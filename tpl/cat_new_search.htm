@@ -1,0 +1,34 @@
+<link rel="stylesheet" href="/css/pages/catalogue.css">
+<link rel="stylesheet" href="/css/plugins/flags.min.css">
+<link rel="stylesheet" href="/js/plugins/slider_bt/bootstrap-slider.min.css">
+<link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
+<link rel="stylesheet" href="/js/plugins/jquery.treefilter/jquery.treefilter.css">
+
+<input type="hidden" id="search_typ_id" value="{search_typ_id}">
+<input type="hidden" id="search_str_id" value="{search_str_id}">
+
+<div id="search_target" class="row wdt100 mar0 flex-column-reverse flex-md-row">
+    <div class="col-lg-3 col-12 content" style="padding: 0 15px; min-height: 700px; height: 100%; margin: 0; box-shadow: none;">
+        <div id="search_new_tree" style="display: none">{cat_search_new_tree}</div>
+        <div id="search_tree" style="display: none">{cat_search_tree}</div>
+        <div id="search_filters" style="display: none">{cat_search_filters}</div>
+        <div id="search_brands" style="display: none">{cat_search_brands}</div>
+    </div>
+    <div id="result_target" class="col-lg-9 col-12 cat_result_table">
+        <input id="type_search" type="hidden" value="{type_search}">
+        <input id="cur_value" type="hidden" value="{cur_value}">
+        {cat_search_main}
+    </div>
+</div>
+
+<script type="text/javascript" src="/js/plugins/jquery.treefilter/jquery.treefilter.js"></script>
+<script type="text/javascript" src="/js/catalogue.js"></script>
+<script>
+    $(document).ready(function() { "use strict";
+        techCarModelsFilter();
+        checkCookieTpoint();
+    });
+</script>
+<script type="text/javascript" src="/js/plugins/slider_bt/bootstrap-slider.min.js"></script>
+<script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" src="/js/plugins/select2/select2_ru.js"></script>

@@ -1,0 +1,167 @@
+<link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
+<script>
+    jQuery(function($){
+        $("#reg_phone").mask("+380999999999",{placeholder:" "});
+    });
+</script>
+
+<div class="container">
+	<div class="registration-account">
+
+		<div class="row align-items-center">
+			<div class="col-lg-12 col-12 pad0">
+				<h2 style="font-size: 16px;"><b>{site_sellers}</b></h2>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4 col-12 pad0">
+				<label class="required_label">{company_name}:</label>
+			</div>
+			<div class="col-lg-8 col-12 pad0">
+				<input id="reg_company" title="{company_name}" class="form-control" type="text">
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4 col-12 pad0">
+				<label class="required_label">{name_surname}:</label>
+			</div>
+			<div class="col-lg-8 col-12 pad0">
+				<input id="reg_name" title="{name_surname}" class="form-control" type="text">
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4 col-12 pad0">
+				<label class="required_label">{phone_cap}:</label>
+			</div>
+			<div class="col-lg-8 col-12 pad0">
+				<input id="reg_phone" title="{phone_cap}" class="form-control" type="tel" placeholder="+380" aria-hidden="true" aria-label="+380">
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4 col-12 pad0">
+				<label>{email_cap}:</label>
+			</div>
+			<div class="col-lg-8 col-12 pad0">
+				<input id="reg_email" title="{email_cap}" class="form-control" type="email">
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4 col-12 pad0">
+				<label class="required_label">{location_cap}:</label>
+			</div>
+			<div class="col-lg-8 col-12 pad0">
+				<select id="reg_city" title="{location_cap}" class="form-control select2-city pointer" onchange="validateForm('city','select')">
+				</select>
+				<div class="float-left city-inline">
+					<ul class="list-inline">
+						<li class="list-inline-item">{for_example}:</li>
+						<li class="list-inline-item"><button id="10108" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>
+						<li class="list-inline-item"><button id="22739" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kharkiv} </button></li>
+						<li class="list-inline-item"> <button id="13549" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
+						<li class="list-inline-item"><button id="4074" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_dnepr} </button></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4 col-12 pad0">
+				<label>{comment_cap}:</label>
+			</div>
+			<div class="col-lg-8 col-12 pad0">
+				<textarea id="reg_comment" title="{comment_cap}" class="form-control"></textarea>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4 col-12 pad0">
+				<label>{sample_price_list}:</label>
+			</div>
+			<div class="col-lg-2 col-12 pad0">
+				<button id="upload_btn" type="button" class="btn" data-toggle="modal" data-target="#filePhotoUploadForm" onClick="showUploadForm()"><i class="fa fa-cloud-upload"></i> {upload_file}</button>
+			</div>
+			<div class="col-lg-2 col-12 pad0">
+				<span id="upload_image"></span>
+			</div>
+		</div>
+
+		<div class="row">
+			<ul class="list-inline">
+				<li><b>{sell_contacts}:</b></li>
+				<li>{manager_cap}: <a href="#">{manager_buchkov}</a></li>
+				<li>{phone_cap}: <a href="#">+38 096 996 82 96</a></li>
+				<li>E-mail: <a href="mailto:support@toko.ua">support@toko.ua</a></li>
+			</ul>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-12 col-12 pad0">
+				<input type="submit" class="btn btn-primary" value="{send_seller}" onclick="saveSellForm();">
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" src="/js/plugins/select2/select2_ru.js"></script>
+
+
+<script>
+    var $example = $('.select2-city').select2({
+        language: "ru"
+    });
+
+    $('.select2-delivery').select2({
+        minimumResultsForSearch: -1
+    });
+
+    $('.select2-payment').select2({
+        minimumResultsForSearch: -1
+    });
+
+    function triggerCity(a) {
+        sendSelect2('',true,a);
+    }
+
+    function select2Soset() {
+        var city_like = $('.select2-search__field').val();
+        if (city_like.length>2) {
+            sendSelect2(city_like);
+        }
+    }
+
+    function sendSelect2(city_like,trig,a) {
+        JsHttpRequest.query(folder,{'w':'get_city_list', 'city_like':city_like},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                $("#select_city").append(result.content);
+                var mas=result.content;
+                var len = Object.keys(mas).length;
+                for (var i=1; i<=len; i++) {
+                    var id_city=Object.entries(mas[i])[0][1];
+                    var value_city=Object.entries(mas[i])[1][1];
+                    addOption(id_city,value_city);
+                }
+                $(".select2-city").select2('open');
+                if (trig===true) {
+                    var city = $(a).attr('id');
+                    $example.val(city).trigger("change");
+                }
+            }}, true);
+    }
+
+    function addOption(id_city,value_city) {
+        if ($('.select2-city').find("option[value='" + id_city + "']").length) {
+            $('.select2-city').val(id_city).trigger('change');
+        } else {
+            var newOption = new Option(value_city, id_city, false, false);
+            $('.select2-city').append(newOption).val(id_city).trigger('change');
+        }
+    }
+</script>
+

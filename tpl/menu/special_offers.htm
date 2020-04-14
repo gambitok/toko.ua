@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="/css/pages/catalogue.css">
+<link rel="stylesheet" href="/css/pages/special_offers.css">
+
+<div class="content special_offers">
+    <input id="special_offers_update" type="hidden" value="{special_offers_update}">
+    <div class="row">
+        <div class="col-lg-4 col-12"><h2><i class="fa fa-box-open span-green"></i> {special_offers_cap}</h2></div>
+        <div class="col-lg-4 col-6">
+            <h3>{category_goods}</h3>
+        </div>
+        <div class="col-lg-4 col-6 float-right">
+            <select class="form-control" name="special_offers_filter" title="{special_offers_cap}" id="special_offers_filter" onchange="getSpecialOffersList();">
+                <option value="0">-{not_chosen}-</option>
+                {special_offers_filter}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div id="special_offers_range">
+    {special_offers_range}
+</div>

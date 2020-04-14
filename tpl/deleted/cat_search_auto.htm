@@ -1,0 +1,69 @@
+<link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
+
+<div id="cat_search_auto">
+
+    <input type="hidden" id="str_id" value="">
+    <input type="hidden" id="str_level" value="">
+    <input type="hidden" id="str_id_parrent" value="">
+
+    <input type="hidden" id="str_year" value="">
+    <input type="hidden" id="str_manufacture" value="">
+    <input type="hidden" id="str_model" value="">
+    <input type="hidden" id="str_model_id" value="">
+    <input type="hidden" id="str_group" value="">
+
+    <input type="hidden" id="val_manufacture" value="{str_manufacture}">
+    <input type="hidden" id="val_model" value="{str_model}">
+    <input type="hidden" id="val_model_id" value="{str_model_id}">
+    <input type="hidden" id="val_group" value="{str_group}">
+
+    <input type="hidden" id="str_str_text" value="">
+
+    <input type="hidden" id="str_type" value="{str_type}">
+
+    <div class="auto_table">
+        <div class="row auto_table--row padb15 padt15">
+            <div class="col-12 col-lg-2 auto_table--col">
+                <button id="btn_trg_manufacture" class="btn btn-outline-primary" onclick="triggerDetailCar(0);">{year_cap} <i class="fa fa-angle-down"></i></button>
+            </div>
+            <div class="col-12 col-lg-2 auto_table--col">
+                <button id="btn_trg_model" class="btn btn-outline-primary" onclick="triggerDetailCar(1);">{auto_cap} <i class="fa fa-angle-down"></i></button>
+            </div>
+            <div class="col-12 col-lg-2 auto_table--col">
+                <button id="btn_trg_modelid" class="btn btn-outline-primary" onclick="triggerDetailCar(2);">{model_cap} <i class="fa fa-angle-down"></i></button>
+            </div>
+            <div class="col-12 col-lg-2 auto_table--col">
+                <button class="btn btn-outline-primary" onclick="triggerDetailCar(3);">{model_number} <i class="fa fa-angle-down"></i></button>
+            </div>
+            <div class="col-12 col-lg-2 auto_table--col">
+                <button id="btn_trg_group" class="btn btn-outline-primary" onclick="triggerDetailCar(4);">{detail_group} <i class="fa fa-angle-down"></i></button>
+            </div>
+            <div class="col-12 col-lg-2 auto_table--col">
+                <button onClick="addGarage();" class="btn btn-search-auto btn-outline-secondary btn-outline-primary" type="button" title="{garage_add}"><i class="fa fa-car"></i> {garage_add}</button>
+            </div>
+        </div>
+
+        <div id="toggle_manuf_list" class="toggle_manuf_list">
+            {catalogue_tab_manuf}
+        </div>
+
+        <div id="toggle_auto_list" class="toggle_auto_list">
+            {catalogue_tab_search}
+        </div>
+
+        <div id="toggle_history" class="toggle_history">
+            <h5>{history_cap}</h5>
+            <div id="toggle_history-block"></div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" src="/js/plugins/select2/select2_ru.min.js"></script>
+
+<script>
+    $(".js-example-basic-single").select2({
+        language: "ru"
+    });
+</script>

@@ -1,0 +1,12 @@
+.contacts_row i {
+    text-align: center;
+    padding-left: 5%;
+    font-size: 12px;
+    width: 35px
+}
+.contacts_row li {
+    padding-bottom: 60px
+}
+.contacts_row span {
+    font-size: 12px
+}

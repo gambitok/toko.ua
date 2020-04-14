@@ -1,0 +1,53 @@
+<div class="col-lg-4 col-12 pad0">
+
+    <div class="article_card">
+
+        <div class="article_card-main">
+
+            <div class="row">
+                <div class="col-12">
+                    <a itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">
+                        <div class="search__photo">
+                            <img class="lazy" data-src="{product_image}" alt="{product_title}" title="{product_title}">
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <a class="search__link" itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/" onclick="showLoader();">
+                        <span class="search__name">{product_text}</span>
+                        <span class="search__brand">{product_brand}</span>
+                        <span class="search__art">{product_name}</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-7 padr0">
+                    <span class="search__name">{price_cap}: </span>
+                    <span class="search__true_price">{product_price}</span>
+                </div>
+                <div class="col-5">
+                    <input type="hidden" value="1" id="count_{product_i}">
+                    <button class="btn-group btn btn-md btn-info float-right {product_button}" onclick="moveBasket({product_i},'{art_id}','{brand_id}','{product_real_stock}','{product_storage_id}',{product_suppl_id});">{buy_cap}</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 {product_button}">
+                    <span class="search__name">{in_stock}:</span> {product_stock} {amount_abbr}.
+                </div>
+                <div class="col-12 {product_delivery_class} {product_button}">
+                    <span class="search__name">{storage_info}:</span> {product_delivery_short_info}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="article_card-hidden">{product_info}</div>
+    </div>
+
+</div>
+

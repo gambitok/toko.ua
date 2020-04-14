@@ -1,0 +1,29 @@
+<div class="filters row">
+    <div class="col-lg-12 col-12">
+        <ul class="nav nav-pills tabs-auto" role="tablist">
+            <li class="nav-item"><span class="span-title">{search_detail_cap}</span></li>
+            <li class="nav-item"> <a id="link_year" class="nav-link active" data-toggle="pill" href="#label_year"><span>{year_cap} <i class="fa fa-caret-right"></i></span></a> </li>
+            <li class="nav-item"> <a id="link_auto" class="nav-link disabled" data-toggle="pill" href="#label_auto"><span>{auto_cap} <i class="fa fa-caret-right"></i></span></a> </li>
+            <li class="nav-item"> <a id="link_model" class="nav-link disabled" data-toggle="pill" href="#label_model"><span>{model_cap} <i class="fa fa-caret-right"></i></span></a> </li>
+            <li class="nav-item"> <a id="link_modelid" class="nav-link disabled" data-toggle="pill" href="#label_modelid"><span>{model_number} <i class="fa fa-caret-right"></i></span></a> </li>
+            <li class="nav-item"> <a id="link_group" class="nav-link disabled" data-toggle="pill" href="#label_group"><span>{detail_group}</span></a> </li>
+        </ul>
+        <div class="tab-content pad0">
+            <div id="label_year" class="container tab-pane active pad0">
+                {catalogue_year_list}
+            </div>
+            <div id="label_auto" class="container tab-pane fade pad0">
+                <div id="tab_auto"></div>
+            </div>
+            <div id="label_model" class="container tab-pane fade pad0">
+                <div id="tab_model"></div>
+            </div>
+            <div id="label_modelid" class="container tab-pane fade pad0">
+                <div id="tab_modelid"></div>
+            </div>
+            <div id="label_group" class="container tab-pane fade pad0 tab_auto_group">
+                <div id="tab_group"></div>
+            </div>
+        </div>
+    </div>
+</div>

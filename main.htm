@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="{site_lang_html}">
+<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-134334911-1"></script>
+	<script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-134334911-1');
+	</script>
+
+	<title>{site_title}</title>
+    <meta http-equiv="Content-Type" content="text/html" charset="windows-1251">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="{site_description}">
+	<meta name="keywords" content="{site_keywords}">
+
+	<meta name="robots" content="index, follow">
+	<meta name="googlebot" content="index, follow">
+	<meta name="yandex" content="index, follow">
+	<meta name="distribution" content="global">
+	<meta name="google-site-verification" content="KA_3DBoBspAeA7v6LtjRUB9bXdPhWPcgNUvlNhZjzac" />
+
+	<link rel="alternate" href="https://toko.ua/" hreflang="x-default" />
+	<link rel="alternate" href="https://toko.ua/" hreflang="ru-ua" />
+	<link rel="alternate" href="https://toko.ua/en" hreflang="en-ua" />
+	<link rel="alternate" href="https://toko.ua/uk" hreflang="uk-ua" />
+
+	<!--semantic-->
+	<script type="application/ld+json">
+		{
+			"@context": "http://schema.org",
+			"@type": "Organization",
+			"url": "https://toko.ua/",
+			"logo": "https://toko.ua/favicon.ico",
+			"contactPoint": [{
+				"@type": "ContactPoint",
+				"telephone": "+380(44) 507 16 16",
+				"contactType": "customer service"
+			},{
+				"@type": "ContactPoint",
+				"telephone": "+380(67) 381 16 83",
+				"contactType": "customer service"
+			},{
+				"@type": "ContactPoint",
+				"telephone": "+380 (67) 384 82 55",
+				"contactType": "customer service"
+			}]
+		}
+	</script>
+
+	<script type="application/ld+json">
+		{
+			"@context": "http://schema.org",
+			"@type": "WebSite",
+			"url": "https://toko.ua/",
+			"potentialAction": {
+				 "@type": "SearchAction",
+				 "target": "https://toko.ua/search/{search_term_string}",
+				 "query-input": "required name=search_term_string"
+			}
+		}
+	</script>
+
+	<script type="application/ld+json">
+		{
+			"@context": "http://schema.org",
+			"@type": "Store",
+			"name": "TOKO GROUP toko.ua",
+			"image": "https://toko.ua/images/logo.png",
+			"priceRange": "$$$",
+			"openingHoursSpecification": [
+				{
+					"@type": "OpeningHoursSpecification",
+					"dayOfWeek": [
+						"Понеділок",
+						"Вівторок",
+						"Середа",
+						"Четвер",
+						"П'ятниця"
+					],
+					"opens": "09:00",
+					"closes": "18:00"
+				},
+				{
+					"@type": "OpeningHoursSpecification",
+					"dayOfWeek": [
+						"Субота"
+					],
+					"opens": "9:00",
+					"closes": "15:00"
+				}
+			],
+			"telephone": [
+				"+38 044 507 16 16",
+				"+38 067 381 16 83",
+				"+38 067 384 82 55"
+			],
+			"address": [
+				{
+					"@type": "PostalAddress",
+					"streetAddress": "Проспект миру, 7",
+					"addressLocality": "Хмельницький",
+					"addressCountry": "Україна"
+				},
+				{
+					"@type": "PostalAddress",
+					"streetAddress": "Пост-Волинська, 94/1",
+					"addressLocality": "Київ",
+					"addressCountry": "Україна"
+				}
+			]
+		}
+	</script>
+
+	{script_breadcrumbs}
+
+	{site_page_pagination}
+
+	<!--socials-->
+
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="{site_title}" />
+	<meta property="og:url" content="{canonical_link}" />
+	<meta property="og:description" content="{site_description}" />
+	<meta property="og:image" content="/favicon.png" />
+	<meta property="og:site_name" content="{internet_shop} toko.ua" />
+
+	<link rel="icon" href="/favicon.png" type="image/png">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+	<link rel="apple-touch-icon" sizes="192x192" href="/favicon.png">
+	<!--<link rel="manifest" href="manifest.json" />-->
+
+	<script async src="https://www.google-analytics.com/analytics.js"></script>
+
+	<link rel="canonical" href="{canonical_link}"/>
+
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap&subset=cyrillic" rel="stylesheet">
+
+	<link rel="stylesheet" href="/fonts/fontawesome_web/css/all-minify.css">
+
+	<!--plugins styles-->
+	<link rel="stylesheet" href="/css/plugins/bootstrap.min.css">
+
+	<!--custom styles-->
+	<link rel="stylesheet" href="/css/full.css">
+	<link rel="stylesheet" href="/css/plugins.css">
+	<link rel="stylesheet" href="/css/media.css">
+	<link rel="stylesheet" href="/css/modals.css">
+
+	<!--plugins scripts-->
+	<script type="text/javascript" src="/js/library/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="/js/library/popper.min.js"></script>
+	<script type="text/javascript" src="/js/library/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/js/JsHttpRequest/JsHttpRequest.min.js"></script>
+</head>
+
+<body>
+
+<div class="wrapper container-fluid">
+
+	<img src="/favicon.png" style="display: none;" alt="{site_title_short}" title="{site_title_short}">
+
+	<div class="container fixed-hidden">
+		<div class="row fixed hidden">
+			<div class="fixed-main">
+				<div class="offset-lg-2 col-lg-1">
+					<div class="active-group active">
+						<button class="btn fixed-btn"><span class="fas fa-bars"></span></button>
+						<div class="passive">
+							<ul>
+								<li><a href="{site_lang_prefix}/">{main_page}</a></li>
+								<li><a href="{site_lang_prefix}/news/">{news_cap}</a></li>
+								<li><a href="{site_lang_prefix}/contacts/">{contacts_cap}</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<div class="dropdown">
+								<button style="border-right: 1px solid #ced4da;" onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" class="btn btn-outline-secondary btn-primary btn-history" type="button">
+									<span class="fas fa-history"></span>
+								</button>
+								<div onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" id="myDropdown2" class="dropdown-content"></div>
+							</div>
+						</div>
+						<input id="search_art2" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
+						<div class="input-group-append">
+							<button onClick="artSearch('search_art2');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-1">
+					<div class="btn-group">
+						<a class="btn fixed-btn" onclick="showBasketMinForm();">
+							<img src="/images/buy-cart-white.png" alt="basket">
+							<div class="h0">
+								<div id="basket_status2" class="basket_count {basket_style}">{basket_count}</div>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="fixed-phone">
+				<div class="container">
+					<div class="row align-items-center">
+						<ul class="list-inline mar0">
+							<li class="list-inline-item logotype-min">
+								<a href="/" class="btn btn-outline-secondary btn-primary btn-header-phone">
+									<img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}">
+								</a>
+							</li>
+							<li class="list-inline-item">
+								<button onClick="showArtSearch();" class="btn btn-outline-secondary btn-primary btn-header-phone" type="button" title="{search_cap}"><span class="fas fa-search"></span></button>
+							</li>
+							<li class="list-inline-item">
+								<a href="/catalogue" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-car"></span></a>
+							</li>
+							<li class="list-inline-item">
+								<a href="/profile" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-user-alt"></span></a>
+							</li>
+							<div class="basket_status">
+								<div id="basket_status4" class="basket_phone {basket_style}">{basket_count}</div>
+							</div>
+							<li class="list-inline-item">
+								<a onclick="showBasketMinForm();" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-shopping-basket"></span></a>
+							</li>
+							<li class="list-inline-item bar">
+								<a href="#menu" class="btn btn-outline-secondary btn-primary btn-header-phone" title="{mob_menu}"><span class="fas fa-bars"></span></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row fixed-up hidden">
+			<div class="up-arrow">
+				<a href="header" rel="nofollow" class="scrollto text-right"><span class="mob-span"><span class="fas fa-chevron-up"></span></span></a>
+			</div>
+		</div>
+	</div>
+
+	<header>
+
+		<div class="row header-top" id="header-top">
+			<div class="container">
+				<div class="row align-items-center">
+					<div class="col-lg-6 contacts" id="region_select_tpoint">
+						{login_info}
+						{region_select}
+					</div>
+					<div class="col-lg-6 col-12 authorization">
+						<ul>
+							<li>
+								<a href="{site_lang_prefix}/contacts/" class="pointer"><span class="fas fa-address-card"></span><span> {contacts_cap}</span></a>
+							</li>
+							{news_info}
+							{special_offers}
+							{profile_info}
+							<li>
+								<div class="dropdown d-inline">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										{current_language}
+									</button>
+									<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+										{language_dropdown}
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>	
+				</div>
+			</div>
+		</div>
+
+		<div class="row header-phone">
+			<div class="container">
+				<div class="row align-items-center">
+					<ul class="list-inline mar0">
+						<li class="list-inline-item logotype-min">
+							<a href="{site_lang_prefix}/" class="btn btn-outline-secondary btn-primary btn-header-phone">
+								<img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}">
+							</a>
+						</li>
+						<li class="list-inline-item">
+							<button onClick="showArtSearch();" class="btn btn-outline-secondary btn-primary btn-header-phone" type="button" title="{search_cap}"><span class="fas fa-search"></span></button>
+						</li>
+						<li class="list-inline-item">
+							<a href="{site_lang_prefix}/catalogue/" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-car"></span></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="{site_lang_prefix}/profile/" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-user-alt"></span></a>
+						</li>
+						<div class="basket_status">
+							<div id="basket_status3" class="basket_phone {basket_style}">{basket_count}</div>
+						</div>
+						<li class="list-inline-item">
+							<a onclick="showBasketMinForm();" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-shopping-basket"></span></a>
+						</li>
+						<li class="list-inline-item bar">
+							<a href="#menu" class="btn btn-outline-secondary btn-primary btn-header-phone" title="{mob_menu}"><span class="fas fa-bars"></span></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="row header-main">
+			<div class="container">
+				<div class="row align-items-center">
+
+					<div class="col-2 logotype-main"><a href="{site_lang_prefix}/"><img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}"></a></div>
+
+					<div class="col-6 search">
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<div class="dropdown">
+									<button style="border-right: 1px solid #ced4da;" onMouseOut="showDropHistory2();" onMouseOver="showDropHistory();" class="btn btn-outline-secondary btn-primary btn-history" type="button">
+										<span class="fas fa-history"></span>
+									</button>
+									<div onMouseOut="showDropHistory2();" onMouseOver="showDropHistory();" id="myDropdown" class="dropdown-content"></div>
+								</div>
+							</div>
+							<input id="search_art" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">
+							<div class="input-group-append">
+								<button onClick="artSearch('search_art');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button" title="{search_cap}">
+									<span class="fas fa-search"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-4 pad0">
+						<ul class="list-inline">
+							<li class="garage">
+								<a id="garage_btn" {garage_link} title="{garage_user}">
+									<span class="fa fa-car garage-icon"></span>
+									<span class="garage_span" id="garage_span"><small>{my_cap}</small>
+										{user_garage}</span>
+									<div class="hidden">
+										<div id="garage_status" class="garage_count {garage_style}">{garage_status}</div>
+									</div>
+								</a>
+								<div id="GarageForm" class="dropdown-content garage_block"></div>
+							</li>
+							<li class="profile">
+								<a id="profile_btn" href="{site_lang_prefix}/profile/orders/" title="{profile}">
+									<span class="fa fa-user garage-icon"></span>
+									<span id="profile_span"><small>{private_cap}</small>
+										{office_cap}</span>
+								</a>
+							</li>
+							<li class="basket">
+								<a id="basket_btn" onclick="showBasketMinForm();" title="{basket_cap}">
+									<span class="fa fa-shopping-cart garage-icon"></span>
+									<span id="basket_span"><small>{mine_cap}</small>
+										{basket_cap}</span>
+									<div class="hidden">
+										<div id="basket_status" class="basket_count {basket_style}">{basket_count}</div>
+									</div>
+								</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div id="navigation" class="row header-nav">
+			<div class="container">
+				<nav class="row align-items-center" itemscope itemtype="http://schema.org/SiteNavigationElement">
+					<ul>{details_info}</ul>
+				</nav>
+			</div>
+		</div>
+
+		<div id="navigation-hide" class="row header-hide-nav" style="display:none;">
+			<div class="container">
+				<div class="row content-hide-nav">
+					<div class="col-10">
+						<span id="navigation-hide__header" class="navigation-hide__header"></span>
+					</div>
+					<div class="col-2">
+						<button class="btn btn-sm btn-outline-secondary float-right wauto" onclick="closeHideNavigation();"><span class="fa fa-times"></span></button>
+					</div>
+					<div class="tree-list border-none" id="navigation-hide__content"></div>
+				</div>
+			</div>
+		</div>
+
+	</header>
+
+	<section class="row main">
+		<div id="catalogue" class="container pad0">
+			<div id="catalogue-auto">{main_auto_window}</div>
+			{site_breadcrumbs}
+			<div id="catalogue-main">
+				{main_window}
+			</div>
+		</div>
+		{main_seo_text}
+	</section>
+
+	<footer>
+		<div class="row footer-socials">
+			<div class="container">
+				<div class="row align-items-center">
+					<div class="col-lg-2 col-5 padl0 madl0">
+						<span>{social_contacts}: </span>
+					</div>
+					<div class="col-lg-7 col-7">
+						<span itemscope itemtype="http://schema.org/Organization">
+ 							<link itemprop="url" href="https://toko.ua/">
+							<ul>{list_social}</ul>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row footer-contacts">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-4 col-12 foot_head">
+						<span>{contacts_cap}</span>
+						{contacts_bottom}
+					</div>
+					<div class="col-lg-4 col-12 foot_col">
+						<span>{for_suppliers_cap}</span>
+						<ul class="list-inline">
+							<li><a href="{site_lang_prefix}/sell/"><span class="fas fa-angle-right"></span> {sell_on_toko}</a></li>
+						</ul>
+					</div>
+					<div class="col-lg-4 col-12 foot_col">
+						<span>{info_cap}</span>
+						<ul class="list-inline">
+							<li><a href="{site_lang_prefix}/contacts/"><span class="fas fa-angle-right"></span> {contacts_cap}</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="background: #292929;">
+			<!--footers_block-->
+		</div>
+	</footer>
+</div>
+
+<div id="modals" class="modals">
+
+	<!-- Modal Alert-->
+	<div class="modal fade" id="AlertForm" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div id="alert-modal-header" class="modal-header">
+					<div id="choose_title"></div>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="container">
+						<div class="row">
+							<div id="choose_message" class="wdt100"></div>
+						</div>
+						<div class="row float-right">
+							<button id="alert_btn_ok" class="btn btn-primary" data-dismiss="modal">OK</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Validate-->
+	<div class="modal fade" id="ValidateForm" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div id="validate-modal-header" class="modal-header bg-info">
+					<div id="validate_title">{phone_confirmation}</div>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="container">
+						<div class="row">
+							<div id="validate_message" class="wdt100">{code_from_SMS}</div>
+							<div class="wdt100"><br>
+								<input id="validate_code" name="validate_code" type="text" title="code" maxlength="4" onkeypress="validate(event);"><br>
+								<label id="validate_label" for="validate_code" class="span-red" style="display: none">{wrong_code}</label>
+							</div>
+						</div>
+						<div class="row float-right">
+							<button id="validate_btn_ok" class="btn btn-primary">OK</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Info-->
+	<div class="modal fade" id="InfoForm" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span id="info_title">{info_title}</span>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body text-left pad0">
+					<div id="info_content">{info_content}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Photo-->
+	<div class="modal fade modal-gallery" id="PhotoForm" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="container">
+						<div id="photo_gallery"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--phone search-->
+	<div class="modal fade modal-gallery modal-phone" id="PhoneArticle" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="container">
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<button onclick="showHistorySearch();" class="btn btn-outline-secondary btn-primary btn-search-art"><span class="fas fa-history"></span></button>
+							</div>
+							<input id="search_art3" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
+							<div class="input-group-append">
+								<button onClick="artSearch('search_art3');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
+							</div>
+						</div>
+						<div id="PhoneHistory" style="padding: 45px; display: none;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Brand-->
+	<div class="modal fade" id="BrandForm" role="dialog" tabindex="-1">
+		<div class="modal-dialog" style="max-width: 1000px;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span class="modal-title">{info_cap}</span>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="container">
+						<div class="row">
+							<div id="info_brand">
+								{brand_info}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Article-->
+	<div class="modal fade" id="ArtForm" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span class="modal-title">{art_cap}</span>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="container">
+						<div class="row">
+							<div id="info_art">
+								{art_info}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Basket-->
+	<div class="modal fade" id="BasketForm" role="dialog" tabindex="-1">
+		<div class="modal-dialog" style="max-width: 1080px;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span class="modal-title">{basket_cap}</span>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="container">
+						<div class="row">
+							<div id="basket_block" class="container">
+								{basket_content}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Login-->
+	<div class="modal fade" id="myModal" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span class="modal-title">{authorization}</span>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="container">
+						<div class="row align-items-center">
+							<div class="offset-1 col-10">
+								<form action="" onsubmit="return false;" autocomplete="off">
+									<input class="clearAll TextBox" id="loginform" type="hidden" name="loginform" value="1">
+									<input class="clearAll TextBox" id="remember" type="hidden" name="remember" value="1">
+									<div class="auth-input">
+										<label class="auth-label">{client_login}</label><br>
+										<input class="form-control" id="userlogin" type="text" name="userlogin" value="" placeholder="{input_phone}">
+									</div><br>
+									<div class="auth-input">
+										<label class="auth-label">{client_password_cap}</label><br>
+										<input class="form-control" id="userpassword" type="password" name="userpassword" placeholder="{input_password}">
+									</div><br>
+									<input class="btn btn-primary" type="submit" value="{login}" onClick="loginForm();"><br><br>
+									<a class="auth-link" href="{site_lang_prefix}/recover_password/">{forget_password}?</a>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Region-->
+	<div class="modal fade" id="RegionForm" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span class="modal-title">{choose_office}</span>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="container">
+						<div class="row">
+							<div id="choose_region">
+								{region_list}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Action-->
+	<div class="modal fade" id="ActionForm" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span class="modal-title span-red text-center wdt100">TOKO Assistance</span>
+				</div>
+				<div class="modal-body text-left">
+					<div class="container">
+						<div class="row">
+							<div class="col-12" style="text-align: center;font-size: 2.5em;">
+								<span class="span-green tooltips" data-toggle="tooltip" data-placement="bottom" data-html="true"
+									title="
+									<span class='span-red' style='font-size:1.2em'>{price_cap} 42.54 UAH, {from_cap} 20 {amount_abbr}.</span> <br>
+									{offer_valid_until}: {indefinitely_cap} <br>
+									{quantity_limited}: {no_cap}
+								">
+								<span class="fa fa-box-open"></span></span>
+							</div>
+							<div class="col-12 text-center">
+								{action_rules}
+							</div>
+							<div class="col-12" style="text-align: center;font-size: 2.5em;">
+								<span class="span-green"><span class="fa fa-box-open"></span></span>
+							</div>
+							<div class="offset-2 col-8 text-center" style="background: black; color: white; border-radius: 0.25em; line-height: 1.2; padding: 10px;">
+								<span class="span-red" style="font-size:1em">
+									{price_cap} 42.54 UAH, {from_cap} 20 {amount_abbr}.
+								</span> <br>
+								<span style="font-size:0.8em">
+									{offer_valid_until}: {indefinitely_cap} <br>
+									{quantity_limited}: {no_cap}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--Loader Form-->
+	<div class="modal fade" id="LoaderForm" role="dialog" data-toggle="modal" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content modal-loader">
+				<div class="text-center"><img src="{image_logotype}" alt="loader"></div>
+				<div class="loader-dots">
+					<div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div><div class="dot dot4"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<!--Mobile Navigation-->
+<div class="navigations">
+	<nav id="menu" class="panel" role="navigation">
+		<ul>
+			<li class="dweb">{menu_cap} | {lang_select}</li>
+			{region_select_phone}
+			<li><a href="{site_lang_prefix}/">{main_page}</a></li>
+			<li><a href="{site_lang_prefix}/news/">{news_cap}</a></li>
+			<li><a href="{site_lang_prefix}/contacts/">{contacts_cap}</a></li>
+			<li>{profile_mobile}</li>
+			<li><a onclick="showBasketMinForm();">{basket_cap}<span> ({basket_summ})</span></a></li>
+		</ul>
+	</nav>
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="/js/plugins/bigSlide.js"></script>
+<script type="text/javascript" src="/js/plugins/lazyload/lazyload.min.js"></script>
+<script type="text/javascript" src="/js/plugins/bootstrap-notify/bootstrap-notify.min.js"></script>
+<script type="text/javascript" src='/js/plugins/maskedinput.js'></script>
+
+<!--custom scripts-->
+<script type="text/javascript" src="/js/onload.js"></script>
+<script type="text/javascript" src="/js/catalogue.js"></script>
+<script type="text/javascript" src="/js/menu.js"></script>
+<script type="text/javascript" src="/js/shop.js"></script>
+<script type="text/javascript" src="/js/client.js"></script>
+
+<script>
+    $("body").click(function(e) {
+        if ($(e.target).attr('id') == 'garage_btn'
+			|| $(e.target).attr('class') == 'garage'
+			|| $(e.target).attr('class') == 'garage_span'
+			|| $(e.target).attr('class') == 'garage_img'
+			|| $(e.target).attr('class') == 'btn btn-primary'
+			|| $(e.target).attr('class') == 'btn btn-primary wauto'
+			|| $(e.target).attr('class') == 'fa fa-car'
+		) { return true; } else {
+            $('#GarageForm').fadeOut();
+        }
+    });
+    $("body").click(function(e) {
+        if ($(e.target).attr('class') == 'header-nav__li'
+           || $(e.target).attr('class') == 'tree-title'
+        ) { return true; } else {
+            closeHideNavigation();
+        }
+    });
+    $("body").click(function(e) {
+        if ($(e.target).attr('class') == 'panel'
+            || $(e.target).attr('class') == 'list-inline-item bar active'
+            || $(e.target).attr('class') == 'btn btn-outline-secondary btn-primary btn-header-phone'
+            || $(e.target).attr('class') == 'fas fa-bars'
+        ) { return true; } else {
+            $(".bar").bigSlide();
+        }
+    });
+</script>
+

@@ -1,0 +1,63 @@
+<link rel="stylesheet" href="/css/pages/basket.css">
+
+<div class="container basket-card">
+    <div class="row">
+        <div class="col-4 basket-title">{caption_cap}</div>
+        <div class="col-7 basket-content" style="font-size: 0.9em;">
+            <span class="tooltips" data-toggle="tooltip" data-placement="bottom" title="{country_name}">{flag} {brand_name}</span>
+            <a class="span-red" href="{link}">{art_name}</a>
+            <br>
+            {text}
+        </div>
+        <div class="col-1 basket-close text-right">
+            <button class="btn-basket pointer" onclick='deleteFromBasket({art_id},{storage_id},"{art_name}");'><i class="fa fa-trash-alt"></i></button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 basket-title">{date_cap}</div>
+            <div class="col-8 basket-content small-text">
+            <p><span title="{date_start_cap}">{added_cap}:</span> {date1}</p>
+            <p><span title="{date_update_cap}">{updated_cap}:</span> {date2}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 basket-title">{storage_short_info}</div>
+        <div class="col-8 basket-content">
+            <span class="medium-text"><i class="fas fa-stopwatch"></i> {delivery_short_info}</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 basket-title">{count_cap}</div>
+        <div class="col-4 basket-content">
+            <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="updateCountBasket(0,{art_id},{storage_id},{stock},1);">-</button>
+                </div>
+                <input id="{amount_field}_phone" class="show_count form-control" min="0" value="{amount}" onchange="updateBasketForm({art_id},{storage_id},{stock},1);">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="updateCountBasket(1,{art_id},{storage_id},{stock},1);">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 basket-title">{price_cap}</div>
+        <div class="col-8 basket-content small-text">
+            <span>{price} {cur_cap}</span>{action}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 basket-title">{total_cap}</div>
+        <div class="col-7 basket-content">
+            <span class="bold">{full_price} {cur_cap}</span>
+        </div>
+        <div class="col-1 basket-close text-right">
+            <label class="container_check" style="margin:0;float: right;">
+                <input id="{art_id}" name="{storage_id}" type="checkbox" {checked} class="check-brand" onclick="checkBasketItem({art_id},{storage_id},this);">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<hr>

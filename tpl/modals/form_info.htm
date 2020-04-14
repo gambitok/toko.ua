@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="row">
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="info-tab" data-toggle="tab" href="#info-main" role="tab" aria-controls="info" aria-selected="true">{info_cap}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="applicability-tab" data-toggle="tab" href="#info-applicability" role="tab" aria-controls="applicability" aria-selected="false">{applicability_cap}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="original-tab" data-toggle="tab" href="#info-original" role="tab" aria-controls="original" aria-selected="false">{original_numbers}</a>
+            </li>
+        </ul>
+
+        <div class="tab-content wdt100" id="myTabContent">
+
+            <div class="tab-pane fade show active" id="info-main" role="tabpanel" aria-labelledby="info-tab">
+                <div id="info_art1" class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-12">{info-main__photo}</div>
+                        <div class="col-lg-6 col-12">{info-main__parameters}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="info-applicability" role="tabpanel" aria-labelledby="applicability-tab">
+                <div id="info_art2">
+                    <div class="row">
+                        <div class="col-12">
+                            {info-applicability}
+                        </div>
+                    </div>
+                </div>
+                <div id="info2_more"></div>
+            </div>
+
+            <div class="tab-pane fade" id="info-original" role="tabpanel" aria-labelledby="original-tab">
+                <div id="info_art3">
+                    <div class="row">
+                        <div class="col-12">
+                            {info-original}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

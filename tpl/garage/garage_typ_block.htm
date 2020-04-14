@@ -1,0 +1,21 @@
+<div class="content-min garage_typ_form">
+
+<div class="row">
+    <div class="col-6 col-lg-4">
+        <span class="title">{manufacture_cap} {model_id_cap}</span> <button class="btn btn-circle" onclick="setCookie('auto_typ_id', ''); location.reload();"><i class="fa fa-times"></i></button>
+        <br><span>{typ_text}</span>
+    </div>
+
+    <div class="order-1 order-lg-0 col-12 col-lg-4 garage_form-buttons">
+        {garage_button}
+        <button class="btn btn-primary-outline" title="{garage_add}" onclick="openAutoCars();">{garage_add}</button>
+        <button class="btn btn-primary-outline" title="{history_cap}" onclick="openAutoHistory();">{history_cap}</button>
+        <button class="btn btn-primary-outline" title="{search_new}" onclick="$('#car_form-select').toggle();showCarsSelectMin(1);">{search_new}</button>
+    </div>
+
+    <div class="order-0 order-lg-1 col-6 col-lg-4">
+        <img src="https://toko.ua/uploads/images/models/{models_img}" alt="{manufacture_cap}" >
+    </div>
+</div>
+
+</div>

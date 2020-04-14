@@ -1,0 +1,49 @@
+<link rel="stylesheet" href="/css/pages/catalogue.css">
+
+<input type="hidden" value="{details_str_id}" id="details_str_id">
+<input type="hidden" value="{details_active_filters}" id="details_active_filters">
+<input type="hidden" value="{details_page}" id="details_page">
+<input type="hidden" value="{details_str_type}" id="details_str_type">
+<input type="hidden" value="{details_link}" id="details_link">
+
+<div class="container">
+    <div class="row details_offers">
+        <div class="col-lg-3 col-12 order-lg-0 order-1 content" style="border-right: 1px solid #f1f1f1; padding: 3% 2%;">
+            <span>{brands_cap}</span>
+            <div id="search_brands_form">
+                {details_brands}
+            </div>
+            <div id="search_linking_form">
+                {details_linking}
+            </div>
+        </div>
+        <div class="col-lg-9 col-12 order-lg-1 order-0 content">
+            <h1>{details_title}</h1>
+            <span id="details_count" class="span-titled">{details_count}</span>
+            {details_content}
+            <div id="details_pagination"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 pad0">
+            <div class="content-min">
+                <div id="details_listing">{details_listing}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 pad0">
+            <div class="content-auto seo_auto seo_details">
+                {seo_auto}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        showSearchBrands();
+    });
+</script>

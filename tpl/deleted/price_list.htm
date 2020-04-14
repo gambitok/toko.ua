@@ -1,0 +1,47 @@
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+<div class="content">
+
+    <div class="row">
+        <div class="col-6">
+            <h4><b>Клієнт:</b> {client_id}</h4>
+            <h4><b>Користувач:</b> {user}</h4>
+            <h4><b>Торгова точка:</b> {tpoint_id}</h4>
+        </div>
+        <div class="col-6 text-right">
+            <p><a class="btn btn-primary wdt50" href="/download">{price_list_form}</a></p>
+            <p><a class="btn btn-primary wdt50" href="/uploads/tested.csv" download>{price_list_down}</a></p>
+        </div>
+    </div>
+
+    <div id="loader-price"></div>
+
+    <table id="example" class="table table-striped table-bordered table-responsive" style="width:100%">
+        <thead>
+        <tr>
+            <td>#</td>
+            <td>{index_cap}</td>
+            <td>{brand_cap}</td>
+            <td>{art_name_cap}</td>
+            <td>{price_cap}</td>
+            <td>{currency_cap}</td>
+            {filials}
+        </tr>
+        </thead>
+        <tbody>
+            {price_list}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.19/i18n/Russian.json"
+            }
+        });
+    } );
+</script>

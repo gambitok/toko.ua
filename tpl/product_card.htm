@@ -1,0 +1,135 @@
+<div itemtype="https://schema.org/Product" itemscope class="row tables__row {style_border} {style_class} {style_hide}">
+
+    <meta itemprop="name" content="{product_name}" />
+    <meta itemprop="sku" content="{product_name}" />
+    <meta itemprop="gtin13" content="{product_barcode}" />
+    <meta itemprop="image" content="https://toko.ua/uploads/images/catalogue/{product_main_photo}" />
+    <meta itemprop="description" content="{product_text}" />
+
+    <!--ARTICLE & BRAND-->
+    <div class="col-lg-2 col-4 tables__name {style_none}">
+        <a class="pointer" onClick="showBrandForm({brand_id});">
+            <h2 id="brand{product_i}" class="search__brand">{product_brand}</h2>
+            <span class="flag-search tooltips {country_display}" data-toggle="tooltip" data-placement="bottom" title="{brand_manuf}: {country_name}"><span class="flag flag-{flag_image}"></span><br>
+            <span id="{art_id}" data-title="{art_cap}">
+                <a itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">
+                    <h3 itemprop="name" id="{product_i}" class="search__art">{product_name}</h3>
+                    <input type="hidden" value="{product_name}">
+
+                    <div itemprop="aggregateRating" itemtype="http://schema.org/AggregateRating" itemscope class="dnone">
+                        <meta itemprop="reviewCount" content="100" />
+                        <meta itemprop="ratingValue" content="5" />
+                        <!--<span itemprop="ratingValue">5</span> {stars_cap} - -->
+                        <!--{based_on_cap} <span itemprop="reviewCount">{count_users}</span> {reviews_stars_cap}-->
+                    </div>
+
+                    <div itemprop="review" itemtype="http://schema.org/Review" itemscope class="dnone">
+                        <div itemprop="author" itemtype="http://schema.org/Person" itemscope>
+                          <meta itemprop="name" content="Author" />
+                        </div>
+                        <!--<span itemprop="name">Value purchase</span> - -->
+                        <!--by <span itemprop="author">Author</span>,-->
+                        <!--<meta itemprop="datePublished" content="{data_today}" />-->
+                        <div itemprop="reviewRating" itemtype="http://schema.org/Rating" itemscope>
+                            <meta itemprop="ratingValue" content="5" />
+                            <meta itemprop="bestRating" content="5" />
+                            <!--<meta itemprop="worstRating" content="1"/>-->
+                            <!--<span itemprop="ratingValue">5</span>/-->
+                            <!--<span itemprop="bestRating">5</span>{reviews_stars_cap}-->
+                        </div>
+                    </div>
+
+                    <div itemprop="brand" itemtype="http://schema.org/Thing" itemscope class="dnone">
+                        <meta itemprop="name" content="{product_brand}" />
+                    </div>
+                </a>
+            </span>
+            <button class="btn-copy tooltips" data-toggle="tooltip" data-placement="bottom" title="{copy_to_clipboard}" onclick='copyToClipboard({product_i},"{product_name}")'><i class="fa fa-copy"></i></button><br>
+            {index_type}
+        </a>
+    </div>
+
+    <!--NAME & INFO-->
+    <div class="col-lg-3 col-8 tables__text {style_none}">
+        <!--<span itemprop="description" class="search__name" data-title="{caption_cap}">{product_text}</span>-->
+        <span class="search__name" data-title="{caption_cap}">{product_text}</span>
+        <div class="tables__info">
+            <a class="{photo_display}" onClick="showPhotoGallery({art_id});"><i class="fas fa-camera show_basket tooltips" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<img width='250' src='{photo_src}' alt='ArticleImage'>"></i></a>
+            <a onClick='showInfoForm({art_id});'><i class="fas fa-info-circle show_basket tooltips" data-toggle="tooltip" data-placement="bottom" data-html="true" title="{product_info}"></i></a>
+            <a class="tables__analog {analog_display}" href="https://toko.ua{product_lang_prefix}/search/{product_format_name}/{product_brand_link}" onclick="showLoader();"><i id="analog{product_i}" class="fas show_basket tooltips" data-toggle="tooltip" data-placement="bottom" title="{analogs_cap}">A</i></a>
+        </div>
+    </div>
+
+    <!--DELIVERY-->
+    <div class="col-lg-2 col-4 tables__delivery {product_delivery_class}">
+        <span class="tooltips" data-toggle="tooltip" data-placement="bottom" title="{product_del}" data-html="true">{product_delivery_short_info}</span>
+        <br><img class="search__return {return_display}" itemprop="image" src="{return_days_img}" alt="{return_days_alt}" title="{return_days_alt}">
+    </div>
+
+    <!--STOCK-->
+    <div class="col-lg-1 col-2 tables__stock" style="padding: 0!important;">
+        <span class="tooltips" data-toggle="tooltip" data-placement="bottom" title="{tpoint_full_name}">{product_stock} {amount_abbr}.</span><br>
+        {instock}
+        <div itemprop="offers" itemtype="http://schema.org/AggregateOffer" itemscope class="dnone">
+            <meta itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/" />
+            <meta itemprop="availability" content="https://schema.org/InStock" />
+            <meta itemprop="priceCurrency" content="{product_kours_cap}" />
+            <meta itemprop="itemCondition" content="https://schema.org/UsedCondition" />
+            <meta itemprop="price" content="{product_true_price}" />
+            <span itemprop="lowPrice">{product_true_price}</span>
+            <span itemprop="highPrice" class="dnone">{product_true_price}</span>
+            <span itemprop="offerCount">{product_real_stock}</span>
+            <meta itemprop="availability" content="http://schema.org/SoldOut" />
+        </div>
+    </div>
+
+    <!--PRICE & AMOUNT-->
+    <div class="col-lg-4 col-12 tables__box">
+        <div class="row">
+            <div class="col-8">
+                <div itemprop="offers" itemtype="https://schema.org/Offer" itemscope class="buy-price-group tables__price" data-title="{price_cap}">
+
+                    <link itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/" />
+                    <meta itemprop="availability" content="https://schema.org/InStock" />
+                    <meta itemprop="priceCurrency" content="USD" />
+                    <meta itemprop="itemCondition" content="https://schema.org/UsedCondition" />
+                    <meta itemprop="price" content="{product_true_price}" />
+                    <meta itemprop="priceValidUntil" content="2021-01-01" />
+                    <div itemprop="seller" itemtype="http://schema.org/Organization" itemscope>
+                        <meta itemprop="name" content="TOKO GROUP" />
+                    </div>
+
+                    <span id="price_{product_i}">{product_price}</span>
+                    <br class="d-lg-block d-none">{product_action}
+                    <input id="true_price_{product_i}" type="hidden" value="{product_true_price}">
+                    <input id="true_kours_{product_i}" type="hidden" value="{product_kours_cap}">
+
+                    <div class="tables-p__stock">
+                        {available_cap}: <span class="tooltips" data-toggle="tooltip" data-placement="bottom" title="{tpoint_full_name}">{product_stock} {amount_abbr}.</span> {instock}
+                    </div>
+                    <div class="tables-p__delivery {del_class}">
+                        {storage_short_info}: <span class="tooltips" data-toggle="tooltip" data-placement="bottom" title="{product_del}" data-html="true">{product_delivery_short_info}</span> <img class="search__return {return_display}" itemprop="image" src="{return_days_img}" alt="{return_days_alt}" title="{return_days_alt}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 pad0">
+                <div class="buy-cart-group tables__count">
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="changeBasketCount(0,'count_{product_i}')">-</button>
+                        </div>
+                        <input id="count_{product_i}" class="show_count form-control" value="1" min="1" placeholder="0" {product_action_count}>
+                        <div class="input-group-append">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="changeBasketCount(1,'count_{product_i}')">+</button>
+                        </div>
+                    </div>
+                    <div class="btn-group btn btn-sm btn-info" id="basket_{product_i}" onClick='moveBasket({product_i},"{art_id}","{brand_id}","{product_real_stock}","{product_storage_id}",{product_suppl_id});'>
+                        <img src="/images/buy-cart-white.png" alt="PNG" width="25">
+                        <span>{buy_cap}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

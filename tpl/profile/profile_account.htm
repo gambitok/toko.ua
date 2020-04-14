@@ -1,0 +1,51 @@
+<script>
+    jQuery(function($){
+        $("#reg_phone").mask("+380999999999",{placeholder:" "});
+    });
+</script>
+
+<div class="profile-account">
+
+    <div class="row">
+        <div class="col-lg-4 col-12 pad0">
+            <label class="required_label">{phone_cap}:</label>
+        </div>
+        <div class="col-lg-8 col-12 pad0">
+            <input id="reg_phone" title="{phone_cap}" class="form-control" type="text" value="{client_phone}">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-12 pad0">
+            <label class="required_label">{client_password_cap}:</label>
+        </div>
+        <div class="col-lg-8 col-12 pad0">
+            <input id="reg_password" title="{client_password_cap}" class="form-control" type="password" value="{client_password}">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-12 pad0">
+            <label>{email_cap}:</label>
+        </div>
+        <div class="col-lg-8 col-12 pad0">
+            <input id="reg_email" title="{email_cap}" class="form-control" type="text" value="{client_email}">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-12 pad0">
+            <label class="required_label">{full_name_cap}:</label>
+        </div>
+        <div class="col-lg-8 col-12 pad0">
+            <input id="reg_name" title="{full_name_cap}" class="form-control" type="text" value="{client_name}">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-12 pad0">
+            <input type="submit" class="btn btn-primary" value="{save_cap}" onclick="saveProfileForm();">
+        </div>
+    </div>
+
+</div>

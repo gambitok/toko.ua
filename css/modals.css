@@ -1,0 +1,111 @@
+#AlertForm {
+    z-index: 99999
+}
+
+#InfoForm .modal-dialog {
+    max-width: 650px
+}
+
+#InfoForm .tab-content {
+    background: #fff;
+    padding: 10px;
+}
+
+#InfoForm .modal-header {
+    background: #228b94;
+}
+
+#InfoForm .info_title h4 span {
+    color: rgba(54, 25, 25, .5);
+    font-weight: 700
+}
+
+.modal-body {
+    text-align: center
+}
+
+.modal-body .container .col-10 {
+    padding: 0
+}
+
+.modal-loader {
+    background: transparent;
+    border: none;
+    padding-top: 40%;
+}
+
+.modal-gallery .container {
+    max-width: 100%
+}
+
+.modal-content {
+    border-radius: 0;
+    top: 50px
+}
+
+.modal-header {
+    border-radius: 0;
+    background: #606975;
+    color: #fff;
+    border-bottom: unset;
+}
+
+.modal-header span {
+    margin: 0;
+}
+
+.modal-header button {
+    width: 100px;
+    margin-left: 10px
+}
+
+.modal-gallery {
+    background-color: rgba(0, 0, 0, .5)
+}
+
+.modal-gallery .modal-dialog {
+    max-width: 100%;
+    margin: 0
+}
+
+.modal-gallery .modal-header {
+    background: 0 0;
+    border: none;
+    padding-top: 65px
+}
+
+.modal-gallery .modal-content {
+    background: 0 0;
+    border: none;
+    top: 0
+}
+
+.modal-gallery .modal-body {
+    padding: 0
+}
+
+.modal-gallery .info-photo {
+    border: none
+}
+
+.modal-gallery .d-block {
+    max-height: 85vh;
+    padding-bottom: 25px
+}
+
+.modal-gallery .carousel-caption {
+    bottom: -18px
+}
+
+.modal-phone button {
+    width: auto;
+    margin: 0;
+}
+
+.modal-header .close {
+    outline: 0
+}
+
+.close {
+    color: #fff
+}

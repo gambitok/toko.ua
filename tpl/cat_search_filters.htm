@@ -1,0 +1,32 @@
+<div id="cat_search_filters">
+    <div class="row">
+        <div id="search_filters_block" class="wdt100">
+            <div class="side_menu">
+                <h5>{sideblock_title}</h5>
+                <div class="pad10">
+                    <input name="{text_filter_js}" title="{search_by_article}" id="text_filter" class="wdt100 text_filter" type="search" placeholder="{search_by_article}"><br>
+                    <input type="hidden" id="template_id" value="{template_id}">
+                </div>
+                <div class="pad10">
+                    <span class="bold">{price_cap}</span> (<span id="price_val">0,{sideblock_max_price}</span>)
+                    <input id="ex1" title="{price_cap}" type="text" class="span2" value="" data-slider-min="0" data-slider-max="{sideblock_max_price}" data-slider-step="1" data-slider-value="[{sideblock_min_price_val},{sideblock_max_price_val}]" style="width: 100%"/>
+                    <span>0</span>
+                    <span id="filter-max-price" class="float-right">{sideblock_max_price}</span>
+                </div>
+                <div class="pad10">
+                    <span class="bold">{delivery_cap}</span> (<span id="dd_val">0,{sideblock_max_dd}</span>)
+                    <input id="ex3" title="{delivery_cap}" type="text" class="span2" value="" data-slider-min="0" data-slider-max="{sideblock_max_dd}" data-slider-step="1" data-slider-value="[{sideblock_min_dd_val},{sideblock_max_dd_val}]" style="width: 100%"/>
+                    <span>0</span>
+                    <span class="float-right">{sideblock_max_dd}</span>
+                </div>
+                <div class="pad10">
+                    <button onClick="{catalogue_js_filter}" class="btn btn-outline-secondary btn-outline-primary" type="button">{filter_cap}</button>
+                </div>
+                <div class="pad10">
+                    <button onClick="{catalogue_js_filter_clear}" class="btn btn-outline-secondary btn-outline-primary" type="button">{filter_cap_empty}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

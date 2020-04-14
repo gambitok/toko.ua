@@ -1,0 +1,68 @@
+User-agent: *
+
+Disallow: /*utm_
+
+Disallow: /*gclid=
+
+Disallow: /search
+
+Disallow: /basket
+
+Disallow: /registration
+
+Disallow: /sell
+
+Disallow: /profile
+
+
+User-agent: Googlebot
+
+Disallow: /*utm_
+
+Disallow: /*gclid=
+
+Disallow: /search
+
+Disallow: /basket
+
+Disallow: /registration
+
+Disallow: /sell
+
+Disallow: /profile
+
+
+User-agent: Yandex
+
+Disallow: /*utm_
+
+Disallow: /*gclid=
+
+Disallow: /search
+
+Disallow: /basket
+
+Disallow: /registration
+
+Disallow: /sell
+
+Disallow: /profile
+
+Disallow: /thumb.php?image=catalogue/
+
+Disallow: /images/
+
+
+
+User-agent: YandexImages
+
+Disallow: /
+
+Allow: /thumb.php?image=catalogue/
+
+Allow: /images/
+
+
+Host: https://toko.ua/
+
+Sitemap: https://toko.ua/sitemap.xml

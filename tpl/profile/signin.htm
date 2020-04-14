@@ -1,0 +1,29 @@
+<link rel="stylesheet" href="/css/pages/profile.css">
+
+<div class="content">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12" style="margin: 0; padding: 0; width: 100%;">
+                <form action="" autocomplete="off" class="signin-form" onsubmit="return false;">
+                    <h1>{authorization}</h1>
+                    <hr>
+                    <input class="clearAll TextBox" id="loginform2" type="hidden" name="loginform" value="1">
+                    <input class="clearAll TextBox" id="remember2" type="hidden" name="remember" value="1">
+                    <div class="auth-input">
+                        <label class="auth-label">{client_login}</label><br>
+                        <input class="form-control" id="userlogin2" type="text" name="userlogin" value="" placeholder="{input_phone}">
+                    </div>
+                    <br>
+                    <div class="auth-input">
+                        <label class="auth-label">{client_password_cap}</label><br>
+                        <input class="form-control" id="userpassword2" type="password" name="userpassword" placeholder="{input_password}">
+                    </div>
+                    <br>
+                    <input class="btn btn-primary" type="submit" value="{login}" onClick="signInForm();"><br><br>
+                    <a class="auth-link d-block" href="/registration/">{registration}</a> <br>
+                    <a class="auth-link" href="/recover_password/">{forget_password}?</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

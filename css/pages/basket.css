@@ -1,0 +1,285 @@
+
+.basket-title {
+    background: #f1f1f1;
+    color: #9da9b9;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    padding: 10px;
+    word-break: break-word;
+}
+.basket-content {
+    padding: 10px;
+}
+.basket-close {
+    padding: 10px;
+}
+.small-text {
+    font-size: 0.75em;
+    color: #8c8c8c;
+}
+.medium-text {
+    font-size: 0.9em;
+    color: #8c8c8c;
+}
+.basket-content .btn-outline-secondary {
+    border-color: #ccc;
+}
+.basket-content p {
+    margin: 0;
+}
+
+.shop__table-tr {
+    background: #ffffe0
+}
+
+.btn-order {
+    background: #228b94;
+    color: #fff
+}
+
+.btn-basket {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    border: none;
+    border-radius: .25rem;
+    padding: 0;
+    background: #f7f7f7;
+    color: #a9a9a9;
+}
+
+.btn-basket:hover {
+    background: #4b4e4f;
+    color: #fff
+}
+
+.basket-text {
+    font-size: 0.9em;
+    text-transform: uppercase
+}
+
+.flag-search {
+    position: relative;
+    top: -2px
+}
+
+/*=====ORDERS======*/
+
+.table-order span {
+    color: gray
+}
+
+.table-order .row {
+    margin-bottom: 1%
+}
+
+.table-order button {
+    max-width: 200px;
+    float: right
+}
+
+.order-success .row {
+    padding: 15px
+}
+
+.order_block .tabs {
+    background: #fff;
+    box-shadow: none
+}
+
+.order_block .label {
+    background: #fff;
+    color: #a9a9a9;
+    border-radius: 25px;
+    margin-right: 15px
+}
+
+.order_block .label:hover {
+    background: #fff;
+    color: #ee7f80
+}
+
+.order_block .input:checked+.label {
+    background: #ee7f80;
+    color: #fff
+}
+
+.order_block .panel__item {
+    display: none;
+    padding: 50px 5px 50px 50px;
+    background: #fff;
+    width: 100%
+}
+
+.order_block .table-order {
+    padding: 30px 0 15px 15px;
+    margin-bottom: 15px
+}
+
+.order_block .nav-tabs {
+    background: #fff;
+    box-shadow: none
+}
+
+.order_block .nav-tabs a {
+    background: #fff;
+    color: #a9a9a9;
+    padding: 10px;
+    border-radius: 25px;
+    margin-right: 15px;
+    display: inline
+}
+
+.order_block .nav-tabs a:hover {
+    background: #fff;
+    color: #ee7f80
+}
+
+.order_block .nav-tabs .active {
+    background: #ee7f80;
+    color: #fff
+}
+
+.order_block .table-order {
+    padding: 30px 0 15px 15px;
+    margin-bottom: 15px
+}
+
+.order_block .nav-tabs {
+    padding-bottom: 30px
+}
+
+.order_block .nav-tabs li {
+    display: flex
+}
+
+.city-inline {
+    padding-top: 15px;
+    color: #000;
+    font-size: 12px
+}
+
+.city-inline button {
+    color: #ee7f80;
+    border: none;
+    cursor: pointer;
+    background: 0 0;
+    padding: 0;
+    line-height: 1;
+    border-bottom: 1px dashed #ee7f80
+}
+
+.city-inline button:hover {
+    color: #000;
+    border-bottom: 1px dashed #000
+}
+
+.basket-thead {
+    background: #f7f7f7;
+    color: #228b94;
+    height: 60px;
+    font-size: 0.9em;
+    border: 3px solid #e1e7ec;
+}
+
+.basket-tbody {
+    background: #fff;
+    color: #000;
+    border-bottom: 3px solid #e1e7ec;
+    min-height: 50px;
+}
+
+.basket-tbody .input-group {
+    width: 100px;
+}
+.basket-tbody .input-group button {
+    border-color: #ccc;
+}
+
+.basket-table .search__art,
+.basket-table .search__brand {
+    font-size: 0.9em;
+    font-weight: 700;
+    display: inline
+}
+.basket-table .search__brand {
+    color: #000
+}
+.basket-table .search__art {
+    color: #228b94;
+}
+.basket-table .search__name {
+    font-size: 0.8em;
+}
+.basket-table .search__date {
+    color: #9da9b9;
+    font-size: 0.7em;
+}
+.search__img {
+    width: 100%;
+    display: block;
+    margin: 0 auto;
+}
+.search__price {
+    color: #797979;
+    font-weight: bold;
+    font-size: 0.9em;
+    text-align: center;
+}
+.search__total {
+    color: #000;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.search__basket {
+    padding: 10px 15px;
+}
+
+.search__delivery {
+    font-size: 0.8em;
+}
+
+.search__delivery i {
+    font-style: normal;
+    text-transform: uppercase;
+    color: #797979;
+    font-weight: 700!important;
+}
+
+.basket-table {
+    display: block;
+}
+
+.basket-footer .basket-footer__total {
+    padding-bottom: 15px;
+    text-align: right;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.basket-phone {
+    display: none;
+}
+
+@media (max-width:992px) {
+    .btn-finish-order {
+        float: left!important;
+        margin-top: 15px
+    }
+    .basket-summ-price {
+        float: left
+    }
+    .btn-basket {
+        float: right;
+    }
+    .basket-table {
+        display: none;
+    }
+    .basket-phone {
+        display: block;
+    }
+}
+
+

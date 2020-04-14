@@ -1,0 +1,138 @@
+<link rel="stylesheet" href="/css/pages/basket.css">
+<link rel="stylesheet" href="/css/pages/catalogue.css">
+<link rel="stylesheet" href="/css/plugins/flags.min.css">
+
+<div id="basket_block">
+
+    <div class="row align-items-center search_title">
+        <div class="col-lg-6 col-6 pad0">
+            <span>{goods_in_basket}: {count}</span>
+        </div>
+        <div class="col-lg-6 col-6 pad0">
+            <div class="radio-group">
+                {currency}
+            </div>
+        </div>
+    </div>
+
+    <div class="row basket-footer">
+        <div class="col-12 basket-footer__total">
+            <span>{total_cap}: <i>{sum_total}</i> {cur_cap}</span>
+        </div>
+        <div class="col-12 basket-footer__total {total_style}">
+            <span>{total_checked_cap}: <i>{sum}</i> {cur_cap}</span>
+        </div>
+        <div class="offset-lg-9 col-lg-3 offset-4 col-8 pad0">
+            <button id="make_order2" onclick="{location}" {disabled} class="btn btn-order btn-primary btn-outline-secondary">{make_order}</button>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="basket-table">
+        <div class="row align-items-center basket-thead">
+            <div class="col-4">{caption_cap}</div>
+            <div class="col-2 text-center">{storage_info}</div>
+            <div class="col-2">{count_cap}</div>
+            <div class="col-1 text-center">{price_cap}</div>
+            <div class="col-2 text-center">{total_cap}</div>
+            <div class="col-1 pad0">
+                <label class="container_check d-inline">
+                    <input type="checkbox" id="check_all_box" {checked_status} class="btn" onclick="checkAllBasket();" title="check">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+        {basket_rows}
+    </div>
+
+    <div class="basket-phone">
+        {basket_phone_rows}
+    </div>
+
+    <br>
+
+    <div class="row basket-footer">
+        <div class="col-12 basket-footer__total">
+            <span>{total_cap}: <i>{sum_total}</i> {cur_cap}</span>
+        </div>
+        <div class="col-12 basket-footer__total {total_style}">
+            <span>{total_checked_cap}: <i>{sum}</i> {cur_cap}</span>
+        </div>
+        <div class="offset-lg-9 col-lg-3 offset-4 col-8 pad0">
+            <button id="make_order" onclick="{location}" {disabled} class="btn btn-order btn-primary btn-outline-secondary">{make_order}</button>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-lg-4 col-12"><span>{phone_number}:</span></div>
+        <div class="col-lg-5 col-10"><input id="input_phone2" value="" class="form-control" type="tel" name="phone" placeholder="+380" aria-hidden="true" aria-label="+380" onChange="validateForm('phone2','input');"></div>
+        <div class="col-lg-1 col-2"><i id="validate_input_phone2" class="fas fa-times-circle non_accept validate_input"></i></div>
+        <div class="col-lg-2 col-12"><button onclick="finishFastOrder();" class="btn btn-outline-primary btn-outline-secondary btn-finish-order">{make_order_fast}</button></div>
+    </div>
+
+</div>
+
+<div class="container table-order">
+
+</div>
+
+<script type="text/javascript" src="/js/plugins/OwlCarousel2-2.3.4/owl.carousel.min.js"></script>
+
+<script>
+
+$(document).ready(function() {
+    "use strict";
+    var owl = $(".owl-carousel");
+
+    if (detectmob()) {
+        owl.owlCarousel({
+            loop: true,
+            nav: true,
+            dots: false,
+            margin: 15,
+            autoplay: true,
+            autoplayTimeout: 12000,
+            autoplayHoverPause: true,
+            responsiveClass: true,
+            responsive: {
+                0: {
+                    items: 1,
+                    nav: true
+                },
+                600: {
+                    items: 3,
+                    nav: false
+                },
+                1000: {
+                    items: 5,
+                    nav: true,
+                    loop: false
+                }
+            }
+        });
+    } else {
+        owl.owlCarousel({
+            loop: true,
+            nav: true,
+            dots: false,
+            margin: 15,
+            autoplay: true,
+            autoplayTimeout: 12000,
+            autoplayHoverPause: true
+        });
+    }
+
+    owl.on('mousewheel', '.owl-stage', function (e) {
+        if (e.deltaY > 0) {
+            owl.trigger('next.owl');
+        } else {
+            owl.trigger('prev.owl');
+        }
+        e.preventDefault();
+    });
+});
+</script>
+

@@ -1,0 +1,84 @@
+
+<div itemscope itemtype="http://schema.org/Product" class="row gg__row {style_border} {style_class} {style_hide}">
+
+<meta itemprop="sku" content="{product_name}" />
+<meta itemprop="gtin13" content="{product_barcode}" />
+<meta itemprop="image" content="https://toko.ua/uploads/images/catalogue/{product_main_photo}" />
+
+<div class="col-lg-3 col-12 gg__row-photo {style_none}">
+    {product_photo}
+</div>
+
+<div class="dnone" itemprop="aggregateRating" itemtype="http://schema.org/AggregateRating" itemscope>
+    <span itemprop="ratingValue">5</span> {stars_cap} -
+    {based_on_cap} <span itemprop="reviewCount">{count_users}</span> {reviews_stars_cap}
+</div>
+
+<div class="dnone" itemprop="review" itemtype="http://schema.org/Review" itemscope>
+    <span itemprop="name">Value purchase</span> -
+    by <span itemprop="author">Author</span>,
+    <meta itemprop="datePublished" content="{data_today}" />
+    <div itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+        <meta itemprop="worstRating" content="1" />
+        <span itemprop="ratingValue">5</span>/
+        <span itemprop="bestRating">5</span>{reviews_stars_cap}
+    </div>
+</div>
+
+<div class="col-lg-4 col-12 gg__row-art">
+    <ul class="list-inline mar0">
+        <div class="{style_class} {style_none}">
+            <li>
+                <h2 itemprop="description" class="search__text" data-title="{caption_cap}">{product_text}</h2>
+            </li>
+            <li>{brand_cap}:
+                <a class="pointer" onClick="showBrandForm({brand_id});">
+                    <h3 title="{country_name}" class="search__brand" data-title="{brand_cap}">{product_brand}</h3>
+                </a>
+                {flag_image}
+                <div itemprop="brand" itemtype="http://schema.org/Thing" itemscope>
+                    <meta itemprop="name" content="{product_brand}" />
+                </div>
+            </li>
+            <li>{number_cap}:
+                <a itemprop="url" href="https://toko.ua{prefix_url}/catalogue/article/{product_format_name}/{product_format_brand}/{art_id}/">
+                    <h4 id="{product_i}" itemprop="name" class="search__art" data-title="{art_cap}" title="{product_name}">{product_name}</h4>
+                    <input type="hidden" value="{product_name}">
+                </a>
+                <button title="{copy_to_clipboard}" class="btn-copy" onclick='copyToClipboard({product_i},"{product_name}")'><i class="fa fa-copy"></i></button><br>
+            </li>
+        </div>
+        <li>{delivery_cap}: {product_del}<br>{product_return}</li>
+        <li>{in_stock}: {product_stock}</li>
+        {instock}
+        <div class="{style_class} {style_none}">
+            <li>
+                <a class="pointer color000" onClick='showInfoForm({art_id});'>
+                    <i class="fas fa-info-circle show_basket tooltips" data-toggle="tooltip" data-placement="bottom" data-html="true" title="{info_cap}"></i>
+                </a>
+                {product_analog}
+            </li>
+        </div>
+    </ul>
+</div>
+
+<div class="col-lg-4 col-12" {style_class}>
+    {product_info}
+</div>
+
+<div class="col-lg-1 col-12 gg__row-shop pad0" itemprop="offers" itemtype="https://schema.org/Offer" itemscope>
+    <span data-title="{price_cap}">{product_price}</span><br>
+    <meta itemprop="url" href="https://toko.ua{prefix_url}/catalogue/article/{product_format_name}/{product_format_brand}/{art_id}/" />
+    <meta itemprop="availability" content="http://schema.org/SoldOut" />
+    <meta itemprop="priceValidUntil" content="2024-01-01" />
+    <meta itemprop="price" content="{product_true_price}" />
+    <meta itemprop="priceCurrency" content="{cur_cap}" />
+    <link itemprop="url" href="https://toko.ua{prefix_url}/catalogue/article/{product_format_name}/{product_format_brand}/{art_id}/" />
+    <input id="count_{product_i}" title="{select_count}" class="show_count" value="1" min="1"><br>
+    <div id="basket_{product_i}" title="{add_basket}" class="gg__row-basket" onClick='moveBasket({product_i},"{art_id}","{brand_id}","{product_real_stock}","{product_storage_id}",{product_suppl_id});'>
+        <input id="check_{product_i}" type="checkbox" hidden="false" title="{select_count}">
+        <i id="i_{product_i}" class="fas fa-shopping-cart move_basket"></i>
+    </div>
+</div>
+
+</div>

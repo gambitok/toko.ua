@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="col-10">
+        <span class="car_form-select-h">{cars_title}</span>
+    </div>
+    <div class="col-2 text-right">
+        <a class="show_more_title" onclick="toggleAutoBlock('show_more_title','cars_range-title');"><i class="rotate_anime fas fa-chevron-down"></i></a>
+    </div>
+</div>
+
+<input type="hidden" id="mfa_select" value="{mfa_select}" placeholder="mfa">
+<input type="hidden" id="model_select" value="{model_select}" placeholder="model">
+<input type="hidden" id="year_select" value="{year_select}" placeholder="year">
+<input type="hidden" id="modelid_select" value="{modelid_select}" placeholder="model_id">
+<input type="hidden" id="typ_id" value="{typ_id_select}" placeholder="typ_id">
+<input type="hidden" id="typ_id_select" value="{typ_id_select}" placeholder="typ_id_select">
+<input type="hidden" id="fuel_id_select" value="{fuel_id_select}" placeholder="fuel_id_select">
+<!--<input type="hidden" id="str_id_select" value="{str_id_select}" placeholder="str_id">-->
+<input type="hidden" id="str_text_select" value="{str_text_select}" placeholder="str_text_select">
+
+<div id="cars_range-title" class="cars_range-title">
+    <div class="row mar0">
+        <div class="col-12 col-lg-2">
+            <span id="select_mfa" class="cars_range-title-h {mfa_style}" onclick="showCarsSelectMin(1)">{mfa_search}</span>
+        </div>
+        <div class="col-12 col-lg-2">
+            <span id="select_model" class="cars_range-title-h {model_style}" onclick="showCarsSelectMin(2)">{model_search}</span>
+        </div>
+        <div class="col-12 col-lg-2">
+            <span id="select_year" class="cars_range-title-h {year_style}" onclick="showCarsSelectMin(3)">{year_search}</span>
+        </div>
+        <div class="col-12 col-lg-2">
+            <span id="select_modelid" class="cars_range-title-h {modelid_style}" onclick="showCarsSelectMin(4)">{modelid_search}</span>
+        </div>
+        <div class="col-12 col-lg-2">
+            <span id="select_typid" class="cars_range-title-h {type_style}" onclick="showCarsSelectMin(5)" title="{typ_search}">{typ_search}</span>
+        </div>
+        <div class="col-12 col-lg-2">
+            <span id="select_modification" class="cars_range-title-h {modification_style}" onclick="showCarsSelectMin(6)">{modification_search}</span>
+        </div>
+        <!--<div class="col-12 col-lg-2">-->
+            <!--<button class="btn btn-primary" onclick="addToGarage();"><i class="fa fa-car"></i> {garage_add}</button>-->
+        <!--</div>-->
+    </div>
+    <div class="row cars_range-main_min">
+        <div class="col-12" style="padding: 0 10px;">
+            {range_manuf}
+            {range_model}
+            {range_year}
+            {range_model_id}
+            {range_types}
+            {range_modification}
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).click(function(e){
+        if ( $(e.target).closest(".cars_range-title").length > 0 ) {
+            return false;
+        } else {
+            closeCarsSelectMin();
+        }
+    });
+</script>
+

@@ -1,0 +1,41 @@
+<link rel="stylesheet" href="/css/pages/catalogue.css">
+
+<input id="template_id" value="{template_id}" type="hidden">
+<input id="template_link" value="{template_link}" type="hidden">
+<input id="template_active_filters" value='{template_active_filters}' type="hidden">
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-12 order-1 col-lg-3 order-lg-0 content template_filters">
+            <div id="template_filters">
+                {template_filters}
+            </div>
+            <a class="btn btn-warning wdt100" href="https://toko.ua/template/{template_name}/" style="margin-top: 2em;margin-bottom: 2em;">{filter_cap_empty}</a>
+        </div>
+
+        <div class="col-12 order-0 col-lg-9 order-lg-1 content template_content">
+
+            <h1>{template_title}</h1>
+            <div id="template_checked">{template_checked}</div>
+            <span id="template_count" class="template_content-count">{template_count}</span>
+
+            <div id="template_products">
+                {template_products}
+            </div>
+
+            <div id="template_pagination">
+                {template_pagination}
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        showFiltersForm();
+        showFilterOptionsForm('{template_page}');
+    });
+</script>
