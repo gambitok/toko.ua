@@ -45,9 +45,6 @@ class SearchClass extends CatalogueClass {
             $form=str_replace("{details_brands}", $filters_form, $form);
         } else {
             // T2_TREE
-            // $art_ids = $this->getTrueSearchArts($str_id, $brandy);
-            // $details_content = $this->getTrueSearchList($art_ids, $page, $brandy);
-            // $str_type = 0;
             $str_type = 0;
             $details_content = "";
             $form=str_replace("{details_brands}", "", $form);
@@ -188,7 +185,6 @@ class SearchClass extends CatalogueClass {
 
         if ($str_link=="" && $filters=="" && $mfa_link=="" && $mod_link=="") {
             // 1: /catalog
-
             $car_content = $prod->showCarsSelectMin($str_link, $mfa_link, $mod_link);
             if ($cookie_typ_id=="") {
                 $str_ids="";
@@ -221,7 +217,6 @@ class SearchClass extends CatalogueClass {
             if ($str_link!="" && ($filters=="" || $filters!="") && $mfa_link=="" && $mod_link=="") {
                 // 2: /catalog/shrus
                 // 3: /catalog/shrus/brandy=bosch
-
                 $str_id = $automan->getStrNewLinkStr($str_link);
                 list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link, $link);
 
@@ -238,7 +233,6 @@ class SearchClass extends CatalogueClass {
                 // 5: /catalog/shrus/kia/brandy=bosch
                 // 6: /catalog/shrus/kia/sportage
                 // 7: /catalog/shrus/kia/sportage/brandy=bosch
-
                 if ($cookie_typ_id=="") {
                     $str_id=$automan->getStrNewLinkStr($str_link);
                     list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link, $link);
@@ -261,7 +255,6 @@ class SearchClass extends CatalogueClass {
                 if ($cookie_typ_id!="") {
                     // 8: /catalog/shrus + TYP
                     // 9: /catalog/shrus/brandy=bosch + TYP
-
                     $str_id = $automan->getStrNewLinkStr($str_link);
                     $car_content = $prod->showCarsSelectMin($str_link, $mfa_link, $mod_link);
                     $form1 = $prod->techCarModels($cookie_typ_id, $str_id);
@@ -292,13 +285,11 @@ class SearchClass extends CatalogueClass {
     }
 
     function getActiveFilters($filters) {
-
         $active_filters = [];
         $arr = explode(";", $filters);
 
         foreach ($arr as $variable) {
             $param = substr($variable, 0, strpos($variable, "="));
-
             if ($param=="brandy") {
                 $active_filters[0]=[];
                 $value = str_replace($param."=", "", $variable);
@@ -308,7 +299,6 @@ class SearchClass extends CatalogueClass {
                     array_push($active_filters[0], $value_id);
                 }
             }
-
         }
 
         return $active_filters;
@@ -803,36 +793,43 @@ class SearchClass extends CatalogueClass {
         return true;
     }
 
-    function getSeoLinking($str_id, $h1, $filters, $brands){
-        $automan=new AutoClass; $kours=new ExRateClass;
+    function getSeoLinking($str_id, $h1, $filters, $brands) { $db=DbSingleton::getTokoDb();
+        $r=$db->query("SELECT * FROM `SEO_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n=$db->num_rows($r);
+        if ($n==0) {
+            $automan=new AutoClass; $kours=new ExRateClass;
 
-        $head_id = $automan->getHeadStr($str_id);
-        list($head_text) = $automan->getHeadNewDescr($head_id);
-        $parrent_h1=$head_text;
+            $head_id = $automan->getHeadStr($str_id);
+            list($head_text) = $automan->getHeadNewDescr($head_id);
+            $parrent_h1=$head_text;
 
-        $brand=$this->getBrandName(array_rand($brands));
-        $cur=$kours->getCurrentKours();
-        $kours_cap=$kours->getKoursCaptionLang($cur);
+            $brand=$this->getBrandName(array_rand($brands));
+            $cur=$kours->getCurrentKours();
+            $kours_cap=$kours->getKoursCaptionLang($cur);
 
-        $min_price=$filters["min_price"]." $kours_cap";
-        $max_price=$filters["max_price"]." $kours_cap";
+            $min_price=$filters["min_price"]." $kours_cap";
+            $max_price=$filters["max_price"]." $kours_cap";
 
-        $city=$this->getSeoLinkingParam("CITY", 3);
-        $category=$this->getSeoLinkingParam("CATEGORY", 2);
-        $ngramma=$this->getSeoLinkingParam("GRAMMA", 1);
+            $city=$this->getSeoLinkingParam("CITY", 3);
+            $category=$this->getSeoLinkingParam("CATEGORY", 2);
+            $ngramma=$this->getSeoLinkingParam("GRAMMA", 1);
 
-        $list="{_offer} {_buy} $h1 {_for} {_best_price} {_delivery} {_and} {_choose} $parrent_h1 {_such} {_models} {_example} $brand {_in} {_shop} {_toko} . {_call} {_manager} {_help} $ngramma {_for} {_best_price} {_from} $min_price {_to} $max_price {_exactly} {_auto} {_shop2} {_toko} {_bring_category} $category {_in_city} $city {_other_city}";
+            $list="{_offer} {_buy} $h1 {_for} {_best_price} {_delivery} {_and} {_choose} $parrent_h1 {_such} {_models} {_example} $brand {_in} {_shop} {_toko} . {_call} {_manager} {_help} $ngramma {_for} {_best_price} {_from} $min_price {_to} $max_price {_exactly} {_auto} {_shop2} {_toko} {_bring_category} $category {_in_city} $city {_other_city}";
 
-        $list=str_replace("{","",$list);
-        $list=str_replace("}","",$list);
+            $list=str_replace(str_split("{}"),"",$list);
+            $list=explode(" ", $list); $seo_text="";
 
-        $list=explode(" ", $list); $new_list="";
-        foreach ($list as $value) {
-            $value=$this->getSeoListingValue($value);
-            $new_list.="$value ";
+            foreach ($list as $value) {
+                $value=$this->getSeoListingValue($value);
+                $seo_text.="$value ";
+            }
+
+            $db->query("INSERT INTO `SEO_STR` (`STR_ID`, `TEXT`) VALUES ('$str_id', '$seo_text');");
+
+        } else {
+            $seo_text=$db->result($r, 0, "TEXT");
         }
 
-        return $new_list;
+        return $seo_text;
     }
 
     function getSeoListingValue($value) { $db=DbSingleton::getTokoDb();
