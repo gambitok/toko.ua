@@ -167,6 +167,25 @@ function getMoreTitle($path) {
         }
     }
 
+    elseif ($path=="cars") {
+        $mfa_link = $linka[1];
+        $mod_link = $linka[2];
+        if ($mfa_link=="") $pretitle = "{site_catalog} - {seo_details_title}";
+        if ($mfa_link!="") {
+            list($mfa_brand, $model_text)=$automan->getAutoDescrLink($mfa_link, $mod_link);
+            list($mfa_id, $model)=$automan->getAutoIdsLink($mfa_link, $mod_link);
+            $translit=$prod->getCarManufTranslit($mfa_id, $model);
+
+            if ($mfa_link!="") {
+                $mm="$mfa_brand $model_text";
+                if ($translit!="") $mm.=" $translit";
+            } else $mm="";
+            $pretitle = "{details_on_cap}";
+            $mm=="" ?: $pretitle.=" $mm";
+            $pretitle.=" - {seo_details_title}";
+        }
+    }
+
     elseif ($path=="catalog") {
         $pager = "";
         if ($_GET['page']!==NULL && $_GET['page']>0) {$pager="- {pager_cap}".$_GET['page'];}
@@ -207,7 +226,6 @@ function getMoreTitle($path) {
             }
 
         } else {
-
             $head_id = $automan->getHeadStr($str_id);
             list($head_text) = $automan->getHeadNewDescr($head_id);
 
@@ -227,7 +245,6 @@ function getMoreTitle($path) {
             $filters_cap=="" ?: $pretitle.=": $filters_cap";
             $pager=="" ?: $pretitle.=" $pager";
             $pretitle.=" - $seo_title_lvl2";
-
         }
 
         if ($str_link=="") $pretitle = "{site_catalog} - {seo_details_title}";
