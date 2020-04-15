@@ -15,21 +15,18 @@ function searchBrandInput() {
     }
 }
 
-function showSearchBrands() {
+function showSearchParameters() {
     let str_id=$("#details_str_id").val();
     let page=$("#details_page").val();
     let active_filters=$("#details_active_filters").val();
     let type=$("#details_str_type").val();
-    let link=$("#details_link").val();
 
-    $("#search_brands_form").html("<div class=\"spinner-border\"></div>");
     $("#details_pagination").html("<div class=\"spinner-border\"></div>");
 
-    JsHttpRequest.query(folder,{'w':'showSearchBrands', 'str_id':str_id, 'page':page, 'active_filters':active_filters, 'type':type, 'link':link},
+    JsHttpRequest.query(folder,{'w':'showSearchParameters', 'str_id':str_id, 'page':page, 'active_filters':active_filters, 'type':type},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#search_brands_form").html(result.content[0]);
-            $("#details_count").html(result.content[1]);
-            $("#details_pagination").html(result.content[2]);
+            $("#details_count").html(result.content[0]);
+            $("#details_pagination").html(result.content[1]);
         }}, true);
 }
 

@@ -17,8 +17,8 @@ class SearchClass extends CatalogueClass {
         return $link;
     }
 
-    function showDetailsForm($form, $str_id, $page, $active_filters, $mfa_link, $mod_link, $mod_id_link, $link) {
-        $parts = new PartsClass; $pages_count=0;
+    function showDetailsForm($form, $str_id, $page, $active_filters, $mfa_link, $mod_link, $mod_id_link) {
+        $parts = new PartsClass;
         $h1 = $this->getCatalogTitle($str_id, $active_filters, $mfa_link, $mod_link, $mod_id_link, $page);
         $form=str_replace("{details_str_id}", $str_id, $form);
         $form=str_replace("{details_active_filters}", implode(",", $active_filters), $form);
@@ -40,18 +40,19 @@ class SearchClass extends CatalogueClass {
             $form=str_replace("{details_listing}", $this->getSeoLinking($str_id, $h1, $filters, $brands), $form);
 
             $where_arts = $parts->initPartsArts($str_id);
-            $filters_form = $this->printBrandsList(array_unique($this->getBrandIds($where_arts)),array_unique($active_filters),$link);
+            $filters_form = $this->printBrandsList(array_unique($this->getBrandIds($where_arts)), array_unique($active_filters), $this->getActualLink());
 
             $form=str_replace("{details_brands}", $filters_form, $form);
         } else {
             // T2_TREE
             $str_type = 0;
+            $pages_count=0;
             $details_content = "";
             $form=str_replace("{details_brands}", "", $form);
         }
         $form=str_replace("{details_str_type}", $str_type, $form);
         $form=str_replace("{details_content}", $details_content, $form);
-        return  array($form, $pages_count);
+        return array($form, $pages_count);
     }
 
     function getCatalogTitle($str_id, $active_filters, $mfa_link, $mod_link, $mod_id_link, $page) {
@@ -218,7 +219,7 @@ class SearchClass extends CatalogueClass {
                 // 2: /catalog/shrus
                 // 3: /catalog/shrus/brandy=bosch
                 $str_id = $automan->getStrNewLinkStr($str_link);
-                list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link, $link);
+                list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link);
 
                 if ($mfa_link!="" && $mod_link!="") {
                     $car_content = $prod->showCarsSelectMin($str_link, $mfa_link, $mod_link);
@@ -235,7 +236,7 @@ class SearchClass extends CatalogueClass {
                 // 7: /catalog/shrus/kia/sportage/brandy=bosch
                 if ($cookie_typ_id=="") {
                     $str_id=$automan->getStrNewLinkStr($str_link);
-                    list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link, $link);
+                    list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link);
 
                     if ($mfa_link!="" && $mod_link!="") {
                         if ($mod_id_link!="") {
@@ -547,21 +548,21 @@ class SearchClass extends CatalogueClass {
         return $brands;
     }
 
-    function showSearchBrands($str_id, $page, $brandy_str, $type=0, $link="") {
+    function showSearchParameters($str_id, $page, $brandy_str, $type=0) {
         $parts = new PartsClass;
-        $number=""; $filters_form=""; $pagination_form="";
+        $number=""; $pagination_form="";
 
         if ($type==1) {
             $active_filters=explode(",", $brandy_str);
-            $where_arts = $parts->initPartsArts($str_id);
-            $filters_form = $this->printBrandsList(array_unique($this->getBrandIds($where_arts)),array_unique($active_filters),$link);
+            //$where_arts = $parts->initPartsArts($str_id);
+            //$filters_form = $this->printBrandsList(array_unique($this->getBrandIds($where_arts)),array_unique($active_filters),$link);
             $number = $parts->getPartsCount($str_id, $active_filters);
             $pagination_form = $this->replaceLang($parts->getPartsPaginationForm($number, $page));
         }
 
         $number_form = $this->replaceLang("($number {offer_tenths_cap})");
 
-        return array($filters_form, $number_form, $pagination_form);
+        return array($number_form, $pagination_form);
     }
 
     function printBrandsList($brands, $brands_ch, $link) {

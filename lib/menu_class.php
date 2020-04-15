@@ -37,9 +37,8 @@ class MenuClass {
                 $img_file=$this->getNewsImage($state_id);
                 $img_file!=""
                     ? $img="<img itemprop=\"image\" src=\"/thumb.php?image=news/$lang/$state_id/$img_file&size=280\">"
-                    : $img="<img itemprop=\"image\" src=\"$this->noPhoto\">";
-                $list.="
-                <div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"news-block__item row\">
+                    : $img="";
+                $list.="<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"row news-block__item\">
                     <div class=\"col-8\">
                         <h4>$date</h4>
                         <h2 itemprop=\"name\">$title</h2>
@@ -66,16 +65,11 @@ class MenuClass {
         $date=$db->result($r,0,"data");
         $img_file=$this->getNewsImage($state_id);
         $img_file!="" ? $img="<p><img itemprop=\"image\" src=\"/uploads/images/news/$lang/$state_id/$img_file\"></p>" : $img="";
-        $header = "<h1>$title</h1>";
-        $footer = "<h1></h1>";
-        $title=="" ? $header="" : $footer="";
-        $list="
-        <div class=\"news-state\">
-            $header
+        $list="<div class=\"news-state\">
+            <h1>$title</h1>
             <h2>$date</h2>
             $img
             <div itemprop=\"description\">$text</div>
-            $footer
         </div>";
         $form=str_replace("{state_id}",$state_id,$form);
         $form=str_replace("{state_info}",$state_id>0 ? $list : "<h1>$this->err1</h1>",$form);

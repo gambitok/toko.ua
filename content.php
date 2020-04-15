@@ -229,7 +229,7 @@ if ($_REQUEST["w"]=="techCarModelsFilter"){ $GLOBALS['_RESULT'] = array("content
 
 //=Search======================================================================================================
 
-if ($_REQUEST["w"]=="showSearchBrands"){ $GLOBALS['_RESULT'] = array("content"=>$search->showSearchBrands($_REQUEST["str_id"],$_REQUEST["page"],$_REQUEST["active_filters"],$_REQUEST["type"],$_REQUEST["link"]));}
+if ($_REQUEST["w"]=="showSearchParameters"){ $GLOBALS['_RESULT'] = array("content"=>$search->showSearchParameters($_REQUEST["str_id"],$_REQUEST["page"],$_REQUEST["active_filters"],$_REQUEST["type"]));}
 
 //=Products======================================================================================================
 
