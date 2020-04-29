@@ -215,7 +215,7 @@ class PatternClass extends CatalogueClass {
                 if ($value_id>0) {
                     $new_link = $this->getTemplateFilterLink($active_filters, $param_id, $value_id, $status);
                     $amount_values++;
-                    $values_list.="<li><a class=\"pointer $style\" style=\"font-size: 1em;\" href=\"https://toko.ua$prefix/$this->products_link/$template_name/$new_link/\">$label $value_name</a></li>";
+                    $values_list.="<li><a class=\"pointer $style\" style=\"font-size: 1em;\" href=\"https://toko.ua$prefix/$this->products_link/$template_name/$new_link\">$label $value_name</a></li>";
                 }
             }
 

@@ -182,7 +182,11 @@ function getMoreTitle($path) {
             } else $mm="";
             $pretitle = "{details_on_cap}";
             $mm=="" ?: $pretitle.=" $mm";
-            $pretitle.=" - {seo_details_title}";
+
+            $postfix = $cat->replaceLang("{seo_title_lvl3}");
+            $postfix = str_replace("{title_lvl1}", $pretitle, $postfix);
+
+            $pretitle="$pretitle - $postfix";
         }
     }
 
@@ -272,7 +276,7 @@ function getMoreTitle($path) {
 }
 
 function printBreadcrumbs($path) {
-    $cat=new CatalogueClass; $menu=new MenuClass; $pattern=new PatternClass; $automan=new AutoClass;
+    $cat=new CatalogueClass; $menu=new MenuClass; $pattern=new PatternClass; $automan=new AutoClass; $search=new SearchClass;
 
     $language=new LangClass; $prefix=$language->getLangPrefix();
     $bread=findLinks();
@@ -280,7 +284,7 @@ function printBreadcrumbs($path) {
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     if (strpos($actual_link,"?")!==false) $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
 
-    $a_home="<a href=\"https://toko.ua$prefix/\" title=\"{seo_site_toko}\"><i class=\"fa fa-home\"></i></a>";
+    $a_home="<a href=\"https://toko.ua$prefix/\" title=\"{seo_site_toko}\">{seo_shop_toko}</a>";
     $a_section="<a href=\"https://toko.ua$prefix/$section/\">{site_$section}</a>";
     $h_section="{site_$section}";
 
@@ -305,7 +309,23 @@ function printBreadcrumbs($path) {
             break;
         }
         case "catalog" : {
-            $str_text = $bread[1];
+
+            $linka=findLinks(); $result=explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2); $link=ltrim($result[1]);
+
+            $arr=explode("/", $link);
+
+            $str_text=""; $filters=[]; $mfa_link=""; $mod_link="";
+            if (!empty($arr[0])) $str_text = $arr[0];
+            if (!empty($arr[3])) ((strpos($arr[4], "=") !== false)) ? $filters = $arr[4] : $filters = "";
+            if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $mod_id_link = $arr[3];
+            if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
+            if (!empty($arr[1])) ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
+
+            $brand_ids = $search->getActiveFilters($filters);
+            $active_filters=$brand_ids[0];
+            $filters_cap=$search->getFiltersTitle($active_filters,1);
+            $filters_cap=str_replace(": ", "", $filters_cap);
+
             $str_id = $automan->getStrNewLinkStr($str_text);
 
             if ($str_id=="") $head_id = $automan->getHeadNewLinkStr($str_text);
@@ -333,8 +353,30 @@ function printBreadcrumbs($path) {
                         $pretitle="$a_home > $a_section > $back > $cat_text";
                     }
                 } else {
-                    $back="<a href='/catalog/$head_link/'>$head_text</a>";
-                    $pretitle="$a_home > $a_section > $back > $title";
+                    list($mfa_brand, $model_text)=$automan->getAutoDescrLink($mfa_link, $mod_link);
+
+
+                    if ($mfa_link=="") {
+                        $back="<a href='/catalog/$head_link/'>$head_text</a>";
+                        $back_str="<a href='/catalog/$str_link/'>$title</a>";
+                        $pretitle="$a_home > $a_section > $back > ";
+                        if ($filters_cap!="") $pretitle.=" $back_str > $filters_cap"; else $pretitle.=" $title";
+                    } else {
+                        if ($mod_link=="") {
+                            $back="<a href='/catalog/$head_link/'>$head_text</a>";
+                            $back_str="<a href='/catalog/$str_link/'>$title</a>";
+                            $back_mfa_brand="<a href='/catalog/$str_link/$mfa_link'>$mfa_brand</a>";
+                            $pretitle="$a_home > $a_section > $back > $back_str > ";
+                            if ($filters_cap!="") $pretitle.=" $back_mfa_brand > $filters_cap"; else $pretitle.=" $mfa_brand";
+                        } else {
+                            $back="<a href='/catalog/$head_link/'>$head_text</a>";
+                            $back_str="<a href='/catalog/$str_link/'>$title</a>";
+                            $back_mfa="<a href='/catalog/$str_link/$mfa_link/'>$mfa_brand</a>";
+                            $back_model_text="<a href='/catalog/$str_link/$mfa_link/$mod_link'>$model_text</a>";
+                            $pretitle="$a_home > $a_section > $back > $back_str > $back_mfa > ";
+                            if ($filters_cap!="") $pretitle.=" $back_model_text > $filters_cap"; else $pretitle.=" $model_text";
+                        }
+                    }
                 }
 
                 $b_arr[2]=["name"=>"{site_catalog}", "item"=>"https://toko.ua$prefix/catalog/"];

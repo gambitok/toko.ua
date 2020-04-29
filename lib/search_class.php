@@ -584,7 +584,7 @@ class SearchClass extends CatalogueClass {
                 if (in_array($brand_id, $brands_ch)) $label="<i class=\"fa fa-check-square\"></i>";
             }
             $brand_link=$this->getSearchLink($brand_id, $brands_ch, $link);
-            $list.="<li><a class=\"pointer\" href=\"$brand_link\">$label $brand_name</a></li>";
+            $list.="<li><a class=\"pointer\" href=\"$brand_link/\">$label $brand_name</a></li>";
         }
 
         $list.="</ul>";
