@@ -355,7 +355,6 @@ function printBreadcrumbs($path) {
                 } else {
                     list($mfa_brand, $model_text)=$automan->getAutoDescrLink($mfa_link, $mod_link);
 
-
                     if ($mfa_link=="") {
                         $back="<a href='/catalog/$head_link/'>$head_text</a>";
                         $back_str="<a href='/catalog/$str_link/'>$title</a>";

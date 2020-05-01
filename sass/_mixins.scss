@@ -1,0 +1,102 @@
+/* FONTS */
+@mixin font-face($font-family, $file-path, $weight: normal, $style: normal) {
+    @font-face {
+        font-family: $font-family;
+        font-style: $style;
+        font-weight: $weight;
+        src: url('#{$file-path}.eot');
+        src: url('#{$file-path}.eot?#iefix') format('embedded-opentype'), url('#{$file-path}.woff') format('woff'), url('#{$file-path}.ttf') format('truetype');
+    }
+}
+
+/* BOX */
+@mixin box($width, $height) {
+    width: $width;
+    height: $height;
+}
+
+/* CENTER BLOCK */
+@mixin center-block {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/* VERTICAL CENTERING */
+@mixin vertical-center {
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+/* HORIZONTAL CENTERING */
+@mixin vertical-center {
+    position: relative;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translate(-50%);
+}
+
+/* BOTH CENTERING */
+@mixin vertical-center {
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+/* MEDIA QUERIES FOR MOBILE-FIRST DESIGN */
+@mixin breakpoint($point) {
+    @if $point == large {
+        @media only screen and (min-width: 1366px) {
+            @content;
+        }
+    }
+
+    @else if $point == desktop {
+        @media only screen and (min-width: 1024px) {
+            @content;
+        }
+    }
+
+    @else if $point == tablet {
+        @media only screen and (min-width: 600px) {
+            @content;
+        }
+    }
+}
+
+/* MEDIA QUERIES FOR MOBILE-FIRST DESIGN */
+@mixin screen($size) {
+    $desktop: "(min-width: 1024px)";
+    $tablet: "(min-width: 768px) and (max-width: 1023px)";
+    $mobile: "(max-width: 767px)";
+
+    @if $size == desktop {
+        @media only screen and #{$desktop} {
+            @content;
+        }
+    }
+
+    @else if $size == tablet {
+        @media only screen and #{$tablet} {
+            @content;
+        }
+    }
+
+    @else if $size == mobile {
+        @media only screen and #{$mobile} {
+            @content;
+        }
+    }
+
+    @else {
+        @media only screen and #{$size} {
+            @content;
+        }
+    }
+}
