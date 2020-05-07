@@ -5,18 +5,18 @@ var gulp             = require('gulp'),
     minifyCss        = require('gulp-clean-css'),
     rename           = require('gulp-rename'),
     browserSync      = require('browser-sync').create(),
-    uglify           = require('gulp-uglify'),
     gulpStyleLint    = require('gulp-stylelint');
 
+//    uglify           = require('gulp-uglify'),
 // minify js
-gulp.task('uglify', function(){
-    gulp.src('./js/*.js')
-        .pipe(uglify())
-        .pipe(rename('script.min.js'))
-        .pipe(gulp.dest('js/src'))
-        .pipe(browserSync.reload({stream: true})),
-        gulp.watch('./js/*.js', ['uglify']);
-});
+// gulp.task('uglify', function(){
+//     gulp.src('./js/*.js')
+//         .pipe(uglify())
+//         .pipe(rename('script.min.js'))
+//         .pipe(gulp.dest('js/src'))
+//         .pipe(browserSync.reload({stream: true})),
+//         gulp.watch('./js/*.js', ['uglify']);
+// });
 
 // stylelint
 gulp.task('stylelint', function(){
@@ -67,4 +67,4 @@ gulp.task('browser-sync', function(){
     gulp.watch('./js/*.js').on('change', browserSync.reload);
 });
 
-gulp.task('default', ['sass', 'minify-css', 'uglify', 'browser-sync']);
+gulp.task('default', ['sass', 'minify-css', 'browser-sync']);
