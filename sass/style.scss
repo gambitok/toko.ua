@@ -9,6 +9,15 @@
 
 /* ==== Main Page ==== */
 @import "main";
+@import "plugins";
+@import "media";
+@import "modals";
+
+@import "pages/basket";
+@import "pages/catalogue";
+@import "pages/news";
+@import "pages/profile";
+@import "pages/special_offers";
 
 /* ==== Adaptive ==== */
 @import "media";

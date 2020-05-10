@@ -1,0 +1,95 @@
+.js-programmatic-set-val {
+    border: none;
+    background: none;
+    text-decoration: underline;
+    color: lightcoral;
+    cursor: pointer;
+}
+
+.signin-form {
+    width: 45%;
+    color: #000;
+    display: block;
+    margin: 0 auto
+}
+
+.profile-form {
+    min-height: 500px;
+    height: 100%;
+    .btn-primary {
+        width: auto
+    }
+}
+
+.profile-side {
+    padding: 0 15px 0 0
+}
+
+.profile-main {
+    padding: 0
+}
+
+.profile-account {
+    .row {
+        padding: 15px;
+        border-top: 1px dashed #ddd
+    }
+    input, select {
+        display: inline;
+    }
+    input[type=submit] {
+        width: 25%;
+        float: right;
+    }
+}
+
+/*====REGISTRATION=====*/
+.required_label:before {
+    color: red;
+    content: ' *'
+}
+
+.registration-account {
+    .row {
+        padding: 15px;
+        border-bottom: 1px dashed #ddd;
+    }
+    input {
+        display: inline;
+    }
+    input[type=submit] {
+        width: 25%;
+        float: right;
+    }
+}
+
+/*==== PAD ====*/
+@media (min-width:992px) and (max-width:1200px) {
+    .signin-form {
+        width: 100%
+    }
+}
+
+/*==== /PAD ====*/
+
+/*==== PHONE ====*/
+@media (max-width:992px) {
+    .signin-form {
+        width: 100%
+    }
+    .profile-form {
+        padding: 20px 30px
+    }
+    .profile-account {
+        input, select {
+            width: 100% !important
+        }
+    }
+    .profile-side {
+        padding: 0;
+        margin-bottom: 15px
+    }
+}
+
+/*==== /PHONE ====*/
+

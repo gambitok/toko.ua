@@ -1,4 +1,149 @@
-<link rel="stylesheet" href="/css/pages/group_bulbs.css">
+<style>
+    .group-car h1 {
+        font-size: 2em
+    }
+
+    .group-car h2 {
+        display: none
+    }
+
+    .group-car-bulbs-back,
+    .group-car-bulbs-front {
+        width: 100%;
+        min-height: 600px;
+        padding: 30px;
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: stretch;
+        height: 100%
+    }
+
+    .group-car-bulbs-front {
+        background: url(/images/lamps/lamps-front-lines.png) no-repeat;
+        background-position-x: 0;
+        background-position-y: 42px
+    }
+
+    .group-car-bulbs-back {
+        background: url(/images/lamps/lamps-back-lines.png) no-repeat;
+        background-position-x: 0;
+        background-position-y: 40px
+    }
+
+    .group-car-bulbs-back .row,
+    .group-car-bulbs-front .row {
+        height: 100px;
+        margin-bottom: 30px
+    }
+
+    .group-bulb {
+        list-style: none;
+        width: auto
+    }
+
+    .bulb-main {
+        display: flex
+    }
+
+    .bulb-title {
+        margin-bottom: 10px
+    }
+
+    .bulb-title span {
+        background: #8d8d8d;
+        color: #fff;
+        border-radius: .25em;
+        padding: 0 5px;
+        font-size: 1em;
+        font-weight: 700
+    }
+
+    .bulb-photo {
+        padding-right: 15px
+    }
+
+    .bulb-photo img {
+        width: 4em;
+        height: 4em
+    }
+
+    .bulb-list {
+        display: flex
+    }
+
+    .bulb-list img {
+        display: block;
+        margin: 0 auto;
+        width: 40px;
+        height: 40px
+    }
+
+    .bulb-list .b-name {
+        text-decoration: underline;
+        color: #8d8d8d;
+        font-size: .75em
+    }
+
+    .bulb-list .b-image {
+        display: block;
+        margin: 0 auto;
+        width: 50px;
+        height: 50px;
+        overflow: hidden;
+        position: relative
+    }
+
+    .b-image:hover {
+        background-position-y: -50px!important;
+        cursor: pointer
+    }
+
+    .bulb-list li {
+        padding-right: 15px
+    }
+
+    @media (max-width:992px) {
+        .group-car h2 {
+            display: block;
+            font-size: 1.5em;
+            margin-bottom: 1em
+        }
+        .bulb-list {
+            display: block;
+            margin-top: 1.5em
+        }
+        .group-car-bulbs-front,
+        .group-car-bulbs-back {
+            background: none
+        }
+        .group-car-bulbs-front .row,
+        .group-car-bulbs-back .row {
+            height: auto;
+            margin: 0
+        }
+        .group-bulb {
+            float: left!important
+        }
+        .group-car-bulbs-front,
+        .group-car-bulbs-back,
+        .group-car-bulbs-front .container,
+        .group-car-bulbs-back .container,
+        .group-car-bulbs-front .col-12,
+        .group-car-bulbs-back .col-12 {
+            padding: 0
+        }
+        .bulb-list ul {
+            display: inline-block
+        }
+        .bulb-title,
+        .bulb-main,
+        .bulb-photo,
+        .bulb-list {
+            display: inline
+        }
+    }
+</style>
 
 <div class="content group-car">
     <h1>{car_lamps}</h1>

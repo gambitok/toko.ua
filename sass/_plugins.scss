@@ -8,6 +8,14 @@
     margin: 0 auto;
 }
 
+.rotate_animation {
+    transition: .5s ease-in-out;
+}
+
+.rotate_icon {
+    transform: rotate(90deg);
+}
+
 .rotate_anime {
     transition: .5s ease-in-out
 }
