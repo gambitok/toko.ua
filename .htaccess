@@ -1,0 +1,110 @@
+DirectoryIndex index.php
+Options -Indexes
+IndexOptions -FancyIndexing
+AddDefaultCharset windows-1251
+
+Options +FollowSymLinks
+RewriteEngine On
+php_value error_reporting 1
+
+ErrorDocument 404 /404.html
+
+# redirect .php
+RewriteCond %{THE_REQUEST} ^.*/index\.php
+RewriteRule ^(.*)index.php$ /$1 [R=301,L]
+RewriteCond %{THE_REQUEST} ^.*/home\.php
+RewriteRule ^(.*)home.php$ /$1 [R=301,L]
+
+# redirect .html
+RewriteCond %{THE_REQUEST} ^.*/index\.html
+RewriteRule ^(.*)index.html /$1 [R=301,L]
+RewriteCond %{THE_REQUEST} ^.*/home\.html
+RewriteRule ^(.*)home.html /$1 [R=301,L]
+
+# redirect .htm
+RewriteCond %{THE_REQUEST} ^.*/index\.htm
+RewriteRule ^(.*)index.htm /$1 [R=301,L]
+RewriteCond %{THE_REQUEST} ^.*/home\.htm
+RewriteRule ^(.*)home.htm /$1 [R=301,L]
+
+# redirect many slashes
+RewriteCond %{THE_REQUEST} \s/+(.*?)/{2,}([^\s]*)
+RewriteRule ^ %1/%2 [R=301,L,NE]
+
+# redirect page=0
+RewriteCond %{QUERY_STRING} /?page=0
+RewriteRule ^ %{REQUEST_URI}? [L,R=301]
+
+# redirect page=1
+RewriteCond %{QUERY_STRING} /?page=1
+RewriteRule ^ %{REQUEST_URI}? [L,R=301]
+
+# redirect slash
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !(.*)/$
+RewriteRule ^(.*[^/])$ $1/ [L,R=301]
+
+### START WWW & HTTPS
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteBase /
+RewriteCond %{HTTP_HOST} ^www.localhost:8080
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.php\ HTTP/
+RewriteRule ^index\.php$ https://www.localhost:8080/ [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^(.*)(/?)+$ /?link=$1&%{QUERY_STRING} [NC,L]
+
+<IfModule mod_deflate.c>
+    #The following line is enough for .js and .css
+    AddOutputFilter DEFLATE js css
+
+    #The following line also enables compression by file content type, for the following list of Content-Type:s
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml application/xml
+
+    #The following lines are to avoid bugs with some browsers
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always append X-Frame-Options SAMEORIGIN
+    <FilesMatch "\.(js|css|xml|gz)$">
+        Header append Vary: Accept-Encoding
+    </FilesMatch>
+</IfModule>
+
+# кеш браузера
+<ifModule mod_expires.c>
+    ExpiresActive On
+    #по умолчанию кеш в 5 секунд
+    ExpiresDefault "access plus 1 days"
+    # Включаем кэширование изображений и флэш на месяц
+    ExpiresByType image/x-icon "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 4 weeks"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/gif "access plus 43829 minutes"
+    ExpiresByType application/x-shockwave-flash "access plus 2592000 seconds"
+    # Включаем кэширование css, javascript и текстовых файлоф на одну неделю
+    ExpiresByType text/css "access plus 604800 seconds"
+    ExpiresByType text/javascript "access plus 604800 seconds"
+    ExpiresByType application/javascript "access plus 604800 seconds"
+    ExpiresByType application/x-javascript "access plus 604800 seconds"
+    # Включаем кэширование html и htm файлов на один день
+    ExpiresByType text/html "access plus 43200 seconds"
+    # Включаем кэширование xml файлов на десять минут
+    ExpiresByType application/xhtml+xml "access plus 600 seconds"
+    # Нестандартные шрифты сайта
+    ExpiresByType application/x-font-ttf "access plus 1 month"
+    ExpiresByType font/opentype "access plus 1 month"
+    ExpiresByType application/x-font-woff "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 month"
+</ifModule>
+
+
+
+
