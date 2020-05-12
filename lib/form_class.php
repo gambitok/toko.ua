@@ -38,7 +38,14 @@ class FormClass {
     }
 
     function showArticle($art_id) {
-        $cat=new CatalogueClass; $language=new LangClass;
+        $cat=new CatalogueClass; $language=new LangClass; $prod=new ProductsClass;
+        $form=$this->getHtmlForm("cat_article");
+
+        $auto_typ_id = $prod->getCookieAuto();
+        if ($auto_typ_id!="") {
+            $form=str_replace("{applicable_display}", "", $form);
+            $form=str_replace("{applicable_cap}", $auto_typ_id, $form);
+        }
 
         $article = $this->getArticleInfo($art_id);
         $article_nr_displ = $article["article_nr_displ"]; $format_article=$this->getFormatAticle($article_nr_displ);
@@ -60,7 +67,6 @@ class FormClass {
             </a>";
         }
 
-        $form=$this->getHtmlForm("cat_article");
         $form=str_replace("{art_id}", $art_id, $form);
         $form=str_replace("{art_name}", $article_nr_displ, $form);
         $form=str_replace("{art_brand_id}", $brand_id, $form);
@@ -81,6 +87,7 @@ class FormClass {
         $form=str_replace("{analogs_list}", $analogs, $form);
         $form=str_replace("{analogs_display}", $analogs=="" ? "dnone" : "", $form);
         $form=str_replace("{article_header}", "<h1>$article_name $brand_name $article_nr_displ</h1>", $form);
+        $form=str_replace("{applicable_display}", "none", $form);
 
         $form=$this->replaceLang($form);
         return $form;
