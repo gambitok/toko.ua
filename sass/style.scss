@@ -2,7 +2,8 @@
 @import "mixins";
 
 /* ==== Fonts ==== */
-@include font-face('OpenSans', '../fonts/OpenSans');
+//@include font-face('Roboto', '../fonts/Roboto');
+//@include font-face('OpenSans', '../fonts/OpenSans');
 
 /* ==== Variables ==== */
 @import "variables";
@@ -17,7 +18,7 @@
 @import "pages/catalogue";
 @import "pages/news";
 @import "pages/profile";
-@import "pages/special_offers";
+//@import "pages/special_offers";
 
 /* ==== Adaptive ==== */
 @import "media";

@@ -9,7 +9,8 @@ html {
     padding: 0;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 0.5px;
 }
 
 a, a:not([href]):not([tabindex]) {
@@ -456,14 +457,16 @@ i {
     padding: 3% 4%;
     width: 100%;
     min-height: 367px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .1)
+    //box-shadow: 0 1px 4px rgba(0, 0, 0, .1)
+    box-shadow: 0 1px 10px #ccc;
 }
 
 .content-auto {
     background: #fff;
     padding: 3% 4%;
     width: 100%;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    //box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    box-shadow: 0 1px 10px #ccc;
     h1 {
         padding-left: 15px;
         font-weight: 600;
@@ -482,7 +485,8 @@ i {
     background: #fff;
     padding: 1em;
     width: 100%;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .1)
+    //box-shadow: 0 1px 4px rgba(0, 0, 0, .1)
+    box-shadow: 0 1px 10px #ccc;
 }
 
 .table thead tr td {
@@ -650,7 +654,8 @@ header {
         margin-bottom: 15px;
         border-bottom: 1px solid #eee;
         background: #fff;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+        //box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+        box-shadow: 0 1px 10px #ccc;
         padding: 15px;
         margin-right: 15px;
         width: 100%;
@@ -895,7 +900,8 @@ header {
 
 /*===== BANNER ====*/
 .banner_row {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    //box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    box-shadow: 0 1px 10px #ccc;
     width: 100%;
     background: #fff;
     margin: 0;
@@ -958,7 +964,8 @@ header {
     padding: 3% 4%;
     width: 100%;
     margin: 0;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    //box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    box-shadow: 0 1px 10px #ccc;
     h2, h3 {
         display: inline;
         font-size: 15px;
@@ -1013,7 +1020,8 @@ header {
     display: none;
     background: #fff;
     margin-left: 0;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    //box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    box-shadow: 0 1px 10px #ccc;
     width: 100%;
     padding: 40px 60px;
     min-height: 369px;
@@ -1196,7 +1204,7 @@ header {
 /*==== MAIN ====*/
 .main {
     padding: 15px 0;
-    background: #eee;
+    background: #fff;
 }
 
 .main_menu {
@@ -1760,6 +1768,7 @@ header {
     background: #fff;
     padding: 1.2em;
     box-shadow: 0 4px 4px rgba(0, 0, 0, .25);
+    margin: 0 5px;
 }
 
 .t_mfa {
@@ -1814,7 +1823,7 @@ header {
         width: auto;
         height: 70px;
     }
-    &.row {
+    .row {
         padding: 10px;
         .body-car {
             padding-right: 0;
@@ -1825,6 +1834,9 @@ header {
         }
         .image-car {
             padding-left: 0;
+            img {
+                width: 100%;
+            }
         }
     }
 }
@@ -1894,7 +1906,7 @@ header {
         width: auto;
         float: none
     }
-    &.garage_form-buttons button {
+    &-buttons button {
         margin-top: .5em;
         width: 150px!important;
         font-size: 14px

@@ -38,13 +38,15 @@ class FormClass {
     }
 
     function showArticle($art_id) {
-        $cat=new CatalogueClass; $language=new LangClass; $prod=new ProductsClass;
+        $cat=new CatalogueClass; $language=new LangClass; $prod=new ProductsClass; $auto=new AutoClass;
         $form=$this->getHtmlForm("cat_article");
 
         $auto_typ_id = $prod->getCookieAuto();
         if ($auto_typ_id!="") {
             $form=str_replace("{applicable_display}", "", $form);
-            $form=str_replace("{applicable_cap}", $auto_typ_id, $form);
+            list($manufacture,$model,$model_id)=$auto->getCarInfo($auto_typ_id);
+            list($manufacture_cap,,$model_id_cap,)=$auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
+            $form=str_replace("{applicable_cap}", "<a href='https://toko.ua/catalog/'>$manufacture_cap $model_id_cap</a>", $form);
         }
 
         $article = $this->getArticleInfo($art_id);

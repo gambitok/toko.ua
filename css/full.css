@@ -27,7 +27,8 @@ input,
 button,
 span,
 td {
-    font-family: 'Open Sans', sans-serif
+    /*font-family: 'Open Sans', sans-serif*/
+    font-family: 'Roboto', sans-serif
 }
 
 a,
