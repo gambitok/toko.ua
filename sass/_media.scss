@@ -1,22 +1,4 @@
-.up-arrow {
-    i {
-        width: 44px;
-        height: 44px;
-        text-align: center;
-        padding: 14px
-    }
-    a:hover {
-        color: #f44336
-    }
-}
-
-.mob-span span {
-    width: 44px;
-    height: 44px;
-    text-align: center;
-    padding: 14px
-}
-
+/*==== Mobile Navigation ====*/
 .panel {
     color: #fff;
     padding-top: 6%;
@@ -37,7 +19,9 @@
     }
 }
 
-/* === PHONE === */
+/*==== /Mobile Navigation ====*/
+
+/* ==== PHONE ==== */
 @media (max-width: 768px) {
 
     .garage_block {
@@ -55,7 +39,7 @@
     .contacts,
     .fixed-main,
     .fixed-menu,
-    .fixed-up,
+    .ancor,
     .mob-span,
     .offset,
     .searchtab__appl,
@@ -345,7 +329,7 @@
     }
 
     .tree-head_min img {
-        width: auto;
+        width: 100%;
     }
 
     .tree-item {
@@ -366,7 +350,9 @@
     }
 }
 
-/*==== PAD === */
+/* ==== /PHONE ==== */
+
+/*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 1200px) {
 
     #menu {
@@ -407,3 +393,4 @@
 
 }
 
+/*==== PAD ====*/

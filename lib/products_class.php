@@ -250,7 +250,7 @@ class ProductsClass extends CatalogueClass {
         $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
         $form=$this->getHtmlForm("cat_car_details");
         $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD`;"); $n=$db->num_rows($r);
-        $list="<ul style=\"list-style:none; padding:0; margin: 0;\">";
+        $list="<ul class='head-list'>";
         for ($i=1;$i<=$n;$i++) {
             $head_id=$db->result($r,$i-1,"HEAD_ID");
             $tex_text=$db->result($r,$i-1,"TEX_$lang_cap");
@@ -284,7 +284,7 @@ class ProductsClass extends CatalogueClass {
         $language=new LangClass;
         $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
         $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD`;"); $n=$db->num_rows($r);
-        $list="<ul style=\"list-style:none; padding:0; margin: 0;\">";
+        $list="<ul class='head-list bordered'>";
         for ($i=1;$i<=$n;$i++) {
             $head_id=$db->result($r,$i-1,"HEAD_ID");
             $tex_text=$db->result($r,$i-1,"TEX_$lang_cap");
@@ -293,7 +293,8 @@ class ProductsClass extends CatalogueClass {
             $header_list=$this->showCarDetailsStr($head_id);
             if ($images=="") $photo=$this->noPhoto; else $photo="/uploads/images/group_tree_head/$images";
             if ($status) {
-                $list.="<li id=\"head_id_$head_id\" class=\"head-block\">
+                $list.="
+                <li id=\"head_id_$head_id\" class=\"head-list__item\">
                     <input type=\"checkbox\" id=\"toggle-head-$head_id\">
                     <label for=\"toggle-head-$head_id\">
                         <div id=\"tree_head-$head_id\" class=\"row align-items-center tree-head pointer-el\">
@@ -434,7 +435,7 @@ class ProductsClass extends CatalogueClass {
         return $form;
     }
 
-    function getCarManufList() { $db = DbSingleton::getTokoDb();
+    function getCarManufList($prefix="") { $db = DbSingleton::getTokoDb();
         $first=$second="";
         $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n=$db->num_rows($r);
         $list="<ul class=\"t_mfa\">";
@@ -451,7 +452,7 @@ class ProductsClass extends CatalogueClass {
                 $second=substr($name,0,1);
             }
             $list.="
-            <a href=\"$mfa_search/\">
+            <a href=\"$prefix$mfa_search/\">
                 <span class=\"searchtab_model\">$first</span>
                 <li $main_class>
                     <span id=\"auto-$id\" class=\"auto-list\">$name</span>

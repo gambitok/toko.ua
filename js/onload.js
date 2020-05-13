@@ -39,8 +39,8 @@ $(document).ready(function() { "use strict";
     // auto-manufacture-model select
     // $('.js-example-basic-single').select2();
 
-    // anchor
-    $("a.scrollto").click(function() {
+    // ancor
+    $(".ancor__link a").click(function() {
         var elementClick = $(this).attr("href");
         var destination = $(elementClick).offset().top;
         jQuery("html:not(:animated),body:not(:animated)").animate({
@@ -112,7 +112,7 @@ $(document).ready(function() { "use strict";
     });
 
     // fixed top search
-    var $wind = $(window), $fixedup = $(".fixed-up"), limit2 = 240;
+    var $wind = $(window), $fixedup = $(".ancor"), limit2 = 240;
     function tglup (state) { $fixedup.toggleClass("hidden", state); }
     $wind.on("scroll", function () {
         var topd = $wind.scrollTop();

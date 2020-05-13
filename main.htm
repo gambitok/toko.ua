@@ -181,15 +181,8 @@
 				</div>
 				<div class="col-lg-6">
 					<div class="input-group">
-						<div class="input-group-prepend">
-							<div class="dropdown">
-								<button style="border-right: 1px solid #ced4da;" onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" class="btn btn-outline-secondary btn-primary btn-history" type="button">
-									<span class="fas fa-history"></span>
-								</button>
-								<div onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" id="myDropdown2" class="dropdown-content"></div>
-							</div>
-						</div>
-						<input id="search_art2" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
+						<input id="search_art2" onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
+                        <div onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" id="myDropdown2" class="dropdown-content"></div>
 						<div class="input-group-append">
 							<button onClick="artSearch('search_art2');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
 						</div>
@@ -200,7 +193,7 @@
 						<a class="btn fixed-btn" onclick="showBasketMinForm();">
 							<img src="/images/buy-cart-white.png" alt="basket">
 							<div class="h0">
-								<div id="basket_status2" class="basket_count {basket_style}">{basket_count}</div>
+								<div id="basket_status2" class="basket_count basket_count_media {basket_style}">{basket_count}</div>
 							</div>
 						</a>
 					</div>
@@ -242,13 +235,11 @@
 		</div>
 	</div>
 
-	<div class="container">
-		<div class="row fixed-up hidden">
-			<div class="up-arrow">
-				<a href="header" rel="nofollow" class="scrollto text-right"><span class="mob-span"><span class="fas fa-chevron-up"></span></span></a>
-			</div>
-		</div>
-	</div>
+    <div class="ancor hidden">
+        <div class="ancor__link">
+            <a href="header" rel="nofollow"><span class="mob-span"><span class="fas fa-chevron-up"></span></span></a>
+        </div>
+    </div>
 
 	<header>
 
@@ -323,15 +314,8 @@
 
 					<div class="col-6 search">
 						<div class="input-group">
-							<div class="input-group-prepend">
-								<div class="dropdown">
-									<button style="border-right: 1px solid #ced4da;" onMouseOut="showDropHistory2();" onMouseOver="showDropHistory();" class="btn btn-outline-secondary btn-primary btn-history" type="button">
-										<span class="fas fa-history"></span>
-									</button>
-									<div onMouseOut="showDropHistory2();" onMouseOver="showDropHistory();" id="myDropdown" class="dropdown-content"></div>
-								</div>
-							</div>
-							<input id="search_art" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">
+							<input id="search_art" onMouseOut="showDropHistory2();" onMouseOver="showDropHistory();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">
+							<div onMouseOut="showDropHistory2();" onMouseOver="showDropHistory();" id="myDropdown" class="dropdown-content"></div>
 							<div class="input-group-append">
 								<button onClick="artSearch('search_art');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button" title="{search_cap}">
 									<span class="fas fa-search"></span>

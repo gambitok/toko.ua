@@ -457,7 +457,6 @@ i {
     padding: 3% 4%;
     width: 100%;
     min-height: 367px;
-    //box-shadow: 0 1px 4px rgba(0, 0, 0, .1)
     box-shadow: 0 1px 10px #ccc;
 }
 
@@ -465,7 +464,6 @@ i {
     background: #fff;
     padding: 3% 4%;
     width: 100%;
-    //box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
     box-shadow: 0 1px 10px #ccc;
     h1 {
         padding-left: 15px;
@@ -485,12 +483,8 @@ i {
     background: #fff;
     padding: 1em;
     width: 100%;
-    //box-shadow: 0 1px 4px rgba(0, 0, 0, .1)
     box-shadow: 0 1px 10px #ccc;
-}
-
-.table thead tr td {
-    border: 1px solid #000;
+    text-align: justify;
 }
 
 .table-bordered {
@@ -580,20 +574,18 @@ header {
     padding: 1% 0;
     position: relative;
     background: 75% no-repeat #fff;
-    background-size: 32%
+    background-size: 32%;
 }
 
 .search {
     input {
-        margin-left: -42px;
-        padding-left: 50px;
         border-right: none;
         margin-right: -41px;
         border-radius: .25rem!important;
         box-shadow: none
     }
     button {
-        border: 1px solid #ced4da
+        border: 1px solid #ced4da;
     }
 }
 
@@ -850,7 +842,7 @@ header {
         border: none;
         cursor: pointer;
         display: block;
-        &.hidden {
+        .hidden {
             float: left;
             width: 10%;
         }
@@ -884,6 +876,11 @@ header {
     width: 25px;
     height: 25px;
     text-align: center;
+    &_media {
+        position: relative;
+        top: -40px;
+        left: 30px;
+    }
 }
 
 .basket_status {
@@ -1116,8 +1113,6 @@ header {
         }
     }
     input {
-        margin-left: -42px;
-        padding-left: 50px;
         border-right: none;
         margin-right: -41px;
         border-radius: .25rem!important;
@@ -1364,21 +1359,29 @@ header {
 }
 
 /*==== HEAD BLOCK =====*/
-.head-block {
-    label {
-        width: 100%;
-        margin: 0;
+.head-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    &.bordered {
+        box-shadow: 0 1px 10px #ccc;
     }
-    input[type="checkbox"] {
-        display: none;
-        &:checked ~ div {
-            display: block!important;
+    &__item {
+        label {
+            width: 100%;
+            margin: 0;
         }
-        &:checked ~ label .tree-head {
-            background: #228b94;
-            color: #fff;
-            i {
-                transform: rotate(90deg);
+        input[type="checkbox"] {
+            display: none;
+            &:checked ~ div {
+                display: block!important;
+            }
+            &:checked ~ label .tree-head {
+                background: #228b94;
+                color: #fff;
+                i {
+                    transform: rotate(90deg);
+                }
             }
         }
     }
@@ -1583,7 +1586,7 @@ header {
     }
 }
 
-.fixed-up {
+.ancor {
     color: #000;
     left: 85%;
     top: 85.7%;
@@ -1597,12 +1600,33 @@ header {
     opacity: .75;
     text-align: center;
     box-shadow: 0 0 2px 0 rgba(51, 51, 51, .05), 0 1px 4px 0 rgba(51, 51, 51, .15);
-    background-color: #fff;
+    background-color: #ccc;
     border-radius: 50%;
     cursor: pointer;
     &.hidden {
         display: none;
     }
+    &__link {
+        i {
+            width: 44px;
+            height: 44px;
+            text-align: center;
+            padding: 14px;
+        }
+        a {
+            text-align: center;
+            &:hover {
+                color: #f44336;
+            }
+        }
+    }
+}
+
+.mob-span span {
+    width: 44px;
+    height: 44px;
+    text-align: center;
+    padding: 14px
 }
 
 /*==== /FOOTER ====*/
@@ -1737,8 +1761,11 @@ header {
 
 .cars_range-main {
     padding: 0 10px;
-    &.col-12 {
+    .col-12 {
         padding: 0 20px;
+        .car_form-select_card {
+            margin: 0;
+        }
     }
     &_min {
         z-index: 999;
@@ -1768,7 +1795,6 @@ header {
     background: #fff;
     padding: 1.2em;
     box-shadow: 0 4px 4px rgba(0, 0, 0, .25);
-    margin: 0 5px;
 }
 
 .t_mfa {
@@ -1876,10 +1902,10 @@ header {
 }
 
 .garage_block {
-    z-index: 1000;
-    width: 400%;
+    z-index: 1000!important;
+    width: 400%!important;
     left: -250%;
-    top: 300%;
+    top: 300%!important;
     background: #fff;
     overflow: unset!important;
 }
@@ -1904,19 +1930,21 @@ header {
     img {
         filter: none;
         width: auto;
-        float: none
+        float: none;
     }
     &-buttons button {
-        margin-top: .5em;
-        width: 150px!important;
-        font-size: 14px
+        margin-top: 10px;
+        margin-right: 10px;
+        width: 150px;
+        font-size: 14px;
+        float: left;
     }
 }
 
 .garage_row {
     padding-bottom: 15px;
     button {
-        width: 150px;
+        width: 150px!important;
     }
 }
 
@@ -2023,13 +2051,13 @@ header {
 
 /*==== SEO CARS =====*/
 .seo_details {
-    &.seo-ul {
+    .seo-ul {
         list-style: none;
         display: flex;
         flex-wrap: wrap;
         margin-right: -15px;
     }
-    &.seo-li {
+    .seo-li {
         cursor: pointer;
         display: flex;
         width: calc(25% - 48px);
@@ -2079,7 +2107,7 @@ header {
             width: 100%;
             filter: grayscale(100%);
         }
-        &.seo-li-id {
+        &-id {
             width: calc(33% - 48px);
             margin-bottom: 15px;
         }

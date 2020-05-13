@@ -488,7 +488,8 @@ class AutoClass {
 
         $db->query("UPDATE `T_manufacturers` SET `POSITION`=`POSITION`+1 WHERE `MFA_ID`='$auto' LIMIT 1;");
 
-            $list.="<span class=\"title_auto\"><i class=\"fa fa-car\"></i> $year_cap $auto_name</span><ul class=\"manufacture_list\">"; $list=$this->replaceLang($list);
+        $list.="<span class=\"title_auto\"><i class=\"fa fa-car\"></i> $year_cap $auto_name</span><ul class=\"manufacture_list\">"; $list=$this->replaceLang($list);
+
         for ($i=1;$i<=$n;$i++){
             $model=$db->result($r,$i-1,"Model");
             if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second=substr($model,0,1); $main_class="class=\"search__cat-auto\"";}

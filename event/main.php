@@ -2,7 +2,7 @@
 
 $content=str_replace("{main_window}", $catalogue->getHtmlForm("main_window"), $content);
 // Поиск по автомобилю
-$content=str_replace("{catalogue_tab_search}", $automan->showTabCatalogueAutoMin(), $content);
+$content=str_replace("{catalogue_tab_search}", $prod->getCarManufList("cars/"), $content);
 $content=str_replace("{cat_tab_title}", $automan->getHtmlForm("cat_tab_title"), $content);
 // Профильные каталоги
 $content=str_replace("{select_group}", $catalogue->showCatalogueTemplates(), $content);
