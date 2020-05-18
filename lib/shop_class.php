@@ -499,6 +499,15 @@ class ShopClass {
         return $sum;
     }
 
+    function getOrderSumm($order_id) { $db=DbSingleton::getDbm();
+        $summ=0;
+        $r=$db->query("SELECT * FROM `orders_new` WHERE `id`='$order_id' LIMIT 1;"); $n=$db->num_rows($r);
+        if ($n>0) {
+            $summ=$db->result($r, 0, "price_summ");
+        }
+        return $summ;
+    }
+
     function showRegistrationSuccessForm($order_id, $user) {
         $client=new ClientClass;
         $client_id=$client->getClient()[0];

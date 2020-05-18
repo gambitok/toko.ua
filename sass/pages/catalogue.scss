@@ -164,55 +164,6 @@
     border-top: none!important;
 }
 
-.info-table {
-    font-size: 0.7em;
-    border-collapse: separate;
-    border-spacing: 0 1em;
-    width: 100%;
-    td {
-        width: 175px;
-    }
-}
-
-.info-table_min {
-    font-size: 0.7em;
-    width: 100%;
-    margin: 0;
-    tr {
-        border: none;
-        td {
-            padding-bottom: 5px;
-        }
-    }
-}
-
-.info-photo {
-    border: 1px solid #ddd;
-    max-height: 250px;
-    padding: 0;
-    cursor: pointer;
-}
-
-.info-numbers {
-    margin: 0 15px;
-    text-align: left;
-    &__row {
-        border: 1px solid #797979;
-        border-top: none;
-        padding: 0;
-    }
-    &__title {
-        background: #797979;
-        color: #fff
-    }
-    &__auto {
-        background: #f7f7f7;
-        border-right: 1px solid #797979;
-        overflow-wrap: break-word;
-        font-weight: bold;
-    }
-}
-
 .list-hide {
     max-height: 120px;
     transition: max-height .15s ease-out;

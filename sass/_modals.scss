@@ -1,28 +1,83 @@
 #AlertForm {
-    z-index: 99999
+    z-index: 99999;
 }
 
+/*==== INFO FORM ====*/
 #InfoForm {
-    &.modal-dialog {
-        max-width: 650px
+    .modal-dialog {
+        max-width: 650px;
     }
-    &.tab-content {
+    .tab-content {
         background: #fff;
         padding: 10px;
     }
-    &.modal-header {
+    .modal-header {
         background: #228b94;
     }
-    &.info_title h4 span {
+    .info_title h4 span {
         color: rgba(54, 25, 25, .5);
-        font-weight: 700
+        font-weight: 700;
     }
 }
+
+.info-applicability {
+    margin: 15px 0;
+}
+
+.info-table {
+    font-size: 0.7em;
+    border-collapse: separate;
+    border-spacing: 0 1em;
+    width: 100%;
+    td {
+        width: 175px;
+    }
+    &_min {
+        font-size: 0.7em;
+        width: 100%;
+        tr {
+            border: none;
+            td {
+                padding-bottom: 5px;
+            }
+        }
+    }
+}
+
+.info-photo {
+    margin: 15px 0;
+    border: 1px solid #ddd;
+    max-height: 250px;
+    padding: 0;
+    cursor: pointer;
+}
+
+.info-numbers {
+    margin: 15px;
+    text-align: left;
+    &__row {
+        border: 1px solid #797979;
+        border-top: none;
+        padding: 0;
+    }
+    &__title {
+        background: #797979;
+        color: #fff
+    }
+    &__auto {
+        background: #f7f7f7;
+        border-right: 1px solid #797979;
+        overflow-wrap: break-word;
+        font-weight: bold;
+    }
+}
+
+/*==== /INFO FORM ====*/
 
 .modal-body {
     text-align: center;
     &.container .col-10 {
-        padding: 0
+        padding: 0;
     }
 }
 
@@ -34,7 +89,7 @@
 
 .modal-content {
     border-radius: 0;
-    top: 50px
+    top: 50px;
 }
 
 .modal-header {
@@ -47,44 +102,44 @@
     }
     button {
         width: 100px;
-        margin-left: 10px
+        margin-left: 10px;
     }
     &.close {
-        outline: 0
+        outline: 0;
     }
 }
 
 .modal-gallery {
     background-color: rgba(0, 0, 0, .5);
-    &.container {
-        max-width: 100%
-    }
-    &.modal-dialog {
+    .container {
         max-width: 100%;
-        margin: 0
     }
-    &.modal-header {
+    .modal-dialog {
+        max-width: 100%;
+        margin: 0;
+    }
+    .modal-header {
         background: 0 0;
         border: none;
-        padding-top: 65px
+        padding-top: 65px;
     }
-    &.modal-content {
+    .modal-content {
         background: 0 0;
         border: none;
         top: 0;
     }
-    &.modal-body {
-        padding: 0
+    .modal-body {
+        padding: 0;
     }
-    &.info-photo {
-        border: none
+    .info-photo {
+        border: none;
     }
-    &.d-block {
+    .d-block {
         max-height: 85vh;
-        padding-bottom: 25px
+        padding-bottom: 25px;
     }
-    &.carousel-caption {
-        bottom: -18px
+    .carousel-caption {
+        bottom: -18px;
     }
 }
 
@@ -94,5 +149,5 @@
 }
 
 .close {
-    color: #fff
+    color: #fff;
 }

@@ -35,6 +35,7 @@ $content = str_replace("{site_keywords}", getKeywords($path), $content);
 $content = str_replace("{site_lang_html}", getSiteLang(), $content);
 $content = str_replace("{site_lang_prefix}", $language->getLangPrefix(), $content);
 $content = str_replace("{site_page_pagination}", "", $content);
+$content = str_replace("{google_conversation}", "", $content);
 $seo_text = "<!--seo_text_start--><!--seo_text_end-->";
 
 if(isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') === false && $_SERVER['REQUEST_METHOD'] === 'GET'){

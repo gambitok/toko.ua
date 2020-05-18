@@ -816,6 +816,7 @@ class SearchClass extends CatalogueClass {
 
             $list="{_offer} {_buy} $h1 {_for} {_best_price} {_delivery} {_and} {_choose} $parrent_h1 {_such} {_models} {_example} $brand {_in} {_shop} {_toko} . {_call} {_manager} {_help} $ngramma {_for} {_best_price} {_from} $min_price {_to} $max_price {_exactly} {_auto} {_shop2} {_toko} {_bring_category} $category {_in_city} $city {_other_city}";
 
+            $list=$this->replaceLang($list);
             $list=str_replace(str_split("{}"),"",$list);
             $list=explode(" ", $list); $seo_text="";
 

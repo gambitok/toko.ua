@@ -35,6 +35,7 @@ trait Helper {
     function getUrlString($str) {
         $str = str_replace("'","",$str);
         $str = str_replace("`","",$str);
+        $str = str_replace(",","",$str);
         $str = str_replace('"',"",$str);
         $str = str_replace("%20"," ",$str);
         $str = str_replace("%60","",$str);
