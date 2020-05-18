@@ -37,16 +37,24 @@ class FormClass {
         return $info;
     }
 
+    function checkT2Link($typ_id, $art_id) { $db=DbSingleton::getTokoDb();
+        $r=$db->query("SELECT * FROM `T2_LINKS` WHERE `ART_ID`='$art_id' AND `TYP_ID`='$typ_id' LIMIT 1;");
+        $n=$db->num_rows($r);
+        if ($n==0) return false; else return true;
+    }
+
     function showArticle($art_id) {
         $cat=new CatalogueClass; $language=new LangClass; $prod=new ProductsClass; $auto=new AutoClass;
         $form=$this->getHtmlForm("cat_article");
 
         $auto_typ_id = $prod->getCookieAuto();
         if ($auto_typ_id!="") {
-            $form=str_replace("{applicable_display}", "", $form);
-            list($manufacture,$model,$model_id)=$auto->getCarInfo($auto_typ_id);
-            list($manufacture_cap,,$model_id_cap,)=$auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
-            $form=str_replace("{applicable_cap}", "<a href='https://toko.ua/catalog/'>$manufacture_cap $model_id_cap</a>", $form);
+            if ($this->checkT2Link($auto_typ_id, $art_id)) {
+                $form=str_replace("{applicable_display}", "", $form);
+                list($manufacture,$model,$model_id)=$auto->getCarInfo($auto_typ_id);
+                list($manufacture_cap,,$model_id_cap,)=$auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
+                $form=str_replace("{applicable_cap}", "<a href='https://toko.ua/catalog/'>$manufacture_cap $model_id_cap</a>", $form);
+            }
         }
 
         $article = $this->getArticleInfo($art_id);
@@ -225,11 +233,10 @@ class FormClass {
         }
     }
 
-    function insertHistory($article_nr_displ, $brand_id=0) { $db = DbSingleton::getTokoDb();
+    function insertHistory($article_nr_displ, $brand_id) { $db = DbSingleton::getTokoDb();
         session_start(); $ses=session_id(); $cookie=$_COOKIE["session_id"];
         $date=date("Y-m-d H:i:s"); $client_id=$this->getClient(); $user=$this->getUser();
         $artData=$this->getBrandId($article_nr_displ); $max_history_count=10;
-        if ($brand_id==0) $brand_id=$artData[0];
         $art_id=$artData[1];
         if ($brand_id>0 && is_numeric($brand_id)) {
             if ($user==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user'";

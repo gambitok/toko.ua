@@ -625,28 +625,9 @@ class ProductsClass extends CatalogueClass {
             $range_type=$this->getCarTypeListMin($model_id, $str_id); $range_type=$this->drawStyle($range_type);
         }
         else {
-//        }
-//
-//            if ($fuel_id=="") { //TYPE_ID
-//            $text = $this->getCarModelIdVariables($model_id);
-//            $model_cap = $this->getCarModelVariables($mfa, $model);
-//            $mfa_brand = $this->getCarManufVariables($mfa)[1];
-//            $typ_text = $this->getTypesInfo($typ_id);
-//            $title = "$typ_text";
-//            $range_manuf=""; $mfa_search=$mfa_brand;
-//            $range_model=""; $model_search=$model_cap;
-//            $range_year=""; $year_search=$year;
-//            $range_model_id=""; $modelid_search=$text;
-//            $range_type=""; $typ_search=$typ_text;
-//            $type_style=$style_title;
-//
-//            $range_modification=$this->getCarModificationListMin($model_id, $typ_id, $fuel_id, $str_id); $range_modification=$this->drawStyle($range_modification);
-//        }
-//        else {
             $text = $this->getCarModelIdVariables($model_id);
             $model_cap = $this->getCarModelVariables($mfa, $model);
             $mfa_brand = $this->getCarManufVariables($mfa)[1];
-            //$typ_text = $this->getTypesInfo($typ_id);
 
             $range_manuf=""; $mfa_search=$mfa_brand;
             $range_model=""; $model_search=$model_cap;
@@ -654,7 +635,6 @@ class ProductsClass extends CatalogueClass {
             $range_model_id=""; $modelid_search=$text;
             $fuel_name=$automan->getFuelName($fuel_id);
             $range_type=""; $typ_search="$fuel_name $typ_id "; $type_style="";
-            //$modification_search="$typ_id $fuel_id";
             $modification_style=$style_title;
             $title = "$mfa_brand $text $fuel_name $typ_id";
 
@@ -975,8 +955,8 @@ class ProductsClass extends CatalogueClass {
         $str_link = $automan->getStrNewLink($str_id);
 
         $list="<div class='t_modification'>";
-        $r=$db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` 
-        FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;"); $n=$db->num_rows($r);
+        $r=$db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` FROM `T_types` 
+        WHERE `TYP_MOD_ID`='$mod_id' GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $count_types = $db->result($r, $i-1, "count_types");
             $typ_id = $db->result($r, $i-1, "TYP_ID");
@@ -987,10 +967,14 @@ class ProductsClass extends CatalogueClass {
                 $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/';";
 
             if ($count_types<=1) {
-                $list.="<div><a href=\"#\" onclick=\"$onclick\"><b>$typ_text $fuel_name</b></a></div>";
+                $list.="<div><a href=\"#\" onclick=\"$onclick\">
+                    <b>$typ_text $fuel_name</b>
+                </a></div>";
             } else {
                 $onclick="showCarsSelectMin(6,'$typ_text','$fuel_id');";
-                $list.="<div><a href=\"#\" onclick=\"$onclick\"><b>$typ_text $fuel_name</b></a></div>";
+                $list.="<div><a href=\"#\" onclick=\"$onclick\">
+                    <b>$typ_text $fuel_name</b>
+                </a></div>";
             }
         }
         $list.="</div>";
@@ -1008,12 +992,22 @@ class ProductsClass extends CatalogueClass {
             $typ_text = $db->result($r, $i-1, "TYP_TEXT");
             $kw_from = $db->result($r,$i-1,"TYP_KW_FROM");
             $hp_from = $db->result($r,$i-1,"TYP_HP_FROM");
-            //$fuel_name = $automan->getFuelName($fuel_id);
+            $d_start=$db->result($r,$i-1,"TYP_PCON_START");
+            if ($d_start==0) {$d_start="";} if (strlen($d_start)==6) {$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
+            $d_end=$db->result($r,$i-1,"TYP_PCON_END");
+            if ($d_end==0) {$d_end="{cur_time_min}";} if (strlen($d_end)==6) {$d_end=substr($d_end,0,4).".".substr($d_end,4,2);}
+            $eng_cod = $db->result($r,$i-1,"ENG_Cod");
             $type==0 ?
                 $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/$str_link/';" :
                 $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/';";
-            //<b>$fuel_name $typ_text</b>
-            $list.="<div><a href=\"#\" onclick=\"$onclick\"><b>$typ_text</b> $hp_from {horse_power_cap}, $kw_from {kilo_wat_cap}</a></div>";
+            $list.="<div><a href=\"#\" onclick=\"$onclick\">
+                <b>$typ_text</b> 
+                <table style='font-size: 11px; width: 100%;'>
+                    <tr><td>{date_release}:</td><td class='text-right'>$d_start - $d_end</td></tr>
+                    <tr><td>{engine_model}:</td><td class='text-right'>$eng_cod</td></tr>
+                    <tr><td>{power_cap}:</td><td class='text-right'>$hp_from {horse_power_cap}, $kw_from {kilo_wat_cap}</td></tr>
+                </table>
+            </a></div>";
         }
         $list.="</div>";
         return $list;

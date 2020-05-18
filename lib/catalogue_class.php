@@ -22,6 +22,8 @@ class CatalogueClass {
     }
 
     function showCatalogueList($article_nr_search, $brand_nr_search, $status_brand=0) { $db = DbSingleton::getTokoDb();
+        $formclass=new FormClass;
+        $formclass->insertHistory($article_nr_search, $brand_nr_search);
         $kours=new ExRateClass;
         $cur=$kours->getCurrentKours();
         $article_nr_search = $this->getUrlString($article_nr_search);
