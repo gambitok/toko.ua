@@ -1,34 +1,5 @@
-/*==== Mobile Navigation ====*/
-.panel {
-    color: #fff;
-    padding-top: 6%;
-    background: #606975;
-    z-index: 999999;
-    border-right: 1px solid #a5abb2;
-    list-style: none;
-    ul {
-        list-style: none;
-        li {
-            padding: 10%;
-            border-bottom: 1px solid #a5abb2;
-        }
-    }
-    span {
-        color: #fff;
-        font-size: 10pt
-    }
-}
-
-/*==== /Mobile Navigation ====*/
-
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
-
-    .garage_block {
-        width: 300%;
-        left: -200%;
-        top: 280%
-    }
 
     #cat_search_auto,
     .header-main,
@@ -47,7 +18,6 @@
     .adnone {
         display: none
     }
-
     .header-phone,
     .tabs-auto,
     .tabs-auto li,
@@ -59,16 +29,8 @@
         display: block
     }
 
-    .rec-info .nav-tabs {
+    .banner .nav-tabs {
         display: flex;
-    }
-
-    .banner {
-        text-indent: 0;
-    }
-
-    .tabs-auto li a {
-        padding-left: 5px
     }
 
     .header-phone {
@@ -83,7 +45,7 @@
     }
 
     .main {
-        padding-bottom: 5%
+        padding-bottom: 5%;
     }
 
     .main_menu {
@@ -95,33 +57,29 @@
     }
 
     .transition {
-        padding: 15px 0!important
+        padding: 15px 0!important;
     }
 
     .search input {
-        font-size: 14px
-    }
-
-    .info_block {
-        padding: 10px
+        font-size: 14px;
     }
 
     .tab-content {
-        padding: 0!important
+        padding: 0!important;
     }
 
     .tab_auto_group,
     .tables {
-        padding: 0
+        padding: 0;
     }
 
     .searchtab__appl-phone .container {
         margin: 15px 0;
-        border: 1px solid #a9a9a9
+        border: 1px solid #a9a9a9;
     }
 
     .searchtab__appl-link {
-        background: #fff
+        background: #fff;
     }
 
     .searchtab__appl-head {
@@ -136,22 +94,19 @@
             color: #000;
             font-size: 12px;
             text-align: right;
-            margin: 0
+            margin: 0;
         }
     }
 
     .fixed {
-        width: 100%;
-        left: 15px;
         background: #fff;
         height: auto;
-        width: 100%;
         a {
             color: gray;
         }
         h1 {
             font-size: 20px;
-            padding-top: .45em
+            padding-top: .45em;
         }
     }
 
@@ -179,7 +134,7 @@
         &_min {
             -moz-column-count: 1;
             -webkit-column-count: 1;
-            column-count: 1
+            column-count: 1;
         }
     }
 
@@ -192,17 +147,17 @@
     }
 
     .font10 {
-        font-size: 10px
+        font-size: 10px;
     }
 
     .owl-row {
-        padding: 0 15px
+        padding: 0 15px;
     }
 
     .tree-list li {
         width: 50%;
         margin: 0;
-        padding: 10px
+        padding: 10px;
     }
 
     .tree-head {
@@ -214,41 +169,42 @@
 
     /*=== GOODS ====*/
     .goods__item {
-        margin: 0
+        margin: 0;
     }
 
     .goods-content {
         padding: 30px;
-        text-align: center
+        text-align: center;
     }
 
     .goods {
-        display: inline-table
+        display: inline-table;
     }
 
     /*=== /GOODS ====*/
 
-    /*====FOOTER====*/
-    .foot_head ul {
-        padding-right: 1%
-    }
-
-    .footer-contacts {
-        padding-top: 5%
-    }
-
-    .footer-socials {
-        padding-left: 15px;
-        ul {
-            padding-top: 2%;
-            margin-bottom: 2%;
+    /*==== FOOTER ====*/
+    .footer {
+        &__socials {
+            padding-left: 15px;
+            ul {
+                padding-top: 2%;
+                margin-bottom: 2%;
+            }
+        }
+        &__contacts {
+            padding-top: 5%;
+            &-head ul {
+                padding-right: 1%;
+            }
+            &-column {
+                border: none!important;
+                padding-left: 15px!important;
+            }
         }
     }
 
-    .foot_col {
-        border: none!important;
-        padding-left: 15px!important
-    }
+    /*==== /FOOTER ====*/
 
     .cat_display {
         text-align: left;
@@ -265,12 +221,15 @@
         padding: 10px!important;
     }
 
-    .main_menu .tabs-auto {
-        display: block!important;
+    .tabs-auto li a {
+        padding-left: 5px;
     }
 
-    .main_menu .tabs-auto .nav-item {
+    .main_menu .tabs-auto {
         display: block!important;
+        .nav-item {
+            display: block!important;
+        }
     }
 
     .span-media {
@@ -285,12 +244,10 @@
         column-count: 2;
     }
 
-    .t_model_id .row .body-car {
-        padding: 0;
-    }
-
-    .t_model_id .row .image-car {
-        padding: 0;
+    .t_model_id .row {
+        .body-car, .image-car {
+            padding: 0;
+        }
     }
 
     .t_modification div {
@@ -314,6 +271,12 @@
         }
     }
 
+    .garage_block {
+        width: 300%;
+        left: -200%;
+        top: 280%;
+    }
+
     .garage_row button {
         width: 100px;
     }
@@ -326,6 +289,13 @@
     .seo_details .seo-li {
         width: 100%;
         margin-right: 0;
+        &.seo-li-id {
+            width: 100%;
+        }
+        img {
+            width: 100%;
+            max-height: 70px;
+        }
     }
 
     .tree-head_min img {
@@ -340,14 +310,6 @@
         column-count: 2;
     }
 
-    .seo_details .seo-li.seo-li-id {
-        width: 100%;
-    }
-
-    .seo_details .seo-li img {
-        width: 100%;
-        max-height: 70px;
-    }
 }
 
 /* ==== /PHONE ==== */

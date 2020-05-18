@@ -5,7 +5,7 @@
 <div class="content">
 	<div class="container">
 
-		<div class="row article_header" style="margin-bottom: 15px;">
+		<div class="row article-header">
 			<div class="col-lg-12 col-12">
 				{article_header}
 			</div>
@@ -16,30 +16,30 @@
 				{art_images}
 			</div>
 			<div class="col-lg-6 col-12">
-				<ul class="list-inline article_list">
+				<ul class="list-inline article-list">
                     <li class="tables__delivery applicable {applicable_display}">
-                        <div class="article_list-title">{is_applicable}:</div>
-                        <div class="article_list-content">{applicable_cap}</div>
+                        <div class="article-list__title">{is_applicable}:</div>
+                        <div class="article-list__content">{applicable_cap}</div>
                     </li>
 					<li class="tables__delivery">
-						<div class="article_list-title">{brand_cap}:</div>
-						<div class="article_list-content"><span>{art_brand_form}</span></div>
+						<div class="article-list__title">{brand_cap}:</div>
+						<div class="article-list__content"><span>{art_brand_form}</span></div>
 					</li>
 					<li class="tables__delivery {del_class}">
-						<div class="article_list-title">{delivery_cap}:</div>
-						<div class="article_list-content"><span style="font-size: 14px;">{art_del}</span></div>
+						<div class="article-list__title">{delivery_cap}:</div>
+						<div class="article-list__content"><span style="font-size: 14px;">{art_del}</span></div>
 					</li>
 					<li class="tables__stock">
-						<div class="article_list-title">{stock_cap}:</div>
-						<div class="article_list-content"><span>{art_stock} {amount_abbr}.</span></div>
+						<div class="article-list__title">{stock_cap}:</div>
+						<div class="article-list__content"><span>{art_stock} {amount_abbr}.</span></div>
 					</li>
 					<li class="tables__count">
-						<div class="article_list-title">{count_cap}:</div>
-						<div class="article_list-content"><input type="text" value="1" min="1" title="amount" id="count_0"></div>
+						<div class="article-list__title">{count_cap}:</div>
+						<div class="article-list__content"><input type="text" value="1" min="1" title="amount" id="count_0"></div>
 					</li>
 					<li class="tables__price">
-						<div class="article_list-title">{price_cap}:</div>
-						<div class="article_list-content"><span>{art_price} {art_cur}</span></div>
+						<div class="article-list__title">{price_cap}:</div>
+						<div class="article-list__content"><span>{art_price} {art_cur}</span></div>
 					</li>
 					<li class="buy-cart-group" style="float: unset!important;">
 						<div class="btn-group btn btn-sm btn-info" onClick="{art_basket}">

@@ -4,7 +4,6 @@
 			<li class="col-lg-3 col-12 nav-title">
 				<h1>{auto_search}</h1>
 			</li>
-			<li class="col-lg-9 col-12 nav-auto">{cat_tab_title}</li>
 		</ul>
 		<div class="tab-content pad0">
 			<div id="menu-cars" class="tab-pane fade in active show">
@@ -34,14 +33,14 @@
 					</div>
 				</div>
 				<div id="menu-recommendation" class="tab-pane fade in active show">
-					<div class="rec-info">
+					<div class="banner">
 						<input type="checkbox" id="toggle-info">
-						<ul class="nav nav-tabs row mar0 align-items-center">
-							<li class="col-10 pad0">
+						<ul class="nav nav-tabs row banner-header">
+							<li class="col-10 banner-header__title">
 								<a><span>{recommendations_parts}</span></a>
 							</li>
-							<li class="col-2 banner" style="color: white;">
-								<label for="toggle-info" class="mar0"><span>{more_read}</span><i class="fa fa-chevron-down"></i></label>
+							<li class="col-2 banner-header__swipe">
+								<label for="toggle-info" class="mar0"><span>{more_read} <i class="fa fa-chevron-down"></i></span></label>
 							</li>
 						</ul>
 						{select_recommendations}

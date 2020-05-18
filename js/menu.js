@@ -301,8 +301,8 @@ function showHideNavigation(head_id) {
     $("#navigation-hide").show();
     JsHttpRequest.query(folder,{'w':'showHeadTemplate', 'head_id':head_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-        $("#navigation-hide__content").html(result.content);
-        $("#navigation-hide__header").html(result.header);
+        $("#content-nav__content").html(result.content);
+        $("#content-nav__header").html(result.header);
     }}, true);
 }
 

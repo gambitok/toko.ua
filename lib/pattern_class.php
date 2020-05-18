@@ -221,7 +221,7 @@ class PatternClass extends CatalogueClass {
 
             if (count($values)<=$amount_max) $style_more="height:auto;"; else $style_more="";
             if ($param_id==0) $param_name="{brands_cap}"; else $param_name=$this->getCatalogueParamName($param_id, $template_id);
-            if (count($values)>0 && $amount_values>0) $filters_list.="<div class=\"param-title\">$param_name</div><ul id=\"param-$param_id\" class=\"template-list list-inline list-hide\" style=\"margin: 0; $style_more\">";
+            if (count($values)>0 && $amount_values>0) $filters_list.="<div class=\"param-title\">$param_name</div><ul id=\"param-$param_id\" class=\"list-inline template-list list-hide\" style=\"margin: 0; $style_more\">";
 
             $amount_values=$amount_values-$amount_max;
             if ($amount_values<=0) $link_more=""; else $link_more="<a class=\"pointer underline\" onclick=\"toggleListParams(this, $param_id);\"><span class=\"show\">{more_cap} $amount_values</span> <span class=\"none\">{hide_cap}</span></a>";

@@ -176,11 +176,11 @@
 
 	<img src="/favicon.png" style="display: none;" alt="{site_title_short}" title="{site_title_short}">
 
-	<div class="container fixed-hidden">
+	<div class="container">
 		<div class="row fixed hidden">
 			<div class="fixed-main">
 				<div class="offset-lg-2 col-lg-1">
-					<div class="active-group active">
+					<div class="fixed-main__nav active">
 						<button class="btn fixed-btn"><span class="fas fa-bars"></span></button>
 						<div class="passive">
 							<ul>
@@ -192,7 +192,7 @@
 					</div>
 				</div>
 				<div class="col-lg-6">
-					<div class="input-group">
+					<div class="fixed-main__search">
 						<input id="search_art2" onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
                         <div onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" id="myDropdown2" class="dropdown-content"></div>
 						<div class="input-group-append">
@@ -201,7 +201,7 @@
 					</div>
 				</div>
 				<div class="col-lg-1">
-					<div class="btn-group">
+					<div class="fixed-main__basket">
 						<a class="btn fixed-btn" onclick="showBasketMinForm();">
 							<img src="/images/buy-cart-white.png" alt="basket">
 							<div class="h0">
@@ -381,16 +381,16 @@
 			</div>
 		</div>
 
-		<div id="navigation-hide" class="row header-hide-nav" style="display:none;">
+		<div id="navigation-hide" class="row header-nav-hide" style="display:none;">
 			<div class="container">
-				<div class="row content-hide-nav">
+				<div class="row content-nav-hide">
 					<div class="col-10">
-						<span id="navigation-hide__header" class="navigation-hide__header"></span>
+						<span id="content-nav__header" class="content-nav__header"></span>
 					</div>
 					<div class="col-2">
 						<button class="btn btn-sm btn-outline-secondary float-right wauto" onclick="closeHideNavigation();"><span class="fa fa-times"></span></button>
 					</div>
-					<div class="tree-list border-none" id="navigation-hide__content"></div>
+					<div id="content-nav__content" class="content-nav__content tree-list"></div>
 				</div>
 			</div>
 		</div>
@@ -409,46 +409,54 @@
 	</section>
 
 	<footer>
-		<div class="row footer-socials">
-			<div class="container">
-				<div class="row align-items-center">
-					<div class="col-lg-2 col-5 padl0 madl0">
-						<span>{social_contacts}: </span>
-					</div>
-					<div class="col-lg-7 col-7">
+
+        <div class="footer">
+
+            <div class="row footer__socials">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-2 col-5 padl0 madl0">
+                            <span>{social_contacts}: </span>
+                        </div>
+                        <div class="col-lg-7 col-7">
 						<span itemscope itemtype="http://schema.org/Organization">
  							<link itemprop="url" href="https://toko.ua/">
 							<ul>{list_social}</ul>
 						</span>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row footer-contacts">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-4 col-12 foot_head">
-						<span>{contacts_cap}</span>
-						{contacts_bottom}
-					</div>
-					<div class="col-lg-4 col-12 foot_col">
-						<span>{for_suppliers_cap}</span>
-						<ul class="list-inline">
-							<li><a href="{site_lang_prefix}/sell/"><span class="fas fa-angle-right"></span> {sell_on_toko}</a></li>
-						</ul>
-					</div>
-					<div class="col-lg-4 col-12 foot_col">
-						<span>{info_cap}</span>
-						<ul class="list-inline">
-							<li><a href="{site_lang_prefix}/contacts/"><span class="fas fa-angle-right"></span> {contacts_cap}</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row" style="background: #292929;">
-			<!--footers_block-->
-		</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row footer__contacts">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-4 col-12 footer__contacts-head">
+                            <span>{contacts_cap}</span>
+                            {contacts_bottom}
+                        </div>
+                        <div class="col-lg-4 col-12 footer__contacts-column">
+                            <span>{for_suppliers_cap}</span>
+                            <ul class="list-inline">
+                                <li><a href="{site_lang_prefix}/sell/"><span class="fas fa-angle-right"></span> {sell_on_toko}</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-4 col-12 footer__contacts-column">
+                            <span>{info_cap}</span>
+                            <ul class="list-inline">
+                                <li><a href="{site_lang_prefix}/contacts/"><span class="fas fa-angle-right"></span> {contacts_cap}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row footer__cities">
+                <!--footers_block-->
+            </div>
+
+        </div>
+
 	</footer>
 </div>
 

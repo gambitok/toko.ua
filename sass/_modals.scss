@@ -4,6 +4,9 @@
 
 /*==== INFO FORM ====*/
 #InfoForm {
+    .modal-header {
+        background: #228b94;
+    }
     .modal-dialog {
         max-width: 650px;
     }
@@ -11,64 +14,60 @@
         background: #fff;
         padding: 10px;
     }
-    .modal-header {
-        background: #228b94;
-    }
     .info_title h4 span {
         color: rgba(54, 25, 25, .5);
         font-weight: 700;
     }
 }
 
-.info-applicability {
-    margin: 15px 0;
-}
-
-.info-table {
-    font-size: 0.7em;
-    border-collapse: separate;
-    border-spacing: 0 1em;
-    width: 100%;
-    td {
-        width: 175px;
+.info {
+    &__applicability {
+        margin: 15px 0;
     }
-    &_min {
-        font-size: 0.7em;
-        width: 100%;
-        tr {
-            border: none;
-            td {
-                padding-bottom: 5px;
-            }
+    &__numbers {
+        margin: 15px;
+        text-align: left;
+        &__row {
+            border: 1px solid #797979;
+            border-top: none;
+            padding: 0;
+        }
+        &__title {
+            background: #797979;
+            color: #fff
+        }
+        &__auto {
+            background: #f7f7f7;
+            border-right: 1px solid #797979;
+            overflow-wrap: break-word;
+            font-weight: bold;
         }
     }
-}
-
-.info-photo {
-    margin: 15px 0;
-    border: 1px solid #ddd;
-    max-height: 250px;
-    padding: 0;
-    cursor: pointer;
-}
-
-.info-numbers {
-    margin: 15px;
-    text-align: left;
-    &__row {
-        border: 1px solid #797979;
-        border-top: none;
+    &__photo {
+        margin: 15px 0;
+        border: 1px solid #ddd;
+        max-height: 250px;
         padding: 0;
+        cursor: pointer;
     }
-    &__title {
-        background: #797979;
-        color: #fff
-    }
-    &__auto {
-        background: #f7f7f7;
-        border-right: 1px solid #797979;
-        overflow-wrap: break-word;
-        font-weight: bold;
+    &__table {
+        font-size: 0.7em;
+        border-collapse: separate;
+        border-spacing: 0 1em;
+        width: 100%;
+        td {
+            width: 175px;
+        }
+        &_min {
+            font-size: 0.7em;
+            width: 100%;
+            tr {
+                border: none;
+                td {
+                    padding-bottom: 5px;
+                }
+            }
+        }
     }
 }
 
@@ -81,15 +80,15 @@
     }
 }
 
+.modal-content {
+    border-radius: 0;
+    top: 50px;
+}
+
 .modal-loader {
     background: transparent;
     border: none;
     padding-top: 40%;
-}
-
-.modal-content {
-    border-radius: 0;
-    top: 50px;
 }
 
 .modal-header {

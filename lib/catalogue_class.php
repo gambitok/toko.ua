@@ -28,15 +28,13 @@ class CatalogueClass {
         $cur=$kours->getCurrentKours();
         $article_nr_search = $this->getUrlString($article_nr_search);
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
-        //, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME
         $r=$db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
         WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
-        GROUP BY t2c.`ART_ID` ORDER BY t2n.NAME ASC;"); $n=$db->num_rows($r); $art_id_str=""; //$brand_name="";
+        GROUP BY t2c.`ART_ID` ORDER BY t2n.NAME ASC;"); $n=$db->num_rows($r); $art_id_str="";
         for ($i=1;$i<=$n;$i++) {
-            //$brand_name = $db->result($r,$i-1,"BRAND_NAME");
             $art_id=$db->result($r,$i-1,"ART_ID");
             $art_id_str.="'$art_id'";if ($i<$n){$art_id_str.=",";}
         }
@@ -1697,15 +1695,15 @@ class CatalogueClass {
                 $brand_name=$db->result($r,$i-1,"BRAND_NAME");
                 $arr[$brand_name][$i]=$art_name;
             }
-            $list="<div class=\"info-numbers\">
-            <div class=\"row info-numbers__row\">
-                <div class=\"col-3 info-numbers__title\">{brand_cap}</div>
-                <div class=\"col-9 info-numbers__title\">{art_cap}</div>
+            $list="<div class=\"info__numbers\">
+            <div class=\"row info__numbers__row\">
+                <div class=\"col-3 info__numbers__title\">{brand_cap}</div>
+                <div class=\"col-9 info__numbers__title\">{art_cap}</div>
             </div>";
             $i=1;
             foreach ($arr as $arr_key=>$arr_val) {
-                $list.="<div class=\"row info-numbers__row\">
-                    <div class=\"col-3 info-numbers__auto\">".$arr_key."</div>
+                $list.="<div class=\"row info__numbers__row\">
+                    <div class=\"col-3 info__numbers__auto\">".$arr_key."</div>
                     <div class=\"col-9 word-wrap\">";
                 foreach ($arr_val as $key=>$val) {
                     $format_val = str_replace(str_split('.,+-\/:*?"<>| '),"", $val);

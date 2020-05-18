@@ -1,43 +1,42 @@
-.basket-title {
-    background: #f1f1f1;
-    color: #9da9b9;
-    font-size: 0.7em;
-    text-transform: uppercase;
-    padding: 10px;
-    word-break: break-word;
-}
-
-.basket-close {
-    padding: 10px;
-}
-
-.small-text {
-    font-size: 0.75em;
-    color: #8c8c8c;
-}
-
-.medium-text {
-    font-size: 0.9em;
-    color: #8c8c8c;
-}
-
-.basket-content {
-    padding: 10px;
-    .btn-outline-secondary {
-        border-color: #ccc;
+/*==== BASKET ====*/
+.basket-card {
+    .medium-text {
+        font-size: 0.9em;
+        color: #8c8c8c;
     }
-    p {
-        margin: 0;
+    .small-text {
+        font-size: 0.75em;
+        color: #8c8c8c;
+    }
+    &__title {
+        background: #f1f1f1;
+        color: #9da9b9;
+        font-size: 0.7em;
+        text-transform: uppercase;
+        padding: 10px;
+        word-break: break-word;
+    }
+    &__content {
+        padding: 10px;
+        p {
+            margin: 0;
+        }
+        .btn-outline-secondary {
+            border-color: #ccc;
+        }
+    }
+    &__close {
+        padding: 10px;
     }
 }
 
 .shop__table-tr {
-    background: #ffffe0
+    background: #ffffe0;
 }
 
 .btn-order {
     background: #228b94;
-    color: #fff
+    color: #fff;
 }
 
 .btn-basket {
@@ -66,8 +65,9 @@
     top: -2px;
 }
 
-/*=====ORDERS======*/
+/*==== /BASKET ====*/
 
+/*===== ORDERS ====*/
 .table-order {
     button {
         max-width: 200px;
@@ -139,6 +139,8 @@
         }
     }
 }
+
+/*===== /ORDERS ====*/
 
 .city-inline {
     padding-top: 15px;
