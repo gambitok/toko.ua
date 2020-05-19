@@ -180,9 +180,9 @@
 		<div class="row fixed hidden">
 			<div class="fixed-main">
 				<div class="offset-lg-2 col-lg-1">
-					<div class="fixed-main__nav active">
-						<button class="btn fixed-btn"><span class="fas fa-bars"></span></button>
-						<div class="passive">
+					<div class="fixed-main__nav">
+						<button class="btn fixed-main__nav-btn"><span class="fas fa-bars"></span></button>
+						<div class="fixed-main__nav-hidden">
 							<ul>
 								<li><a href="{site_lang_prefix}/">{main_page}</a></li>
 								<li><a href="{site_lang_prefix}/news/">{news_cap}</a></li>
@@ -193,17 +193,20 @@
 				</div>
 				<div class="col-lg-6">
 					<div class="fixed-main__search">
-						<input id="search_art2" onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
-                        <div onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" id="myDropdown2" class="dropdown-content"></div>
-						<div class="input-group-append">
-							<button onClick="artSearch('search_art2');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
-						</div>
+                        <div class="input-group">
+                            <input id="search_art2" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button onClick="artSearch('search_art2');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
+                            </div>
+                        </div>
+						<!--onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();"-->
+						<!--<div onMouseOut="showDropHistoryFixed2();" onMouseOver="showDropHistoryFixed();" id="myDropdown2" class="dropdown-content"></div>-->
 					</div>
 				</div>
 				<div class="col-lg-1">
 					<div class="fixed-main__basket">
-						<a class="btn fixed-btn" onclick="showBasketMinForm();">
-							<img src="/images/buy-cart-white.png" alt="basket">
+						<a class="btn fixed-main__basket-btn" onclick="showBasketMinForm();">
+							<img src="/images/buy-cart-white.png" alt="Basket">
 							<div class="h0">
 								<div id="basket_status2" class="basket_count basket_count_media {basket_style}">{basket_count}</div>
 							</div>
@@ -337,8 +340,8 @@
 					</div>
 
 					<div class="col-4 pad0">
-						<ul class="list-inline">
-							<li class="garage">
+						<ul class="list-inline icon-nav">
+							<li class="icon-nav__garage">
 								<a id="garage_btn" {garage_link} title="{garage_user}">
 									<span class="fa fa-car garage-icon"></span>
 									<span class="garage_span" id="garage_span"><small>{my_cap}</small>
@@ -349,14 +352,14 @@
 								</a>
 								<div id="GarageForm" class="dropdown-content garage_block"></div>
 							</li>
-							<li class="profile">
+							<li class="icon-nav__profile">
 								<a id="profile_btn" href="{site_lang_prefix}/profile/orders/" title="{profile}">
 									<span class="fa fa-user garage-icon"></span>
 									<span id="profile_span"><small>{private_cap}</small>
 										{office_cap}</span>
 								</a>
 							</li>
-							<li class="basket">
+							<li class="icon-nav__basket">
 								<a id="basket_btn" onclick="showBasketMinForm();" title="{basket_cap}">
 									<span class="fa fa-shopping-cart garage-icon"></span>
 									<span id="basket_span"><small>{mine_cap}</small>
@@ -551,15 +554,15 @@
 				<div class="modal-body text-left">
 					<div class="container">
 						<div class="input-group">
-							<div class="input-group-prepend">
-								<button onclick="showHistorySearch();" class="btn btn-outline-secondary btn-primary btn-search-art"><span class="fas fa-history"></span></button>
-							</div>
+							<!--<div class="input-group-prepend">-->
+								<!--<button onclick="showHistorySearch();" class="btn btn-outline-secondary btn-primary btn-search-art"><span class="fas fa-history"></span></button>-->
+							<!--</div>-->
 							<input id="search_art3" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
 							<div class="input-group-append">
 								<button onClick="artSearch('search_art3');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
 							</div>
 						</div>
-						<div id="PhoneHistory" style="padding: 45px; display: none;"></div>
+						<!--<div id="PhoneHistory" style="padding: 45px; display: none;"></div>-->
 					</div>
 				</div>
 			</div>

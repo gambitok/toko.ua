@@ -7,7 +7,6 @@
     .authorization ul,
     .authorization span,
     .basket,
-    .contacts,
     .fixed-main,
     .fixed-menu,
     .ancor,
@@ -26,7 +25,16 @@
     .info_block,
     .searchtab__appl-phone,
     .nav-tabs {
-        display: block
+        display: block;
+    }
+
+    .contacts ul li {
+        padding-top: 30px;
+    }
+
+    .profile__side {
+        padding: 0;
+        margin-bottom: 15px;
     }
 
     .banner .nav-tabs {

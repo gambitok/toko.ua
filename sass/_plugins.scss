@@ -364,42 +364,6 @@ table {
 
 /*==== /TABS ====*/
 
-.passive {
-    display: none;
-    width: 100%;
-    position: absolute;
-    background: #4b4e4f;
-    top: 100%;
-    border-top: 0;
-    opacity: .9;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
-    ul {
-        margin: 0;
-        list-style: none;
-        li {
-            float: none;
-            list-style: none;
-            padding: 5% 0;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            color: #fff;
-            &:hover {
-                color: #fff;
-                background: rgba(54, 25, 25, .5);
-            }
-        }
-    }
-}
-
-.active {
-    position: relative;
-    &:hover .passive {
-        display: block;
-        position: absolute;
-        z-index: 9999;
-    }
-}
-
 .label {
     background: #595d5f;
     cursor: pointer;

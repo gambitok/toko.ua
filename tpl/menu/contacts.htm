@@ -1,12 +1,12 @@
-<!--<link rel="stylesheet" href="/css/pages/contacts.css">-->
-
 <div class="content">
 	<h1>{contacts_cap}</h1>
-	<div class="row contacts_row">
-		<div class="col-lg-8 col-12"><iframe src="https://www.google.com/maps/d/embed?mid=1aFdkteB6bCe3nEF_PHq7eunFvIlNknUb" width="100%" height="480"></iframe></div>
+	<div class="row contacts">
+		<div class="col-lg-8 col-12">
+			<iframe src="https://www.google.com/maps/d/embed?mid=1aFdkteB6bCe3nEF_PHq7eunFvIlNknUb" width="100%" height="480"></iframe>
+        </div>
 		<div class="col-lg-4 col-12" itemscope itemtype="https://schema.org/Organization">
 			<input itemprop="name" value="{site_title}" type="hidden">
-			<ul itemprop="address" itemscope itemtype="https://schema.org/PostalAddress" style="list-style: none;">
+			<ul itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
 				{contact_block}
 			</ul>
 		</div>
