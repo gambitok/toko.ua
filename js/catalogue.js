@@ -1,5 +1,5 @@
 
-function showRegionForm() { "use strict"; $("#RegionForm").modal("toggle"); $("#menu").css('left','-19em'); }
+function showRegionForm() { "use strict"; $("#RegionForm").modal("toggle"); $("#menu").css('left','-100%'); }
 
 function showActionForm() { "use strict"; $("#ActionForm").modal("toggle"); }
 

@@ -938,7 +938,7 @@ function showArticleInfoForm($art_id,$article_nr_displ,$brand_name) { $db=DbSing
                     </a>
                 </div> ";
         }
-        $info.="<div class=\"row pad15\">
+        $info.="<div class=\"row pad10\">
             <div class=\"col-lg-12 col-12 info-photo\">
                 <div id=\"carouselExampleControls\" class=\"carousel slide\" data-ride=\"carousel\">
                     <div class=\"carousel-inner\" role=\"listbox\">$list</div>
@@ -957,7 +957,7 @@ function showArticleInfoForm($art_id,$article_nr_displ,$brand_name) { $db=DbSing
         $list.="<div class=\"carousel-item active\"> 
                 <a><img itemprop=\"image\" class=\"d-block img-fluid\" src=\"$this->noPhoto\" alt=\"Slider\"></a>
             </div>";
-        $info.="<div class=\"row pad15\">
+        $info.="<div class=\"row pad10\">
             <div class=\"col-lg-12 col-12 info-photo\">
                 <div id=\"carouselExampleControls\" class=\"carousel slide\" data-ride=\"carousel\">
                     <div class=\"carousel-inner\" role=\"listbox\">$list</div>

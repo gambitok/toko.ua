@@ -656,7 +656,23 @@ table {
     }
 }
 
+.owl-row {
+    padding: 0!important;
+}
+
 /*==== /OWL CAROUSEL =====*/
+
+/*==== Bootstrap Carousel ====*/
+.carousel-caption {
+    text-shadow: #000 0 0 4px;
+}
+
+.carousel-control-next:hover, .carousel-control-prev:hover {
+    background: #000;
+    color: #fff;
+}
+
+/*==== /Bootstrap Carousel ====*/
 
 /*==== DOTS ====*/
 .loader {
@@ -773,23 +789,109 @@ table {
 
 /*==== Mobile Navigation ====*/
 .panel {
-    color: #fff;
-    padding-top: 6%;
-    background: #606975;
-    z-index: 999999;
-    border-right: 1px solid #a5abb2;
+    background: #fff;
     list-style: none;
+    padding-top: 30px;
+    overflow: auto;
+    z-index: 99999999;
     ul {
         list-style: none;
         li {
-            padding: 10%;
-            border-bottom: 1px solid #a5abb2;
+            border-bottom: 1px solid #ddd;
+            font-size: 24px;
+            padding: 15px 30px;
+            background: url("/images/icons/arrow-right.svg") calc(100% - 20px) center no-repeat;
+            &.title {
+                background: none;
+            }
+            &:hover > a {
+                color: #228b94;
+                text-decoration: underline;
+            }
+            span {
+                color: #333;
+                cursor: pointer;
+                font-size: 25px;
+            }
+            a {
+                display: block;
+                width: 100%;
+                color: #333;
+                font-size: 25px;
+            }
         }
-    }
-    span {
-        color: #fff;
-        font-size: 10pt;
     }
 }
 
 /*==== /Mobile Navigation ====*/
+
+/*==== Spinner ====*/
+@-webkit-keyframes spinner-border {
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spinner-border {
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.spinner-border {
+    display: block;
+    margin: 2em auto;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    border: 0.25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: spinner-border .75s linear infinite;
+    animation: spinner-border .75s linear infinite;
+    &-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.2em;
+    }
+}
+
+@-webkit-keyframes spinner-grow {
+    0% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes spinner-grow {
+    0% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.spinner-grow {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    background-color: currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    -webkit-animation: spinner-grow .75s linear infinite;
+    animation: spinner-grow .75s linear infinite;
+    &-sm {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+/*==== /Spinner ====*/

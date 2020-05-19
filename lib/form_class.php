@@ -43,6 +43,23 @@ class FormClass {
         if ($n==0) return false; else return true;
     }
 
+    function getArtBrandLink($art_id, $brand_id) { $db=DbSingleton::getTokoDb();
+        $link="";
+        $r=$db->query("SELECT * FROM `T2_TREE` WHERE `ART_ID`='$art_id';"); $n=$db->num_rows($r);
+        if ($n>0) {
+            $str_text="";
+            for ($i=1;$i<=$n;$i++) {
+                $str_id=$db->result($r, $i-1, "STR_ID");
+                $r1=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1=$db->query($r1);
+                if ($n1>0) $str_text=$db->result($r1, 0, "TEX_LINK");
+                if ($str_text!="") break;
+            }
+            $brand_link=$this->getBrandLink($brand_id);
+            if ($str_text!="") $link="https://toko.ua/catalog/$str_text/brandy=$brand_link/";
+        }
+        return $link;
+    }
+
     function showArticle($art_id) {
         $cat=new CatalogueClass; $language=new LangClass; $prod=new ProductsClass; $auto=new AutoClass;
         $form=$this->getHtmlForm("cat_article");
@@ -63,16 +80,18 @@ class FormClass {
         $brand_name = $article["brand_name"];
         $article_name = $article["text"];
 
+        $brand_link=$this->getArtBrandLink($art_id, $brand_id);
+
         if ($this->getCountryFlag($brand_id)!==false) {
             list($flag, $country_name) = $this->getCountryFlag($brand_id);
             $brand_form="
-            <a class=\"pointer\" onClick=\"showBrandForm($brand_id);\">
+            <a href=\"$brand_link\">
                 <span title=\"$country_name\" class=\"search__brand\" data-title=\"{brand_cap}\" style=\"font-size: 14px;\">$brand_name</span>
             </a>
             <img class=\"flag flag-$flag flag-search\">";
         } else {
             $brand_form="
-            <a class=\"pointer\" onClick=\"showBrandForm($brand_id);\">
+            <a href=\"$brand_link\">
                 <span title=\"$brand_name\" class=\"search__brand\" data-title=\"{brand_cap}\" style=\"font-size: 14px;\">$brand_name</span>
             </a>";
         }

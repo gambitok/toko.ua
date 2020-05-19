@@ -4,28 +4,41 @@
     #cat_search_auto,
     .header-main,
     .header-nav,
-    .authorization ul,
-    .authorization span,
     .basket,
     .fixed-main,
-    .fixed-menu,
     .ancor,
     .mob-span,
-    .offset,
     .searchtab__appl,
-    .logotype-main,
-    .adnone {
+    .logotype-main {
         display: none
     }
+
     .header-phone,
-    .tabs-auto,
-    .tabs-auto li,
     .fixed-phone,
     .table-responsive,
     .info_block,
     .searchtab__appl-phone,
     .nav-tabs {
         display: block;
+    }
+
+    .tabs-auto {
+        display: block;
+        li {
+            display: block;
+        }
+    }
+
+    .header-top {
+        display: none;
+        .contacts {
+            display: none;
+        }
+        .authorization {
+            ul, span {
+                display: none;
+            }
+        }
     }
 
     .contacts ul li {
@@ -39,13 +52,6 @@
 
     .banner .nav-tabs {
         display: flex;
-    }
-
-    .header-phone {
-        padding: 8px 0;
-        li {
-            padding-left: 8px
-        }
     }
 
     .label {
@@ -64,12 +70,10 @@
         }
     }
 
-    .transition {
-        padding: 15px 0!important;
-    }
-
-    .search input {
-        font-size: 14px;
+    .search {
+        input {
+            font-size: 14px;
+        }
     }
 
     .tab-content {
@@ -81,9 +85,11 @@
         padding: 0;
     }
 
-    .searchtab__appl-phone .container {
-        margin: 15px 0;
-        border: 1px solid #a9a9a9;
+    .searchtab__appl-phone {
+        .container {
+            margin: 15px 0;
+            border: 1px solid #a9a9a9;
+        }
     }
 
     .searchtab__appl-link {
@@ -109,9 +115,6 @@
     .fixed {
         background: #fff;
         height: auto;
-        a {
-            color: gray;
-        }
         h1 {
             font-size: 20px;
             padding-top: .45em;
@@ -120,19 +123,6 @@
 
     .btn-header-phone {
         color: gray;
-    }
-
-    .logotype-min {
-        display: inline;
-        height: auto;
-        position: relative;
-        img {
-            width: 100%;
-        }
-        a {
-            width: 80px;
-            border: 1px solid white;
-        }
     }
 
     .manufacture_list {
@@ -148,10 +138,6 @@
 
     .nav-title h1 {
         font-size: 1em;
-    }
-
-    .nav-auto {
-        text-align: left;
     }
 
     .font10 {
@@ -176,10 +162,6 @@
     }
 
     /*=== GOODS ====*/
-    .goods__item {
-        margin: 0;
-    }
-
     .goods-content {
         padding: 30px;
         text-align: center;
@@ -187,6 +169,9 @@
 
     .goods {
         display: inline-table;
+        &__item {
+            margin: 0;
+        }
     }
 
     /*=== /GOODS ====*/
@@ -213,12 +198,6 @@
     }
 
     /*==== /FOOTER ====*/
-
-    .cat_display {
-        text-align: left;
-        padding-top: 0.5em;
-        padding-bottom: 0.5em;
-    }
 
     .cars_range-title-h {
         display: none;
@@ -279,12 +258,6 @@
         }
     }
 
-    .garage_block {
-        width: 300%;
-        left: -200%;
-        top: 280%;
-    }
-
     .garage_row button {
         width: 100px;
     }
@@ -325,6 +298,16 @@
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 1200px) {
 
+    .icons-nav {
+        padding-left: 0;
+        list-style: none;
+        &__garage, &__profile, &__basket {
+            &-text {
+                display: none;
+            }
+        }
+    }
+
     #menu {
         display: none;
     }
@@ -337,16 +320,8 @@
         width: auto;
     }
 
-    .authorization {
+    .header-top .authorization {
         padding: 0;
-    }
-
-    #menu {
-        display: none;
-    }
-
-    .garage_count {
-        left: 116px;
     }
 
     .basket_count {
@@ -355,10 +330,6 @@
 
     .table-responsive {
         display: block;
-    }
-
-    .label {
-        width: auto;
     }
 
 }

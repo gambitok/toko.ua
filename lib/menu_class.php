@@ -45,7 +45,7 @@ class MenuClass {
                         <h3 itemprop=\"description\">$short_desc</h3><br>
                         <a itemprop=\"url\" href=\"$prefix/news/state/$state_id/$format_title/\">{details_cap} <span class=\"fas fa-angle-right\"></span></a>
                     </div>
-                    <div class=\"col-4 pad15\">$img</div>
+                    <div class=\"col-4 pad10\">$img</div>
                 </div>";
             }
         } else $list="<div class=\"content\"><h2>$err1<h2></div>";
@@ -292,7 +292,7 @@ class MenuClass {
         $r=$db->query("SELECT * FROM `new_lang` WHERE `id`='$id' LIMIT 1;"); $n=$db->num_rows($r); $list="";
         if ($n>0) {
             $abr=$db->result($r,0,"abr");
-            $list="<a class=\"lang_select pointer\" onClick=\"showLangForm();\">
+            $list="<a class=\"lang_select\" onClick=\"showLangForm();\">
                 <span id=\"lang_select\">
                     {laguage_cap}: <span> $abr</span>
                 </span>
@@ -351,7 +351,7 @@ class MenuClass {
         $lang=new LangClass;
         $language=$lang->getLanguage(); $ch=$style="";
         $r=$db->query("SELECT * FROM `new_lang`;"); $n=$db->num_rows($r);
-        $list="<form action=\"\" autocomplete=\"off\"><span class=\"padr15\"></span>";
+        $list="<form action=\"\" autocomplete=\"off\">";
         for ($i=1;$i<=$n;$i++){
             $id=$db->result($r,$i-1,"id");
             $abr=$db->result($r,$i-1,"abr");
