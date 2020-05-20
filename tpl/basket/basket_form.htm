@@ -3,19 +3,22 @@
 <div id="basket_block">
 
     <div class="basket">
-        <div class="row align-items-center basket__header">
-            <div class="col-6">
-                <span>{goods_in_basket}: {count}</span>
-            </div>
-            <div class="col-6">
-                <div class="radio-group">
-                    {currency}
+
+        <div class="basket__header">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <span>{goods_in_basket}: {count}</span>
+                </div>
+                <div class="col-6">
+                    <div class="radio-group">
+                        {currency}
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="basket__table">
-            <div class="row align-items-center basket-thead">
+            <div class="row align-items-center basket__table-thead">
                 <div class="col-4">{caption_cap}</div>
                 <div class="col-2 text-center">{storage_info}</div>
                 <div class="col-2">{count_cap}</div>
@@ -32,35 +35,40 @@
         </div>
 
         <div class="basket__phone">
-            {basket_phone_rows}
-        </div>
-
-        <div class="row basket__footer">
-            <div class="col-12 basket__footer-total">
-                <span>{total_cap}: <i>{sum_total}</i> {cur_cap}</span>
-            </div>
-            <div class="col-12 basket__footer-total {total_style}">
-                <span>{total_checked_cap}: <i>{sum}</i> {cur_cap}</span>
-            </div>
-            <div class="col-lg-6 col-12 basket__footer-buttons">
-                <button class="btn" data-dismiss="modal"><i class="fa fa-chevron-left"></i> {back_to_buy}</button>
-            </div>
-            <div class="col-lg-6 col-12 basket__footer-buttons">
-                <button id="make_order" onclick="{location}" {disabled} class="btn btn-order btn-primary btn-outline-secondary">{make_order}</button>
+            <div class="row">
+                {basket_phone_rows}
             </div>
         </div>
 
-        <div class="row basket__fast">
-            <div class="col-lg-4 col-12"><span>{phone_number}:</span></div>
-            <div class="col-lg-5 col-10"><input id="input_phone2" value="" class="form-control" type="tel" name="phone" placeholder="+380" aria-hidden="true" aria-label="+380" onChange="validateForm('phone2','input');"></div>
-            <div class="col-lg-1 col-2"><i id="validate_input_phone2" class="fas fa-times-circle non_accept validate_input"></i></div>
-            <div class="col-lg-2 col-12"><button onclick="finishFastOrder();" class="btn btn-outline-primary btn-outline-secondary btn-finish-order">{make_order_fast}</button></div>
+        <div class="basket__footer">
+            <div class="row">
+                <div class="col-12 basket__footer-total">
+                    <span>{total_cap}: <i>{sum_total}</i> {cur_cap}</span>
+                </div>
+                <div class="col-12 basket__footer-total {total_style}">
+                    <span>{total_checked_cap}: <i>{sum}</i> {cur_cap}</span>
+                </div>
+                <div class="col-lg-6 col-12 basket__footer-buttons">
+                    <button class="btn" data-dismiss="modal"><i class="fa fa-chevron-left"></i> {back_to_buy}</button>
+                </div>
+                <div class="col-lg-6 col-12 basket__footer-buttons">
+                    <button id="make_order" onclick="{location}" {disabled} class="btn btn-primary">{make_order}</button>
+                </div>
+            </div>
         </div>
+
+        <div class="basket__fast">
+            <div class="row">
+                <div class="col-lg-4 col-12"><span>{phone_number}:</span></div>
+                <div class="col-lg-5 col-10"><input id="input_phone2" value="" class="form-control" type="tel" name="phone" placeholder="+380" aria-hidden="true" aria-label="+380" onChange="validateForm('phone2','input');"></div>
+                <div class="col-lg-1 col-2"><i id="validate_input_phone2" class="fas fa-times-circle non_accept validate_input"></i></div>
+                <div class="col-lg-2 col-12"><button onclick="finishFastOrder();" class="btn btn-outline-primary">{make_order_fast}</button></div>
+            </div>
+        </div>
+
     </div>
 
 </div>
-
-<div class="container table-order"></div>
 
 <script type="text/javascript" src="/js/plugins/OwlCarousel2-2.3.4/owl.carousel.min.js"></script>
 

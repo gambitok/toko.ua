@@ -1,4 +1,3 @@
-<!--<link rel="stylesheet" href="/css/pages/basket.css">-->
 <link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
 
 <script>
@@ -9,156 +8,169 @@
     });
 </script>
 
-<div id="order_block" class="content order_block">
+<div class="content">
 
-    <div class="row align-items-center mar0" style="margin-bottom: 15px;">
-        <div class="col-lg-4 col-12">
-            <h5>{making_order_cap}</h5>
-        </div>
-        <div class="col-lg-7 col-11 padr0">
-            <span class="basket-summ-price float-right">{total_cap}: {full_price} {currency_cap}</span>
-        </div>
-        <div class="col-1 pad0">
-            <button style="width: 50px;" title="{basket_show_cap}" class="btn btn-primary btn-outline-secondary float-right" onclick="toggleBasket();">
-                <span class="fas fa-shopping-basket"></span>
-            </button>
-        </div>
-    </div>
+    <div class="order">
 
-    <div id="basket_toggle" class="container " style="display: none;">
-        <div class="row mar0">
-            {show_basket}
-        </div>
-    </div>
-
-    <ul class="nav nav-tabs">
-        <li><a data-toggle="tab" href="#menu1" class="active show">{order_type_caption}</a></li>
-        <li class="{order_type_display}"><a data-toggle="tab" href="#menu2">{regular_customer}</a></li>
-        <li class="{order_type_display}"><a data-toggle="tab" href="#menu3">{fast_buy}</a></li>
-    </ul>
-
-    <div class="tab-content pad0">
-
-        <div id="menu1" class="tab-pane fade in active show">
-            <div class="container table-order">
-                <div class="row">
-                    <div class="col-lg-4 col-12"><span class="span-red" title="{field_is_required}">*</span><span>{name_surname}:</span></div>
-                    <div class="col-lg-7 col-10"><input id="input_name" title="{name_surname}" value="{name_value}" class="form-control" type="text" onchange="validateForm('name','input');"></div>
-                    <div class="col-lg-1 col-2"><i id="validate_input_name" class="{valid}"></i></div>
+        <div class="order__header">
+            <div class="row align-items-center">
+                <div class="col-lg-4 col-12">
+                    <h1>{making_order_cap}</h1>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4 col-12"><span class="span-red" title="{field_is_required}">*</span><span>{phone_number}:</span></div>
-                    <div class="col-lg-7 col-10"><input id="input_phone" class="form-control" type="tel" placeholder="+380" aria-hidden="true" aria-label="+380" value="{phone_value}"  onChange="validateForm('phone','input');"></div>
-                    <input id="true_phone" name="true_phone" type="hidden" value="{phone_value}">
-                    <div class="col-lg-1 col-2"><i id="validate_input_phone" class="{valid}"></i></div>
+                <div class="col-lg-7 col-11">
+                    <span class="order__header-total">{total_cap}: {full_price} {currency_cap}</span>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4 col-12"><span>{email_cap}:</span></div>
-                    <div class="col-lg-7 col-10"><input id="input_email" title="{email_cap}" value="{email_value}" class="form-control" type="email"></div>
+                <div class="col-1">
+                    <button style="width: 50px;" title="{basket_show_cap}" class="btn btn-primary btn-outline-secondary float-right" onclick="toggleBasket();">
+                        <span class="fas fa-shopping-basket"></span>
+                    </button>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4 col-12"><span class="span-red" title="{field_is_required}">*</span><span>{location_cap}:</span></div>
-                    <div class="col-lg-7 col-10">
-                        <select id="select_city" title="{location_cap}" class="form-control select2-city pointer" onchange="validateForm('city','select')">
-                            {city_range}
-                        </select>
-                        <div class="float-left city-inline">
-                            <ul class="list-inline">
-                                <li class="list-inline-item">{for_example}:</li>
-                                <li class="list-inline-item"><button id="10108" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>
-                                <li class="list-inline-item"><button id="22739" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kharkiv} </button></li>
-                                <li class="list-inline-item"><button id="13549" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
-                                <li class="list-inline-item"><button id="4074"  class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_dnepr} </button></li>
-                            </ul>
+            </div>
+        </div>
+
+        <div id="basket_toggle" class="order__basket">
+            <div class="row">
+                {show_basket}
+            </div>
+        </div>
+
+        <div class="order__navs">
+            <ul class="nav nav-tabs">
+                <li><a data-toggle="tab" href="#menu1" class="active show">{order_type_caption}</a></li>
+                <li class="{order_type_display}"><a data-toggle="tab" href="#menu2">{regular_customer}</a></li>
+                <li class="{order_type_display}"><a data-toggle="tab" href="#menu3">{fast_buy}</a></li>
+            </ul>
+        </div>
+
+        <div class="order__tabs">
+            <div class="tab-content">
+
+                <div id="menu1" class="tab-pane fade in active show">
+                    <div class="container table-order">
+                        <div class="row">
+                            <div class="col-lg-4 col-12"><span class="span-red" title="{field_is_required}">*</span><span>{name_surname}:</span></div>
+                            <div class="col-lg-7 col-10"><input id="input_name" title="{name_surname}" value="{name_value}" class="form-control" type="text" onchange="validateForm('name','input');"></div>
+                            <div class="col-lg-1 col-2"><i id="validate_input_name" class="{valid}"></i></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-12"><span class="span-red" title="{field_is_required}">*</span><span>{phone_number}:</span></div>
+                            <div class="col-lg-7 col-10"><input id="input_phone" class="form-control" type="tel" placeholder="+380" aria-hidden="true" aria-label="+380" value="{phone_value}"  onChange="validateForm('phone','input');"></div>
+                            <input id="true_phone" name="true_phone" type="hidden" value="{phone_value}">
+                            <div class="col-lg-1 col-2"><i id="validate_input_phone" class="{valid}"></i></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-12"><span>{email_cap}:</span></div>
+                            <div class="col-lg-7 col-10"><input id="input_email" title="{email_cap}" value="{email_value}" class="form-control" type="email"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-12"><span class="span-red" title="{field_is_required}">*</span><span>{location_cap}:</span></div>
+                            <div class="col-lg-7 col-10">
+                                <select id="select_city" title="{location_cap}" class="form-control select2-city pointer" onchange="validateForm('city','select')">
+                                    {city_range}
+                                </select>
+                                <div class="float-left city-inline">
+                                    <ul class="list-inline">
+                                        <li class="list-inline-item">{for_example}:</li>
+                                        <li class="list-inline-item"><button id="10108" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>
+                                        <li class="list-inline-item"><button id="22739" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kharkiv} </button></li>
+                                        <li class="list-inline-item"><button id="13549" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
+                                        <li class="list-inline-item"><button id="4074"  class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_dnepr} </button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-2"><i id="validate_input_city" class="{valid}"></i></div>
+                        </div>
+                        <div class="row">
+                            <input id="input_client" type="hidden" value="{client_value}">
+                            <input id="input_user" type="hidden" value="{user_value}">
+                            <input id="input_tpoint" type="hidden" value="{tpoint_value}">
+                            <input id="order_id" name="order_id" type="hidden" value="0">
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-12"><span>{delivery_type}:</span></div>
+                            <div class="col-lg-7 col-10">
+                                <select id="select_delivery" title="{delivery_type}" class="form-control select2-delivery pointer" onchange="getTypeDeliveryId();">
+                                    {delivery_range}
+                                </select>
+                            </div>
+                        </div>
+                        <div id="carrier_id_row" class="row" style="display:none;">
+                            <div class="col-lg-4 col-12"><span>{delivery_type_id}:</span></div>
+                            <div class="col-lg-7 col-10">
+                                <select id="select_carrier_id" title="{carrier_id}" class="form-control select2-delivery pointer">
+                                    {carrier_id_range}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-12"><span>{delivery_info}:</span></div>
+                            <div class="col-lg-7 col-10" style="display: flex">
+                                <select style="width: calc(100% - 200px);" title="{delivery_info}" name="select_delivery_info" id="select_delivery_info" onchange="setDeliveryInfoInput();" class="form-control">
+                                    <option value="0"></option>
+                                    {delivery_info_select}
+                                </select>
+                                <button style="width: 200px; height: 38px;" class="btn btn-outline-info" onclick="showNewAdressForm();"><i class="fa fa-plus"></i> {add_address}</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-12"><span>{payment_type}:</span></div>
+                            <div class="col-lg-7 col-10">
+                                <select id="select_payment" title="{payment_type}" class="form-control select2-payment pointer">
+                                    {payment_range}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-12"><span>{payment_info}:</span></div>
+                            <div class="col-lg-7 col-10"><input id="input_payment_info" title="{payment_info}" class="form-control"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-11"><button onclick="finishOrder();" class="btn btn-primary">{make_order_btn}</button></div>
                         </div>
                     </div>
-                    <div class="col-lg-1 col-2"><i id="validate_input_city" class="{valid}"></i></div>
                 </div>
-                <div class="row">
-                    <input id="input_client" type="hidden" value="{client_value}">
-                    <input id="input_user" type="hidden" value="{user_value}">
-                    <input id="input_tpoint" type="hidden" value="{tpoint_value}">
-                    <input id="order_id" name="order_id" type="hidden" value="0">
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-12"><span>{delivery_type}:</span></div>
-                    <div class="col-lg-7 col-10">
-                        <select id="select_delivery" title="{delivery_type}" class="form-control select2-delivery pointer" onchange="getTypeDeliveryId();">
-                            {delivery_range}
-                        </select>
-                    </div>
-                </div>
-                <div class="row" id="carrier_id_row" style="display:none;">
-                    <div class="col-lg-4 col-12"><span>{delivery_type_id}:</span></div>
-                    <div class="col-lg-7 col-10">
-                        <select id="select_carrier_id" title="{carrier_id}" class="form-control select2-delivery pointer">
-                            {carrier_id_range}
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-12"><span>{delivery_info}:</span></div>
-                    <div class="col-lg-7 col-10" style="display: flex">
-                        <select style="width: calc(100% - 200px);" title="{delivery_info}" name="select_delivery_info" id="select_delivery_info" onchange="setDeliveryInfoInput();" class="form-control">
-                            <option value="0"></option>
-                            {delivery_info_select}
-                        </select>
-                        <button style="width: 200px; height: 38px;" class="btn btn-outline-info" onclick="showNewAdressForm();"><i class="fa fa-plus"></i> {add_address}</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-12"><span>{payment_type}:</span></div>
-                    <div class="col-lg-7 col-10">
-                        <select id="select_payment" title="{payment_type}" class="form-control select2-payment pointer">
-                            {payment_range}
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-12"><span>{payment_info}:</span></div>
-                    <div class="col-lg-7 col-10"><input id="input_payment_info" title="{payment_info}" class="form-control"></div>
-                </div>
-                <div class="row">
-                    <div class="col-11"><button onclick="finishOrder();" class="btn btn-primary btn-outline-secondary btn-finish-order">{make_order_btn}</button></div>
-                    <div class="col-1"> </div>
-                </div>
-            </div>
-        </div>
 
-        <div id="menu2" class="tab-pane fade">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="offset-1 col-10">
-                        <form action="" autocomplete="off" onsubmit="return false;" style="width: 45%; color: black; display: block; margin: 0 auto;">
-                            <input class="clearAll TextBox" id="loginform2" type="hidden" name="loginform" value="1">
-                            <input class="clearAll TextBox" id="remember2" type="hidden" name="remember" value="1">
-                            <div class="auth-input ">
-                                <label class="auth-label">{client_login}</label><br>
-                                <input class="form-control" id="userlogin2" type="text" name="userlogin" value="" placeholder="{input_phone}">
-                            </div><br>
-                            <div class="auth-input ">
-                                <label class="auth-label">{client_password_cap}</label><br>
-                                <input class="form-control" id="userpassword2" type="password" name="userpassword" placeholder="{input_password}">
-                            </div><br>
-                            <input class="btn btn-primary" type="submit" value="{login}" onClick="loginFormOrder();"><br><br>
-                            <a class="auth-link" href="/recover_password/">{forget_password}?</a>
-                        </form>
+                <div id="menu2" class="tab-pane fade">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="offset-1 col-10">
+                                <form action="" autocomplete="off" onsubmit="return false;" style="width: 45%; color: black; display: block; margin: 0 auto;">
+                                    <input id="loginform2" type="hidden" name="loginform" value="1">
+                                    <input id="remember2" type="hidden" name="remember" value="1">
+                                    <div class="auth-input">
+                                        <label class="auth-label">{client_login}</label><br>
+                                        <input class="form-control" id="userlogin2" type="text" name="userlogin" value="" placeholder="{input_phone}">
+                                    </div>
+                                    <br>
+                                    <div class="auth-input">
+                                        <label class="auth-label">{client_password_cap}</label><br>
+                                        <input class="form-control" id="userpassword2" type="password" name="userpassword" placeholder="{input_password}">
+                                    </div>
+                                    <br>
+                                    <input class="btn btn-primary" type="submit" value="{login}" onClick="loginFormOrder();">
+                                    <br>
+                                    <a class="dblock" href="/recover_password/">{forget_password}?</a>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div id="menu3" class="tab-pane fade">
-            <div class="container table-order">
-                <div class="row">
-                    <div class="col-lg-4 col-12"><span>{phone_number}:</span></div>
-                    <div class="col-lg-7 col-10"><input id="input_phone2" value="{phone_value}" class="form-control" type="tel" name="phone" placeholder="+380" aria-hidden="true" aria-label="+380" onChange="validateForm('phone2','input');"></div>
-                    <div class="col-lg-1 col-2"><i id="validate_input_phone2" class="{valid}"></i></div>
+                <div id="menu3" class="tab-pane fade">
+                    <div class="container table-order">
+                        <div class="row">
+                            <div class="col-lg-4 col-12"><span>{phone_number}:</span></div>
+                            <div class="col-lg-7 col-10"><input id="input_phone2" value="{phone_value}" class="form-control" type="tel" name="phone" placeholder="+380" aria-hidden="true" aria-label="+380" onChange="validateForm('phone2','input');"></div>
+                            <div class="col-lg-1 col-2"><i id="validate_input_phone2" class="{valid}"></i></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-11">
+                                <button onclick="finishFastOrder();" class="btn btn-primary">{make_order}</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-11"><button onclick="finishFastOrder();" class="btn btn-primary btn-outline-secondary btn-finish-order">{make_order}</button></div>
-                    <div class="col-1">&nbsp;</div>
-                </div>
+
             </div>
         </div>
 

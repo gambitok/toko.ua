@@ -16,6 +16,25 @@
     }
     &__table {
         display: block;
+        &-thead {
+            background: #f7f7f7;
+            color: #228b94;
+            height: 60px;
+            font-size: 0.9em;
+            border: 3px solid #e1e7ec;
+        }
+        &-tbody {
+            background: #fff;
+            color: #000;
+            border-bottom: 3px solid #e1e7ec;
+            min-height: 50px;
+            .input-group {
+                width: 100px;
+                button {
+                    border-color: #ccc;
+                }
+            }
+        }
         .search__art {
             font-size: 0.9em;
             font-weight: 700;
@@ -60,14 +79,6 @@
 }
 
 .basket-card {
-    .medium-text {
-        font-size: 0.9em;
-        color: #8c8c8c;
-    }
-    .small-text {
-        font-size: 0.75em;
-        color: #8c8c8c;
-    }
     &__title {
         background: #f1f1f1;
         color: #9da9b9;
@@ -81,23 +92,92 @@
         p {
             margin: 0;
         }
+        &-small {
+            font-size: 0.75em;
+            color: #8c8c8c;
+        }
+        &-medium {
+            font-size: 0.9em;
+        }
         .btn-outline-secondary {
             border-color: #ccc;
         }
     }
     &__close {
         padding: 10px;
+        text-align: right;
     }
 }
 
-.shop__table-tr {
-    background: #ffffe0;
+/*==== /BASKET ====*/
+
+/*===== ORDERS ====*/
+
+.order {
+    &__header {
+        margin: 0;
+        margin-bottom: 15px;
+        h1 {
+            font-size: 24px;
+        }
+        &-total {
+            float: right;
+        }
+    }
+    &__basket {
+        display: none;
+    }
+    &__navs {
+        .nav-tabs {
+            background: #fff;
+            box-shadow: none;
+            padding-bottom: 30px;
+            a {
+                background: #fff;
+                color: #a9a9a9;
+                padding: 10px;
+                border-radius: 25px;
+                margin-right: 15px;
+                display: inline;
+                &:hover {
+                    background: #fff;
+                    color: #ee7f80;
+                }
+            }
+            li {
+                display: flex;
+            }
+            .active {
+                background: #ee7f80;
+                color: #fff;
+            }
+        }
+    }
+    &__tabs {
+        .label {
+            background: #fff;
+            color: #a9a9a9;
+            border-radius: 25px;
+            margin-right: 15px;
+            &:hover {
+                background: #fff;
+                color: #ee7f80;
+            }
+        }
+        .input:checked+.label {
+            background: #ee7f80;
+            color: #fff;
+        }
+        .table-order {
+            margin-bottom: 15px;
+            .row {
+                margin-bottom: 15px;
+            }
+        }
+    }
 }
 
-.btn-order {
-    background: #228b94;
-    color: #fff;
-}
+/*===== /ORDERS ====*/
 
 .btn-basket {
     width: 20px;
@@ -115,188 +195,13 @@
     }
 }
 
-.basket-text {
-    font-size: 0.9em;
-    text-transform: uppercase;
-}
-
-.flag-search {
-    position: relative;
-    top: -2px;
-}
-
-/*==== /BASKET ====*/
-
-/*===== ORDERS ====*/
-.table-order {
-    button {
-        max-width: 200px;
-        float: right;
-    }
-    span {
-        color: gray;
-    }
-    .row {
-        margin-bottom: 1%;
-    }
-}
-
-.order-success .row {
-    padding: 15px
-}
-
-.order_block {
-    .tabs {
-        background: #fff;
-        box-shadow: none;
-    }
-    .label {
-        background: #fff;
-        color: #a9a9a9;
-        border-radius: 25px;
-        margin-right: 15px;
-        &:hover {
-            background: #fff;
-            color: #ee7f80;
-        }
-    }
-    .input:checked+.label {
-        background: #ee7f80;
-        color: #fff;
-    }
-    .panel__item {
-        display: none;
-        padding: 50px 5px 50px 50px;
-        background: #fff;
-        width: 100%;
-    }
-    .table-order {
-        padding: 30px 0 15px 15px;
-        margin-bottom: 15px;
-    }
-    .nav-tabs {
-        background: #fff;
-        box-shadow: none;
-        padding-bottom: 30px;
-        a {
-            background: #fff;
-            color: #a9a9a9;
-            padding: 10px;
-            border-radius: 25px;
-            margin-right: 15px;
-            display: inline;
-            &a:hover {
-                background: #fff;
-                color: #ee7f80;
-            }
-        }
-        li {
-            display: flex;
-        }
-        .active {
-            background: #ee7f80;
-            color: #fff;
-        }
-    }
-}
-
-/*===== /ORDERS ====*/
-
-.city-inline {
-    padding-top: 15px;
-    color: #000;
-    font-size: 12px;
-    button {
-        color: #ee7f80;
-        border: none;
-        cursor: pointer;
-        background: 0 0;
-        padding: 0;
-        line-height: 1;
-        border-bottom: 1px dashed #ee7f80;
-        &:hover {
-            color: #000;
-            border-bottom: 1px dashed #000;
-        }
-    }
-}
-
-.basket-thead {
-    background: #f7f7f7;
-    color: #228b94;
-    height: 60px;
-    font-size: 0.9em;
-    border: 3px solid #e1e7ec;
-}
-
-.basket-tbody {
-    background: #fff;
-    color: #000;
-    border-bottom: 3px solid #e1e7ec;
-    min-height: 50px;
-    .input-group {
-        width: 100px;
-        button {
-            border-color: #ccc;
-        }
-    }
-}
-
-.search__img {
-    width: 100%;
-    display: block;
-    margin: 0 auto;
-}
-
-.search__price {
-    color: #797979;
-    font-weight: bold;
-    font-size: 0.9em;
-    text-align: center;
-}
-
-.search__total {
-    color: #000;
-    font-weight: bold;
-    font-size: 1em;
-}
-
-.search__basket {
-    padding: 10px 15px;
-}
-
-.search__delivery {
-    font-size: 0.8em;
-    i {
-        font-style: normal;
-        text-transform: uppercase;
-        color: #797979;
-        font-weight: 700!important;
-    }
-}
-
-
 /*==== PHONE ====*/
 @media (max-width:992px) {
-    .btn-finish-order {
-        float: left!important;
-        margin-top: 15px
-    }
-
-    .basket-summ-price {
-        float: left
-    }
-
     .btn-basket {
         float: right;
     }
-
-    .basket__table {
-        display: none;
-    }
-
-    .basket__phone {
-        display: block;
+    .order__header-total {
+        float: left;
     }
 }
 

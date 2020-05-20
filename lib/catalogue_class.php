@@ -193,12 +193,12 @@ class CatalogueClass {
         } else {
             $search_form=str_replace("{search_results}", "{offers_request}", $search_form);
             $search_form=str_replace("{search_result_index}", "<br><span class=\"span-search text-uppercase\">{search_result_for} <b style=\"color:#f44336\">$article_nr_search</b> {nothing_found}</span>
-            <br><br><p class=\"span-search text-uppercase\">{check_the_data}</p>", $search_form);
+            <br><br><p class=\"span-search\">{check_the_data}</p>", $search_form);
             $search_form=str_replace("{search_result}", "", $search_form);
         }
 
         $search_form=str_replace("{search_results}", "{choose_brand_manuf}", $search_form);
-        $search_form=str_replace("{search_result_index}", "<span class=\"span-search\">{search_request} <b style=\"color:#f44336\">$article_search</b> {search_result_for_end}</span>", $search_form);
+        $search_form=str_replace("{search_result_index}", "<span class=\"span-brand-search\">{search_request} <b>$article_search</b> {search_result_for_end}</span>", $search_form);
         $search_form=str_replace("{art}", $result, $search_form);
         $search_form=str_replace("{currency}", $currency, $search_form);
         $search_form=str_replace("{products_view}", "", $search_form);

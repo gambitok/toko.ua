@@ -1,72 +1,70 @@
-<!--<link rel="stylesheet" href="/css/pages/basket.css">-->
-
 <div class="content">
 	<div class="container">
-		<div class="order-success">
 
-			<div class="row align-items-center">
-				<div class="col-lg-12 col-12 pad0">
-					<h5>{order_cap} #{order_id} {order_is_executed}!</h5>
-					<input type="hidden" id="reg_client_id" value="{client_id}">
-					<input type="hidden" id="reg_order_id" value="{order_id}">
-				</div>
-			</div>
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-12">
+                <h5>{order_cap} #{order_id} {order_is_executed}!</h5>
+                <input type="hidden" id="reg_client_id" value="{client_id}">
+                <input type="hidden" id="reg_order_id" value="{order_id}">
+            </div>
+        </div>
 
-			<div class="row">
-				<p>{order_succes}
-					<b class="{status_logout}">{order_succes_reg}</b>
-				</p>
-			</div>
+        <div class="row">
+            <div class="col-12">
+                <p>{order_succes}
+                    <b class="{status_logout}">{order_succes_reg}</b>
+                </p>
+            </div>
+        </div>
 
-			<div class="row {status_logout}">
-				<div class="col-lg-4 col-12 pad0">
-					<label class="label-required">{client_password_cap}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0"><input id="reg_password" title="reg_password" class="form-control" type="password" autocomplete="off">
-					<div class="box">
-						<input id="show_pass" name="show_pass" checked="checked" type="checkbox" class="check-mark" onclick="togglePass(this);">
-						<label for="show_pass">{show_pass}</label>
-					</div>
-				</div>
-			</div>
+        <div class="row {status_logout}">
+            <div class="col-lg-4 col-12">
+                <label class="label-required">{client_password_cap}:</label>
+            </div>
+            <div class="col-lg-8 col-12"><input id="reg_password" title="reg_password" class="form-control" type="password" autocomplete="off">
+                <div class="box">
+                    <input id="show_pass" name="show_pass" checked="checked" type="checkbox" class="check-mark" onclick="togglePass(this);">
+                    <label for="show_pass">{show_pass}</label>
+                </div>
+            </div>
+        </div>
 
-			<div class="row {status_logout}">
-				<div class="col-lg-4 col-12 pad0">
-					<label>{phone_cap}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<input id="reg_phone" disabled value="{input_phone}" title="reg_phone" class="form-control" type="text">
-				</div>
-			</div>
+        <div class="row {status_logout}">
+            <div class="col-lg-4 col-12">
+                <label>{phone_cap}:</label>
+            </div>
+            <div class="col-lg-8 col-12">
+                <input id="reg_phone" disabled value="{input_phone}" title="reg_phone" class="form-control" type="text">
+            </div>
+        </div>
 
-			<div class="row {status_logout}">
-				<div class="col-lg-4 col-12 pad0">
-					<label>{email_cap}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<input id="reg_email" value="{input_email}" title="reg_email" class="form-control" type="text">
-				</div>
-			</div>
+        <div class="row {status_logout}">
+            <div class="col-lg-4 col-12">
+                <label>{email_cap}:</label>
+            </div>
+            <div class="col-lg-8 col-12">
+                <input id="reg_email" value="{input_email}" title="reg_email" class="form-control" type="text">
+            </div>
+        </div>
 
-			<div class="row {status_logout}">
-				<div class="col-lg-4 col-12 pad0">
-					<label>{full_name_cap}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<input id="reg_name" value="{input_name}" title="reg_name" class="form-control" type="text">
-				</div>
-			</div>
+        <div class="row {status_logout}">
+            <div class="col-lg-4 col-12">
+                <label>{full_name_cap}:</label>
+            </div>
+            <div class="col-lg-8 col-12">
+                <input id="reg_name" value="{input_name}" title="reg_name" class="form-control" type="text">
+            </div>
+        </div>
 
-			<br>
+        <br>
 
-			<div class="row">
-				<div class="col-lg-12 col-12 pad0" style="display: flex">
-					<input type="submit" class="btn btn-primary {status_logout}" value="{order_success_save}" onclick="saveClientRetail();" style="width:auto; margin-right: 15px;">
-					<input type="submit" class="btn btn-secondary {status_logout}" value="{order_success_delete}" onclick="deleteClientRetail();" style="width:auto;">
-					<input type="submit" class="btn btn-primary {status_login}" value="{order_success_show}" onclick="showProfilePageOrders();" style="width:auto;">
-				</div>
-			</div>
+        <div class="row">
+            <div class="col-lg-12 col-12 dflex">
+                <input type="submit" class="btn btn-primary {status_logout}" value="{order_success_save}" onclick="saveClientRetail();">
+                <input type="submit" class="btn btn-secondary {status_logout}" value="{order_success_delete}" onclick="deleteClientRetail();">
+                <input type="submit" class="btn btn-primary {status_login}" value="{order_success_show}" onclick="showProfilePageOrders();">
+            </div>
+        </div>
 
-		</div>
 	</div>
 </div>
