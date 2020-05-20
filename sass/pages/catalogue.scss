@@ -850,18 +850,16 @@
     }
 
     .search_title {
-        padding: 0
-    }
-
-    .search_title .col-12 {
-        padding: 0
-    }
-
-    .search_title h1, .search_title span{
-        font-size: 1.2em;
-        font-weight: bold;
-        color: #606975;
-        text-transform: uppercase;
+        padding: 0;
+        h1, span {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #606975;
+            text-transform: uppercase;
+        }
+        .col-12 {
+            padding: 0
+        }
     }
 
     .tables__row {

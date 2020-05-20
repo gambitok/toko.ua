@@ -1,4 +1,64 @@
 /*==== BASKET ====*/
+.basket {
+    &__header {
+        padding-bottom: 15px;
+        h1 {
+            display: inline;
+            font-size: 22px;
+            font-weight: bold;
+            color: #606975;
+            text-transform: uppercase;
+        }
+        span {
+            font-size: 22px;
+            color: gray;
+        }
+    }
+    &__table {
+        display: block;
+        .search__art {
+            font-size: 0.9em;
+            font-weight: 700;
+            display: inline;
+            color: #228b94;
+        }
+        .search__brand {
+            font-size: 0.9em;
+            font-weight: 700;
+            display: inline;
+            color: #000;
+        }
+        .search__date {
+            color: #9da9b9;
+            font-size: 0.7em;
+        }
+        .search__name {
+            font-size: 0.8em;
+        }
+    }
+    &__phone {
+        display: none;
+    }
+    &__footer {
+        &-total {
+            padding-bottom: 15px;
+            text-align: right;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        &-butons {
+            button {
+                width: auto;
+            }
+        }
+    }
+    &__fast {
+        border-top: 1px solid #ccc;
+        margin-top: 30px;
+        padding-top: 30px;
+    }
+}
+
 .basket-card {
     .medium-text {
         font-size: 0.9em;
@@ -182,28 +242,6 @@
     }
 }
 
-.basket-table {
-    .search__art {
-        font-size: 0.9em;
-        font-weight: 700;
-        display: inline;
-        color: #228b94;
-    }
-    .search__brand {
-        font-size: 0.9em;
-        font-weight: 700;
-        display: inline;
-        color: #000;
-    }
-    .search__date {
-        color: #9da9b9;
-        font-size: 0.7em;
-    }
-    .search__name {
-        font-size: 0.8em;
-    }
-}
-
 .search__img {
     width: 100%;
     display: block;
@@ -237,27 +275,6 @@
     }
 }
 
-.basket-table {
-    display: block;
-}
-
-.basket-footer {
-    &__total {
-        padding-bottom: 15px;
-        text-align: right;
-        font-weight: bold;
-        font-size: 20px;
-    }
-    &__butons {
-        button {
-            width: auto;
-        }
-    }
-}
-
-.basket-phone {
-    display: none;
-}
 
 /*==== PHONE ====*/
 @media (max-width:992px) {
@@ -274,11 +291,11 @@
         float: right;
     }
 
-    .basket-table {
+    .basket__table {
         display: none;
     }
 
-    .basket-phone {
+    .basket__phone {
         display: block;
     }
 }
