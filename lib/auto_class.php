@@ -825,13 +825,14 @@ class AutoClass {
                 }
                 list($manufacture_cap,, $model_id_cap, $typ_text)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                 $list.="
-                <li class=\"row garage_row\">
-                    <div class=\"col-6\">$manufacture_cap $model_id_cap <br>
-                        <span class=\"span-dark\">$typ_text</span>
+                <li class=\"row garage-row\">
+                    <div class=\"col-6 garage-row__text\">
+                        $manufacture_cap $model_id_cap <br>
+                        <span>$typ_text</span>
                     </div>
-                    <div class=\"col-6 text-right\"> 
+                    <div class=\"col-6 garage-row__buttons\"> 
                         <button $status_btn class=\"btn btn-primary\" $status_disable>$status_cap</button>
-                        <button onclick=\"deleteAutoGarage($id);\" class=\"btn btn-primary wauto\"><i class=\"fa fa-trash-alt\"></i></button>
+                        <button onclick=\"deleteAutoGarage($id);\" class=\"btn btn-primary\"><i class=\"fa fa-trash-alt\"></i></button>
                     </div>
                 </li>";
             }
@@ -868,13 +869,14 @@ class AutoClass {
                 }
                 list($manufacture_cap,,$model_id_cap,$typ_text)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                 $list.="
-                <li class=\"row garage_row\">
-                    <div class=\"col-6\">$manufacture_cap $model_id_cap <br>
-                        <span class=\"span-dark\">$typ_text</span>
+                <li class=\"row garage-row\">
+                    <div class=\"col-6 garage-row__text\">
+                        $manufacture_cap $model_id_cap <br>
+                        <span>$typ_text</span>
                     </div>
-                    <div class=\"col-6 text-right\"> 
+                    <div class=\"col-6 garage-row__buttons\"> 
                         <button $status_btn class=\"btn btn-primary\" $status_disable>$status_cap</button>
-                        <button onclick=\"deleteAutoGarage($id);\" class=\"btn btn-primary wauto\"><i class=\"fa fa-trash-alt\"></i></button>
+                        <button onclick=\"deleteAutoGarage($id);\" class=\"btn btn-primary\"><i class=\"fa fa-trash-alt\"></i></button>
                     </div>
                 </li>";
             }

@@ -281,7 +281,7 @@ class PartsClass extends CatalogueClass {
         }
 
         $list="<div class=\"row\">
-            <nav aria-label=\"Page navigation\" class=\"img-center\" style='margin-top: 2em'>
+            <nav aria-label=\"Page navigation\">
                 <ul class=\"pagination\">
                     <li class=\"page-item $disabled_pred\"><a class=\"page-link\" href=\"?page=$pred_page\"><i class='fa fa-chevron-left'></i> <span class='span-media'>{previous_cap}</span></a></li>
                     $pagination

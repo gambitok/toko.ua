@@ -15,22 +15,22 @@ html {
     letter-spacing: 0.5px;
 }
 
-a, a:not([href]):not([tabindex]) {
-    color: $site_dark_secondary;
-}
-
-a:active, a:focus, a:hover {
-    text-decoration: none;
-    color: #4b4e4f;
-}
-
-a:not([href]):not([tabindex]):hover {
-    color: $site_main_primary;
-}
-
-i {
-    text-rendering: optimizeLegibility!important;
-}
+//a, a:not([href]):not([tabindex]) {
+//    color: $site_dark_secondary;
+//}
+//
+//a:active, a:focus, a:hover {
+//    text-decoration: none;
+//    color: #4b4e4f;
+//}
+//
+//a:not([href]):not([tabindex]):hover {
+//    color: $site_main_primary;
+//}
+//
+//i {
+//    text-rendering: optimizeLegibility!important;
+//}
 
 /*==== PAGE 404 ====*/
 .page-404 {
@@ -463,6 +463,9 @@ i {
     word-wrap: break-word;
     overflow: auto;
     white-space: nowrap;
+    a {
+        color: $black;
+    }
 }
 
 /* ==== HEADER ==== */
@@ -548,8 +551,8 @@ header {
             list-style: none;
             &__garage, &__profile, &__basket {
                 .fa {
-                    float: left!important;
-                    font-size: 2.5em!important;
+                    float: left;
+                    font-size: 38px;
                 }
                 &-count {
                     float: left;
@@ -561,15 +564,6 @@ header {
                     width: 25px;
                     height: 25px;
                     text-align: center;
-                }
-                &-drop {
-                    //garage_block
-                    z-index: 1000!important;
-                    width: 400%!important;
-                    left: -250%;
-                    top: 300%!important;
-                    background: $white;
-                    overflow: unset!important;
                 }
             }
             &__garage, &__profile {
@@ -649,6 +643,74 @@ header {
                     width: 40%;
                     font-size: 2.5em;
                 }
+            }
+        }
+    }
+}
+
+.garage-drop {
+    z-index: 1000!important;
+    width: 400%!important;
+    left: -250%;
+    top: 300%!important;
+    background: $white;
+    overflow: unset!important;
+    //.garage_form_dropdown {
+    &-block {
+        background: $white;
+        //.garage_form-list {
+        &__list {
+            padding: 30px;
+            .garage-row {
+                padding-bottom: 15px;
+                &__text {
+                    span {
+                        color: $site_dark_primary;
+                        padding: 0;
+                    }
+                }
+                &__buttons {
+                    text-align: right;
+                    button {
+                        width: 150px;
+                        .fa {
+                            float: unset;
+                            font-size: 16px;
+                        }
+                    }
+                }
+            }
+            i {
+                float: unset;
+                width: auto;
+                font-size: 13px;
+            }
+            span {
+                padding: 0;
+            }
+            button {
+                width: 50px;
+            }
+        }
+        //.garage_form-select {
+        &__select {
+            border-left: 1px solid #ccc;
+            padding: 30px;
+            //.garage_row {
+            i {
+                float: unset;
+                width: auto;
+                font-size: 13px;
+            }
+            span {
+                padding: 0;
+            }
+            button {
+                width: auto;
+            }
+            a {
+                padding: 0;
+                height: auto;
             }
         }
     }
@@ -927,6 +989,11 @@ header {
                 float: right;
                 height: 100%;
                 align-items: center;
+                margin: 0;
+                a:hover {
+                    cursor: pointer;
+                    text-decoration: underline;
+                }
             }
         }
     }
@@ -1021,9 +1088,11 @@ header {
         box-shadow: 0 2px 4px $black;
     }
     &__header {
-        color: lightcoral;
-        font-size: 18px;
-        font-weight: bold;
+        a {
+            font-size: 18px;
+            font-weight: bold;
+            color: $site_main_secondary;
+        }
     }
     &__content {
         border: none;
@@ -1186,11 +1255,6 @@ header {
 .main_menu {
     padding-left: 0;
     padding-right: 0;
-    h1 {
-        font-size: 16px;
-        display: inline;
-        font-weight: bold;
-    }
     .nav-title {
         padding: 0;
     }
@@ -1198,14 +1262,11 @@ header {
         background: $site_dark_primary;
         box-shadow: 0 1px 4px $black;
         a, h1 {
+            font-size: 16px;
             display: block;
             padding: 15px;
             color: $white;
-            font-weight: 700;
             margin: 0;
-            &:hover {
-                color: $site_main_primary;
-            }
         }
         .show {
             background: #778899;
@@ -1266,13 +1327,15 @@ header {
     }
 }
 
-.search__cat-auto,
-.searchtab_model {
+.search__cat-auto {
     position: relative;
     left: -20px;
+    color: $black;
 }
 
 .searchtab_model {
+    position: relative;
+    left: -20px;
     color: $site_main_primary;
     float: left;
     min-width: 20px;
@@ -1422,17 +1485,21 @@ header {
 .tree-list {
     transition: all 2s linear;
     border: none;
-    border-bottom: 3px solid #eee;
-    border-top: 3px solid #eee;
+    //border-bottom: 3px solid #eee;
+    //border-top: 3px solid #eee;
     padding: 1em;
 }
 
-.tree-title span {
-    display: block;
-    padding: 10px 0 0 10px;
-    font-size: 20px;
-    font-weight: bold;
-    color: $site_info_primary;
+.tree-title {
+    a {
+        color: $site_info_primary;
+    }
+    span {
+        display: block;
+        padding: 10px 0 0 10px;
+        font-size: 20px;
+        font-weight: bold;
+    }
 }
 
 .tree-str {
@@ -1601,6 +1668,7 @@ header {
         }
         a {
             text-align: center;
+            color: $black;
             &:hover {
                 color: $site_main_primary;
             }
@@ -1647,12 +1715,56 @@ header {
 }
 
 /*==== CAR PRODUCTS ====*/
-.details_offers {
-    h1 {
-        color: #292929;
-        font-size: 2em;
-        font-weight: bold;
-        text-transform: uppercase;
+
+.details-offers {
+    &-side {
+        border-right: 1px solid #f1f1f1;
+        padding: 3% 2%;
+    }
+    &__header {
+        h1 {
+            color: #292929;
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        span {
+            display: inline;
+            font-size: 22px;
+            font-weight: bold;
+            color: #606975;
+            text-transform: uppercase;
+        }
+    }
+    &__pagination {
+        nav {
+            display: block;
+            margin: 0 auto;
+            margin-top: 2em;
+        }
+    }
+    &__brands {
+        input {
+            width: 100%;
+        }
+        ul {
+            list-style: none;
+            li {
+                a {
+                    color: $black;
+                }
+            }
+        }
+    }
+    &__linking {
+        ul {
+            list-style: none;
+            li {
+                a {
+                    color: $black;
+                }
+            }
+        }
     }
 }
 
@@ -1777,6 +1889,9 @@ header {
     -moz-column-gap: 20px;
     column-count: 4;
     column-gap: 70px;
+    a {
+        color: $black;
+    }
 }
 
 .t_model {
@@ -1909,13 +2024,6 @@ header {
     }
 }
 
-.garage_row {
-    padding-bottom: 15px;
-    button {
-        width: 150px!important;
-    }
-}
-
 .garage_typ_form {
     background: $site_info_secondary;
     a {
@@ -1955,43 +2063,6 @@ header {
                 color: $site_info_secondary;
             }
         }
-    }
-}
-
-.garage_form_dropdown {
-    background: $white;
-}
-
-.garage_form-list {
-    padding: 30px;
-    i {
-        float: unset;
-        width: auto;
-        font-size: 13px;
-    }
-    span {
-        padding: 0;
-    }
-    button {
-        width: 50px;
-    }
-}
-
-.garage_form-select {
-    i {
-        float: unset;
-        width: auto;
-        font-size: 13px;
-    }
-    span {
-        padding: 0;
-    }
-    button {
-        width: auto;
-    }
-    a {
-        padding: 0;
-        height: auto;
     }
 }
 
@@ -2063,6 +2134,9 @@ header {
 }
 
 .seo_auto {
+    a {
+        color: $black;
+    }
     ul {
         list-style: none;
         column-count: 1;

@@ -387,23 +387,6 @@
     margin-bottom: 5px;
 }
 
-.text_filter {
-    background: 0 0;
-    font-size: 12px;
-    border: solid #ddd;
-    border-width: 0 0 1px;
-    border-radius: 0;
-    line-height: 40px;
-    height: 40px;
-    width: 100%;
-    outline: 0;
-    margin-bottom: 2%;
-    -webkit-appearance: none;
-    &::-webkit-search-cancel-button {
-        -webkit-appearance: searchfield-cancel-button;
-    }
-}
-
 .search_title {
     padding-bottom: 15px;
     h1 {

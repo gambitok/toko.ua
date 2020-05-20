@@ -313,7 +313,7 @@
 										<div id="garage_status" class="icons-nav__garage-count {garage_style}">{garage_status}</div>
 									</div>
 								</a>
-								<div id="GarageForm" class="dropdown-content icons-nav__garage-drop"></div>
+								<div id="GarageForm" class="dropdown-content garage-drop"></div>
 							</li>
 							<li class="icons-nav__profile">
 								<a id="profile_btn" href="{site_lang_prefix}/profile/orders/" title="{profile}">
@@ -786,8 +786,9 @@
 			|| $(e.target).attr('class') == 'garage_span'
 			|| $(e.target).attr('class') == 'garage_img'
 			|| $(e.target).attr('class') == 'btn btn-primary'
-			|| $(e.target).attr('class') == 'btn btn-primary wauto'
 			|| $(e.target).attr('class') == 'fa fa-car'
+			|| $(e.target).attr('class') == 'icons-nav__garage'
+			|| $(e.target).attr('class') == 'icons-nav__garage-text'
 		) { return true; } else {
             $('#GarageForm').fadeOut();
         }

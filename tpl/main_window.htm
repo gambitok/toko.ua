@@ -37,10 +37,12 @@
 						<input type="checkbox" id="toggle-info">
 						<ul class="nav nav-tabs row banner-header">
 							<li class="col-10 banner-header__title">
-								<a><span>{recommendations_parts}</span></a>
+								<a href="#menu-recommendation"><span>{recommendations_parts}</span></a>
 							</li>
 							<li class="col-2 banner-header__swipe">
-								<label for="toggle-info" class="mar0"><span>{more_read} <i class="fa fa-chevron-down"></i></span></label>
+								<label for="toggle-info">
+									<a>{more_read} <i class="fa fa-chevron-down"></i></a>
+								</label>
 							</li>
 						</ul>
 						{select_recommendations}

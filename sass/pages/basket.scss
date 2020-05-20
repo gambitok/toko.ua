@@ -241,11 +241,18 @@
     display: block;
 }
 
-.basket-footer .basket-footer__total {
-    padding-bottom: 15px;
-    text-align: right;
-    font-weight: bold;
-    font-size: 20px;
+.basket-footer {
+    &__total {
+        padding-bottom: 15px;
+        text-align: right;
+        font-weight: bold;
+        font-size: 20px;
+    }
+    &__butons {
+        button {
+            width: auto;
+        }
+    }
 }
 
 .basket-phone {

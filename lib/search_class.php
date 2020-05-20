@@ -554,8 +554,6 @@ class SearchClass extends CatalogueClass {
 
         if ($type==1) {
             $active_filters=explode(",", $brandy_str);
-            //$where_arts = $parts->initPartsArts($str_id);
-            //$filters_form = $this->printBrandsList(array_unique($this->getBrandIds($where_arts)),array_unique($active_filters),$link);
             $number = $parts->getPartsCount($str_id, $active_filters);
             $pagination_form = $this->replaceLang($parts->getPartsPaginationForm($number, $page));
         }
@@ -567,8 +565,9 @@ class SearchClass extends CatalogueClass {
 
     function printBrandsList($brands, $brands_ch, $link) {
         $list="
-        <input class=\"wdt100 text_filter\" type=\"text\" id=\"brandSearchInput\" onkeyup=\"searchBrandInput();\" placeholder=\"{search_by_brand}\" title=\"{search_by_brand}\">
-        <ul id=\"brandSearchList\" class=\"list-inline\">";
+        <div class=\"details-offers__brands\">
+        <input class=\"text-filter\" type=\"text\" id=\"brandSearchInput\" onkeyup=\"searchBrandInput();\" placeholder=\"{search_by_brand}\" title=\"{search_by_brand}\">
+        <ul id=\"brandSearchList\">";
 
         $brands = array_unique($brands);
         $sort_brands = [];
@@ -584,10 +583,10 @@ class SearchClass extends CatalogueClass {
                 if (in_array($brand_id, $brands_ch)) $label="<i class=\"fa fa-check-square\"></i>";
             }
             $brand_link=$this->getSearchLink($brand_id, $brands_ch, $link);
-            $list.="<li><a class=\"pointer\" href=\"$brand_link/\">$label $brand_name</a></li>";
+            $list.="<li><a href=\"$brand_link/\">$label $brand_name</a></li>";
         }
 
-        $list.="</ul>";
+        $list.="</ul></div>";
 
         return $this->replaceLang($list);
     }
@@ -755,15 +754,16 @@ class SearchClass extends CatalogueClass {
 
     function getStrLinking($str_id) { $db=DbSingleton::getTokoDb();
         $language=new LangClass; $prefix=$language->getLangPrefix();
-        $list="<div><span>{popular_cap}</span> <i class='fa fa-angle-down'></i></div>";
-        $list.="<div>";
+        $list="<div class=\"details-offers__linking\">";
+        $list.="<div><span>{popular_cap}</span> <i class='fa fa-angle-down'></i></div>";
+        $list.="<div><ul>";
+
         $r=$db->query("SELECT * FROM `T_LINKING_PAGE` WHERE `STR_ID`='$str_id';"); $n=$db->num_rows($r);
         if ($n==0) {
             $this->initStrLinking($str_id);
             $r=$db->query("SELECT * FROM `T_LINKING_PAGE` WHERE `STR_ID`='$str_id';"); $n=$db->num_rows($r);
         }
 
-        $list.="<ul class='list-inline'>";
         for ($i=1;$i<=$n;$i++) {
             $page_id = $db->result($r, $i-1, "PAGE_ID");
             $sort_id = $db->result($r, $i-1, "SORT_ID");
@@ -771,9 +771,9 @@ class SearchClass extends CatalogueClass {
             $link = $page_link."#".$page_id."-".$sort_id;
             $list.="<li><a href='https://toko.ua$prefix$link'>$page_text</a></li>";
         }
-        $list.="</ul>";
 
-        $list.="</div>";
+        $list.="</ul></div></div>";
+
         $list=$this->replaceLang($list);
         return $list;
     }
