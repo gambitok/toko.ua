@@ -143,9 +143,6 @@ html {
     color: $site_dark_primary;
     font-size: 12px;
     float: left;
-    &:hover {
-        color: #4b4e4f
-    }
     &-red {
         color: $site_main_primary;
         font-weight: bold;
