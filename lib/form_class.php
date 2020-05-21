@@ -391,7 +391,7 @@ class FormClass {
         }
         if ($n>0) {
             $info="<div class=\"row\">
-                <div class=\"col-12 info__photo\">
+                <div class=\"col-12\">
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\">
                         <div class=\"carousel-inner\" role=\"listbox\">$list</div>
                         <a class=\"carousel-control-prev\" href=\"#carouselGalleryControls\" role=\"button\" data-slide=\"prev\">
@@ -407,7 +407,7 @@ class FormClass {
             </div>";
         } else {
             $info="<div class=\"row\">
-                <div class=\"col-12 info__photo\">
+                <div class=\"col-12\">
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\">
                         <div class=\"carousel-inner\" role=\"listbox\">
                             <div class=\"carousel-item active\">

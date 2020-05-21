@@ -1,51 +1,53 @@
-<div class="row mar0">
-	<div class="col-lg-12 main_menu">
-		<ul class="nav nav-tabs row mar0">
-			<li class="col-lg-3 col-12 nav-title">
-				<h1>{auto_search}</h1>
-			</li>
-		</ul>
-		<div class="tab-content pad0">
-			<div id="menu-cars" class="tab-pane fade in active show">
-				<div id="cat_tab_search" class="content" style="padding-top: 20px; padding-bottom: 10px; min-height: unset;">
-					{catalogue_tab_search}
-				</div>
-				<div id="menu-catalogs" class="tab-pane fade in active show">
-					<ul class="nav nav-tabs">
-						<li><a href="#menu-catalogs"><span>{professional_catalogs}</span></a></li>
-					</ul>
-					<div class="content goods-content goods-content-menu">
-						{select_group}
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12 main_menu">
+			<ul class="nav nav-tabs row mar0">
+				<li class="col-lg-3 col-12 nav-title">
+					<h1>{auto_search}</h1>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div id="menu-cars" class="tab-pane fade in active show">
+					<div id="cat_tab_search" class="content" style="padding-top: 20px; padding-bottom: 10px; min-height: unset;">
+						{catalogue_tab_search}
 					</div>
-				</div>
-				<div id="menu-details" class="tab-pane fade in active show">
-					<ul class="nav nav-tabs">
-						<li><a href="#menu-details"><span>{spare_parts_catalog_cap}</span></a></li>
-					</ul>
-					{select_det_group}
-				</div>
-				<div id="menu-auto" class="tab-pane fade in active show">
-					<ul class="nav nav-tabs">
-						<li><a href="#menu-auto"><span>{auto_parts_catalog_cap}</span></a></li>
-					</ul>
-					<div class="content seo_details">
-						{select_auto_group}
-					</div>
-				</div>
-				<div id="menu-recommendation" class="tab-pane fade in active show">
-					<div class="banner">
-						<input type="checkbox" id="toggle-info">
-						<ul class="nav nav-tabs row banner-header">
-							<li class="col-10 banner-header__title">
-								<a href="#menu-recommendation"><span>{recommendations_parts}</span></a>
-							</li>
-							<li class="col-2 banner-header__swipe">
-								<label for="toggle-info">
-									<a>{more_read} <i class="fa fa-chevron-down"></i></a>
-								</label>
-							</li>
+					<div id="menu-catalogs" class="tab-pane fade in active show">
+						<ul class="nav nav-tabs">
+							<li><a href="#menu-catalogs"><span>{professional_catalogs}</span></a></li>
 						</ul>
-						{select_recommendations}
+						<div class="content goods-content goods-content-menu">
+							{select_group}
+						</div>
+					</div>
+					<div id="menu-details" class="tab-pane fade in active show">
+						<ul class="nav nav-tabs">
+							<li><a href="#menu-details"><span>{spare_parts_catalog_cap}</span></a></li>
+						</ul>
+						{select_det_group}
+					</div>
+					<div id="menu-auto" class="tab-pane fade in active show">
+						<ul class="nav nav-tabs">
+							<li><a href="#menu-auto"><span>{auto_parts_catalog_cap}</span></a></li>
+						</ul>
+						<div class="content seo_details">
+							{select_auto_group}
+						</div>
+					</div>
+					<div id="menu-recommendation" class="tab-pane fade in active show">
+						<div class="banner">
+							<input type="checkbox" id="toggle-info">
+							<ul class="nav nav-tabs row banner-header">
+								<li class="col-10 banner-header__title">
+									<a href="#menu-recommendation"><span>{recommendations_parts}</span></a>
+								</li>
+								<li class="col-2 banner-header__swipe">
+									<label for="toggle-info">
+										<a>{more_read} <i class="fa fa-chevron-down"></i></a>
+									</label>
+								</li>
+							</ul>
+							{select_recommendations}
+						</div>
 					</div>
 				</div>
 			</div>

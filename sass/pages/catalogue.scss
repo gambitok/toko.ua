@@ -236,6 +236,8 @@
 
 .search__delivery {
     font-size: 0.8em;
+    padding: 0;
+    text-align: center;
     i {
         font-style: normal;
         text-transform: uppercase;
@@ -353,7 +355,7 @@
 
 /*==== SEARCH ====*/
 .cat_search_brands {
-    box-shadow: 0 1px 10px #ccc;
+    box-shadow: 0 1px 4px #ccc;
     padding: 20px 15px;
     margin-right: auto;
     margin-left: auto;
@@ -481,7 +483,7 @@
     width: 100%;
     font-size: 11px;
     background: #fff;
-    box-shadow: 0 1px 10px #ccc;
+    box-shadow: 0 1px 4px #ccc;
     h1 {
         font-size: 16px;
     }
@@ -497,7 +499,7 @@
     width: 100%;
     font-size: 11px;
     background: #fff;
-    box-shadow: 0 1px 10px #ccc;
+    box-shadow: 0 1px 4px #ccc;
     h5, i {
         font-size: 14px;
     }

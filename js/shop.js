@@ -56,7 +56,6 @@ function moveBasket(id,art_id,brand_id,stock,storage_id,suppl_id) { "use strict"
                     if (old_count>0) message_all="<br><b>{total_basket_cap}:</b> "+all_count+" {amount_abbr}.";
                     showNotify("{done_cap}:","{art_cap} '"+art_name+"' - "+message+" {added_to_basket}!" + message_all,"success");
                     showBasketStatus();
-                    //showBasketMinForm();
                 }}, true);
         }
     } else {
@@ -70,7 +69,6 @@ function moveBasket(id,art_id,brand_id,stock,storage_id,suppl_id) { "use strict"
                 if (old_count>0) message_all="<br><b>{total_basket_cap}:</b> "+all_count+" {amount_abbr}.";
                 showNotify("{done_cap}:","{art_cap} '"+art_name+"' - "+message+" {added_to_basket}!" + message_all,"success");
                 showBasketStatus();
-                //showBasketMinForm();
             }}, true);
     }
 }
@@ -405,13 +403,11 @@ function addNewAddressForm() {
         }}, true);
 }
 
-function validateForm(name,type) { "use strict";
+function validateForm(name, type) { "use strict";
     var valid=$("#validate_input_"+name);
     var variable="";
     if (type==="input") variable=$("#input_"+name).val();
-    // else variable=$("#select_" + name + " option:selected").val();
     else variable=$("#select2-select_"+name+"-container").text();
-    // || variable==="0" || variable===undefined
     if (variable==="") {
         valid.removeClass("accept");
         valid.addClass("non_accept");

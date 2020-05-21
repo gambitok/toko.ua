@@ -425,7 +425,7 @@ html {
     padding: 3% 4%;
     width: 100%;
     min-height: 367px;
-    box-shadow: 0 1px 10px #ccc;
+    box-shadow: 0 1px 4px #ccc;
 }
 
 .content-auto {
@@ -458,7 +458,7 @@ html {
 .breadcrumbs {
     background: $white;
     width: 100%;
-    box-shadow: 0 1px 10px #ccc;
+    box-shadow: 0 1px 4px #ccc;
     min-height: 0;
     margin-bottom: 15px;
     padding: 10px 15px;
@@ -738,8 +738,13 @@ header {
                 }
                 a {
                     width: 80px;
-                    border: 1px solid white;
                 }
+            }
+            a, a:not([href]):not([tabindex]), button {
+                background: $white;
+                color: #292929;
+                width: 40px;
+                border: 1px solid white;
             }
         }
         .basket_status {
@@ -1110,9 +1115,9 @@ header {
     left: 0;
     margin: 0;
     width: 100%;
-    background: $site_info_primary;
+    background: #f1f1f1;
     z-index: 99999999;
-    box-shadow: 0 0 5px 0 $black;
+    box-shadow: 0 0 4px 0 $black;
     height: 60px;
     &-main {
         height: inherit;
@@ -1123,49 +1128,19 @@ header {
             text-align: center;
             display: block;
             position: relative;
-            &:hover &-hidden {
-                display: block;
-                position: absolute;
-                z-index: 9999;
-            }
             &-btn {
                 color: $white;
                 padding: 5px;
                 width: 40px;
                 height: 40px;
                 border-radius: 5px;
-                background: rgba(54, 25, 25, .25);
+                background: #4b4e4f;
+                opacity: 0.9;
                 img {
                     width: 100%;
                 }
                 &:hover {
-                    background: rgba(54, 25, 25, .5);
-                }
-            }
-            &-hidden {
-                display: none;
-                width: 100%;
-                position: absolute;
-                background: #4b4e4f;
-                top: 100%;
-                border-top: 0;
-                opacity: .9;
-                box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
-                ul {
-                    margin: 0;
-                    list-style: none;
-                    li {
-                        float: none;
-                        list-style: none;
-                        padding: 5% 0;
-                        word-wrap: break-word;
-                        overflow-wrap: break-word;
-                        color: #fff;
-                        &:hover {
-                            color: #fff;
-                            background: rgba(54, 25, 25, .5);
-                        }
-                    }
+                    opacity: 0.5;
                 }
             }
         }
@@ -1200,12 +1175,13 @@ header {
                 width: 40px;
                 height: 40px;
                 border-radius: 5px;
-                background: rgba(54, 25, 25, .25);
+                background: #4b4e4f;
+                opacity: 0.9;
                 img {
                     width: 100%;
                 }
                 &:hover {
-                    background: rgba(54, 25, 25, .5);
+                    opacity: 0.5;
                 }
             }
         }
@@ -1235,8 +1211,13 @@ header {
                 }
                 a {
                     width: 80px;
-                    border: 1px solid white;
                 }
+            }
+            a, a:not([href]):not([tabindex]), button {
+                background: $white;
+                color: #292929;
+                width: 40px;
+                border: 1px solid white;
             }
         }
         .basket_status {
@@ -1261,14 +1242,17 @@ header {
         padding: 0;
     }
     .nav-tabs {
-        background: $site_dark_primary;
-        box-shadow: 0 1px 4px $black;
+        background: #f1f1f1;
+        box-shadow: 0 1px 4px #ccc;
         a, h1 {
             font-size: 16px;
             display: block;
             padding: 15px;
-            color: $white;
+            color: $black;
             margin: 0;
+            &:hover {
+                color: $black;
+            }
         }
         .show {
             background: #778899;
@@ -1278,7 +1262,9 @@ header {
 
 /*==== TEMPLATES GOODS ====*/
 .goods {
+    list-style: none;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     margin: 0;
     &__item {
@@ -1423,7 +1409,7 @@ header {
     margin: 0;
     padding: 0;
     &.bordered {
-        box-shadow: 0 1px 10px #ccc;
+        box-shadow: 0 1px 4px #ccc;
     }
     &__item {
         label {

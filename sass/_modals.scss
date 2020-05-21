@@ -2,6 +2,20 @@
     z-index: 99999;
 }
 
+#PhotoForm {
+    padding: 0;
+}
+
+#BasketForm {
+    .modal-header {
+        display: none;
+    }
+    .modal-dialog {
+        max-width: 1080px;
+        padding-bottom: 30px;
+    }
+}
+
 /*==== INFO FORM ====*/
 #InfoForm {
     .modal-header {
@@ -42,13 +56,6 @@
             overflow-wrap: break-word;
             font-weight: bold;
         }
-    }
-    &__photo {
-        margin: 15px 0;
-        border: 1px solid #ddd;
-        max-height: 250px;
-        padding: 0;
-        cursor: pointer;
     }
     &__table {
         font-size: 0.7em;
@@ -118,9 +125,16 @@
         margin: 0;
     }
     .modal-header {
-        background: 0 0;
+        display: block;
+        background: none;
         border: none;
-        padding-top: 65px;
+        padding-top: 25px;
+        button {
+            padding: 0;
+            width: auto;
+            float: right;
+            margin: 0;
+        }
     }
     .modal-content {
         background: 0 0;

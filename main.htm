@@ -178,19 +178,12 @@
 		<div class="row fixed hidden">
 
 			<div class="fixed-main">
-				<div class="offset-lg-2 col-lg-1">
+				<div class="offset-lg-2 col-lg-1 offset-0 col-1">
 					<div class="fixed-main__nav">
 						<button class="btn fixed-main__nav-btn bar"><span class="fas fa-bars"></span></button>
-						<div class="fixed-main__nav-hidden">
-							<ul>
-								<li><a href="{site_lang_prefix}/">{main_page}</a></li>
-								<li><a href="{site_lang_prefix}/news/">{news_cap}</a></li>
-								<li><a href="{site_lang_prefix}/contacts/">{contacts_cap}</a></li>
-							</ul>
-						</div>
 					</div>
 				</div>
-				<div class="col-lg-6">
+				<div class="col-lg-6 col-10">
 					<div class="fixed-main__search">
                         <div class="input-group">
                             <input id="search_art2" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
@@ -200,7 +193,7 @@
                         </div>
 					</div>
 				</div>
-				<div class="col-lg-1">
+				<div class="col-lg-1 col-1">
 					<div class="fixed-main__basket">
 						<a class="btn fixed-main__basket-btn" onclick="showBasketMinForm();">
 							<img src="/images/buy-cart-white.png" alt="Basket">
@@ -217,27 +210,27 @@
 					<div class="row align-items-center">
 						<ul>
 							<li class="logotype-min">
-								<a href="/" class="btn btn-outline-secondary btn-primary btn-header-phone">
+								<a href="/" class="btn">
 									<img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}">
 								</a>
 							</li>
 							<li>
-								<button onClick="showArtSearch();" class="btn btn-outline-secondary btn-primary btn-header-phone" type="button" title="{search_cap}"><span class="fas fa-search"></span></button>
+								<button onClick="showArtSearch();" class="btn" type="button" title="{search_cap}"><span class="fas fa-search"></span></button>
 							</li>
 							<li>
-								<a href="/catalogue" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-car"></span></a>
+								<a href="/catalogue" class="btn"><span class="fas fa-car"></span></a>
 							</li>
 							<li>
-								<a href="/profile" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-user-alt"></span></a>
+								<a href="/profile" class="btn"><span class="fas fa-user-alt"></span></a>
 							</li>
 							<div class="basket_status">
 								<div id="basket_status4" class="basket_phone {basket_style}">{basket_count}</div>
 							</div>
 							<li>
-								<a onclick="showBasketMinForm();" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-shopping-basket"></span></a>
+								<a onclick="showBasketMinForm();" class="btn"><span class="fas fa-shopping-basket"></span></a>
 							</li>
 							<li class="bar">
-								<a href="#menu" class="btn btn-outline-secondary btn-primary btn-header-phone" title="{mob_menu}"><span class="fas fa-bars"></span></a>
+								<a href="#menu" class="btn" title="{mob_menu}"><span class="fas fa-bars"></span></a>
 							</li>
 						</ul>
 					</div>
@@ -344,27 +337,27 @@
                 <div class="row align-items-center">
                     <ul>
                         <li class="logotype-min">
-                            <a href="{site_lang_prefix}/" class="btn btn-outline-secondary btn-primary btn-header-phone">
+                            <a href="{site_lang_prefix}/" class="btn btn-outline-secondary btn-primary">
                                 <img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}">
                             </a>
                         </li>
                         <li>
-                            <button onClick="showArtSearch();" class="btn btn-outline-secondary btn-primary btn-header-phone" type="button" title="{search_cap}"><span class="fas fa-search"></span></button>
+                            <button onClick="showArtSearch();" class="btn btn-outline-secondary btn-primary" type="button" title="{search_cap}"><span class="fas fa-search"></span></button>
                         </li>
                         <li>
-                            <a href="{site_lang_prefix}/catalogue/" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-car"></span></a>
+                            <a href="{site_lang_prefix}/catalogue/" class="btn btn-outline-secondary btn-primary"><span class="fas fa-car"></span></a>
                         </li>
                         <li>
-                            <a href="{site_lang_prefix}/profile/" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-user-alt"></span></a>
+                            <a href="{site_lang_prefix}/profile/" class="btn btn-outline-secondary btn-primary"><span class="fas fa-user-alt"></span></a>
                         </li>
                         <div class="basket_status">
                             <div id="basket_status3" class="basket_phone {basket_style}">{basket_count}</div>
                         </div>
                         <li>
-                            <a onclick="showBasketMinForm();" class="btn btn-outline-secondary btn-primary btn-header-phone"><span class="fas fa-shopping-basket"></span></a>
+                            <a onclick="showBasketMinForm();" class="btn btn-outline-secondary btn-primary"><span class="fas fa-shopping-basket"></span></a>
                         </li>
                         <li class="bar">
-                            <a href="#menu" class="btn btn-outline-secondary btn-primary btn-header-phone" title="{mob_menu}"><span class="fas fa-bars"></span></a>
+                            <a href="#menu" class="btn btn-outline-secondary btn-primary" title="{mob_menu}"><span class="fas fa-bars"></span></a>
                         </li>
                     </ul>
                 </div>
@@ -530,7 +523,7 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
-				<div class="modal-body text-left">
+				<div class="modal-body">
 					<div class="container">
 						<div id="photo_gallery"></div>
 					</div>
@@ -608,7 +601,7 @@
 
 	<!-- Modal Basket-->
 	<div class="modal fade" id="BasketForm" role="dialog" tabindex="-1">
-		<div class="modal-dialog" style="max-width: 1080px;">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<span class="modal-title">{basket_cap}</span>
@@ -803,7 +796,7 @@
     // $("body").click(function(e) {
     //     if ($(e.target).attr('class') == 'panel'
     //         || $(e.target).attr('class') == 'list-inline-item bar active'
-    //         || $(e.target).attr('class') == 'btn btn-outline-secondary btn-primary btn-header-phone'
+    //         || $(e.target).attr('class') == 'btn btn-outline-secondary btn-primary'
     //         || $(e.target).attr('class') == 'fas fa-bars'
     //     ) { return true; } else {
     //         $(".bar").bigSlide();

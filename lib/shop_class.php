@@ -137,7 +137,7 @@ class ShopClass {
                 $bprow=str_replace("{cash_abr}", $cur_cap, $bprow);
             }
         } else {
-            $brow="<div class=\"row align-items-center basket-tbody\"><div class=\"col-12\"><p class=\"text-center mar0\"><br>{basket_empty}</p><br></div></div>";
+            $brow="<div class=\"row align-items-center\"><div class=\"col-12\"><p class=\"text-center mar0\"><br>{basket_empty}</p><br></div></div>";
             $bprow="";
         }
 
@@ -167,8 +167,7 @@ class ShopClass {
         $form=$this->getHtmlForm("basket/basket");
         $r=$db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n=$db->num_rows($r);
         if ($n>0) {
-            $bcontent="<div class=\"basket-table wdt100\">";
-            $bcontent.="<div class=\"row align-items-center basket-thead\">
+            $bcontent="<div><div class=\"row align-items-center\">
                 <div class=\"col-2 col-lg-2\" title=\"{art_brand_name_cap}\">{caption_cap}</div>
                 <div class=\"col-2 col-lg-2\">&nbsp</div>
                 <div class=\"col-4 col-lg-4\">&nbsp</div>
@@ -210,7 +209,7 @@ class ShopClass {
                     $flag=""; $country_name="";
                 }
 
-                $bcontent.="<div class=\"row align-items-center basket-tbody\">
+                $bcontent.="<div class=\"row align-items-center\">
                     <div class=\"col-12 col-lg-2\"><a href=\"$link\">$art_name</a></div>
                     <div class=\"col-12 col-lg-2\" title=\"$country_name\">$flag $brand_name</div>
                     <div class=\"col-12 col-lg-4\">$text</div>
@@ -249,9 +248,7 @@ class ShopClass {
         $price=$catalogue->getArticlePrice($art_id);
         if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id,$suppl_id,$storage_id);
 
-        if (!($catalogue->checkActionPrice($art_id))) {
-            //
-        } else {
+        if (!($catalogue->checkActionPrice($art_id))) {} else {
             list($action_id,$action_amount,$action_price)=$catalogue->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price,1); // to UAH
             if ($amount>=$action_amount) {
@@ -301,9 +298,7 @@ class ShopClass {
     function updateBasketForm($art_id,$amount,$storage_id) { $db = DbSingleton::getTokoDb();
         $client=new ClientClass; $catalogue=new CatalogueClass;
         $where=$client->getClientWhere(); $status_action=0;
-        if (!($catalogue->checkActionPrice($art_id))) {
-            //
-        } else {
+        if (!($catalogue->checkActionPrice($art_id))) {} else {
             list($action_id,$action_amount,)=$catalogue->checkActionPrice($art_id);
             if ($amount>=$action_amount) $status_action=$action_id;
         }
@@ -344,9 +339,7 @@ class ShopClass {
         $price=$catalogue->getArticlePrice($art_id);
         if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id,$suppl_id,$storage_id);
 
-        if (!($catalogue->checkActionPrice($art_id))) {
-         //
-        } else {
+        if (!($catalogue->checkActionPrice($art_id))) {} else {
             list(,$action_amount,$action_price)=$catalogue->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price,1);
             if ($amount>=$action_amount) {$price=$action_price;}

@@ -2,31 +2,19 @@
 .basket {
     &__header {
         padding-bottom: 15px;
-        h1 {
-            display: inline;
-            font-size: 22px;
-            font-weight: bold;
-            color: #606975;
-            text-transform: uppercase;
-        }
         span {
+            font-weight: bold;
             font-size: 22px;
-            color: gray;
+            color: #000;
         }
     }
     &__table {
         display: block;
         &-thead {
-            background: #f7f7f7;
-            color: #228b94;
-            height: 60px;
-            font-size: 0.9em;
-            border: 3px solid #e1e7ec;
+            font-size: 14px;
         }
         &-tbody {
             background: #fff;
-            color: #000;
-            border-bottom: 3px solid #e1e7ec;
             min-height: 50px;
             .input-group {
                 width: 100px;
@@ -57,6 +45,7 @@
     }
     &__phone {
         display: none;
+        color: gray;
     }
     &__footer {
         &-total {
@@ -72,8 +61,6 @@
         }
     }
     &__fast {
-        border-top: 1px solid #ccc;
-        margin-top: 30px;
         padding-top: 30px;
     }
 }
@@ -194,17 +181,5 @@
         color: #fff;
     }
 }
-
-/*==== PHONE ====*/
-@media (max-width:992px) {
-    .btn-basket {
-        float: right;
-    }
-    .order__header-total {
-        float: left;
-    }
-}
-
-/*==== /PHONE ====*/
 
 
