@@ -1,7 +1,11 @@
 <link rel="stylesheet" href="/css/plugins/flags.min.css">
 <script>
     $(document).ready(function(){
-        $("#input_phone2").mask("(099) 999-99-99", {placeholder:"(0__) ___-__-__"}, {alias:"numeric"});
+        $(".masked-phone").mask("+38(099) 999-99-99", {
+            placeholder:"+38(0__) ___-__-__",
+            autoclear: false,
+            alias: "numeric"
+        });
     })
 </script>
 
@@ -72,9 +76,15 @@
                     <p><b>{phone_number_input}:</b></p>
                     <div class="container">
                         <div class="row align-items-center">
-                            <div class="col-6 pad0"><input id="input_phone2" value="" class="form-control" type="tel" name="phone" placeholder="(0__) ___-__-__" aria-hidden="true" aria-label="+380" onChange="validateForm('phone2','input');"></div>
+                            <div class="col-6 pad0">
+                                <input
+                                    id="input_phone2" class="form-control masked-phone" type="tel" name="phone"
+                                    placeholder="+38(0__) ___-__-__" onchange="validationInput('input_phone2');"
+                                    title="{input_valid_phone}" data-toggle="tooltip" data-placement="top" data-html="true"
+                                >
+                            </div>
                             <div class="col-1"><i id="validate_input_phone2" class="fas fa-times-circle non_accept validate_input"></i></div>
-                            <div class="col-5 pad0"><button onclick="finishFastOrder();" class="btn btn-primary">{make_order_fast}</button></div>
+                            <div class="col-5 pad0"><button onclick="finishFastOrder('input_phone2');" class="btn btn-primary">{make_order_fast}</button></div>
                         </div>
                     </div>
                 </div>

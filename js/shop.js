@@ -258,7 +258,7 @@ function finishOrder() { "use strict";
     let email=$("#input_email").val(); if (email===undefined) email="";
     let user=$("#input_user").val();
     let region=$("#select2-select_city-container").attr("name");
-    if (name==="" || phone==="" || region==="0") {
+    if (name==="" || !(validationInput('input_phone')) || region==="0") {
         showAlertModal("{input_all_data}!","{error_cap}!",0);
         return true;
     } else {
@@ -274,11 +274,15 @@ function finishOrder() { "use strict";
     }
 }
 
-function finishFastOrder() { "use strict";
+function finishFastOrder(name) { "use strict";
     $("#input_phone").val(""); validateForm("phone","input");
     let phone=$("#input_phone2").val();
-    if (phone==="") {
-        showAlertModal("{input_all_data}!","{error_cap}!",0);
+
+    if (!validationInput(name)) {
+        $("#input_phone2").tooltip("show");
+        setTimeout(function() {
+            $("#input_phone2").tooltip("hide");
+        }, 5000);
         return true;
     } else {
         JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
@@ -403,9 +407,9 @@ function addNewAddressForm() {
         }}, true);
 }
 
-function validateForm(name, type) { "use strict";
-    var valid=$("#validate_input_"+name);
-    var variable="";
+function validateForm(name, type) {
+    let valid=$("#validate_input_"+name);
+    let variable="";
     if (type==="input") variable=$("#input_"+name).val();
     else variable=$("#select2-select_"+name+"-container").text();
     if (variable==="") {
@@ -420,5 +424,25 @@ function validateForm(name, type) { "use strict";
         valid.addClass("fa-check-circle");
     }
     return variable;
+}
+
+function validationInput(name) {
+    let id = $("#"+name).attr("id");
+    let valid = $("#validate_"+id);
+    let max_count = 16;
+    let count = $("#"+id).val().replace(/[_-]/g, '').length;
+    if (max_count===count) {
+        valid.removeClass("non_accept");
+        valid.addClass("accept");
+        valid.removeClass("fa-times-circle");
+        valid.addClass("fa-check-circle");
+        return true;
+    } else {
+        valid.removeClass("accept");
+        valid.addClass("non_accept");
+        valid.removeClass("fa-check-circle");
+        valid.addClass("fa-times-circle");
+        return false;
+    }
 }
 

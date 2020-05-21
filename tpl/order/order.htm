@@ -1,11 +1,14 @@
 <link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
 
 <script>
-    jQuery(function($){
-        $("#input_phone").mask("+380999999999",{placeholder:" "});
+    $(document).ready(function(){
         $("#input_phone").val($("#true_phone").val());
-        $("#input_phone2").mask("+380999999999",{placeholder:" "});
-    });
+        $(".masked-phone").mask("+38(099) 999-99-99", {
+            placeholder:"+38(0__) ___-__-__",
+            autoclear: false,
+            alias: "numeric"
+        });
+    })
 </script>
 
 <div class="content">
@@ -54,7 +57,12 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-4 col-12"><span class="span-red" title="{field_is_required}">*</span><span>{phone_number}:</span></div>
-                            <div class="col-lg-7 col-10"><input id="input_phone" class="form-control" type="tel" placeholder="+380" aria-hidden="true" aria-label="+380" value="{phone_value}"  onChange="validateForm('phone','input');"></div>
+                            <div class="col-lg-7 col-10">
+                                <input
+                                    id="input_phone" class="form-control masked-phone" type="tel"
+                                    placeholder="+38(0__) ___-__-__" value="{phone_value}" onchange="validationInput('input_phone');"
+                                >
+                            </div>
                             <input id="true_phone" name="true_phone" type="hidden" value="{phone_value}">
                             <div class="col-lg-1 col-2"><i id="validate_input_phone" class="{valid}"></i></div>
                         </div>
@@ -160,7 +168,12 @@
                     <div class="container table-order">
                         <div class="row">
                             <div class="col-lg-4 col-12"><span>{phone_number}:</span></div>
-                            <div class="col-lg-7 col-10"><input id="input_phone2" value="{phone_value}" class="form-control" type="tel" name="phone" placeholder="+380" aria-hidden="true" aria-label="+380" onChange="validateForm('phone2','input');"></div>
+                            <div class="col-lg-7 col-10">
+                                <input
+                                    id="input_phone2" value="{phone_value}" class="form-control masked-phone" type="tel" name="phone"
+                                    placeholder="+38(0__) ___-__-__" onchange="validationInput('input_phone2');"
+                                >
+                            </div>
                             <div class="col-lg-1 col-2"><i id="validate_input_phone2" class="{valid}"></i></div>
                         </div>
                         <div class="row">
