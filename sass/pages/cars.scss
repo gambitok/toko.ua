@@ -1,0 +1,62 @@
+.cars {
+    box-shadow: 0 0 40px 0 rgba(0, 0, 0, .11);
+    margin: 30px;
+    &-nav {
+        background: #fff;
+        color: #fff;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: start;
+        &__item {
+            background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat;
+            color: #000;
+            padding: 30px 65px 30px 30px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            &:not(:first-child) {
+                &:before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 19px;
+                    bottom: 19px;
+                    width: 1px;
+                    background: #ececec;
+                }
+            }
+            &-active {
+                background: url("/images/icons/dropdown-white.svg") calc(100% - 20px) center no-repeat #1a77d2;
+                color: #fff;
+            }
+            &-checked {
+                background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #1a77d2;
+                color: #fff;
+            }
+            &-hidden {
+                display: none;
+            }
+        }
+    }
+    &-tab {
+        display: none;
+        &__item {
+
+        }
+    }
+}
+
+@media (max-width: 1200px) {
+    .cars {
+        &-nav {
+            display: block;
+            &__item {
+                padding: 15px 65px 15px 15px;
+                &:not(:last-child) {
+                    border-bottom: 1px solid #ebebeb;
+                }
+            }
+        }
+    }
+}

@@ -1,14 +1,10 @@
-/* ==== Mixins ==== */
+/*==== Mixins ====*/
 @import "mixins";
 
-/* ==== Fonts ==== */
-//@include font-face('Roboto', '../fonts/Roboto');
-//@include font-face('OpenSans', '../fonts/OpenSans');
-
-/* ==== Variables ==== */
+/*==== Variables ====*/
 @import "variables";
 
-/* ==== Main Page ==== */
+/* ==== Main Page ====*/
 @import "main";
 @import "plugins";
 @import "media";
@@ -18,7 +14,7 @@
 @import "pages/catalogue";
 @import "pages/news";
 @import "pages/profile";
-//@import "pages/special_offers";
+@import "pages/cars";
 
-/* ==== Adaptive ==== */
+/*==== Adaptive ====*/
 @import "media";

@@ -1013,4 +1013,9 @@ class ProductsClass extends CatalogueClass {
         return $list;
     }
 
+    function getCarsSearch() {
+        $form=$this->getHtmlForm("cars/cars");
+        return $form;
+    }
+
 }
