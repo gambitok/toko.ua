@@ -86,13 +86,13 @@ class FormClass {
             list($flag, $country_name) = $this->getCountryFlag($brand_id);
             $brand_form="
             <a href=\"$brand_link\">
-                <span title=\"$country_name\" class=\"search__brand\" data-title=\"{brand_cap}\" style=\"font-size: 14px;\">$brand_name</span>
+                <span title=\"$country_name\" class=\"search__brand\" data-title=\"{brand_cap}\">$brand_name</span>
             </a>
             <img class=\"flag flag-$flag flag-search\">";
         } else {
             $brand_form="
             <a href=\"$brand_link\">
-                <span title=\"$brand_name\" class=\"search__brand\" data-title=\"{brand_cap}\" style=\"font-size: 14px;\">$brand_name</span>
+                <span title=\"$brand_name\" class=\"search__brand\" data-title=\"{brand_cap}\">$brand_name</span>
             </a>";
         }
 
@@ -295,19 +295,26 @@ class FormClass {
     function showHistoryList() {
         $cat=new CatalogueClass;
         $language=new LangClass; $prefix=$language->getLangPrefix();
-        $list=$this->getHistory(); $result=""; $max_count=9;
-        for ($i=0;$i<count($list);$i++){
+        $list=$this->getHistory(); $max_count=9;
+        $form="<ul class=\"search-nav\">";
+        for ($i=0; $i<count($list); $i++) {
             $article_nr_displ=$list[$i]["article_nr_displ"];
             $brand=$list[$i]["brand"];
             $brand_link=$list[$i]["brand_link"];
-            $result.="<p><a href=\"https://toko.ua$prefix/$cat->search_link/$article_nr_displ/$brand_link/\">$brand $article_nr_displ</a></p>";
+            $form.="<li class=\"search-nav__item\">
+                <a href=\"https://toko.ua$prefix/$cat->search_link/$article_nr_displ/$brand_link/\">
+                    <i class='fa fa-history'></i>
+                    $brand $article_nr_displ
+                </a>
+            </li>";
             if ($i==$max_count) break;
         }
-        $result=$this->replaceLang($result);
-        return $result;
+        $form.="</ul>";
+        $form=$this->replaceLang($form);
+        return $form;
     }
 
-    /*=====PHOTO GALLERY======*/
+    /*==== PHOTO GALLERY ====*/
 
     function getArticleMainPhoto($art_id) { $db=DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n=$db->num_rows($r); $photo_name="";
@@ -332,13 +339,14 @@ class FormClass {
         if ($n>0) return 1; else return 0;
     }
 
-    function getArticlePhoto($art_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n=$db->num_rows($r); $photo_name="";
-        for ($i=1;$i<=$n;$i++){
+    function getShortArticlePhoto($art_id) { $db=DbSingleton::getTokoDb();
+        $photo_name="";
+        $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n=$db->num_rows($r);
+        for ($i=1;$i<=$n;$i++) {
             $photo_name=trim($db->result($r,$i-1,"PHOTO_NAME"));
         }
         $photo_name=="" ? $photo_name=$this->noPhoto : $photo_name="$this->uploads_link/".$photo_name;
-        $photo="<img itemprop=\"image\" style=\"width: 50px;height: 50px;margin: 15px;\" src=\"$photo_name\" alt=\"Slide $i\">";
+        $photo="<img itemprop=\"image\" src=\"$photo_name\" alt=\"Article\">";
         return $photo;
     }
 
@@ -359,7 +367,7 @@ class FormClass {
         }
     }
 
-    /*=====INFO FORM==================================================================================================*/
+    /*==== INFO FORM ====*/
 
     function showPhotoGallery($art_id, $display=0) { $db=DbSingleton::getTokoDb();
         $cat=new CatalogueClass;
@@ -576,7 +584,7 @@ class FormClass {
     }
 
     function getApplModelInfoTCD($art_id, $typ_id) { $db = DbSingleton::getTokoDb();
-    //DELETE????????
+        //DELETE????????
         $automan=new AutoClass;
         $form=$this->getHtmlForm("cat_modif_group_form");
         $r=$db->query("SELECT tt.*, man.MFA_ID, tm.Model, tm.MOD_ID
@@ -588,7 +596,6 @@ class FormClass {
         GROUP BY tm.MOD_ID ORDER BY tt.TYP_TEXT ASC;"); $n=$db->num_rows($r); $list="";
         for ($i=1;$i<=$n;$i++) {
             $TYP_TEXT=$db->result($r,$i-1,"TYP_TEXT");
-            //$typ_id=$db->result($r,$i-1,"TYP_ID");
             $fuel=$db->result($r,$i-1,"FUEL_ID"); $fuel_name=$automan->getFuelName($fuel);
             $start=$db->result($r,$i-1,"TYP_PCON_START"); if ($start==0){$start="";}if (strlen($start)==6){$start=substr($start,0,4).".".substr($start,4,2);}
             $end=$db->result($r,$i-1,"TYP_PCON_END"); if ($end==0){$end="";}if (strlen($end)==6){$end=substr($end,0,4).".".substr($end,4,2);}
@@ -596,7 +603,6 @@ class FormClass {
             $TYP_HP_FROM=$db->result($r,$i-1,"TYP_HP_FROM");
             $TYP_CCM=$db->result($r,$i-1,"TYP_CCM");
             $ENG_Cod=$db->result($r,$i-1,"ENG_Cod");
-            //setCookie(\"auto_typ_id\",$typ_id);
             $list.="<tr class=\"pointer\" onclick='showLoader(); location.href=\"/catalog\";' style=\"font-size: .8em;\">
                 <td>$fuel_name</td>
                 <td>$TYP_TEXT</td>

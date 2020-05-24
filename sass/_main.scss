@@ -529,6 +529,16 @@ header {
         button {
             border: 1px solid #ced4da;
         }
+        &-nav {
+            list-style: none;
+            margin: 0;
+            &__item {
+                background: $white;
+                &:hover {
+                    background: #f7f7f7;
+                }
+            }
+        }
     }
     .icons {
         &-nav {
@@ -640,10 +650,8 @@ header {
     top: 300%!important;
     background: $white;
     overflow: unset!important;
-    //.garage_form_dropdown {
     &-block {
         background: $white;
-        //.garage_form-list {
         &__list {
             padding: 30px;
             .garage-row {
@@ -677,11 +685,9 @@ header {
                 width: 50px;
             }
         }
-        //.garage_form-select {
         &__select {
-            border-left: 1px solid #ccc;
+            border-left: 1px solid #f1f1f1;
             padding: 30px;
-            //.garage_row {
             i {
                 float: unset;
                 width: auto;

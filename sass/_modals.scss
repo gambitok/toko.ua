@@ -41,20 +41,23 @@
     &__numbers {
         margin: 15px;
         text-align: left;
-        &__row {
-            border: 1px solid #797979;
-            border-top: none;
-            padding: 0;
-        }
-        &__title {
+        &-title {
             background: #797979;
             color: #fff
         }
-        &__auto {
-            background: #f7f7f7;
-            border-right: 1px solid #797979;
-            overflow-wrap: break-word;
-            font-weight: bold;
+        &-row {
+            border: 1px solid #797979;
+            border-top: none;
+            padding: 0;
+            &-auto {
+                background: #f7f7f7;
+                border-right: 1px solid #797979;
+                overflow-wrap: break-word;
+                font-weight: bold;
+            }
+            &-article {
+                word-wrap: break-word;
+            }
         }
     }
     &__table {

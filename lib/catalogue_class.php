@@ -163,7 +163,7 @@ class CatalogueClass {
                 $brand_name = $db->result($r,$i-1,"BRAND_NAME");
                 $brand_link = $db->result($r,$i-1,"BRAND_LINK");
                 $name = $db->result($r,$i-1,"NAME");
-                $photo = $showform->getArticlePhoto($art_id);
+                $photo = $showform->getShortArticlePhoto($art_id);
                 $count = $this->countBrandItems($search_number, $brand_id);
                 if ($count==0) $count_zero++; else { $exist_search_number=strtolower($search_number); $exist_brand_link=$brand_link; }
                 $mas[$i] = ["search_number"=>$search_number,"text"=>$text,"brand_id"=>$brand_id,"brand_name"=>$brand_name,"brand_link"=>$brand_link,"count"=>$count,"name"=>$name,"photo"=>$photo];
@@ -182,7 +182,7 @@ class CatalogueClass {
                     ? $link="showAlertModal(\"{brand_no_offer} `$text/$brand_name`\",\"{sorry_cap}\");"
                     : $link="location.href=\"https://toko.ua$prefix/$this->search_link/$search_number/$brand_link/\";";
                 $list.="<tr class=\"pointer table-row\" onclick='$link'>
-                    <td style='width: 100px;'>$photo</td> 
+                    <td class=\"minify\">$photo</td> 
                     <td>$text</td> 
                     <td>$brand_name</td> 
                     <td>$name</td> 
@@ -1696,15 +1696,15 @@ class CatalogueClass {
                 $arr[$brand_name][$i]=$art_name;
             }
             $list="<div class=\"info__numbers\">
-            <div class=\"row info__numbers__row\">
-                <div class=\"col-3 info__numbers__title\">{brand_cap}</div>
-                <div class=\"col-9 info__numbers__title\">{art_cap}</div>
+            <div class=\"row info__numbers-title\">
+                <div class=\"col-3\">{brand_cap}</div>
+                <div class=\"col-9\">{art_cap}</div>
             </div>";
             $i=1;
             foreach ($arr as $arr_key=>$arr_val) {
-                $list.="<div class=\"row info__numbers__row\">
-                    <div class=\"col-3 info__numbers__auto\">".$arr_key."</div>
-                    <div class=\"col-9 word-wrap\">";
+                $list.="<div class=\"row info__numbers-row\">
+                    <div class=\"col-3 info__numbers-row-auto\">".$arr_key."</div>
+                    <div class=\"col-9 info__numbers-row-article\">";
                 foreach ($arr_val as $key=>$val) {
                     $format_val = str_replace(str_split('.,+-\/:*?"<>| '),"", $val);
                     $list.="<a target=\"_blank\" href=\"https://toko.ua$prefix/$this->search_link/$format_val/\">$val</a>";

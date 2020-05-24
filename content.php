@@ -127,8 +127,6 @@ if ($_REQUEST["w"]=="showBrandForm"){$GLOBALS['_RESULT'] = array("content"=>$sho
 
 if ($_REQUEST["w"]=="showDropHistory"){$GLOBALS['_RESULT'] = array("content"=>$showform->showHistoryList());}
 
-//if ($_REQUEST["w"]=="showAutoHistory"){ $GLOBALS['_RESULT'] = array("content"=>$showform->showAutoHistory());}
-
 //=client && login======================================================================================================
 
 if ($_REQUEST["w"]=="loginClient"){$GLOBALS['_RESULT'] = array("content"=>$client->loginClient($_REQUEST["login"],$_REQUEST["password"]));}

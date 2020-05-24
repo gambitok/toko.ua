@@ -225,6 +225,12 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-main .search button { border: 1px solid #ced4da; }
 
+.header-main .search-nav { list-style: none; margin: 0; }
+
+.header-main .search-nav__item { background: #fff; }
+
+.header-main .search-nav__item:hover { background: #f7f7f7; }
+
 .header-main .icons-nav { padding-left: 0; list-style: none; }
 
 .header-main .icons-nav__garage .fa, .header-main .icons-nav__profile .fa, .header-main .icons-nav__basket .fa { float: left; font-size: 38px; }
@@ -279,7 +285,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .garage-drop-block__list button { width: 50px; }
 
-.garage-drop-block__select { border-left: 1px solid #ccc; padding: 30px; }
+.garage-drop-block__select { border-left: 1px solid #f1f1f1; padding: 30px; }
 
 .garage-drop-block__select i { float: unset; width: auto; font-size: 13px; }
 
@@ -907,11 +913,9 @@ header { width: 100%; color: #a9a9a9; }
 
 .dropdown a:hover { background-color: #4b4e4f; color: #fff; }
 
-.dropdown-content { display: none; position: absolute; top: 40px; background-color: #f1f1f1; min-width: 260px; overflow: auto; box-shadow: 0 2px 4px 0 grey; z-index: 1; }
+.dropdown-content { display: none; position: absolute; top: 40px; background-color: #f1f1f1; min-width: 260px; width: 100%; overflow: auto; box-shadow: 0 2px 4px 0 grey; z-index: 1; }
 
 .dropdown-content a { color: #000; padding: 12px 16px; text-decoration: none; display: block; }
-
-.dropdown-content a:hover { background: #ccc; }
 
 .dropdown-content p { font-size: 16px; line-height: 20px; margin: 0; padding: 0; }
 
@@ -1179,6 +1183,10 @@ table thead td { border: 1px solid #000; }
 .city-inline button:hover { color: #000; border-bottom: 1px dashed #000; }
 
 /*==== /Cities List ====*/
+.rotate__animation { transition: .5s ease-in-out; }
+
+.rotate__icon { transform: rotate(180deg); }
+
 /* ==== PHONE ==== */
 @media (max-width: 768px) { #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
   .header-phone, .fixed-phone, .table-responsive, .info_block, .searchtab__appl-phone, .nav-tabs { display: block; }
@@ -1292,11 +1300,13 @@ table thead td { border: 1px solid #000; }
 
 .info__numbers { margin: 15px; text-align: left; }
 
-.info__numbers__row { border: 1px solid #797979; border-top: none; padding: 0; }
+.info__numbers-title { background: #797979; color: #fff; }
 
-.info__numbers__title { background: #797979; color: #fff; }
+.info__numbers-row { border: 1px solid #797979; border-top: none; padding: 0; }
 
-.info__numbers__auto { background: #f7f7f7; border-right: 1px solid #797979; overflow-wrap: break-word; font-weight: bold; }
+.info__numbers-row-auto { background: #f7f7f7; border-right: 1px solid #797979; overflow-wrap: break-word; font-weight: bold; }
+
+.info__numbers-row-article { word-wrap: break-word; }
 
 .info__table { font-size: 0.7em; border-collapse: separate; border-spacing: 0 1em; width: 100%; }
 
@@ -1569,6 +1579,10 @@ table thead td { border: 1px solid #000; }
 .cat_search_brands h5 { font-size: 14px; margin-bottom: 2em; }
 
 .cat_result_table { padding-right: 0; padding-left: 0; }
+
+.search-specify img { width: 50px; height: 50px; margin: 15px; }
+
+.search-specify thead tr th.minify, .search-specify tbody tr td.minify { width: 150px; }
 
 .toggle_history { padding-bottom: 3%; }
 

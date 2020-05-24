@@ -100,33 +100,28 @@ function showDropGarage() { "use strict";
         }}, true);
 }
 
-function showDropHistory() { "use strict";
-    let myDropDown=$("#myDropdown"); myDropDown.show();
+function showDropHistory() {
+    let myDropDown=$("#myDropdown");
+    myDropDown.show();
     if (myDropDown.html()==="") {
-    JsHttpRequest.query(folder,{ 'w': 'showDropHistory'},
-        function (result, errors){ if (errors) {} if (result){
-            myDropDown.html(result.content);
-        }}, true);
+        JsHttpRequest.query(folder,{ 'w': 'showDropHistory'},
+            function (result, errors){ if (errors) {} if (result){
+                myDropDown.html(result.content);
+            }}, true);
     }
 }
 
-function showDropHistory2() { "use strict"; $("#myDropdown").hide(); }
-
-function showDropHistoryFixed() { "use strict";
-    let myDropDown=$("#myDropdown2"); myDropDown.show();
-    if (myDropDown.html()==="") {
-    JsHttpRequest.query(folder,{ 'w': 'showDropHistory'},
-        function (result, errors){ if (errors) {} if (result){
-            myDropDown.html(result.content);
-        }}, true);
-    }
+function showDropHistory2() {
+    $("#myDropdown").hide();
 }
 
-function showDropHistoryFixed2() { "use strict"; $("#myDropdown2").hide(); }
+function toggleBlock(block, slide) { "use strict";
+    $("#" + slide).slideToggle("slow");
+    $("." + block).find("i").toggleClass("icon-rotate");
+}
 
-function toggleBlock(block,slide) { "use strict";
-    $("#"+slide).slideToggle("slow");
-    $("."+block).find("i").toggleClass("icon-rotate");
+function rotateIcon(a) {
+    $(a).find("i").toggleClass("rotate__icon");
 }
 
 // function toggleBlockHistory(block,slide) { "use strict";
