@@ -229,6 +229,10 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-main .search-nav__item { background: #fff; }
 
+.header-main .search-nav__item a, .header-main .search-nav__item a:not([href]):not([tabindex]) { display: block; color: #000; cursor: pointer; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 15px 0; }
+
+.header-main .search-nav__item a:hover, .header-main .search-nav__item a:not([href]):not([tabindex]):hover { color: #ccc; }
+
 .header-main .search-nav__item:hover { background: #f7f7f7; }
 
 .header-main .icons-nav { padding-left: 0; list-style: none; }

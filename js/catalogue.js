@@ -227,7 +227,6 @@ function showBrandForm(brand) { "use strict";
 //     if ((auto==="0")||(model==="0")||(modelid==="0")||(group==="0")||(auto===undefined)||(model===undefined)||(modelid===undefined)||(group===undefined)) {
 //         showNotify("{error_cap}:","{select_all_fields}!","danger");
 //     } else {
-//         showLoader();
 //         JsHttpRequest.query(folder,{'w':'getCatalogueLink'},
 //             function (result, errors){ if (errors) {alert(errors);} if (result){
 //                 location.href = result.content + "findmodel/"+auto+"/"+model+"/"+modelid+"/"+group+"/";
@@ -246,7 +245,6 @@ function showBrandForm(brand) { "use strict";
 //     if ((auto==="0")||(model==="0")||(modelid==="0")||(group==="0")||(auto===undefined)||(model===undefined)||(modelid===undefined)||(group===undefined)) {
 //         showNotify("{error_cap}:","{select_all_fields}!","danger");
 //     } else {
-//         showLoader();
 //         JsHttpRequest.query(folder,{'w':'getCatalogueLink'},
 //             function (result, errors){ if (errors) {alert(errors);} if (result){
 //                 location.href = result.content + "findmodel/"+auto+"/"+model+"/"+modelid+"/"+group+"/"+str_id+"/"+str_level+"/"+str_id_parrent+"/";

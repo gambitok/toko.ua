@@ -298,20 +298,35 @@ class FormClass {
         $list=$this->getHistory(); $max_count=9;
         $form="<ul class=\"search-nav\">";
         for ($i=0; $i<count($list); $i++) {
+            $id=$list[$i]["id"];
             $article_nr_displ=$list[$i]["article_nr_displ"];
             $brand=$list[$i]["brand"];
             $brand_link=$list[$i]["brand_link"];
             $form.="<li class=\"search-nav__item\">
-                <a href=\"https://toko.ua$prefix/$cat->search_link/$article_nr_displ/$brand_link/\">
-                    <i class='fa fa-history'></i>
-                    $brand $article_nr_displ
-                </a>
+                <div class='container'>
+                <div class='row'>
+                    <div class='col-10'>
+                        <a href=\"https://toko.ua$prefix/$cat->search_link/$article_nr_displ/$brand_link/\">
+                            <i class='fa fa-history'></i>
+                            $brand $article_nr_displ
+                        </a>
+                    </div>
+                    <div class='col-2'>
+                        <a class='float-right' onclick='deleteHistoryItem($id)'><i class='fa fa-times'></i></a>
+                    </div>
+                </div>
+                </div>
             </li>";
             if ($i==$max_count) break;
         }
         $form.="</ul>";
         $form=$this->replaceLang($form);
         return $form;
+    }
+
+    function deleteHistoryItem($id) { $db=DbSingleton::getTokoDb();
+        $db->query("DELETE FROM `CLIENT_HISTORY` WHERE `id`='$id' LIMIT 1;");
+        return true;
     }
 
     /*==== PHOTO GALLERY ====*/
@@ -603,7 +618,7 @@ class FormClass {
             $TYP_HP_FROM=$db->result($r,$i-1,"TYP_HP_FROM");
             $TYP_CCM=$db->result($r,$i-1,"TYP_CCM");
             $ENG_Cod=$db->result($r,$i-1,"ENG_Cod");
-            $list.="<tr class=\"pointer\" onclick='showLoader(); location.href=\"/catalog\";' style=\"font-size: .8em;\">
+            $list.="<tr class=\"pointer\" location.href=\"/catalog\";' style=\"font-size: .8em;\">
                 <td>$fuel_name</td>
                 <td>$TYP_TEXT</td>
                 <td>$start - $end</td>

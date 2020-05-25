@@ -273,7 +273,6 @@ class CatalogueClass {
                 }
                 $list.="</ul>";
             }
-//            if ($max_count>0 && $n>$max_count)
             $list.="<a class=\"btn btn-main\" href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/\">{show_all_cap} \"$head_name\"</a>";
         }
         if ($n==0) $list="";
@@ -478,7 +477,7 @@ class CatalogueClass {
         if ($str_text=="") {
             $result="<h1>{details_for} $mfa_mod_typ_text</h1>";
         } else {
-            $result="<h1>$str_text</h1>"; // {for_cap} $mfa_mod_typ_text
+            $result="<h1>$str_text</h1>";
         }
 
         if ($cur==2) $ch2="checked=\"checked\""; else if ($cur==3) $ch3="checked=\"checked\""; else $ch1="checked=\"checked\"";
@@ -515,9 +514,7 @@ class CatalogueClass {
         //DELETE?
         $automan=new AutoClass;
         $language=new LangClass; $prefix=$language->getLangPrefix();
-        //$true_str_id=$str_id;
         if ($str_id==0) list($str_id, $slvl,)=$automan->getAutoStrData(); else list($slvl,)=$automan->getStrParams($str_id);
-        //list($manufacture, $model, $model_id)=$automan->getCarInfo($typ_id);
         $tree=""; $lvl=1; $parrents=$this->getStrParrents($str_id, $slvl);
 
         for ($i=1; $i<=10; $i++) { $lvl+=1;
@@ -525,27 +522,21 @@ class CatalogueClass {
                 if ($elm["level"] == $lvl) {
                     $str_id2 = $elm["id_tree"];
                     $str_id_parrent2 = $elm["id_parent"];
-                    //$str_level2 = $elm["level"];
                     if (in_array($str_id2,$parrents)) $class_parrent="tf-child-true tf-open"; else $class_parrent="";
                     if ($str_id_parrent2==$str_id) $class_str="tf-child-false tf-open"; else $class_str="";
                     if ($str_id2==$str_id) $class_check="detail-red"; else $class_check="";
 
                     $str="<li class=\"$str_id2 $class_parrent $class_str\"><div>";
-                    if ($elm["child"]>0){$str.=$elm["name"];}
-                    if ($elm["child"]==0){
-                        // if ($true_sid==0) {
-                            // $str.="<a class=\"details_class $class_check\" onclick='tecModelsTreeStr(\"$manufacture\",\"$model\",\"$model_id\",\"$typ_id\",\"$str_id2\",\"$str_level2\",\"$str_id_parrent2\",this);'>".$elm["name"]."</a>";
-                        // }
-                        //if ($true_str_id!=0) {
+                    if ($elm["child"]>0) {$str.=$elm["name"];}
+                    if ($elm["child"]==0) {
                         $newLink = $automan->getCarLink($typ_id, $str_id2);
                         $str.="<a class=\"details_class $class_check\" href=\"$newLink\">".$elm["name"]."</a>";
-                        //}
                     }
                     $str.="</div>";
                     if ($elm["child"]>0){$str.="\n<ul>\n{p".$elm["id_tree"]."}</ul>\n";}
                     $str.="</li>\n";
-                    if ($lvl==2){$tree.=$str;}
-                    if ($lvl>2){$tree=str_replace("{p".$elm["id_parent"]."}",$str."{p".$elm["id_parent"]."}",$tree);}
+                    if ($lvl==2) {$tree.=$str;}
+                    if ($lvl>2) {$tree=str_replace("{p".$elm["id_parent"]."}",$str."{p".$elm["id_parent"]."}",$tree);}
                 }
             }
         }
@@ -625,7 +616,7 @@ class CatalogueClass {
     function getSearchList($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands, $where_text) { $db = DbSingleton::getTokoDb();
         if ($article_nr_search!="") {
             $r=$db->query("SELECT * FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' AND `BRAND_ID`='$brand_nr_search' LIMIT 1;");$n=$db->num_rows($r);
-            if ($n>0) {
+            if ($n > 0) {
                 $art_id=$db->result($r,0,"ART_ID");
                 $where_oe_art_id=$this->getOriginalEquipment($art_id);
                 $where_art_id_str.=",$where_oe_art_id";
@@ -653,20 +644,31 @@ class CatalogueClass {
     }
 
     function getOriginalEquipment($art_id) { $db = DbSingleton::getTokoDb();
-        $search_str=""; $art_id_str=""; $brand_str="";
+        $search_str=""; $brand_str=""; $art_id_str=""; $arts=[];
         $r=$db->query("SELECT * FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND` IN (3,4) AND `RELATION`=1) OR (`KIND` IN (3,4) AND `RELATION`=2)) 
         GROUP BY `SEARCH_NUMBER`;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
-            $SEARCH_NUMBER = $db->result($r, $i-1, "SEARCH_NUMBER");
-            $BRAND_ID = $db->result($r, $i-1, "BRAND_ID");
-            $search_str.="'$SEARCH_NUMBER'"; if ($i<$n) $search_str.=",";
-            $brand_str.="'$BRAND_ID'"; if ($i<$n) $brand_str.=",";
+            $article_search = $db->result($r, $i-1, "SEARCH_NUMBER");
+            $brand_id = $db->result($r, $i-1, "BRAND_ID");
+            $search_str.="'$article_search'"; if ($i<$n) $search_str.=",";
+            $brand_str.="'$brand_id'"; if ($i<$n) $brand_str.=",";
+            $arts[$i]=["search_number"=>$article_search, "brand_id"=>$brand_id];
         }
         if ($search_str!="") {
             $r=$db->query("SELECT * FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` IN ($search_str) AND `BRAND_ID` IN ($brand_str);"); $n=$db->num_rows($r);
             for ($i=1; $i<=$n; $i++) {
-                $ART_ID=$db->result($r, $i-1, "ART_ID");
-                $art_id_str.="'$ART_ID'"; if ($i<$n) $art_id_str.=",";
+                $cross_art_id=$db->result($r, $i - 1, "ART_ID");
+                $art_id_str.="'$cross_art_id'"; if ($i<$n) $art_id_str.=",";
+            }
+        }
+        foreach ($arts as $val) {
+            $article_search = $val["search_number"];
+            $brand_id = $val["brand_id"];
+            $r=$db->query("SELECT * FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`='$brand_id' AND `KIND`=3 AND `RELATION`=0;"); $n=$db->num_rows($r);
+            if ($art_id_str!="") $art_id_str.=",";
+            for ($i=1; $i<=$n; $i++) {
+                $cross_art_id = $db->result($r, $i - 1, "ART_ID");
+                $art_id_str.="'$cross_art_id'"; if ($i<$n) $art_id_str.=",";
             }
         }
         return $art_id_str;

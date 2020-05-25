@@ -226,15 +226,16 @@ trait Variables {
         $cookie=$_COOKIE["session_id"]; if ($cookie=="" || $cookie==NULL) $cookie=0;
         list($client_id,$user)=$client->getClient();
         if ($user==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user'";
-        $r=$db->query("SELECT `article_nr_displ`, `brand_id` FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;"); $n=$db->num_rows($r);
+        $r=$db->query("SELECT * FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++){
+            $id=$db->result($r,$i-1,"id");
             $art_name=$db->result($r,$i-1,"article_nr_displ");
             $brand_id=$db->result($r,$i-1,"brand_id");
             $brand_link=$this->getBrandLink($brand_id);
             $art_name=strtoupper($art_name);
             $brand=$this->getBrandName($brand_id);
             if ($brand!="") {
-                $history[$col]=["article_nr_displ"=>$art_name,"brand_id"=>$brand_id,"brand"=>$brand,"brand_link"=>$brand_link];
+                $history[$col]=["id"=>$id,"article_nr_displ"=>$art_name,"brand_id"=>$brand_id,"brand"=>$brand,"brand_link"=>$brand_link];
                 $col++;
             }
         }

@@ -125,7 +125,8 @@ if ($_REQUEST["w"]=="showPhotoForm"){$GLOBALS['_RESULT'] = array("content"=>$sho
 
 if ($_REQUEST["w"]=="showBrandForm"){$GLOBALS['_RESULT'] = array("content"=>$showform->showBrandForm($_REQUEST["brand"]));}
 
-if ($_REQUEST["w"]=="showDropHistory"){$GLOBALS['_RESULT'] = array("content"=>$showform->showHistoryList());}
+if ($_REQUEST["w"]=="showHistoryList"){$GLOBALS['_RESULT'] = array("content"=>$showform->showHistoryList());}
+if ($_REQUEST["w"]=="deleteHistoryItem"){$GLOBALS['_RESULT'] = array("content"=>$showform->deleteHistoryItem($_REQUEST["history_id"]));}
 
 //=client && login======================================================================================================
 

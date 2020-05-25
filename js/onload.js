@@ -1,12 +1,18 @@
 var folder='/content.php';
 
-// basket switcher
-// window.setInterval(function(){
-//     $('.basket_count').toggleClass('basket_count_hover');
-// }, 1000);
+// $(document).on('click', function() {
+//     $("#search_art").on("click", function() {
+//         let $this = $(this);
+//         if ($this.data('clicked')) {
+//             dropHistoryShow();
+//         } else {
+//             $this.data('clicked', true);
+//             dropHistoryHide();
+//         }
+//     });
+// });
 
 $(document).ready(function() { "use strict";
-
     // tooltips
     $(".tooltips").tooltip();
 
@@ -27,17 +33,9 @@ $(document).ready(function() { "use strict";
         }
     });
 
-    // tree
-    // var tree = new treefilter($("#my-tree"), {
-    //     searcher : $('input#my-search')
-    // });
-
     $(".carousel").carousel({
         interval: 122000
     });
-
-    // auto-manufacture-model select
-    // $('.js-example-basic-single').select2();
 
     // ancor
     $(".ancor__link a").click(function() {
@@ -67,8 +65,7 @@ $(document).ready(function() { "use strict";
     $(".params-data").each(function () {
         $(this).slider();
         $(this).on("slide", function(slideEvt) {
-            var name=$(this).attr("name");
-            $("#"+name).text(slideEvt.value);
+            $("#" + $(this).attr("name")).text(slideEvt.value);
         });
     });
 
@@ -78,25 +75,21 @@ $(document).ready(function() { "use strict";
             artSearch("search_art");
         }
     });
-
     $("#search_art2").keyup(function(event) {
         if (event.keyCode === 13) {
             artSearch("search_art2");
         }
     });
-
     $("#search_art3").keyup(function(event) {
         if (event.keyCode === 13) {
             artSearch("search_art3");
         }
     });
-
     $("#userlogin").keyup(function(event) {
         if (event.keyCode === 13) {
             loginForm();
         }
     });
-
     $("#userpassword").keyup(function(event) {
         if (event.keyCode === 13) {
             loginForm();

@@ -21,14 +21,11 @@ function initProductsForm(page) {
             window.history.pushState("catalogue", "Product", "?page="+page);
             new LazyLoad({ elements_selector: ".lazy" });
 
-            setTimeout(hideLoader, 500);
             navigateTo("result_target");
         }}, true);
 }
 
 function addFilterTemplate(param_id,value_id) {
-
-    showLoader();
 
     let template_id=$("#template_id").val();
 
@@ -89,7 +86,6 @@ function clearFilters() {
             $("#template_products").html(result.content[0]);
             $("#template_filters").html(result.content[1]);
             window.history.pushState("catalogue", "Product", "/catalogue/filter/"+result.content[2]);
-            setTimeout(hideLoader, 500);
             navigateTo("result_target");
         }}, true);
 }

@@ -9,7 +9,6 @@ $social_array=[
 ];
 
 $dist="/images/";
-
 foreach($social_array as $key=>$value): ?>
     <li>
         <a itemprop="sameAs" href="<?php echo($value["link"])?>">
@@ -20,3 +19,4 @@ foreach($social_array as $key=>$value): ?>
         </a>
     </li>
 <?php endforeach; ?>
+

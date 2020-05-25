@@ -534,6 +534,19 @@ header {
             margin: 0;
             &__item {
                 background: $white;
+                a, a:not([href]):not([tabindex]) {
+                    display: block;
+                    color: #000;
+                    cursor: pointer;
+                    position: relative;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    padding: 15px 0;
+                    &:hover {
+                        color: #ccc;
+                    }
+                }
                 &:hover {
                     background: #f7f7f7;
                 }
@@ -1056,7 +1069,7 @@ header {
             justify-content: center;
             flex-direction: column;
             text-align: center;
-                font-size: .7em;
+            font-size: .7em;
             cursor: pointer;
             float: left;
             list-style: none;

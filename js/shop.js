@@ -135,19 +135,15 @@ function updateBasketForm(art_id,storage_id,stock,phone) { "use strict";
         count_id.val(secret);
         count=secret;
         if (secret!==0 && secret!=="") {
-            //showLoader();
             JsHttpRequest.query(folder,{'w':'updateBasketForm', 'art_id':art_id, 'count':count, 'storage_id':storage_id},
                 function (result, errors){ if (errors) {alert(errors);} if (result){
                     showBasketForm();
-                    //setTimeout(hideLoader, 500);
                 }}, true);
         }
     } else {
-        //showLoader();
         JsHttpRequest.query(folder,{'w':'updateBasketForm', 'art_id':art_id, 'count':count, 'storage_id':storage_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 showBasketForm();
-                //setTimeout(hideLoader, 500);
             }}, true);
     }
 }
@@ -202,15 +198,12 @@ function detectmob() {
 }
 
 function showBasketForm() {
-    showLoader();
     let cur = parseInt($(".radio-group input[name=cur]:checked").attr("value"));
-    //$("#basket_block").html("<div class='content'></div>");
     JsHttpRequest.query(folder,{'w':'showBasketForm', 'cur':cur},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#basket_block").html(result.content);
             loadInputNumber();
             showBasketStatus();
-            setTimeout(hideLoader, 500);
         }}, true);
 }
 

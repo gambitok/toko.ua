@@ -1,13 +1,12 @@
-
-function showLoader() {
+// function showLoader() {
     // $("#LoaderForm").modal("show");
     // $(".modal-backdrop").css("background-color","white");
-}
+// }
 
-function hideLoader() {
+// function hideLoader() {
     // $("#LoaderForm").modal("hide");
     // $(".modal-backdrop").css("background-color","black");
-}
+// }
 
 function showUploadForm() {
     let myDropzone = new Dropzone("#myDropzone",{ dictDefaultMessage: "Press to choose file!" });
@@ -23,7 +22,7 @@ function showUploadForm() {
     });
 }
 
-function showAlertModal(message,title,status,callback) { "use strict";
+function showAlertModal(message, title, status, callback) { "use strict";
     JsHttpRequest.query(folder,{ 'w': 'changeLangAlert', 'message':message, 'title':title },
         function (result, errors){ if (errors) {} if (result){
             $("#choose_message").html("<span>"+result.content[0]+"</span>");
@@ -39,22 +38,20 @@ function showAlertModal(message,title,status,callback) { "use strict";
 
 function validate(evt) { "use strict";
     var theEvent = evt || window.event;
-    // Handle paste
     if (theEvent.type === "paste") {
         key = event.clipboardData.getData("text/plain");
     } else {
-        // Handle key press
         var key = theEvent.keyCode || theEvent.which;
         key = String.fromCharCode(key);
     }
     var regex = /[0-9]|\./;
-    if( !regex.test(key) ) {
+    if (!regex.test(key)) {
         theEvent.returnValue = false;
         if(theEvent.preventDefault) theEvent.preventDefault();
     }
 }
 
-function showValidateModal(phone,callback,callback2) { "use strict";
+function showValidateModal(phone, callback, callback2) { "use strict";
     JsHttpRequest.query(folder,{ 'w': 'validatePhone', 'phone':phone},
         function (result, errors){ if (errors) {} if (result){
             $("#ValidateForm").modal("show");
@@ -100,19 +97,27 @@ function showDropGarage() { "use strict";
         }}, true);
 }
 
-function showDropHistory() {
+function dropHistoryShow() {
     let myDropDown=$("#myDropdown");
     myDropDown.show();
     if (myDropDown.html()==="") {
-        JsHttpRequest.query(folder,{ 'w': 'showDropHistory'},
+        JsHttpRequest.query(folder,{ 'w': 'showHistoryList'},
             function (result, errors){ if (errors) {} if (result){
                 myDropDown.html(result.content);
             }}, true);
     }
 }
 
-function showDropHistory2() {
+function dropHistoryHide() {
     $("#myDropdown").hide();
+}
+
+function deleteHistoryItem(history_id) {
+    JsHttpRequest.query(folder,{ 'w': 'deleteHistoryItem', 'history_id':history_id},
+        function (result, errors){ if (errors) {} if (result){
+            dropHistoryHide();
+            $("#myDropdown").html("");
+        }}, true);
 }
 
 function toggleBlock(block, slide) { "use strict";
@@ -123,17 +128,6 @@ function toggleBlock(block, slide) { "use strict";
 function rotateIcon(a) {
     $(a).find("i").toggleClass("rotate__icon");
 }
-
-// function toggleBlockHistory(block,slide) { "use strict";
-//     $("#"+slide).slideToggle("slow");
-//     $("."+block).find("i").toggleClass("icon-rotate");
-//     if ($("#toggle_history-block").html()==="") {
-//     JsHttpRequest.query(folder,{ 'w': 'showAutoHistory'},
-//         function (result, errors){ if (errors) {} if (result){
-//             $("#toggle_history-block").html(result.content);
-//         }}, true);
-//     }
-// }
 
 function triggerTabAuto(year) { "use strict";
     $(".year-list").each(function () {$(this).removeClass("span-red");});
@@ -152,7 +146,7 @@ function triggerTabAuto(year) { "use strict";
     return true;
 }
 
-function triggerTabModel(auto,year) { "use strict";
+function triggerTabModel(auto, year) { "use strict";
     $(".auto-list").each(function () {$(this).removeClass("span-red");});
     $("#auto-"+auto).addClass("span-red");
     JsHttpRequest.query(folder,{ 'w': 'tab_model', 'auto':auto, 'year':year },
@@ -168,7 +162,7 @@ function triggerTabModel(auto,year) { "use strict";
     return true;
 }
 
-function triggerTabModelId(model,auto,year) { "use strict";
+function triggerTabModelId(model, auto, year) { "use strict";
     $(".model-list").each(function () {$(this).removeClass("span-red");});
     $("#model-"+model).addClass("span-red");
     JsHttpRequest.query(folder,{ 'w': 'tab_modelid', 'model':model, 'auto':auto, 'year':year },
@@ -183,7 +177,7 @@ function triggerTabModelId(model,auto,year) { "use strict";
     return true;
 }
 
-function triggerTabGroup(modelid,model,auto,year) { "use strict";
+function triggerTabGroup(modelid ,model, auto, year) { "use strict";
     $(".modelid-list").each(function () {$(this).removeClass("span-red");});
     $("#modelid-"+modelid).addClass("span-red");
     JsHttpRequest.query(folder,{ 'w': 'tab_group', 'modelid':modelid, 'model':model, 'auto':auto, 'year':year },
@@ -197,69 +191,51 @@ function triggerTabGroup(modelid,model,auto,year) { "use strict";
     return true;
 }
 
-////////////////////// Load catalogue page
-
-// function triggerTabAuto2(year,auto,model,modelid) { "use strict";
-//     $(".year-list").each(function () {$(this).removeClass("span-red");});
-//     $("#year-"+year).addClass("span-red");
-//     JsHttpRequest.query(folder,{ 'w': 'tab_auto', 'year':year },
+/*==== Load Catalogue page ====*/
+// function triggerTabModel2(auto,model,modelid) { "use strict";
+//     window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/");
+//     $(".auto-list").each(function () {$(this).removeClass("span-red");});
+//     $("#auto-"+auto).addClass("span-red");
+//     JsHttpRequest.query(folder,{ 'w': 'tab_model', 'auto':auto },
 //         function (result, errors){ if (errors) {} if (result){
-//             let link = $("#link_auto"); link.removeClass("disabled"); link.trigger("click");
-//             $("#link_model").addClass("disabled");
+//             let link = $("#link_model"); link.removeClass("disabled"); link.trigger("click");
 //             $("#link_modelid").addClass("disabled");
 //             $("#link_group").addClass("disabled");
-//             $("#tab_auto").html(result.content);
-//             if (year!==undefined && year!=="") {triggerTabModel2(auto,model,modelid);}
+//             $("#tab_model").html(result.content);
+//             if (model!==undefined && model!=="") {triggerTabModelId2(auto,model,modelid);}
 //         }}, true);
 //     return true;
 // }
-
-function triggerTabModel2(auto,model,modelid) { "use strict";
-    window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/");
-    $(".auto-list").each(function () {$(this).removeClass("span-red");});
-    $("#auto-"+auto).addClass("span-red");
-    JsHttpRequest.query(folder,{ 'w': 'tab_model', 'auto':auto },
-        function (result, errors){ if (errors) {} if (result){
-            let link = $("#link_model"); link.removeClass("disabled"); link.trigger("click");
-            $("#link_modelid").addClass("disabled");
-            $("#link_group").addClass("disabled");
-            $("#tab_model").html(result.content);
-            if (model!==undefined && model!=="") {triggerTabModelId2(auto,model,modelid);}
-        }}, true);
-    return true;
-}
-
-function triggerTabModelId2(auto,model,modelid) { "use strict";
-    window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/"+model+"/");
-    $(".model-list").each(function () {$(this).removeClass("span-red");});
-    $("#model-"+model).addClass("span-red");
-    JsHttpRequest.query(folder,{ 'w': 'tab_modelid', 'model':model, 'auto':auto },
-        function (result, errors){ if (errors) {} if (result){
-            let link = $("#link_modelid"); link.removeClass("disabled"); link.trigger("click");
-            $("#link_group").addClass("disabled");
-            $("#tab_modelid").html(result.content);
-            if (modelid!==undefined && modelid!=="") {setTimeout(triggerTabGroup2(auto,model,modelid),2000);}
-        }}, true);
-    return true;
-}
-
-function triggerTabGroup2(auto,model,modelid) { "use strict";
-    window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/"+model+"/"+modelid+"/");
-    $(".modelid-list").each(function () {$(this).removeClass("span-red");});
-    $("#modelid-"+modelid).addClass("span-red");
-    JsHttpRequest.query(folder,{ 'w': 'tab_group', 'modelid':modelid, 'model':model, 'auto':auto },
-        function (result, errors){ if (errors) {} if (result){
-            let link = $("#link_group"); link.removeClass("disabled"); link.trigger("click");
-            $("#tab_group").html(result.content);
-        }}, true);
-    return true;
-}
-
-function triggerCatalogueTabs(auto,model,modelid) {
-    if (auto!==undefined && auto!=="") triggerTabModel2(auto,model,modelid);
-}
-
-///////////////
+//
+// function triggerTabModelId2(auto,model,modelid) { "use strict";
+//     window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/"+model+"/");
+//     $(".model-list").each(function () {$(this).removeClass("span-red");});
+//     $("#model-"+model).addClass("span-red");
+//     JsHttpRequest.query(folder,{ 'w': 'tab_modelid', 'model':model, 'auto':auto },
+//         function (result, errors){ if (errors) {} if (result){
+//             let link = $("#link_modelid"); link.removeClass("disabled"); link.trigger("click");
+//             $("#link_group").addClass("disabled");
+//             $("#tab_modelid").html(result.content);
+//             if (modelid!==undefined && modelid!=="") {setTimeout(triggerTabGroup2(auto,model,modelid),2000);}
+//         }}, true);
+//     return true;
+// }
+//
+// function triggerTabGroup2(auto,model,modelid) { "use strict";
+//     window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/"+model+"/"+modelid+"/");
+//     $(".modelid-list").each(function () {$(this).removeClass("span-red");});
+//     $("#modelid-"+modelid).addClass("span-red");
+//     JsHttpRequest.query(folder,{ 'w': 'tab_group', 'modelid':modelid, 'model':model, 'auto':auto },
+//         function (result, errors){ if (errors) {} if (result){
+//             let link = $("#link_group"); link.removeClass("disabled"); link.trigger("click");
+//             $("#tab_group").html(result.content);
+//         }}, true);
+//     return true;
+// }
+//
+// function triggerCatalogueTabs(auto,model,modelid) {
+//     if (auto!==undefined && auto!=="") triggerTabModel2(auto,model,modelid);
+// }
 
 function saveSellForm() { "use strict";
     let company_input=$("#reg_company"), company=company_input.val();

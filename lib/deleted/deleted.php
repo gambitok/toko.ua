@@ -27,7 +27,7 @@
     //                $url = "https://toko.ua/pattern/$template_link/";
     //                $list.="
     //                <li class=\"goods__item\">
-        //                    <a href=\"$url\" onclick=\"showLoader();\">
+        //                    <a href=\"$url\">
             //                        <img src=\"$link\" alt=\"$text\" title=\"$text\">
             //                        <h2>$text</h2>
             //                        <input type='hidden' value='$descr' title='$text'>
@@ -208,7 +208,7 @@
 //                list($manufacture,$model,$model_id)=$automan->getCarInfo($typ_id);
 //                list($mf,$md,$md2,$gr)=$automan->getAutoDescr($manufacture,$model,$model_id,$typ_id);
 //                $auto_title="$mf / $md / $md2 / $gr";
-//                $list.="<p><a onclick='showLoader(); setCookie(\"auto_typ_id\",$typ_id); location.href=\"/details\";'>$auto_title</a></p>";
+//                $list.="<p><a setCookie(\"auto_typ_id\",$typ_id); location.href=\"/details\";'>$auto_title</a></p>";
 //            }
 //        } else $list="{empty_history}";
 //        $list=$this->replaceLang($list);

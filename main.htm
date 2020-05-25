@@ -61,7 +61,6 @@
 			}]
 		}
 	</script>
-
 	<script type="application/ld+json">
 		{
 			"@context": "http://schema.org",
@@ -74,7 +73,6 @@
 			}
 		}
 	</script>
-
 	<script type="application/ld+json">
 		{
 			"@context": "http://schema.org",
@@ -125,13 +123,10 @@
 			]
 		}
 	</script>
-
 	{script_breadcrumbs}
-
 	{site_page_pagination}
 
 	<!--socials-->
-
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="{site_title}" />
 	<meta property="og:url" content="{canonical_link}" />
@@ -148,7 +143,6 @@
 
 	<link rel="canonical" href="{canonical_link}"/>
 
-	<!--<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap&subset=cyrillic" rel="stylesheet">-->
 	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" href="/fonts/fontawesome_web/css/all-minify.css">
@@ -157,10 +151,6 @@
 	<link rel="stylesheet" href="/css/plugins/bootstrap.min.css">
 
 	<!--custom styles-->
-	<!--<link rel="stylesheet" href="/css/full.css">-->
-	<!--<link rel="stylesheet" href="/css/plugins.css">-->
-	<!--<link rel="stylesheet" href="/css/media.css">-->
-	<!--<link rel="stylesheet" href="/css/modals.css">-->
 	<link rel="stylesheet" href="/css/style.min.css">
 
 	<!--plugins scripts-->
@@ -285,7 +275,7 @@
 
 					<div class="col-6 search">
 						<div class="input-group">
-							<input id="search_art" onfocus="showDropHistory();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">
+							<input id="search_art" onfocus="dropHistoryShow();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">
 							<div id="myDropdown" class="dropdown-content"></div>
 							<div class="input-group-append">
 								<button onClick="artSearch('search_art');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button" title="{search_cap}">
@@ -783,7 +773,7 @@
 			|| $(e.target).attr('class') == 'icons-nav__garage'
 			|| $(e.target).attr('class') == 'icons-nav__garage-text'
 		) { return true; } else {
-            $('#GarageForm').fadeOut();
+            $("#GarageForm").fadeOut();
         }
     });
     $("body").click(function(e) {
@@ -791,6 +781,14 @@
            || $(e.target).attr('class') == 'tree-title'
         ) { return true; } else {
             closeHideNavigation();
+        }
+    });
+    $("body").click(function(e) {
+        if ($(e.target).attr('id') == 'search_art'
+           || $(e.target).attr('class') == 'search-nav'
+           || $(e.target).attr('class') == 'search-nav__item'
+        ) { return true; } else {
+            dropHistoryHide();
         }
     });
     // $("body").click(function(e) {

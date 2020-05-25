@@ -292,8 +292,8 @@
 
                     <div class="col-6 search">
                         <div class="input-group">
-                            <input id="search_art" onMouseOut="showDropHistory2();" onMouseOver="showDropHistory();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">
-                            <div onMouseOut="showDropHistory2();" onMouseOver="showDropHistory();" id="myDropdown" class="dropdown-content"></div>
+                            <input id="search_art" onMouseOut="dropHistoryHide();" onMouseOver="dropHistoryShow();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">
+                            <div onMouseOut="dropHistoryHide();" onMouseOver="dropHistoryShow();" id="myDropdown" class="dropdown-content"></div>
                             <div class="input-group-append">
                                 <button onClick="artSearch('search_art');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button" title="{search_cap}">
                                     <span class="fas fa-search"></span>
