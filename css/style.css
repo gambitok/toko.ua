@@ -1839,21 +1839,34 @@ table thead td { border: 1px solid #000; }
 
 .cars-nav { background: #fff; color: #fff; display: flex; flex-wrap: nowrap; justify-content: start; }
 
-.cars-nav__item { background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat; color: #000; padding: 30px 65px 30px 30px; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.cars-nav__item { background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat; color: #000; cursor: pointer; padding: 30px 65px 30px 30px; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
 .cars-nav__item:not(:first-child):before { content: ''; position: absolute; left: 0; top: 19px; bottom: 19px; width: 1px; background: #ececec; }
 
+.cars-nav__item-checked { background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #1a77d2; color: #fff; }
+
+.cars-nav__item-checked:before { content: none !important; }
+
 .cars-nav__item-active { background: url("/images/icons/dropdown-white.svg") calc(100% - 20px) center no-repeat #1a77d2; color: #fff; }
 
-.cars-nav__item-checked { background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #1a77d2; color: #fff; }
+.cars-nav__item-active:before { content: none !important; }
+
+.cars-nav__item-disabled { color: #989898; cursor: default; }
 
 .cars-nav__item-hidden { display: none; }
 
-.cars-tab { display: none; }
+.cars-tab__block { border-top: 3px solid #1a77d2; display: none; flex-wrap: wrap; }
+
+.cars-tab__block-active { display: flex; }
+
+.cars-tab__block-item { background: #fff; border-bottom: 1px solid #ebebeb; border-right: 1px solid #ebebeb; border-top: 1px solid #ebebeb; cursor: pointer; margin-bottom: -1px; padding: 15px; width: calc(12.5%); }
+
+.cars-tab__block-item:hover { background: #f5f5f5; }
 
 @media (max-width: 1200px) { .cars-nav { display: block; }
   .cars-nav__item { padding: 15px 65px 15px 15px; }
-  .cars-nav__item:not(:last-child) { border-bottom: 1px solid #ebebeb; } }
+  .cars-nav__item:not(:last-child) { border-bottom: 1px solid #ebebeb; }
+  .cars-tab__block-item { width: 100%; } }
 
 /*==== Adaptive ====*/
 /* ==== PHONE ==== */

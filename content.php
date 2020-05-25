@@ -226,6 +226,9 @@ if ($_REQUEST["w"]=="techCarModels"){ $GLOBALS['_RESULT'] = array("content"=>$pr
 
 if ($_REQUEST["w"]=="techCarModelsFilter"){ $GLOBALS['_RESULT'] = array("content"=>$prod->techCarModelsFilter($_REQUEST["typ_id"],$_REQUEST["str_id"]));}
 
+// NEW
+if ($_REQUEST["w"]=="getCarsSearchContent"){ $GLOBALS['_RESULT'] = array("content"=>$prod->getCarsSearchContent($_REQUEST["type"],$_REQUEST["attr"]));}
+
 //=Search======================================================================================================
 
 if ($_REQUEST["w"]=="showSearchParameters"){ $GLOBALS['_RESULT'] = array("content"=>$search->showSearchParameters($_REQUEST["str_id"],$_REQUEST["page"],$_REQUEST["active_filters"],$_REQUEST["type"]));}

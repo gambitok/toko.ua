@@ -1015,7 +1015,104 @@ class ProductsClass extends CatalogueClass {
 
     function getCarsSearch() {
         $form=$this->getHtmlForm("cars/cars");
+        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("")[0], $form);
+//        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("manuf", "648")[0], $form);
+//        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("model", "648-Sportage")[0], $form);
+//        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("years", "648-Sportage-2015")[0], $form);
+//        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("bodyc", "8751")[0], $form);
+//        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("engin", "8751-2.0-15")[0], $form);
         return $form;
+    }
+
+    function getCarsSearchContent($type="", $value="") { $db = DbSingleton::getTokoDb();
+        $list = ""; $descr=""; $automan=new AutoClass;
+
+        // MANUFACTURE
+        if ($type=="") {
+            $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n=$db->num_rows($r);
+            for ($i=1;$i<=$n;$i++) {
+                $mfa_id = $db->result($r, $i - 1, "MFA_ID");
+                $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
+                $list.="<div data-url=\"manuf/$mfa_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$mfa_brand</div>";
+            }
+        }
+
+        // MODEL
+        if ($type=="manuf") {
+            $mfa_id = $value;
+            $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
+            for ($i=1;$i<=$n;$i++) {
+                $model = $db->result($r, $i - 1, "Model");
+                $model_cap = $mfa_id."-".$model;
+                $list.="<div data-url=\"model/$model_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$model</div>";
+            }
+            $descr = $automan->getMfaBrand($mfa_id);
+        }
+
+        // YEAR
+        if ($type=="model") {
+            list($mfa_id, $model) = explode("-", $value);
+            $min_date_start=1947; $max_date_end=2019;
+            $r=$db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
+                CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
+            FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id';");
+            $date_start = $db->result($r,0,"min_year");
+            $date_start = substr($date_start, 0, -2)."";
+            $date_end = $db->result($r,0,"max_year");
+            if ($date_end!=0) $date_end = substr($date_end, 0, -2)."";
+            if ($date_end==0) $date_end=$max_date_end;
+            if ($date_start=="" || $date_start==0) $date_start=$min_date_start;
+            for ($i=$date_end; $i>=$date_start; $i--) {
+                $year = $i;
+                $year_cap = $mfa_id."-".$model."-".$year;
+                $list.="<div data-url=\"years/$year_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$year</div>";
+            }
+            $descr = $model;
+        }
+
+        // BODY (MODEL_ID)
+        if ($type=="years") {
+            list($mfa_id, $model, $year) = explode("-", $value);
+            $where = "AND 
+                ((`MOD_PCON_END`>=".$year."00 AND `MOD_PCON_END`<=".$year."12)
+                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`>=".$year."00)
+                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`=0))";
+            $r=$db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id' $where;"); $n=$db->num_rows($r);
+            for ($i=1;$i<=$n;$i++) {
+                $mod_id = $db->result($r, $i - 1, "MOD_ID");
+                $tex_text = $db->result($r, $i - 1, "TEX_TEXT");
+                $list.="<div data-url=\"bodyc/$mod_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$tex_text</div>";
+            }
+            $descr = $year;
+        }
+
+        // ENGINE
+        if ($type=="bodyc") {
+            $mod_id = $value;
+            $r=$db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` FROM `T_types` 
+            WHERE `TYP_MOD_ID`='$mod_id' GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;"); $n=$db->num_rows($r);
+            for ($i=1;$i<=$n;$i++) {
+                $volume_cm = $db->result($r, $i-1, "VOLUME_CM");
+                $fuel_id = $db->result($r, $i-1, "FUEL_ID"); $fuel_text=$this->getFuelName($fuel_id);
+                $fuel_cap = $mod_id."-".$volume_cm."-".$fuel_id;
+                $list.="<div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$volume_cm $fuel_text</div>";
+            }
+            $descr = $mod_id;
+        }
+
+        // MODIFICATION
+        if ($type=="engin") {
+            list($mod_id, $volume_cm, $fuel_id) = explode("-", $value);
+            $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' AND `VOLUME_CM`='$volume_cm' AND `FUEL_ID`='$fuel_id' AND `ACTIVE`=1 ORDER BY `TYP_HP_FROM`;"); $n=$db->num_rows($r);
+            for ($i=1;$i<=$n;$i++) {
+                $typ_id = $db->result($r, $i-1, "TYP_ID");
+                $typ_text = $db->result($r, $i-1, "TYP_TEXT");
+                $list.="<div data-url=\"modif/$typ_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$typ_text</div>";
+            }
+            $descr = $volume_cm."-".$fuel_id;
+        }
+
+        return array($list, $descr);
     }
 
 }

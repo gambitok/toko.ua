@@ -10,6 +10,7 @@
         &__item {
             background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat;
             color: #000;
+            cursor: pointer;
             padding: 30px 65px 30px 30px;
             position: relative;
             overflow: hidden;
@@ -26,13 +27,23 @@
                     background: #ececec;
                 }
             }
-            &-active {
-                background: url("/images/icons/dropdown-white.svg") calc(100% - 20px) center no-repeat #1a77d2;
-                color: #fff;
-            }
             &-checked {
                 background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #1a77d2;
                 color: #fff;
+                &:before {
+                    content: none!important;
+                }
+            }
+            &-active {
+                background: url("/images/icons/dropdown-white.svg") calc(100% - 20px) center no-repeat #1a77d2;
+                color: #fff;
+                &:before {
+                    content: none!important;
+                }
+            }
+            &-disabled {
+                color: #989898;
+                cursor: default;
             }
             &-hidden {
                 display: none;
@@ -40,9 +51,26 @@
         }
     }
     &-tab {
-        display: none;
-        &__item {
-
+        &__block {
+            border-top: 3px solid #1a77d2;
+            display: none;
+            flex-wrap: wrap;
+            &-active {
+                display: flex;
+            }
+            &-item {
+                background: #fff;
+                border-bottom: 1px solid #ebebeb;
+                border-right: 1px solid #ebebeb;
+                border-top: 1px solid #ebebeb;
+                cursor: pointer;
+                margin-bottom: -1px;
+                padding: 15px;
+                width: calc(12.5%);
+                &:hover {
+                    background: #f5f5f5;
+                }
+            }
         }
     }
 }
@@ -55,6 +83,13 @@
                 padding: 15px 65px 15px 15px;
                 &:not(:last-child) {
                     border-bottom: 1px solid #ebebeb;
+                }
+            }
+        }
+        &-tab {
+            &__block {
+                &-item {
+                    width: 100%;
                 }
             }
         }

@@ -1,19 +1,24 @@
+<script type="text/javascript" src="/js/cars.js"></script>
+
 <h2>Cars</h2>
 
 <div class="cars">
     <div class="cars-nav">
-        <div class="cars-nav__item cars-nav__item-active">Manufacture</div>
-        <div class="cars-nav__item">Model</div>
-        <div class="cars-nav__item">Year</div>
-        <div class="cars-nav__item">Engine</div>
-        <div class="cars-nav__item">Modification</div>
+        <div data-type="manuf" data-next="model" data-tab="cars-tab1" data-id="0" class="cars-nav__item cars-nav__item-active cars-nav__item-checked">Manufacture</div>
+        <div data-type="model" data-next="years" data-tab="cars-tab2" data-id="0" class="cars-nav__item">Model</div>
+        <div data-type="years" data-next="bodyc" data-tab="cars-tab3" data-id="0" class="cars-nav__item">Year</div>
+        <div data-type="bodyc" data-next="engin" data-tab="cars-tab4" data-id="0" class="cars-nav__item cars-nav__item-disabled">Body</div>
+        <div data-type="engin" data-next="modif" data-tab="cars-tab5" data-id="0" class="cars-nav__item cars-nav__item-disabled">Engine</div>
+        <div data-type="modif" data-next="empty" data-tab="cars-tab6" data-id="0" class="cars-nav__item cars-nav__item-disabled">Modification</div>
     </div>
     <div id="cars_tab" class="cars-tab">
-        <div class="cars-tab__item">Acura</div>
-        <div class="cars-tab__item">Alfa Romeo</div>
-        <div class="cars-tab__item">Audi</div>
-        <div class="cars-tab__item">BMW</div>
-        <div class="cars-tab__item">Ford</div>
-        <div class="cars-tab__item">Toyota</div>
+        <div id="cars-tab1" class="cars-tab__block cars-tab__block-active">
+            {cars_manufactures}
+        </div>
+        <div id="cars-tab2" class="cars-tab__block"></div>
+        <div id="cars-tab3" class="cars-tab__block"></div>
+        <div id="cars-tab4" class="cars-tab__block"></div>
+        <div id="cars-tab5" class="cars-tab__block"></div>
+        <div id="cars-tab6" class="cars-tab__block"></div>
     </div>
 </div>
