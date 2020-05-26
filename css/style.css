@@ -793,6 +793,22 @@ header { width: 100%; color: #a9a9a9; }
 
 .garage_form-buttons button { margin-top: 10px; margin-right: 10px; width: 150px; font-size: 14px; float: left; }
 
+.garage-user { background: #fff; box-shadow: 0 1px 4px #ccc; border-bottom: 3px solid #0c5460; }
+
+.garage-user__title { background: #0c5460; color: #fff; padding: 15px; }
+
+.garage-user__title span { font-size: 11px; }
+
+.garage-user__title span.title { font-size: 16px; font-weight: 700; }
+
+.garage-user__nav { display: inline; }
+
+.garage-user__nav button { margin-top: 10px; margin-right: 10px; width: 150px; font-size: 14px; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+.garage-user__image { padding: 15px; }
+
+.garage-user__image img { width: auto; max-height: 85px; float: right; }
+
 .garage_typ_form { background: #0c5460; }
 
 .garage_typ_form a { font-size: 15px; padding: 0 !important; text-transform: uppercase; color: #fff; }

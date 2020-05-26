@@ -2014,6 +2014,45 @@ header {
     }
 }
 
+.garage-user {
+    background: #fff;
+    box-shadow: 0 1px 4px #ccc;
+    border-bottom: 3px solid #0c5460;
+    &__title {
+        background: #0c5460;
+        color: #fff;
+        padding: 15px;
+        span {
+            font-size: 11px;
+            &.title {
+                font-size: 16px;
+                font-weight: 700;
+            }
+        }
+    }
+    &__nav {
+        display: inline;
+        button {
+            margin-top: 10px;
+            margin-right: 10px;
+            width: 150px;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+    &__image {
+        padding: 15px;
+        img {
+            width: auto;
+            max-height: 85px;
+            float: right;
+        }
+    }
+}
+
 .garage_typ_form {
     background: $site_info_secondary;
     a {
