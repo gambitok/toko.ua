@@ -1337,7 +1337,7 @@ table thead td { border: 1px solid #000; }
 
 .modal-header button { width: 100px; margin-left: 10px; }
 
-.modal-header.close { outline: 0; }
+.modal-header.close { outline: 0; padding: 0; width: auto; float: right; margin: 0; }
 
 .modal-gallery { background-color: rgba(0, 0, 0, 0.5); }
 
@@ -1843,11 +1843,11 @@ table thead td { border: 1px solid #000; }
 
 .cars-nav__item:not(:first-child):before { content: ''; position: absolute; left: 0; top: 19px; bottom: 19px; width: 1px; background: #ececec; }
 
-.cars-nav__item-checked { background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #1a77d2; color: #fff; }
+.cars-nav__item-checked { background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #228b94; color: #fff; }
 
 .cars-nav__item-checked:before { content: none !important; }
 
-.cars-nav__item-active { background: url("/images/icons/dropdown-white.svg") calc(100% - 20px) center no-repeat #1a77d2; color: #fff; }
+.cars-nav__item-active { background: url("/images/icons/dropdown-white.svg") calc(100% - 20px) center no-repeat #228b94; color: #fff; }
 
 .cars-nav__item-active:before { content: none !important; }
 
@@ -1857,7 +1857,7 @@ table thead td { border: 1px solid #000; }
 
 .cars-nav__item-disabled { color: #989898; cursor: default; }
 
-.cars-tab__block { border-top: 3px solid #1a77d2; display: none; flex-wrap: wrap; background: none repeat scroll 0 0 #fff; z-index: 9999; }
+.cars-tab__block { border-top: 3px solid #228b94; display: none; flex-wrap: wrap; }
 
 .cars-tab__block-active { display: flex; }
 
@@ -1876,8 +1876,36 @@ table thead td { border: 1px solid #000; }
   .cars-nav__item:not(:last-child) { border-bottom: 1px solid #ebebeb; }
   .cars-nav__item-mob { display: block; }
   .cars-nav__item-hidden { display: none; }
-  .cars-tab__block { max-height: 40vh; overflow-x: hidden; overflow-y: auto; border-bottom: 3px solid #1a77d2; border-top: unset; }
+  .cars-tab__block { max-height: 40vh; overflow-x: hidden; overflow-y: auto; border-bottom: 3px solid #228b94; border-top: none; }
   .cars-tab__block-item { width: 100%; } }
+
+.cars-garage { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; background: #fff; }
+
+.cars-garage-box { display: block; }
+
+.cars-garage-box__title { padding: 15px; color: #000; font-weight: bold; }
+
+.cars-garage-box__add { padding: 15px; text-align: right; color: #228b94; }
+
+.cars-garage-box-car { padding: 15px; }
+
+.cars-garage-box-car__title { color: #000; }
+
+.cars-garage-box-car__text { color: #989898; }
+
+.cars-garage-list { background: #fff; border-top: 3px solid #228b94; display: flex; flex-wrap: wrap; }
+
+.cars-garage-list-item { border-bottom: 1px solid #ebebeb; border-right: 1px solid #ebebeb; border-top: 1px solid #ebebeb; display: flex; padding: 10px; width: 25%; }
+
+.cars-garage-list-item-car:hover { text-decoration: none; }
+
+.cars-garage-list-item-car__title { color: #000; }
+
+.cars-garage-list-item-car__text { color: #228b94; }
+
+.cars-garage-list-item__delete { color: #228b94; width: 50px; }
+
+.cars-garage-list-item__delete:hover { text-decoration: none; }
 
 /*==== Adaptive ====*/
 /* ==== PHONE ==== */
