@@ -1,0 +1,94 @@
+$(document).ready(function() {
+
+    $(".cars-nav__item").on('click', function() {
+        toggleCarsNavigation(this);
+    });
+
+});
+
+function toggleCarsTab(index) {
+    let data = $(index).attr("data-url").split("/");
+    let type = data[0];
+    let attr = data[1];
+    let elem = $("div[data-type='" + type + "']");
+    let next = $("div[data-type='" + $(elem).attr('data-next') + "']");
+
+    if ($(elem).attr('data-id') !== "0") {
+        clearCarsBlock($(elem).attr("data-tab"));
+    }
+
+    $(elem).attr('data-id', attr);
+
+    // Remove Disables
+    $(next).removeClass("cars-nav__item-disabled");
+    $(next).removeClass("cars-nav__item-hidden");
+
+    // Hide Checked
+    $(".cars-nav__item").each(function () {
+        $(this).removeClass("cars-nav__item-checked");
+    });
+    $(next).addClass('cars-nav__item-checked');
+
+    toggleCarsNavigation(next, type, attr);
+}
+
+function toggleCarsNavigation(index, type, attr) {
+    let data_pred = $("div[data-type='" + $(index).attr("data-pred") + "']");
+    if (type===undefined) { type = $(data_pred).attr("data-type"); }
+    if (attr===undefined) { attr = $(data_pred).attr("data-id"); }
+    if (type===undefined && attr===undefined) { type=""; attr=0; }
+
+    // Tab Non-Disabled
+    if (!$(index).hasClass("cars-nav__item-disabled")) {
+        // Uncheck Non-Active Nav
+        // Close Non-Active Tab
+        if ($(index).hasClass("cars-nav__item-active")) {
+            $(index).removeClass("cars-nav__item-active");
+            $("#" + $(index).attr("data-tab")).removeClass("cars-tab__block-active");
+        } else {
+            // Show Active Nav
+            $(".cars-nav__item").each(function () {
+                $(this).removeClass("cars-nav__item-active");
+            });
+            $(index).addClass("cars-nav__item-active");
+
+            // Show Active Tab
+            $(".cars-tab__block").each(function () {
+                $(this).removeClass("cars-tab__block-active");
+            });
+            let index_tab = $("#" + $(index).attr("data-tab"));
+            index_tab.addClass("cars-tab__block-active");
+
+            getCarsSearchContent(type, attr);
+        }
+    }
+}
+
+function getCarsSearchContent(type, attr) {
+    JsHttpRequest.query(folder,{'w':'getCarsSearchContent', 'type':type, 'attr':attr},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            $("#" + result.tab).html(result.list);
+            $("div[data-type='" + result.nav + "']").html(result.title);
+        }}, true);
+}
+
+function clearCarsBlock(data_tab) {
+    let cur_tab = parseInt(data_tab.match(/\d+/));
+    if (cur_tab!==undefined) {
+        for (let i = 1; i <= 6; i++) {
+            if (i > cur_tab) {
+                let active_tab = $("div[data-tab='cars-tab" + i + "']");
+                active_tab.removeClass("cars-nav__item-active");
+                active_tab.removeClass("cars-nav__item-checked");
+
+                JsHttpRequest.query(folder,{'w':'clearCarsBlock', 'sel_tab':i, 'cur_tab':cur_tab},
+                    function (result, errors){ if (errors) {alert(errors);} if (result) {
+                        //default Classes
+                        active_tab.addClass(result.content[0]);
+                        //default Texts
+                        active_tab.html(result.content[1]);
+                    }}, true);
+            }
+        }
+    }
+}
