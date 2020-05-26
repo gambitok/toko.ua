@@ -1021,11 +1021,13 @@ class ProductsClass extends CatalogueClass {
 //        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("years", "648-Sportage-2015")[0], $form);
 //        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("bodyc", "8751")[0], $form);
 //        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("engin", "8751-2.0-15")[0], $form);
+        $form=$this->replaceLang($form);
         return $form;
     }
 
     function getCarsSearchContent($type="", $value="") { $db = DbSingleton::getTokoDb();
-        $list = ""; $descr=""; $automan=new AutoClass;
+        $list = ""; $title=""; $automan=new AutoClass; $n=0;
+        $nav=""; $tab="";
 
         // MANUFACTURE
         if ($type=="") {
@@ -1035,6 +1037,8 @@ class ProductsClass extends CatalogueClass {
                 $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
                 $list.="<div data-url=\"manuf/$mfa_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$mfa_brand</div>";
             }
+            $title = "{auto_cap}";
+            $nav="{auto_cap}"; $tab="cars-tab1";
         }
 
         // MODEL
@@ -1046,28 +1050,29 @@ class ProductsClass extends CatalogueClass {
                 $model_cap = $mfa_id."-".$model;
                 $list.="<div data-url=\"model/$model_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$model</div>";
             }
-            $descr = $automan->getMfaBrand($mfa_id);
+            $title = $automan->getMfaBrand($mfa_id);
+            $nav="manuf"; $tab="cars-tab2";
         }
 
         // YEAR
         if ($type=="model") {
             list($mfa_id, $model) = explode("-", $value);
-            $min_date_start=1947; $max_date_end=2019;
+            $min_date_start=1947; $max_date_end=2019; $n=1;
             $r=$db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
                 CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
             FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id';");
             $date_start = $db->result($r,0,"min_year");
             $date_start = substr($date_start, 0, -2)."";
             $date_end = $db->result($r,0,"max_year");
-            if ($date_end!=0) $date_end = substr($date_end, 0, -2)."";
-            if ($date_end==0) $date_end=$max_date_end;
-            if ($date_start=="" || $date_start==0) $date_start=$min_date_start;
+            if ($date_end!=0) $date_end = substr($date_end, 0, -2).""; else $date_end = $max_date_end;
+            if ($date_start=="" || $date_start==0) $date_start = $min_date_start;
             for ($i=$date_end; $i>=$date_start; $i--) {
                 $year = $i;
                 $year_cap = $mfa_id."-".$model."-".$year;
                 $list.="<div data-url=\"years/$year_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$year</div>";
             }
-            $descr = $model;
+            $title = $model;
+            $nav="model"; $tab="cars-tab3";
         }
 
         // BODY (MODEL_ID)
@@ -1083,7 +1088,8 @@ class ProductsClass extends CatalogueClass {
                 $tex_text = $db->result($r, $i - 1, "TEX_TEXT");
                 $list.="<div data-url=\"bodyc/$mod_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$tex_text</div>";
             }
-            $descr = $year;
+            $title = $year;
+            $nav="years"; $tab="cars-tab4";
         }
 
         // ENGINE
@@ -1097,7 +1103,8 @@ class ProductsClass extends CatalogueClass {
                 $fuel_cap = $mod_id."-".$volume_cm."-".$fuel_id;
                 $list.="<div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$volume_cm $fuel_text</div>";
             }
-            $descr = $mod_id;
+            $title = $this->getModIdText($mod_id);
+            $nav="bodyc"; $tab="cars-tab5";
         }
 
         // MODIFICATION
@@ -1107,12 +1114,71 @@ class ProductsClass extends CatalogueClass {
             for ($i=1;$i<=$n;$i++) {
                 $typ_id = $db->result($r, $i-1, "TYP_ID");
                 $typ_text = $db->result($r, $i-1, "TYP_TEXT");
-                $list.="<div data-url=\"modif/$typ_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$typ_text</div>";
+                $kw_from = $db->result($r,$i-1,"TYP_KW_FROM");
+                $hp_from = $db->result($r,$i-1,"TYP_HP_FROM");
+                $d_start=$db->result($r,$i-1,"TYP_PCON_START"); if ($d_start==0) {$d_start="";} if (strlen($d_start)==6) {$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
+                $d_end=$db->result($r,$i-1,"TYP_PCON_END"); if ($d_end==0) {$d_end="{cur_time_min}";} if (strlen($d_end)==6) {$d_end=substr($d_end,0,4).".".substr($d_end,4,2);}
+                $eng_cod = $db->result($r,$i-1,"ENG_Cod");
+                $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/';";
+//                $list.="<div data-url=\"modif/$typ_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$typ_text</div>";
+                $list.="<div class=\"cars-tab__block-item cars-tab__block-item-modif\"><a href=\"#\" onclick=\"$onclick\">
+                <b>$typ_text</b> 
+                    <table>
+                        <tr><td>{date_release}:</td><td class='text-right'>$d_start - $d_end</td></tr>
+                        <tr><td>{engine_model}:</td><td class='text-right'>$eng_cod</td></tr>
+                        <tr><td>{power_cap}:</td><td class='text-right'>$hp_from {horse_power_cap}, $kw_from {kilo_wat_cap}</td></tr>
+                    </table>
+                </a></div>";
             }
-            $descr = $volume_cm."-".$fuel_id;
+            $title = $volume_cm." ".$this->getFuelName($fuel_id);
+            $nav="engin"; $tab="cars-tab6";
         }
 
-        return array($list, $descr);
+        // TYP SELECTED
+        if ($type=="modif") {
+            $typ_id = $value;
+            $title = $this->getTypIdText($typ_id);
+            $nav="modif"; $tab="cars-tab6";
+        }
+
+        if ($n==0) { $list="<div style='margin: 30px auto;'>{nothing_found}</div>"; }
+
+        $list=$this->replaceLang($list);
+
+        return array($list, $title, $nav, $tab);
+    }
+
+    function getModIdText($mod_id) { $db = DbSingleton::getTokoDb();
+        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
+        $tex_text=$db->result($r, 0, "TEX_TEXT");
+        return $tex_text;
+    }
+
+    function getTypIdText($typ_id) { $db = DbSingleton::getTokoDb();
+        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
+        $tex_text=$db->result($r, 0, "TYP_TEXT");
+        return $tex_text;
+    }
+
+    function clearCarsBlock($sel_tab, $cur_tab) {
+        $disabled="cars-nav__item-disabled";
+        $hidden="cars-nav__item-hidden";
+
+        if ($sel_tab == ($cur_tab + 1)) {
+            $disabled="";
+            $hidden="";
+        }
+        switch ($sel_tab) {
+            case "1": {$classes=""; $text="{auto_cap}"; break;}
+            case "2": {$classes="$disabled"; $text="{model_cap}"; break;}
+            case "3": {$classes="$disabled"; $text="{year_cap}"; break;}
+            case "4": {$classes="$disabled $hidden"; $text="{model_number}"; break;}
+            case "5": {$classes="$disabled $hidden"; $text="{engine_cap}"; break;}
+            case "6": {$classes="$disabled $hidden"; $text="{modification_cap}"; break;}
+            default:  {$classes=""; $text="{auto_cap}"; break;}
+        }
+        $text=$this->replaceLang($text);
+        return array($classes, $text);
     }
 
 }

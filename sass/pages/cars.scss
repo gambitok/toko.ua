@@ -1,6 +1,21 @@
+//.loader_inner {
+//    background-image: url("/images/preloader.gif");
+//    background-size: cover;
+//    background-repeat: no-repeat;
+//    background-position: center center;
+//    background-color: #fff;
+//    height: 60px;
+//    width: 60px;
+//    margin-top: -30px;
+//    margin-left: -30px;
+//    left: 50%;
+//    top: 50%;
+//    position: absolute;
+//}
+
 .cars {
     box-shadow: 0 0 40px 0 rgba(0, 0, 0, .11);
-    margin: 30px;
+    margin: 30px 0;
     &-nav {
         background: #fff;
         color: #fff;
@@ -41,12 +56,15 @@
                     content: none!important;
                 }
             }
-            &-disabled {
-                color: #989898;
-                cursor: default;
+            &-mob {
+                display: none;
             }
             &-hidden {
                 display: none;
+            }
+            &-disabled {
+                color: #989898;
+                cursor: default;
             }
         }
     }
@@ -55,6 +73,8 @@
             border-top: 3px solid #1a77d2;
             display: none;
             flex-wrap: wrap;
+            background: none repeat scroll 0 0 #fff;
+            z-index: 9999;
             &-active {
                 display: flex;
             }
@@ -70,6 +90,17 @@
                 &:hover {
                     background: #f5f5f5;
                 }
+                &-modif {
+                    padding: 10px;
+                    width: calc(25%);
+                    a {
+                        color: #000;
+                    }
+                    table {
+                        font-size: 11px;
+                        width: 100%;
+                    }
+                }
             }
         }
     }
@@ -78,16 +109,27 @@
 @media (max-width: 1200px) {
     .cars {
         &-nav {
-            display: block;
+            display: none;
             &__item {
                 padding: 15px 65px 15px 15px;
                 &:not(:last-child) {
                     border-bottom: 1px solid #ebebeb;
                 }
+                &-mob {
+                    display: block;
+                }
+                &-hidden {
+                    display: none;
+                }
             }
         }
         &-tab {
             &__block {
+                max-height: 40vh;
+                overflow-x: hidden;
+                overflow-y: auto;
+                border-bottom: 3px solid #1a77d2;
+                border-top: unset;
                 &-item {
                     width: 100%;
                 }

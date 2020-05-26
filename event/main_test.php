@@ -1,8 +1,7 @@
 <?php
 
-$content=str_replace("{main_window}", $catalogue->getHtmlForm("main_window"), $content);
+$content=str_replace("{main_window}", $prod->getCarsSearch(), $content);
 // Поиск по автомобилю
-$content=str_replace("{catalogue_tab_search}", $prod->getCarsSearch(), $content);
 // Профильные каталоги
 //$content=str_replace("{select_group}", $catalogue->showCatalogueTemplates(), $content);
 // Каталог запчастей
