@@ -906,10 +906,10 @@ header {
     }
 }
 
-.goods-content-menu {
-    min-height: unset;
-    padding: 25px 40px;
-}
+//.goods-content-menu {
+//    min-height: unset;
+//    padding: 25px 40px;
+//}
 
 /*==== /MAIN HEAD ===*/
 
@@ -1007,7 +1007,6 @@ header {
         }
     }
     &-block {
-        display: none;
         background: $white;
         padding: 30px;
         margin: 0;

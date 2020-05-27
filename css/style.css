@@ -367,8 +367,6 @@ header { width: 100%; color: #a9a9a9; }
 
 .basket_count_media { position: relative; top: -40px; left: 30px; }
 
-.goods-content-menu { min-height: unset; padding: 25px 40px; }
-
 /*==== /MAIN HEAD ===*/
 /*===== BANNER ====*/
 .banner_row { box-shadow: 0 1px 10px #ccc; width: 100%; background: #fff; margin: 0; padding: 1%; }
@@ -414,7 +412,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .banner-header__swipe label a:hover { cursor: pointer; text-decoration: underline; }
 
-.banner-block { display: none; background: #fff; padding: 30px; margin: 0; box-shadow: 0 1px 10px #ccc; list-style: none; }
+.banner-block { background: #fff; padding: 30px; margin: 0; box-shadow: 0 1px 10px #ccc; list-style: none; }
 
 .banner-block h2, .banner-block h3 { display: inline; font-size: 15px; }
 
@@ -876,6 +874,48 @@ header { width: 100%; color: #a9a9a9; }
 .seo_auto.title { font-weight: bold; }
 
 /*==== /SEO CARS =====*/
+.metro { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; width: 100%; padding: 30px; }
+
+.home h1 { font-size: 24px; text-align: center; width: 100%; margin-bottom: 30px; }
+
+.home h2 { font-size: 20px; text-align: center; width: 100%; margin-top: 30px; }
+
+.home h3 { font-size: 16px; text-align: center; width: 100%; margin-top: 15px; }
+
+.home-cars { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; width: 100%; }
+
+.home-products { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; width: 100%; padding: 30px; }
+
+.home-catalog { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; width: 100%; }
+
+.home-seo { width: 100%; }
+
+.home-seo .form-toggle label { color: #000; cursor: pointer; transition: .5s ease-in-out; text-align: right; width: 100%; }
+
+.home-seo .form-toggle label:hover { text-decoration: underline; }
+
+.home-seo .form-toggle input[type="checkbox"] { display: none; }
+
+.home-seo .form-toggle input[type="checkbox"] ~ div { display: none; }
+
+.home-seo .form-toggle input[type="checkbox"]:checked ~ label { transform: rotate(180deg); }
+
+.home-seo .form-toggle input[type="checkbox"]:checked ~ div { display: block; }
+
+.home-recommend { width: 100%; }
+
+.home-recommend .form-toggle label { color: #000; cursor: pointer; transition: .5s ease-in-out; text-align: right; width: 100%; }
+
+.home-recommend .form-toggle label:hover { text-decoration: underline; }
+
+.home-recommend .form-toggle input[type="checkbox"] { display: none; }
+
+.home-recommend .form-toggle input[type="checkbox"] ~ div { display: none; }
+
+.home-recommend .form-toggle input[type="checkbox"]:checked ~ label { transform: rotate(180deg); }
+
+.home-recommend .form-toggle input[type="checkbox"]:checked ~ div { display: block; }
+
 .d-block { max-height: 230px; margin: auto; }
 
 .img-fluid { width: auto; margin: 0 auto; }
@@ -1281,7 +1321,6 @@ table thead td { border: 1px solid #000; }
   .tree-head { min-height: 200px; }
   .tree-head span { float: left; }
   /*=== GOODS ====*/
-  .goods-content { padding: 30px; text-align: center; }
   .goods__item { margin: 15px; }
   /*=== /GOODS ====*/
   /*==== FOOTER ====*/
@@ -1913,8 +1952,6 @@ table thead td { border: 1px solid #000; }
   .profile-side { padding: 0; margin-bottom: 15px; } }
 
 /*==== /PHONE ====*/
-.cars { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; }
-
 .cars-nav { background: #fff; color: #fff; display: flex; flex-wrap: nowrap; justify-content: start; }
 
 .cars-nav__item { background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat; color: #000; cursor: pointer; padding: 30px 65px 30px 30px; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -1946,6 +1983,8 @@ table thead td { border: 1px solid #000; }
 .cars-tab__block-item-modif { padding: 10px; width: calc(25%); }
 
 .cars-tab__block-item-modif a { color: #000; }
+
+.cars-tab__block-item-modif a:hover { text-decoration: none; }
 
 .cars-tab__block-item-modif table { font-size: 11px; width: 100%; }
 
@@ -2022,7 +2061,6 @@ table thead td { border: 1px solid #000; }
   .tree-head { min-height: 200px; }
   .tree-head span { float: left; }
   /*=== GOODS ====*/
-  .goods-content { padding: 30px; text-align: center; }
   .goods__item { margin: 15px; }
   /*=== /GOODS ====*/
   /*==== FOOTER ====*/
