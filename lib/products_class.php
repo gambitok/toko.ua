@@ -1016,7 +1016,6 @@ class ProductsClass extends CatalogueClass {
     function getCarsSearch() {
         $form=$this->getHtmlForm("cars/cars");
         $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("")[0], $form);
-        $form=str_replace("{cars_garage}", $this->getHtmlForm("cars/garage"), $form);
 //        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("manuf", "648")[0], $form);
 //        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("model", "648-Sportage")[0], $form);
 //        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("years", "648-Sportage-2015")[0], $form);
@@ -1196,12 +1195,15 @@ class ProductsClass extends CatalogueClass {
         $form=str_replace("{models_img}",$models_img,$form);
         if ($auto_typ_id!="") {
             if ($automan->checkUserGarage($auto_typ_id)) {
-                $button="<button class=\"btn btn-primary-outline\" title=\"{already_garage}\" disabled>{already_garage}</button>";
+//                $button="<button class=\"btn btn-primary-outline\" title=\"{already_garage}\" disabled>{already_garage}</button>";
+                $button="btn-img-disabled";
             } else {
-                $button="<button class=\"btn btn-primary-outline\" title=\"{add_garage}\" onclick=\"addToGarage($auto_typ_id);\">{add_garage}</button>";
+//                $button="<button class=\"btn btn-primary-outline\" title=\"{add_garage}\" onclick=\"addToGarage($auto_typ_id);\">{add_garage}</button>";
+                $button="";
             }
         } else {
-            $button="<button class=\"btn btn-primary-outline\" title=\"{add_garage}\" onclick=\"addToGarage($auto_typ_id);\">{add_garage}</button>";
+//            $button="<button class=\"btn btn-primary-outline\" title=\"{add_garage}\" onclick=\"addToGarage($auto_typ_id);\">{add_garage}</button>";
+            $button="";
         }
         $form=str_replace("{garage_button}",$button,$form);
         $form=$this->replaceLang($form);

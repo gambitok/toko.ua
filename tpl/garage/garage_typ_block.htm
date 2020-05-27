@@ -22,23 +22,65 @@
 
 <div class="garage-user">
     <div class="row">
-        <div class="col-4">
+        <div class="col-lg-3 col-12 garage-user-select">
             <div class="garage-user__title">
-                <span class="title">{manufacture_cap} {model_id_cap}</span> <button class="btn btn-circle" onclick="setCookie('auto_typ_id', ''); location.reload();"><i class="fa fa-times"></i></button>
+                <span class="title">{manufacture_cap} {model_id_cap}</span>
+                <button class="btn btn-close" onclick="setCookie('auto_typ_id', ''); location.reload();">
+                </button>
                 <br><span>{typ_text}</span>
+                <button class="btn btn-arrow" onclick="toggleForm('toggle_btn');">
+                </button>
             </div>
         </div>
-        <div class="col-6">
-            <div class="garage-user__nav">
-                {garage_button}
-                <button class="btn btn-primary-outline" title="{garage_add}" onclick="openAutoCars();">{garage_add}</button>
-                <button class="btn btn-primary-outline" title="{history_cap}" onclick="openAutoHistory();">{history_cap}</button>
-                <button class="btn btn-primary-outline" title="{search_new}" onclick="$('#car_form-select').toggle(); showCarsSelectMin(1);">{search_new}</button>
-            </div>
-        </div>
-        <div class="col-2">
+        <div class="col-lg-2 col-12">
             <div class="garage-user__image">
                 <img src="https://toko.ua/uploads/images/models/{models_img}" alt="{manufacture_cap}">
+            </div>
+        </div>
+        <div class="col-lg-7 col-12" id="toggle_btn">
+            <div class="garage-user__nav">
+                <!--{garage_button}-->
+
+                <div class="btn-img {garage_button}" onclick="addToGarage($('#auto_garage_typ_id').val());">
+                    <div class="btn-img__icon">
+                        <img src="/images/icons/buttons/save_car_to_garage.png" alt="icon">
+                    </div>
+                    <div class="btn-img__text">
+                        <div class="btn-img__text-sm">{add_cap}</div>
+                        <div class="btn-img__text-lg">{to_garage_cap}</div>
+                    </div>
+                </div>
+
+                <div class="btn-img" onclick="openAutoCars();">
+                    <div class="btn-img__icon">
+                        <img src="/images/icons/buttons/garage.png" alt="icon">
+                    </div>
+                    <div class="btn-img__text">
+                        <div class="btn-img__text-sm">{my_cap}</div>
+                        <div class="btn-img__text-lg">{user_garage}</div>
+                    </div>
+                </div>
+
+                <div class="btn-img" onclick="openAutoHistory();">
+                    <div class="btn-img__icon">
+                        <img src="/images/icons/buttons/hystory_of_car_requests.png" alt="icon">
+                    </div>
+                    <div class="btn-img__text">
+                        <div class="btn-img__text-sm">{site_history}</div>
+                        <div class="btn-img__text-lg">{orders_cap}</div>
+                    </div>
+                </div>
+
+                <div class="btn-img" onclick="$('#car_form-select').toggle(); showCarsSelectMin(1);">
+                    <div class="btn-img__icon">
+                        <img src="/images/icons/buttons/new_car_search.png" alt="icon">
+                    </div>
+                    <div class="btn-img__text">
+                        <div class="btn-img__text-sm">{new_one_cap}</div>
+                        <div class="btn-img__text-lg">{search_cap}</div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

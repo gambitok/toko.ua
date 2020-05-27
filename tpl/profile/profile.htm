@@ -8,19 +8,19 @@
 			<span class="bold">{client_name}</span><br>ID: {client_id}<hr>
             <ul class="nav nav-tabs flex-column" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link {profile-account}" onclick="showProfileAccount();" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><span class="fas fa-user-circle"></span> {my_office}</a>
+                    <a class="nav-link {profile-account}" onclick="showProfileAccount();" id="home-tab" data-toggle="tab" href="#profile-home" role="tab" aria-controls="profile-home" aria-selected="true"><span class="fas fa-user-circle"></span> {my_office}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {profile-orders}" onclick="showProfileOrders();" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><span class="fas fa-history"></span> {orders}</a>
+                    <a class="nav-link {profile-orders}" onclick="showProfileOrders();" id="profile-tab" data-toggle="tab" href="#profile-orders" role="tab" aria-controls="profile-orders" aria-selected="false"><span class="fas fa-history"></span> {orders}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {profile-basket}" onclick="showProfileBasketForm();" id="basket-tab" data-toggle="tab" href="#basket" role="tab" aria-controls="basket" aria-selected="false"><span class="fas fa-shopping-basket"></span> {basket_cap}</a>
-                </li>
+                    <a class="nav-link {profile-basket}" onclick="showProfileBasketForm();" id="basket-tab" data-toggle="tab" href="#profile-basket" role="tab" aria-controls="profile-basket" aria-selected="false"><span class="fas fa-shopping-basket"></span> {basket_cap}</a>
+				</li>
                 <li class="nav-item {check_visible}">
-                    <a class="nav-link {profile-check}" onclick="showProfileCheckForm();" id="check-tab" data-toggle="tab" href="#check" role="tab" aria-controls="check" aria-selected="false"><span class="fas fa-credit-card"></span> {check_profile}</a>
+                    <a class="nav-link {profile-check}" onclick="showProfileCheckForm();" id="check-tab" data-toggle="tab" href="#profile-check" role="tab" aria-controls="profile-check" aria-selected="false"><span class="fas fa-credit-card"></span> {check_profile}</a>
                 </li>
                 <li class="nav-item {price_visible}">
-                    <a class="nav-link {profile-price}" onclick="showProfilePrice();" id="price_list-tab" data-toggle="tab" href="#price_list" role="tab" aria-controls="price_list" aria-selected="false"><span class="fas fa-money-check-alt"></span> {price_list}</a>
+                    <a class="nav-link {profile-price}" onclick="showProfilePrice();" id="price_list-tab" data-toggle="tab" href="#profile-price_list" role="tab" aria-controls="profile-price_list" aria-selected="false"><span class="fas fa-money-check-alt"></span> {price_list}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" onClick="logoutForm();" role="tab" ><span class="fas fa-sign-out-alt"></span> {logout}</a>
@@ -33,7 +33,7 @@
 		<div class="content profile__main-form">
 			<div class="tab-content">
 
-				<div class="tab-pane {profile-account}" id="home" role="tabpanel" aria-labelledby="home-tab">
+				<div class="tab-pane {profile-account}" id="profile-home" role="tabpanel" aria-labelledby="home-tab">
 					<div class="row align-items-center">
 						<div class="col-lg-12 col-12 pad0">
 							<h5>{my_office}</h5>
@@ -48,7 +48,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane {profile-orders}" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+				<div class="tab-pane {profile-orders}" id="profile-orders" role="tabpanel" aria-labelledby="profile-tab">
 					<div class="row align-items-center">
 						<div class="col-lg-12 col-12 pad0"><h5>{orders}</h5></div>
 					</div>
@@ -71,7 +71,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane {profile-basket}" id="basket" role="tabpanel" aria-labelledby="basket-tab">
+				<div class="tab-pane {profile-basket}" id="profile-basket" role="tabpanel" aria-labelledby="basket-tab">
 					<div class="row align-items-center">
 						<div class="col-lg-12 col-12 pad0">
 							<div id="profile_basket_form">
@@ -83,7 +83,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane {profile-check}" id="check" role="tabpanel" aria-labelledby="check-tab">
+				<div class="tab-pane {profile-check}" id="profile-check" role="tabpanel" aria-labelledby="check-tab">
 					<div class="row align-items-center">
 						<div class="col-lg-12 col-12 pad0" style="padding-bottom: 30px;"><h5>{check_profile}</h5></div>
 					</div>
@@ -109,7 +109,7 @@
 					</div>
 				</div>
 
-				<div class="tab-pane {profile-price}" id="price_list" role="tabpanel" aria-labelledby="price_list-tab">
+				<div class="tab-pane {profile-price}" id="profile-price_list" role="tabpanel" aria-labelledby="price_list-tab">
 					<div class="row align-items-center">
 						<div class="col-lg-12 col-12 pad0">
 							<h5>{price_list}</h5>

@@ -168,6 +168,60 @@
     color: #797979;
 }
 
+.btn-img {
+    background: #fff;
+    border: 2px solid #0c5460;
+    border-radius: 5px;
+    color: #0c5460;
+    cursor: pointer;
+    display: flex;
+    font-weight: bold;
+    padding: 3px;
+    text-transform: uppercase;
+    width: 150px;
+    height: 45px;
+    &-hidden {
+        display: none;
+    }
+    &-disabled {
+        background: #ccc;
+        opacity: .5;
+        pointer-events: none;
+    }
+    &:hover {
+        background: #0c5460;
+        color: #fff;
+    }
+    &__icon {
+        display: block;
+        width: 30%;
+        padding: 3px 5px;
+        img {
+            width: 30px;
+            height: 30px;
+        }
+    }
+    &__text {
+        display: block;
+        width: 70%;
+        padding: 0 5px;
+        &-lg {
+            font-size: 15px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        &-sm {
+            font-size: 10px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
 /*==== /BUTTONS =====*/
 
 /*==== DROPDOWN ====*/
@@ -454,19 +508,19 @@ table {
 }
 
 .container_check:hover input~.checkmark {
-    background-color: #ccc
+    background-color: #ccc;
 }
 
 .container_check input:checked~.checkmark {
-    background-color: #228b94
+    background-color: #228b94;
 }
 
 .container_check input:disabled~.checkmark {
-    background-color: #ccc
+    background-color: #ccc;
 }
 
 .container_check input:checked~.checkmark:after {
-    display: block
+    display: block;
 }
 
 .container_check .checkmark:after {

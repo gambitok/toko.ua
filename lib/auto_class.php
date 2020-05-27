@@ -922,12 +922,15 @@ class AutoClass {
         $form=str_replace("{models_img}",$models_img,$form);
         if ($auto_typ_id!="") {
             if ($this->checkUserGarage($auto_typ_id)) {
-                $button="<button class=\"btn btn-primary-outline\" title=\"{already_garage}\" disabled>{already_garage}</button>";
+//                $button="<button class=\"btn btn-primary-outline\" title=\"{already_garage}\" disabled>{already_garage}</button>";
+                $button="btn-img-disabled";
             } else {
-                $button="<button class=\"btn btn-primary-outline\" title=\"{add_garage}\" onclick=\"addToGarage($auto_typ_id);\">{add_garage}</button>";
+//                $button="<button class=\"btn btn-primary-outline\" title=\"{add_garage}\" onclick=\"addToGarage($auto_typ_id);\">{add_garage}</button>";
+                $button="";
             }
         } else {
-            $button="<button class=\"btn btn-primary-outline\" title=\"{add_garage}\" onclick=\"addToGarage($auto_typ_id);\">{add_garage}</button>";
+//            $button="<button class=\"btn btn-primary-outline\" title=\"{add_garage}\" onclick=\"addToGarage($auto_typ_id);\">{add_garage}</button>";
+            $button="";
         }
         $form=str_replace("{garage_button}",$button,$form);
         $form=$this->replaceLang($form);

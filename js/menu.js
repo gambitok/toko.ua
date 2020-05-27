@@ -125,6 +125,10 @@ function toggleBlock(block, slide) { "use strict";
     $("." + block).find("i").toggleClass("icon-rotate");
 }
 
+function toggleForm(slide) { "use strict";
+    $("#" + slide).slideToggle("slow");
+}
+
 function rotateIcon(a) {
     $(a).find("i").toggleClass("rotate__icon");
 }

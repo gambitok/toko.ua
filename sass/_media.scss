@@ -305,12 +305,48 @@
 
     /*==== /BASKET ====*/
 
+    /*==== GARAGE ====*/
+    .garage-user {
+        height: auto;
+        .btn-arrow {
+            display: block;
+        }
+        #toggle_btn {
+            display: none;
+        }
+        &-select {
+            padding-right: 15px;
+        }
+        &__title {
+            margin-right: 0;
+            &:after {
+                content: none;
+            }
+        }
+        &__nav {
+            flex-wrap: wrap;
+            justify-content: center;
+            .btn-img {
+                margin-bottom: 15px;
+            }
+            button {
+                margin-bottom: 10px;
+                margin-left: 10px;
+            }
+        }
+        &__image {
+            display: none;
+        }
+    }
+
+    /*==== /GARAGE ====*/
+
 }
 
 /* ==== /PHONE ==== */
 
 /*==== PAD ====*/
-@media (min-width: 768px) and (max-width: 1200px) {
+@media (min-width: 768px) and (max-width: 992px) {
 
     .icons-nav {
         padding-left: 0;
@@ -368,6 +404,42 @@
     .table-responsive {
         display: block;
     }
+
+    /*==== GARAGE ====*/
+    .garage-user {
+        height: auto;
+        .btn-arrow {
+            display: block;
+        }
+        #toggle_btn {
+            display: none;
+        }
+        &-select {
+            padding-right: 15px;
+        }
+        &__title {
+            margin-right: 0;
+            &:after {
+                content: none;
+            }
+        }
+        &__nav {
+            flex-wrap: wrap;
+            justify-content: center;
+            .btn-img {
+                margin-bottom: 15px;
+            }
+            button {
+                margin-bottom: 10px;
+                margin-left: 10px;
+            }
+        }
+        &__image {
+            display: none;
+        }
+    }
+
+    /*==== /GARAGE ====*/
 
 }
 

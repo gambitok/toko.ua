@@ -62,7 +62,7 @@ function toggleListParams(a, param_id) { "use strict";
 }
 
 function showStorage(art_id) { "use strict";
-    $("."+art_id+"-hide").toggleClass("none",1000);
+    $("."+art_id+"-hide").toggleClass("none");
     $("#fa-"+art_id).toggleClass("none");
     $("#fas-"+art_id).toggleClass("none");
 }
@@ -621,12 +621,13 @@ function updateTypForm() {
 function openAutoHistory() {
     let div_id = $("#car_form-history");
     if (div_id.is(':visible')) {
-        div_id.hide();
+        div_id.hide("slow");
     } else {
         JsHttpRequest.query(folder,{'w':'openAutoHistory'},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 div_id.html(result.content);
-                div_id.show();
+                // div_id.show();
+                div_id.show("slow");
             }}, true);
     }
 }
@@ -634,12 +635,13 @@ function openAutoHistory() {
 function openAutoCars() {
     let div_id = $("#car_form-cars");
     if (div_id.is(':visible')) {
-        div_id.hide();
+        div_id.hide("slow");
     } else {
         JsHttpRequest.query(folder,{'w':'openAutoCars'},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 div_id.html(result.content);
-                div_id.show();
+                // div_id.show();
+                div_id.show("slow");
             }}, true);
     }
 }
