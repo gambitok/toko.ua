@@ -748,16 +748,12 @@ class AutoClass {
             list($manufacture,$model,$model_id)=$this->getCarInfo($typ_id);
             list($manufacture_cap,,$model_id_cap,)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
             list(,,$models_img)=$this->getAutoIMG($manufacture,$model,$model_id);
-            $auto_form="
-            <div class=\"row\">
-                <div class=\"col-6\">
-                    <a href=\"https://toko.ua$prefix/catalog/\" style=\"padding: 0!important;\">$manufacture_cap $model_id_cap</a>
-                    <span>$typ_text</span>
-                </div>
-                <div class=\"col-6\">
-                    <img class=\"wdt100i\" src=\"https://toko.ua/uploads/images/models/$models_img\" alt=\"$manufacture_cap $model_id_cap\" title=\"$manufacture_cap $model_id_cap\">
-                </div>
-            </div>";
+            $auto_form=$this->getHtmlForm("garage/garage_selected");
+            $auto_form=str_replace("{manufacture_cap}", $manufacture_cap, $auto_form);
+            $auto_form=str_replace("{model_id_cap}", $model_id_cap, $auto_form);
+            $auto_form=str_replace("{models_img}", $models_img, $auto_form);
+            $auto_form=str_replace("{typ_text}", $typ_text, $auto_form);
+            $auto_form=str_replace("{prefix}", $prefix, $auto_form);
         } else {
             $auto_form="{choose_auto_first}";
         }
@@ -826,11 +822,11 @@ class AutoClass {
                 list($manufacture_cap,, $model_id_cap, $typ_text)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                 $list.="
                 <li class=\"row garage-row\">
-                    <div class=\"col-6 garage-row__text\">
+                    <div class=\"col-lg-6 col-12 garage-row__text\">
                         $manufacture_cap $model_id_cap <br>
                         <span>$typ_text</span>
                     </div>
-                    <div class=\"col-6 garage-row__buttons\"> 
+                    <div class=\"col-lg-6 col-12 garage-row__buttons\"> 
                         <button $status_btn class=\"btn btn-primary\" $status_disable>$status_cap</button>
                         <button onclick=\"deleteAutoGarage($id);\" class=\"btn btn-primary\"><i class=\"fa fa-trash-alt\"></i></button>
                     </div>
@@ -839,8 +835,8 @@ class AutoClass {
             $auto_form=$this->getChosenAutoGarage($client_id, $user);
         }
         if ($n==0) $form="<div class=\"content\"><h2>$this->err1</h2></div>";
-        $form=str_replace("{garage_list}",$list,$form);
-        $form=str_replace("{auto_form}",$auto_form,$form);
+        $form=str_replace("{garage_list}", $list, $form);
+        $form=str_replace("{auto_form}", $auto_form, $form);
         $form=$this->replaceLang($form);
         return $form;
     }
@@ -870,11 +866,11 @@ class AutoClass {
                 list($manufacture_cap,,$model_id_cap,$typ_text)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                 $list.="
                 <li class=\"row garage-row\">
-                    <div class=\"col-6 garage-row__text\">
+                    <div class=\"col-lg-6 col-12 garage-row__text\">
                         $manufacture_cap $model_id_cap <br>
                         <span>$typ_text</span>
                     </div>
-                    <div class=\"col-6 garage-row__buttons\"> 
+                    <div class=\"col-lg-6 col-12 garage-row__buttons\"> 
                         <button $status_btn class=\"btn btn-primary\" $status_disable>$status_cap</button>
                         <button onclick=\"deleteAutoGarage($id);\" class=\"btn btn-primary\"><i class=\"fa fa-trash-alt\"></i></button>
                     </div>

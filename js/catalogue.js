@@ -600,7 +600,7 @@ function updateChosenAutoGarage(auto_id) { "use strict";
             showGarageBlockMin();
             $("#garage_cars_form").remove();
             $("#car_form-cars").hide();
-            location.reload();
+            // location.reload();
         }}, true);
 }
 
@@ -632,6 +632,7 @@ function openAutoHistory() {
     }
 }
 
+//DELETE !!!!
 function openAutoCars() {
     let div_id = $("#car_form-cars");
     if (div_id.is(':visible')) {
@@ -906,6 +907,7 @@ function detectmob2() {
     }
 }
 
+// DELETE !!!!
 function closeCarsSelectMin() {
     if (!detectmob2()) {
         $("#select_mfa").removeClass("car_form-selected");

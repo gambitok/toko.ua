@@ -537,7 +537,7 @@ class MenuClass {
         $automan=new AutoClass;
         $language=new LangClass; $prefix=$language->getLangPrefix();
         $garage_count=$automan->getGarageAutoCount()[0];
-        $garage_count=="" ? $garage_link="href=\"https://toko.ua$prefix/catalogue/auto/\"" : $garage_link="onclick=\"showDropGarage();\"";
+        $garage_count=="" ? $garage_link="href=\"https://toko.ua$prefix/catalogue/auto/\"" : $garage_link="onclick=\"showGarageForm();\"";
         return $garage_link;
     }
 

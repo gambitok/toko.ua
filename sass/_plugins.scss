@@ -180,17 +180,17 @@
     text-transform: uppercase;
     width: 150px;
     height: 45px;
+    transition: .3s;
     &-hidden {
         display: none;
     }
     &-disabled {
-        background: #ccc;
+        background: #e1e7ec;
         opacity: .5;
         pointer-events: none;
     }
     &:hover {
-        background: #0c5460;
-        color: #fff;
+        background: #e1e7ec;
     }
     &__icon {
         display: block;

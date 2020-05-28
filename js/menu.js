@@ -89,11 +89,20 @@ function tabNavigation(id) {
     $(tab_id).tab("show");
 }
 
+// DELETE !!!!
 function showDropGarage() { "use strict";
     $("#GarageForm").toggle();
     JsHttpRequest.query(folder,{ 'w': 'showGarageForm'},
         function (result, errors){ if (errors) {} if (result){
             $("#GarageForm").html(result.content);
+        }}, true);
+}
+
+function showGarageForm() { "use strict";
+    $("#GarageForm").modal("show");
+    JsHttpRequest.query(folder,{ 'w': 'showGarageForm'},
+        function (result, errors){ if (errors) {} if (result){
+            $("#garage_block").html(result.content);
         }}, true);
 }
 

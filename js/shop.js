@@ -76,6 +76,7 @@ function moveBasket(id,art_id,brand_id,stock,storage_id,suppl_id) { "use strict"
 function showBasketMinForm() {
     $("#BasketForm").modal("show");
     $(".bar").bigSlide();
+    $(".fixed").toggleClass("hidden");
     JsHttpRequest.query(folder,{'w':'showBasketMinForm'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#basket_block").html(result.content);

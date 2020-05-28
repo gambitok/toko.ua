@@ -269,6 +269,14 @@
         text-align: left!important;
     }
 
+    .garage-drop-block__select {
+        border: none;
+    }
+
+    .garage-drop-block__list .garage-row__buttons {
+        text-align: left;
+    }
+
     .seo_details .seo-li {
         width: 100%;
         margin-right: 0;
@@ -406,6 +414,12 @@
     }
 
     /*==== GARAGE ====*/
+    .garage-drop-block__select {
+        border: none;
+    }
+    .garage-drop-block__list .garage-row__buttons {
+        text-align: left;
+    }
     .garage-user {
         height: auto;
         .btn-arrow {

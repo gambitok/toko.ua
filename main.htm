@@ -296,7 +296,7 @@
 										<div id="garage_status" class="icons-nav__garage-count {garage_style}">{garage_status}</div>
 									</div>
 								</a>
-								<div id="GarageForm" class="dropdown-content garage-drop"></div>
+								<!--<div id="GarageForm" class="dropdown-content garage-drop"></div>-->
 							</li>
 							<li class="icons-nav__profile">
 								<a id="profile_btn" href="{site_lang_prefix}/profile/orders/" title="{profile}">
@@ -610,6 +610,27 @@
 		</div>
 	</div>
 
+	<!-- Modal Basket-->
+	<div class="modal fade" id="GarageForm" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span class="modal-title">{garage_cap}</span>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="container">
+						<div class="row">
+							<div id="garage_block" class="container garage-drop">
+								{basket_content}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Modal Login-->
 	<div class="modal fade" id="myModal" role="dialog">
 		<div class="modal-dialog">
@@ -764,19 +785,19 @@
 <script type="text/javascript" src="/js/cars.js"></script>
 
 <script>
-    $("body").click(function(e) {
-        if ($(e.target).attr('id') == 'garage_btn'
-			|| $(e.target).attr('class') == 'garage'
-			|| $(e.target).attr('class') == 'garage_span'
-			|| $(e.target).attr('class') == 'garage_img'
-			|| $(e.target).attr('class') == 'btn btn-primary'
-			|| $(e.target).attr('class') == 'fa fa-car'
-			|| $(e.target).attr('class') == 'icons-nav__garage'
-			|| $(e.target).attr('class') == 'icons-nav__garage-text'
-		) { return true; } else {
-            $("#GarageForm").fadeOut();
-        }
-    });
+    // $("body").click(function(e) {
+    //     if ($(e.target).attr('id') == 'garage_btn'
+	// 		|| $(e.target).attr('class') == 'garage'
+	// 		|| $(e.target).attr('class') == 'garage_span'
+	// 		|| $(e.target).attr('class') == 'garage_img'
+	// 		|| $(e.target).attr('class') == 'btn btn-primary'
+	// 		|| $(e.target).attr('class') == 'fa fa-car'
+	// 		|| $(e.target).attr('class') == 'icons-nav__garage'
+	// 		|| $(e.target).attr('class') == 'icons-nav__garage-text'
+	// 	) { return true; } else {
+    //         $("#GarageForm").fadeOut();
+    //     }
+    // });
     $("body").click(function(e) {
         if ($(e.target).attr('class') == 'header-nav__li'
            || $(e.target).attr('class') == 'tree-title'
