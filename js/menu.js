@@ -126,6 +126,7 @@ function deleteHistoryItem(history_id) {
         function (result, errors){ if (errors) {} if (result){
             dropHistoryHide();
             $("#myDropdown").html("");
+            if (detectmob()) showArtSearch();
         }}, true);
 }
 

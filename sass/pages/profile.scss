@@ -18,8 +18,9 @@
 
 .profile-account {
     .row {
+        margin: 0;
         padding: 15px;
-        border-top: 1px dashed #ddd
+        border-top: 1px dashed #ddd;
     }
     input, select {
         display: inline;

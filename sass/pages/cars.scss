@@ -69,15 +69,65 @@ $cars-hover: #f5f5f5;
             }
             &-item {
                 background: $white;
-                border-bottom: 1px solid $cars-default;
-                border-right: 1px solid $cars-default;
-                border-top: 1px solid $cars-default;
+                //border-bottom: 1px solid $cars-default;
+                //border-right: 1px solid $cars-default;
+                //border-top: 1px solid $cars-default;
+                border: 1px solid $cars-default;
                 cursor: pointer;
-                margin-bottom: -1px;
+                //margin-bottom: -1px;
                 padding: 15px;
+                transition: .3s;
                 width: calc(12.5%);
                 &:hover {
-                    background: $cars-hover;
+                    //background: $cars-hover;
+                    border-color: $cars-primary;
+                }
+                &-body {
+                    padding: 10px;
+                    width: calc(25%);
+                    .bodyc {
+                        &-head {
+                            display: flex;
+                            width: 100%;
+                        }
+                        &-content {
+                            display: flex;
+                            width: 100%;
+                            margin-top: 15px;
+                        }
+                        &__title {
+                            width: 80%;
+                            color: #000;
+                            font-size: 14px;
+                            position: relative;
+                            overflow: hidden;
+                            white-space: normal;
+                            text-overflow: ellipsis;
+                            padding-right: 15px;
+                        }
+                        &__descr {
+                            width: 60%;
+                            color: #9da9b9;
+                            font-size: 11px;
+                            position: relative;
+                            overflow: hidden;
+                            white-space: normal;
+                            text-overflow: ellipsis;
+                            padding-right: 15px;
+                        }
+                        &__type {
+                            width: 20%;
+                            img {
+                                width: 100%;
+                            }
+                        }
+                        &__image {
+                            width: 40%;
+                            img {
+                                width: 100%;
+                            }
+                        }
+                    }
                 }
                 &-modif {
                     padding: 10px;

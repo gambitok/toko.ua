@@ -96,7 +96,6 @@ class ProductsClass extends CatalogueClass {
         $lang=$language->getLanguage(); $lang=$language->getOldLanguage($lang);
 
         session_start(); $key=session_id()."_".time();
-        //setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
 
         list($str_level, $str_id_parrent) = $automan->getStrParams($str_id);
 
@@ -506,9 +505,6 @@ class ProductsClass extends CatalogueClass {
     }
 
     function getCarModelVariables($mfa_link, $model_link) { $db = DbSingleton::getTokoDb();
-//        $r=$db->query("SELECT * FROM `T_models` md
-//            LEFT JOIN `T_manufacturers` mf ON mf.MFA_ID = md.MOD_MFA_ID
-//        WHERE md.`Model_Link`='$model_link' AND mf.`MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
         $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
         $mfa_id=$db->result($r,0,"MFA_ID");
         $r=$db->query("SELECT * FROM `T_models` WHERE `Model_Link`='$model_link' AND `MOD_MFA_ID`=$mfa_id LIMIT 1;");
@@ -928,7 +924,6 @@ class ProductsClass extends CatalogueClass {
             $d_end=$db->result($r,$i-1,"MOD_PCON_END"); $d_end=substr($d_end,0,4); if ($d_end==0) $d_end="{cur_time}";
             $type==0 ? $onclick="showCarsSelectMin(5,'$model_id');" : $onclick="showCarsSelected(5,'$model_id');";
             list($body_name, $body_path) = $this->getBodyCarImage($model_id);
-            //$list.="<a href=\"#\" onclick=\"$onclick\"><b>$tex_text</b> <span>$d_start - $d_end</span></a>";
             $list.="<a href=\"#\" onclick=\"$onclick\"><div class='row'> 
                 <div class='col-2 col-lg-1 body-car'><img src='$body_path' alt='$body_name' title='$body_name'></div>
                 <div class='col-4 col-lg-2 image-car'><img src='$path' alt='$tex_text' title='$tex_text'></div>
@@ -953,8 +948,7 @@ class ProductsClass extends CatalogueClass {
     function getCarTypeListMin($mod_id, $str_id="", $type=0) { $db = DbSingleton::getTokoDb();
         $automan=new AutoClass;
         $str_link = $automan->getStrNewLink($str_id);
-
-        $list="<div class='t_modification'>";
+        $list="<div class=\"t_modification\">";
         $r=$db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` FROM `T_types` 
         WHERE `TYP_MOD_ID`='$mod_id' GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
@@ -965,7 +959,6 @@ class ProductsClass extends CatalogueClass {
             $type==0 ?
                 $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/$str_link/';" :
                 $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/';";
-
             if ($count_types<=1) {
                 $list.="<div><a href=\"#\" onclick=\"$onclick\">
                     <b>$typ_text $fuel_name</b>
@@ -978,7 +971,6 @@ class ProductsClass extends CatalogueClass {
             }
         }
         $list.="</div>";
-
         return $list;
     }
 
@@ -1026,7 +1018,8 @@ class ProductsClass extends CatalogueClass {
     }
 
     function getCarsSearchContent($type="", $value="") { $db = DbSingleton::getTokoDb();
-        $list = ""; $title=""; $automan=new AutoClass; $n=0;
+        $automan=new AutoClass;
+        $list = ""; $title=""; $n=0;
         $nav=""; $tab="";
 
         // MANUFACTURE
@@ -1086,7 +1079,30 @@ class ProductsClass extends CatalogueClass {
             for ($i=1;$i<=$n;$i++) {
                 $mod_id = $db->result($r, $i - 1, "MOD_ID");
                 $tex_text = $db->result($r, $i - 1, "TEX_TEXT");
-                $list.="<div data-url=\"bodyc/$mod_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$tex_text</div>";
+                $image=$db->result($r, $i - 1, "Car_pict");
+                $img_path="https://toko.ua/uploads/images/models/$image";
+                list($body_name, $body_path) = $this->getBodyCarImage($mod_id);
+                $d_start=$db->result($r,$i-1,"MOD_PCON_START"); $d_start=substr($d_start,0,4);
+                $d_end=$db->result($r,$i-1,"MOD_PCON_END"); $d_end=substr($d_end,0,4); if ($d_end==0) $d_end="{cur_time}";
+
+                $list.="<div data-url=\"bodyc/$mod_id\" class=\"cars-tab__block-item cars-tab__block-item-body\" onclick=\"toggleCarsTab(this)\">
+                    <div class='bodyc'>
+                        <div class='bodyc-head'>
+                            <div class='bodyc__title'>$tex_text</div>
+                            <div class='bodyc__type'><img src='$body_path' alt='$body_name' title='$body_name'></div></div>
+                        </div>    
+                        <div class='bodyc-content'>
+                            <div class='bodyc__descr'>
+                                {model_number_type}: $body_name
+                                <br>
+                                {year_issue}: $d_start - $d_end
+                            </div>
+                            <div class='bodyc__image'>
+                                <img src='$img_path' alt='$tex_text' title='$tex_text'>
+                            </div>
+                        </div>
+                    </div>
+                </div>";
             }
             $title = $year;
             $nav="years"; $tab="cars-tab4";
@@ -1120,7 +1136,6 @@ class ProductsClass extends CatalogueClass {
                 $d_end=$db->result($r,$i-1,"TYP_PCON_END"); if ($d_end==0) {$d_end="{cur_time_min}";} if (strlen($d_end)==6) {$d_end=substr($d_end,0,4).".".substr($d_end,4,2);}
                 $eng_cod = $db->result($r,$i-1,"ENG_Cod");
                 $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/';";
-//                $list.="<div data-url=\"modif/$typ_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$typ_text</div>";
                 $list.="<div class=\"cars-tab__block-item cars-tab__block-item-modif\"><a href=\"#\" onclick=\"$onclick\">
                 <b>$typ_text</b> 
                     <table>
@@ -1195,14 +1210,11 @@ class ProductsClass extends CatalogueClass {
         $form=str_replace("{models_img}",$models_img,$form);
         if ($auto_typ_id!="") {
             if ($automan->checkUserGarage($auto_typ_id)) {
-//                $button="<button class=\"btn btn-primary-outline\" title=\"{already_garage}\" disabled>{already_garage}</button>";
                 $button="btn-img-disabled";
             } else {
-//                $button="<button class=\"btn btn-primary-outline\" title=\"{add_garage}\" onclick=\"addToGarage($auto_typ_id);\">{add_garage}</button>";
                 $button="";
             }
         } else {
-//            $button="<button class=\"btn btn-primary-outline\" title=\"{add_garage}\" onclick=\"addToGarage($auto_typ_id);\">{add_garage}</button>";
             $button="";
         }
         $form=str_replace("{garage_button}",$button,$form);

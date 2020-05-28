@@ -163,9 +163,43 @@
     }
 }
 
-.modal-phone button {
-    width: auto;
-    margin: 0;
+.modal-phone {
+    button {
+        width: auto;
+        margin: 0;
+    }
+    input {
+        border-radius: .25rem;
+    }
+    .search {
+        margin-top: 15px;
+        &-nav {
+            background: #fff;
+            list-style: none;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: scroll;
+            &__item {
+                a, a:not([href]):not([tabindex]) {
+                    display: block;
+                    color: #000;
+                    cursor: pointer;
+                    position: relative;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    padding: 10px 0;
+                    font-size: 12px;
+                    &:hover {
+                        color: #ccc;
+                    }
+                }
+                &:hover {
+                    background: #f7f7f7;
+                }
+            }
+        }
+    }
 }
 
 .close {

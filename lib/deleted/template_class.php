@@ -239,11 +239,11 @@ class TemplateClass {
                 if ($checked) {$label="<i class=\"fa fa-check-square\"></i>";$style="span-red";} else {$label="<i class=\"far fa-square\"></i>";$style="";}
                 if ($value_id>0) {
                     $amount_values++;
-                    $list.="<li><a class=\"pointer $style\" style=\"font-size: 1em;\" onclick=\"addFilterTemplate($param_id,'$value_id');\">$label $value_name</a></li>";
+                    $list.="<li><a class=\"$style\" onclick=\"addFilterTemplate($param_id,'$value_id');\">$label $value_name</a></li>";
                 }
             }
             $amount_values=$amount_values-$amount_max;
-            if ($amount_values<=0) $link_more=""; else $link_more="<a class=\"pointer underline\" onclick=\"toggleListParams(this, $param_id);\"><span class=\"show\">{more_cap} $amount_values</span> <span class=\"none\">{hide_cap}</span></a>";
+            if ($amount_values<=0) $link_more=""; else $link_more="<a onclick=\"toggleListParams(this, $param_id);\"><span class=\"show\">{more_cap} $amount_values</span> <span class=\"none\">{hide_cap}</span></a>";
             $list.="</ul>$link_more";
             $amount_values=0;
         }

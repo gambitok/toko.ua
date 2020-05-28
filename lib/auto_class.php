@@ -841,48 +841,6 @@ class AutoClass {
         return $form;
     }
 
-    function openAutoGarage() { $db = DbSingleton::getTokoDb();
-        $form=$this->getHtmlForm("garage/garage_cars"); $list="";
-        $client_id=$this->getClient(); $user=$this->getUser(); $cookie=$_COOKIE["session_id"];
-        if ($user==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user'";
-        $r=$db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where;"); $n=$db->num_rows($r);
-        if ($n>0) {
-            for ($i=1; $i<=$n; $i++) {
-                $id=$db->result($r, $i-1, "id");
-                $typ_id=$db->result($r, $i-1, "typ_id");
-                list($manufacture,$model,$model_id)=$this->getCarInfo($typ_id);
-//                $status=$db->result($r, $i-1, "status");
-//                if ($status=="0") {
-                $prod=new ProductsClass;
-                if ($typ_id!=$prod->getCookieAuto()) {
-                    $status_cap="{select_cap}";
-                    $status_disable="";
-                    $status_btn="onclick='updateChosenAutoGarage($id);'";
-                } else {
-                    $status_cap="{unselect_cap}";
-                    $status_disable="disabled";
-                    $status_btn="";
-                }
-                list($manufacture_cap,,$model_id_cap,$typ_text)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
-                $list.="
-                <li class=\"row garage-row\">
-                    <div class=\"col-lg-6 col-12 garage-row__text\">
-                        $manufacture_cap $model_id_cap <br>
-                        <span>$typ_text</span>
-                    </div>
-                    <div class=\"col-lg-6 col-12 garage-row__buttons\"> 
-                        <button $status_btn class=\"btn btn-primary\" $status_disable>$status_cap</button>
-                        <button onclick=\"deleteAutoGarage($id);\" class=\"btn btn-primary\"><i class=\"fa fa-trash-alt\"></i></button>
-                    </div>
-                </li>";
-            }
-            $form=str_replace("{garage_cars_list}",$list,$form);
-        }
-        if ($n==0) $form="<div><span class='text-center bold'>{garage_empty}</span></div>";
-        $form=$this->replaceLang($form);
-        return $form;
-    }
-
 //    function showGarageFormMin() {
 //        $form=$this->showGarageBlockMin();
 //        return $form;

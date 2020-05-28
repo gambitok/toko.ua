@@ -217,7 +217,7 @@
 								<div id="basket_status4" class="basket_phone {basket_style}">{basket_count}</div>
 							</div>
 							<li>
-								<a onclick="showBasketMinForm();" class="btn"><span class="fas fa-shopping-basket"></span></a>
+								<button onclick="showBasketMinForm();" class="btn"><span class="fas fa-shopping-basket"></span></button>
 							</li>
 							<li class="bar">
 								<a href="#menu" class="btn" title="{mob_menu}"><span class="fas fa-bars"></span></a>
@@ -327,27 +327,27 @@
                 <div class="row align-items-center">
                     <ul>
                         <li class="logotype-min">
-                            <a href="{site_lang_prefix}/" class="btn btn-outline-secondary btn-primary">
+                            <a href="{site_lang_prefix}/" class="btn">
                                 <img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}">
                             </a>
                         </li>
                         <li>
-                            <button onClick="showArtSearch();" class="btn btn-outline-secondary btn-primary" type="button" title="{search_cap}"><span class="fas fa-search"></span></button>
+                            <button onClick="showArtSearch();" class="btn" type="button" title="{search_cap}"><span class="fas fa-search"></span></button>
                         </li>
                         <li>
-                            <a href="{site_lang_prefix}/catalogue/" class="btn btn-outline-secondary btn-primary"><span class="fas fa-car"></span></a>
+                            <a href="{site_lang_prefix}/catalogue/" class="btn"><span class="fas fa-car"></span></a>
                         </li>
                         <li>
-                            <a href="{site_lang_prefix}/profile/" class="btn btn-outline-secondary btn-primary"><span class="fas fa-user-alt"></span></a>
+                            <a href="{site_lang_prefix}/profile/" class="btn"><span class="fas fa-user-alt"></span></a>
                         </li>
                         <div class="basket_status">
                             <div id="basket_status3" class="basket_phone {basket_style}">{basket_count}</div>
                         </div>
                         <li>
-                            <a onclick="showBasketMinForm();" class="btn btn-outline-secondary btn-primary"><span class="fas fa-shopping-basket"></span></a>
+                            <button onclick="showBasketMinForm();" class="btn"><span class="fas fa-shopping-basket"></span></button>
                         </li>
                         <li class="bar">
-                            <a href="#menu" class="btn btn-outline-secondary btn-primary" title="{mob_menu}"><span class="fas fa-bars"></span></a>
+                            <a href="#menu" class="btn" title="{mob_menu}"><span class="fas fa-bars"></span></a>
                         </li>
                     </ul>
                 </div>
@@ -532,15 +532,12 @@
 				<div class="modal-body text-left">
 					<div class="container">
 						<div class="input-group">
-							<!--<div class="input-group-prepend">-->
-								<!--<button onclick="showHistorySearch();" class="btn btn-outline-secondary btn-primary btn-search-art"><span class="fas fa-history"></span></button>-->
-							<!--</div>-->
 							<input id="search_art3" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
 							<div class="input-group-append">
 								<button onClick="artSearch('search_art3');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
 							</div>
 						</div>
-						<!--<div id="PhoneHistory" style="padding: 45px; display: none;"></div>-->
+                        <div id="modal-phone__history" class="modal-phone__history search"></div>
 					</div>
 				</div>
 			</div>
@@ -610,7 +607,7 @@
 		</div>
 	</div>
 
-	<!-- Modal Basket-->
+	<!-- Modal Garage-->
 	<div class="modal fade" id="GarageForm" role="dialog" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">

@@ -340,15 +340,17 @@
 .template_filters {
     padding: 0 2%;
     border-right: 1px solid #f1f1f1;
+    .template-list {
+        a {
+            color: #000;
+            font-size: 16px;
+        }
+    }
     .param-title {
         padding-top: 30px;
         font-size: 1em;
         font-weight: 700;
     }
-}
-
-.template-list a {
-    font-size: .8em;
 }
 
 /*==== /TEMPLATES ====*/

@@ -1,16 +1,18 @@
 var folder='/content.php';
 
-// $(document).on('click', function() {
-//     $("#search_art").on("click", function() {
-//         let $this = $(this);
-//         if ($this.data('clicked')) {
-//             dropHistoryShow();
-//         } else {
-//             $this.data('clicked', true);
-//             dropHistoryHide();
-//         }
-//     });
-// });
+function detectmob() {
+    if (navigator.userAgent.match(/Android/i)
+        || navigator.userAgent.match(/webOS/i)
+        || navigator.userAgent.match(/iPhone/i)
+        || navigator.userAgent.match(/iPad/i)
+        || navigator.userAgent.match(/iPod/i)
+        || navigator.userAgent.match(/BlackBerry/i)
+        || navigator.userAgent.match(/Windows Phone/i)) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 $(document).ready(function() { "use strict";
     // tooltips

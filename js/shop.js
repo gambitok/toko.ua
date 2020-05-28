@@ -76,7 +76,7 @@ function moveBasket(id,art_id,brand_id,stock,storage_id,suppl_id) { "use strict"
 function showBasketMinForm() {
     $("#BasketForm").modal("show");
     $(".bar").bigSlide();
-    $(".fixed").toggleClass("hidden");
+    $(".fixed").addClass("hidden");
     JsHttpRequest.query(folder,{'w':'showBasketMinForm'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#basket_block").html(result.content);
@@ -181,20 +181,6 @@ function checkAllBasket() {
             $(this).removeAttr("checked");
         });
         btn.removeAttr("checked");
-    }
-}
-
-function detectmob() {
-    if (navigator.userAgent.match(/Android/i)
-        || navigator.userAgent.match(/webOS/i)
-        || navigator.userAgent.match(/iPhone/i)
-        || navigator.userAgent.match(/iPad/i)
-        || navigator.userAgent.match(/iPod/i)
-        || navigator.userAgent.match(/BlackBerry/i)
-        || navigator.userAgent.match(/Windows Phone/i)) {
-        return true;
-    } else {
-        return false;
     }
 }
 

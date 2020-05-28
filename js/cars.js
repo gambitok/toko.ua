@@ -4,6 +4,11 @@ $(document).ready(function() {
         toggleCarsNavigation(this);
     });
 
+    if (detectmob()) {
+        // hide on mobile
+        toggleCarsNavigation($("div[data-type='manuf']"));
+    }
+
 });
 
 function toggleCarsTab(index) {
@@ -13,11 +18,11 @@ function toggleCarsTab(index) {
     let elem = $("div[data-type='" + type + "']");
     let next = $("div[data-type='" + $(elem).attr('data-next') + "']");
 
-    if ($(elem).attr('data-id') !== "0") {
+    if ($(elem).attr("data-id") !== "0") {
         clearCarsBlock($(elem).attr("data-tab"));
     }
 
-    $(elem).attr('data-id', attr);
+    $(elem).attr("data-id", attr);
 
     // Remove Disables
     $(next).removeClass("cars-nav__item-disabled");
@@ -27,9 +32,33 @@ function toggleCarsTab(index) {
     $(".cars-nav__item").each(function () {
         $(this).removeClass("cars-nav__item-checked");
     });
-    $(next).addClass('cars-nav__item-checked');
+    $(next).addClass("cars-nav__item-checked");
 
     toggleCarsNavigation(next, type, attr);
+
+    if (detectmob()) scrollTo($("div[data-pred='" + type + "'].cars-nav__item-mob"));
+}
+
+function showCarsNavigation(index) {
+    // Remove Disables
+    $(index).removeClass("cars-nav__item-disabled");
+    $(index).removeClass("cars-nav__item-hidden");
+
+    // Show Active Nav
+    $(".cars-nav__item").each(function () {
+        $(this).removeClass("cars-nav__item-active");
+        $(this).removeClass("cars-nav__item-checked");
+    });
+    $(index).addClass("cars-nav__item-active");
+    $(index).addClass("cars-nav__item-checked");
+
+    // Show Active Tab
+    $(".cars-tab__block").each(function () {
+        $(this).removeClass("cars-tab__block-active");
+    });
+    let index_tab = $("#" + $(index).attr("data-tab"));
+    index_tab.addClass("cars-tab__block-active");
+    return true;
 }
 
 function toggleCarsNavigation(index, type, attr) {
@@ -67,8 +96,13 @@ function toggleCarsNavigation(index, type, attr) {
 function getCarsSearchContent(type, attr) {
     JsHttpRequest.query(folder,{'w':'getCarsSearchContent', 'type':type, 'attr':attr},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            $("#" + result.tab).html(result.list);
-            $("div[data-type='" + result.nav + "']").html(result.title);
+
+            let tab = $("#" + result.tab);
+            tab.html(result.list);
+
+            let nav = $("div[data-type='" + result.nav + "']");
+            nav.html(result.title);
+
         }}, true);
 }
 
@@ -83,12 +117,18 @@ function clearCarsBlock(data_tab) {
 
                 JsHttpRequest.query(folder,{'w':'clearCarsBlock', 'sel_tab':i, 'cur_tab':cur_tab},
                     function (result, errors){ if (errors) {alert(errors);} if (result) {
-                        //default Classes
+                        // default Classes
                         active_tab.addClass(result.content[0]);
-                        //default Texts
+                        // default Texts
                         active_tab.html(result.content[1]);
                     }}, true);
             }
         }
     }
+}
+
+function scrollTo(index) {
+    $([document.documentElement, document.body]).animate({
+        scrollTop: index.offset().top - parseInt($('.fixed-phone').css('height'))
+    }, 500);
 }

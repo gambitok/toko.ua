@@ -1319,6 +1319,7 @@ table thead td { border: 1px solid #000; }
   .tree-head { min-height: 200px; }
   .tree-head span { float: left; }
   /*=== GOODS ====*/
+  .goods { justify-content: center; }
   .goods__item { margin: 15px; }
   /*=== /GOODS ====*/
   /*==== FOOTER ====*/
@@ -1479,6 +1480,18 @@ table thead td { border: 1px solid #000; }
 .modal-gallery .carousel-caption { bottom: -18px; }
 
 .modal-phone button { width: auto; margin: 0; }
+
+.modal-phone input { border-radius: .25rem; }
+
+.modal-phone .search { margin-top: 15px; }
+
+.modal-phone .search-nav { background: #fff; list-style: none; margin: 0; max-height: 200px; overflow-y: scroll; }
+
+.modal-phone .search-nav__item a, .modal-phone .search-nav__item a:not([href]):not([tabindex]) { display: block; color: #000; cursor: pointer; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 10px 0; font-size: 12px; }
+
+.modal-phone .search-nav__item a:hover, .modal-phone .search-nav__item a:not([href]):not([tabindex]):hover { color: #ccc; }
+
+.modal-phone .search-nav__item:hover { background: #f7f7f7; }
 
 .close { color: #fff; }
 
@@ -1691,9 +1704,9 @@ table thead td { border: 1px solid #000; }
 
 .template_filters { padding: 0 2%; border-right: 1px solid #f1f1f1; }
 
-.template_filters .param-title { padding-top: 30px; font-size: 1em; font-weight: 700; }
+.template_filters .template-list a { color: #000; font-size: 16px; }
 
-.template-list a { font-size: .8em; }
+.template_filters .param-title { padding-top: 30px; font-size: 1em; font-weight: 700; }
 
 /*==== /TEMPLATES ====*/
 /*==== SEARCH ====*/
@@ -1921,7 +1934,7 @@ table thead td { border: 1px solid #000; }
 
 .profile__side { padding: 0 15px 0 0; }
 
-.profile-account .row { padding: 15px; border-top: 1px dashed #ddd; }
+.profile-account .row { margin: 0; padding: 15px; border-top: 1px dashed #ddd; }
 
 .profile-account input, .profile-account select { display: inline; }
 
@@ -1974,9 +1987,27 @@ table thead td { border: 1px solid #000; }
 
 .cars-tab__block-active { display: flex; }
 
-.cars-tab__block-item { background: #fff; border-bottom: 1px solid #ebebeb; border-right: 1px solid #ebebeb; border-top: 1px solid #ebebeb; cursor: pointer; margin-bottom: -1px; padding: 15px; width: calc(12.5%); }
+.cars-tab__block-item { background: #fff; border: 1px solid #ebebeb; cursor: pointer; padding: 15px; transition: .3s; width: calc(12.5%); }
 
-.cars-tab__block-item:hover { background: #f5f5f5; }
+.cars-tab__block-item:hover { border-color: #228b94; }
+
+.cars-tab__block-item-body { padding: 10px; width: calc(25%); }
+
+.cars-tab__block-item-body .bodyc-head { display: flex; width: 100%; }
+
+.cars-tab__block-item-body .bodyc-content { display: flex; width: 100%; margin-top: 15px; }
+
+.cars-tab__block-item-body .bodyc__title { width: 80%; color: #000; font-size: 14px; position: relative; overflow: hidden; white-space: normal; text-overflow: ellipsis; padding-right: 15px; }
+
+.cars-tab__block-item-body .bodyc__descr { width: 60%; color: #9da9b9; font-size: 11px; position: relative; overflow: hidden; white-space: normal; text-overflow: ellipsis; padding-right: 15px; }
+
+.cars-tab__block-item-body .bodyc__type { width: 20%; }
+
+.cars-tab__block-item-body .bodyc__type img { width: 100%; }
+
+.cars-tab__block-item-body .bodyc__image { width: 40%; }
+
+.cars-tab__block-item-body .bodyc__image img { width: 100%; }
 
 .cars-tab__block-item-modif { padding: 10px; width: calc(25%); }
 
@@ -2059,6 +2090,7 @@ table thead td { border: 1px solid #000; }
   .tree-head { min-height: 200px; }
   .tree-head span { float: left; }
   /*=== GOODS ====*/
+  .goods { justify-content: center; }
   .goods__item { margin: 15px; }
   /*=== /GOODS ====*/
   /*==== FOOTER ====*/

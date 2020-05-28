@@ -5,7 +5,14 @@ function showActionForm() { "use strict"; $("#ActionForm").modal("toggle"); }
 
 function catalogueFilterClear() { "use strict"; location.reload(true); }
 
-function showArtSearch() { "use strict"; $("#PhoneArticle").modal("show"); }
+function showArtSearch() { "use strict";
+    $("#PhoneArticle").modal("show");
+    $("#search_art3").focus();
+    JsHttpRequest.query(folder,{'w':'showHistoryList'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modal-phone__history").html(result.content);
+        }}, true);
+}
 
 function carGarageSearch() { location.href = "https://toko.ua/catalog/"; }
 
@@ -67,15 +74,6 @@ function showStorage(art_id) { "use strict";
     $("#fas-"+art_id).toggleClass("none");
 }
 
-function showHistorySearch() {
-    JsHttpRequest.query(folder,{'w':'showHistorySearch'},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            let phone=$("#PhoneHistory");
-            phone.html(result.content);
-            phone.toggle();
-        }}, true);
-}
-
 function artSearch(input_name) { "use strict";
     let art = $("#"+input_name).val();
     art=art.replace(/\s+/g,'');
@@ -92,7 +90,7 @@ function artSearch(input_name) { "use strict";
             }}, true);
     }
 }
-//
+
 // function selectModel() { "use strict";
 //     let auto = $("#select_auto option:selected").val();
 //     $("#select_model_descr").empty();
@@ -632,21 +630,6 @@ function openAutoHistory() {
     }
 }
 
-//DELETE !!!!
-function openAutoCars() {
-    let div_id = $("#car_form-cars");
-    if (div_id.is(':visible')) {
-        div_id.hide("slow");
-    } else {
-        JsHttpRequest.query(folder,{'w':'openAutoCars'},
-            function (result, errors){ if (errors) {alert(errors);} if (result){
-                div_id.html(result.content);
-                // div_id.show();
-                div_id.show("slow");
-            }}, true);
-    }
-}
-
 /*==== /Garage =====*/
 
 function changeBasketCount(status, id) {
@@ -891,36 +874,6 @@ function showTabCatalogueAuto() {
 function showCarsSelectLink() {
     let str_text = $("#str_text_select").val();
     location.href = "https://toko.ua/details/"+str_text+"/";
-}
-
-function detectmob2() {
-    if (navigator.userAgent.match(/Android/i)
-        || navigator.userAgent.match(/webOS/i)
-        || navigator.userAgent.match(/iPhone/i)
-        || navigator.userAgent.match(/iPad/i)
-        || navigator.userAgent.match(/iPod/i)
-        || navigator.userAgent.match(/BlackBerry/i)
-        || navigator.userAgent.match(/Windows Phone/i)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// DELETE !!!!
-function closeCarsSelectMin() {
-    if (!detectmob2()) {
-        $("#select_mfa").removeClass("car_form-selected");
-        $("#select_model").removeClass("car_form-selected");
-        $("#select_year").removeClass("car_form-selected");
-        $("#select_modelid").removeClass("car_form-selected");
-        $("#select_typid").removeClass("car_form-selected");
-        $("#select_modification").removeClass("car_form-selected");
-        $(".car_form-select_card").hide();
-        console.log('close all');
-    } else {
-        console.log('detectmob');
-    }
 }
 
 function showCarsSelectMin(param_id, value_id=0, fuel_id=0) {

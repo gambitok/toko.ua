@@ -165,12 +165,8 @@
     }
 
     /*=== GOODS ====*/
-    //.goods-content {
-    //    padding: 30px;
-    //    text-align: center;
-    //}
-
     .goods {
+        justify-content: center;
         &__item {
             margin: 15px;
         }

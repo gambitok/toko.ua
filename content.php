@@ -27,7 +27,6 @@ session_start();
 $catalog=new CatalogueClass; $menu=new MenuClass; $client=new ClientClass; $lang=new LangClass; $shop=new ShopClass;
 $showform=new FormClass; $automan=new AutoClass; $profile=new ProfileClass;
 $prod=new ProductsClass; $parameters=new ParametersClass; $search=new SearchClass;
-//$pattern=new PatternClass; $parts=new PartsClass;
 
 //=profile==============================================================================================================
 
@@ -69,9 +68,7 @@ if ($_REQUEST["w"]=="tab_modelid"){$GLOBALS['_RESULT'] = array("content"=>$autom
 
 if ($_REQUEST["w"]=="tab_group"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueGroup($_REQUEST["modelid"], $_REQUEST["model"], $_REQUEST["auto"], $_REQUEST["year"]));}
 
-/*GARAGE*/
-
-//if ($_REQUEST["w"]=="addGarage"){$GLOBALS['_RESULT'] = array("content"=>$automan->addGarageAuto($_REQUEST["manufacture"], $_REQUEST["model"], $_REQUEST["model_id"], $_REQUEST["typ_id"]));}
+/*=== GARAGE ====*/
 
 if ($_REQUEST["w"]=="addToGarage"){$GLOBALS['_RESULT'] = array("content"=>$automan->addToGarage($_REQUEST["typ_id"]));}
 
@@ -87,12 +84,10 @@ if ($_REQUEST["w"]=="updateGarageStatus"){$GLOBALS['_RESULT'] = array("content"=
 
 if ($_REQUEST["w"]=="showGarageBlockMin"){$GLOBALS['_RESULT'] = array("content"=>$automan->showGarageBlockMin());}
 
-//if ($_REQUEST["w"]=="openAutoGarage"){$GLOBALS['_RESULT'] = array("content"=>$automan->openAutoGarage());}
-
 if ($_REQUEST["w"]=="openAutoHistory"){$GLOBALS['_RESULT'] = array("content"=>$automan->showAutoHistory());}
-if ($_REQUEST["w"]=="openAutoCars"){$GLOBALS['_RESULT'] = array("content"=>$automan->openAutoGarage());}
 
 if ($_REQUEST["w"]=="updateGarageForm"){$GLOBALS['_RESULT'] = array("content"=>$automan->showGarageBlockMin());}
+
 if ($_REQUEST["w"]=="updateTypForm"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTypBlockMin());}
 
 //=catalogue filters====================================================================================================
@@ -126,6 +121,7 @@ if ($_REQUEST["w"]=="showPhotoForm"){$GLOBALS['_RESULT'] = array("content"=>$sho
 if ($_REQUEST["w"]=="showBrandForm"){$GLOBALS['_RESULT'] = array("content"=>$showform->showBrandForm($_REQUEST["brand"]));}
 
 if ($_REQUEST["w"]=="showHistoryList"){$GLOBALS['_RESULT'] = array("content"=>$showform->showHistoryList());}
+
 if ($_REQUEST["w"]=="deleteHistoryItem"){$GLOBALS['_RESULT'] = array("content"=>$showform->deleteHistoryItem($_REQUEST["history_id"]));}
 
 //=client && login======================================================================================================
@@ -180,8 +176,6 @@ if ($_REQUEST["w"]=="updateBasketForm"){ $GLOBALS['_RESULT'] = array("content"=>
 
 if ($_REQUEST["w"]=="updateBasketStatus"){ $GLOBALS['_RESULT'] = array("content"=>$shop->countBasket());}
 
-if ($_REQUEST["w"]=="showHistorySearch"){ $GLOBALS['_RESULT'] = array("content"=>$showform->showHistoryList());}
-
 if ($_REQUEST["w"]=="get_city_list"){ $GLOBALS['_RESULT'] = array("content"=>$showform->showCityForm($_REQUEST["city_like"]));}
 
 if ($_REQUEST["w"]=="closeOrderArtUpdate"){ $GLOBALS['_RESULT'] = array("content"=>$profile->closeOrderArtUpdate($_REQUEST["dp_id"],$_REQUEST["art_id"],$_REQUEST["order_id"]));}
@@ -226,7 +220,8 @@ if ($_REQUEST["w"]=="techCarModels"){ $GLOBALS['_RESULT'] = array("content"=>$pr
 
 if ($_REQUEST["w"]=="techCarModelsFilter"){ $GLOBALS['_RESULT'] = array("content"=>$prod->techCarModelsFilter($_REQUEST["typ_id"],$_REQUEST["str_id"]));}
 
-// NEW
+/*==== HOME CARS ====*/
+
 if ($_REQUEST["w"]=="getCarsSearchContent"){ list($list, $title, $nav, $tab) = $prod->getCarsSearchContent($_REQUEST["type"],$_REQUEST["attr"]); $GLOBALS['_RESULT'] = array("list"=>$list, "title"=>$title, "nav"=>$nav, "tab"=>$tab);}
 
 if ($_REQUEST["w"]=="clearCarsBlock"){ $GLOBALS['_RESULT'] = array("content"=>$prod->clearCarsBlock($_REQUEST["sel_tab"],$_REQUEST["cur_tab"]));}

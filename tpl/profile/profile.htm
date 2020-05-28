@@ -2,10 +2,9 @@
 
 	<div class="col-lg-2 col-12 profile__side">
 		<div class="side-menu">
-
 			<h1>{profile_user}</h1>
-
 			<span class="bold">{client_name}</span><br>ID: {client_id}<hr>
+            
             <ul class="nav nav-tabs flex-column" id="myTab" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link {profile-account}" onclick="showProfileAccount();" id="home-tab" data-toggle="tab" href="#profile-home" role="tab" aria-controls="profile-home" aria-selected="true"><span class="fas fa-user-circle"></span> {my_office}</a>
@@ -34,94 +33,101 @@
 			<div class="tab-content">
 
 				<div class="tab-pane {profile-account}" id="profile-home" role="tabpanel" aria-labelledby="home-tab">
-					<div class="row align-items-center">
-						<div class="col-lg-12 col-12 pad0">
-							<h5>{my_office}</h5>
+					<div class="container">
+						<div class="row align-items-center">
+							<div class="col-lg-12 col-12">
+								<h5>{my_office}</h5>
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-12 col-12 pad0">
-							<div id="profile_account">
-								{profile_account}
+						<div class="row">
+							<div class="col-lg-12 col-12">
+								<div id="profile_account">
+									{profile_account}
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 
 				<div class="tab-pane {profile-orders}" id="profile-orders" role="tabpanel" aria-labelledby="profile-tab">
-					<div class="row align-items-center">
-						<div class="col-lg-12 col-12 pad0"><h5>{orders}</h5></div>
-					</div>
-					<div class="row align-items-center">
-
-						<div id="radio-group" class="col-lg-12 col-12 radio-group">
-							<input id="radio_orders" type="radio" name="cur" checked="checked" onclick="showProfileOrders();" title="{orders}">
-							<label for="radio_orders" title="{orders}"><span class="fa fa-folder"></span></label>
-							<input id="radio_orders_arts" type="radio" name="cur" onclick="showProfileOrdersArts('','');" title="{orders_arts}">
-							<label for="radio_orders_arts" title="{orders_arts}"><span class="fa fa-folder-open"></span></label>
-						</div>
-
-						<div class="col-lg-12 col-12 pad0">
-							<br>
-							<div id="profile_orders">
-								{profile_orders}
-							</div>
-						</div>
-
-					</div>
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-12 col-12"><h5>{orders}</h5></div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div id="radio-group" class="col-lg-12 col-12 radio-group">
+                                <input id="radio_orders" type="radio" name="cur" checked="checked" onclick="showProfileOrders();" title="{orders}">
+                                <label for="radio_orders" title="{orders}"><span class="fa fa-folder"></span></label>
+                                <input id="radio_orders_arts" type="radio" name="cur" onclick="showProfileOrdersArts('','');" title="{orders_arts}">
+                                <label for="radio_orders_arts" title="{orders_arts}"><span class="fa fa-folder-open"></span></label>
+                            </div>
+                            <div class="col-lg-12 col-12">
+                                <br>
+                                <div id="profile_orders">
+                                    {profile_orders}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 				</div>
 
 				<div class="tab-pane {profile-basket}" id="profile-basket" role="tabpanel" aria-labelledby="basket-tab">
-					<div class="row align-items-center">
-						<div class="col-lg-12 col-12 pad0">
-							<div id="profile_basket_form">
-								<div class="container">
-									{profile_basket}
-								</div>
-							</div>
-						</div>
-					</div>
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-12 col-12">
+                                <div id="profile_basket_form">
+                                    <div class="container">
+                                        {profile_basket}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 				</div>
 
 				<div class="tab-pane {profile-check}" id="profile-check" role="tabpanel" aria-labelledby="check-tab">
-					<div class="row align-items-center">
-						<div class="col-lg-12 col-12 pad0" style="padding-bottom: 30px;"><h5>{check_profile}</h5></div>
-					</div>
-					<div class="row align-items-center {check_visible}">
-						<div class="col-lg-12 col-12 pad0">
-							<div class="row">
-								<div class="col-12 col-lg-5">
-									<label for="saldo_data_start">{date_cap} {from_cap}:</label>
-									<input title="{date_cap}" type="date" class="form-control" id="saldo_data_start" value="{date_saldo_from}">
-								</div>
-								<div class="col-12 col-lg-5">
-									<label for="saldo_data_end">{date_cap} {to_cap}:</label>
-									<input title="{date_cap}" type="date" class="form-control" id="saldo_data_end" value="{date_saldo_to}">
-								</div>
-								<div class="col-12 col-lg-2">
-									<label>&nbsp;</label><br>
-									<button class="btn btn-primary" onclick="showProfileCheckForm()"><span class="fa fa-filter"></span> {filter_cap}</button>
-								</div>
-							</div>
-							<br>
-							{profile_check}
-						</div>
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-12 col-12"><h5>{check_profile}</h5></div>
+                        </div>
+                        <div class="row align-items-center {check_visible}">
+                            <div class="col-lg-12 col-12">
+                                <div class="row">
+                                    <div class="col-12 col-lg-5">
+                                        <label for="saldo_data_start">{date_cap} {from_cap}:</label>
+                                        <input title="{date_cap}" type="date" class="form-control" id="saldo_data_start" value="{date_saldo_from}">
+                                    </div>
+                                    <div class="col-12 col-lg-5">
+                                        <label for="saldo_data_end">{date_cap} {to_cap}:</label>
+                                        <input title="{date_cap}" type="date" class="form-control" id="saldo_data_end" value="{date_saldo_to}">
+                                    </div>
+                                    <div class="col-12 col-lg-2">
+                                        <label>&nbsp;</label><br>
+                                        <button class="btn btn-primary" onclick="showProfileCheckForm()"><span class="fa fa-filter"></span> {filter_cap}</button>
+                                    </div>
+                                </div>
+                                <br>
+                                {profile_check}
+                            </div>
+                        </div>
 					</div>
 				</div>
 
 				<div class="tab-pane {profile-price}" id="profile-price_list" role="tabpanel" aria-labelledby="price_list-tab">
-					<div class="row align-items-center">
-						<div class="col-lg-12 col-12 pad0">
-							<h5>{price_list}</h5>
-						</div>
-					</div>
-					<div class="row align-items-center {price_visible}">
-					  <div class="col-lg-12 col-12 pad0">
-						  <div id="profile_file_list">
-							  {profile_file_list}
-						  </div>
-					  </div>
-					</div>
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-12 col-12">
+                                <h5>{price_list}</h5>
+                            </div>
+                        </div>
+                        <div class="row align-items-center {price_visible}">
+                          <div class="col-lg-12 col-12">
+                              <div id="profile_file_list">
+                                  {profile_file_list}
+                              </div>
+                          </div>
+                        </div>
+				    </div>
 				</div>
 
 			</div>
