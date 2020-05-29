@@ -201,10 +201,6 @@ html {
     display: block;
 }
 
-.inline {
-    display: inline;
-}
-
 .none {
     display: none!important;
 }
@@ -246,14 +242,6 @@ html {
     text-align: left;
 }
 
-.word-wrap {
-    overflow-wrap: break-word;
-}
-
-.underline {
-    text-decoration: underline!important;
-}
-
 .mar0 {
     margin: 0;
 }
@@ -278,14 +266,6 @@ html {
     padding-right: 15px;
 }
 
-.padb15 {
-    padding-bottom: 15px;
-}
-
-.padt15 {
-    padding-top: 15px;
-}
-
 .float-left {
     float: left;
 }
@@ -302,28 +282,12 @@ html {
     width: auto!important
 }
 
-.wdt25 {
-    width: 25%;
-}
-
-.wdt50 {
-    width: 50%;
-}
-
 .wdt100 {
     width: 100%;
 }
 
-.wdt100i {
-    width: 100%!important;
-}
-
 .hgt100 {
     height: 100%;
-}
-
-.border-none {
-    border: unset!important;
 }
 
 .img-center {
@@ -338,10 +302,6 @@ html {
 
 .non_accept {
     color: $site_main_secondary;
-}
-
-.color000 {
-    color: $black;
 }
 
 .bg-danger {
@@ -362,6 +322,7 @@ html {
 }
 
 .word-wrap {
+    overflow-wrap: break-word;
     word-wrap: break-word;
 }
 
@@ -492,7 +453,6 @@ header {
                 font-size: 13px;
             }
             a {
-                color: $white;
                 &:hover {
                     color: #ccc;
                     text-decoration: none;
@@ -807,7 +767,6 @@ header {
 /* ==== /HEADER ==== */
 
 /*==== SPECIAL OFFERS ===*/
-
 .special-offers {
     &-header {
         padding: 15px;
@@ -971,62 +930,6 @@ header {
 }
 
 /*==== /MAIN HEAD ===*/
-
-/*===== BANNER ====*/
-.banner_row {
-    box-shadow: 0 1px 10px #ccc;
-    width: 100%;
-    background: $white;
-    margin: 0;
-    padding: 1%;
-    span {
-        text-decoration: underline;
-    }
-    h5 {
-        color: $black;
-        font-size: 15px;
-        font-weight: 700;
-    }
-    a {
-        color: $black;
-        font-weight: 400;
-        &:hover {
-            text-decoration: none;
-        }
-    }
-    &.carousel {
-        width: 100%;
-    }
-    &.carousel-inner {
-        background: #ddd;
-    }
-}
-
-.banner_img {
-    padding: 5px;
-    width: 100%;
-    height: 150px;
-    img {
-        width: 100%;
-        height: 100%;
-        display: block;
-        margin: 0 auto;
-    }
-}
-
-.banner_text {
-    padding: 5px;
-    b {
-        color: $black;
-        font-size: 13px;
-        font-weight: 700;
-    }
-    p {
-        font-size: 10px;
-        text-indent: 0;
-        text-decoration: none;
-    }
-}
 
 /*==== RECOMENDATION BANNER ====*/
 .banner {
@@ -1533,9 +1436,11 @@ header {
 .tree-list {
     transition: all 2s linear;
     border: none;
-    //border-bottom: 3px solid #eee;
-    //border-top: 3px solid #eee;
     padding: 1em;
+    &-clear {
+        border: none;
+        padding: 0;
+    }
 }
 
 .tree-title {
@@ -1786,8 +1691,7 @@ header {
     &__pagination {
         nav {
             display: block;
-            margin: 0 auto;
-            margin-top: 2em;
+            margin: 2em auto 0 auto;
         }
     }
     &__brands {
@@ -2155,16 +2059,6 @@ header {
         .btn-img {
             margin-right: 10px;
         }
-        //button {
-        //    margin-top: 10px;
-        //    margin-right: 10px;
-        //    width: 150px;
-        //    font-size: 14px;
-        //    position: relative;
-        //    overflow: hidden;
-        //    white-space: nowrap;
-        //    text-overflow: ellipsis;
-        //}
     }
     &__image {
         padding: 15px;
@@ -2247,9 +2141,7 @@ header {
             width: 22px;
             height: 22px;
             border-radius: 100%;
-            background: url(/images/next-black.svg);
-            background-position: center;
-            background-repeat: no-repeat;
+            background: url(/images/next-black.svg) center no-repeat;
             background-size: cover;
         }
         &:hover {
@@ -2260,11 +2152,8 @@ header {
             }
         }
         &:hover:after {
-            background: url(/images/next-white.svg);
-            background-position: center;
-            background-repeat: no-repeat;
+            background: $site_info_primary url(/images/next-white.svg) center no-repeat;
             background-size: cover;
-            background-color: $site_info_primary;
         }
         span {
             position: relative;

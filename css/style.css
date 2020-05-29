@@ -83,8 +83,6 @@ body, html { width: 100%; height: 100%; overflow-x: hidden; }
 
 .show { display: block; }
 
-.inline { display: inline; }
-
 .none { display: none !important; }
 
 .dblock { display: block !important; }
@@ -105,10 +103,6 @@ body, html { width: 100%; height: 100%; overflow-x: hidden; }
 
 .text-left { text-align: left; }
 
-.word-wrap { overflow-wrap: break-word; }
-
-.underline { text-decoration: underline !important; }
-
 .mar0 { margin: 0; }
 
 .pad0 { padding: 0; }
@@ -121,10 +115,6 @@ body, html { width: 100%; height: 100%; overflow-x: hidden; }
 
 .padr15 { padding-right: 15px; }
 
-.padb15 { padding-bottom: 15px; }
-
-.padt15 { padding-top: 15px; }
-
 .float-left { float: left; }
 
 .float-right { float: right; }
@@ -133,25 +123,15 @@ body, html { width: 100%; height: 100%; overflow-x: hidden; }
 
 .wauto { width: auto !important; }
 
-.wdt25 { width: 25%; }
-
-.wdt50 { width: 50%; }
-
 .wdt100 { width: 100%; }
 
-.wdt100i { width: 100% !important; }
-
 .hgt100 { height: 100%; }
-
-.border-none { border: unset !important; }
 
 .img-center { display: block; margin: 0 auto; max-width: 100%; }
 
 .accept { color: #228b94; }
 
 .non_accept { color: #ee7f80; }
-
-.color000 { color: #000; }
 
 .bg-danger { background: #f44336 !important; }
 
@@ -161,7 +141,7 @@ body, html { width: 100%; height: 100%; overflow-x: hidden; }
 
 .required_input { border: 1px solid #ee7f80; box-shadow: 0 0 5px #ee7f80; }
 
-.word-wrap { word-wrap: break-word; }
+.word-wrap { overflow-wrap: break-word; word-wrap: break-word; }
 
 .table-bordered { border: 1px solid #000; border-top: none; }
 
@@ -210,8 +190,6 @@ header { width: 100%; color: #a9a9a9; }
 .header-top .authorization ul { margin: 0; text-align: right; }
 
 .header-top .authorization ul li { display: inline; margin-right: 0; padding: 0 5px; font-size: 13px; }
-
-.header-top .authorization ul a { color: #fff; }
 
 .header-top .authorization ul a:hover { color: #ccc; text-decoration: none; -webkit-transition: all .2s ease; -moz-transition: all .2s ease; -o-transition: all .2s ease; transition: all .2s ease; }
 
@@ -374,31 +352,6 @@ header { width: 100%; color: #a9a9a9; }
 .basket_count_media { position: relative; top: -40px; left: 30px; }
 
 /*==== /MAIN HEAD ===*/
-/*===== BANNER ====*/
-.banner_row { box-shadow: 0 1px 10px #ccc; width: 100%; background: #fff; margin: 0; padding: 1%; }
-
-.banner_row span { text-decoration: underline; }
-
-.banner_row h5 { color: #000; font-size: 15px; font-weight: 700; }
-
-.banner_row a { color: #000; font-weight: 400; }
-
-.banner_row a:hover { text-decoration: none; }
-
-.banner_row.carousel { width: 100%; }
-
-.banner_row.carousel-inner { background: #ddd; }
-
-.banner_img { padding: 5px; width: 100%; height: 150px; }
-
-.banner_img img { width: 100%; height: 100%; display: block; margin: 0 auto; }
-
-.banner_text { padding: 5px; }
-
-.banner_text b { color: #000; font-size: 13px; font-weight: 700; }
-
-.banner_text p { font-size: 10px; text-indent: 0; text-decoration: none; }
-
 /*==== RECOMENDATION BANNER ====*/
 .banner input[type="checkbox"] { display: none; }
 
@@ -600,6 +553,8 @@ header { width: 100%; color: #a9a9a9; }
 /*==== TREE LIST =====*/
 .tree-list { transition: all 2s linear; border: none; padding: 1em; }
 
+.tree-list-clear { border: none; padding: 0; }
+
 .tree-title a { color: #228b94; }
 
 .tree-title span { display: block; padding: 10px 0 0 10px; font-size: 20px; font-weight: bold; }
@@ -689,7 +644,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .details-offers__header span { display: inline; font-size: 22px; font-weight: bold; color: #606975; text-transform: uppercase; }
 
-.details-offers__pagination nav { display: block; margin: 0 auto; margin-top: 2em; }
+.details-offers__pagination nav { display: block; margin: 2em auto 0 auto; }
 
 .details-offers__brands input { width: 100%; }
 
@@ -855,13 +810,13 @@ header { width: 100%; color: #a9a9a9; }
 
 .seo_details .seo-li { cursor: pointer; display: flex; width: calc(25% - 48px); margin-right: 48px; margin-bottom: 15px; height: 75px; text-decoration: none; padding: 0 69px 0 0; position: relative; border-bottom: 1px solid #ebebeb; }
 
-.seo_details .seo-li:after { content: ""; position: absolute; top: calc(50% - 11px); right: 12px; width: 22px; height: 22px; border-radius: 100%; background: url(/images/next-black.svg); background-position: center; background-repeat: no-repeat; background-size: cover; }
+.seo_details .seo-li:after { content: ""; position: absolute; top: calc(50% - 11px); right: 12px; width: 22px; height: 22px; border-radius: 100%; background: url(/images/next-black.svg) center no-repeat; background-size: cover; }
 
 .seo_details .seo-li:hover { color: #228b94 !important; box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1); }
 
 .seo_details .seo-li:hover img { filter: grayscale(0); }
 
-.seo_details .seo-li:hover:after { background: url(/images/next-white.svg); background-position: center; background-repeat: no-repeat; background-size: cover; background-color: #228b94; }
+.seo_details .seo-li:hover:after { background: #228b94 url(/images/next-white.svg) center no-repeat; background-size: cover; }
 
 .seo_details .seo-li span { position: relative; max-height: 85%; overflow: hidden; display: flex; margin: auto 0; font-size: 15px; }
 
@@ -1055,6 +1010,10 @@ header { width: 100%; color: #a9a9a9; }
 
 .dropdown-menu-right { min-width: 4em; width: 4em; }
 
+.dropdown-menu-right .dropdown-item { color: #000; cursor: pointer; text-decoration: none; background-color: #fff; }
+
+.dropdown-menu-right .dropdown-item.active { color: #fff; background-color: #f44336; }
+
 /*==== /DROPDOWN ====*/
 /*==== SCROLLBAR ====*/
 ::-webkit-scrollbar { width: 10px; height: 5px; }
@@ -1085,7 +1044,7 @@ table thead td { border: 1px solid #000; }
 /*==== NAVS ====*/
 #nav-Content .nav-tabs { border-bottom: 0; width: 100%; background: #fff; }
 
-#nav-Content .nav-tabs a, #nav-Content .nav-tabs h1 { padding: 0; padding-right: 15px; color: #797979; font-weight: 700; line-height: 3em; }
+#nav-Content .nav-tabs a, #nav-Content .nav-tabs h1 { padding: 0 15px 0 0; color: #797979; font-weight: 700; line-height: 3em; }
 
 #nav-Content .nav-tabs a:hover, #nav-Content .nav-tabs h1:hover { color: #f44336; }
 
@@ -1210,6 +1169,30 @@ table thead td { border: 1px solid #000; }
 .owl-next i { transform: scale(1, 6); color: #ccc; }
 
 .owl-row { padding: 0 !important; }
+
+.owl-row__img { padding: 5px; width: 100%; height: 150px; }
+
+.owl-row__img img { width: 100%; height: 100%; display: block; margin: 0 auto; }
+
+.owl-row__text { padding: 5px; }
+
+.owl-row__text b { color: #000; font-size: 13px; font-weight: 700; }
+
+.owl-row__text p { font-size: 10px; text-indent: 0; text-decoration: none; }
+
+.banner_row { box-shadow: 0 1px 10px #ccc; width: 100%; background: #fff; margin: 0; padding: 1%; }
+
+.banner_row span { text-decoration: underline; }
+
+.banner_row h5 { color: #000; font-size: 15px; font-weight: 700; }
+
+.banner_row a { color: #000; font-weight: 400; }
+
+.banner_row a:hover { text-decoration: none; }
+
+.banner_row.carousel { width: 100%; }
+
+.banner_row.carousel-inner { background: #ddd; }
 
 /*==== /OWL CAROUSEL =====*/
 /*==== Bootstrap Carousel ====*/
@@ -1578,7 +1561,7 @@ table thead td { border: 1px solid #000; }
 
 /*==== /BASKET ====*/
 /*===== ORDERS ====*/
-.order__header { margin: 0; margin-bottom: 15px; }
+.order__header { margin: 0 0 15px 0; }
 
 .order__header h1 { font-size: 24px; }
 
@@ -1832,7 +1815,7 @@ table thead td { border: 1px solid #000; }
 /*==== TREE ====*/
 .tree-list_min { padding: 0.5em; transition: all 2s linear; border: 5px solid #228b94; border-top: none; }
 
-.tree-list_min .tree-item { margin: 1em 0; width: 50%; background: linear-gradient(to right, #26a4af 50%, white 50%); background-size: 200% 100%; background-position: right bottom; transition: all .5s ease-out; }
+.tree-list_min .tree-item { margin: 1em 0; width: 50%; background: linear-gradient(to right, #26a4af 50%, white 50%) right bottom; background-size: 200% 100%; transition: all .5s ease-out; }
 
 .tree-list_min .tree-item:hover { background-position: left bottom; color: white; }
 
@@ -1870,7 +1853,7 @@ table thead td { border: 1px solid #000; }
 
 .buy-cart-group { float: right; }
 
-.buy-cart-group .btn-group { width: 100%; display: block; margin: 0 auto; margin-top: 10px; background: #55bae6; }
+.buy-cart-group .btn-group { width: 100%; display: block; margin: 10px auto 0 auto; background: #55bae6; }
 
 .buy-cart-group .btn-group:hover { background: #228b94; }
 

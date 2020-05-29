@@ -639,7 +639,7 @@ class ProfileClass {
         $filename=scandir(RDD."/uploads/$user")[2];
         if ($filename!="") {
             $file="$this->uploads/$user/".$filename;
-            $list="<a class=\"btn btn-primary wdt100i\" href=\"$file\" download $visible><span class='fa fa-download'></span> Download $filename</a><br>";
+            $list="<a class=\"btn btn-primary\" href=\"$file\" download $visible><span class='fa fa-download'></span> Download $filename</a><br>";
         }
         else $list="";
 	    $r=$db->query("SELECT * FROM `cron_task_prices` WHERE `user_id`='$user' ORDER BY `date` DESC;"); $n=$db->num_rows($r);

@@ -458,8 +458,8 @@ class MenuClass {
             <div class=\"container\">
                 <a href='/search/$article_nr_search/'>
                 <div class=\"row owl-row\">
-                    <div class=\"col-5 banner_img\">$image</div>
-                    <div class=\"col-7 banner_text\">
+                    <div class=\"col-5 owl-row__img\">$image</div>
+                    <div class=\"col-7 owl-row__text\">
                          <p>$name</p>
                          <p>$info</p>
                          <span>$article_nr_displ ($brand)</span>

@@ -595,9 +595,8 @@
     .tree-item {
         margin: 1em 0;
         width: 50%;
-        background: linear-gradient(to right, #26a4af 50%, white 50%);
+        background: linear-gradient(to right, #26a4af 50%, white 50%) right bottom;
         background-size: 200% 100%;
-        background-position: right bottom;
         transition: all .5s ease-out;
         &:hover {
             background-position: left bottom;
@@ -700,8 +699,7 @@
     .btn-group {
         width: 100%;
         display: block;
-        margin: 0 auto;
-        margin-top: 10px;
+        margin: 10px auto 0 auto;
         background: #55bae6;
         &:hover {
             background: #228b94;
@@ -751,19 +749,10 @@
         margin-left: 10px
     }
 
-    //.result_table-content {
-    //    padding: 0
-    //}
-    //
-    //.result_table .container .row .show_hidden {
-    //    padding-top: 5%;
-    //    padding-bottom: 2%
-    //}
-
     .tables__count,
     .tables__price,
     .tables__stock {
-        padding: 0
+        padding: 0;
     }
 
     .tables__info {
@@ -774,11 +763,11 @@
 
     .border-line {
         border-top: 3px solid #deedf3;
-        margin-top: 15px
+        margin-top: 15px;
     }
 
     .auto_table--col {
-        padding-bottom: 15px
+        padding-bottom: 15px;
     }
 
     .show_hidden {
@@ -804,7 +793,7 @@
             text-transform: uppercase;
         }
         .col-12 {
-            padding: 0
+            padding: 0;
         }
     }
 
@@ -823,28 +812,28 @@
     }
 
     .search_template {
-        margin-top: 1em
+        margin-top: 1em;
     }
 
     .toggle_auto_list,
     .toggle_history {
-        padding: 15px
+        padding: 15px;
     }
 
     .gg__row-art {
-        padding: 1em
+        padding: 1em;
     }
 
     .gg__row-shop span {
-        float: none
+        float: none;
     }
 
     .gg__row-shop input {
-        float: none
+        float: none;
     }
 
     .gg__row-basket {
-        float: none
+        float: none;
     }
 
     .btn-copy {

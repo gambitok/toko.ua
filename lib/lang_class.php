@@ -38,7 +38,7 @@ class LangClass {
             $lang_id=$db->result($r,$i-1,"id");
             $lang_abr=$db->result($r,$i-1,"abr");
             $lang_id==$sel_id ? $active="active" : $active="";
-            $list.="<a class=\"dropdown-item pointer $active\" onclick=\"setSiteLang($lang_id);\">$lang_abr</a>";
+            $list.="<a class=\"dropdown-item $active\" onclick=\"setSiteLang($lang_id);\">$lang_abr</a>";
         }
         return $list;
     }

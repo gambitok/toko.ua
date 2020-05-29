@@ -1283,7 +1283,7 @@ class AutoClass {
         if ($head!="") $where="AND `HEAD_ID`='$head'";
         if ($category!="") $where_category="AND `CAT_ID`='$category'";
 
-        $list="<div class='tree-list border-none pad0'>";
+        $list="<div class='tree-list tree-list-clear'>";
         $r3=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 $where;"); $n3=$db->num_rows($r3);
         for ($i3=1;$i3<=$n3;$i3++) {
             $head_id = $db->result($r3, $i3-1, "HEAD_ID");
