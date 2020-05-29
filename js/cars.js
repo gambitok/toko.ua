@@ -36,7 +36,7 @@ function toggleCarsTab(index) {
 
     toggleCarsNavigation(next, type, attr);
 
-    if (detectmob()) scrollTo($("div[data-pred='" + type + "'].cars-nav__item-mob"));
+    if (detectmob()) scrollTo($("div[data-type='manuf'].cars-nav__item-mob"));
 }
 
 function showCarsNavigation(index) {
@@ -129,6 +129,6 @@ function clearCarsBlock(data_tab) {
 
 function scrollTo(index) {
     $([document.documentElement, document.body]).animate({
-        scrollTop: index.offset().top - parseInt($('.fixed-phone').css('height'))
+        scrollTop: index.offset().top
     }, 500);
 }

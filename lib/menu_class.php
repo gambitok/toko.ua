@@ -108,7 +108,7 @@ class MenuClass {
             LEFT OUTER JOIN `ACTION_CLIENTS_CATEGORY` acc ON (acc.action_id=ac.id)
         WHERE (acl.client_id='$client_id' OR acc.category_id IN ($categories)) $where_arts AND ac.data>='$cur_data';"); $n=$db->num_rows($r);
         if ($n>0) {
-            $list="<div class=\"news-block row\">"; $arr=[];
+            $list="<div class=\"row\">"; $arr=[];
             for ($i=1;$i<=$n;$i++){
                 $art_id=$db->result($r,$i-1,"art_id");
                 $article_nr_displ=$this->getArticleDispl($art_id);
@@ -147,16 +147,11 @@ class MenuClass {
                 array_push($group_arts,$art_id);
                 $name=$catalogue->getArticleName($art_id);
                 $article_nr_search=$this->getArticleSearch($art_id);
-                list($brand_id,$brand_name)=$this->getBrandInfo($art_id);
+                list(, $brand_name, $brand_link)=$this->getBrandInfo($art_id);
                 $data>0 ? $data=date("d.m.Y", strtotime($data)) : $data="{indefinitely_cap}";
                 $max_amount>0 ? $max_amount="{yes_cap}" : $max_amount="{no_cap}";
-                $link="https://toko.ua$prefix/search/$article_nr_search/$brand_id/$brand_name/";
-                if ($status_new)
-                    $status_new="
-                    <span class=\"span-red float-right\" title=\"{new_cap} {offer_cap}\" style=\"margin-left: 10px\">
-                        <span class=\"fa fa-bell\"></span>
-                    </span>";
-                else $status_new="";
+                $link="https://toko.ua$prefix/search/$article_nr_search/$brand_link/";
+                if ($status_new) $status_new="<span class=\"special-offers-item__bell\" title=\"{new_cap} {offer_cap}\"><span class=\"fa fa-bell\"></span></span>"; else $status_new="";
 
                 $article_info = $showform->getArticleInfoForm($art_id);
                 $info="<span class=\"fas fa-info-circle tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-html=\"true\" title=\"$article_info\"></span>";
@@ -164,30 +159,29 @@ class MenuClass {
                 if ($status) {
                     $list.="
                     <div class=\"col-lg-4 col-12\">
-                        <div class=\"show-offers__item offer-discount\">
+                        <div class=\"special-offers-item special-offers-item-discount\">
                             <div class=\"row\">
                                 <div class=\"col-7\">
-                                    <h4 itemprop=\"datePublished\">$timestamp</h4><br>
-                                    <h2 itemprop=\"name\">
-                                        <a class=\"a-blue\" href=\"$link\" target=\"_blank\">$article_nr_displ {from_cap} $amount {amount_abbr}.
-                                        <br><span>$name</span></a>
-                                    </h2>
-                                    <h3 itemprop=\"description\">
+                                    <span class=\"special-offers-item__date\" itemprop=\"datePublished\">$timestamp</span><br>
+                                    <div class=\"special-offers-item__name\" itemprop=\"name\">
+                                        <a href=\"$link\" target=\"_blank\">$article_nr_displ {from_cap} $amount {amount_abbr}.<br><span>$name</span></a>
+                                    </div>
+                                    <div class=\"special-offers-item__descr\" itemprop=\"description\">
                                         {offer_valid_until}: $data <br>
                                         {quantity_limited}: $max_amount 
-                                    </h3>
+                                    </div>
                                 </div>
-                                <div class=\"col-5 text-right\">
-                                    <span style='font-size:.9em;color: #606975;font-weight:bold'>{economy_cap}</span><br>
-                                    <span style='font-size:1.2em;color: #606975;font-weight:bold'>$discount%</span>
+                                <div class=\"col-5 special-offers-item-eco\">
+                                    <span class=\"special-offers-item-eco__text\">{economy_cap}</span><br>
+                                    <span class=\"special-offers-item-eco__number\">$discount%</span>
                                 </div>
                             </div>
                             <div class=\"row\">
                                 <div class=\"col-8\">
-                                    <a class=\"a-blue\" href=\"$link\" target=\"_blank\"><span class=\"fa fa-link\"></span> {go_to_offer}</a>
+                                    <a class=\"special-offers-item__link\" href=\"$link\" target=\"_blank\"><span class=\"fa fa-link\"></span> {go_to_offer}</a>
                                 </div>
                                 <div class=\"col-4 text-right\">
-                                   <a class=\"pointer color000 a-blue\" onclick=\"showInfoForm($art_id, '$article_nr_displ', '$brand_name');\">$info</a>
+                                   <a class=\"special-offers-item__info\" onclick=\"showInfoForm($art_id, '$article_nr_displ', '$brand_name');\">$info</a>
                                    $status_new
                                 </div>
                             </div>

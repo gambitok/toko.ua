@@ -122,13 +122,14 @@ trait Variables {
     }
 
     function getBrandInfo($art_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT t2a.BRAND_ID, t2b.BRAND_NAME 
+        $r=$db->query("SELECT t2a.BRAND_ID, t2b.BRAND_NAME, t2b.BRAND_LINK
         FROM `T2_ARTICLES` t2a
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID=t2a.BRAND_ID)
         WHERE t2a.`ART_ID`='$art_id' LIMIT 1;");
         $brand_id=$db->result($r,0,"BRAND_ID");
         $brand_name=$db->result($r,0,"BRAND_NAME");
-        return array($brand_id, $brand_name);
+        $brand_link=$db->result($r,0,"BRAND_LINK");
+        return array($brand_id, $brand_name, $brand_link);
     }
 
     function getArtMainInfo($art_id) { $db = DbSingleton::getTokoDb();

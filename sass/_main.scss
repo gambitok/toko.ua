@@ -807,8 +807,27 @@ header {
 /* ==== /HEADER ==== */
 
 /*==== SPECIAL OFFERS ===*/
-.show-offers {
-    &__item {
+
+.special-offers {
+    &-header {
+        padding: 15px;
+        min-height: 0;
+        margin-bottom: 1em;
+        h2 {
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 1.2em;
+            padding-top: .3em;
+        }
+        h3 {
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 1em;
+            float: right;
+            padding-top: .7em;
+        }
+    }
+    &-item {
         margin-left: 0;
         margin-bottom: 15px;
         border-bottom: 1px solid #eee;
@@ -817,86 +836,83 @@ header {
         padding: 15px;
         margin-right: 15px;
         width: 100%;
-        h2 {
-            font-size: 1.2em;
-            padding-bottom: 0;
-            a {
-                font-size: 1em;
-            }
-            span {
-                font-size: .75em;
-                color: $site_dark_primary;
-            }
+        &__date {
+            color: darkgray;
+            font-size: 11px;
         }
-        h3 {
+        &__name {
             font-size: .8em;
             color: $site_dark_secondary;
+            a {
+                color: $site_info_primary;
+                font-size: 16px;
+                span {
+                    color: $site_dark_primary;
+                    font-size: 14px;
+                }
+            }
         }
-        h4 {
+        &__descr {
             color: #999;
-            font-size: 10pt;
-            display: inline-block;
+            font-size: 14px;
         }
-        & > .color000 {
-            font-size: 1.35em;
+        &__link {
+            color: $site_info_primary;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        &__info {
+            color: $site_info_primary;
+            cursor: pointer;
+            span {
+                color: $site_info_primary;
+            }
+        }
+        &__bell {
+            color: lightcoral;
             float: right;
+            margin-left: 10px;
         }
-    }
-}
-
-.special_offers {
-    padding: 15px;
-    min-height: 0;
-    margin-bottom: 1em;
-    h2 {
-        text-transform: uppercase;
-        font-weight: 700;
-        font-size: 1.2em;
-        padding-top: .3em;
-    }
-    h3 {
-        text-transform: uppercase;
-        font-weight: 700;
-        font-size: 1em;
-        float: right;
-        padding-top: .7em;
-    }
-}
-
-.a-blue {
-    font-weight: 700;
-    color: $site_info_primary!important;
-    &:hover {
-        color: $site_dark_secondary!important;
-    }
-}
-
-.offer-discount {
-    background: $white;
-    position: relative;
-    p {
-        color: $white;
-    }
-    &:after {
-        content: "";
-        position: absolute;
-        width: 0;
-        height: 0;
-        background: #eee;
-    }
-    &:before {
-        content: "";
-        position: absolute;
-        width: 0;
-        height: 0;
-        background: #eee;
-        top: 0;
-        right: 0;
-        border-bottom: 110px solid $white;
-        border-right: 170px solid transparent;
-        -webkit-box-shadow: 3px 3px 7px rgba(0,0,0,0.3);
-        -moz-box-shadow: 3px 3px 7px rgba(0,0,0,0.3);
-        box-shadow: -3px 3px 7px rgba(0,0,0,0.3);
+        &-eco {
+            color: #606975;
+            font-weight: bold;
+            &__text {
+                float: right;
+                font-size: 14px;
+            }
+            &__number {
+                float: right;
+                font-size: 18px;
+            }
+        }
+        &-discount {
+            background: $white;
+            position: relative;
+            p {
+                color: $white;
+            }
+            &:after {
+                content: "";
+                position: absolute;
+                width: 0;
+                height: 0;
+                background: #eee;
+            }
+            &:before {
+                content: "";
+                position: absolute;
+                width: 0;
+                height: 0;
+                background: #eee;
+                top: 0;
+                right: 0;
+                border-bottom: 110px solid $white;
+                border-right: 170px solid transparent;
+                -webkit-box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+                -moz-box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+                box-shadow: -3px 3px 7px rgba(0, 0, 0, 0.3);
+            }
+        }
     }
 }
 

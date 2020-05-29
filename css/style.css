@@ -315,37 +315,45 @@ header { width: 100%; color: #a9a9a9; }
 
 /* ==== /HEADER ==== */
 /*==== SPECIAL OFFERS ===*/
-.show-offers__item { margin-left: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; background: #fff; box-shadow: 0 1px 10px #ccc; padding: 15px; margin-right: 15px; width: 100%; }
+.special-offers-header { padding: 15px; min-height: 0; margin-bottom: 1em; }
 
-.show-offers__item h2 { font-size: 1.2em; padding-bottom: 0; }
+.special-offers-header h2 { text-transform: uppercase; font-weight: 700; font-size: 1.2em; padding-top: .3em; }
 
-.show-offers__item h2 a { font-size: 1em; }
+.special-offers-header h3 { text-transform: uppercase; font-weight: 700; font-size: 1em; float: right; padding-top: .7em; }
 
-.show-offers__item h2 span { font-size: .75em; color: #606975; }
+.special-offers-item { margin-left: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; background: #fff; box-shadow: 0 1px 10px #ccc; padding: 15px; margin-right: 15px; width: 100%; }
 
-.show-offers__item h3 { font-size: .8em; color: #a9a9a9; }
+.special-offers-item__date { color: darkgray; font-size: 11px; }
 
-.show-offers__item h4 { color: #999; font-size: 10pt; display: inline-block; }
+.special-offers-item__name { font-size: .8em; color: #a9a9a9; }
 
-.show-offers__item > .color000 { font-size: 1.35em; float: right; }
+.special-offers-item__name a { color: #228b94; font-size: 16px; }
 
-.special_offers { padding: 15px; min-height: 0; margin-bottom: 1em; }
+.special-offers-item__name a span { color: #606975; font-size: 14px; }
 
-.special_offers h2 { text-transform: uppercase; font-weight: 700; font-size: 1.2em; padding-top: .3em; }
+.special-offers-item__descr { color: #999; font-size: 14px; }
 
-.special_offers h3 { text-transform: uppercase; font-weight: 700; font-size: 1em; float: right; padding-top: .7em; }
+.special-offers-item__link { color: #228b94; font-size: 14px; font-weight: bold; }
 
-.a-blue { font-weight: 700; color: #228b94 !important; }
+.special-offers-item__info { color: #228b94; cursor: pointer; }
 
-.a-blue:hover { color: #a9a9a9 !important; }
+.special-offers-item__info span { color: #228b94; }
 
-.offer-discount { background: #fff; position: relative; }
+.special-offers-item__bell { color: lightcoral; float: right; margin-left: 10px; }
 
-.offer-discount p { color: #fff; }
+.special-offers-item-eco { color: #606975; font-weight: bold; }
 
-.offer-discount:after { content: ""; position: absolute; width: 0; height: 0; background: #eee; }
+.special-offers-item-eco__text { float: right; font-size: 14px; }
 
-.offer-discount:before { content: ""; position: absolute; width: 0; height: 0; background: #eee; top: 0; right: 0; border-bottom: 110px solid #fff; border-right: 170px solid transparent; -webkit-box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3); -moz-box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3); box-shadow: -3px 3px 7px rgba(0, 0, 0, 0.3); }
+.special-offers-item-eco__number { float: right; font-size: 18px; }
+
+.special-offers-item-discount { background: #fff; position: relative; }
+
+.special-offers-item-discount p { color: #fff; }
+
+.special-offers-item-discount:after { content: ""; position: absolute; width: 0; height: 0; background: #eee; }
+
+.special-offers-item-discount:before { content: ""; position: absolute; width: 0; height: 0; background: #eee; top: 0; right: 0; border-bottom: 110px solid #fff; border-right: 170px solid transparent; -webkit-box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3); -moz-box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3); box-shadow: -3px 3px 7px rgba(0, 0, 0, 0.3); }
 
 /*==== /SPECIAL OFFERS ===*/
 /*==== CONTACTS ===*/
