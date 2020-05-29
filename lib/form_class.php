@@ -655,4 +655,34 @@ class FormClass {
         return $info;
     }
 
+    function getCarsBanner() { $db=DbSingleton::getTokoDb();
+        $form=$this->getHtmlForm("home/banner");
+
+        $indicators=""; $items=""; $k=0;
+        $r=$db->query("SELECT * FROM `banner` WHERE `STATUS`=1;"); $n=$db->num_rows($r);
+        for ($i=1;$i<=$n;$i++) {
+            $title = $db->result($r, $i - 1, "TITLE");
+            $text = $db->result($r, $i - 1, "TEXT");
+            $image = $db->result($r, $i - 1, "IMAGE");
+
+            $k==0 ? $class="active" : $class="";
+            $indicators.="<li data-target=\"#carouselBanner\" data-slide-to=\"$k\" class=\"$class\"></li>";
+            $items.="<div class=\"carousel-item $class\">".$this->getCarsBannerItem($title, $text, "/images/banners/".$image)."</div>";
+            $k++;
+        }
+
+        $form=str_replace("{carousel_indicators}", $indicators, $form);
+        $form=str_replace("{carousel_items}", $items, $form);
+
+        return $form;
+    }
+
+    function getCarsBannerItem($title, $text, $image) {
+        $form=$this->getHtmlForm("home/banner_item");
+        $form=str_replace("{banner_title}", $title, $form);
+        $form=str_replace("{banner_text}", $text, $form);
+        $form=str_replace("{banner_image}", $image, $form);
+        return $form;
+    }
+
 }

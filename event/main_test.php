@@ -5,6 +5,9 @@ $content=str_replace("{main_window}", $catalogue->getHtmlForm("main_form"), $con
 // Поиск по автомобилю
 $content=str_replace("{catalogue_tab_search}", $prod->getCarsSearch(), $content);
 
+// Баннер
+$content=str_replace("{catalogue_banner}", $showform->getCarsBanner(), $content);
+
 // Профильные каталоги
 $content=str_replace("{select_group}", $catalogue->showCatalogueTemplates(), $content);
 

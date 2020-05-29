@@ -3,7 +3,8 @@
 body,
 html {
     width: 100%;
-    height: 100%
+    height: 100%;
+    overflow-x: hidden;
 }
 
 * {
@@ -652,6 +653,58 @@ header {
                 }
             }
         }
+        //&-nav {
+        //    display: flex;
+        //    flex-wrap: wrap;
+        //    &-item {
+        //        color: #000;
+        //        display: flex;
+        //        font-weight: 700;
+        //        text-transform: uppercase;
+        //        margin-left: 50px;
+        //        position: relative;
+        //        width: 33.33%;
+        //        &:before {
+        //            content: "";
+        //            position: absolute;
+        //            left: calc(100% - 50px);
+        //            bottom: 0;
+        //            width: 50px;
+        //            height: 100%;
+        //            background-size: contain;
+        //        }
+        //        &-row {
+        //            display: flex;
+        //        }
+        //        &-garage {
+        //            background: url(/images/icons/buttons/garage.png) left no-repeat;
+        //        }
+        //        &-profile {
+        //            background: url(/images/icons/buttons/save_car_to_garage.png) left no-repeat;
+        //        }
+        //        &-basket {
+        //            background: url(/images/icons/buttons/new_car_search.png) left no-repeat;
+        //        }
+        //        &__title {
+        //            font-size: 10px;
+        //            width: calc(100% - 25px);
+        //        }
+        //        &__descr {
+        //            font-size: 14px;
+        //            width: 100%;
+        //        }
+        //        &__status {
+        //            font-size: 14px;
+        //            background: #f44336;
+        //            border: 1px solid #f44336;
+        //            border-radius: 30px;
+        //            color: #fff;
+        //            width: 25px;
+        //            height: 25px;
+        //            text-align: center;
+        //        }
+        //    }
+        //}
     }
 }
 
@@ -2237,6 +2290,7 @@ header {
 }
 
 /*==== /SEO CARS =====*/
+
 
 
 
