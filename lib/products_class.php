@@ -302,7 +302,7 @@ class ProductsClass extends CatalogueClass {
                             <div class=\"col-lg-1 col-2 text-right\"><i class=\"fa fa-chevron-right rotate_animation\"></i></div>
                         </div>
                     </label>
-                    <div id=\"manufacture_head$head_id\" class=\"tree-list\" style='background: white; display: none'>
+                    <div id=\"manufacture_head$head_id\" class=\"tree-list\" style='display: none'>
                         $header_list
                     </div>
                 </li>";

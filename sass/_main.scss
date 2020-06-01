@@ -433,13 +433,9 @@ header {
     }
     .contacts {
         padding: 0;
-        font-size: 13px;
+        font-size: 14px;
         a:hover {
             color: #ccc;
-        }
-        span {
-            padding-top: 1%;
-            font-size: 10pt;
         }
     }
     .authorization {
@@ -454,17 +450,14 @@ header {
             text-align: right;
             li {
                 display: inline;
+                font-size: 14px;
                 margin-right: 0;
                 padding: 0 5px;
-                font-size: 13px;
             }
             a {
                 &:hover {
                     color: #ccc;
                     text-decoration: none;
-                    -webkit-transition: all .2s ease;
-                    -moz-transition: all .2s ease;
-                    -o-transition: all .2s ease;
                     transition: all .2s ease;
                 }
             }
@@ -522,6 +515,7 @@ header {
     .icons {
         &-nav {
             display: flex;
+            font-weight: bold;
             flex-wrap: wrap;
             justify-content: space-between;
             &-item {
@@ -1362,7 +1356,9 @@ header {
 
 /*==== TREE LIST =====*/
 .tree-list {
+    background: #fff;
     border: none;
+    padding: 15px;
     transition: all 2s linear;
     width: 100%;
     &-clear {
@@ -1377,7 +1373,6 @@ header {
     }
     span {
         display: block;
-        padding: 10px 0 0 10px;
         font-size: 20px;
         font-weight: bold;
     }

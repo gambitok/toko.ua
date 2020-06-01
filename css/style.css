@@ -181,19 +181,17 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-top a:hover { color: #000; }
 
-.header-top .contacts { padding: 0; font-size: 13px; }
+.header-top .contacts { padding: 0; font-size: 14px; }
 
 .header-top .contacts a:hover { color: #ccc; }
-
-.header-top .contacts span { padding-top: 1%; font-size: 10pt; }
 
 .header-top .authorization .dropdown-toggle { background: #606874; border: unset; color: #fff; font-size: 14px; }
 
 .header-top .authorization ul { margin: 0; text-align: right; }
 
-.header-top .authorization ul li { display: inline; margin-right: 0; padding: 0 5px; font-size: 13px; }
+.header-top .authorization ul li { display: inline; font-size: 14px; margin-right: 0; padding: 0 5px; }
 
-.header-top .authorization ul a:hover { color: #ccc; text-decoration: none; -webkit-transition: all .2s ease; -moz-transition: all .2s ease; -o-transition: all .2s ease; transition: all .2s ease; }
+.header-top .authorization ul a:hover { color: #ccc; text-decoration: none; transition: all .2s ease; }
 
 .header-main { margin-bottom: 0; padding: 1% 0; position: relative; background: 75% no-repeat #fff; background-size: 32%; }
 
@@ -215,7 +213,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-main .search-nav__item:hover { background: #f7f7f7; }
 
-.header-main .icons-nav { display: flex; flex-wrap: wrap; justify-content: space-between; }
+.header-main .icons-nav { display: flex; font-weight: bold; flex-wrap: wrap; justify-content: space-between; }
 
 .header-main .icons-nav-item { display: block; width: 30%; padding-left: 45px; cursor: pointer; text-decoration: none; transition: all .3s linear; }
 
@@ -551,13 +549,13 @@ header { width: 100%; color: #a9a9a9; }
 
 /*==== /TREE BLOCK =====*/
 /*==== TREE LIST =====*/
-.tree-list { border: none; transition: all 2s linear; width: 100%; }
+.tree-list { background: #fff; border: none; padding: 15px; transition: all 2s linear; width: 100%; }
 
 .tree-list-clear { border: none; padding: 0; }
 
 .tree-title a { color: #228b94; }
 
-.tree-title span { display: block; padding: 10px 0 0 10px; font-size: 20px; font-weight: bold; }
+.tree-title span { display: block; font-size: 20px; font-weight: bold; }
 
 .tree-str { list-style: none; display: flex; flex-direction: row; justify-content: start; flex-wrap: wrap; align-content: flex-start; }
 
