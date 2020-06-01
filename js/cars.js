@@ -36,7 +36,12 @@ function toggleCarsTab(index) {
 
     toggleCarsNavigation(next, type, attr);
 
-    if (detectmob()) scrollTo($("div[data-type='manuf'].cars-nav__item-mob"));
+    if (detectmob()) {
+        // $("html, body").animate({
+        //     scrollTop: $("#scrollManuf").position().top
+        // }, "slow");
+        document.getElementById("scrollManuf").scrollIntoView();
+    }
 }
 
 function showCarsNavigation(index) {

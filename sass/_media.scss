@@ -352,12 +352,16 @@
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) {
 
-    .icons-nav {
-        padding-left: 0;
-        list-style: none;
-        &__garage, &__profile, &__basket {
-            &-text {
-                display: none;
+    .header-main {
+        .icons {
+            &-nav {
+                &-item {
+                    width: 30px;
+                    height: 30px;
+                    &-row {
+                        display: none;
+                    }
+                }
             }
         }
     }

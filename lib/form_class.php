@@ -657,7 +657,6 @@ class FormClass {
 
     function getCarsBanner() { $db=DbSingleton::getTokoDb();
         $form=$this->getHtmlForm("home/banner");
-
         $indicators=""; $items=""; $k=0;
         $r=$db->query("SELECT * FROM `banner` WHERE `STATUS`=1;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
@@ -670,7 +669,6 @@ class FormClass {
             $items.="<div class=\"carousel-item $class\">".$this->getCarsBannerItem($title, $text, "/images/banners/".$image)."</div>";
             $k++;
         }
-
         $form=str_replace("{carousel_indicators}", $indicators, $form);
         $form=str_replace("{carousel_items}", $items, $form);
 

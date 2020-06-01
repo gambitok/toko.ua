@@ -235,11 +235,11 @@
 		<div class="row header-top" id="header-top">
 			<div class="container">
 				<div class="row align-items-center">
-					<div class="col-lg-6 contacts" id="region_select_tpoint">
+					<div class="col-3 contacts" id="region_select_tpoint">
 						{login_info}
 						{region_select}
 					</div>
-					<div class="col-lg-6 col-12 authorization">
+					<div class="col-9 authorization">
 						<ul>
 							<li>
 								<a href="{site_lang_prefix}/contacts/" class="pointer"><span class="fas fa-address-card"></span><span> {contacts_cap}</span></a>
@@ -286,64 +286,34 @@
 					</div>
 
 					<div class="col-4 icons">
-						<ul class="icons-nav">
-							<li class="icons-nav__garage">
-								<a id="garage_btn" {garage_link} title="{garage_user}">
-									<span class="fa fa-car"></span>
-									<span id="garage_span" class="icons-nav__garage-text"><small>{my_cap}</small>
-										{user_garage}</span>
-									<div class="hidden">
-										<div id="garage_status" class="icons-nav__garage-count {garage_style}">{garage_status}</div>
-									</div>
-								</a>
-								<!--<div id="GarageForm" class="dropdown-content garage-drop"></div>-->
-							</li>
-							<li class="icons-nav__profile">
-								<a id="profile_btn" href="{site_lang_prefix}/profile/orders/" title="{profile}">
-									<span class="fa fa-user"></span>
-									<span id="profile_span" class="icons-nav__profile-text"><small>{private_cap}</small>
-										{office_cap}</span>
-								</a>
-							</li>
-							<li class="icons-nav__basket">
-								<a id="basket_btn" onclick="showBasketMinForm();" title="{basket_cap}">
-									<span class="fa fa-shopping-cart"></span>
-									<span id="basket_span" class="icons-nav__basket-text"><small>{mine_cap}</small>
-										{basket_cap}</span>
-									<div class="hidden">
-										<div id="basket_status" class="basket_count {basket_style}">{basket_count}</div>
-									</div>
-								</a>
-							</li>
-						</ul>
-                        <!--<div class="icons-nav">-->
-                            <!--<div class="icons-nav-item icons-nav-item-garage">-->
-                                <!--<div class="icons-nav-item-row">-->
-                                    <!--<div class="icons-nav-item__title">{my_cap}</div>-->
-                                    <!--<div class="icons-nav-item__status {garage_status}" id="garage_status">{garage_status}</div>-->
-                                <!--</div>-->
-                                <!--<div class="icons-nav-item-row">-->
-                                    <!--<div class="icons-nav-item__descr">{user_garage}</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                            <!--<div class="icons-nav-item icons-nav-item-profile">-->
-                                <!--<div class="icons-nav-item-row">-->
-                                    <!--<div class="icons-nav-item__title">{private_cap}</div>-->
-                                <!--</div>-->
-                                <!--<div class="icons-nav-item-row">-->
-                                    <!--<div class="icons-nav-item__descr">{office_cap}</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                            <!--<div class="icons-nav-item icons-nav-item-basket">-->
-                                <!--<div class="icons-nav-item-row">-->
-                                    <!--<div class="icons-nav-item__title">{mine_cap}</div>-->
-                                    <!--<div class="icons-nav-item__descr">{basket_cap}</div>-->
-                                <!--</div>-->
-                                <!--<div class="icons-nav-item-row">-->
-                                    <!--<div class="icons-nav-item__status {basket_style}" id="basket_status">{basket_count}</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
+                        <div class="icons-nav">
+                            <div class="icons-nav-item icons-nav-item-garage" onclick="showGarageForm();">
+                                <div class="icons-nav-item-row">
+                                    <div class="icons-nav-item__title">{my_cap}</div>
+                                    <div class="icons-nav-item__status {garage_status}" id="garage_status">{garage_status}</div>
+                                </div>
+                                <div class="icons-nav-item-row">
+                                    <div class="icons-nav-item__descr">{user_garage}</div>
+                                </div>
+                            </div>
+                            <a class="icons-nav-item icons-nav-item-profile" href="{site_lang_prefix}/profile/orders/">
+                                <div class="icons-nav-item-row">
+                                    <div class="icons-nav-item__title">{private_cap}</div>
+                                </div>
+                                <div class="icons-nav-item-row">
+                                    <div class="icons-nav-item__descr">{office_cap}</div>
+                                </div>
+                            </a>
+                            <div class="icons-nav-item icons-nav-item-basket" onclick="showBasketMinForm();">
+                                <div class="icons-nav-item-row">
+                                    <div class="icons-nav-item__title">{mine_cap}</div>
+									<div class="icons-nav-item__status {basket_style}" id="basket_status">{basket_count}</div>
+                                </div>
+                                <div class="icons-nav-item-row">
+									<div class="icons-nav-item__descr">{basket_cap}</div>
+                                </div>
+                            </div>
+                        </div>
 					</div>
 
 				</div>
@@ -393,7 +363,7 @@
 		<div id="navigation-hide" class="row header-nav-hide" style="display:none;">
 			<div class="container">
 				<div class="row content-nav-hide">
-					<div class="col-10">
+					<div class="col-10 pad0">
 						<span id="content-nav__header" class="content-nav__header"></span>
 					</div>
 					<div class="col-2">
@@ -810,19 +780,6 @@
 <script type="text/javascript" src="/js/cars.js"></script>
 
 <script>
-    // $("body").click(function(e) {
-    //     if ($(e.target).attr('id') == 'garage_btn'
-	// 		|| $(e.target).attr('class') == 'garage'
-	// 		|| $(e.target).attr('class') == 'garage_span'
-	// 		|| $(e.target).attr('class') == 'garage_img'
-	// 		|| $(e.target).attr('class') == 'btn btn-primary'
-	// 		|| $(e.target).attr('class') == 'fa fa-car'
-	// 		|| $(e.target).attr('class') == 'icons-nav__garage'
-	// 		|| $(e.target).attr('class') == 'icons-nav__garage-text'
-	// 	) { return true; } else {
-    //         $("#GarageForm").fadeOut();
-    //     }
-    // });
     $("body").click(function(e) {
         if ($(e.target).attr('class') == 'header-nav__li'
            || $(e.target).attr('class') == 'tree-title'
@@ -838,14 +795,5 @@
             dropHistoryHide();
         }
     });
-    // $("body").click(function(e) {
-    //     if ($(e.target).attr('class') == 'panel'
-    //         || $(e.target).attr('class') == 'list-inline-item bar active'
-    //         || $(e.target).attr('class') == 'btn btn-outline-secondary btn-primary'
-    //         || $(e.target).attr('class') == 'fas fa-bars'
-    //     ) { return true; } else {
-    //         $(".bar").bigSlide();
-    //     }
-    // });
 </script>
 

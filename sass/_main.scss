@@ -443,6 +443,12 @@ header {
         }
     }
     .authorization {
+        .dropdown-toggle {
+            background: #606874;
+            border: unset;
+            color: #fff;
+            font-size: 14px;
+        }
         ul {
             margin: 0;
             text-align: right;
@@ -515,156 +521,77 @@ header {
     }
     .icons {
         &-nav {
-            padding-left: 0;
-            list-style: none;
-            &__garage, &__profile, &__basket {
-                .fa {
-                    float: left;
-                    font-size: 38px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            &-item {
+                display: block;
+                width: 30%;
+                padding-left: 45px;
+                cursor: pointer;
+                text-decoration: none;
+                transition: all .3s linear;
+                &:hover {
+                    & .icons-nav-item__title {
+                        color: #228B94;
+                    }
+                    & .icons-nav-item__descr {
+                        color: #228B94;
+                    }
+                    &.icons-nav-item-garage {
+                        background: url(/images/icons/header/hover/garage.png) left no-repeat;
+                        background-size: 30px;
+                    }
+                    &.icons-nav-item-profile {
+                        background: url(/images/icons/header/hover/profile.png) left no-repeat;
+                        background-size: 30px;
+                    }
+                    &.icons-nav-item-basket {
+                        background: url(/images/icons/header/hover/basket.png) left no-repeat;
+                        background-size: 30px;
+                    }
                 }
-                &-count {
-                    float: left;
-                    background: $site_main_primary;
-                    border: 2px solid $white;
-                    font-size: 14px;
-                    border-radius: 30px;
-                    color: $white;
-                    width: 25px;
+                &-row {
+                    display: flex;
                     height: 25px;
+                }
+                &-garage {
+                    background: url(/images/icons/header/garage.png) left no-repeat;
+                    background-size: 30px;
+                }
+                &-profile {
+                    background: url(/images/icons/header/profile.png) left no-repeat;
+                    background-size: 30px;
+                }
+                &-basket {
+                    background: url(/images/icons/header/basket.png) left no-repeat;
+                    background-size: 30px;
+                }
+                &__title {
+                    color: #606975;
+                    font-size: 14px;
+                    width: calc(100% - 25px);
+                }
+                &__descr {
+                    color: #606975;
+                    font-size: 14px;
+                    text-transform: uppercase;
+                    width: 100%;
+                }
+                &__status {
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    background: #f44336;
+                    border: 1px solid #f44336;
+                    border-radius: 30px;
+                    color: #fff;
+                    width: 20px;
+                    height: 20px;
+                    line-height: 20px;
                     text-align: center;
                 }
             }
-            &__garage, &__profile {
-                float: left;
-                padding: 0 15px;
-                width: 33.33%;
-                a {
-                    transition: .3s;
-                    color: $site_dark_primary!important;
-                    font-weight: 700;
-                    height: 40px;
-                    background: 0 0;
-                    border: none;
-                    cursor: pointer;
-                    display: block;
-                    &:hover {
-                        color: $site_main_danger!important;
-                    }
-                }
-                span {
-                    font-size: 14px;
-                    float: left;
-                    width: 45%;
-                    padding-left: 10px;
-                    text-transform: uppercase;
-                }
-                small {
-                    font-size: 10px;
-                    font-weight: 700;
-                    text-transform: uppercase;
-                }
-                i {
-                    float: left;
-                    width: 40%;
-                    font-size: 2.5em;
-                }
-            }
-            &__garage {
-                a .hidden {
-                    float: left;
-                    width: 10%;
-                }
-            }
-            &__basket {
-                float: left;
-                padding: 0 15px;
-                width: 33.33%;
-                color: $site_main_danger!important;
-                a {
-                    transition: .3s;
-                    color: $site_dark_primary!important;
-                    font-weight: 700;
-                    height: 40px;
-                    background: 0 0;
-                    border: none;
-                    cursor: pointer;
-                    display: block;
-                    .hidden {
-                        float: left;
-                        width: 10%;
-                    }
-                }
-                span {
-                    font-size: 14px;
-                    float: left;
-                    width: 45%;
-                    padding-left: 10px;
-                    text-transform: uppercase;
-                }
-                small {
-                    font-size: 10px;
-                    font-weight: 700;
-                    text-transform: uppercase;
-                }
-                i {
-                    float: left;
-                    width: 40%;
-                    font-size: 2.5em;
-                }
-            }
         }
-        //&-nav {
-        //    display: flex;
-        //    flex-wrap: wrap;
-        //    &-item {
-        //        color: #000;
-        //        display: flex;
-        //        font-weight: 700;
-        //        text-transform: uppercase;
-        //        margin-left: 50px;
-        //        position: relative;
-        //        width: 33.33%;
-        //        &:before {
-        //            content: "";
-        //            position: absolute;
-        //            left: calc(100% - 50px);
-        //            bottom: 0;
-        //            width: 50px;
-        //            height: 100%;
-        //            background-size: contain;
-        //        }
-        //        &-row {
-        //            display: flex;
-        //        }
-        //        &-garage {
-        //            background: url(/images/icons/buttons/garage.png) left no-repeat;
-        //        }
-        //        &-profile {
-        //            background: url(/images/icons/buttons/save_car_to_garage.png) left no-repeat;
-        //        }
-        //        &-basket {
-        //            background: url(/images/icons/buttons/new_car_search.png) left no-repeat;
-        //        }
-        //        &__title {
-        //            font-size: 10px;
-        //            width: calc(100% - 25px);
-        //        }
-        //        &__descr {
-        //            font-size: 14px;
-        //            width: 100%;
-        //        }
-        //        &__status {
-        //            font-size: 14px;
-        //            background: #f44336;
-        //            border: 1px solid #f44336;
-        //            border-radius: 30px;
-        //            color: #fff;
-        //            width: 25px;
-        //            height: 25px;
-        //            text-align: center;
-        //        }
-        //    }
-        //}
     }
 }
 
@@ -1059,9 +986,10 @@ header {
     }
     &__header {
         a {
-            font-size: 18px;
-            font-weight: bold;
             color: $site_main_secondary;
+            display: block;
+            font-size: 24px;
+            padding-bottom: 15px;
         }
     }
     &__content {
@@ -1375,6 +1303,7 @@ header {
         box-shadow: 0 1px 4px #ccc;
     }
     &__item {
+        border-bottom: 1px solid #f1f1f1;
         label {
             width: 100%;
             margin: 0;
@@ -1385,8 +1314,7 @@ header {
                 display: block!important;
             }
             &:checked ~ label .tree-head {
-                background: $site_info_primary;
-                color: $white;
+                background: #f5f5f5;
                 i {
                     transform: rotate(90deg);
                 }
@@ -1434,9 +1362,9 @@ header {
 
 /*==== TREE LIST =====*/
 .tree-list {
-    transition: all 2s linear;
     border: none;
-    padding: 1em;
+    transition: all 2s linear;
+    width: 100%;
     &-clear {
         border: none;
         padding: 0;
@@ -1462,7 +1390,6 @@ header {
     justify-content: start;
     flex-wrap: wrap;
     align-content: flex-start;
-    padding: 10px;
 }
 
 .tree-cat .title a {
@@ -1475,8 +1402,8 @@ header {
 
 .tree-item {
     cursor: pointer;
-    width: calc(16% - 15px);
-    margin: 0 15px 15px 0;
+    width: calc(10% - 10px);
+    margin: 0 10px 10px 0;
     a {
         color: #374250;
         display: block;
@@ -1485,22 +1412,23 @@ header {
     }
     span {
         font-weight: bold;
-        font-size: 14px;
+        font-size: 12px;
         display: block;
-        text-align: center!important;
-        height: 60px;
+        text-align: center;
+        height: 40px;
     }
     img {
         width: 100%;
         margin: 0 auto;
         display: block;
-        padding: 15px;
+        padding: 5px;
+        border: 1px solid #f1f1f1;
         &:hover img {
             transition: all .3s linear;
         }
         &:hover span {
+            color: #000;
             transition: all .3s linear;
-            color: #000000;
             text-decoration: underline;
         }
     }
@@ -1987,7 +1915,7 @@ header {
     width: 29px;
     border-radius: 15px;
     background: url(/images/icons/close-white.svg) center no-repeat;
-    &:hover {
+    &:hover, &:active {
         background: url(/images/icons/close-black.svg) center no-repeat;
     }
 }
