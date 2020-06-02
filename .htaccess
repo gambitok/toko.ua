@@ -21,6 +21,12 @@ RewriteRule ^(.*)index.html /$1 [R=301,L]
 RewriteCond %{THE_REQUEST} ^.*/home\.html
 RewriteRule ^(.*)home.html /$1 [R=301,L]
 
+# redirect httpS
+#RewriteEngine On
+#RewriteCond %{HTTPS} off
+#RewriteCond %{HTTP:X-Forwarded-Proto} !https
+#RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 # redirect .htm
 RewriteCond %{THE_REQUEST} ^.*/index\.htm
 RewriteRule ^(.*)index.htm /$1 [R=301,L]

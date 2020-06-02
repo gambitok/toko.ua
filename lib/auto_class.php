@@ -1015,6 +1015,7 @@ class AutoClass {
 
     /*==========================================*/
 
+
     function getMfaLink($mfa_link) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
         $mfa_id=$db->result($r,0,"MFA_ID");

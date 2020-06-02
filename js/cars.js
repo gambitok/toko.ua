@@ -137,3 +137,32 @@ function scrollTo(index) {
         scrollTop: index.offset().top
     }, 500);
 }
+
+function setActiveCar() {
+
+    let type = $("#active_nav").val();
+
+    if (type!=="" && type!==undefined) {
+        let elem = $("div[data-type='" + type + "']");
+
+        // Remove HIDDEN
+        $(elem).removeClass("cars-nav__item-disabled");
+
+        // Remove ALL ACTIVE + CHECKED
+        $(".cars-nav__item").each(function () {
+            $(this).removeClass("cars-nav__item-active");
+            $(this).removeClass("cars-nav__item-checked");
+        });
+
+        // Set ACTIVE + CHECKED
+        $(elem).addClass("cars-nav__item-active cars-nav__item-checked");
+
+        // Remove ALL ACTIVE Tab
+        $(".cars-tab__block").each(function () {
+            $(this).removeClass("cars-tab__block-active");
+        });
+
+        // Set ACTIVE + CHECKED Tab
+        $("#" + $(elem).attr("data-tab")).addClass("cars-tab__block-active");
+    }
+}

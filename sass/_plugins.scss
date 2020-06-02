@@ -395,9 +395,6 @@ table {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     &.active {
-        -webkit-transition: all .2s ease;
-        -moz-transition: all .2s ease;
-        -o-transition: all .2s ease;
         transition: all .2s ease;
         color: #228b94;
         background-color: #fff;
@@ -481,9 +478,6 @@ table {
     position: relative;
     padding-left: 20px;
     font-size: 12px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
     input {
         position: absolute;
@@ -531,8 +525,6 @@ table {
     height: 10px;
     border: solid #fff;
     border-width: 0 3px 3px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
     transform: rotate(45deg);
 }
 
@@ -543,9 +535,6 @@ table {
     position: relative;
     padding-left: 35px;
     font-size: 22px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
     input {
         position: absolute;
@@ -597,9 +586,6 @@ table {
     margin-bottom: 12px;
     cursor: pointer;
     font-size: 16px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
     input {
         position: absolute;
@@ -661,9 +647,6 @@ table {
     padding-top: 60px;
     text-align: center;
     button {
-        -webkit-transition: all .2s ease;
-        -moz-transition: all .2s ease;
-        -o-transition: all .2s ease;
         transition: all .2s ease;
         width: 40px;
         font-size: 15px;
@@ -822,17 +805,16 @@ table {
     border-bottom: 16px solid #f44336;
     width: 120px;
     height: 120px;
-    -webkit-animation: spin 2s linear infinite;
     animation: spin 2s linear infinite;
     margin: 10% auto;
 }
 
 @-webkit-keyframes spin {
     0% {
-        -webkit-transform: rotate(0)
+        -webkit-transform: rotate(0);
     }
     100% {
-        -webkit-transform: rotate(360deg)
+        -webkit-transform: rotate(360deg);
     }
 }
 
@@ -968,14 +950,12 @@ table {
 /*==== Spinner ====*/
 @-webkit-keyframes spinner-border {
     to {
-        -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
     }
 }
 
 @keyframes spinner-border {
     to {
-        -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
     }
 }
@@ -989,7 +969,6 @@ table {
     border: 0.25em solid currentColor;
     border-right-color: transparent;
     border-radius: 50%;
-    -webkit-animation: spinner-border .75s linear infinite;
     animation: spinner-border .75s linear infinite;
     &-sm {
         width: 1rem;
@@ -1000,7 +979,6 @@ table {
 
 @-webkit-keyframes spinner-grow {
     0% {
-        -webkit-transform: scale(0);
         transform: scale(0);
     }
     50% {
@@ -1010,7 +988,6 @@ table {
 
 @keyframes spinner-grow {
     0% {
-        -webkit-transform: scale(0);
         transform: scale(0);
     }
     50% {
@@ -1026,7 +1003,6 @@ table {
     background-color: currentColor;
     border-radius: 50%;
     opacity: 0;
-    -webkit-animation: spinner-grow .75s linear infinite;
     animation: spinner-grow .75s linear infinite;
     &-sm {
         width: 1rem;

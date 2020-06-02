@@ -129,12 +129,8 @@
     }
 
     .manufacture_list {
-        -moz-column-count: 1;
-        -webkit-column-count: 1;
         column-count: 1;
         &_min {
-            -moz-column-count: 1;
-            -webkit-column-count: 1;
             column-count: 1;
         }
     }

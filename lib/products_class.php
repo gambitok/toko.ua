@@ -56,7 +56,6 @@ class ProductsClass extends CatalogueClass {
     /*car Details=====================================================*/
 
     function techCarModels($typ_id, $str_id) {
-
         setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
 
         $kours=new ExRateClass; $automan=new AutoClass;
@@ -374,7 +373,8 @@ class ProductsClass extends CatalogueClass {
             }
             foreach ($arr as $key=>$value) {
                 list($CAT_NAME, $CAT_LINK) = $automan->getCatNewDescr($key);
-                $list.="<div class=\"tree-title\"><span><a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$CAT_LINK/\">$CAT_NAME</a></span></div>"; $list.="<ul class=\"tree-str\">";
+                $list.="<div class=\"tree-title\"><span><a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$CAT_LINK/\">$CAT_NAME</a></span></div>";
+                $list.="<ul class=\"tree-str\">";
                 foreach ($value as $v) {
                     $text=$v["text"];
                     $link=$v["link"];
@@ -489,7 +489,7 @@ class ProductsClass extends CatalogueClass {
             for ($i=1;$i<=$n;$i++){
                 $model=$db->result($r,$i-1,"Model");
                 $model_search=$db->result($r,$i-1,"Model_Link");
-                if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second = substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
+                if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second=substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
                 else {$first=""; $second=substr($model,0,1); $main_class="";}
                 $list.="
                 <a href=\"$model_search/\">
@@ -675,7 +675,6 @@ class ProductsClass extends CatalogueClass {
     /*================================================================================================================*/
 
     function showCarsSelected($mfa="", $model="", $year="", $model_id="", $typ_id="") {
-
         $form=$this->getHtmlForm("cars_form_min");
         $style_title="car_form-selected"; $style_disabled="car_form-disabled";
         $range_model=""; $range_year=""; $range_model_id=""; $range_type=""; $range_modification="";
@@ -830,7 +829,7 @@ class ProductsClass extends CatalogueClass {
             for ($i=1;$i<=$n;$i++){
                 $model=$db->result($r,$i-1,"Model");
                 $model_search=$db->result($r,$i-1,"Model_Link");
-                if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second = substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
+                if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second=substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
                 else {$first=""; $second=substr($model,0,1); $main_class="";}
                 $type==0 ? $onclick="showCarsSelectMin(3,'$model_search');" : $onclick="showCarsSelected(3,'$model_search');";
                 $list.="
@@ -1005,9 +1004,35 @@ class ProductsClass extends CatalogueClass {
         return $list;
     }
 
-    function getCarsSearch() {
+    function getCarsSearch($mfa_link="", $mod_link="") { $automan = new AutoClass;
         $form=$this->getHtmlForm("cars/cars");
-        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("")[0], $form);
+
+        $list_manuf = $this->getCarsSearchContent("")[0];
+
+        if ($mfa_link!="") {
+            $mfa_id=$automan->getMfaLink($mfa_link);
+            $mfa_brand=$automan->getMfaBrand($mfa_id);
+            $list_model = $this->getCarsSearchContent("manuf", $mfa_id)[0];
+            $form=str_replace("{cars_models}", $list_model, $form);
+            $form=str_replace("{selected_manuf}", $mfa_id, $form);
+            $form=str_replace("{cars_manufacturer}", $mfa_brand, $form);
+
+            if ($mod_link!="") {
+                $model=$automan->getModLink($mod_link);
+                $list_years = $this->getCarsSearchContent("model", $mfa_id."_".$model)[0];
+                $form=str_replace("{cars_years}", $list_years, $form);
+                $form=str_replace("{selected_model}", $mfa_id."_".$model, $form);
+                $form=str_replace("{cars_model}", $model, $form);
+                $form=str_replace("{active_nav}", "years", $form);
+            }
+            $form=str_replace("{active_nav}", "model", $form);
+        }
+
+        $form=str_replace("{cars_manufactures}", $list_manuf, $form);
+        $form=str_replace("{selected_manuf}", 0, $form);
+        $form=str_replace("{selected_model}", 0, $form);
+        $form=str_replace("{active_nav}", "", $form);
+
 //        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("manuf", "648")[0], $form);
 //        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("model", "648-Sportage")[0], $form);
 //        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("years", "648-Sportage-2015")[0], $form);
@@ -1114,10 +1139,13 @@ class ProductsClass extends CatalogueClass {
             $r=$db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` FROM `T_types` 
             WHERE `TYP_MOD_ID`='$mod_id' GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;"); $n=$db->num_rows($r);
             for ($i=1;$i<=$n;$i++) {
+                $typ_id = $db->result($r, $i-1, "TYP_ID");
+                $count_types = $db->result($r, $i-1, "count_types");
                 $volume_cm = $db->result($r, $i-1, "VOLUME_CM");
                 $fuel_id = $db->result($r, $i-1, "FUEL_ID"); $fuel_text=$this->getFuelName($fuel_id);
                 $fuel_cap = $mod_id."_".$volume_cm."_".$fuel_id;
-                $list.="<div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$volume_cm $fuel_text</div>";
+                if ($count_types==1) $onclick = "setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/';"; else $onclick = "toggleCarsTab(this)";
+                $list.="<div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"$onclick\">$volume_cm $fuel_text</div>";
             }
             $title = $this->getModIdText($mod_id);
             $nav="bodyc"; $tab="cars-tab5";

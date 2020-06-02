@@ -1,7 +1,10 @@
 <div class="cars">
+
+    <input type="hidden" value="{active_nav}" id="active_nav">
+
     <div class="cars-nav">
-        <div data-type="manuf" data-next="model" data-pred="empty" data-tab="cars-tab1" data-id="0" class="cars-nav__item cars-nav__item-active cars-nav__item-checked">{cars_manufacturer}</div>
-        <div data-type="model" data-next="years" data-pred="manuf" data-tab="cars-tab2" data-id="0" class="cars-nav__item cars-nav__item-disabled">{cars_model}</div>
+        <div data-type="manuf" data-next="model" data-pred="empty" data-tab="cars-tab1" data-id="{selected_manuf}" class="cars-nav__item cars-nav__item-active cars-nav__item-checked">{cars_manufacturer}</div>
+        <div data-type="model" data-next="years" data-pred="manuf" data-tab="cars-tab2" data-id="{selected_model}" class="cars-nav__item cars-nav__item-disabled">{cars_model}</div>
         <div data-type="years" data-next="bodyc" data-pred="model" data-tab="cars-tab3" data-id="0" class="cars-nav__item cars-nav__item-disabled">{cars_year}</div>
         <div data-type="bodyc" data-next="engin" data-pred="years" data-tab="cars-tab4" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_body}</div>
         <div data-type="engin" data-next="modif" data-pred="bodyc" data-tab="cars-tab5" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_engine}</div>
@@ -13,10 +16,10 @@
         <div id="cars-tab1" class="cars-tab__block cars-tab__block-active">{cars_manufactures}</div>
 
         <div data-type="model" data-next="years" data-pred="manuf" data-tab="cars-tab2" data-id="0" class="cars-nav__item cars-nav__item-mob cars-nav__item-disabled">{cars_model}</div>
-        <div id="cars-tab2" class="cars-tab__block"></div>
+        <div id="cars-tab2" class="cars-tab__block">{cars_models}</div>
 
         <div data-type="years" data-next="bodyc" data-pred="model" data-tab="cars-tab3" data-id="0" class="cars-nav__item cars-nav__item-mob cars-nav__item-disabled">{cars_year}</div>
-        <div id="cars-tab3" class="cars-tab__block"></div>
+        <div id="cars-tab3" class="cars-tab__block">{cars_years}</div>
 
         <div data-type="bodyc" data-next="engin" data-pred="years" data-tab="cars-tab4" data-id="0" class="cars-nav__item cars-nav__item-mob cars-nav__item-disabled cars-nav__item-hidden">{cars_body}</div>
         <div id="cars-tab4" class="cars-tab__block"></div>
@@ -28,3 +31,9 @@
         <div id="cars-tab6" class="cars-tab__block"></div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        setActiveCar();
+    });
+</script>
