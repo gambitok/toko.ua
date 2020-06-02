@@ -847,6 +847,8 @@ header { width: 100%; color: #a9a9a9; }
 
 .home-banner .carousel-indicators li { cursor: pointer; }
 
+.home-banner .gallery { display: block; width: 100%; height: auto; }
+
 .home-banner .gallery-item { height: 500px; }
 
 .home-banner .gallery-item-image { background: var(--background); height: 100%; }
@@ -894,7 +896,9 @@ header { width: 100%; color: #a9a9a9; }
 .home-recommend .form-toggle input[type="checkbox"]:checked ~ div { display: block; }
 
 /*==== PHONE ====*/
-@media (max-width: 768px) { .home-banner .carousel-indicators { bottom: 90%; }
+@media (max-width: 768px) { .home-banner { width: 100%; margin: 0; left: 0; }
+  .home-banner .carousel-indicators { bottom: 90%; }
+  .home-banner .gallery-item { display: block; height: 500px; width: 100%; }
   .home-banner .gallery-item-image { background-position: center; }
   .home-banner .gallery-item-panel { display: block; padding: 10px 20px; height: auto; }
   .home-banner .gallery-item-panel__title { font-size: 24px; margin-bottom: 3%; margin-left: 0; width: 100%; max-width: 100%; text-align: left; }
@@ -902,7 +906,9 @@ header { width: 100%; color: #a9a9a9; }
 
 /*==== /PHONE ====*/
 /*==== PAD ====*/
-@media (min-width: 768px) and (max-width: 992px) { .home-banner .carousel-indicators { bottom: 90%; }
+@media (min-width: 768px) and (max-width: 992px) { .home-banner { width: 100%; margin: 0; left: 0; }
+  .home-banner .carousel-indicators { bottom: 90%; }
+  .home-banner .gallery-item { display: block; height: 500px; width: 100%; }
   .home-banner .gallery-item-image { background-position: center; }
   .home-banner .gallery-item-panel { display: block; padding: 10px 20px; height: auto; }
   .home-banner .gallery-item-panel__title { font-size: 24px; margin-bottom: 3%; margin-right: 0; width: 100%; max-width: 100%; text-align: left; }

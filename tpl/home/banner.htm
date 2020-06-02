@@ -1,4 +1,4 @@
-<div id="carouselBanner" class="carousel slide" data-ride="carousel">
+<div id="carouselBanner" class="carousel" data-ride="carousel">
     <ol class="carousel-indicators">
         {carousel_indicators}
     </ol>
@@ -8,7 +8,27 @@
 </div>
 
 <script>
-    $(".carousel").carousel({
-        interval: 2000
+    $(document).ready(function() {
+        $(".carousel").carousel({
+            interval: 5000
+        });
+        if (!detectmob()) {
+            $(".carousel").addClass("slide");
+        }
+    });
+    $(".carousel").on("touchstart", function(event){
+        var xClick = event.originalEvent.touches[0].pageX;
+        $(this).one("touchmove", function(event){
+            var xMove = event.originalEvent.touches[0].pageX;
+            if( Math.floor(xClick - xMove) > 5 ){
+                $(this).carousel('next');
+            }
+            else if( Math.floor(xClick - xMove) < -5 ){
+                $(this).carousel('prev');
+            }
+        });
+        $(".carousel").on("touchend", function(){
+            $(this).off("touchmove");
+        });
     });
 </script>

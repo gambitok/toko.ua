@@ -38,6 +38,9 @@
             }
         }
         .gallery {
+            display: block;
+            width: 100%;
+            height: auto;
             &-item {
                 height: 500px;
                 &-image {
@@ -167,11 +170,17 @@
 @media (max-width: 768px) {
     .home {
         &-banner {
+            width: 100%;
+            margin: 0;
+            left: 0;
             .carousel-indicators {
                 bottom: 90%;
             }
             .gallery {
                 &-item {
+                    display: block;
+                    height: 500px;
+                    width: 100%;
                     &-image {
                         background-position: center;
                     }
@@ -209,11 +218,17 @@
 @media (min-width: 768px) and (max-width: 992px) {
     .home {
         &-banner {
+            width: 100%;
+            margin: 0;
+            left: 0;
             .carousel-indicators {
                 bottom: 90%;
             }
             .gallery {
                 &-item {
+                    display: block;
+                    height: 500px;
+                    width: 100%;
                     &-image {
                         background-position: center;
                     }

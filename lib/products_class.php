@@ -1040,7 +1040,7 @@ class ProductsClass extends CatalogueClass {
             $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
             for ($i=1;$i<=$n;$i++) {
                 $model = $db->result($r, $i - 1, "Model");
-                $model_cap = $mfa_id."-".$model;
+                $model_cap = $mfa_id."_".$model;
                 $list.="<div data-url=\"model/$model_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$model</div>";
             }
             $title = $automan->getMfaBrand($mfa_id);
@@ -1049,7 +1049,7 @@ class ProductsClass extends CatalogueClass {
 
         // YEAR
         if ($type=="model") {
-            list($mfa_id, $model) = explode("-", $value);
+            list($mfa_id, $model) = explode("_", $value);
             $min_date_start=1947; $max_date_end=2019; $n=1;
             $r=$db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
                 CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
@@ -1061,7 +1061,7 @@ class ProductsClass extends CatalogueClass {
             if ($date_start=="" || $date_start==0) $date_start = $min_date_start;
             for ($i=$date_end; $i>=$date_start; $i--) {
                 $year = $i;
-                $year_cap = $mfa_id."-".$model."-".$year;
+                $year_cap = $mfa_id."_".$model."_".$year;
                 $list.="<div data-url=\"years/$year_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$year</div>";
             }
             $title = $model;
@@ -1070,7 +1070,7 @@ class ProductsClass extends CatalogueClass {
 
         // BODY (MODEL_ID)
         if ($type=="years") {
-            list($mfa_id, $model, $year) = explode("-", $value);
+            list($mfa_id, $model, $year) = explode("_", $value);
             $where = "AND 
                 ((`MOD_PCON_END`>=".$year."00 AND `MOD_PCON_END`<=".$year."12)
                 OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`>=".$year."00)
@@ -1116,7 +1116,7 @@ class ProductsClass extends CatalogueClass {
             for ($i=1;$i<=$n;$i++) {
                 $volume_cm = $db->result($r, $i-1, "VOLUME_CM");
                 $fuel_id = $db->result($r, $i-1, "FUEL_ID"); $fuel_text=$this->getFuelName($fuel_id);
-                $fuel_cap = $mod_id."-".$volume_cm."-".$fuel_id;
+                $fuel_cap = $mod_id."_".$volume_cm."_".$fuel_id;
                 $list.="<div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$volume_cm $fuel_text</div>";
             }
             $title = $this->getModIdText($mod_id);
@@ -1125,7 +1125,7 @@ class ProductsClass extends CatalogueClass {
 
         // MODIFICATION
         if ($type=="engin") {
-            list($mod_id, $volume_cm, $fuel_id) = explode("-", $value);
+            list($mod_id, $volume_cm, $fuel_id) = explode("_", $value);
             $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' AND `VOLUME_CM`='$volume_cm' AND `FUEL_ID`='$fuel_id' AND `ACTIVE`=1 ORDER BY `TYP_HP_FROM`;"); $n=$db->num_rows($r);
             for ($i=1;$i<=$n;$i++) {
                 $typ_id = $db->result($r, $i-1, "TYP_ID");
