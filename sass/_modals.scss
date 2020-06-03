@@ -7,22 +7,25 @@
 }
 
 #BasketForm, #GarageForm {
-    .modal-header {
-        display: none;
-    }
     .modal-dialog {
         max-width: 1080px;
         padding-bottom: 30px;
+        .modal-content {
+            top: 0;
+            .modal-header {
+                display: none;
+            }
+        }
     }
 }
 
 /*==== INFO FORM ====*/
 #InfoForm {
-    .modal-header {
-        background: #228b94;
-    }
     .modal-dialog {
         max-width: 650px;
+        .modal-header {
+            background: #228b94;
+        }
     }
     .tab-content {
         background: #fff;

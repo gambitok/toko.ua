@@ -687,30 +687,23 @@ class FormClass {
         $language=new LangClass; $prefix=$language->getLangPrefix();
         $list="<div class='seo_details'><div class='seo-ul'>";
         $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `POSITION` DESC LIMIT 0,25;"); $n=$db->num_rows($r);
-
         $arr = [];
         for ($i=1;$i<=$n;$i++) {
             $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
-            $arr[$i]=["brand"=>$mfa_brand, "link"=>$mfa_link];
+            $mfa_image = $db->result($r, $i - 1, "LOGO_SVG");
+            $arr[$i]=["brand"=>$mfa_brand, "link"=>$mfa_link, "image"=>$mfa_image];
         }
         sort($arr);
-
         foreach ($arr as $value) {
             $mfa_brand = $value["brand"];
             $mfa_link = $value["link"];
+            $mfa_image = $value["image"];
             $list.="<a class='seo-li seo-li-min' href='https://toko.ua$prefix/cars/$mfa_link/'>
+                <img src=\"https://toko.ua/uploads/images/manufacturers/svg/$mfa_image\" alt=\"$mfa_brand\">
                 <span>$mfa_brand</span>
             </a>";
         }
-
-//        for ($i=1;$i<=$n;$i++) {
-//            $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
-//            $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
-//            $list.="<a class='seo-li seo-li-min' href='https://toko.ua$prefix/cars/$mfa_link/'>
-//                <span>$mfa_brand</span>
-//            </a>";
-//        }
         $list.="</div></div>";
         return $list;
     }

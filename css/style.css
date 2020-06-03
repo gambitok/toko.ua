@@ -175,9 +175,9 @@ body, html { width: 100%; height: 100%; overflow-x: hidden; }
 /* ==== HEADER ==== */
 header { width: 100%; color: #a9a9a9; }
 
-.header-top { background: #606975; color: #fff; padding: 0; border-bottom: 5px solid #a9a9a9; }
+.header-top { background: #f1f1f1; color: #000; padding: 0; border-bottom: 1px solid #ced4da; }
 
-.header-top a { color: #fff; }
+.header-top a { color: #606975; }
 
 .header-top a:hover { color: #000; }
 
@@ -185,7 +185,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-top .contacts a:hover { color: #ccc; }
 
-.header-top .authorization .dropdown-toggle { background: #606874; border: unset; color: #fff; font-size: 14px; }
+.header-top .authorization .dropdown-toggle { background: #f1f1f1; border: unset; color: #606975; font-size: 14px; }
 
 .header-top .authorization ul { margin: 0; text-align: right; }
 
@@ -198,6 +198,12 @@ header { width: 100%; color: #a9a9a9; }
 .header-main .logotype-main { height: auto; position: relative; }
 
 .header-main .logotype-main img { width: 100%; }
+
+.header-main .phones ul { list-style: none; margin: 0; }
+
+.header-main .phones ul li img { width: 15px; height: 15px; }
+
+.header-main .phones ul li input { border: none; background: transparent; color: #606975; font-size: 14px; }
 
 .header-main .search input { border-right: none; margin-right: -41px; border-radius: 0.25rem !important; box-shadow: none; }
 
@@ -271,21 +277,49 @@ header { width: 100%; color: #a9a9a9; }
 
 .garage-drop-block__select-image { width: 100%; }
 
-.header-phone { display: none; padding: 10px 0; border-bottom: 1px solid #ccc; }
+.header-phone { display: none; }
 
-.header-phone ul { margin: 0; padding-left: 0; list-style: none; }
+.header-phone-nav { padding: 10px 15px; border-bottom: 1px solid #ccc; }
 
-.header-phone ul li { display: inline-block; padding-left: 8px; }
+.header-phone-nav__logo a, .header-phone-nav__logo a:not([href]):not([tabindex]) { width: 100%; padding: 0; display: block; }
 
-.header-phone ul li.logotype-min { display: inline; height: auto; position: relative; }
+.header-phone-nav__logo img { width: 100%; }
 
-.header-phone ul li.logotype-min img { width: 100%; }
+.header-phone-nav__list { margin: 0; }
 
-.header-phone ul li.logotype-min a { width: 80px; }
+.header-phone-nav__list li { display: inline-block; }
 
-.header-phone ul li a, .header-phone ul li a:not([href]):not([tabindex]), .header-phone ul li button { background: #fff; color: #292929; width: 40px; border: 1px solid white; }
+.header-phone-nav__list li a, .header-phone-nav__list li a:not([href]):not([tabindex]) { cursor: pointer; display: block; background: #fff; color: #292929; width: 40px; height: 40px; border: 1px solid #ccc; border-radius: .25em; padding: 11px; }
 
-.header-phone ul .basket_status { display: inline-block; width: 0; }
+.header-phone-nav__list li a span, .header-phone-nav__list li a:not([href]):not([tabindex]) span { display: block; margin: 0 auto; }
+
+.header-phone-nav__list li a:hover, .header-phone-nav__list li a:not([href]):not([tabindex]):hover { text-decoration: none; }
+
+.header-phone-nav__list .basket_status { display: inline-block; width: 0; }
+
+.header-phone-search { padding: 10px 15px; border-bottom: 1px solid #ccc; }
+
+.header-phone-drop { background: #f1f1f1; padding: 10px 15px; border-bottom: 1px solid #ccc; }
+
+.header-phone-drop .dropdown { display: block; margin: 0 auto; }
+
+.header-phone-drop .dropdown-toggle { margin-left: 15px; }
+
+.header-phone-drop .dropdown-menu { width: 100%; }
+
+.header-phone-drop .dropdown-menu .dropdown-item { padding: 5px 10px; width: 100%; }
+
+.header-phone-drop .dropdown-menu .dropdown-item:hover { background: #ced4da; }
+
+.header-phone-drop img { width: 20px; height: 20px; position: relative; top: -4px; margin-right: 5px; }
+
+.header-phone-drop input { border: none; background: transparent; color: #606975; font-size: 14px; }
+
+.header-phone-drop a { color: #606975; font-size: 18px; }
+
+.header-phone-drop label { color: #606975; font-size: 18px; margin: 0; }
+
+.header-phone-drop a:hover { background-color: inherit; color: inherit; }
 
 /* ==== /HEADER ==== */
 /*==== SPECIAL OFFERS ===*/
@@ -804,13 +838,17 @@ header { width: 100%; color: #a9a9a9; }
 
 /*==== /CAR PRODUCTS ====*/
 /*==== SEO CARS =====*/
-.seo_details .seo-ul { list-style: none; display: flex; flex-wrap: wrap; margin-right: -15px; }
+.seo_details .seo-ul { list-style: none; display: flex; flex-wrap: wrap; margin-right: -15px; width: 100%; }
 
-.seo_details .seo-li { color: #000; cursor: pointer; display: flex; width: calc(25% - 48px); margin-right: 48px; margin-bottom: 15px; height: 75px; text-decoration: none; padding: 0 69px 0 0; position: relative; border-bottom: 1px solid #ebebeb; }
+.seo_details .seo-li { color: #000; cursor: pointer; display: flex; width: calc(25% - 48px); margin-right: 48px; margin-bottom: 15px; height: 75px; text-decoration: none; padding: 0 69px 0 0; position: relative; border-bottom: 1px solid #ebebeb; transition: all .3s linear; }
 
-.seo_details .seo-li-min { width: calc(20% - 24px); margin-right: 24px; }
+.seo_details .seo-li-min { width: calc(20% - 24px); margin: 12px; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.11); }
 
-.seo_details .seo-li:after { content: ""; position: absolute; top: calc(50% - 11px); right: 12px; width: 22px; height: 22px; border-radius: 100%; background: url(/images/next-black.svg) center no-repeat; background-size: cover; }
+.seo_details .seo-li-min img { width: 40px !important; height: 40px; margin: 17px 0 17px 10px; }
+
+.seo_details .seo-li-min:after { content: unset !important; }
+
+.seo_details .seo-li:after { content: ""; position: absolute; top: calc(50% - 11px); right: 12px; width: 22px; height: 22px; border-radius: 100%; background: url(/images/next-black.svg) center no-repeat; background-size: cover; transition: all .3s linear; }
 
 .seo_details .seo-li:hover { color: #228b94 !important; box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1); }
 
@@ -818,7 +856,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .seo_details .seo-li:hover:after { background: #228b94 url(/images/next-white.svg) center no-repeat; background-size: 14px; }
 
-.seo_details .seo-li span { position: relative; max-height: 85%; overflow: hidden; display: flex; margin: auto 0; font-size: 15px; }
+.seo_details .seo-li span { padding-left: 15px; position: relative; max-height: 85%; overflow: hidden; display: flex; margin: auto 0; font-size: 15px; }
 
 .seo_details .seo-li img { width: 100%; filter: grayscale(100%); }
 
@@ -1383,6 +1421,8 @@ table thead td { border: 1px solid #000; }
   .seo_details .seo-li { width: 100%; margin-right: 0; }
   .seo_details .seo-li.seo-li-id { width: 100%; }
   .seo_details .seo-li img { width: 100%; max-height: 70px; }
+  .seo_details .seo-li-min { margin-right: 15px; }
+  .seo_details .seo-li-min img { width: 40px; height: 40px; }
   .tree-head_min img { width: 100%; }
   .tree-item { width: calc(50% - 15px); }
   .seo_auto ul.list-inline { column-count: 2; }
@@ -1404,9 +1444,18 @@ table thead td { border: 1px solid #000; }
   /*==== /GARAGE ====*/ }
 
 /* ==== /PHONE ==== */
+/*==== PAD PRO ====*/
+@media (min-width: 992px) and (max-width: 1275px) { .header-main .phones { padding: 0; }
+  .header-main .phones ul li img { display: none; }
+  .header-main .phones ul li input { font-size: 11px; } }
+
+/*==== /PAD PRO ====*/
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) { .header-main .icons-nav-item { width: 30px; height: 30px; }
   .header-main .icons-nav-item-row { display: none; }
+  .header-main .phones { padding: 0; }
+  .header-main .phones ul li img { display: none; }
+  .header-main .phones ul li input { font-size: 11px; }
   #menu { display: none; }
   .main_menu .table-responsive { display: block; }
   .label { width: auto; }
@@ -1440,14 +1489,16 @@ table thead td { border: 1px solid #000; }
 
 #PhotoForm { padding: 0; }
 
-#BasketForm .modal-header, #GarageForm .modal-header { display: none; }
-
 #BasketForm .modal-dialog, #GarageForm .modal-dialog { max-width: 1080px; padding-bottom: 30px; }
 
-/*==== INFO FORM ====*/
-#InfoForm .modal-header { background: #228b94; }
+#BasketForm .modal-dialog .modal-content, #GarageForm .modal-dialog .modal-content { top: 0; }
 
+#BasketForm .modal-dialog .modal-content .modal-header, #GarageForm .modal-dialog .modal-content .modal-header { display: none; }
+
+/*==== INFO FORM ====*/
 #InfoForm .modal-dialog { max-width: 650px; }
+
+#InfoForm .modal-dialog .modal-header { background: #228b94; }
 
 #InfoForm .tab-content { background: #fff; padding: 10px; }
 
@@ -1555,9 +1606,19 @@ table thead td { border: 1px solid #000; }
 
 .basket__footer-total { padding-bottom: 15px; text-align: right; font-weight: bold; font-size: 20px; }
 
-.basket__footer-butons button { width: auto; }
+.basket__footer-buttons { margin-bottom: 15px; }
 
 .basket__fast { padding-top: 30px; }
+
+.basket__fast-phone { margin-bottom: 15px; padding: 0; }
+
+.basket__fast-valid { margin-bottom: 15px; padding: 0; }
+
+.basket__fast-valid i { display: block; margin: 0 auto; width: 15px; }
+
+.basket__fast-button { margin-bottom: 15px; padding: 0; }
+
+.basket-card { border-bottom: 1px solid #f1f1f1; margin-bottom: 15px; }
 
 .basket-card__title { background: #f1f1f1; color: #9da9b9; font-size: 0.7em; text-transform: uppercase; padding: 10px; word-break: break-word; }
 
@@ -2154,6 +2215,8 @@ table thead td { border: 1px solid #000; }
   .seo_details .seo-li { width: 100%; margin-right: 0; }
   .seo_details .seo-li.seo-li-id { width: 100%; }
   .seo_details .seo-li img { width: 100%; max-height: 70px; }
+  .seo_details .seo-li-min { margin-right: 15px; }
+  .seo_details .seo-li-min img { width: 40px; height: 40px; }
   .tree-head_min img { width: 100%; }
   .tree-item { width: calc(50% - 15px); }
   .seo_auto ul.list-inline { column-count: 2; }
@@ -2175,9 +2238,18 @@ table thead td { border: 1px solid #000; }
   /*==== /GARAGE ====*/ }
 
 /* ==== /PHONE ==== */
+/*==== PAD PRO ====*/
+@media (min-width: 992px) and (max-width: 1275px) { .header-main .phones { padding: 0; }
+  .header-main .phones ul li img { display: none; }
+  .header-main .phones ul li input { font-size: 11px; } }
+
+/*==== /PAD PRO ====*/
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) { .header-main .icons-nav-item { width: 30px; height: 30px; }
   .header-main .icons-nav-item-row { display: none; }
+  .header-main .phones { padding: 0; }
+  .header-main .phones ul li img { display: none; }
+  .header-main .phones ul li input { font-size: 11px; }
   #menu { display: none; }
   .main_menu .table-responsive { display: block; }
   .label { width: auto; }

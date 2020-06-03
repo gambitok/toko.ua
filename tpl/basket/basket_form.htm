@@ -61,10 +61,10 @@
                 <div class="col-12 basket__footer-total {total_style}">
                     <span>{total_checked_cap}: <b>{sum}</b> {cur_cap}</span>
                 </div>
-                <div class="col-lg-6 col-12 basket__footer-buttons">
+                <div class="col-lg-6 col-12 basket__footer-buttons order-lg-0 order-1">
                     <button class="btn btn-outline-primary" data-dismiss="modal"><i class="fa fa-chevron-left"></i> {back_to_buy}</button>
                 </div>
-                <div class="col-lg-6 col-12 basket__footer-buttons">
+                <div class="col-lg-6 col-12 basket__footer-buttons order-lg-1 order-0">
                     <button id="make_order" onclick="{location}" {disabled} class="btn btn-primary">{make_order}</button>
                 </div>
             </div>
@@ -80,15 +80,15 @@
                     <p><b>{phone_number_input}:</b></p>
                     <div class="container">
                         <div class="row align-items-center">
-                            <div class="col-lg-6 col-11 pad0">
+                            <div class="col-lg-6 col-11 basket__fast-phone">
                                 <input
                                     id="input_phone2" class="form-control masked-phone" type="tel" name="phone"
                                     placeholder="+38(0__) ___-__-__" onchange="validationInput('input_phone2');"
                                     title="{input_valid_phone}" data-toggle="tooltip" data-placement="top" data-html="true"
                                 >
                             </div>
-                            <div class="col-lg-1 col-1"><i id="validate_input_phone2" class="fas fa-times-circle non_accept validate_input"></i></div>
-                            <div class="col-lg-5 col-12 pad0"><button onclick="finishFastOrder('input_phone2');" class="btn btn-primary">{make_order_fast}</button></div>
+                            <div class="col-lg-1 col-1 basket__fast-valid"><i id="validate_input_phone2" class="fas fa-times-circle non_accept validate_input"></i></div>
+                            <div class="col-lg-5 col-12 basket__fast-button"><button onclick="finishFastOrder('input_phone2');" class="btn btn-primary">{make_order_fast}</button></div>
                         </div>
                     </div>
                 </div>

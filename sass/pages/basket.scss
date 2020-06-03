@@ -54,18 +54,35 @@
             font-weight: bold;
             font-size: 20px;
         }
-        &-butons {
-            button {
-                width: auto;
-            }
+        &-buttons {
+            margin-bottom: 15px;
         }
     }
     &__fast {
         padding-top: 30px;
+        &-phone {
+            margin-bottom: 15px;
+            padding: 0;
+        }
+        &-valid {
+            margin-bottom: 15px;
+            padding: 0;
+            i {
+                display: block;
+                margin: 0 auto;
+                width: 15px;
+            }
+        }
+        &-button {
+            margin-bottom: 15px;
+            padding: 0;
+        }
     }
 }
 
 .basket-card {
+    border-bottom: 1px solid #f1f1f1;
+    margin-bottom: 15px;
     &__title {
         background: #f1f1f1;
         color: #9da9b9;

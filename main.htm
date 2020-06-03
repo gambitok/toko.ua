@@ -273,7 +273,7 @@
                         </a>
                     </div>
 
-					<div class="col-6 search">
+					<div class="col-4 search">
 						<div class="input-group">
 							<input id="search_art" onfocus="dropHistoryShow();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">
 							<div id="myDropdown" class="dropdown-content"></div>
@@ -283,6 +283,23 @@
 								</button>
 							</div>
 						</div>
+					</div>
+
+					<div class="col-2 phones">
+                        <ul>
+                            <li>
+                                <img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
+                                <input type="tel" placeholder="phone" value="+380 (97) 080 30 60">
+                            </li>
+                            <li>
+                                <img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
+                                <input type="tel" placeholder="phone" value="+380 (50) 080 30 60">
+                            </li>
+                            <li>
+                                <img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
+                                <input type="tel" placeholder="phone" value="+380 (93) 080 30 60">
+                            </li>
+                        </ul>
 					</div>
 
 					<div class="col-4 icons">
@@ -322,32 +339,65 @@
 
         <div class="row header-phone">
             <div class="container">
-                <div class="row align-items-center">
-                    <ul>
-                        <li class="logotype-min">
+                <div class="row header-phone-drop">
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" id="dropdownPhoneButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <label><i class="fa fa-phone"></i> (097) <b>080 30 60</b></label>
+                        </div>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownPhoneButton">
+                            <div class="dropdown-item">
+                                <img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
+                                <a href="tel:0970803060">(097) <b>080 30 60</b></a>
+                            </div>
+                            <div class="dropdown-item">
+                                <img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
+                                <a href="tel:0500803060">(050) <b>080 30 60</b></a>
+                            </div>
+                            <div class="dropdown-item">
+                                <img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
+                                <a href="tel:0930803060">(093) <b>080 30 60</b></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-center header-phone-nav">
+                    <div class="col-2 pad0">
+                        <div class="header-phone-nav__logo">
                             <a href="{site_lang_prefix}/" class="btn">
                                 <img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}">
                             </a>
-                        </li>
-                        <li>
-                            <button onClick="showArtSearch();" class="btn" type="button" title="{search_cap}"><span class="fas fa-search"></span></button>
-                        </li>
-                        <li>
-                            <a href="{site_lang_prefix}/catalogue/" class="btn"><span class="fas fa-car"></span></a>
-                        </li>
-                        <li>
-                            <a href="{site_lang_prefix}/profile/" class="btn"><span class="fas fa-user-alt"></span></a>
-                        </li>
-                        <div class="basket_status">
-                            <div id="basket_status3" class="basket_phone {basket_style}">{basket_count}</div>
                         </div>
-                        <li>
-                            <button onclick="showBasketMinForm();" class="btn"><span class="fas fa-shopping-basket"></span></button>
-                        </li>
-                        <li class="bar">
-                            <a href="#menu" class="btn" title="{mob_menu}"><span class="fas fa-bars"></span></a>
-                        </li>
-                    </ul>
+                    </div>
+                    <div class="col-10 pad0 text-right">
+                        <ul class="header-phone-nav__list">
+                            <li>
+                                <a onClick="showArtSearch();" title="{search_cap}"><span class="fas fa-search"></span></a>
+                            </li>
+                            <li>
+                                <a href="{site_lang_prefix}/catalogue/"><span class="fas fa-car"></span></a>
+                            </li>
+                            <li>
+                                <a href="{site_lang_prefix}/profile/"><span class="fas fa-user-alt"></span></a>
+                            </li>
+                            <!--<div class="basket_status">-->
+                            <!--<div id="basket_status3" class="basket_phone {basket_style}">{basket_count}</div>-->
+                            <!--</div>-->
+                            <li>
+                                <a onclick="showBasketMinForm();"><span class="fas fa-shopping-basket"></span></a>
+                            </li>
+                            <li class="bar">
+                                <a title="{mob_menu}"><span class="fas fa-bars"></span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row header-phone-search">
+                    <div class="input-group" onclick="showArtSearch();">
+                        <input type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
