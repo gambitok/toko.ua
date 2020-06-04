@@ -12,46 +12,23 @@ class ProductsClass extends CatalogueClass {
         return $selected_auto;
     }
 
-//    function getCookieGarage() {
-//        $auto_garage_id=$_COOKIE["auto_garage_id"];
-//        $selected_auto="";
-//        if ($auto_garage_id>0 && $auto_garage_id!="") $selected_auto=$auto_garage_id;
-//        return $selected_auto;
-//    }
-
-//    function getCookieSelectedGarage($mfa_link, $model_link) {
+//    function getCookieSelectedAuto($mfa_link, $model_link) {
 //        $automan = new AutoClass;
-//        $auto_garage_id=$_COOKIE["auto_garage_id"];
-//        if ($auto_garage_id>0 && $auto_garage_id!="") {
-//            list($mfa,$model,,)=$automan->getCookieCarInfo($auto_garage_id);
+//        $auto_typ_id=$_COOKIE["auto_typ_id"];
+//        if ($auto_typ_id>0 && $auto_typ_id!="") {
+//            list($mfa,$model,,)=$automan->getCookieCarInfo($auto_typ_id);
 //            if ($mfa==$mfa_link && $model==$model_link) {
-//                $typ_id=$auto_garage_id;
+//                $typ_id=$auto_typ_id;
 //            } else {
+//                setcookie("auto_typ_id","",time()-3600,"/");
 //                $typ_id="";
 //            }
 //        } else {
+//            setcookie("auto_typ_id","",time()-3600,"/");
 //            $typ_id="";
 //        }
 //        return $typ_id;
 //    }
-
-    function getCookieSelectedAuto($mfa_link, $model_link) {
-        $automan = new AutoClass;
-        $auto_typ_id=$_COOKIE["auto_typ_id"];
-        if ($auto_typ_id>0 && $auto_typ_id!="") {
-            list($mfa,$model,,)=$automan->getCookieCarInfo($auto_typ_id);
-            if ($mfa==$mfa_link && $model==$model_link) {
-                $typ_id=$auto_typ_id;
-            } else {
-                setcookie("auto_typ_id","",time()-3600,"/");
-                $typ_id="";
-            }
-        } else {
-            setcookie("auto_typ_id","",time()-3600,"/");
-            $typ_id="";
-        }
-        return $typ_id;
-    }
 
     /*car Details=====================================================*/
 
@@ -397,77 +374,77 @@ class ProductsClass extends CatalogueClass {
 
     /*SELECT CAR =====================================================*/
 
-    function showCarsSelect($str_text="", $mfa="", $model="") {
-        $form=$this->getHtmlForm("cars_form");
-        $style_title="car_form-selected";
-        $range_model="";
-        $mfa_search="{auto_cap}"; $model_search="{model_cap}";
-        $mfa_style=""; $model_style="";
+//    function showCarsSelect($str_text="", $mfa="", $model="") {
+//        $form=$this->getHtmlForm("cars_form");
+//        $style_title="car_form-selected";
+//        $range_model="";
+//        $mfa_search="{auto_cap}"; $model_search="{model_cap}";
+//        $mfa_style=""; $model_style="";
+//
+//        if ($mfa=="") { //AUTO
+//            $title="{auto_search}";
+//            $mfa_style=$style_title;
+//            $range_manuf=$this->getCarManufList(); $range_manuf=$this->drawStyle($range_manuf);
+//        }
+//        else { //MANUFACTURE
+//            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
+//            $title="$mfa_brand";
+//            $translit=$this->getCarManufTranslit($mfa_id, "");
+//            if ($translit!="") $title.=" $translit";
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $model_style=$style_title;
+//            $range_model=$this->getCarModelsList($mfa_id); $range_model=$this->drawStyle($range_model);
+//        }
+//
+//        $form=str_replace("{cars_title}",$title,$form);
+//        $form=str_replace("{str_text_select}",$str_text,$form);
+//        $form=str_replace("{mfa_select}",$mfa,$form);
+//        $form=str_replace("{model_select}",$model,$form);
+//        $form=str_replace("{range_manuf}",$range_manuf,$form);
+//        $form=str_replace("{range_model}",$range_model,$form);
+//        $form=str_replace("{mfa_search}",$mfa_search,$form);
+//        $form=str_replace("{model_search}",$model_search,$form);
+//        $form=str_replace("{mfa_style}",$mfa_style,$form);
+//        $form=str_replace("{model_style}",$model_style,$form);
+//
+//        $form=$this->replaceLang($form);
+//        return $form;
+//    }
 
-        if ($mfa=="") { //AUTO
-            $title="{auto_search}";
-            $mfa_style=$style_title;
-            $range_manuf=$this->getCarManufList(); $range_manuf=$this->drawStyle($range_manuf);
-        }
-        else { //MANUFACTURE
-            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
-            $title="$mfa_brand";
-            $translit=$this->getCarManufTranslit($mfa_id, "");
-            if ($translit!="") $title.=" $translit";
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $model_style=$style_title;
-            $range_model=$this->getCarModelsList($mfa_id); $range_model=$this->drawStyle($range_model);
-        }
+//    function getCarManufList($prefix="") { $db = DbSingleton::getTokoDb();
+//        $first=$second="";
+//        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n=$db->num_rows($r);
+//        $list="<ul class=\"t_mfa\">";
+//        for ($i=1;$i<=$n;$i++) {
+//            $name=$db->result($r,$i-1,"MFA_BRAND");
+//            $id=$db->result($r,$i-1,"MFA_ID");
+//            $mfa_search=$db->result($r,$i-1,"MFA_BRAND_LINK");
+//            if ($first!=substr($name,0,1) && $second!=substr($name,0,1)) {
+//                $first = substr($name,0,1);
+//                $second = substr($name,0,1);
+//                $main_class = "class=\"search__cat-auto\"";
+//            } else {
+//                $first="";$main_class="";
+//                $second=substr($name,0,1);
+//            }
+//            $list.="
+//            <a href=\"$prefix$mfa_search/\">
+//                <span class=\"searchtab_model\">$first</span>
+//                <li $main_class>
+//                    <span id=\"auto-$id\" class=\"auto-list\">$name</span>
+//                </li>
+//            </a>";
+//        }
+//        $list.="</ul>";
+//        return $list;
+//    }
 
-        $form=str_replace("{cars_title}",$title,$form);
-        $form=str_replace("{str_text_select}",$str_text,$form);
-        $form=str_replace("{mfa_select}",$mfa,$form);
-        $form=str_replace("{model_select}",$model,$form);
-        $form=str_replace("{range_manuf}",$range_manuf,$form);
-        $form=str_replace("{range_model}",$range_model,$form);
-        $form=str_replace("{mfa_search}",$mfa_search,$form);
-        $form=str_replace("{model_search}",$model_search,$form);
-        $form=str_replace("{mfa_style}",$mfa_style,$form);
-        $form=str_replace("{model_style}",$model_style,$form);
-
-        $form=$this->replaceLang($form);
-        return $form;
-    }
-
-    function getCarManufList($prefix="") { $db = DbSingleton::getTokoDb();
-        $first=$second="";
-        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n=$db->num_rows($r);
-        $list="<ul class=\"t_mfa\">";
-        for ($i=1;$i<=$n;$i++) {
-            $name=$db->result($r,$i-1,"MFA_BRAND");
-            $id=$db->result($r,$i-1,"MFA_ID");
-            $mfa_search=$db->result($r,$i-1,"MFA_BRAND_LINK");
-            if ($first!=substr($name,0,1) && $second!=substr($name,0,1)) {
-                $first = substr($name,0,1);
-                $second = substr($name,0,1);
-                $main_class = "class=\"search__cat-auto\"";
-            } else {
-                $first="";$main_class="";
-                $second=substr($name,0,1);
-            }
-            $list.="
-            <a href=\"$prefix$mfa_search/\">
-                <span class=\"searchtab_model\">$first</span>
-                <li $main_class>
-                    <span id=\"auto-$id\" class=\"auto-list\">$name</span>
-                </li>
-            </a>";
-        }
-        $list.="</ul>";
-        return $list;
-    }
-
-    function getCarManufVariables($mfa_search) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_search' LIMIT 1;");
-        $mfa_id=$db->result($r,0,"MFA_ID");
-        $mfa_brand=$db->result($r,0,"MFA_BRAND");
-        return array($mfa_id, $mfa_brand);
-    }
+//    function getCarManufVariables($mfa_search) { $db = DbSingleton::getTokoDb();
+//        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_search' LIMIT 1;");
+//        $mfa_id=$db->result($r,0,"MFA_ID");
+//        $mfa_brand=$db->result($r,0,"MFA_BRAND");
+//        return array($mfa_id, $mfa_brand);
+//    }
 
     function getCarManufTranslit($mfa_id, $model="") { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
@@ -481,458 +458,458 @@ class ProductsClass extends CatalogueClass {
         return $text;
     }
 
-    function getCarModelsList($mfa_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
-        $list=""; $first=$second="";
-        if ($n>0) {
-            $list="<ul class=\"t_model\">"; $list=$this->replaceLang($list);
-            for ($i=1;$i<=$n;$i++){
-                $model=$db->result($r,$i-1,"Model");
-                $model_search=$db->result($r,$i-1,"Model_Link");
-                if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second=substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
-                else {$first=""; $second=substr($model,0,1); $main_class="";}
-                $list.="
-                <a href=\"$model_search/\">
-                    <span class=\"searchtab_model\">$first</span>
-                    <li $main_class>
-                        <span id=\"model-$model\" class=\"model-list\">$model</span>
-                    </li>
-                </a>";
-            }
-            $list.="</ul>";
-        }
-        return $list;
-    }
+//    function getCarModelsList($mfa_id) { $db = DbSingleton::getTokoDb();
+//        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
+//        $list=""; $first=$second="";
+//        if ($n>0) {
+//            $list="<ul class=\"t_model\">"; $list=$this->replaceLang($list);
+//            for ($i=1;$i<=$n;$i++){
+//                $model=$db->result($r,$i-1,"Model");
+//                $model_search=$db->result($r,$i-1,"Model_Link");
+//                if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second=substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
+//                else {$first=""; $second=substr($model,0,1); $main_class="";}
+//                $list.="
+//                <a href=\"$model_search/\">
+//                    <span class=\"searchtab_model\">$first</span>
+//                    <li $main_class>
+//                        <span id=\"model-$model\" class=\"model-list\">$model</span>
+//                    </li>
+//                </a>";
+//            }
+//            $list.="</ul>";
+//        }
+//        return $list;
+//    }
 
-    function getCarModelVariables($mfa_link, $model_link) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
-        $mfa_id=$db->result($r,0,"MFA_ID");
-        $r=$db->query("SELECT * FROM `T_models` WHERE `Model_Link`='$model_link' AND `MOD_MFA_ID`=$mfa_id LIMIT 1;");
-        $model=$db->result($r,0,"Model");
-        return $model;
-    }
+//    function getCarModelVariables($mfa_link, $model_link) { $db = DbSingleton::getTokoDb();
+//        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
+//        $mfa_id=$db->result($r,0,"MFA_ID");
+//        $r=$db->query("SELECT * FROM `T_models` WHERE `Model_Link`='$model_link' AND `MOD_MFA_ID`=$mfa_id LIMIT 1;");
+//        $model=$db->result($r,0,"Model");
+//        return $model;
+//    }
 
-    function getCarModelIdVariables($mod_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
-        $text=$db->result($r,0,"TEX_TEXT");
-        return $text;
-    }
+//    function getCarModelIdVariables($mod_id) { $db = DbSingleton::getTokoDb();
+//        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
+//        $text=$db->result($r,0,"TEX_TEXT");
+//        return $text;
+//    }
 
-    function getTypesInfo($type_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$type_id' LIMIT 1;");
-        $tex_text=$db->result($r,0,"TYP_MMT_TEXT");
-        $fuel_id=$db->result($r,0,"FUEL_ID"); $fuel_name=$this->getFuelName($fuel_id);
-        $info="$tex_text ($fuel_name)";
-        return $info;
-    }
+//    function getTypesInfo($type_id) { $db = DbSingleton::getTokoDb();
+//        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$type_id' LIMIT 1;");
+//        $tex_text=$db->result($r,0,"TYP_MMT_TEXT");
+//        $fuel_id=$db->result($r,0,"FUEL_ID"); $fuel_name=$this->getFuelName($fuel_id);
+//        $info="$tex_text ($fuel_name)";
+//        return $info;
+//    }
 
-    function getTypesShortInfo($type_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$type_id' LIMIT 1;");
-        $typ_text=$db->result($r,0,"TYP_TEXT");
-        $fuel_id=$db->result($r,0,"FUEL_ID"); $fuel_name=$this->getFuelName($fuel_id);
-        $info="$fuel_name $typ_text";
-        return $info;
-    }
+//    function getTypesShortInfo($type_id) { $db = DbSingleton::getTokoDb();
+//        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$type_id' LIMIT 1;");
+//        $typ_text=$db->result($r,0,"TYP_TEXT");
+//        $fuel_id=$db->result($r,0,"FUEL_ID"); $fuel_name=$this->getFuelName($fuel_id);
+//        $info="$fuel_name $typ_text";
+//        return $info;
+//    }
 
-    function drawStyle($list) {
-        return "<div class=\"car_form-select_card\">$list</div>";
-    }
+//    function drawStyle($list) {
+//        return "<div class=\"car_form-select_card\">$list</div>";
+//    }
 
     /*SELECT CAR MIN======================================*/
 
-    function showCarsSelectMin($str_text, $mfa, $model, $year="", $model_id="", $typ_id="", $fuel_id="", $ajax=false) {
-        $automan=new AutoClass;
-        $str_id=$automan->getStrNewLinkStr($str_text);
-
-        if (!$ajax)
-        if ($this->getCookieAuto()!="") {
-            $typ_id=$this->getCookieSelectedAuto($mfa, $model);
-            if ($typ_id!="") {
-                list($mfa, $model, $year, $model_id)=$automan->getCookieCarInfo($typ_id);
-            }
-        }
-
-        $form=$this->getHtmlForm("cars_form_min");
-        $style_title="car_form-selected"; $style_disabled="car_form-disabled";
-        $range_model=""; $range_year=""; $range_model_id=""; $range_type=""; $range_modification="";
-        $mfa_style=""; $model_style=""; $year_style=""; $modelid_style=""; $type_style=""; $modification_style="dnone";
-        $mfa_search="{auto_cap}"; $model_search="{model_cap}"; $year_search="{year_cap}"; $modelid_search="{model_number}"; $typ_search="{engine_cap}"; $modification_search="{modification_cap}";
-
-        if ($mfa=="") { //AUTO
-            $title="{auto_search}";
-            $mfa_style=$style_title;
-            $range_manuf=$this->getCarManufListMin(); $range_manuf=$this->drawStyle($range_manuf);
-        }
-        elseif ($model=="") { //MANUFACTURE
-            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
-            $title = "$mfa_brand";
-            $translit = $this->getCarManufTranslit($mfa_id, "");
-            if ($translit!="") $title.=" $translit";
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $model_style=$style_title;
-            $range_model=$this->getCarModelsListMin($mfa_id); $range_model=$this->drawStyle($range_model);
-        }
-        elseif ($year=="") { //MODEL
-            $model_cap = $this->getCarModelVariables($mfa, $model);
-            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
-            $title = " $mfa_brand $model_cap";
-            $translit=$this->getCarManufTranslit($mfa_id, $model_cap);
-            if ($translit!="") $title.=" $translit";
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $range_model=""; $model_search=$model_cap;
-            $year_style=$style_title;
-            $range_year=$this->getCarYearListMin($model_cap, $mfa_id); $range_year=$this->drawStyle($range_year);
-        }
-        elseif ($model_id=="") { //YEAR
-            $model_cap = $this->getCarModelVariables($mfa, $model);
-            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
-            $title = " $mfa_brand $model_cap $year"; if ($year=="all") $title=" $mfa_brand $model_cap";
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $range_model=""; $model_search=$model_cap;
-            $range_year=""; $year_search=$year;
-            $modelid_style=$style_title;
-            $range_model_id=$this->getCarModelIdsListMin($year, $model_cap, $mfa_id); $range_model_id=$this->drawStyle($range_model_id);
-            $check_mod_id=$this->checkCarModelIdsListMin($year, $model_cap, $mfa_id);
-            if ($check_mod_id>0) { //=>MODEL_ID
-                $model_id = $check_mod_id;
-                $text = $this->getCarModelIdVariables($model_id);
-                $model_cap = $this->getCarModelVariables($mfa, $model);
-                $mfa_brand = $this->getCarManufVariables($mfa)[1];
-                $title = " $mfa_brand $text";
-                $range_manuf=""; $mfa_search=$mfa_brand;
-                $range_model=""; $model_search=$model_cap;
-                $range_year=""; $year_search=$year;
-                $range_model_id=""; $modelid_search=$text;
-                $modelid_style=$style_disabled;
-                $type_style=$style_title;
-                $range_type=$this->getCarTypeListMin($model_id, $str_id); $range_type=$this->drawStyle($range_type);
-            }
-        }
-        elseif ($typ_id=="") { //MODEL_ID
-            $text = $this->getCarModelIdVariables($model_id);
-            $model_cap = $this->getCarModelVariables($mfa, $model);
-            $mfa_brand = $this->getCarManufVariables($mfa)[1];
-            $title = " $mfa_brand $text";
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $range_model=""; $model_search=$model_cap;
-            $range_year=""; $year_search=$year;
-            $range_model_id=""; $modelid_search=$text;
-            $type_style=$style_title;
-            $range_type=$this->getCarTypeListMin($model_id, $str_id); $range_type=$this->drawStyle($range_type);
-        }
-        else {
-            $text = $this->getCarModelIdVariables($model_id);
-            $model_cap = $this->getCarModelVariables($mfa, $model);
-            $mfa_brand = $this->getCarManufVariables($mfa)[1];
-
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $range_model=""; $model_search=$model_cap;
-            $range_year=""; $year_search=$year;
-            $range_model_id=""; $modelid_search=$text;
-            $fuel_name=$automan->getFuelName($fuel_id);
-            $range_type=""; $typ_search="$fuel_name $typ_id "; $type_style="";
-            $modification_style=$style_title;
-            $title = "$mfa_brand $text $fuel_name $typ_id";
-
-            $range_modification=$this->getCarModificationListMin($model_id, $typ_id, $fuel_id, $str_id); $range_modification=$this->drawStyle($range_modification);
-        }
-
-        $form=str_replace("{cars_title}",$title,$form);
-        $form=str_replace("{str_text_select}",$str_text,$form);
-
-        $form=str_replace("{mfa_select}",$mfa,$form);
-        $form=str_replace("{model_select}",$model,$form);
-        $form=str_replace("{year_select}",$year,$form);
-        $form=str_replace("{modelid_select}",$model_id,$form);
-        $form=str_replace("{typ_id_select}",$typ_id,$form);
-        $form=str_replace("{fuel_id_select}",$fuel_id,$form);
-
-        $form=str_replace("{range_manuf}",$range_manuf,$form);
-        $form=str_replace("{range_model}",$range_model,$form);
-        $form=str_replace("{range_year}",$range_year,$form);
-        $form=str_replace("{range_model_id}",$range_model_id,$form);
-        $form=str_replace("{range_types}",$range_type,$form);
-        $form=str_replace("{range_modification}",$range_modification,$form);
-
-        $form=str_replace("{mfa_search}",$mfa_search,$form);
-        $form=str_replace("{model_search}",$model_search,$form);
-        $form=str_replace("{year_search}",$year=="all" ? "{all_years}" : $year_search,$form);
-        $form=str_replace("{modelid_search}",$modelid_search,$form);
-        $form=str_replace("{typ_search}",$typ_search,$form);
-        $form=str_replace("{modification_search}",$modification_search,$form);
-
-        $form=str_replace("{mfa_style}",$mfa_style,$form);
-        $form=str_replace("{model_style}",$model_style,$form);
-        $form=str_replace("{year_style}",$year_style,$form);
-        $form=str_replace("{modelid_style}",$modelid_style,$form);
-        $form=str_replace("{type_style}",$type_style,$form);
-        $form=str_replace("{modification_style}",$modification_style,$form);
-
-        $form=$this->replaceLang($form);
-        return $form;
-    }
-
-    /*================================================================================================================*/
-
-    function showCarsSelected($mfa="", $model="", $year="", $model_id="", $typ_id="") {
-        $form=$this->getHtmlForm("cars_form_min");
-        $style_title="car_form-selected"; $style_disabled="car_form-disabled";
-        $range_model=""; $range_year=""; $range_model_id=""; $range_type=""; $range_modification="";
-        $mfa_style=""; $model_style=""; $year_style=""; $modelid_style=""; $type_style=""; $modification_style="";
-        $mfa_search="{auto_cap}"; $model_search="{model_cap}"; $year_search="{year_cap}"; $modelid_search="{model_number}"; $typ_search="{engine_cap}"; $modification_search="{modification_cap}";
-
-        if ($mfa=="") { //AUTO
-            $title="{auto_search}";
-            $mfa_style=$style_title;
-            $range_manuf=$this->getCarManufListMin(1); $range_manuf=$this->drawStyle($range_manuf);
-        }
-        elseif ($model=="") { //MANUFACTURE
-            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
-            $title="$mfa_brand";
-            $translit=$this->getCarManufTranslit($mfa_id, "");
-            if ($translit!="") $title.=" $translit";
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $model_style=$style_title;
-            $range_model=$this->getCarModelsListMin($mfa_id, 1); $range_model=$this->drawStyle($range_model);
-        }
-        elseif ($year=="") { //MODEL
-            $model_cap = $this->getCarModelVariables($mfa, $model);
-            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
-            $title=" $mfa_brand $model_cap";
-            $translit=$this->getCarManufTranslit($mfa_id, $model_cap);
-            if ($translit!="") $title.=" $translit";
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $range_model=""; $model_search=$model_cap;
-            $year_style=$style_title;
-            $range_year=$this->getCarYearListMin($model_cap, $mfa_id, 1); $range_year=$this->drawStyle($range_year);
-        }
-        elseif ($model_id=="") { //YEAR
-            $model_cap = $this->getCarModelVariables($mfa, $model);
-            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
-            $title=" $mfa_brand $model_cap $year";
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $range_model=""; $model_search=$model_cap;
-            $range_year=""; $year_search=$year;
-            $modelid_style=$style_title;
-            $range_model_id=$this->getCarModelIdsListMin($year, $model_cap, $mfa_id, 1); $range_model_id=$this->drawStyle($range_model_id);
-            $check_mod_id=$this->checkCarModelIdsListMin($year, $model_cap, $mfa_id);
-            if ($check_mod_id>0) { //MODEL_ID
-                $model_id=$check_mod_id;
-                $text = $this->getCarModelIdVariables($model_id);
-                $model_cap = $this->getCarModelVariables($mfa, $model);
-                $mfa_brand = $this->getCarManufVariables($mfa)[1];
-                $title=" $mfa_brand $text";
-                $range_manuf=""; $mfa_search=$mfa_brand;
-                $range_model=""; $model_search=$model_cap;
-                $range_year=""; $year_search=$year;
-                $range_model_id=""; $modelid_search=$text;
-                $modelid_style=$style_disabled;
-                $type_style=$style_title;
-                $range_type=$this->getCarTypeListMin($model_id, "", 1); $range_type=$this->drawStyle($range_type);
-            }
-        }
-        elseif ($typ_id=="") { //MODEL_ID
-            $text = $this->getCarModelIdVariables($model_id);
-            $model_cap = $this->getCarModelVariables($mfa, $model);
-            $mfa_brand = $this->getCarManufVariables($mfa)[1];
-            $title=" $mfa_brand $text";
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $range_model=""; $model_search=$model_cap;
-            $range_year=""; $year_search=$year;
-            $range_model_id=""; $modelid_search=$text;
-            $type_style=$style_title;
-            $range_type=$this->getCarTypeListMin($model_id, "", 1); $range_type=$this->drawStyle($range_type);
-        }
-        else { //TYPE_ID
-            $text = $this->getCarModelIdVariables($model_id);
-            $model_cap = $this->getCarModelVariables($mfa, $model);
-            $mfa_brand = $this->getCarManufVariables($mfa)[1];
-            $typ_text = $this->getTypesInfo($typ_id);
-            $title="$typ_text";
-            $range_manuf=""; $mfa_search=$mfa_brand;
-            $range_model=""; $model_search=$model_cap;
-            $range_year=""; $year_search=$year;
-            $range_model_id=""; $modelid_search=$text;
-            $range_type=""; $typ_search=$typ_text;
-            $type_style="";
-        }
-
-        $form=str_replace("{cars_title}",$title,$form);
-
-        $form=str_replace("{mfa_select}",$mfa,$form);
-        $form=str_replace("{model_select}",$model,$form);
-        $form=str_replace("{year_select}",$year,$form);
-        $form=str_replace("{modelid_select}",$model_id,$form);
-        $form=str_replace("{typ_id_select}",$typ_id,$form);
-
-        $form=str_replace("{range_manuf}",$range_manuf,$form);
-        $form=str_replace("{range_model}",$range_model,$form);
-        $form=str_replace("{range_year}",$range_year,$form);
-        $form=str_replace("{range_model_id}",$range_model_id,$form);
-        $form=str_replace("{range_types}",$range_type,$form);
-        $form=str_replace("{range_modification}",$range_modification,$form);
-
-        $form=str_replace("{mfa_search}",$mfa_search,$form);
-        $form=str_replace("{model_search}",$model_search,$form);
-        $form=str_replace("{year_search}",$year=="all" ? "{all_years}" : $year_search,$form);
-        $form=str_replace("{modelid_search}",$modelid_search,$form);
-        $form=str_replace("{typ_search}",$typ_search,$form);
-        $form=str_replace("{modification_search}",$modification_search,$form);
-
-        $form=str_replace("{mfa_style}",$mfa_style,$form);
-        $form=str_replace("{model_style}",$model_style,$form);
-        $form=str_replace("{year_style}",$year_style,$form);
-        $form=str_replace("{modelid_style}",$modelid_style,$form);
-        $form=str_replace("{type_style}",$type_style,$form);
-        $form=str_replace("{modification_style}",$modification_style,$form);
-
-        $form=$this->replaceLang($form);
-        return $form;
-    }
+//    function showCarsSelectMin($str_text, $mfa, $model, $year="", $model_id="", $typ_id="", $fuel_id="", $ajax=false) {
+//        $automan=new AutoClass;
+//        $str_id=$automan->getStrNewLinkStr($str_text);
+//
+//        if (!$ajax)
+//        if ($this->getCookieAuto()!="") {
+//            $typ_id=$this->getCookieSelectedAuto($mfa, $model);
+//            if ($typ_id!="") {
+//                list($mfa, $model, $year, $model_id)=$automan->getCookieCarInfo($typ_id);
+//            }
+//        }
+//
+//        $form=$this->getHtmlForm("cars_form_min");
+//        $style_title="car_form-selected"; $style_disabled="car_form-disabled";
+//        $range_model=""; $range_year=""; $range_model_id=""; $range_type=""; $range_modification="";
+//        $mfa_style=""; $model_style=""; $year_style=""; $modelid_style=""; $type_style=""; $modification_style="dnone";
+//        $mfa_search="{auto_cap}"; $model_search="{model_cap}"; $year_search="{year_cap}"; $modelid_search="{model_number}"; $typ_search="{engine_cap}"; $modification_search="{modification_cap}";
+//
+//        if ($mfa=="") { //AUTO
+//            $title="{auto_search}";
+//            $mfa_style=$style_title;
+//            $range_manuf=$this->getCarManufListMin(); $range_manuf=$this->drawStyle($range_manuf);
+//        }
+//        elseif ($model=="") { //MANUFACTURE
+//            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
+//            $title = "$mfa_brand";
+//            $translit = $this->getCarManufTranslit($mfa_id, "");
+//            if ($translit!="") $title.=" $translit";
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $model_style=$style_title;
+//            $range_model=$this->getCarModelsListMin($mfa_id); $range_model=$this->drawStyle($range_model);
+//        }
+//        elseif ($year=="") { //MODEL
+//            $model_cap = $this->getCarModelVariables($mfa, $model);
+//            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
+//            $title = " $mfa_brand $model_cap";
+//            $translit=$this->getCarManufTranslit($mfa_id, $model_cap);
+//            if ($translit!="") $title.=" $translit";
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $range_model=""; $model_search=$model_cap;
+//            $year_style=$style_title;
+//            $range_year=$this->getCarYearListMin($model_cap, $mfa_id); $range_year=$this->drawStyle($range_year);
+//        }
+//        elseif ($model_id=="") { //YEAR
+//            $model_cap = $this->getCarModelVariables($mfa, $model);
+//            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
+//            $title = " $mfa_brand $model_cap $year"; if ($year=="all") $title=" $mfa_brand $model_cap";
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $range_model=""; $model_search=$model_cap;
+//            $range_year=""; $year_search=$year;
+//            $modelid_style=$style_title;
+//            $range_model_id=$this->getCarModelIdsListMin($year, $model_cap, $mfa_id); $range_model_id=$this->drawStyle($range_model_id);
+//            $check_mod_id=$this->checkCarModelIdsListMin($year, $model_cap, $mfa_id);
+//            if ($check_mod_id>0) { //=>MODEL_ID
+//                $model_id = $check_mod_id;
+//                $text = $this->getCarModelIdVariables($model_id);
+//                $model_cap = $this->getCarModelVariables($mfa, $model);
+//                $mfa_brand = $this->getCarManufVariables($mfa)[1];
+//                $title = " $mfa_brand $text";
+//                $range_manuf=""; $mfa_search=$mfa_brand;
+//                $range_model=""; $model_search=$model_cap;
+//                $range_year=""; $year_search=$year;
+//                $range_model_id=""; $modelid_search=$text;
+//                $modelid_style=$style_disabled;
+//                $type_style=$style_title;
+//                $range_type=$this->getCarTypeListMin($model_id, $str_id); $range_type=$this->drawStyle($range_type);
+//            }
+//        }
+//        elseif ($typ_id=="") { //MODEL_ID
+//            $text = $this->getCarModelIdVariables($model_id);
+//            $model_cap = $this->getCarModelVariables($mfa, $model);
+//            $mfa_brand = $this->getCarManufVariables($mfa)[1];
+//            $title = " $mfa_brand $text";
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $range_model=""; $model_search=$model_cap;
+//            $range_year=""; $year_search=$year;
+//            $range_model_id=""; $modelid_search=$text;
+//            $type_style=$style_title;
+//            $range_type=$this->getCarTypeListMin($model_id, $str_id); $range_type=$this->drawStyle($range_type);
+//        }
+//        else {
+//            $text = $this->getCarModelIdVariables($model_id);
+//            $model_cap = $this->getCarModelVariables($mfa, $model);
+//            $mfa_brand = $this->getCarManufVariables($mfa)[1];
+//
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $range_model=""; $model_search=$model_cap;
+//            $range_year=""; $year_search=$year;
+//            $range_model_id=""; $modelid_search=$text;
+//            $fuel_name=$automan->getFuelName($fuel_id);
+//            $range_type=""; $typ_search="$fuel_name $typ_id "; $type_style="";
+//            $modification_style=$style_title;
+//            $title = "$mfa_brand $text $fuel_name $typ_id";
+//
+//            $range_modification=$this->getCarModificationListMin($model_id, $typ_id, $fuel_id, $str_id); $range_modification=$this->drawStyle($range_modification);
+//        }
+//
+//        $form=str_replace("{cars_title}",$title,$form);
+//        $form=str_replace("{str_text_select}",$str_text,$form);
+//
+//        $form=str_replace("{mfa_select}",$mfa,$form);
+//        $form=str_replace("{model_select}",$model,$form);
+//        $form=str_replace("{year_select}",$year,$form);
+//        $form=str_replace("{modelid_select}",$model_id,$form);
+//        $form=str_replace("{typ_id_select}",$typ_id,$form);
+//        $form=str_replace("{fuel_id_select}",$fuel_id,$form);
+//
+//        $form=str_replace("{range_manuf}",$range_manuf,$form);
+//        $form=str_replace("{range_model}",$range_model,$form);
+//        $form=str_replace("{range_year}",$range_year,$form);
+//        $form=str_replace("{range_model_id}",$range_model_id,$form);
+//        $form=str_replace("{range_types}",$range_type,$form);
+//        $form=str_replace("{range_modification}",$range_modification,$form);
+//
+//        $form=str_replace("{mfa_search}",$mfa_search,$form);
+//        $form=str_replace("{model_search}",$model_search,$form);
+//        $form=str_replace("{year_search}",$year=="all" ? "{all_years}" : $year_search,$form);
+//        $form=str_replace("{modelid_search}",$modelid_search,$form);
+//        $form=str_replace("{typ_search}",$typ_search,$form);
+//        $form=str_replace("{modification_search}",$modification_search,$form);
+//
+//        $form=str_replace("{mfa_style}",$mfa_style,$form);
+//        $form=str_replace("{model_style}",$model_style,$form);
+//        $form=str_replace("{year_style}",$year_style,$form);
+//        $form=str_replace("{modelid_style}",$modelid_style,$form);
+//        $form=str_replace("{type_style}",$type_style,$form);
+//        $form=str_replace("{modification_style}",$modification_style,$form);
+//
+//        $form=$this->replaceLang($form);
+//        return $form;
+//    }
 
     /*================================================================================================================*/
 
-    function getCarManufListMin($type=0) { $db = DbSingleton::getTokoDb();
-        $first=$second="";
-        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n=$db->num_rows($r);
-        $list="<ul class=\"t_mfa\">";
-        for ($i=1;$i<=$n;$i++) {
-            $name=$db->result($r,$i-1,"MFA_BRAND");
-            $id=$db->result($r,$i-1,"MFA_ID");
-            $mfa_search=$db->result($r,$i-1,"MFA_BRAND_LINK");
-            if ($first!=substr($name,0,1) && $second!=substr($name,0,1)) {
-                $first = substr($name,0,1);
-                $second = substr($name,0,1);
-                $main_class = "class=\"search__cat-auto\"";
-            } else {
-                $first="";$main_class="";
-                $second=substr($name,0,1);
-            }
-            $type==0 ? $onclick="showCarsSelectMin(2,'$mfa_search');" : $onclick="showCarsSelected(2,'$mfa_search');";
-            $list.="
-            <a href=\"#\" onclick=\"$onclick\">
-                <span class=\"searchtab_model\">$first</span>
-                <li $main_class>
-                    <span id=\"auto-$id\" class=\"auto-list\">$name</span>
-                </li>
-            </a>";
-        }
-        $list.="</ul>";
-        return $list;
-    }
+//    function showCarsSelected($mfa="", $model="", $year="", $model_id="", $typ_id="") {
+//        $form=$this->getHtmlForm("cars_form_min");
+//        $style_title="car_form-selected"; $style_disabled="car_form-disabled";
+//        $range_model=""; $range_year=""; $range_model_id=""; $range_type=""; $range_modification="";
+//        $mfa_style=""; $model_style=""; $year_style=""; $modelid_style=""; $type_style=""; $modification_style="";
+//        $mfa_search="{auto_cap}"; $model_search="{model_cap}"; $year_search="{year_cap}"; $modelid_search="{model_number}"; $typ_search="{engine_cap}"; $modification_search="{modification_cap}";
+//
+//        if ($mfa=="") { //AUTO
+//            $title="{auto_search}";
+//            $mfa_style=$style_title;
+//            $range_manuf=$this->getCarManufListMin(1); $range_manuf=$this->drawStyle($range_manuf);
+//        }
+//        elseif ($model=="") { //MANUFACTURE
+//            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
+//            $title="$mfa_brand";
+//            $translit=$this->getCarManufTranslit($mfa_id, "");
+//            if ($translit!="") $title.=" $translit";
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $model_style=$style_title;
+//            $range_model=$this->getCarModelsListMin($mfa_id, 1); $range_model=$this->drawStyle($range_model);
+//        }
+//        elseif ($year=="") { //MODEL
+//            $model_cap = $this->getCarModelVariables($mfa, $model);
+//            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
+//            $title=" $mfa_brand $model_cap";
+//            $translit=$this->getCarManufTranslit($mfa_id, $model_cap);
+//            if ($translit!="") $title.=" $translit";
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $range_model=""; $model_search=$model_cap;
+//            $year_style=$style_title;
+//            $range_year=$this->getCarYearListMin($model_cap, $mfa_id, 1); $range_year=$this->drawStyle($range_year);
+//        }
+//        elseif ($model_id=="") { //YEAR
+//            $model_cap = $this->getCarModelVariables($mfa, $model);
+//            list($mfa_id, $mfa_brand) = $this->getCarManufVariables($mfa);
+//            $title=" $mfa_brand $model_cap $year";
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $range_model=""; $model_search=$model_cap;
+//            $range_year=""; $year_search=$year;
+//            $modelid_style=$style_title;
+//            $range_model_id=$this->getCarModelIdsListMin($year, $model_cap, $mfa_id, 1); $range_model_id=$this->drawStyle($range_model_id);
+//            $check_mod_id=$this->checkCarModelIdsListMin($year, $model_cap, $mfa_id);
+//            if ($check_mod_id>0) { //MODEL_ID
+//                $model_id=$check_mod_id;
+//                $text = $this->getCarModelIdVariables($model_id);
+//                $model_cap = $this->getCarModelVariables($mfa, $model);
+//                $mfa_brand = $this->getCarManufVariables($mfa)[1];
+//                $title=" $mfa_brand $text";
+//                $range_manuf=""; $mfa_search=$mfa_brand;
+//                $range_model=""; $model_search=$model_cap;
+//                $range_year=""; $year_search=$year;
+//                $range_model_id=""; $modelid_search=$text;
+//                $modelid_style=$style_disabled;
+//                $type_style=$style_title;
+//                $range_type=$this->getCarTypeListMin($model_id, "", 1); $range_type=$this->drawStyle($range_type);
+//            }
+//        }
+//        elseif ($typ_id=="") { //MODEL_ID
+//            $text = $this->getCarModelIdVariables($model_id);
+//            $model_cap = $this->getCarModelVariables($mfa, $model);
+//            $mfa_brand = $this->getCarManufVariables($mfa)[1];
+//            $title=" $mfa_brand $text";
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $range_model=""; $model_search=$model_cap;
+//            $range_year=""; $year_search=$year;
+//            $range_model_id=""; $modelid_search=$text;
+//            $type_style=$style_title;
+//            $range_type=$this->getCarTypeListMin($model_id, "", 1); $range_type=$this->drawStyle($range_type);
+//        }
+//        else { //TYPE_ID
+//            $text = $this->getCarModelIdVariables($model_id);
+//            $model_cap = $this->getCarModelVariables($mfa, $model);
+//            $mfa_brand = $this->getCarManufVariables($mfa)[1];
+//            $typ_text = $this->getTypesInfo($typ_id);
+//            $title="$typ_text";
+//            $range_manuf=""; $mfa_search=$mfa_brand;
+//            $range_model=""; $model_search=$model_cap;
+//            $range_year=""; $year_search=$year;
+//            $range_model_id=""; $modelid_search=$text;
+//            $range_type=""; $typ_search=$typ_text;
+//            $type_style="";
+//        }
+//
+//        $form=str_replace("{cars_title}",$title,$form);
+//
+//        $form=str_replace("{mfa_select}",$mfa,$form);
+//        $form=str_replace("{model_select}",$model,$form);
+//        $form=str_replace("{year_select}",$year,$form);
+//        $form=str_replace("{modelid_select}",$model_id,$form);
+//        $form=str_replace("{typ_id_select}",$typ_id,$form);
+//
+//        $form=str_replace("{range_manuf}",$range_manuf,$form);
+//        $form=str_replace("{range_model}",$range_model,$form);
+//        $form=str_replace("{range_year}",$range_year,$form);
+//        $form=str_replace("{range_model_id}",$range_model_id,$form);
+//        $form=str_replace("{range_types}",$range_type,$form);
+//        $form=str_replace("{range_modification}",$range_modification,$form);
+//
+//        $form=str_replace("{mfa_search}",$mfa_search,$form);
+//        $form=str_replace("{model_search}",$model_search,$form);
+//        $form=str_replace("{year_search}",$year=="all" ? "{all_years}" : $year_search,$form);
+//        $form=str_replace("{modelid_search}",$modelid_search,$form);
+//        $form=str_replace("{typ_search}",$typ_search,$form);
+//        $form=str_replace("{modification_search}",$modification_search,$form);
+//
+//        $form=str_replace("{mfa_style}",$mfa_style,$form);
+//        $form=str_replace("{model_style}",$model_style,$form);
+//        $form=str_replace("{year_style}",$year_style,$form);
+//        $form=str_replace("{modelid_style}",$modelid_style,$form);
+//        $form=str_replace("{type_style}",$type_style,$form);
+//        $form=str_replace("{modification_style}",$modification_style,$form);
+//
+//        $form=$this->replaceLang($form);
+//        return $form;
+//    }
 
-    function getCarModelsListMin($mfa_id, $type=0) { $db = DbSingleton::getTokoDb();
-        $list=$first=$second="";
-        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
-        if ($n>0) {
-            $list="<ul class=\"t_model\">"; $list=$this->replaceLang($list);
-            for ($i=1;$i<=$n;$i++){
-                $model=$db->result($r,$i-1,"Model");
-                $model_search=$db->result($r,$i-1,"Model_Link");
-                if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second=substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
-                else {$first=""; $second=substr($model,0,1); $main_class="";}
-                $type==0 ? $onclick="showCarsSelectMin(3,'$model_search');" : $onclick="showCarsSelected(3,'$model_search');";
-                $list.="
-                <a href=\"#\" onclick=\"$onclick\">
-                    <span class=\"searchtab_model\">$first</span>
-                    <li $main_class>
-                        <span id=\"model-$model\" class=\"model-list\">$model</span>
-                    </li>
-                </a>";
-            }
-            $list.="</ul>";
-        }
-        return $list;
-    }
+    /*================================================================================================================*/
 
-    function getCarYearListMin($model, $mfa_id, $type=0) { $db = DbSingleton::getTokoDb();
-        $min_date_start=1947; $max_date_end=2019;
-        $r=$db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
-            CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
-        FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id';");
-        $date_start = $db->result($r,0,"min_year");
-        $date_start = substr($date_start, 0, -2)."";
-        $date_end = $db->result($r,0,"max_year");
-        if ($date_end!=0) $date_end = substr($date_end, 0, -2)."";
-        if ($date_end==0) $date_end=$max_date_end;
-        if ($date_start=="" || $date_start==0) $date_start=$min_date_start;
+//    function getCarManufListMin($type=0) { $db = DbSingleton::getTokoDb();
+//        $first=$second="";
+//        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n=$db->num_rows($r);
+//        $list="<ul class=\"t_mfa\">";
+//        for ($i=1;$i<=$n;$i++) {
+//            $name=$db->result($r,$i-1,"MFA_BRAND");
+//            $id=$db->result($r,$i-1,"MFA_ID");
+//            $mfa_search=$db->result($r,$i-1,"MFA_BRAND_LINK");
+//            if ($first!=substr($name,0,1) && $second!=substr($name,0,1)) {
+//                $first = substr($name,0,1);
+//                $second = substr($name,0,1);
+//                $main_class = "class=\"search__cat-auto\"";
+//            } else {
+//                $first="";$main_class="";
+//                $second=substr($name,0,1);
+//            }
+//            $type==0 ? $onclick="showCarsSelectMin(2,'$mfa_search');" : $onclick="showCarsSelected(2,'$mfa_search');";
+//            $list.="
+//            <a href=\"#\" onclick=\"$onclick\">
+//                <span class=\"searchtab_model\">$first</span>
+//                <li $main_class>
+//                    <span id=\"auto-$id\" class=\"auto-list\">$name</span>
+//                </li>
+//            </a>";
+//        }
+//        $list.="</ul>";
+//        return $list;
+//    }
 
-        $type==0 ? $onclick1="showCarsSelectMin(4,'all');" : $onclick1="showCarsSelected(4,'all');";
-        $list="
-         <div style='margin:10px;'>
-             <a href=\"#\" onclick=\"$onclick1\">
-                <span id=\"year-all\" class=\"year-list btn btn-secondary\" style=\"width: 150px;\">{all_years}</span>
-            </a>
-        </div>";
-        $list.="<div class=\"t_year\">";
+//    function getCarModelsListMin($mfa_id, $type=0) { $db = DbSingleton::getTokoDb();
+//        $list=$first=$second="";
+//        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
+//        if ($n>0) {
+//            $list="<ul class=\"t_model\">"; $list=$this->replaceLang($list);
+//            for ($i=1;$i<=$n;$i++){
+//                $model=$db->result($r,$i-1,"Model");
+//                $model_search=$db->result($r,$i-1,"Model_Link");
+//                if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second=substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
+//                else {$first=""; $second=substr($model,0,1); $main_class="";}
+//                $type==0 ? $onclick="showCarsSelectMin(3,'$model_search');" : $onclick="showCarsSelected(3,'$model_search');";
+//                $list.="
+//                <a href=\"#\" onclick=\"$onclick\">
+//                    <span class=\"searchtab_model\">$first</span>
+//                    <li $main_class>
+//                        <span id=\"model-$model\" class=\"model-list\">$model</span>
+//                    </li>
+//                </a>";
+//            }
+//            $list.="</ul>";
+//        }
+//        return $list;
+//    }
 
-        for ($i=$date_end;$i>=$date_start;$i--) {
-            if (($i+1)%10==0 || $i==$date_end) {
-                $mod = substr($i, 0, -1)."0 - e";
-                $list.="<ul class=\"list-inline\"><li class=\"year-title\">".$mod."</li>";
-            }
-            $type==0 ? $onclick="showCarsSelectMin(4,'$i');" : $onclick="showCarsSelected(4,'$i');";
+//    function getCarYearListMin($model, $mfa_id, $type=0) { $db = DbSingleton::getTokoDb();
+//        $min_date_start=1947; $max_date_end=2019;
+//        $r=$db->query("SELECT MIN(`MOD_PCON_START`) as min_year,
+//            CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
+//        FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id';");
+//        $date_start = $db->result($r,0,"min_year");
+//        $date_start = substr($date_start, 0, -2)."";
+//        $date_end = $db->result($r,0,"max_year");
+//        if ($date_end!=0) $date_end = substr($date_end, 0, -2)."";
+//        if ($date_end==0) $date_end=$max_date_end;
+//        if ($date_start=="" || $date_start==0) $date_start=$min_date_start;
+//
+//        $type==0 ? $onclick1="showCarsSelectMin(4,'all');" : $onclick1="showCarsSelected(4,'all');";
+//        $list="
+//         <div style='margin:10px;'>
+//             <a href=\"#\" onclick=\"$onclick1\">
+//                <span id=\"year-all\" class=\"year-list btn btn-secondary\" style=\"width: 150px;\">{all_years}</span>
+//            </a>
+//        </div>";
+//        $list.="<div class=\"t_year\">";
+//
+//        for ($i=$date_end;$i>=$date_start;$i--) {
+//            if (($i+1)%10==0 || $i==$date_end) {
+//                $mod = substr($i, 0, -1)."0 - e";
+//                $list.="<ul class=\"list-inline\"><li class=\"year-title\">".$mod."</li>";
+//            }
+//            $type==0 ? $onclick="showCarsSelectMin(4,'$i');" : $onclick="showCarsSelected(4,'$i');";
+//
+//            $list.="<a href=\"#\" onclick=\"$onclick\">
+//                <li><span id=\"year-$i\" class=\"year-list\">$i</span></li>
+//            </a>";
+//            if (($i+1)%10==1) {
+//                $list.="</ul>";
+//            }
+//        }
+//        $list.="</div>";
+//
+//        return $list;
+//    }
 
-            $list.="<a href=\"#\" onclick=\"$onclick\">
-                <li><span id=\"year-$i\" class=\"year-list\">$i</span></li>
-            </a>";
-            if (($i+1)%10==1) {
-                $list.="</ul>";
-            }
-        }
-        $list.="</div>";
+//    function checkCarModelIdsListMin($year, $mod_id, $mfa_id) { $db = DbSingleton::getTokoDb();
+//        if ($year=="all") {
+//            $where="";
+//        } else {
+//            $where="AND
+//                ((`MOD_PCON_END`>=".$year."00 AND `MOD_PCON_END`<=".$year."12)
+//                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`>=".$year."00)
+//                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`=0))";
+//        }
+//        $r=$db->query("SELECT * FROM `T_models` WHERE `Model`='$mod_id' AND `MOD_MFA_ID`='$mfa_id' $where;"); $n=$db->num_rows($r);
+//        if ($n==1) {
+//            $mod_id=$db->result($r,0,"MOD_ID");
+//        } else {
+//            $mod_id=0;
+//        }
+//        return $mod_id;
+//    }
 
-        return $list;
-    }
-
-    function checkCarModelIdsListMin($year, $mod_id, $mfa_id) { $db = DbSingleton::getTokoDb();
-        if ($year=="all") {
-            $where="";
-        } else {
-            $where="AND 
-                ((`MOD_PCON_END`>=".$year."00 AND `MOD_PCON_END`<=".$year."12)
-                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`>=".$year."00)
-                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`=0))";
-        }
-        $r=$db->query("SELECT * FROM `T_models` WHERE `Model`='$mod_id' AND `MOD_MFA_ID`='$mfa_id' $where;"); $n=$db->num_rows($r);
-        if ($n==1) {
-            $mod_id=$db->result($r,0,"MOD_ID");
-        } else {
-            $mod_id=0;
-        }
-        return $mod_id;
-    }
-
-    function getCarModelIdsListMin($year, $mod_id, $mfa_id, $type=0) { $db = DbSingleton::getTokoDb();
-        if ($year=="all") {
-            $where="";
-        } else {
-            $where="AND 
-                ((`MOD_PCON_END`>=".$year."00 AND `MOD_PCON_END`<=".$year."12)
-                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`>=".$year."00)
-                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`=0))";
-        }
-        $r=$db->query("SELECT * FROM `T_models` WHERE `Model`='$mod_id' AND `MOD_MFA_ID`='$mfa_id' $where ORDER BY `MOD_PCON_START`;"); $n=$db->num_rows($r);
-        $list="<div class=\"t_model_id\">";
-        for ($i=1;$i<=$n;$i++) {
-            $model_id=$db->result($r,$i-1,"MOD_ID");
-            $tex_text=$db->result($r,$i-1,"TEX_TEXT");
-            $image=$db->result($r,$i-1,"Car_pict");
-            $path="https://toko.ua/uploads/images/models/$image";
-            $d_start=$db->result($r,$i-1,"MOD_PCON_START"); $d_start=substr($d_start,0,4);
-            $d_end=$db->result($r,$i-1,"MOD_PCON_END"); $d_end=substr($d_end,0,4); if ($d_end==0) $d_end="{cur_time}";
-            $type==0 ? $onclick="showCarsSelectMin(5,'$model_id');" : $onclick="showCarsSelected(5,'$model_id');";
-            list($body_name, $body_path) = $this->getBodyCarImage($model_id);
-            $list.="<a href=\"#\" onclick=\"$onclick\"><div class='row'> 
-                <div class='col-2 col-lg-1 body-car'><img src='$body_path' alt='$body_name' title='$body_name'></div>
-                <div class='col-4 col-lg-2 image-car'><img src='$path' alt='$tex_text' title='$tex_text'></div>
-                <div class='col-3 col-lg-6'><b>$tex_text</b></div>
-                <div class='col-3 col-lg-3 text-right'>$d_start - $d_end</div>
-            </div></a>";
-        }
-        $list.="</div>";
-        return $list;
-    }
+//    function getCarModelIdsListMin($year, $mod_id, $mfa_id, $type=0) { $db = DbSingleton::getTokoDb();
+//        if ($year=="all") {
+//            $where="";
+//        } else {
+//            $where="AND
+//                ((`MOD_PCON_END`>=".$year."00 AND `MOD_PCON_END`<=".$year."12)
+//                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`>=".$year."00)
+//                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`=0))";
+//        }
+//        $r=$db->query("SELECT * FROM `T_models` WHERE `Model`='$mod_id' AND `MOD_MFA_ID`='$mfa_id' $where ORDER BY `MOD_PCON_START`;"); $n=$db->num_rows($r);
+//        $list="<div class=\"t_model_id\">";
+//        for ($i=1;$i<=$n;$i++) {
+//            $model_id=$db->result($r,$i-1,"MOD_ID");
+//            $tex_text=$db->result($r,$i-1,"TEX_TEXT");
+//            $image=$db->result($r,$i-1,"Car_pict");
+//            $path="https://toko.ua/uploads/images/models/$image";
+//            $d_start=$db->result($r,$i-1,"MOD_PCON_START"); $d_start=substr($d_start,0,4);
+//            $d_end=$db->result($r,$i-1,"MOD_PCON_END"); $d_end=substr($d_end,0,4); if ($d_end==0) $d_end="{cur_time}";
+//            $type==0 ? $onclick="showCarsSelectMin(5,'$model_id');" : $onclick="showCarsSelected(5,'$model_id');";
+//            list($body_name, $body_path) = $this->getBodyCarImage($model_id);
+//            $list.="<a href=\"#\" onclick=\"$onclick\"><div class='row'>
+//                <div class='col-2 col-lg-1 body-car'><img src='$body_path' alt='$body_name' title='$body_name'></div>
+//                <div class='col-4 col-lg-2 image-car'><img src='$path' alt='$tex_text' title='$tex_text'></div>
+//                <div class='col-3 col-lg-6'><b>$tex_text</b></div>
+//                <div class='col-3 col-lg-3 text-right'>$d_start - $d_end</div>
+//            </div></a>";
+//        }
+//        $list.="</div>";
+//        return $list;
+//    }
 
     function getBodyCarImage($mod_id) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' LIMIT 1;");
@@ -944,65 +921,65 @@ class ProductsClass extends CatalogueClass {
         return array($name, $path);
     }
 
-    function getCarTypeListMin($mod_id, $str_id="", $type=0) { $db = DbSingleton::getTokoDb();
-        $automan=new AutoClass;
-        $str_link = $automan->getStrNewLink($str_id);
-        $list="<div class=\"t_modification\">";
-        $r=$db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` FROM `T_types` 
-        WHERE `TYP_MOD_ID`='$mod_id' GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $count_types = $db->result($r, $i-1, "count_types");
-            $typ_id = $db->result($r, $i-1, "TYP_ID");
-            $typ_text = $db->result($r, $i-1, "VOLUME_CM");
-            $fuel_id = $db->result($r, $i-1, "FUEL_ID"); $fuel_name=$automan->getFuelName($fuel_id);
-            $type==0 ?
-                $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/$str_link/';" :
-                $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/';";
-            if ($count_types<=1) {
-                $list.="<div><a href=\"#\" onclick=\"$onclick\">
-                    <b>$typ_text $fuel_name</b>
-                </a></div>";
-            } else {
-                $onclick="showCarsSelectMin(6,'$typ_text','$fuel_id');";
-                $list.="<div><a href=\"#\" onclick=\"$onclick\">
-                    <b>$typ_text $fuel_name</b>
-                </a></div>";
-            }
-        }
-        $list.="</div>";
-        return $list;
-    }
+//    function getCarTypeListMin($mod_id, $str_id="", $type=0) { $db = DbSingleton::getTokoDb();
+//        $automan=new AutoClass;
+//        $str_link = $automan->getStrNewLink($str_id);
+//        $list="<div class=\"t_modification\">";
+//        $r=$db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` FROM `T_types`
+//        WHERE `TYP_MOD_ID`='$mod_id' GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;"); $n=$db->num_rows($r);
+//        for ($i=1;$i<=$n;$i++) {
+//            $count_types = $db->result($r, $i-1, "count_types");
+//            $typ_id = $db->result($r, $i-1, "TYP_ID");
+//            $typ_text = $db->result($r, $i-1, "VOLUME_CM");
+//            $fuel_id = $db->result($r, $i-1, "FUEL_ID"); $fuel_name=$automan->getFuelName($fuel_id);
+//            $type==0 ?
+//                $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/$str_link/';" :
+//                $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/';";
+//            if ($count_types<=1) {
+//                $list.="<div><a href=\"#\" onclick=\"$onclick\">
+//                    <b>$typ_text $fuel_name</b>
+//                </a></div>";
+//            } else {
+//                $onclick="showCarsSelectMin(6,'$typ_text','$fuel_id');";
+//                $list.="<div><a href=\"#\" onclick=\"$onclick\">
+//                    <b>$typ_text $fuel_name</b>
+//                </a></div>";
+//            }
+//        }
+//        $list.="</div>";
+//        return $list;
+//    }
 
-    function getCarModificationListMin($mod_id, $typ_id, $fuel_id, $str_id="", $type=0) { $db = DbSingleton::getTokoDb();
-        $automan=new AutoClass;
-        $str_link = $automan->getStrNewLink($str_id);
-        $list="<div class='t_modification'>";
-        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' AND `VOLUME_CM`='$typ_id' AND `FUEL_ID`='$fuel_id' AND `ACTIVE`=1 ORDER BY `TYP_HP_FROM`;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $typ_id = $db->result($r, $i-1, "TYP_ID");
-            $typ_text = $db->result($r, $i-1, "TYP_TEXT");
-            $kw_from = $db->result($r,$i-1,"TYP_KW_FROM");
-            $hp_from = $db->result($r,$i-1,"TYP_HP_FROM");
-            $d_start=$db->result($r,$i-1,"TYP_PCON_START");
-            if ($d_start==0) {$d_start="";} if (strlen($d_start)==6) {$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
-            $d_end=$db->result($r,$i-1,"TYP_PCON_END");
-            if ($d_end==0) {$d_end="{cur_time_min}";} if (strlen($d_end)==6) {$d_end=substr($d_end,0,4).".".substr($d_end,4,2);}
-            $eng_cod = $db->result($r,$i-1,"ENG_Cod");
-            $type==0 ?
-                $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/$str_link/';" :
-                $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/';";
-            $list.="<div><a href=\"#\" onclick=\"$onclick\">
-                <b>$typ_text</b> 
-                <table style='font-size: 11px; width: 100%;'>
-                    <tr><td>{date_release}:</td><td class='text-right'>$d_start - $d_end</td></tr>
-                    <tr><td>{engine_model}:</td><td class='text-right'>$eng_cod</td></tr>
-                    <tr><td>{power_cap}:</td><td class='text-right'>$hp_from {horse_power_cap}, $kw_from {kilo_wat_cap}</td></tr>
-                </table>
-            </a></div>";
-        }
-        $list.="</div>";
-        return $list;
-    }
+//    function getCarModificationListMin($mod_id, $typ_id, $fuel_id, $str_id="", $type=0) { $db = DbSingleton::getTokoDb();
+//        $automan=new AutoClass;
+//        $str_link = $automan->getStrNewLink($str_id);
+//        $list="<div class='t_modification'>";
+//        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' AND `VOLUME_CM`='$typ_id' AND `FUEL_ID`='$fuel_id' AND `ACTIVE`=1 ORDER BY `TYP_HP_FROM`;"); $n=$db->num_rows($r);
+//        for ($i=1;$i<=$n;$i++) {
+//            $typ_id = $db->result($r, $i-1, "TYP_ID");
+//            $typ_text = $db->result($r, $i-1, "TYP_TEXT");
+//            $kw_from = $db->result($r,$i-1,"TYP_KW_FROM");
+//            $hp_from = $db->result($r,$i-1,"TYP_HP_FROM");
+//            $d_start=$db->result($r,$i-1,"TYP_PCON_START");
+//            if ($d_start==0) {$d_start="";} if (strlen($d_start)==6) {$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
+//            $d_end=$db->result($r,$i-1,"TYP_PCON_END");
+//            if ($d_end==0) {$d_end="{cur_time_min}";} if (strlen($d_end)==6) {$d_end=substr($d_end,0,4).".".substr($d_end,4,2);}
+//            $eng_cod = $db->result($r,$i-1,"ENG_Cod");
+//            $type==0 ?
+//                $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/$str_link/';" :
+//                $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/';";
+//            $list.="<div><a href=\"#\" onclick=\"$onclick\">
+//                <b>$typ_text</b>
+//                <table style='font-size: 11px; width: 100%;'>
+//                    <tr><td>{date_release}:</td><td class='text-right'>$d_start - $d_end</td></tr>
+//                    <tr><td>{engine_model}:</td><td class='text-right'>$eng_cod</td></tr>
+//                    <tr><td>{power_cap}:</td><td class='text-right'>$hp_from {horse_power_cap}, $kw_from {kilo_wat_cap}</td></tr>
+//                </table>
+//            </a></div>";
+//        }
+//        $list.="</div>";
+//        return $list;
+//    }
 
     function getCarsSearch($str_id="", $mfa_link="", $mod_link="") { $automan = new AutoClass;
         $form=$this->getHtmlForm("cars/cars");
@@ -1046,7 +1023,6 @@ class ProductsClass extends CatalogueClass {
         $automan=new AutoClass;
         $list = ""; $title=""; $n=0;
         $nav=""; $tab="";
-//        var_dump($str_link);
         $str_link=$automan->getStrNewLink($str_id);
 
         // MANUFACTURE
@@ -1248,6 +1224,7 @@ class ProductsClass extends CatalogueClass {
             $button="";
         }
         $form=str_replace("{garage_button}",$button,$form);
+        $form=str_replace("{typ_id}",$auto_typ_id,$form);
         $form=$this->replaceLang($form);
         return $form;
     }
@@ -1255,6 +1232,12 @@ class ProductsClass extends CatalogueClass {
     // Modal Cars Form
     function showCarsForm() {
         $form = $this->getCarsSearch();
+        return $form;
+    }
+
+    // SELECTED CAR FORM
+    function showCarsSelectedForm() {
+        $form = $this->getCarsGarage();
         return $form;
     }
 

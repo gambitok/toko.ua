@@ -174,31 +174,18 @@ class SearchClass extends CatalogueClass {
             }
         }
 
-        if ($cookie_typ_id!="") {
-            $car_garage_style="display:none;";
-            $car_content_style="display:none;";
-            $car_typ_style="display:block;";
-        } else {
-            $car_garage_style="display:none;";
-            $car_content_style="display:block;";
-            $car_typ_style="display:none;";
-        }
-
         if ($str_link=="" && $filters=="" && $mfa_link=="" && $mod_link=="") {
             // 1: /catalog
-            // $car_content = $prod->showCarsSelectMin($str_link, $mfa_link, $mod_link);
-
             if ($cookie_typ_id=="") {
-                $str_ids="";
-                $typ_id="";
+                $str_ids = "";
+                $typ_id = "";
                 $car_content = $prod->getCarsSearch("", $mfa_link, $mod_link);
             } else {
-                $str_ids=$prod->getStrIds($cookie_typ_id);
-                $typ_id=$cookie_typ_id;
+                $str_ids = $prod->getStrIds($cookie_typ_id);
+                $typ_id = $cookie_typ_id;
                 $car_content = $prod->getCarsGarage();
             }
             $form1 = $prod->getCarDetails($str_ids, $typ_id);
-            $car_content_style="display:none;";
         }
 
         if ($cookie_typ_id!="" && $mfa_link=="" && $mod_link=="") {
@@ -213,9 +200,6 @@ class SearchClass extends CatalogueClass {
             $head_list = $automan->getDetailsList($head_id, $cat_id);
             $form1 = "<div class=\"content\">".$head_list."</div>";
             $car_content = "";
-            $car_content_style="display:none;";
-            $car_garage_style="display:none;";
-            $car_typ_style="display:none;";
         } else {
 
             if ($str_link!="" && ($filters=="" || $filters!="") && $mfa_link=="" && $mod_link=="") {
@@ -223,14 +207,7 @@ class SearchClass extends CatalogueClass {
                 // 3: /catalog/shrus/brandy=bosch
                 $str_id = $automan->getStrNewLinkStr($str_link);
                 list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link);
-
-                if ($mfa_link!="" && $mod_link!="") {
-                    // $car_content = $prod->showCarsSelectMin($str_link, $mfa_link, $mod_link);
-                    $car_content = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
-                } else {
-                    // $car_content = $prod->showCarsSelect($str_link, $mfa_link, $mod_link);
-                    $car_content = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
-                }
+                $car_content = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
                 $form1 = $details_form;
             }
 
@@ -245,17 +222,13 @@ class SearchClass extends CatalogueClass {
 
                     if ($mfa_link!="" && $mod_link!="") {
                         if ($mod_id_link!="") {
-                            // 7: /catalog/shrus/kia/sportage/sl
-                            // list(, $mod_id) = $automan->getAutoModelIdLink($mod_id_link);
-                            //$car_content = $prod->showCarsSelectMin($str_link, $mfa_link, $mod_link, "all", $mod_id);
+                            // 7: /catalog/shrus/kia/sportage/sl-8751/ = list(, $mod_id) = $automan->getAutoModelIdLink($mod_id_link);
                             $car_content = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
                         } else {
                             // 7: /catalog/shrus/kia/sportage/
-                            // $car_content = $prod->showCarsSelectMin($str_link, $mfa_link, $mod_link);
                             $car_content = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
                         }
                     } else {
-                        // $car_content = $prod->showCarsSelect($str_link, $mfa_link, $mod_link);
                         $car_content = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
                     }
                     $form1 = $details_form;
@@ -265,7 +238,6 @@ class SearchClass extends CatalogueClass {
                     // 8: /catalog/shrus + TYP
                     // 9: /catalog/shrus/brandy=bosch + TYP
                     $str_id = $automan->getStrNewLinkStr($str_link);
-//                     $car_content = $prod->showCarsSelectMin($str_link, $mfa_link, $mod_link);
                     $car_content = $prod->getCarsGarage();
                     $form1 = $prod->techCarModels($cookie_typ_id, $str_id);
                 }
@@ -291,7 +263,7 @@ class SearchClass extends CatalogueClass {
         } else {
             $form1=str_replace("{seo_auto}", $automan->getAutoMfaModelList($str_id, $brand_ids[0]), $form1);
         }
-        return array($form1, $car_content, $car_content_style, $car_garage_style, $car_typ_style, $pages_count);
+        return array($form1, $car_content, $pages_count);
     }
 
     function getActiveFilters($filters) {
@@ -602,7 +574,6 @@ class SearchClass extends CatalogueClass {
 
     function getSearchLink($brand_id, $brands_ch, $actual_link) {
         $link="";
-
         if (!empty($brands_ch[0])) {
             foreach ($brands_ch as $brand) {
                 if ($brand!=$brand_id) {
@@ -615,11 +586,7 @@ class SearchClass extends CatalogueClass {
             $link.=$this->getBrandLink($brand_id);
         }
         $link=rtrim($link,",");
-
-        if ($link!="")
-            $link=$actual_link."brandy=$link";
-        else
-            $link=$actual_link;
+        if ($link!="") $link=$actual_link."brandy=$link"; else $link=$actual_link;
         return $link;
     }
 
@@ -663,67 +630,66 @@ class SearchClass extends CatalogueClass {
         return array($suppl_array, $storage_array, $stock_array, $n);
     }
 
-    //////////REWORK!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    function getTrueSearchList($art_ids, $page=1, $brandy="") { $db=DbSingleton::getTokoDb();
-        $kours=new ExRateClass; $client=new ClientClass;
-        $client_id=$this->getClient();
-        $limit=$this->getSearchLimit($page);
-        $cur=$kours->getCurrentKours();
-        $tpoint=$client->getTpoint();
-
-        $where_brands="";
-        if ($brandy!="") {
-            $brand_list=$this->getBrandsList($brandy);
-            if ($brand_list!="") $where_brands="AND t2b.BRAND_ID IN ($brand_list)";
-        }
-
-        $r=$db->query("SELECT AA.* FROM (
-            SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2b.BRAND_POSITION, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
-            FROM `T2_ARTICLES` t2a
-                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
-            WHERE t2a.ART_ID IN ($art_ids) $where_brands AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0)
-            UNION ALL
-            SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2b.BRAND_POSITION, t2n.INFO, t2si.stock_suppl, t2si.client_storage_id, t2si.suppl_id, t2si.return_delay
-            FROM `T2_ARTICLES` t2a
-                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
-            WHERE t2a.ART_ID IN ($art_ids) $where_brands AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
-        ) as AA GROUP BY AA.ART_ID ORDER BY AA.BRAND_POSITION DESC $limit
-        "); $n=$db->num_rows($r);
-
-        $mas=[];
-        for ($i=1;$i<=$n;$i++) {
-            $art_id = $db->result($r,$i-1,"ART_ID");
-            $brand_id = $db->result($r,$i-1,"BRAND_ID");
-            $brand = $db->result($r,$i-1,"BRAND_NAME");
-            $name = $db->result($r,$i-1,"ARTICLE_NR_DISPL");
-            $article_name = $db->result($r,$i-1,"NAME");
-            $suppl_id = $db->result($r,$i-1,"suppl_id");
-            $stock = intval($db->result($r,$i-1,"AMOUNT"));
-            $storage_id = $db->result($r,$i-1,"storage_id");
-
-            $price = $this->getArticlePrice($art_id);
-            if ($suppl_id!=0) $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-            $price = $kours->getKoursPrice($price, $cur);
-            if ($cur==1) { $price=$client->getClientPriceRounding($client_id, $price); }
-
-            list(,$delivery_days,$delivery_short_info) = $this->getTpointDeliveryInfo($tpoint,$storage_id);
-            if ($suppl_id!=0) list(,$delivery_days,$delivery_short_info) = $this->getTpointSupplDeliveryInfo($tpoint,$suppl_id,$storage_id);
-
-            $mas[$i]=["art_id"=>$art_id, "article_nr_displ"=>$name, "brand_id"=>$brand_id, "brand_name"=>$brand, "article_name"=>$article_name, "price"=>$price, "stock"=>$stock, "delivery_info"=>$delivery_short_info, "delivery_days"=>$delivery_days, "storage_id"=>$storage_id, "suppl_id"=>$suppl_id];
-        }
-
-        $list="<div class=\"row\">";
-        foreach ($mas as $key=>$row) {
-            $list.=$this->showSearchList($key, $row["art_id"], $row["article_nr_displ"], $row["brand_id"], $row["brand_name"], $row["article_name"], $row["price"], $row["stock"], $row["delivery_info"], $row["delivery_days"], $row["storage_id"], $row["suppl_id"]);
-        }
-        $list.="</div>";
-
-        return $list;
-    }
+//    function getTrueSearchList($art_ids, $page=1, $brandy="") { $db=DbSingleton::getTokoDb();
+//        $kours=new ExRateClass; $client=new ClientClass;
+//        $client_id=$this->getClient();
+//        $limit=$this->getSearchLimit($page);
+//        $cur=$kours->getCurrentKours();
+//        $tpoint=$client->getTpoint();
+//
+//        $where_brands="";
+//        if ($brandy!="") {
+//            $brand_list=$this->getBrandsList($brandy);
+//            if ($brand_list!="") $where_brands="AND t2b.BRAND_ID IN ($brand_list)";
+//        }
+//
+//        $r=$db->query("SELECT AA.* FROM (
+//            SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2b.BRAND_POSITION, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
+//            FROM `T2_ARTICLES` t2a
+//                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
+//                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
+//                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
+//            WHERE t2a.ART_ID IN ($art_ids) $where_brands AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0)
+//            UNION ALL
+//            SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2b.BRAND_POSITION, t2n.INFO, t2si.stock_suppl, t2si.client_storage_id, t2si.suppl_id, t2si.return_delay
+//            FROM `T2_ARTICLES` t2a
+//                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
+//                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
+//                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
+//            WHERE t2a.ART_ID IN ($art_ids) $where_brands AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
+//        ) as AA GROUP BY AA.ART_ID ORDER BY AA.BRAND_POSITION DESC $limit
+//        "); $n=$db->num_rows($r);
+//
+//        $mas=[];
+//        for ($i=1;$i<=$n;$i++) {
+//            $art_id = $db->result($r,$i-1,"ART_ID");
+//            $brand_id = $db->result($r,$i-1,"BRAND_ID");
+//            $brand = $db->result($r,$i-1,"BRAND_NAME");
+//            $name = $db->result($r,$i-1,"ARTICLE_NR_DISPL");
+//            $article_name = $db->result($r,$i-1,"NAME");
+//            $suppl_id = $db->result($r,$i-1,"suppl_id");
+//            $stock = intval($db->result($r,$i-1,"AMOUNT"));
+//            $storage_id = $db->result($r,$i-1,"storage_id");
+//
+//            $price = $this->getArticlePrice($art_id);
+//            if ($suppl_id!=0) $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+//            $price = $kours->getKoursPrice($price, $cur);
+//            if ($cur==1) { $price=$client->getClientPriceRounding($client_id, $price); }
+//
+//            list(,$delivery_days,$delivery_short_info) = $this->getTpointDeliveryInfo($tpoint,$storage_id);
+//            if ($suppl_id!=0) list(,$delivery_days,$delivery_short_info) = $this->getTpointSupplDeliveryInfo($tpoint,$suppl_id,$storage_id);
+//
+//            $mas[$i]=["art_id"=>$art_id, "article_nr_displ"=>$name, "brand_id"=>$brand_id, "brand_name"=>$brand, "article_name"=>$article_name, "price"=>$price, "stock"=>$stock, "delivery_info"=>$delivery_short_info, "delivery_days"=>$delivery_days, "storage_id"=>$storage_id, "suppl_id"=>$suppl_id];
+//        }
+//
+//        $list="<div class=\"row\">";
+//        foreach ($mas as $key=>$row) {
+//            $list.=$this->showSearchList($key, $row["art_id"], $row["article_nr_displ"], $row["brand_id"], $row["brand_name"], $row["article_name"], $row["price"], $row["stock"], $row["delivery_info"], $row["delivery_days"], $row["storage_id"], $row["suppl_id"]);
+//        }
+//        $list.="</div>";
+//
+//        return $list;
+//    }
 
     // details
     function showSearchList($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $price, $stock, $delivery_info, $delivery_days, $storage_id, $suppl_id) {

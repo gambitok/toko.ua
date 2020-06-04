@@ -14,29 +14,20 @@ if (!$catalogue->checkRedirectLink($some_link)) {
     header("Location: /catalog/$new_link", TRUE, 301);
 }
 
-$form1=""; $pages_count=0;
-
 $result=explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2); $link=ltrim($result[1]);
 
-list($form1, $car_content, $car_content_style, $car_garage_style, $car_typ_style, $pages_count) = $search->catalogRouter($link, $some_link, $some_link2);
+list($form1, $car_content, $pages_count) = $search->catalogRouter($link, $some_link, $some_link2);
 
-if ($page>1)
-if ($page>$pages_count) {
+if ($page>1) if ($page>$pages_count) {
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     if (strpos($actual_link,"?")!==false) $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
     header("Location: $actual_link", TRUE, 301);
 }
 
 $search_form=$prod->getHtmlForm("car_form_div");
-//$search_form=str_replace("{car_typ}", $automan->showTypBlockMin(), $search_form);
-//$search_form=str_replace("{car_garage}", $automan->showGarageBlockMin(), $search_form);
 $search_form=str_replace("{car_content}", $car_content, $search_form);
-//$search_form=str_replace("{car_content_style}", $car_content_style, $search_form);
-//$search_form=str_replace("{car_garage_style}", $car_garage_style, $search_form);
-//$search_form=str_replace("{car_typ_style}", $car_typ_style, $search_form);
 
 $content=str_replace("{main_auto_window}", $search_form, $content);
 $content=str_replace("{main_window}", $form1, $content);
-
 $content=str_replace("{site_page_pagination}", $pages_count>0 ?  $catalogue->getPagePagination($page, $pages_count) : "", $content);
 

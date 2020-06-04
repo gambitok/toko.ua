@@ -515,7 +515,9 @@ function copyToClipboard(element,art_name) { "use strict";
     showNotify("{done_cap}:","{art_cap} '"+art_name+"' {copied_to_clipboard}!","success");
 }
 
-/*==== Garage =====*/
+/*==== Garage ========================================================================================================*/
+
+// ADD NEW CAR TO GARAGE
 function addToGarage(typ_id=0) {
     if (typ_id===0) typ_id=$("#typ_id").val();
     if (typ_id!==undefined && typ_id!==0 && typ_id!=="") {
@@ -527,9 +529,7 @@ function addToGarage(typ_id=0) {
                     } else {
                         showNotify("{done_cap}:",result.content,"success");
                         showGarageStatus();
-                        $("#car_form-select").hide();
-                        updateTypForm();
-                        showGarageBlockMin();
+                        updateGarageForm();
                     }
                 } else {
                     showNotify("{error_cap}:","{garage_is_full}","danger");
@@ -540,29 +540,42 @@ function addToGarage(typ_id=0) {
     }
 }
 
-function deleteAutoGarage(auto_id) { "use strict";
+// UPDATE SELECTED CAR FORM
+function updateGarageForm() {
+    $("#car_content").html();
+    JsHttpRequest.query(folder,{'w':'showCarsSelectedForm'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#car_content").html(result.content);
+        }}, true);
+}
+
+// DELETE CAR FROM GARAGE
+function deleteAutoGarage(auto_id) {
     JsHttpRequest.query(folder,{'w':'deleteAutoGarage', 'auto_id':auto_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             showAutoGarage();
             showGarageStatus();
-            $("#car_form-cars").hide();
-            updateTypForm();
             if (result.content===false) {
-                $("#car_form-garage").hide();
                 if (getCookie("auto_typ_id")==="") {
-                    $("#car_form-select").show();
                     showCarsSelectMin(1);
-                    $("#car_form-typ").hide();
                 } else {
-                    $("#car_form-select").hide();
-                    $("#car_form-typ").show();
                 }
             } else {
-                showGarageBlockMin();
+                updateGarageForm();
             }
         }}, true);
 }
 
+// UPDATE GARAGE MODAL
+function updateChosenAutoGarage(auto_id) {
+    JsHttpRequest.query(folder,{'w':'updateChosenAutoGarage', 'auto_id':auto_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            showAutoGarage();
+            updateGarageForm();
+        }}, true);
+}
+
+// UPDATE GARAGE STATUS
 function showGarageStatus() {
     let status1=$("#garage_status");
     JsHttpRequest.query(folder,{'w':'updateGarageStatus'},
@@ -575,13 +588,14 @@ function showGarageStatus() {
         }}, true);
 }
 
-function showGarageBlockMin() {
-    JsHttpRequest.query(folder,{ 'w': 'showGarageBlockMin' },
-        function (result, errors){ if (errors) {} if (result){
-            $("#car_form-garage").html(result.content);
-        }}, true);
-}
+// function showGarageBlockMin() {
+//     JsHttpRequest.query(folder,{ 'w': 'showGarageBlockMin' },
+//         function (result, errors){ if (errors) {} if (result){
+//             $("#car_form-garage").html(result.content);
+//         }}, true);
+// }
 
+// SHOW GARAGE MODAL
 function showAutoGarage() { "use strict";
     $("#garage_form_dropdown").html("<div class=\"loader\"></div>");
     JsHttpRequest.query(folder,{'w':'showAutoGarage'},
@@ -590,43 +604,33 @@ function showAutoGarage() { "use strict";
         }}, true);
 }
 
-function updateChosenAutoGarage(auto_id) { "use strict";
-    JsHttpRequest.query(folder,{'w':'updateChosenAutoGarage', 'auto_id':auto_id},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            showAutoGarage();
-            showGarageBlockMin();
-            $("#garage_cars_form").remove();
-            $("#car_form-cars").hide();
-            // location.reload();
-        }}, true);
-}
+// function updateTypForm() {
+//     JsHttpRequest.query(folder,{'w':'updateTypForm'},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//             $("#car_form-typ").html(result.content);
+//         }}, true);
+// }
 
-function updateGarageForm() {
-    JsHttpRequest.query(folder,{'w':'updateGarageForm'},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#car_form-garage").html(result.content);
-        }}, true);
-}
-
-function updateTypForm() {
-    JsHttpRequest.query(folder,{'w':'updateTypForm'},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#car_form-typ").html(result.content);
-        }}, true);
-}
-
-function openAutoHistory() {
+// SHOW GARAGE HISTORY FORM
+function showAutoHistory() {
     let div_id = $("#car_form-history");
     if (div_id.is(':visible')) {
         div_id.hide("slow");
     } else {
-        JsHttpRequest.query(folder,{'w':'openAutoHistory'},
+        JsHttpRequest.query(folder,{'w':'showAutoHistory'},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 div_id.html(result.content);
-                // div_id.show();
                 div_id.show("slow");
             }}, true);
     }
+}
+
+// DROP GARAGE HISTORY FORM
+function dropAutoHistory(history_id) {
+    JsHttpRequest.query(folder,{'w':'dropAutoHistory', 'history_id':history_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            showAutoHistory();
+        }}, true);
 }
 
 /*==== /Garage =====*/
@@ -1006,11 +1010,6 @@ function techCarModels(typ_id, str_id) {
 
             $(".tooltips").tooltip();
             new LazyLoad({ elements_selector: ".lazy" });
-
-            updateTypForm();
-            $("#car_form-garage").hide();
-            $("#car_form-typ").show();
-            $("#car_form-select").hide()
 
         }}, true);
 }

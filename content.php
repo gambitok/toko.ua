@@ -82,13 +82,15 @@ if ($_REQUEST["w"]=="showGarageForm"){$GLOBALS['_RESULT'] = array("content"=>$au
 
 if ($_REQUEST["w"]=="updateGarageStatus"){$GLOBALS['_RESULT'] = array("content"=>$automan->getGarageAutoCount());}
 
-if ($_REQUEST["w"]=="showGarageBlockMin"){$GLOBALS['_RESULT'] = array("content"=>$automan->showGarageBlockMin());}
+//if ($_REQUEST["w"]=="showGarageBlockMin"){$GLOBALS['_RESULT'] = array("content"=>$automan->showGarageBlockMin());}
 
-if ($_REQUEST["w"]=="openAutoHistory"){$GLOBALS['_RESULT'] = array("content"=>$automan->showAutoHistory());}
+if ($_REQUEST["w"]=="showAutoHistory"){$GLOBALS['_RESULT'] = array("content"=>$automan->showAutoHistory());}
 
-if ($_REQUEST["w"]=="updateGarageForm"){$GLOBALS['_RESULT'] = array("content"=>$automan->showGarageBlockMin());}
+if ($_REQUEST["w"]=="dropAutoHistory"){$GLOBALS['_RESULT'] = array("content"=>$automan->dropAutoHistory($_REQUEST["history_id"]));}
 
-if ($_REQUEST["w"]=="updateTypForm"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTypBlockMin());}
+//if ($_REQUEST["w"]=="updateGarageForm"){$GLOBALS['_RESULT'] = array("content"=>$automan->showGarageBlockMin());}
+
+//if ($_REQUEST["w"]=="updateTypForm"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTypBlockMin());}
 
 //=catalogue filters====================================================================================================
 
@@ -214,9 +216,9 @@ if ($_REQUEST["w"]=="showHomeCars"){ $GLOBALS['_RESULT'] = array("content"=>$sho
 
 if ($_REQUEST["w"]=="showCarDetailsStr"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarDetailsStr($_REQUEST["head_id"],$_REQUEST["str_id_str"]));}
 
-if ($_REQUEST["w"]=="showCarsSelectMin"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelectMin($_REQUEST["str_id"],$_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"],$_REQUEST["fuel_id"],true));}
+//if ($_REQUEST["w"]=="showCarsSelectMin"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelectMin($_REQUEST["str_id"],$_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"],$_REQUEST["fuel_id"],true));}
 
-if ($_REQUEST["w"]=="showCarsSelected"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelected($_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"]));}
+//if ($_REQUEST["w"]=="showCarsSelected"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelected($_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"]));}
 
 if ($_REQUEST["w"]=="techCarModels"){ $GLOBALS['_RESULT'] = array("content"=>$prod->techCarModels($_REQUEST["typ_id"],$_REQUEST["str_id"]));}
 
@@ -229,6 +231,8 @@ if ($_REQUEST["w"]=="getCarsSearchContent"){ list($list, $title, $nav, $tab) = $
 if ($_REQUEST["w"]=="clearCarsBlock"){ $GLOBALS['_RESULT'] = array("content"=>$prod->clearCarsBlock($_REQUEST["sel_tab"],$_REQUEST["cur_tab"]));}
 
 if ($_REQUEST["w"]=="showCarsForm"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsForm());}
+
+if ($_REQUEST["w"]=="showCarsSelectedForm"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelectedForm());}
 
 //=Search======================================================================================================
 

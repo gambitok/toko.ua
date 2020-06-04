@@ -527,20 +527,22 @@
             color: #004084!important;
         }
     }
+    &-min {
+        margin: 0;
+        padding: 0;
+        h5 {
+            margin: 0;
+            padding: 15px;
+        }
+        ul {
+            margin: 0;
+        }
+    }
 }
 
 /*==== /SIDE FILTERS, SIDE TREE ====*/
 
 /*==== RESULT TABLE ====*/
-//.result_table {
-//    min-height: 400px;
-//    margin-right: auto;
-//    margin-left: auto;
-//    font-size: 0.8em;
-//    padding: 2% 2%;
-//    height: 100%;
-//}
-
 .auto_table {
     margin-right: auto;
     margin-left: auto;
@@ -588,20 +590,18 @@
 
 /*==== TREE ====*/
 .tree-list_min {
-    padding: 0.5em;
-    transition: all 2s linear;
-    border: 5px solid #228b94;
+    border: 2px solid #f1f1f1;
     border-top: none;
-    .tree-item {
-        margin: 1em 0;
-        width: 50%;
-        background: linear-gradient(to right, #26a4af 50%, white 50%) right bottom;
-        background-size: 200% 100%;
-        transition: all .5s ease-out;
-        &:hover {
-            background-position: left bottom;
-            color: white;
+    padding: 10px;
+    transition: all 2s linear;
+    .tree-title {
+        span {
+            font-size: 14px;
         }
+    }
+    .tree-item {
+        margin: 10px 15px 10px 0;
+        width: calc(33.33% - 15px);
         a {
             margin: 0;
             cursor: pointer;
@@ -624,8 +624,8 @@
     }
     .tree-str {
         display: flex;
-        width: 100%;
         flex-wrap: wrap;
+        width: 100%;
     }
 }
 
@@ -719,20 +719,17 @@
 .unknown_form {
     h1 {
         font-size: 22px;
-        text-transform: uppercase;
         font-weight: bold;
         text-align: center;
+        text-transform: uppercase;
     }
     h2 {
-        font-size: 14px;
-        text-transform: uppercase;
         color: #f2433d;
+        font-size: 14px;
         font-weight: bold;
+        text-transform: uppercase;
     }
-    p {
-        color: #606975;
-    }
-    strong {
+    p, strong {
         color: #606975;
     }
 }
@@ -824,12 +821,13 @@
         padding: 1em;
     }
 
-    .gg__row-shop span {
-        float: none;
-    }
-
-    .gg__row-shop input {
-        float: none;
+    .gg__row-shop {
+        span {
+            float: none;
+        }
+        input {
+            float: none;
+        }
     }
 
     .gg__row-basket {
@@ -882,15 +880,13 @@
 
     .tables__box {
         padding: 10px;
-    }
-
-    .tables__box .col-4 {
-        padding-left: 0;
-        padding-right: 5px;
-    }
-
-    .tables__box .col-8 {
-        padding-right: 0;
+        .col-4 {
+            padding-left: 0;
+            padding-right: 5px;
+        }
+        .col-8 {
+            padding-right: 0;
+        }
     }
 }
 

@@ -22,10 +22,8 @@ class CatalogueClass {
     }
 
     function showCatalogueList($article_nr_search, $brand_nr_search, $status_brand=0) { $db = DbSingleton::getTokoDb();
-        $formclass=new FormClass;
-        $formclass->insertHistory($article_nr_search, $brand_nr_search);
-        $kours=new ExRateClass;
-        $cur=$kours->getCurrentKours();
+        $showform=new FormClass; $showform->insertHistory($article_nr_search, $brand_nr_search);
+        $kours=new ExRateClass; $cur=$kours->getCurrentKours();
         $article_nr_search = $this->getUrlString($article_nr_search);
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
         $r=$db->query("SELECT t2c.ART_ID
@@ -97,9 +95,7 @@ class CatalogueClass {
     }
 
     function showCatalogueListFilter($article_nr_search, $brand_nr_search, $brand_filter, $text_filter, $cur, $price_f, $deliv_f, $order_value) { $db=DbSingleton::getTokoDb();
-
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
-
         $r=$db->query("SELECT t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2c.BRAND_ID, t2c.DISPLAY_NR, t2c.ART_ID, t2c.KIND, t2c.RELATION 
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
@@ -315,52 +311,6 @@ class CatalogueClass {
         return array($list, $search_brands, $search_filters);
     }
 
-//    function techModelsStr($manufacture, $model, $model_id, $typ_id, $str_id, $str_level, $str_id_parrent) { $db = DbSingleton::getTokoDb();
-//        $automan=new AutoClass; $kours=new ExRateClass;
-//        $cur=$kours->getCurrentKours();
-//        $str_id = $this->getUrlNumber($str_id);
-//        $typ_id = $this->getUrlNumber($typ_id);
-//
-//        $car_descr=$automan->getCarDescription($typ_id);
-//        $str_text=$automan->getStrDescr($str_id);
-//        $title="$str_text {for_cap} $car_descr | {site_title_short}"; $title=$this->replaceLang($title);
-//
-//        $manuf_text=$automan->getCarStrUrl($typ_id, $str_id);
-//
-//        $automan->setAutoData($manufacture, $model, $model_id, $typ_id, $str_id, $str_level, $str_id_parrent);
-//
-//        $query="SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`=$typ_id GROUP BY `ART_ID`;";
-//        $r=$db->query($query); $n=$db->num_rows($r); $art_id_str="0";
-//        for ($i=1;$i<=$n;$i++){
-//            $art_id=$db->result($r,$i-1,"ART_ID");
-//            if ($art_id!=""){$art_id_str.=",$art_id";}
-//        }
-//
-//        $r=$db->query("SELECT * FROM `T2_TREE` WHERE `ART_ID` IN ($art_id_str) AND `STR_ID`=$str_id;");
-//        $n=$db->num_rows($r); $str_id_str="0";
-//        for ($i=1;$i<=$n;$i++){
-//            $art_id=$db->result($r,$i-1,"ART_ID");
-//            $str_id_str.=",$art_id";
-//        }
-//        list($list, $list_brand, $filters,)=$this->searchList($str_id_str, 2);
-//        // form replace
-//        $search_main=$this->getHtmlForm("cat_search_main");
-//        $search_filters=$this->getHtmlForm("cat_search_filters");
-//        $search_brands=$this->getHtmlForm("cat_search_brands");
-//        // search main
-//        $search_main=$this->getSearchMainTree($search_main, $list, $str_text, $typ_id);
-//        $search_main = $this->replaceLang($search_main);
-//        // search filters
-//        $search_filters=$this->getSearchFilters($search_filters, $filters, $cur, [], 2, 0);
-//        $search_filters = $this->replaceLang($search_filters);
-//        // search brands
-//        $search_brands=str_replace("{brands}", $list_brand, $search_brands);
-//        $search_brands=str_replace("{brands_display}", $list_brand=="" ? "none" : "", $search_brands);
-//        $search_brands = $this->replaceLang($search_brands);
-//
-//        return array($search_main, $search_filters, $search_brands, $title, $manuf_text);
-//    }
-
     function techModelsFilters($art, $brand, $brand_filter, $text_filter, $cur, $price_f, $deliv_f, $order_value) { $db = DbSingleton::getTokoDb();
         $automan=new AutoClass;
         setcookie("currency", $cur); session_start(); $_SESSION["currency"]=$cur;
@@ -442,8 +392,6 @@ class CatalogueClass {
             }
         switch ($type_filter) {
             case 1:  {$jsFilter="catalogueFilter();"; $jsFilterNull="catalogueFilterNull();"; $jsTextFilter="search"; $jsFilterClear="catalogueFilterClear();"; break;}
-//            case 2:  {$jsFilter="tecModelsFilter();"; $jsFilterNull="tecModelsFilterNull();"; $jsTextFilter="findmodel"; $jsFilterClear="tecModelsFilterClear();"; break;}
-//            case 3:  {$jsFilter="catGroupFilter($template_id);"; $jsFilterNull=""; $jsTextFilter="findgoods"; $jsFilterClear=""; break;}
             default: {$jsFilter="catalogueFilter();"; break;}
         }
         $search_filters=str_replace("{sideblock_title}", $title, $search_filters);
@@ -1416,7 +1364,6 @@ class CatalogueClass {
         $form=str_replace("{product_del}",$delivery_info,$form);
         $form=str_replace("{product_dd}",$delivery_days,$form);
         $form=str_replace("{product_delivery_class}",($delivery_days==0) ? "delivery-red" : ($delivery_days==1 ? "delivery-blue" : ($delivery_days>1 ? "delivery-dark" : "")),$form);
-        //$form=str_replace("{product_delivery_short_info_br}",$delivery_short_info,$form);
         $form=str_replace("{product_delivery_short_info}",str_replace("<br>", " ", $delivery_short_info),$form);
 
         $form=str_replace("{product_price}",$price." $kours_cap",$form);
@@ -1755,32 +1702,6 @@ class CatalogueClass {
         $format_text = mb_strtolower($format_text);
         return $format_text;
     }
-
-//    function formatCustomUrlText($text) {
-//        $format_text = mb_convert_encoding($text,"UTF-8","Windows-1251");
-//        $format_text = $this->translit($format_text);
-//        $format_text = str_replace(str_split(',+-\/:*?"<>|_[]()'), "", $format_text);
-//        $format_text = str_replace(" ", "-", $format_text);
-//        $format_text = str_replace("'", "", $format_text);
-//        $format_text = mb_strtolower($format_text);
-//        return $format_text;
-//    }
-
-//    function getShowInfoTemplate($art_id) { $db=DbSingleton::getTokoDb();
-//        $pattern=new PatternClass;
-//        $r=$db->query("SELECT * FROM `T2_CATALOGUES_ARTS` WHERE `ART_ID`='$art_id';"); $n=$db->num_rows($r); $list="";
-//        $list.="<ul class=\"inline-list\">";
-//        for ($i=1;$i<=$n;$i++) {
-//            $value_id=$db->result($r, $i-1, "VALUE_ID");
-//            $param_id=$db->result($r, $i-1, "PARAM_ID");
-//            $template_id=$db->result($r, $i-1, "TEMPLATE_ID");
-//            $value_name=$pattern->getCatalogueValueName($value_id,$template_id);
-//            $param_name=$pattern->getCatalogueParamName($param_id,$template_id);
-//            $list.="<li><span class=\"bold\">$param_name: </span>$value_name</li>";
-//        }
-//        $list.="</ul>";
-//        return $list;
-//    }
 
     function getPriceList($user=null) { $db=DbSingleton::getTokoDb();
         $client=new ClientClass; $kours=new ExRateClass;

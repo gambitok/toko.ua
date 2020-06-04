@@ -18,7 +18,7 @@
         <div class="col-lg-7 col-12" id="toggle_btn">
             <div class="garage-user__nav">
 
-                <div class="btn-img {garage_button}" onclick="addToGarage($('#auto_garage_typ_id').val());">
+                <div class="btn-img {garage_button}" onclick="addToGarage({typ_id});">
                     <div class="btn-img__icon">
                         <img src="/images/icons/buttons/save_car_to_garage.png" alt="icon">
                     </div>
@@ -38,7 +38,7 @@
                     </div>
                 </div>
 
-                <div class="btn-img" onclick="openAutoHistory();">
+                <div class="btn-img" onclick="showAutoHistory();">
                     <div class="btn-img__icon">
                         <img src="/images/icons/buttons/hystory_of_car_requests.png" alt="icon">
                     </div>
@@ -62,3 +62,5 @@
         </div>
     </div>
 </div>
+
+<div id="car_form-history" class="garage-history" style="display: none;"></div>

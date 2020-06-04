@@ -552,8 +552,6 @@ header { width: 100%; color: #a9a9a9; }
 
 .manufacture_year { column-gap: 16px; padding: 0; }
 
-.check-head { color: #fff; background: #228b94 !important; }
-
 /*==== HEAD BLOCK =====*/
 .head-list { list-style: none; margin: 0; padding: 0; }
 
@@ -573,6 +571,14 @@ header { width: 100%; color: #a9a9a9; }
 
 /*==== /HEAD BLOCK =====*/
 /*==== TREE BLOCK =====*/
+.pointer-el { cursor: pointer; transition: .1s ease-in-out; }
+
+.pointer-el:hover { background: #f5f5f5; }
+
+.pointer-el:hover img { transform: scale(1.1); }
+
+.check-head { color: #000; background: #f1f1f1 !important; }
+
 .tree-head { background: #fff; height: 150px; margin: 0; }
 
 .tree-head img { width: auto; height: 120px; display: block; transition: all 1s ease-out; }
@@ -581,7 +587,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .tree-head_min { height: 75px; }
 
-.tree-head_min img { width: 100%; height: auto; }
+.tree-head_min img { display: block; width: 100%; height: auto; max-width: 100px; }
 
 .tree-head_min span { float: unset; font-size: 1.1em; text-align: center; font-weight: 600; }
 
@@ -663,12 +669,6 @@ header { width: 100%; color: #a9a9a9; }
 
 /*==== /FOOTER ====*/
 /*==== MANUFACTURE ====*/
-.pointer-el { cursor: pointer; transition: .1s ease-in-out; }
-
-.pointer-el:hover { background: #f5f5f5; }
-
-.pointer-el:hover img { transform: scale(1.1); }
-
 .title_auto { display: block; padding-bottom: 10px; font-weight: 700; font-size: 16px; color: #f44336; }
 
 .title_auto i { background: #606975; color: #fff; padding: 5px; border-radius: .25em; }
@@ -799,6 +799,16 @@ header { width: 100%; color: #a9a9a9; }
 .btn-arrow { padding: 0; height: 29px; width: 29px; border-radius: 15px; background: url(/images/icons/dropdown-white.svg) center no-repeat; }
 
 .btn-arrow:hover { background: url(/images/icons/dropdown-red.svg) center no-repeat; }
+
+.garage-history-block { padding: 15px; }
+
+.garage-history-block__title { color: #000; display: block; font-size: 16px; }
+
+.garage-history-block__delete { color: #000; cursor: pointer; display: block; font-size: 16px; text-align: right; }
+
+.garage-history-block-list { list-style: none; margin: 0; }
+
+.garage-history-block-list__item { color: #000; cursor: pointer; font-size: 14px; margin-bottom: 5px; }
 
 .garage-user { background: #fff; box-shadow: 0 1px 4px #ccc; border-bottom: 3px solid #0c5460; height: auto; }
 
@@ -1427,7 +1437,7 @@ table thead td { border: 1px solid #000; }
   .seo_details .seo-li img { width: 100%; max-height: 70px; }
   .seo_details .seo-li-min { margin-right: 15px; }
   .seo_details .seo-li-min img { width: 40px; height: 40px; }
-  .tree-head_min img { width: 100%; }
+  .tree-head_min img { width: 100%; max-width: unset; }
   .tree-item { width: calc(50% - 15px); }
   .seo_auto ul.list-inline { column-count: 2; }
   /*==== BASKET ====*/
@@ -1887,6 +1897,12 @@ table thead td { border: 1px solid #000; }
 
 .side-tree__back a { font-size: 1.2em; font-weight: 700; color: #004084 !important; }
 
+.side-tree-min { margin: 0; padding: 0; }
+
+.side-tree-min h5 { margin: 0; padding: 15px; }
+
+.side-tree-min ul { margin: 0; }
+
 /*==== /SIDE FILTERS, SIDE TREE ====*/
 /*==== RESULT TABLE ====*/
 .auto_table { margin-right: auto; margin-left: auto; font-size: 0.8em; height: 100%; padding: 0 3%; width: 100%; background: #fff; margin-bottom: 15px; box-shadow: 0 1px 10px #ccc; }
@@ -1903,11 +1919,11 @@ table thead td { border: 1px solid #000; }
 
 /*==== /RESULT TABLE ====*/
 /*==== TREE ====*/
-.tree-list_min { padding: 0.5em; transition: all 2s linear; border: 5px solid #228b94; border-top: none; }
+.tree-list_min { border: 2px solid #f1f1f1; border-top: none; padding: 10px; transition: all 2s linear; }
 
-.tree-list_min .tree-item { margin: 1em 0; width: 50%; background: linear-gradient(to right, #26a4af 50%, white 50%) right bottom; background-size: 200% 100%; transition: all .5s ease-out; }
+.tree-list_min .tree-title span { font-size: 14px; }
 
-.tree-list_min .tree-item:hover { background-position: left bottom; color: white; }
+.tree-list_min .tree-item { margin: 10px 15px 10px 0; width: calc(33.33% - 15px); }
 
 .tree-list_min .tree-item a { margin: 0; cursor: pointer; transition: all .6s ease-out; }
 
@@ -1915,7 +1931,7 @@ table thead td { border: 1px solid #000; }
 
 .tree-list_min .tree-item span { float: unset; font-size: 1.1em; text-align: center; font-weight: 600; display: block; width: 100%; height: auto; }
 
-.tree-list_min .tree-str { display: flex; width: 100%; flex-wrap: wrap; }
+.tree-list_min .tree-str { display: flex; flex-wrap: wrap; width: 100%; }
 
 /*==== /TREE ====*/
 /*==== SEARCHING ====*/
@@ -1952,13 +1968,11 @@ table thead td { border: 1px solid #000; }
 .buy-cart-group .input-group input { text-align: center; }
 
 /*==== UNKNOWN ====*/
-.unknown_form h1 { font-size: 22px; text-transform: uppercase; font-weight: bold; text-align: center; }
+.unknown_form h1 { font-size: 22px; font-weight: bold; text-align: center; text-transform: uppercase; }
 
-.unknown_form h2 { font-size: 14px; text-transform: uppercase; color: #f2433d; font-weight: bold; }
+.unknown_form h2 { color: #f2433d; font-size: 14px; font-weight: bold; text-transform: uppercase; }
 
-.unknown_form p { color: #606975; }
-
-.unknown_form strong { color: #606975; }
+.unknown_form p, .unknown_form strong { color: #606975; }
 
 /*==== /UNKNOWN ====*/
 /*==== PHONE ====*/
@@ -2232,7 +2246,7 @@ table thead td { border: 1px solid #000; }
   .seo_details .seo-li img { width: 100%; max-height: 70px; }
   .seo_details .seo-li-min { margin-right: 15px; }
   .seo_details .seo-li-min img { width: 40px; height: 40px; }
-  .tree-head_min img { width: 100%; }
+  .tree-head_min img { width: 100%; max-width: unset; }
   .tree-item { width: calc(50% - 15px); }
   .seo_auto ul.list-inline { column-count: 2; }
   /*==== BASKET ====*/

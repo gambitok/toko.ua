@@ -1366,11 +1366,6 @@ header {
     padding: 0;
 }
 
-.check-head {
-    color: $white;
-    background: $site_info_primary!important;
-}
-
 /*==== HEAD BLOCK =====*/
 .head-list {
     list-style: none;
@@ -1403,6 +1398,23 @@ header {
 /*==== /HEAD BLOCK =====*/
 
 /*==== TREE BLOCK =====*/
+
+.pointer-el {
+    cursor: pointer;
+    transition: .1s ease-in-out;
+    &:hover {
+        background: #f5f5f5;
+        img {
+            transform: scale(1.1);
+        }
+    }
+}
+
+.check-head {
+    color: #000;
+    background: #f1f1f1!important;
+}
+
 .tree-head {
     background: $white;
     height: 150px;
@@ -1421,8 +1433,10 @@ header {
     &_min {
         height: 75px;
         img {
+            display: block;
             width: 100%;
             height: auto;
+            max-width: 100px;
         }
         span {
             float: unset;
@@ -1643,16 +1657,6 @@ header {
 /*==== /FOOTER ====*/
 
 /*==== MANUFACTURE ====*/
-.pointer-el {
-    cursor: pointer;
-    transition: .1s ease-in-out;
-    &:hover {
-        background: #f5f5f5;
-        img {
-            transform: scale(1.1);
-        }
-    }
-}
 
 .title_auto {
     display: block;
@@ -1737,30 +1741,6 @@ header {
     }
 }
 
-.car_form {
-    margin-bottom: 1em;
-}
-
-.car_form-select {
-    min-height: unset!important;
-    background: $site_info_secondary;
-    color: $white;
-    padding: 1em 0;
-    h1, h2 {
-        font-size: 1.5em;
-        font-weight: bold;
-        text-transform: uppercase;
-        padding-left: 15px;
-    }
-    &-h {
-        display: block;
-        font-size: 1.5em;
-        font-weight: bold;
-        text-transform: uppercase;
-        padding-left: 15px;
-    }
-}
-
 .show_more_title {
     padding-right: 15px;
     cursor: pointer;
@@ -1809,6 +1789,30 @@ header {
         width: 100%;
         margin: 0;
         padding: 0 5px;
+    }
+}
+
+.car_form {
+    margin-bottom: 1em;
+}
+
+.car_form-select {
+    min-height: unset!important;
+    background: $site_info_secondary;
+    color: $white;
+    padding: 1em 0;
+    h1, h2 {
+        font-size: 1.5em;
+        font-weight: bold;
+        text-transform: uppercase;
+        padding-left: 15px;
+    }
+    &-h {
+        display: block;
+        font-size: 1.5em;
+        font-weight: bold;
+        text-transform: uppercase;
+        padding-left: 15px;
     }
 }
 
@@ -1994,6 +1998,34 @@ header {
     background: url(/images/icons/dropdown-white.svg) center no-repeat;
     &:hover {
         background: url(/images/icons/dropdown-red.svg) center no-repeat;
+    }
+}
+
+.garage-history {
+    &-block {
+        padding: 15px;
+        &__title {
+            color: #000;
+            display: block;
+            font-size: 16px;
+        }
+        &__delete {
+            color: #000;
+            cursor: pointer;
+            display: block;
+            font-size: 16px;
+            text-align: right;
+        }
+        &-list {
+            list-style: none;
+            margin: 0;
+            &__item {
+                color: #000;
+                cursor: pointer;
+                font-size: 14px;
+                margin-bottom: 5px;
+            }
+        }
     }
 }
 
