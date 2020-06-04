@@ -191,8 +191,13 @@
     }
     .search {
         margin-top: 15px;
-        &-nav {
+        &-block {
             background: #fff;
+        }
+        &-header {
+            padding: 15px 0;
+        }
+        &-nav {
             list-style: none;
             margin: 0;
             max-height: 200px;

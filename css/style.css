@@ -203,7 +203,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-main .phones ul li img { width: 15px; height: 15px; }
 
-.header-main .phones ul li input { border: none; background: transparent; color: #606975; font-size: 14px; }
+.header-main .phones ul li a { border: none; background: transparent; color: #606975; font-size: 14px; }
 
 .header-main .search input { border-right: none; margin-right: -41px; border-radius: 0.25rem !important; box-shadow: none; }
 
@@ -298,6 +298,10 @@ header { width: 100%; color: #a9a9a9; }
 .header-phone-nav__list .basket_status { display: inline-block; width: 0; }
 
 .header-phone-search { padding: 10px 15px; border-bottom: 1px solid #ccc; }
+
+.header-phone-search button { border-radius: .25em; text-align: left; }
+
+.header-phone-search button i { float: right; line-height: 24px; }
 
 .header-phone-drop { background: #f1f1f1; padding: 10px 15px; border-bottom: 1px solid #ccc; }
 
@@ -593,6 +597,20 @@ header { width: 100%; color: #a9a9a9; }
 
 /*==== /TREE BLOCK =====*/
 /*==== TREE LIST =====*/
+.tree-block { display: flex; flex-wrap: wrap; }
+
+.tree-block-title { flex: 1 0 100%; }
+
+.tree-block-title h1 { font-size: 24px; }
+
+.tree-item { margin: 0 30px 30px 0; }
+
+.tree-item-title a { font-size: 16px; color: #228b94; }
+
+.tree-item-list { margin-bottom: 15px; }
+
+.tree-item-list__element a { font-size: 14px; color: #000; }
+
 .tree-list { background: #fff; border: none; padding: 15px; transition: all 2s linear; width: 100%; }
 
 .tree-list-clear { border: none; padding: 0; }
@@ -601,21 +619,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .tree-title span { display: block; font-size: 20px; font-weight: bold; }
 
-.tree-str { list-style: none; display: flex; flex-direction: row; justify-content: start; flex-wrap: wrap; align-content: flex-start; }
-
-.tree-cat .title a { display: block; padding: 10px 0 0 10px; font-size: 16px; font-weight: bold; color: #228b94; }
-
-.tree-item { cursor: pointer; width: calc(10% - 10px); margin: 0 10px 10px 0; }
-
-.tree-item a { color: #374250; display: block; margin: 0; flex: 0; }
-
-.tree-item span { font-weight: bold; font-size: 12px; display: block; text-align: center; height: 40px; }
-
-.tree-item img { width: 100%; margin: 0 auto; display: block; padding: 5px; border: 1px solid #f1f1f1; }
-
-.tree-item img:hover img { transition: all .3s linear; }
-
-.tree-item img:hover span { color: #000; transition: all .3s linear; text-decoration: underline; }
+.tree-str { list-style: none; display: block; }
 
 /*==== /TREE LIST =====*/
 /*==== FOOTER ====*/
@@ -698,14 +702,6 @@ header { width: 100%; color: #a9a9a9; }
 
 .details_form-title h1 { font-size: 1.5em; text-transform: uppercase; font-weight: bold; margin: 0; }
 
-.car_form { margin-bottom: 1em; }
-
-.car_form-select { min-height: unset !important; background: #0c5460; color: #fff; padding: 1em 0; }
-
-.car_form-select h1, .car_form-select h2 { font-size: 1.5em; font-weight: bold; text-transform: uppercase; padding-left: 15px; }
-
-.car_form-select-h { display: block; font-size: 1.5em; font-weight: bold; text-transform: uppercase; padding-left: 15px; }
-
 .show_more_title { padding-right: 15px; cursor: pointer; display: none; font-size: 1em; }
 
 .cars_range-title { position: relative; left: 0; right: 0; top: 0; bottom: 0; }
@@ -723,6 +719,14 @@ header { width: 100%; color: #a9a9a9; }
 .cars_range-main .col-12 .car_form-select_card { margin: 0; }
 
 .cars_range-main_min { z-index: 999; position: absolute; width: 100%; margin: 0; padding: 0 5px; }
+
+.car_form { margin-bottom: 1em; }
+
+.car_form-select { min-height: unset !important; background: #0c5460; color: #fff; padding: 1em 0; }
+
+.car_form-select h1, .car_form-select h2 { font-size: 1.5em; font-weight: bold; text-transform: uppercase; padding-left: 15px; }
+
+.car_form-select-h { display: block; font-size: 1.5em; font-weight: bold; text-transform: uppercase; padding-left: 15px; }
 
 .car_form-selected { background: #fff !important; opacity: 1 !important; border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; padding-bottom: 20px !important; color: #000 !important; }
 
@@ -1594,7 +1598,11 @@ table thead td { border: 1px solid #000; }
 
 .modal-phone .search { margin-top: 15px; }
 
-.modal-phone .search-nav { background: #fff; list-style: none; margin: 0; max-height: 200px; overflow-y: scroll; }
+.modal-phone .search-block { background: #fff; }
+
+.modal-phone .search-header { padding: 15px 0; }
+
+.modal-phone .search-nav { list-style: none; margin: 0; max-height: 200px; overflow-y: scroll; }
 
 .modal-phone .search-nav__item a, .modal-phone .search-nav__item a:not([href]):not([tabindex]) { display: block; color: #000; cursor: pointer; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 10px 0; font-size: 12px; }
 
@@ -2086,9 +2094,13 @@ table thead td { border: 1px solid #000; }
   .profile-side { padding: 0; margin-bottom: 15px; } }
 
 /*==== /PHONE ====*/
+.fixed-block { position: fixed; top: 0; left: 0; width: 100%; z-index: 999; }
+
+.cars { background: #fff; }
+
 .cars-nav { background: #fff; color: #fff; display: flex; flex-wrap: nowrap; justify-content: start; }
 
-.cars-nav__item { background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat; color: #000; cursor: pointer; padding: 30px 65px 30px 30px; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.cars-nav__item { background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat #fff; color: #000; cursor: pointer; padding: 30px 65px 30px 30px; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
 .cars-nav__item:not(:first-child):before { content: ''; position: absolute; left: 0; top: 19px; bottom: 19px; width: 1px; background: #ececec; }
 

@@ -14,6 +14,60 @@ function detectmob() {
     }
 }
 
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function setCookie(name, value, props) {
+    props = { path: '/' };
+    props = props || {};
+    var exp = props.expires;
+
+    if (typeof exp == "number" && exp) {
+        var d = new Date();
+        d.setTime(d.getTime() + exp*1000);
+        exp = props.expires = d
+    }
+
+    if(exp && exp.toUTCString) { props.expires = exp.toUTCString() }
+    value = encodeURIComponent(value);
+    var updatedCookie = name + "=" + value;
+
+    for(var propName in props){
+        updatedCookie += "; " + propName;
+        var propValue = props[propName];
+        if(propValue !== true){ updatedCookie += "=" + propValue }
+    }
+
+    document.cookie = updatedCookie
+}
+
+function loadInputNumber() { "use strict";
+    $(".show_count").keydown(function (e) {
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+            (e.keyCode === 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+            (e.keyCode === 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+            return;
+        }
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+}
+
 $(document).ready(function() { "use strict";
     // tooltips
     $(".tooltips").tooltip();

@@ -488,7 +488,7 @@ header {
                     width: 15px;
                     height: 15px;
                 }
-                input {
+                a {
                     border: none;
                     background: transparent;
                     color: #606975;
@@ -715,6 +715,14 @@ header {
     &-search {
         padding: 10px 15px;
         border-bottom: 1px solid #ccc;
+        button {
+            border-radius: .25em;
+            text-align: left;
+            i {
+                float: right;
+                line-height: 24px;
+            }
+        }
     }
     &-drop {
         background: #f1f1f1;
@@ -1450,6 +1458,35 @@ header {
 /*==== /TREE BLOCK =====*/
 
 /*==== TREE LIST =====*/
+.tree-block {
+    display: flex;
+    flex-wrap: wrap;
+    &-title {
+        flex: 1 0 100%;
+        h1 {
+            font-size: 24px;
+        }
+    }
+}
+.tree-item {
+    margin: 0 30px 30px 0;
+    &-title {
+        a {
+            font-size: 16px;
+            color: #228b94;
+        }
+    }
+    &-list {
+        margin-bottom: 15px;
+        &__element {
+            a {
+                font-size: 14px;
+                color: #000;
+            }
+        }
+    }
+}
+
 .tree-list {
     background: #fff;
     border: none;
@@ -1475,54 +1512,52 @@ header {
 
 .tree-str {
     list-style: none;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    flex-wrap: wrap;
-    align-content: flex-start;
-}
-
-.tree-cat .title a {
     display: block;
-    padding: 10px 0 0 10px;
-    font-size: 16px;
-    font-weight: bold;
-    color: $site_info_primary;
+    //display: flex;
+    //flex-direction: row;
+    //justify-content: start;
+    //flex-wrap: wrap;
+    //align-content: flex-start;
 }
 
-.tree-item {
-    cursor: pointer;
-    width: calc(10% - 10px);
-    margin: 0 10px 10px 0;
-    a {
-        color: #374250;
-        display: block;
-        margin: 0;
-        flex: 0;
-    }
-    span {
-        font-weight: bold;
-        font-size: 12px;
-        display: block;
-        text-align: center;
-        height: 40px;
-    }
-    img {
-        width: 100%;
-        margin: 0 auto;
-        display: block;
-        padding: 5px;
-        border: 1px solid #f1f1f1;
-        &:hover img {
-            transition: all .3s linear;
-        }
-        &:hover span {
-            color: #000;
-            transition: all .3s linear;
-            text-decoration: underline;
-        }
-    }
-}
+//.tree-item {
+//    display: block;
+//    a {
+//        color: #000;
+//        cursor: pointer;
+//    }
+//    cursor: pointer;
+//    width: calc(10% - 10px);
+//    margin: 0 10px 10px 0;
+//    a {
+//        color: #374250;
+//        display: block;
+//        margin: 0;
+//        flex: 0;
+//    }
+//    span {
+//        font-weight: bold;
+//        font-size: 12px;
+//        display: block;
+//        text-align: center;
+//        height: 40px;
+//    }
+//    img {
+//        width: 100%;
+//        margin: 0 auto;
+//        display: block;
+//        padding: 5px;
+//        border: 1px solid #f1f1f1;
+//        &:hover img {
+//            transition: all .3s linear;
+//        }
+//        &:hover span {
+//            color: #000;
+//            transition: all .3s linear;
+//            text-decoration: underline;
+//        }
+//    }
+//}
 
 /*==== /TREE LIST =====*/
 

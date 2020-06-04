@@ -254,7 +254,7 @@ class ProductsClass extends CatalogueClass {
         return $form;
     }
 
-    // link: toko.ua
+    // HOME KATALOG ZAPCHASTEY
     function getCarDetailsFull() { $db = DbSingleton::getTokoDb();
         $language=new LangClass;
         $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
@@ -285,6 +285,54 @@ class ProductsClass extends CatalogueClass {
             }
         }
         $list.="</ul>";
+        $list=$this->replaceLang($list);
+        return $list;
+    }
+
+    // get HEAD TREE STR
+    function showCarDetailsStr($head_id, $str_id_str="") { $db=DbSingleton::getTokoDb();
+        $automan=new AutoClass;
+        $language=new LangClass; $prefix=$language->getLangPrefix();
+        $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
+
+        $arr=[]; $list="<div class=\"tree-block\">";
+        list(, $head_link)=$automan->getHeadNewDescr($head_id);
+
+        if ($str_id_str!="") $where_str="AND cs.STR_ID IN ($str_id_str)"; else $where_str="";
+
+        $r=$db->query("SELECT cs.*, cat.CAT_ID
+        FROM `T2_GROUP_TREE_HEAD_STR` cs 
+            LEFT OUTER JOIN `T2_GROUP_TREE_HEAD_CAT` cat ON cat.CAT_ID=cs.CAT_ID
+		WHERE cs.HEAD_ID='$head_id' $where_str ORDER BY cat.POSITION ASC, cs.POSITION ASC;"); $n=$db->num_rows($r);
+        if ($n>0) {
+            for ($i=1;$i<=$n;$i++) {
+                $CAT_ID=$db->result($r,$i-1,"CAT_ID");
+                $DISP_TEXT=$db->result($r,$i-1,"TEX_$lang_cap");
+                $TEX_LINK=$db->result($r,$i-1,"TEX_LINK");
+                $IMAGES=$db->result($r,$i-1,"IMAGES");
+                $STR_ID=$db->result($r,$i-1,"STR_ID");
+                $arr[$CAT_ID][$i]=["text"=>$DISP_TEXT, "link"=>$TEX_LINK, "image"=>$IMAGES, "str_id"=>$STR_ID];
+            }
+            foreach ($arr as $key=>$value) {
+                list($CAT_NAME, $CAT_LINK) = $automan->getCatNewDescr($key);
+                $list.="<div class=\"tree-item\">";
+                $list.="<div class=\"tree-item-title\"><span><a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$CAT_LINK/\">$CAT_NAME</a></span></div>";
+                $list.="<div class=\"tree-item-list\">";
+                foreach ($value as $v) {
+                    $text=$v["text"];
+                    $link=$v["link"];
+                    $list.="<div class=\"tree-item-list__element\">
+                        <a href=\"https://toko.ua$prefix/$this->catalog_link/$link/\">
+                            <span>$text</span>
+                        </a>
+                    </div>";
+                }
+                $list.="</div>";
+                $list.="</div>";
+            }
+        }
+        $list.="</div>";
+        if ($n==0) $list="";
         $list=$this->replaceLang($list);
         return $list;
     }
@@ -324,53 +372,7 @@ class ProductsClass extends CatalogueClass {
         return $form;
     }
 
-    // get HEAD TREE STR
-    function showCarDetailsStr($head_id, $str_id_str="") { $db=DbSingleton::getTokoDb();
-        $automan=new AutoClass;
-        $language=new LangClass; $prefix=$language->getLangPrefix();
-        $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
 
-        $arr=[]; $list="";
-        list(, $head_link)=$automan->getHeadNewDescr($head_id);
-
-        if ($str_id_str!="") $where_str="AND cs.STR_ID IN ($str_id_str)"; else $where_str="";
-
-        $r=$db->query("SELECT cs.*, cat.CAT_ID
-        FROM `T2_GROUP_TREE_HEAD_STR` cs 
-            LEFT OUTER JOIN `T2_GROUP_TREE_HEAD_CAT` cat ON cat.CAT_ID=cs.CAT_ID
-		WHERE cs.HEAD_ID='$head_id' $where_str ORDER BY cat.POSITION ASC, cs.POSITION ASC;"); $n=$db->num_rows($r);
-        if ($n>0) {
-            for ($i=1;$i<=$n;$i++) {
-                $CAT_ID=$db->result($r,$i-1,"CAT_ID");
-                $DISP_TEXT=$db->result($r,$i-1,"TEX_$lang_cap");
-                $TEX_LINK=$db->result($r,$i-1,"TEX_LINK");
-                $IMAGES=$db->result($r,$i-1,"IMAGES");
-                $STR_ID=$db->result($r,$i-1,"STR_ID");
-                $arr[$CAT_ID][$i]=["text"=>$DISP_TEXT, "link"=>$TEX_LINK, "image"=>$IMAGES, "str_id"=>$STR_ID];
-            }
-            foreach ($arr as $key=>$value) {
-                list($CAT_NAME, $CAT_LINK) = $automan->getCatNewDescr($key);
-                $list.="<div class=\"tree-title\"><span><a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$CAT_LINK/\">$CAT_NAME</a></span></div>";
-                $list.="<ul class=\"tree-str\">";
-                foreach ($value as $v) {
-                    $text=$v["text"];
-                    $link=$v["link"];
-                    $img=$v["image"];
-                    if ($img=="") $photo = $this->noPhoto; else $photo = "/uploads/images/group_tree_str/$img";
-                    $list.="<li class=\"tree-item\">
-                        <a href=\"https://toko.ua$prefix/$this->catalog_link/$link/\">
-                            <img src=\"$photo\" alt=\"$text\" title=\"$text\">
-                            <span>$text</span>
-                        </a>
-                    </li>";
-                }
-                $list.="</ul>";
-            }
-        }
-        if ($n==0) $list="";
-        $list=$this->replaceLang($list);
-        return $list;
-    }
 
     /*SELECT CAR =====================================================*/
 

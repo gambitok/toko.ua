@@ -376,7 +376,6 @@ class MenuClass {
         $list="<div itemtype=\"http://schema.org/Organization\" itemscope>
         <span itemprop=\"name\" class=\"dnone\">{seo_shop_toko}</span>
         <ul>";
-
         // PHONE
         $r=$db->query("SELECT * FROM `contacts_bottom_new` WHERE `status`=1 AND `type_contact`=1;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
@@ -385,7 +384,7 @@ class MenuClass {
             $link=$db->result($r, $i-1, "link");
             $itemprop="";
             $list.="<li>
-                <a href=\"$link\">
+                <a href=\"tel:$link\">
                     <span class=\"fas $icon\"></span>
                     <span $itemprop>$text</span>
                 </a>

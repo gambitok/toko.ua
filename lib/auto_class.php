@@ -1273,12 +1273,15 @@ class AutoClass {
         return $list;
     }
 
+    // CATALOG / TO I FILTRI
     function getDetailsList($head, $category="", $mfa_link="", $mod_link="") { $db = DbSingleton::getTokoDb();
-        $language=new LangClass; $prefix=$language->getLangPrefix(); $where=""; $where_category="";
+        $language=new LangClass; $prefix=$language->getLangPrefix();
+        $where=""; $where_category="";
         if ($head!="") $where="AND `HEAD_ID`='$head'";
         if ($category!="") $where_category="AND `CAT_ID`='$category'";
 
-        $list="<div class='tree-list tree-list-clear'>";
+        $list="<div class='tree-block'>";
+
         $r3=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 $where;"); $n3=$db->num_rows($r3);
         for ($i3=1;$i3<=$n3;$i3++) {
             $head_id = $db->result($r3, $i3-1, "HEAD_ID");
@@ -1286,7 +1289,10 @@ class AutoClass {
             $head_tex_link = $db->result($r3, $i3-1, "TEX_LINK");
             $head!="" ? $title="<h1>$head_tex_text</h1>" : $title="<span><a href='https://toko.ua$prefix/catalog/$head_tex_link/'>$head_tex_text</a></span>";
             $category=="" ?: $title="";
-            $list.="<div class='tree-title'>$title</div><div class='tree-cat'>";
+
+            $list.="<div class='tree-block-title'>$title</div>";
+
+            $list.="<div class='tree-item'>";
 
             $r2=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_CAT` WHERE `HEAD_ID`='$head_id' $where_category;"); $n2=$db->num_rows($r2);
             for ($i2=1;$i2<=$n2;$i2++) {
@@ -1294,19 +1300,20 @@ class AutoClass {
                 $cat_tex_text = $db->result($r2, $i2-1, "TEX_RU");
                 $cat_tex_link = $db->result($r2, $i2-1, "TEX_LINK");
                 $category!="" ? $title_cat="<h1>$cat_tex_text</h1>" : $title_cat="<a href='https://toko.ua$prefix/catalog/$head_tex_link/$cat_tex_link/'>$cat_tex_text</a>";
-                $list.="<div class='title'>$title_cat</div><div class='tree-str'>";
+
+                $list.="<div class='tree-item-title'>$title_cat</div>";
+
+                $list.="<div class='tree-item-list'>";
 
                 $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `CAT_ID`='$cat_id' ORDER BY `POSITION`;"); $n=$db->num_rows($r);
                 for ($i=1;$i<=$n;$i++) {
                     $tex_text=$db->result($r,$i-1,"TEX_RU");
                     $tex_link=$db->result($r,$i-1,"TEX_LINK");
-                    $images=$db->result($r,$i-1,"IMAGES");
                     if ($mfa_link!="") $tex_link.="/$mfa_link";
                     if ($mod_link!="") $tex_link.="/$mod_link";
-                    $list.="<div class='tree-item'>
+                    $list.="<div class='tree-item-list__element'>
                         <a href='https://toko.ua$prefix/catalog/$tex_link/'>
-                            <img src='/uploads/images/group_tree_str/$images' alt='$tex_text'>
-                            <span>$tex_text</span>
+                            $tex_text
                         </a>
                     </div>";
                 }

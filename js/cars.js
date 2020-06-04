@@ -6,7 +6,7 @@ $(document).ready(function() {
 
     if (detectmob()) {
         // hide on mobile
-        toggleCarsNavigation($("div[data-type='manuf']"));
+        if ($("div[data-type='manuf']").attr("data-id")==="0") toggleCarsNavigation($("div[data-type='manuf']"));
     }
 
 });

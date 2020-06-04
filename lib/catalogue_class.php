@@ -216,7 +216,9 @@ class CatalogueClass {
         for ($i=1;$i<=$n;$i++){
             $head_id=$db->result($r,$i-1,"HEAD_ID");
             $tex_text=$db->result($r,$i-1,"TEX_$lang_cap");
-            $list.="<li class=\"header-nav__li\" onclick=\"showHideNavigation($head_id);\">$tex_text</li>";
+            // onmouseout="closeHideNavigation();"
+            // onmouseover=\"showHideNavigation($head_id);\"
+            $list.="<li class=\"header-nav__li\" data-nav-id=\"$head_id\">$tex_text</li>";
         }
         return $list;
     }
@@ -230,13 +232,14 @@ class CatalogueClass {
         if ($n>0) return true; else return false;
     }
 
+    // HOME NAVIGATION
     function getGroupTreeStr($head_id, $str_id_str="", $max_count=0) { $db=DbSingleton::getTokoDb();
         $automan=new AutoClass;
         $language=new LangClass; $prefix=$language->getLangPrefix();
         $arr=[]; $list="";
         $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
         if ($str_id_str!="") $where_str="AND cs.STR_ID IN ($str_id_str)"; else $where_str="";
-        list($head_name, $head_link)=$automan->getHeadNewDescr($head_id);
+        list(, $head_link)=$automan->getHeadNewDescr($head_id);
         $r=$db->query("SELECT cs.*, cat.CAT_ID
         FROM `T2_GROUP_TREE_HEAD_STR` cs 
             LEFT OUTER JOIN `T2_GROUP_TREE_HEAD_CAT` cat ON cat.CAT_ID=cs.CAT_ID
@@ -249,27 +252,30 @@ class CatalogueClass {
                 $STR_ID=$db->result($r,$i-1,"STR_ID");
                 $TEX_LINK=$db->result($r,$i-1,"TEX_LINK");
                 $arr[$CAT_ID][$i]=["text"=>$DISP_TEXT, "image"=>$IMAGES, "str_id"=>$STR_ID, "str_link"=>$TEX_LINK];
-                if ($max_count!=0) if ($max_count==$i) break;
+                //if ($max_count!=0) if ($max_count==$i) break;
             }
             foreach ($arr as $key=>$value) {
                 list($CAT_NAME, $CAT_LINK) = $automan->getCatNewDescr($key);
-                $list.="<div class=\"tree-title\"><a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$CAT_LINK/\">$CAT_NAME</a></div><ul class=\"tree-str\">";
+                $list.="<div class='tree-item'>";
+
+                $list.="<div class=\"tree-item-title\">
+                    <a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$CAT_LINK/\">$CAT_NAME</a>
+                </div>";
+
+                $list.="<div class=\"tree-item-list\">";
                 foreach ($value as $v) {
                     $tex=$v["text"];
-                    $img=$v["image"];
                     $str_link=$v["str_link"];
-                    if ($img=="") $photo = $this->noPhoto; else $photo = "/uploads/images/group_tree_str/$img";
                     $link="https://toko.ua$prefix/$this->catalog_link/$str_link/";
-                    $list.="<li class=\"tree-item\">
-                        <a href=\"$link\">
-                            <img src=\"$photo\" alt=\"$tex\" title=\"$tex\">
-                            <span>$tex</span>
-                        </a>
-                    </li>";
+                    $list.="<div class=\"tree-item-list__element\">
+                        <a href=\"$link\">$tex</a>
+                    </div>";
                 }
-                $list.="</ul>";
+                $list.="</div>";
+
+                $list.="</div>";
             }
-            $list.="<a class=\"btn btn-main\" href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/\">{show_all_cap} \"$head_name\"</a>";
+//            $list.="<a class=\"btn btn-main\" href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/\">{show_all_cap} \"$head_name\"</a>";
         }
         if ($n==0) $list="";
         $list=$this->replaceLang($list);

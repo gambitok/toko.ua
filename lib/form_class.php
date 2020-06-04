@@ -296,7 +296,20 @@ class FormClass {
         $cat=new CatalogueClass;
         $language=new LangClass; $prefix=$language->getLangPrefix();
         $list=$this->getHistory(); $max_count=9;
-        $form="<ul class=\"search-nav\">";
+        $form="<div class=\"search-block\">
+        <div class=\"search-header\">
+        <div class='container'>
+            <div class='row'>
+                <div class='col-6'>
+                    <span>{history_cap}</span>
+                </div>
+                <div class='col-6 text-right'>
+                    <a onclick=\"deleteHistoryItem('')\">{clear_cap}</a>
+                </div>
+            </div>
+        </div>
+        </div>";
+        $form.="<ul class=\"search-nav\">";
         for ($i=0; $i<count($list); $i++) {
             $id=$list[$i]["id"];
             $article_nr_displ=$list[$i]["article_nr_displ"];
@@ -320,12 +333,21 @@ class FormClass {
             if ($i==$max_count) break;
         }
         $form.="</ul>";
+        $form.="</div>";
+        if (count($list)==0) $form="";
         $form=$this->replaceLang($form);
         return $form;
     }
 
     function deleteHistoryItem($id) { $db=DbSingleton::getTokoDb();
-        $db->query("DELETE FROM `CLIENT_HISTORY` WHERE `id`='$id' LIMIT 1;");
+        if ($id=="") {
+            $cookie=$_COOKIE["session_id"];
+            $client_id=$this->getClient(); $user=$this->getUser();
+            if ($user==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user'";
+        } else {
+            $where = "`id`='$id'";
+        }
+        $db->query("DELETE FROM `CLIENT_HISTORY` WHERE $where;");
         return true;
     }
 

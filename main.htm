@@ -289,15 +289,15 @@
                         <ul>
                             <li>
                                 <img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
-                                <input type="tel" placeholder="phone" value="+380 (97) 080 30 60">
+								<a href="tel:0970803060">(097) <b>080 30 60</b></a>
                             </li>
                             <li>
-                                <img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
-                                <input type="tel" placeholder="phone" value="+380 (50) 080 30 60">
+								<img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
+								<a href="tel:0500803060">(050) <b>080 30 60</b></a>
                             </li>
                             <li>
                                 <img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
-                                <input type="tel" placeholder="phone" value="+380 (93) 080 30 60">
+								<a href="tel:0930803060">(093) <b>080 30 60</b></a>
                             </li>
                         </ul>
 					</div>
@@ -389,11 +389,8 @@
                     </div>
                 </div>
                 <div class="row header-phone-search">
-                    <div class="input-group" onclick="showArtSearch();">
-                        <input type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
-                        </div>
+                    <div class="input-group">
+                        <button class="form-control" type="button" onclick="showArtSearch(); $('#search_art3').focus();">{search_onsite} <i class="fa fa-search"></i></button>
                     </div>
                 </div>
             </div>
@@ -408,17 +405,10 @@
 		</div>
 
 		<div id="navigation-hide" class="row header-nav-hide" style="display:none;">
-			<div class="container">
-				<div class="row content-nav-hide">
-					<div class="col-10 pad0">
-						<span id="content-nav__header" class="content-nav__header"></span>
-					</div>
-					<div class="col-2">
-						<button class="btn btn-sm btn-outline-secondary float-right wauto" onclick="closeHideNavigation();"><span class="fa fa-times"></span></button>
-					</div>
-					<div id="content-nav__content" class="content-nav__content tree-list"></div>
-				</div>
-			</div>
+            <div class="col-12 content-nav-hide">
+                <span id="content-nav__header" class="content-nav__header"></span>
+                <div id="content-nav__content" class="content-nav__content tree-block"></div>
+            </div>
 		</div>
 
 	</header>
@@ -845,13 +835,30 @@
 <script type="text/javascript" src="/js/cars.js"></script>
 
 <script>
-    $("body").click(function(e) {
-        if ($(e.target).attr('class') == 'header-nav__li'
-           || $(e.target).attr('class') == 'tree-title'
-        ) { return true; } else {
-            closeHideNavigation();
+    $(".header-main").mouseover(function() {
+        closeHideNavigation();
+    });
+    $(".main").mouseover(function() {
+        closeHideNavigation();
+    });
+    $(".footer").mouseover(function() {
+        closeHideNavigation();
+    });
+    // $(".header-nav__li").mouseover(function() {
+    //     showHideNavigation($(this).attr("data-nav-id"));
+    // });
+    var timer;
+    $('.header-nav__li').on({'mouseover': function () {
+            var self = this;
+            timer = setTimeout(function () {
+                showHideNavigation($(self).attr("data-nav-id"));
+            }, 500);
+        },
+        'mouseout' : function () {
+            clearTimeout(timer);
         }
     });
+
     $("body").click(function(e) {
         if ($(e.target).attr('id') == 'search_art'
            || $(e.target).attr('class') == 'search-nav'
