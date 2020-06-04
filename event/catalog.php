@@ -28,12 +28,12 @@ if ($page>$pages_count) {
 }
 
 $search_form=$prod->getHtmlForm("car_form_div");
-$search_form=str_replace("{car_typ}", $automan->showTypBlockMin(), $search_form);
-$search_form=str_replace("{car_garage}", $automan->showGarageBlockMin(), $search_form);
+//$search_form=str_replace("{car_typ}", $automan->showTypBlockMin(), $search_form);
+//$search_form=str_replace("{car_garage}", $automan->showGarageBlockMin(), $search_form);
 $search_form=str_replace("{car_content}", $car_content, $search_form);
-$search_form=str_replace("{car_content_style}", $car_content_style, $search_form);
-$search_form=str_replace("{car_garage_style}", $car_garage_style, $search_form);
-$search_form=str_replace("{car_typ_style}", $car_typ_style, $search_form);
+//$search_form=str_replace("{car_content_style}", $car_content_style, $search_form);
+//$search_form=str_replace("{car_garage_style}", $car_garage_style, $search_form);
+//$search_form=str_replace("{car_typ_style}", $car_typ_style, $search_form);
 
 $content=str_replace("{main_auto_window}", $search_form, $content);
 $content=str_replace("{main_window}", $form1, $content);

@@ -3,10 +3,7 @@
 $content=str_replace("{main_window}", $catalogue->getHtmlForm("main_form"), $content);
 
 // Поиск по автомобилю
-$linka=findLinks();
-$mfa_link=$linka[1];
-$mod_link=$linka[2];
-$content=str_replace("{catalogue_tab_search}", $prod->getCarsSearch($mfa_link, $mod_link), $content);
+$content=str_replace("{catalogue_tab_search}", $prod->getCarsSearch(), $content);
 
 // Баннер
 $content=str_replace("{catalogue_banner}", $showform->getCarsBanner(), $content);

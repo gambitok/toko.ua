@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
-    $(".cars-nav__item").on('click', function() {
-        toggleCarsNavigation(this);
-    });
+    // $(".cars-nav__item").on('click', function() {
+    //     toggleCarsNavigation(this);
+    // });
 
     if (detectmob()) {
         // hide on mobile
@@ -37,9 +37,6 @@ function toggleCarsTab(index) {
     toggleCarsNavigation(next, type, attr);
 
     if (detectmob()) {
-        // $("html, body").animate({
-        //     scrollTop: $("#scrollManuf").position().top
-        // }, "slow");
         document.getElementById("scrollManuf").scrollIntoView();
     }
 }
@@ -99,7 +96,8 @@ function toggleCarsNavigation(index, type, attr) {
 }
 
 function getCarsSearchContent(type, attr) {
-    JsHttpRequest.query(folder,{'w':'getCarsSearchContent', 'type':type, 'attr':attr},
+    let str_id = $("#details_str_id").val();
+    JsHttpRequest.query(folder,{'w':'getCarsSearchContent', 'type':type, 'attr':attr, 'str_id':str_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
 
             let tab = $("#" + result.tab);
@@ -165,4 +163,15 @@ function setActiveCar() {
         // Set ACTIVE + CHECKED Tab
         $("#" + $(elem).attr("data-tab")).addClass("cars-tab__block-active");
     }
+}
+
+function showCarsForm() {
+    $("#CarsForm").modal("show");
+    JsHttpRequest.query(folder,{'w':'showCarsForm'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#cars_block").html(result.content);
+        }}, true);
+    // $(".cars-nav__item").on('click', function() {
+    //     toggleCarsNavigation(this);
+    // });
 }

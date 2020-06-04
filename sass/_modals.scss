@@ -6,6 +6,21 @@
     padding: 0;
 }
 
+#CarsForm {
+    .modal-dialog {
+        max-width: 1200px;
+        width: 100%;
+        .modal-content {
+            .modal-header {
+                display: none;
+            }
+            .modal-body {
+                padding: 0;
+            }
+        }
+    }
+}
+
 #BasketForm, #GarageForm {
     .modal-dialog {
         max-width: 1080px;

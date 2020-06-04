@@ -69,17 +69,13 @@ $cars-hover: #f5f5f5;
             }
             &-item {
                 background: $white;
-                //border-bottom: 1px solid $cars-default;
-                //border-right: 1px solid $cars-default;
-                //border-top: 1px solid $cars-default;
                 border: 1px solid $cars-default;
+                color: #000;
                 cursor: pointer;
-                //margin-bottom: -1px;
                 padding: 15px;
                 transition: .3s;
                 width: calc(12.5%);
                 &:hover {
-                    //background: $cars-hover;
                     border-color: $cars-primary;
                 }
                 &-body {

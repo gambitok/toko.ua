@@ -421,7 +421,7 @@ header {
 
 .header-top {
     background: #f1f1f1;
-    color: #000;
+    color: #606975;
     padding: 0;
     border-bottom: 1px solid #ced4da;
     a {
@@ -434,7 +434,9 @@ header {
         padding: 0;
         font-size: 14px;
         a:hover {
-            color: #ccc;
+            color: #000;
+            text-decoration: none;
+            transition: all .2s ease;
         }
     }
     .authorization {
@@ -455,7 +457,7 @@ header {
             }
             a {
                 &:hover {
-                    color: #ccc;
+                    color: #000;
                     text-decoration: none;
                     transition: all .2s ease;
                 }
@@ -1000,20 +1002,20 @@ header {
 
 /*==== NAVIGATION =====*/
 .header-nav {
-    color: $black;
     background: $site_main_primary;
-    height: 55px;
-    border-top: 5px solid $site_main_secondary;
-    border-bottom: 5px solid $site_main_secondary;
     &-hide {
         position: absolute;
         width: 100%;
         z-index: 999999;
         height: auto;
     }
+    nav {
+        height: 100%;
+    }
     ul {
         color: $white;
         width: 100%;
+        height: 100%;
         margin: 0;
         text-transform: uppercase;
         font-weight: 700;
@@ -1022,21 +1024,32 @@ header {
         justify-content: space-between;
         align-items: flex-start;
         li {
-            padding: .7% 2%;
-            height: 45px;
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            text-align: center;
-            font-size: .7em;
+            color: #fff;
             cursor: pointer;
-            float: left;
-            list-style: none;
-            color: $white;
+            font-size: 12px;
+            font-weight: 600;
+            height: 100%;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-left: -1px;
             &:hover {
-                transition: all .4s ease;
-                background: $site_main_secondary;
+                background: rgba(200, 67, 54, 1);
                 color: $white;
+                transition: all .3s ease;
+            }
+            &:not(:first-child) {
+                &:before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 10px;
+                    bottom: 10px;
+                    width: 1px;
+                    background: rgba(255, 255, 255, 0.3);
+                }
             }
         }
     }
@@ -1046,7 +1059,7 @@ header {
     &-hide {
         z-index: 999999;
         background: $white;
-        border: 5px solid $site_main_danger;
+        border: 4px solid #f44336;
         border-top: none;
         height: auto;
         padding: 15px;

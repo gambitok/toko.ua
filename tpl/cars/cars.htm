@@ -3,12 +3,12 @@
     <input type="hidden" value="{active_nav}" id="active_nav">
 
     <div class="cars-nav">
-        <div data-type="manuf" data-next="model" data-pred="empty" data-tab="cars-tab1" data-id="{selected_manuf}" class="cars-nav__item cars-nav__item-active cars-nav__item-checked">{cars_manufacturer}</div>
-        <div data-type="model" data-next="years" data-pred="manuf" data-tab="cars-tab2" data-id="{selected_model}" class="cars-nav__item cars-nav__item-disabled">{cars_model}</div>
-        <div data-type="years" data-next="bodyc" data-pred="model" data-tab="cars-tab3" data-id="0" class="cars-nav__item cars-nav__item-disabled">{cars_year}</div>
-        <div data-type="bodyc" data-next="engin" data-pred="years" data-tab="cars-tab4" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_body}</div>
-        <div data-type="engin" data-next="modif" data-pred="bodyc" data-tab="cars-tab5" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_engine}</div>
-        <div data-type="modif" data-next="empty" data-pred="engin" data-tab="cars-tab6" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_modification}</div>
+        <div onclick="toggleCarsNavigation(this);" data-type="manuf" data-next="model" data-pred="empty" data-tab="cars-tab1" data-id="{selected_manuf}" class="cars-nav__item cars-nav__item-active cars-nav__item-checked">{cars_manufacturer}</div>
+        <div onclick="toggleCarsNavigation(this);" data-type="model" data-next="years" data-pred="manuf" data-tab="cars-tab2" data-id="{selected_model}" class="cars-nav__item cars-nav__item-disabled">{cars_model}</div>
+        <div onclick="toggleCarsNavigation(this);" data-type="years" data-next="bodyc" data-pred="model" data-tab="cars-tab3" data-id="0" class="cars-nav__item cars-nav__item-disabled">{cars_year}</div>
+        <div onclick="toggleCarsNavigation(this);" data-type="bodyc" data-next="engin" data-pred="years" data-tab="cars-tab4" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_body}</div>
+        <div onclick="toggleCarsNavigation(this);" data-type="engin" data-next="modif" data-pred="bodyc" data-tab="cars-tab5" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_engine}</div>
+        <div onclick="toggleCarsNavigation(this);" data-type="modif" data-next="empty" data-pred="engin" data-tab="cars-tab6" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_modification}</div>
     </div>
 
     <div id="cars_tab" class="cars-tab">

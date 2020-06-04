@@ -7,7 +7,6 @@ function catalogueFilterClear() { "use strict"; location.reload(true); }
 
 function showArtSearch() { "use strict";
     $("#PhoneArticle").modal("show");
-    $("#search_art3").focus();
     JsHttpRequest.query(folder,{'w':'showHistoryList'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modal-phone__history").html(result.content);

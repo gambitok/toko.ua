@@ -4,12 +4,14 @@ $linka=findLinks();
 $mfa_link=$linka[1];
 $mod_link=$linka[2];
 $form=$prod->getHtmlForm("cars");
+//
+//if ($mfa_link!="" && $mod_link!="") {
+//    $car_content = $prod->showCarsSelected($mfa_link, $mod_link);
+//} else {
+//    $car_content = $prod->showCarsSelect("", $mfa_link, $mod_link);
+//}
 
-if ($mfa_link!="" && $mod_link!="") {
-    $car_content = $prod->showCarsSelected($mfa_link, $mod_link);
-} else {
-    $car_content = $prod->showCarsSelect("", $mfa_link, $mod_link);
-}
+$car_content=$prod->getCarsSearch("", $mfa_link, $mod_link);
 
 $seo_content = $automan->getSeoContent($mfa_link, $mod_link);
 

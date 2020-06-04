@@ -373,11 +373,22 @@
 
 /*==== /PAD PRO ====*/
 
+/*==== PAD PRO2 ====*/
+@media (min-width: 576px) and (max-width: 768px) {
+    .container {
+        max-width: unset;
+    }
+}
+
+/*==== /PAD PRO2 ====*/
+
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) {
 
     .header-main {
         .icons {
+            text-align: center;
+            flex: 0 0 25%;
             &-nav {
                 &-item {
                     width: 30px;
@@ -389,7 +400,9 @@
             }
         }
         .phones {
-            padding: 0;
+            text-align: center;
+            flex: 0 0 25%;
+            max-width: 25%;
             ul {
                 li {
                     img {

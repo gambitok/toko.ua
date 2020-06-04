@@ -224,9 +224,11 @@ if ($_REQUEST["w"]=="techCarModelsFilter"){ $GLOBALS['_RESULT'] = array("content
 
 /*==== HOME CARS ====*/
 
-if ($_REQUEST["w"]=="getCarsSearchContent"){ list($list, $title, $nav, $tab) = $prod->getCarsSearchContent($_REQUEST["type"],$_REQUEST["attr"]); $GLOBALS['_RESULT'] = array("list"=>$list, "title"=>$title, "nav"=>$nav, "tab"=>$tab);}
+if ($_REQUEST["w"]=="getCarsSearchContent"){ list($list, $title, $nav, $tab) = $prod->getCarsSearchContent($_REQUEST["type"],$_REQUEST["attr"],$_REQUEST["str_id"]); $GLOBALS['_RESULT'] = array("list"=>$list, "title"=>$title, "nav"=>$nav, "tab"=>$tab);}
 
 if ($_REQUEST["w"]=="clearCarsBlock"){ $GLOBALS['_RESULT'] = array("content"=>$prod->clearCarsBlock($_REQUEST["sel_tab"],$_REQUEST["cur_tab"]));}
+
+if ($_REQUEST["w"]=="showCarsForm"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsForm());}
 
 //=Search======================================================================================================
 
