@@ -22,7 +22,7 @@ class ProfileClass {
         if ($user==0) $info="<li><a href=\"$this->page_registration\">
             <span class=\"fas fa-user-plus\"></span><span> {registration}</span>
         </a></li>
-        <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#myModal\">
+        <li><a href=\"#\" data-toggle=\"modal\" data-target=\"#LoginModal\">
             <span class=\"fas fa-sign-in-alt\"></span><span> {login}</span>
         </a></li>";
         else $info="<li><a href=\"#\" class=\"pointer\" onClick=\"logoutForm();\">

@@ -350,7 +350,6 @@ class ProductsClass extends CatalogueClass {
             $images=$db->result($r,$i-1,"IMAGES");
             $status=$db->result($r,$i-1,"STATUS");
             $check_amount=$this->getGroupTreeAmount($head_id, $str_id_str);
-            $header_list="";
             if ($images=="") $photo=$this->noPhoto; else $photo="/uploads/images/group_tree_head/$images";
             if ($status && $check_amount) {
                 $list.="<li id=\"head_id_$head_id\" onclick=\"showCarDetailsStrMin($head_id);\">
@@ -358,7 +357,7 @@ class ProductsClass extends CatalogueClass {
                         <div class=\"col-lg-4 col-8\"><img src=\"$photo\" alt=\"$images\" title=\"$tex_text\"></div>
                         <div class=\"col-lg-8 col-4\"><span>$tex_text</span></div>
                     </div>
-                    <div id=\"manufacture_head$head_id\" class=\"tree-list_min dnone\">$header_list</div>
+                    <div id=\"manufacture_head$head_id\" class=\"tree-list_min dnone\"></div>
                 </li>";
             }
         }

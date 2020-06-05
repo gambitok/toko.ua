@@ -20,7 +20,7 @@
         gtag('config', 'AW-1023462949');
 	</script>
 
-    {google_conversation}
+    {site_google_conversation}
 
 	<title>{site_title}</title>
     <meta http-equiv="Content-Type" content="text/html" charset="windows-1251">
@@ -123,7 +123,7 @@
 			]
 		}
 	</script>
-	{script_breadcrumbs}
+	{site_script_breadcrumbs}
 	{site_page_pagination}
 
 	<!--socials-->
@@ -372,13 +372,11 @@
                         <ul class="header-phone-nav__list">
                             <li>
                                 <a href="{site_lang_prefix}/catalogue/">
-                                    <!--<span class="fas fa-car"></span>-->
                                     <img src="/images/icons/header/garage.png" alt="Garage">
                                 </a>
                             </li>
                             <li>
                                 <a href="{site_lang_prefix}/profile/">
-                                    <!--<span class="fas fa-user-alt"></span>-->
                                     <img src="/images/icons/header/profile.png" alt="Profile">
                                 </a>
                             </li>
@@ -387,7 +385,6 @@
                             <!--</div>-->
                             <li>
                                 <a onclick="showBasketMinForm();">
-                                    <!--<span class="fas fa-shopping-basket"></span>-->
                                     <img src="/images/icons/header/basket.png" alt="Basket">
                                 </a>
                             </li>
@@ -416,31 +413,30 @@
 		</div>
 
 		<div id="navigation-hide" class="row header-nav-hide" style="display:none;">
-            <div class="col-12 content-nav-hide">
-				<div class="container">
-					<span id="content-nav__header" class="content-nav__header"></span>
-					<div id="content-nav__content" class="content-nav__content tree-block"></div>
-				</div>
+            <div class="col-12 content-nav">
+                <div class="container">
+                    <div id="content-nav__content" class="content-nav__content tree-block"></div>
+                </div>
+                <div id="content-nav__footer"  class="content-nav__footer">
+
+                </div>
             </div>
 		</div>
 
 	</header>
 
 	<section class="row main">
+        <div id="metro" class="wdt100">{main_metro}</div>
 		<div id="catalogue" class="container pad0">
 			<div id="catalogue-auto">{main_auto_window}</div>
-			{site_breadcrumbs}
-			<div id="catalogue-main">
-				{main_window}
-			</div>
+			<div id="catalogue-breadcrumbs">{main_site_breadcrumbs}</div>
+			<div id="catalogue-main">{main_window}</div>
+            <div id="catalogue-seo">{main_seo_text}</div>
 		</div>
-		{main_seo_text}
 	</section>
 
 	<footer>
-
         <div class="footer">
-
             <div class="row footer__socials">
                 <div class="container">
                     <div class="row align-items-center">
@@ -456,7 +452,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row footer__contacts">
                 <div class="container">
                     <div class="row">
@@ -479,14 +474,12 @@
                     </div>
                 </div>
             </div>
-
             <div class="row footer__cities">
                 <!--footers_block-->
             </div>
-
         </div>
-
 	</footer>
+
 </div>
 
 <div id="modals" class="modals">
@@ -655,7 +648,6 @@
 		</div>
 	</div>
 
-
     <!-- Modal Cars-->
     <div class="modal fade" id="CarsForm" role="dialog" tabindex="-1">
         <div class="modal-dialog">
@@ -695,7 +687,7 @@
 	</div>
 
 	<!-- Modal Login-->
-	<div class="modal fade" id="myModal" role="dialog">
+	<div class="modal fade" id="LoginModal" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -791,36 +783,23 @@
 	</div>
 
 	<!--Loader Form-->
-	<div class="modal fade" id="LoaderForm" role="dialog" data-toggle="modal" data-backdrop="static" data-keyboard="false">
-		<div class="modal-dialog">
-			<div class="modal-content modal-loader">
-				<div class="text-center"><img src="{image_logotype}" alt="loader"></div>
-				<div class="loader-dots">
-					<div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div><div class="dot dot4"></div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!--<div class="modal fade" id="LoaderForm" role="dialog" data-toggle="modal" data-backdrop="static" data-keyboard="false">-->
+		<!--<div class="modal-dialog">-->
+			<!--<div class="modal-content modal-loader">-->
+				<!--<div class="text-center"><img src="{image_logotype}" alt="loader"></div>-->
+				<!--<div class="loader-dots">-->
+					<!--<div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div><div class="dot dot4"></div>-->
+				<!--</div>-->
+			<!--</div>-->
+		<!--</div>-->
+	<!--</div>-->
 
 </div>
 
 <!--Mobile Navigation-->
 <div class="navigations">
 	<nav id="menu" class="panel" role="navigation">
-		<ul>
-			<li class="title">
-                <div class="row">
-                    <div class="col-8">{lang_select}</div>
-                    <div class="col-4 text-right"><a class="bar"><span class="fa fa-times"></span></a></div>
-                </div>
-            </li>
-			{region_select_phone}
-			<li><a href="{site_lang_prefix}/">{main_page}</a></li>
-			<li><a href="{site_lang_prefix}/news/">{news_cap}</a></li>
-			<li><a href="{site_lang_prefix}/contacts/">{contacts_cap}</a></li>
-			<li>{profile_mobile}</li>
-			<li><a href="#" onclick="showBasketMinForm();">{basket_cap}<span> ({basket_summ})</span></a></li>
-		</ul>
+        {site_mobile_panel}
 	</nav>
 </div>
 
@@ -830,6 +809,9 @@
         <a href="header" rel="nofollow"><span class="mob-span"><span class="fas fa-chevron-up"></span></span></a>
     </div>
 </div>
+
+<!--Backdrop-->
+<div class="backdrop"></div>
 
 </body>
 </html>
@@ -847,38 +829,4 @@
 <script type="text/javascript" src="/js/client.js"></script>
 <script type="text/javascript" src="/js/cars.js"></script>
 
-<script>
-    $(".header-main").mouseover(function() {
-        closeHideNavigation();
-    });
-    $(".main").mouseover(function() {
-        closeHideNavigation();
-    });
-    $(".footer").mouseover(function() {
-        closeHideNavigation();
-    });
-    // $(".header-nav__li").mouseover(function() {
-    //     showHideNavigation($(this).attr("data-nav-id"));
-    // });
-    var timer;
-    $('.header-nav__li').on({'mouseover': function () {
-            var self = this;
-            timer = setTimeout(function () {
-                showHideNavigation($(self).attr("data-nav-id"));
-            }, 500);
-        },
-        'mouseout' : function () {
-            clearTimeout(timer);
-        }
-    });
-
-    $("body").click(function(e) {
-        if ($(e.target).attr('id') == 'search_art'
-           || $(e.target).attr('class') == 'search-nav'
-           || $(e.target).attr('class') == 'search-nav__item'
-        ) { return true; } else {
-            dropHistoryHide();
-        }
-    });
-</script>
 

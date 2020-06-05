@@ -287,12 +287,22 @@ function showHideNavigation(head_id) {
     JsHttpRequest.query(folder,{'w':'showHeadTemplate', 'head_id':head_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
         $("#content-nav__content").html(result.content);
-        $("#content-nav__header").html(result.header);
+        // $("#content-nav__header").html(result.header);
+        $("#content-nav__footer").html(result.footer);
+        $(".header-nav__li").each(function () {
+            $(this).removeClass("header-nav__li-active");
+        });
+        $("li[data-nav-id='"+head_id+"']").addClass("header-nav__li-active");
+        $(".backdrop").addClass("backdrop-show");
     }}, true);
 }
 
 function closeHideNavigation() {
     $("#navigation-hide").hide();
+    $(".header-nav__li").each(function () {
+        $(this).removeClass("header-nav__li-active");
+    });
+    $(".backdrop").removeClass("backdrop-show");
 }
 
 function getSpecialOffersList() {

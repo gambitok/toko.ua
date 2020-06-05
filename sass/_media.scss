@@ -296,10 +296,6 @@
         max-width: unset;
     }
 
-    .tree-item {
-        width: calc(50% - 15px);
-    }
-
     .seo_auto ul.list-inline {
         column-count: 2;
     }
@@ -352,12 +348,43 @@
 
     /*==== /GARAGE ====*/
 
+    .tree-block {
+        &-title {
+            height: 200px;
+        }
+    }
+
+    .tree-item {
+        width: 100%;
+        margin: 0;
+        padding-left: 15px;
+        &-title {
+            a {
+                line-height: 3;
+            }
+        }
+        &-list {
+            margin-left: 10px;
+            margin-bottom: 20px;
+            &__element {
+                a {
+                    line-height: 2;
+                }
+            }
+        }
+    }
+
 }
 
 /* ==== /PHONE ==== */
 
 /*==== PAD PRO ====*/
 @media (min-width: 992px) and (max-width: 1275px) {
+    .home-banner {
+        width: 100%;
+        margin: 0;
+        left: 0;
+    }
     .header-main {
         .phones {
             padding: 0;
@@ -508,6 +535,32 @@
     }
 
     /*==== /GARAGE ====*/
+
+    .tree-block {
+        &-title {
+            height: 200px;
+        }
+    }
+
+    .tree-item {
+        width: 100%;
+        margin: 0;
+        padding-left: 15px;
+        &-title {
+            a {
+                line-height: 3;
+            }
+        }
+        &-list {
+            margin-left: 10px;
+            margin-bottom: 20px;
+            &__element {
+                a {
+                    line-height: 2;
+                }
+            }
+        }
+    }
 
 }
 

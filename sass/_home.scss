@@ -25,7 +25,7 @@
         margin-top: 15px;
     }
     &-banner {
-        width: 100vw;
+        width: calc(100vw - 5px);
         position: relative;
         margin-left: -50vw;
         height: auto;

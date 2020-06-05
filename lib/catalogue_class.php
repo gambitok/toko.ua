@@ -210,15 +210,15 @@ class CatalogueClass {
     }
 
     function getDetailsList() { $db = DbSingleton::getTokoDb();
-        $language=new LangClass;
+        $language=new LangClass; $prefix=$language->getLangPrefix(); $automan=new AutoClass;
         $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
         $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1;"); $n=$db->num_rows($r); $list="";
         for ($i=1;$i<=$n;$i++){
             $head_id=$db->result($r,$i-1,"HEAD_ID");
             $tex_text=$db->result($r,$i-1,"TEX_$lang_cap");
-            // onmouseout="closeHideNavigation();"
-            // onmouseover=\"showHideNavigation($head_id);\"
-            $list.="<li class=\"header-nav__li\" data-nav-id=\"$head_id\">$tex_text</li>";
+            list(, $text_link)=$automan->getHeadNewDescr($head_id);
+            $header="<a href=\"https://toko.ua$prefix/catalog/$text_link/\">$tex_text</a>";
+            $list.="<li class=\"header-nav__li\" data-nav-id=\"$head_id\">$header</li>";
         }
         return $list;
     }

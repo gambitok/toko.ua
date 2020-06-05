@@ -13,7 +13,7 @@ if ($w=="") {
 } else {
     if ($template_id=="" || $template_id==0) {
         $content=str_replace("{main_window}", $parameters->getHtmlForm("error/404"), $content);
-        $content=str_replace("{site_breadcrumbs}","",$content);
+        $content=str_replace("{main_site_breadcrumbs}","",$content);
         $content=str_replace("{site_page_pagination}","",$content);
     } else {
         list($list, $max_page) = $pattern->showProductsForm($template_id, $page, $link);

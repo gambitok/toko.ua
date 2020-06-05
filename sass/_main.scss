@@ -14,6 +14,22 @@ html {
     letter-spacing: 0.5px;
 }
 
+.backdrop {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+    &-show {
+        left: 0;
+        opacity: 1;
+    }
+}
+
 /*==== PAGE 404 ====*/
 .page-404 {
     h1 {
@@ -1015,6 +1031,8 @@ header {
 /*==== NAVIGATION =====*/
 .header-nav {
     background: $site_main_primary;
+    position: relative;
+    z-index: 999;
     &-hide {
         position: absolute;
         width: 100%;
@@ -1047,6 +1065,12 @@ header {
             align-items: center;
             position: relative;
             margin-left: -1px;
+            a {
+                color: #fff;
+                &:hover {
+                    text-decoration: none;
+                }
+            }
             &:hover {
                 background: rgba(200, 67, 54, 1);
                 color: $white;
@@ -1065,17 +1089,42 @@ header {
             }
         }
     }
+    &__li {
+        &-active {
+            background: $white!important;
+            a {
+                color: $site_main_primary!important;
+            }
+            &:hover {
+                background: $white!important;
+                a {
+                    color: $site_main_primary!important;
+                }
+            }
+        }
+    }
 }
 
 .content-nav {
-    &-hide {
-        z-index: 999999;
-        background: $white;
-        border: 4px solid #f44336;
-        border-top: none;
-        height: auto;
+    z-index: 999999;
+    background: $white;
+    border-top: none;
+    height: auto;
+    padding: 0;
+    box-shadow: 0 3px 3px $black;
+    //&-hide {
+    //}
+    &__content {
+        margin-top: 15px;
+    }
+    &__footer {
+        background: #f1f1f1;
         padding: 15px;
-        box-shadow: 0 2px 4px $black;
+        a {
+            color: #228b94;
+            display: block;
+            text-align: right;
+        }
     }
     &__header {
         a {
@@ -1466,9 +1515,22 @@ header {
     display: flex;
     flex-wrap: wrap;
     &-title {
+        background-size: cover;
+        background-position-y: center;
+        background-repeat: no-repeat;
         flex: 1 0 100%;
-        h1 {
-            font-size: 24px;
+        height: 500px;
+        display: flex;
+        flex-flow: column-reverse;
+        margin-top: -15px;
+        &__text {
+            height: 100px;
+            background: rgba(34,138,148,.7);
+            padding: 30px;
+            h1 {
+                color: $white;
+                font-size: 24px;
+            }
         }
     }
     .tree-item {
@@ -1476,7 +1538,9 @@ header {
         &-title {
             a {
                 font-size: 16px;
+                font-weight: bold;
                 color: #228b94;
+                line-height: 3;
             }
         }
         &-list {
@@ -1485,6 +1549,7 @@ header {
                 a {
                     font-size: 14px;
                     color: #000;
+                    line-height: 2;
                 }
             }
         }

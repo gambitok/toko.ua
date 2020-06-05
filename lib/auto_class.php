@@ -1273,6 +1273,15 @@ class AutoClass {
         return $list;
     }
 
+    function getDetailsHeadImage($head_id) { $db = DbSingleton::getTokoDb();
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 AND `HEAD_ID`='$head_id' LIMIT 1;");
+        $head_tex_text = $db->result($r, 0, "TEX_RU");
+        $title="<div class='tree-block-title__text'><div class='container pad0'><h1>$head_tex_text</h1></div></div>";
+        $img="$head_id.jpg";
+        $list="<div class='tree-block-title' style=\"background-image: url('/images/tree_head/$img');\">$title</div>";
+        return $list;
+    }
+
     // CATALOG / TO I FILTRI
     function getDetailsList($head, $category="", $mfa_link="", $mod_link="") { $db = DbSingleton::getTokoDb();
         $language=new LangClass; $prefix=$language->getLangPrefix();
@@ -1287,10 +1296,8 @@ class AutoClass {
             $head_id = $db->result($r3, $i3-1, "HEAD_ID");
             $head_tex_text = $db->result($r3, $i3-1, "TEX_RU");
             $head_tex_link = $db->result($r3, $i3-1, "TEX_LINK");
-            $head!="" ? $title="<h1>$head_tex_text</h1>" : $title="<span><a href='https://toko.ua$prefix/catalog/$head_tex_link/'>$head_tex_text</a></span>";
+            $head!="" ? $title="<div class='tree-block-title__text'><h1>$head_tex_text</h1></div>" : $title="<span><a href='https://toko.ua$prefix/catalog/$head_tex_link/'>$head_tex_text</a></span>";
             $category=="" ?: $title="";
-
-            $list.="<div class='tree-block-title'>$title</div>";
 
             $list.="<div class='tree-item'>";
 
@@ -1302,10 +1309,9 @@ class AutoClass {
                 $category!="" ? $title_cat="<h1>$cat_tex_text</h1>" : $title_cat="<a href='https://toko.ua$prefix/catalog/$head_tex_link/$cat_tex_link/'>$cat_tex_text</a>";
 
                 $list.="<div class='tree-item-title'>$title_cat</div>";
-
                 $list.="<div class='tree-item-list'>";
 
-                $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `CAT_ID`='$cat_id' ORDER BY `POSITION`;"); $n=$db->num_rows($r);
+                $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `CAT_ID`='$cat_id' ORDER BY `TEX_RU` ASC;"); $n=$db->num_rows($r);
                 for ($i=1;$i<=$n;$i++) {
                     $tex_text=$db->result($r,$i-1,"TEX_RU");
                     $tex_link=$db->result($r,$i-1,"TEX_LINK");
@@ -1319,7 +1325,6 @@ class AutoClass {
                 }
                 $list.="</div>";
             }
-
             $list.="</div>";
         }
         $list.="</div>";

@@ -27,6 +27,12 @@ if ($page>1) if ($page>$pages_count) {
 $search_form=$prod->getHtmlForm("car_form_div");
 $search_form=str_replace("{car_content}", $car_content, $search_form);
 
+if ($car_content=="") {
+    $search_form="";
+    $head_id=$automan->getHeadNewLinkStr($some_link);
+    if ($linka[2]=="") $content=str_replace("{main_metro}", "<div class='wdt100'>".$automan->getDetailsHeadImage($head_id)."</div>", $content);
+}
+
 $content=str_replace("{main_auto_window}", $search_form, $content);
 $content=str_replace("{main_window}", $form1, $content);
 $content=str_replace("{site_page_pagination}", $pages_count>0 ?  $catalogue->getPagePagination($page, $pages_count) : "", $content);

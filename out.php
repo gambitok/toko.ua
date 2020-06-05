@@ -26,18 +26,19 @@ if ($path=="seoshield-client") {
 }
 
 include_once(RDD . "/event/menu.php");
+
+// Main HEAD HTML
+$content = str_replace("{site_lang_html}", getSiteLang(), $content);
+$content = str_replace("{site_google_conversation}", "", $content);
 $content = str_replace("{site_title}", getTitle($path), $content);
-$content = str_replace("{site_breadcrumbs}", printBreadcrumbs($path)[0], $content);
-$content = str_replace("{script_breadcrumbs}", printBreadcrumbs($path)[1], $content);
-$content = str_replace("{main_auto_window}", "", $content);
 $content = str_replace("{site_description}", getDescription($path), $content);
 $content = str_replace("{site_keywords}", getKeywords($path), $content);
-$content = str_replace("{site_lang_html}", getSiteLang(), $content);
-$content = str_replace("{site_lang_prefix}", $language->getLangPrefix(), $content);
+$content = str_replace("{site_script_breadcrumbs}", printBreadcrumbs($path)[1], $content);
 $content = str_replace("{site_page_pagination}", "", $content);
-$content = str_replace("{google_conversation}", "", $content);
-$seo_text = "<!--seo_text_start--><!--seo_text_end-->";
+$content = str_replace("{site_lang_prefix}", $language->getLangPrefix(), $content);
 
+// Main SEO BLOCK
+$seo_text = "<!--seo_text_start--><!--seo_text_end-->";
 if(isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') === false && $_SERVER['REQUEST_METHOD'] === 'GET'){
     if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest')){
         if(file_exists(RDD."/seoshield-client/main.php"))
@@ -54,7 +55,12 @@ if(isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') =
     }
 }
 
+// Main HTML
 $content = str_replace("{main_seo_text}", $seo_text=="" || $seo_text=="<!--seo_text_start--><!--seo_text_end-->" ? "" : getSeoText($seo_text), $content);
+$content = str_replace("{main_auto_window}", "", $content);
+$content = str_replace("{main_site_breadcrumbs}", printBreadcrumbs($path)[0], $content);
+$content = str_replace("{main_window}", "", $content);
+$content = str_replace("{main_metro}", "", $content);
 
 $content = getContent($content);
 $content = translateContent($content);

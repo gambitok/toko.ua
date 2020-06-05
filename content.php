@@ -198,7 +198,7 @@ if ($_REQUEST["w"]=="addNewAddressForm"){ $GLOBALS['_RESULT'] = array("content"=
 
 if ($_REQUEST["w"]=="triggerDetailCar"){ list($content,$header,$format,$skip_id,$title)=$catalog->triggerDetailCar($_REQUEST["type_id"],$_REQUEST["year"],$_REQUEST["manufacture"],$_REQUEST["model"],$_REQUEST["model_id"],$_REQUEST["group"],$_REQUEST["str_id"]); $GLOBALS['_RESULT'] = array("content"=>$content, "header"=>$header, "format"=>$format, "skip_id"=>$skip_id, "title"=>$title);}
 
-if ($_REQUEST["w"]=="showHeadTemplate"){ list($content,$header)=$menu->showHeadTemplate($_REQUEST["head_id"]); $GLOBALS['_RESULT'] = array("content"=>$content,"header"=>$header);}
+if ($_REQUEST["w"]=="showHeadTemplate"){ list($content,$header,$footer)=$menu->showHeadTemplate($_REQUEST["head_id"]); $GLOBALS['_RESULT'] = array("content"=>$content,"header"=>$header,"footer"=>$footer);}
 
 if ($_REQUEST["w"]=="getSpecialOffersList"){ $GLOBALS['_RESULT'] = array("content"=>$menu->getSpecialOffersList($_REQUEST["template_id"],$_REQUEST["update_actions"])[0]);}
 

@@ -34,7 +34,7 @@ function showLoginForm() { "use strict";
     if (phone===undefined || phone==="") phone=$("#input_phone").val();
     if (phone===undefined || phone==="") phone=$("#input_phone2").val();
     $("#userpassword").val("");
-    $("#myModal").modal("show");
+    $("#LoginModal").modal("show");
     $("#userlogin").val(phone);
     document.getElementById("userpassword").select();
 }

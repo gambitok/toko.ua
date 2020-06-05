@@ -523,7 +523,9 @@ class MenuClass {
         list($tex_text, $text_link)=$automan->getHeadNewDescr($head_id);
         $header="<a href=\"https://toko.ua/catalog/$text_link/\">$tex_text</a>";
         $list=$catalogue->getGroupTreeStr($head_id,"",$max_count);
-        return array($list, $header);
+        $footer="<a href=\"https://toko.ua/catalog/$text_link\">{show_all_cap} <i class=\"fa fa-chevron-right\"></i></a>";
+        $footer=$this->replaceLang($footer);
+        return array($list, $header, $footer);
     }
 
     function getGarageLink() {
@@ -532,6 +534,21 @@ class MenuClass {
         $garage_count=$automan->getGarageAutoCount()[0];
         $garage_count=="" ? $garage_link="href=\"https://toko.ua$prefix/catalogue/auto/\"" : $garage_link="onclick=\"showGarageForm();\"";
         return $garage_link;
+    }
+
+    function getMediaNavPanel() {
+        $language=new LangClass; $profile=new ProfileClass;
+        $form=$this->getHtmlForm("media/nav_panel");
+        $form=str_replace("{site_lang_prefix}", $language->getLangPrefix(), $form);
+        $form=str_replace("{lang_select}", $this->getLanguageList(), $form);
+        if (!$profile->getClientInfo()) {
+            $form=str_replace("{region_select}", $this->getRegionSelect(), $form);
+            $form=str_replace("{region_select_phone}", "<li>".$this->getRegionSelect()."</li>", $form);
+        } else {
+            $form=str_replace("{region_select}", "", $form);
+            $form=str_replace("{region_select_phone}", "", $form);
+        }
+        return $form;
     }
 
 }

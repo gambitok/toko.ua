@@ -1,5 +1,39 @@
 var folder='/content.php';
 
+$(".header-main").mouseover(function() {
+    closeHideNavigation();
+});
+$(".main").mouseover(function() {
+    closeHideNavigation();
+});
+$(".footer").mouseover(function() {
+    closeHideNavigation();
+});
+$(".backdrop").mouseover(function() {
+    closeHideNavigation();
+});
+
+var timer;
+$('.header-nav__li').on({'mouseover': function () {
+        var self = this;
+        timer = setTimeout(function () {
+            showHideNavigation($(self).attr("data-nav-id"));
+        }, 500);
+    },
+    'mouseout' : function () {
+        clearTimeout(timer);
+    }
+});
+
+$("body").click(function(e) {
+    if ($(e.target).attr('id') == 'search_art'
+        || $(e.target).attr('class') == 'search-nav'
+        || $(e.target).attr('class') == 'search-nav__item'
+    ) { return true; } else {
+        dropHistoryHide();
+    }
+});
+
 function detectmob() {
     if (navigator.userAgent.match(/Android/i)
         || navigator.userAgent.match(/webOS/i)
