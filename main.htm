@@ -368,22 +368,33 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-9 pad0 text-right">
+                    <div class="col-9 pad0">
                         <ul class="header-phone-nav__list">
                             <li>
-                                <a href="{site_lang_prefix}/catalogue/"><span class="fas fa-car"></span></a>
+                                <a href="{site_lang_prefix}/catalogue/">
+                                    <!--<span class="fas fa-car"></span>-->
+                                    <img src="/images/icons/header/garage.png" alt="Garage">
+                                </a>
                             </li>
                             <li>
-                                <a href="{site_lang_prefix}/profile/"><span class="fas fa-user-alt"></span></a>
+                                <a href="{site_lang_prefix}/profile/">
+                                    <!--<span class="fas fa-user-alt"></span>-->
+                                    <img src="/images/icons/header/profile.png" alt="Profile">
+                                </a>
                             </li>
                             <!--<div class="basket_status">-->
                             <!--<div id="basket_status3" class="basket_phone {basket_style}">{basket_count}</div>-->
                             <!--</div>-->
                             <li>
-                                <a onclick="showBasketMinForm();"><span class="fas fa-shopping-basket"></span></a>
+                                <a onclick="showBasketMinForm();">
+                                    <!--<span class="fas fa-shopping-basket"></span>-->
+                                    <img src="/images/icons/header/basket.png" alt="Basket">
+                                </a>
                             </li>
                             <li class="bar">
-                                <a title="{mob_menu}"><span class="fas fa-bars"></span></a>
+                                <a title="{mob_menu}">
+                                    <img src="/images/icons/header/bar.svg" alt="Bar">
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -406,8 +417,10 @@
 
 		<div id="navigation-hide" class="row header-nav-hide" style="display:none;">
             <div class="col-12 content-nav-hide">
-                <span id="content-nav__header" class="content-nav__header"></span>
-                <div id="content-nav__content" class="content-nav__content tree-block"></div>
+				<div class="container">
+					<span id="content-nav__header" class="content-nav__header"></span>
+					<div id="content-nav__content" class="content-nav__content tree-block"></div>
+				</div>
             </div>
 		</div>
 

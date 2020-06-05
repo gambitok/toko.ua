@@ -4,7 +4,6 @@ body,
 html {
     width: 100%;
     height: 100%;
-    overflow-x: hidden;
 }
 
 * {
@@ -433,6 +432,10 @@ header {
     .contacts {
         padding: 0;
         font-size: 14px;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         a:hover {
             color: #000;
             text-decoration: none;
@@ -480,6 +483,7 @@ header {
         }
     }
     .phones {
+        text-align: center;
         ul {
             list-style: none;
             margin: 0;
@@ -685,21 +689,21 @@ header {
         }
         &__list {
             margin: 0;
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
             li {
-                display: inline-block;
+                display: block;
+                margin-left: 10px;
                 a, a:not([href]):not([tabindex]) {
                     cursor: pointer;
                     display: block;
-                    background: #fff;
-                    color: #292929;
-                    width: 40px;
-                    height: 40px;
-                    border: 1px solid #ccc;
-                    border-radius: .25em;
-                    padding: 11px;
-                    span {
+                    padding: 5px;
+                    img {
+                        width: 30px;
                         display: block;
                         margin: 0 auto;
+                        height: 28px;
                     }
                     &:hover {
                         text-decoration: none;
@@ -1467,21 +1471,35 @@ header {
             font-size: 24px;
         }
     }
-}
-.tree-item {
-    margin: 0 30px 30px 0;
-    &-title {
-        a {
-            font-size: 16px;
-            color: #228b94;
+    .tree-item {
+        margin: 0 30px 30px 0;
+        &-title {
+            a {
+                font-size: 16px;
+                color: #228b94;
+            }
+        }
+        &-list {
+            margin-bottom: 15px;
+            &__element {
+                a {
+                    font-size: 14px;
+                    color: #000;
+                }
+            }
         }
     }
-    &-list {
-        margin-bottom: 15px;
-        &__element {
-            a {
+}
+
+.tree-list_min {
+    .tree-block {
+        display: block;
+        .tree-item {
+            width: 100%;
+            span {
                 font-size: 14px;
-                color: #000;
+                text-align: left;
+                font-weight: 400;
             }
         }
     }
@@ -1499,26 +1517,26 @@ header {
     }
 }
 
-.tree-title {
-    a {
-        color: $site_info_primary;
-    }
-    span {
-        display: block;
-        font-size: 20px;
-        font-weight: bold;
-    }
-}
+//.tree-title {
+//    a {
+//        color: $site_info_primary;
+//    }
+//    span {
+//        display: block;
+//        font-size: 20px;
+//        font-weight: bold;
+//    }
+//}
 
-.tree-str {
-    list-style: none;
-    display: block;
+//.tree-str {
+//    list-style: none;
+//    display: block;
     //display: flex;
     //flex-direction: row;
     //justify-content: start;
     //flex-wrap: wrap;
     //align-content: flex-start;
-}
+//}
 
 //.tree-item {
 //    display: block;

@@ -13,13 +13,16 @@
     }
 
     .header-phone,
-    .fixed-phone,
     .table-responsive,
     .info_block,
     .searchtab__appl-phone,
     .nav-tabs {
         display: block;
     }
+
+    //.fixed-phone {
+    //    display: block;
+    //}
 
     .btn-basket {
         float: right;

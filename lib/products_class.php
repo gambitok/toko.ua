@@ -337,7 +337,7 @@ class ProductsClass extends CatalogueClass {
         return $list;
     }
 
-    // link: /catalog/shrus/kia/sportage
+    // MIN DETAILS LIST (CATALOG)
     function getCarDetailsMin($str_id_str, $typ_id) { $db = DbSingleton::getTokoDb();
         $language=new LangClass; $automan=new AutoClass;
         $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
@@ -371,8 +371,6 @@ class ProductsClass extends CatalogueClass {
         $form=$this->replaceLang($form);
         return $form;
     }
-
-
 
     /*SELECT CAR =====================================================*/
 

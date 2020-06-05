@@ -9,7 +9,7 @@
 /* MEDIA QUERIES FOR MOBILE-FIRST DESIGN */
 /*==== Variables ====*/
 /* ==== Main Page ====*/
-body, html { width: 100%; height: 100%; overflow-x: hidden; }
+body, html { width: 100%; height: 100%; }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; letter-spacing: 0.5px; }
 
@@ -181,7 +181,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-top a:hover { color: #000; }
 
-.header-top .contacts { padding: 0; font-size: 14px; }
+.header-top .contacts { padding: 0; font-size: 14px; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
 .header-top .contacts a:hover { color: #000; text-decoration: none; transition: all .2s ease; }
 
@@ -198,6 +198,8 @@ header { width: 100%; color: #a9a9a9; }
 .header-main .logotype-main { height: auto; position: relative; }
 
 .header-main .logotype-main img { width: 100%; }
+
+.header-main .phones { text-align: center; }
 
 .header-main .phones ul { list-style: none; margin: 0; }
 
@@ -285,13 +287,13 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-phone-nav__logo img { width: 100%; }
 
-.header-phone-nav__list { margin: 0; }
+.header-phone-nav__list { margin: 0; display: flex; flex-wrap: nowrap; justify-content: flex-end; }
 
-.header-phone-nav__list li { display: inline-block; }
+.header-phone-nav__list li { display: block; margin-left: 10px; }
 
-.header-phone-nav__list li a, .header-phone-nav__list li a:not([href]):not([tabindex]) { cursor: pointer; display: block; background: #fff; color: #292929; width: 40px; height: 40px; border: 1px solid #ccc; border-radius: .25em; padding: 11px; }
+.header-phone-nav__list li a, .header-phone-nav__list li a:not([href]):not([tabindex]) { cursor: pointer; display: block; padding: 5px; }
 
-.header-phone-nav__list li a span, .header-phone-nav__list li a:not([href]):not([tabindex]) span { display: block; margin: 0 auto; }
+.header-phone-nav__list li a img, .header-phone-nav__list li a:not([href]):not([tabindex]) img { width: 30px; display: block; margin: 0 auto; height: 28px; }
 
 .header-phone-nav__list li a:hover, .header-phone-nav__list li a:not([href]):not([tabindex]):hover { text-decoration: none; }
 
@@ -603,23 +605,23 @@ header { width: 100%; color: #a9a9a9; }
 
 .tree-block-title h1 { font-size: 24px; }
 
-.tree-item { margin: 0 30px 30px 0; }
+.tree-block .tree-item { margin: 0 30px 30px 0; }
 
-.tree-item-title a { font-size: 16px; color: #228b94; }
+.tree-block .tree-item-title a { font-size: 16px; color: #228b94; }
 
-.tree-item-list { margin-bottom: 15px; }
+.tree-block .tree-item-list { margin-bottom: 15px; }
 
-.tree-item-list__element a { font-size: 14px; color: #000; }
+.tree-block .tree-item-list__element a { font-size: 14px; color: #000; }
+
+.tree-list_min .tree-block { display: block; }
+
+.tree-list_min .tree-block .tree-item { width: 100%; }
+
+.tree-list_min .tree-block .tree-item span { font-size: 14px; text-align: left; font-weight: 400; }
 
 .tree-list { background: #fff; border: none; padding: 15px; transition: all 2s linear; width: 100%; }
 
 .tree-list-clear { border: none; padding: 0; }
-
-.tree-title a { color: #228b94; }
-
-.tree-title span { display: block; font-size: 20px; font-weight: bold; }
-
-.tree-str { list-style: none; display: block; }
 
 /*==== /TREE LIST =====*/
 /*==== FOOTER ====*/
@@ -911,11 +913,11 @@ header { width: 100%; color: #a9a9a9; }
 
 .home-banner .gallery-item-image { background: var(--background); height: 100%; }
 
-.home-banner .gallery-item-panel { background: rgba(34, 138, 148, 0.7); color: #fff; position: absolute; bottom: 0; left: 0; right: 0; padding: 2% 5%; height: 220px; display: flex; }
+.home-banner .gallery-item-panel { background: rgba(34, 138, 148, 0.7); color: #fff; position: absolute; bottom: 0; left: 0; right: 0; padding: 2% 5%; height: 12vw; display: flex; }
 
-.home-banner .gallery-item-panel__title { font-size: 40px; font-weight: 700; margin-right: 3%; position: relative; text-align: right; overflow: hidden; white-space: normal; text-overflow: ellipsis; max-width: 35%; }
+.home-banner .gallery-item-panel__title { font-size: 2vw; font-weight: 700; margin-right: 3%; position: relative; text-align: right; overflow: hidden; white-space: normal; text-overflow: ellipsis; max-width: 35%; }
 
-.home-banner .gallery-item-panel__text { font-size: 24px; position: relative; padding-left: 3%; text-align: left; overflow: hidden; white-space: normal; text-overflow: ellipsis; border-left: 1px solid #fff; }
+.home-banner .gallery-item-panel__text { font-size: 1.5vw; position: relative; padding-left: 3%; text-align: left; overflow: hidden; white-space: normal; text-overflow: ellipsis; border-left: 1px solid #fff; }
 
 .home-banner .gallery-item-panel__text-center { display: flex; height: 100%; align-items: center; justify-content: center; }
 
@@ -1374,7 +1376,7 @@ table thead td { border: 1px solid #000; }
 
 /* ==== PHONE ==== */
 @media (max-width: 768px) { #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
-  .header-phone, .fixed-phone, .table-responsive, .info_block, .searchtab__appl-phone, .nav-tabs { display: block; }
+  .header-phone, .table-responsive, .info_block, .searchtab__appl-phone, .nav-tabs { display: block; }
   .btn-basket { float: right; }
   .order__header-total { float: left; }
   .tabs-auto { display: block; }
@@ -2061,8 +2063,6 @@ table thead td { border: 1px solid #000; }
 
 .profile__main-form { min-height: 500px; height: 100%; }
 
-.profile__main-form .btn-primary { width: auto; }
-
 .profile__side { padding: 0 15px 0 0; }
 
 .profile-account .row { margin: 0; padding: 15px; border-top: 1px dashed #ddd; }
@@ -2191,7 +2191,7 @@ table thead td { border: 1px solid #000; }
 /*==== Adaptive ====*/
 /* ==== PHONE ==== */
 @media (max-width: 768px) { #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
-  .header-phone, .fixed-phone, .table-responsive, .info_block, .searchtab__appl-phone, .nav-tabs { display: block; }
+  .header-phone, .table-responsive, .info_block, .searchtab__appl-phone, .nav-tabs { display: block; }
   .btn-basket { float: right; }
   .order__header-total { float: left; }
   .tabs-auto { display: block; }
