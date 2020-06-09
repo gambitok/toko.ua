@@ -1,12 +1,16 @@
 <div class="side-tree">
-    <h5><i class="fa fa-wrench"></i> {det_group}</h5>
-    <div>
+    <div class="side-tree-title">
+        <i class="fa fa-wrench"></i> {det_group}
+    </div>
+    <div class="side-tree-search">
         <input type="search" id="my-search" class="text-filter" placeholder="{search_by_category}">
     </div>
-    <div class="side-tree__back {tree_catalogue_class}">
+    <div class="side-tree-return {tree_catalogue_class}">
         <a href="{tree_catalogue}"><i class="fa fa-caret-left"></i> {back_to_catalogue}</a>
     </div>
-    <ul id="my-tree" class="tf-tree">
-        {tree_filter}
-    </ul>
+    <div class="side-tree-list">
+        <ul id="my-tree" class="tf-tree">
+            {tree_filter}
+        </ul>
+    </div>
 </div>

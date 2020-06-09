@@ -162,7 +162,7 @@ if ($_REQUEST["w"]=="changeLangJs"){$GLOBALS['_RESULT'] = array("content"=>$lang
 
 //=basket && order======================================================================================================
 
-if ($_REQUEST["w"]=="moveToBasket"){ list($old_amount,$art_name)=$shop->moveToBasket($_REQUEST["art_id"],$_REQUEST["brand_id"],$_REQUEST["count"],$_REQUEST["stock"],$_REQUEST["storage_id"],$_REQUEST["suppl_id"]); $GLOBALS['_RESULT'] = array("old_amount"=>$old_amount,"art_name"=>$art_name);}
+if ($_REQUEST["w"]=="moveToBasket"){ list($old_amount, $art_name, $basket_count)=$shop->moveToBasket($_REQUEST["art_id"],$_REQUEST["brand_id"],$_REQUEST["count"],$_REQUEST["stock"],$_REQUEST["storage_id"],$_REQUEST["suppl_id"]); $GLOBALS['_RESULT'] = array("old_amount"=>$old_amount,"art_name"=>$art_name,"basket_count"=>$basket_count);}
 
 if ($_REQUEST["w"]=="deleteFromBasket"){ $GLOBALS['_RESULT'] = array("content"=>$shop->deleteFromBasket($_REQUEST["art_id"],$_REQUEST["storage_id"]));}
 
@@ -231,6 +231,8 @@ if ($_REQUEST["w"]=="getCarsSearchContent"){ list($list, $title, $nav, $tab) = $
 if ($_REQUEST["w"]=="clearCarsBlock"){ $GLOBALS['_RESULT'] = array("content"=>$prod->clearCarsBlock($_REQUEST["sel_tab"],$_REQUEST["cur_tab"]));}
 
 if ($_REQUEST["w"]=="showCarsForm"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsForm());}
+
+if ($_REQUEST["w"]=="showCarsForm2"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsForm2());}
 
 if ($_REQUEST["w"]=="showCarsSelectedForm"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelectedForm());}
 

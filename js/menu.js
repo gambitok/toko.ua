@@ -104,6 +104,16 @@ function showGarageForm() { "use strict";
         function (result, errors){ if (errors) {} if (result){
             $("#garage_block").html(result.content);
         }}, true);
+
+    JsHttpRequest.query(folder,{'w':'showCarsForm2'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#garage_404_select").html(result.content[0]);
+            console.log(result.content[1]);
+            if (result.content[1]==1) {
+                console.log("zakriv");
+                toggleCarsNavigation($("div[data-type='manuf']"));
+            }
+        }}, true);
 }
 
 function dropHistoryShow() {

@@ -821,9 +821,10 @@ class AutoClass {
             }
             $auto_form=$this->getChosenAutoGarage($client_id, $user);
         }
-        if ($n==0) $form="<div class=\"content\"><h2>$this->err1</h2></div>";
         $form=str_replace("{garage_list}", $list, $form);
         $form=str_replace("{auto_form}", $auto_form, $form);
+
+        if ($n==0) $form=$this->getHtmlForm("error/404_garage");
         $form=$this->replaceLang($form);
         return $form;
     }

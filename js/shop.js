@@ -2,7 +2,10 @@ function goHome() { location.href = "/"; }
 
 function goBasket() { location.href = "/basket"; }
 
-function stayInOrder() { showAlertModal("{basket_empty}!","{error_cap}",0); }
+function stayInOrder() {
+    // showAlertModal("{basket_empty}!","{error_cap}",0);
+    showNotify("{error_cap}!","{basket_empty}!","danger");
+}
 
 function toggleBasket() { $("#basket_toggle").slideToggle(); }
 
@@ -26,12 +29,13 @@ function showNotify(title,text,type_text) {
         }}, true);
 }
 
-function moveBasket(id,art_id,brand_id,stock,storage_id,suppl_id) { "use strict";
+function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) { "use strict";
     let count_id = $("#count_"+id);
+    let basket_count_id = $("#basket_count_"+id);
     let count = count_id.val();
 
     if (parseInt(stock)<parseInt(count) || parseInt(count)===0) {
-        var secret = parseInt(stock)+1;
+        var secret = parseInt(stock) + 1;
         while (parseInt(secret) > parseInt(stock)) {
             secret = prompt("Выбранное количество продукта превышает доступное количество!", 1);
             if (secret === null) { count_id.val(stock); return; }
@@ -56,6 +60,7 @@ function moveBasket(id,art_id,brand_id,stock,storage_id,suppl_id) { "use strict"
                     if (old_count>0) message_all="<br><b>{total_basket_cap}:</b> "+all_count+" {amount_abbr}.";
                     showNotify("{done_cap}:","{art_cap} '"+art_name+"' - "+message+" {added_to_basket}!" + message_all,"success");
                     showBasketStatus();
+                    basket_count_id.html(result["basket_count"]);
                 }}, true);
         }
     } else {
@@ -69,6 +74,7 @@ function moveBasket(id,art_id,brand_id,stock,storage_id,suppl_id) { "use strict"
                 if (old_count>0) message_all="<br><b>{total_basket_cap}:</b> "+all_count+" {amount_abbr}.";
                 showNotify("{done_cap}:","{art_cap} '"+art_name+"' - "+message+" {added_to_basket}!" + message_all,"success");
                 showBasketStatus();
+                basket_count_id.html(result["basket_count"]);
             }}, true);
     }
 }

@@ -11,10 +11,12 @@ trait Variables {
     }
 
     function getSearchMessages($type_filter) {
+        $form_404=$this->getHtmlForm("error/404_tree");
+        $form_404=$this->replaceLang($form_404);
         switch ($type_filter) {
             case 1:  { $error="<h5 class=\"error_message\">$this->err1</h5>"; $list=""; $jsFilterModel="catalogueFilter();"; break; }
-            case 2:  { $error="<h5 class=\"error_message\">{choose_tree}</h5>"; $list="<h2>$error<h2>"; $jsFilterModel="tecModelsFilter();"; break; }
-            default: { $error="<h5 class=\"error_message\">$this->err1</h5>"; $list=""; $jsFilterModel="catalogueFilter();"; break; }
+            case 2:  { $error="$form_404"; $list=""; $jsFilterModel="tecModelsFilter();"; break; }
+            default: { $error="$form_404"; $list=""; $jsFilterModel="catalogueFilter();"; break; }
         }
         return array($error, $jsFilterModel, $list);
     }

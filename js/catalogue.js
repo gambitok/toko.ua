@@ -246,12 +246,12 @@ function catalogueFilter(order) { "use strict";
     JsHttpRequest.query(folder,{'w':'show_catalogue_filter_all', 'art':art, 'brand':brand, 'bb':bb, 'text':text, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
         function (result, errors){ if (errors) {alert(errors);} if (result){
 
-           $("#cat_search_main").html(result.content[0]);
-           $("#cat_search_filters").html(result.content[1]);
-           $("#cat_search_brands").html(result.content[2]);
-           $("#text_filter").val(result.content[4]);
+            $("#cat_search_main").html(result.content[0]);
+            $("#cat_search_filters").html(result.content[1]);
+            $("#cat_search_brands").html(result.content[2]);
+            $("#text_filter").val(result.content[4]);
 
-           loadInputNumber();
+            loadInputNumber();
 
             var ex1=$("#ex1"), ex3=$("#ex3");
             ex1.slider();

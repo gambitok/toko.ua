@@ -162,6 +162,30 @@
 
 <body>
 
+<!-- Modal Garage-->
+<div class="modal fade" id="GarageForm" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">{garage_cap}</span>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body text-left">
+                <div class="container">
+                    <div class="row">
+                        <div id="garage_block" class="container garage-drop">
+                            {basket_content}
+                        </div>
+                        <div class="container">
+                            <div id="garage_404_select"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="wrapper container-fluid">
 
 	<div class="container">
@@ -664,27 +688,6 @@
             </div>
         </div>
     </div>
-
-	<!-- Modal Garage-->
-	<div class="modal fade" id="GarageForm" role="dialog" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<span class="modal-title">{garage_cap}</span>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-				<div class="modal-body text-left">
-					<div class="container">
-						<div class="row">
-							<div id="garage_block" class="container garage-drop">
-								{basket_content}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<!-- Modal Login-->
 	<div class="modal fade" id="LoginModal" role="dialog">

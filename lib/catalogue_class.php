@@ -693,9 +693,10 @@ class CatalogueClass {
         $filters["max_price"]=$filters["max_dd"]=$count=$main_brand=0;
         $filters=$mas=$brands=array(); $list_brand=""; $brand_ids=[];
         $filters["min_price"]=99999999;
-        $art_id_search=$this->getArticleId($article_nr_search, $brand_nr_search);
 
-        list($error,$jsFilterModel,$list)=$this->getSearchMessages($type_filter);
+        $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
+
+        list($error, $jsFilterModel, $list)=$this->getSearchMessages($type_filter);
 
         if ($where_art_id_str!="") {
             $this->createTemporarySearchTable($temp_key);
@@ -963,7 +964,8 @@ class CatalogueClass {
         $tpoint=$client->getTpoint(); $client_id=$this->getClient();
         $filters["max_price"]=$filters["max_dd"]=$main_brand=$count=0; $list_brand="";
         $current_value=$mas=$filters=$art_id_array=$brands=array();
-        $error="<tr><td colspan=\"8\">$this->err1</td></tr>"; $list="<h2>$error<h2>";
+        $error=$this->getHtmlForm("error/404_tree"); $error=$this->replaceLang($error);
+        $list="$error";
         $art_id_search=$this->getArticleId($article_nr_search, $brand_nr_search);
         $view=$client->getProductView();
 
@@ -1401,6 +1403,11 @@ class CatalogueClass {
         $form=str_replace("{product_button}",$price==0 ? "none" : "",$form);
         $form=str_replace("{product_image}",$showform->getArticleActivePhoto($art_id),$form);
         $form=str_replace("{product_title}","$text $brand_name $article_name",$form);
+
+        $shop=new ShopClass;
+        $basket_amount=$shop->getBasketArticleAmount($art_id, $storage_id);
+        if ($basket_amount>0) $basket_cap="{site_basket}: $basket_amount {amount_abbr}."; else $basket_cap="";
+        $form=str_replace("{basket_amount}",$basket_cap,$form);
 
         $list.="$form";
         !$view ? $list.="$ll" : $list.="";

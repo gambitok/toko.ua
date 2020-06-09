@@ -1121,7 +1121,7 @@ class ProductsClass extends CatalogueClass {
                 $volume_cm = $db->result($r, $i-1, "VOLUME_CM");
                 $fuel_id = $db->result($r, $i-1, "FUEL_ID"); $fuel_text=$this->getFuelName($fuel_id);
                 $fuel_cap = $mod_id."_".$volume_cm."_".$fuel_id;
-                if ($count_types==1) $onclick = "setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/$str_link';"; else $onclick = "toggleCarsTab(this)";
+                if ($count_types==1) $onclick = "setCookie('auto_typ_id','$typ_id'); addToGarage('$typ_id'); location.href='https://toko.ua/catalog/$str_link';"; else $onclick = "toggleCarsTab(this)";
                 $list.="<div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"$onclick\">$volume_cm $fuel_text</div>";
             }
             $title = $this->getModIdText($mod_id);
@@ -1140,7 +1140,7 @@ class ProductsClass extends CatalogueClass {
                 $d_start=$db->result($r,$i-1,"TYP_PCON_START"); if ($d_start==0) {$d_start="";} if (strlen($d_start)==6) {$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
                 $d_end=$db->result($r,$i-1,"TYP_PCON_END"); if ($d_end==0) {$d_end="{cur_time_min}";} if (strlen($d_end)==6) {$d_end=substr($d_end,0,4).".".substr($d_end,4,2);}
                 $eng_cod = $db->result($r,$i-1,"ENG_Cod");
-                $onclick="setCookie('auto_typ_id','$typ_id'); location.href='https://toko.ua/catalog/$str_link';";
+                $onclick="setCookie('auto_typ_id','$typ_id'); addToGarage('$typ_id'); location.href='https://toko.ua/catalog/$str_link';";
                 $list.="<div class=\"cars-tab__block-item cars-tab__block-item-modif\"><a href=\"#\" onclick=\"$onclick\">
                 <b>$typ_text</b> 
                     <table>
@@ -1232,6 +1232,15 @@ class ProductsClass extends CatalogueClass {
     function showCarsForm() {
         $form = $this->getCarsSearch();
         return $form;
+    }
+
+    // Modal Cars Form
+    function showCarsForm2() {
+        $form = $this->getCarsSearch();
+        $auto_typ_id = $this->getCookieAuto();
+        $status=0;
+        if ($auto_typ_id!="") $status=1;
+        return array($form,$status);
     }
 
     // SELECTED CAR FORM

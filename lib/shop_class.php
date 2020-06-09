@@ -213,7 +213,7 @@ class ShopClass {
                     <div class=\"col-12 col-lg-2\"><a href=\"$link\">$art_name</a></div>
                     <div class=\"col-12 col-lg-2\" title=\"$country_name\">$flag $brand_name</div>
                     <div class=\"col-12 col-lg-4\">$text</div>
-                    <div class=\"col-12 col-lg-1\" style='color: #797979'><span title=\"$del\"><i class=\"fas fa-clock\"></i> $dd {day_abbr}.</span></div>
+                    <div class=\"col-12 col-lg-1\" style='color: #606975'><span title=\"$del\"><i class=\"fas fa-clock\"></i> $dd {day_abbr}.</span></div>
                     <div class=\"col-12 col-lg-1\">$amount</div>
                     <div class=\"col-12 col-lg-1\">$price</div>
                     <div class=\"col-12 col-lg-1\">$full_price</div>
@@ -234,7 +234,7 @@ class ShopClass {
         $form=str_replace("{basket_block}", "", $form);
         $form=str_replace("{basket_content}", $bcontent, $form);
         $form=$this->replaceLang($form);
-        return array($form,$sum);
+        return array($form, $sum);
     }
 
     function moveToBasket($art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id) { $db=DbSingleton::getTokoDb();
@@ -246,10 +246,10 @@ class ShopClass {
 
         $r=$db->query("SELECT `amount` FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;"); $n=$db->num_rows($r);
         $price=$catalogue->getArticlePrice($art_id);
-        if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id,$suppl_id,$storage_id);
+        if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
 
         if (!($catalogue->checkActionPrice($art_id))) {} else {
-            list($action_id,$action_amount,$action_price)=$catalogue->checkActionPrice($art_id);
+            list($action_id, $action_amount, $action_price) = $catalogue->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price,1); // to UAH
             if ($amount>=$action_amount) {
                 $status_action=$action_id;
@@ -258,44 +258,55 @@ class ShopClass {
         }
 
         // delivery
-        list(,$delivery_days,$short_delivery_info) = $cat->getTpointDeliveryInfo($t_point,$storage_id);
-        if ($suppl_id!=0) list(,$delivery_days,$short_delivery_info) = $cat->getTpointSupplDeliveryInfo($t_point,$suppl_id,$storage_id);
+        list(, $delivery_days, $short_delivery_info) = $cat->getTpointDeliveryInfo($t_point, $storage_id);
+        if ($suppl_id!=0) list(, $delivery_days, $short_delivery_info) = $cat->getTpointSupplDeliveryInfo($t_point, $suppl_id, $storage_id);
         $short_delivery_info=$this->replaceLang($short_delivery_info);
 
         if ($n>0) {
-            $old_amount = intval($db->result($r, 0, "amount"));
-            $amount+=$old_amount;
-            $db->query("UPDATE `basket` SET `amount`='$amount', `status_action`='$status_action' WHERE `art_id`='$art_id' AND `storage_id`='$storage_id';");
+            $r2=$db->query("SELECT * FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
+            $cur_stock = $db->result($r2, 0, "amount");
+            if ($stock < ($cur_stock + $amount)) {
+                $amount=$stock;
+            } else {
+                $old_amount = intval($db->result($r, 0, "amount"));
+                $amount+=$old_amount;
+            }
+            $db->query("UPDATE `basket` SET `amount`='$amount', `status_action`='$status_action' WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
         } else {
             $db->query("INSERT INTO `basket` (`art_id`, `brand_id`, `amount`, `price`, `stock`, `delivery`, `client_id`, `cookie_id`, `date_create`, `storage_id`, `delivery_info`, `suppl_id`,`status_action`,`status`) 
             VALUES ('$art_id', '$brand_id', '$amount', $price, '$stock', '$delivery_days', '$user', '$cookie', '$date_time', '$storage_id', '$short_delivery_info', '$suppl_id', '$status_action', '0');");
         }
-        return array($old_amount,$art_name);
+        if ($amount>0) $amount_cap=$this->replaceLang("{site_basket}: $amount {amount_abbr}."); else $amount_cap="";
+        return array($old_amount, $art_name, $amount_cap);
+    }
+
+    function getBasketArticleAmount($art_id, $storage_id) { $db=DbSingleton::getTokoDb();
+        $client=new ClientClass; $where=$client->getClientWhere();
+        $r=$db->query("SELECT * FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
+        $amount = $db->result($r, 0, "amount");
+        return $amount;
     }
 
     function deleteFromBasket($art_id, $storage_id) { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass;
-        $where=$client->getClientWhere();
+        $client=new ClientClass; $where=$client->getClientWhere();
         $db->query("DELETE FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
         return true;
     }
 
     function checkStatusBasket() { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass;
-        $where=$client->getClientWhere();
+        $client=new ClientClass; $where=$client->getClientWhere();
         $r=$db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n=$db->num_rows($r);
         $n>0 ? $result=true : $result=false;
         return $result;
     }
 
     function checkBasketItem($art_id, $storage_id, $status) { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass;
-        $where=$client->getClientWhere();
+        $client=new ClientClass; $where=$client->getClientWhere();
         $db->query("UPDATE `basket` SET `status_checked`=$status WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
         return true;
     }
 
-    function updateBasketForm($art_id,$amount,$storage_id) { $db = DbSingleton::getTokoDb();
+    function updateBasketForm($art_id, $amount, $storage_id) { $db = DbSingleton::getTokoDb();
         $client=new ClientClass; $catalogue=new CatalogueClass;
         $where=$client->getClientWhere(); $status_action=0;
         if (!($catalogue->checkActionPrice($art_id))) {} else {
@@ -337,7 +348,7 @@ class ShopClass {
         $catalogue=new CatalogueClass; $exrate=new ExRateClass; $client=new ClientClass;
          $t_point=$client->getTpoint();
         $price=$catalogue->getArticlePrice($art_id);
-        if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id,$suppl_id,$storage_id);
+        if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
 
         if (!($catalogue->checkActionPrice($art_id))) {} else {
             list(,$action_amount,$action_price)=$catalogue->checkActionPrice($art_id);
@@ -346,16 +357,16 @@ class ShopClass {
         }
 
         if ($suppl_id==0) {
-            $ddData=$catalogue->getTpointDeliveryInfo($t_point,$storage_id);
+            $ddData=$catalogue->getTpointDeliveryInfo($t_point, $storage_id);
             $dd=$ddData[1];
         } else {
-            $ddSupplData=$catalogue->getTpointSupplDeliveryInfo($t_point,$suppl_id,$storage_id);
+            $ddSupplData=$catalogue->getTpointSupplDeliveryInfo($t_point, $suppl_id, $storage_id);
             $dd=$ddSupplData[1];
         }
 
-        $stock=$this->getArticleStock($art_id,$storage_id);
-        if ($stock==0 || $stock=="") $stock=$this->getArticleSupplStock($art_id,$suppl_id,$storage_id);
-        return array(intval($dd),intval($stock),floatval($price));
+        $stock=$this->getArticleStock($art_id, $storage_id);
+        if ($stock==0 || $stock=="") $stock=$this->getArticleSupplStock($art_id, $suppl_id, $storage_id);
+        return array(intval($dd), intval($stock), floatval($price));
      }
 
      function getClientDeliveryInfo($client_id) { $db=DbSingleton::getDbm();
@@ -372,7 +383,7 @@ class ShopClass {
 
     function showOrderForm() {
         $client=new ClientClass; $menu=new MenuClass; $exrate=new ExRateClass; $showform=new FormClass;
-        list($basket,$price)=$this->showMiniBasketForm("order"); list($client_id,$user)=$client->getClient();
+        list($basket, $price)=$this->showMiniBasketForm("order"); list($client_id,$user)=$client->getClient();
         $cur=$client->getClientCurrency($client_id); $cur_cap=$exrate->getKoursSymbol($cur);
 
         list($phone,$email,$name,$city) = $client->getOrderInfo($client_id,$user);

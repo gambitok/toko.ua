@@ -1,9 +1,15 @@
 <div class="details_form">
     <div class="row">
         <div class="side-tree side-tree-min">
-            <h5><i class="fa fa-wrench"></i> {spare_parts_catalog_cap}</h5>
-            <input id="tree_str_ids" type="hidden" value="{tree_str_ids}">
-            {tree_headers}
+            <div class="side-tree-title">
+                <i class="fa fa-wrench"></i> {spare_parts_catalog_cap}
+            </div>
+            <div class="side-tree-search">
+                <input id="tree_str_ids" type="hidden" value="{tree_str_ids}">
+            </div>
+            <div class="side-tree-list">
+                {tree_headers}
+            </div>
         </div>
     </div>
 </div>
