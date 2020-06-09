@@ -42,9 +42,9 @@ class ShopClass {
 
                 if (!($cat->checkActionPrice($art_id))) $action=""; else {
                     list(,$action_amount,$action_price)=$cat->checkActionPrice($art_id);
-                    $action_price = $exrate->getKoursFromUSA($action_price,$cur);
-                    if ($suppl_id==0) $true_price=$cat->getArticlePrice($art_id); else $true_price=$cat->getArticleSupplPrice($art_id,$suppl_id,$storage_id);
-                    $true_price = round($exrate->getKoursPrice($true_price,$cur),2);
+                    $action_price = $exrate->getKoursFromUSA($action_price, $cur);
+                    if ($suppl_id==0) $true_price=$cat->getArticlePrice($art_id); else $true_price=$cat->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+                    $true_price = round($exrate->getKoursPrice($true_price, $cur),2);
                     if ($amount>=$action_amount) {
                         $true_cap="<br><span class=\"span-outline\">$true_price $cur_cap</span>";
                         $true_clr="";
@@ -310,7 +310,7 @@ class ShopClass {
         $client=new ClientClass; $catalogue=new CatalogueClass;
         $where=$client->getClientWhere(); $status_action=0;
         if (!($catalogue->checkActionPrice($art_id))) {} else {
-            list($action_id,$action_amount,)=$catalogue->checkActionPrice($art_id);
+            list($action_id, $action_amount,)=$catalogue->checkActionPrice($art_id);
             if ($amount>=$action_amount) $status_action=$action_id;
         }
         $db->query("UPDATE `basket` SET `amount`='$amount', `status_action`='$status_action' WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
@@ -346,7 +346,7 @@ class ShopClass {
 
      function getUpdateData($art_id, $suppl_id, $storage_id, $amount) {
         $catalogue=new CatalogueClass; $exrate=new ExRateClass; $client=new ClientClass;
-         $t_point=$client->getTpoint();
+        $t_point=$client->getTpoint();
         $price=$catalogue->getArticlePrice($art_id);
         if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
 
@@ -383,10 +383,10 @@ class ShopClass {
 
     function showOrderForm() {
         $client=new ClientClass; $menu=new MenuClass; $exrate=new ExRateClass; $showform=new FormClass;
-        list($basket, $price)=$this->showMiniBasketForm("order"); list($client_id,$user)=$client->getClient();
+        list($basket, $price)=$this->showMiniBasketForm("order"); list($client_id, $user)=$client->getClient();
         $cur=$client->getClientCurrency($client_id); $cur_cap=$exrate->getKoursSymbol($cur);
 
-        list($phone,$email,$name,$city) = $client->getOrderInfo($client_id,$user);
+        list($phone, $email, $name, $city) = $client->getOrderInfo($client_id, $user);
         $t_point=$client->getTpointUser($client_id);
         $city_range=$showform->showCityFormSelected("",$city);
 
@@ -441,7 +441,7 @@ class ShopClass {
         if($user=="undefined") $user=$this->getUser();
 
         if ($user!==0 && $user!=="0") {
-            list($phone_client,$email_client,$name_client,)=$client->getOrderInfo($client_id,$user);
+            list($phone_client, $email_client, $name_client,)=$client->getOrderInfo($client_id,$user);
             $t_point=$client->getTpointUser($client_id);
             $phone=$phone_client;
             $email=$email_client;
@@ -450,7 +450,7 @@ class ShopClass {
             if ($region=="") $region=0;
             if ($t_point==0) $t_point=$client->getTpoint();
             $category=140;
-            $new_client=$client->regClientRetail($t_point,$name,$phone,$region,$email,$category);
+            $new_client=$client->regClientRetail($t_point, $name, $phone, $region, $email, $category);
             $this->addNewRetailAddressForm($new_client,$delivery_info);
         }
         $db->query("INSERT INTO `orders_new` (`id`,`client_id`,`client_user_id`,`cookie_id`,`tpoint_id`,`cash_id`,`name`,`email`,`phone`,`region`,`address`,`delivery`,`carrier_id`,`delivery_info`,`payment`,`payment_info`,`price_summ`,`status`) 
@@ -506,9 +506,7 @@ class ShopClass {
     function getOrderSumm($order_id) { $db=DbSingleton::getDbm();
         $summ=0;
         $r=$db->query("SELECT * FROM `orders_new` WHERE `id`='$order_id' LIMIT 1;"); $n=$db->num_rows($r);
-        if ($n>0) {
-            $summ=$db->result($r, 0, "price_summ");
-        }
+        if ($n>0) $summ=$db->result($r, 0, "price_summ");
         return $summ;
     }
 

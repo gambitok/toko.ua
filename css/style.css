@@ -969,6 +969,8 @@ header { width: 100%; color: #a9a9a9; }
 
 .home-banner .gallery-item-panel__title { font-size: 2vw; font-weight: 700; margin-right: 3%; position: relative; text-align: right; overflow: hidden; white-space: normal; text-overflow: ellipsis; max-width: 35%; }
 
+.home-banner .gallery-item-panel__title-center { display: flex; height: 100%; align-items: center; justify-content: center; }
+
 .home-banner .gallery-item-panel__text { font-size: 1.5vw; position: relative; padding-left: 3%; text-align: left; overflow: hidden; white-space: normal; text-overflow: ellipsis; border-left: 1px solid #fff; }
 
 .home-banner .gallery-item-panel__text-center { display: flex; height: 100%; align-items: center; justify-content: center; }

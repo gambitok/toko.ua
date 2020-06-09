@@ -68,8 +68,8 @@ class FormClass {
         if ($auto_typ_id!="") {
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
                 $form=str_replace("{applicable_display}", "", $form);
-                list($manufacture,$model,$model_id)=$auto->getCarInfo($auto_typ_id);
-                list($manufacture_cap,,$model_id_cap,)=$auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
+                list($manufacture, $model, $model_id)=$auto->getCarInfo($auto_typ_id);
+                list($manufacture_cap,, $model_id_cap,)=$auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
                 $form=str_replace("{applicable_cap}", "<a href='https://toko.ua/catalog/'>$manufacture_cap $model_id_cap</a>", $form);
             }
         }
@@ -680,7 +680,7 @@ class FormClass {
     function getCarsBanner() { $db=DbSingleton::getTokoDb();
         $form=$this->getHtmlForm("home/banner");
         $indicators=""; $items=""; $k=0;
-        $r=$db->query("SELECT * FROM `banner` WHERE `STATUS`=1;"); $n=$db->num_rows($r);
+        $r=$db->query("SELECT * FROM `banner` WHERE `STATUS`=1 ORDER BY `POSITION` ASC;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $title = $db->result($r, $i - 1, "TITLE");
             $text = $db->result($r, $i - 1, "TEXT");

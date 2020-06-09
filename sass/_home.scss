@@ -67,6 +67,12 @@
                         white-space: normal;
                         text-overflow: ellipsis;
                         max-width: 35%;
+                        &-center {
+                            display: flex;
+                            height: 100%;
+                            align-items: center;
+                            justify-content: center;
+                        }
                     }
                     &__text {
                         font-size: 1.5vw;
