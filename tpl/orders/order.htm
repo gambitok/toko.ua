@@ -1,0 +1,98 @@
+<script>
+    $(document).ready(function(){
+        $(".masked-phone").mask("+38(099) 999-99-99", {
+            placeholder:"+38(0__) ___-__-__",
+            autoclear: false,
+            alias: "numeric"
+        });
+    })
+</script>
+
+<div class="orders">
+    <div class="orders-block">
+        <div class="orders-block-row">
+            <label class="orders-block-row__label" for="user_name">Name</label>
+            <input class="orders-block-row__input" type="text" name="user_name" id="user_name">
+        </div>
+        <div class="orders-block-row">
+            <label class="orders-block-row__label" for="user_phone">Phone</label>
+            <input class="orders-block-row__input masked-phone" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone">
+        </div>
+        <div class="orders-block-row">
+            <label class="orders-block-row__label" for="user_city">City</label>
+            <select class="orders-block-row__input" name="user_city" id="user_city">
+                <option value="0">Kyiv</option>
+                <option value="1">Kmelnytskyi</option>
+            </select>
+        </div>
+    </div>
+    <div class="orders-title">
+        <span>Contacts</span>
+    </div>
+    <div class="orders-block">
+        <div class="orders-block-row">
+            <label class="orders-block-row__radio">
+                Nova poshta
+                <input type="radio" name="user_delivery" checked>
+                <span class="radio-mark"></span>
+            </label>
+        </div>
+        <div class="orders-block-row">
+            <label class="orders-block-row__radio">
+                Ukr poshta
+                <input type="radio" name="user_delivery">
+                <span class="radio-mark"></span>
+            </label>
+        </div>
+    </div>
+    <div class="orders-title">
+        <span>Delivery</span>
+    </div>
+    <div class="orders-block">
+        <div class="orders-block-row">
+            <label class="orders-block-row__radio">
+                Nalichka
+                <input type="radio" name="user_payment" checked>
+                <span class="radio-mark"></span>
+            </label>
+        </div>
+        <div class="orders-block-row">
+            <label class="orders-block-row__radio">
+                Card
+                <input type="radio" name="user_payment" checked>
+                <span class="radio-mark"></span>
+            </label>
+        </div>
+        <div class="orders-block-row">
+            <label class="orders-block-row__radio">
+                Entity
+                <input type="radio" name="user_payment" checked>
+                <span class="radio-mark"></span>
+            </label>
+        </div>
+    </div>
+    <div class="orders-title">
+        <span>Payment</span>
+    </div>
+    <div class="orders-block">
+        <div class="orders-block-row">
+            <label class="orders-block-row__label" for="user_email">Email</label>
+            <input class="orders-block-row__input" type="email" name="user_email" id="user_email">
+        </div>
+        <div class="orders-block-row">
+            <label class="orders-block-row__label" for="user_comment">Comment</label>
+            <textarea class="orders-block-row__input" name="user_comment" id="user_comment" placeholder="Comment"></textarea>
+        </div>
+    </div>
+    <div class="orders-title">
+        <span>Info</span>
+    </div>
+    <div class="orders-footer">
+        <div class="orders-footer-about">
+            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum in laborum odio qui. Dolorem exercitationem illo neque optio. Alias blanditiis eligendi exercitationem laborum nesciunt non nostrum numquam quibusdam unde ut.</span>
+        </div>
+        <div class="orders-footer-button">
+            <button>Order</button>
+        </div>
+    </div>
+</div>

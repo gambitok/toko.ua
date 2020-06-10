@@ -1,7 +1,22 @@
 
-function showRegionForm() { "use strict"; $("#RegionForm").modal("toggle"); $("#menu").css('left','-100%'); }
+function showRegionForm() {
+    let form="region";
+    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modals").append(result.content);
+            $("#RegionForm").modal("show");
+            $("#menu").css('left','-100%');
+        }}, true);
+}
 
-function showActionForm() { "use strict"; $("#ActionForm").modal("toggle"); }
+function showActionForm() {
+    let form="action";
+    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modals").append(result.content);
+            $("#ActionForm").modal("show");
+        }}, true);
+}
 
 function catalogueFilterClear() { "use strict"; location.reload(true); }
 
@@ -173,7 +188,7 @@ function showBrandForm(brand) { "use strict";
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#info_brand").html(result.content);
         }}, true);
-    $("#BrandForm").modal("toggle");
+    $("#BrandForm").modal("show");
 }
 
 // function tecSearch() { "use strict";

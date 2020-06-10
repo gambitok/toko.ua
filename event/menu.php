@@ -21,8 +21,6 @@ if (!$profile->getClientInfo()) {
     $content=str_replace("{login_info}", $profile->getClientInfo(), $content);
 }
 
-$content=str_replace("{region_list}", $menu->getRegionList(), $content);
-$content=str_replace("{region_list_phone}", $menu->getRegionListPhone(), $content);
 
 
 

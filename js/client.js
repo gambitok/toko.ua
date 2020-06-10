@@ -33,10 +33,15 @@ function showLoginForm() { "use strict";
     let phone=$("#reg_phone").val();
     if (phone===undefined || phone==="") phone=$("#input_phone").val();
     if (phone===undefined || phone==="") phone=$("#input_phone2").val();
-    $("#userpassword").val("");
-    $("#LoginModal").modal("show");
-    $("#userlogin").val(phone);
-    document.getElementById("userpassword").select();
+    let form="login";
+    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modals").append(result.content);
+            $("#LoginModal").modal("show");
+            $("#userpassword").val("");
+            $("#userlogin").val(phone);
+            document.getElementById("userpassword").select();
+        }}, true);
 }
 
 function setPriceList() { "use strict";

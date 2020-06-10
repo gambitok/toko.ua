@@ -210,6 +210,8 @@ if ($_REQUEST["w"]=="showTabCatalogueAuto"){ $GLOBALS['_RESULT'] = array("conten
 
 if ($_REQUEST["w"]=="showHomeCars"){ $GLOBALS['_RESULT'] = array("content"=>$showform->showHomeCars());}
 
+if ($_REQUEST["w"]=="showModalForm"){ $GLOBALS['_RESULT'] = array("content"=>$showform->showModalForm($_REQUEST["form"]));}
+
 //if ($_REQUEST["w"]=="showTabCatalogueAutoMin"){ $GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueAutoMin());}
 
 //=products search======================================================================================================

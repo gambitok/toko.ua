@@ -11,6 +11,19 @@ class FormClass {
 
     public $uploads_link = "https://toko.ua/uploads/images/catalogue";
 
+    function showModalForm($name) {
+        $menu=new MenuClass;
+
+        $form=$this->getHtmlForm("modals/$name");
+        $form=$this->replaceLang($form);
+
+        // REGION MODAL
+        $form=str_replace("{region_list}", $menu->getRegionList(), $form);
+        $form=str_replace("{region_list_phone}", $menu->getRegionListPhone(), $form);
+
+        return $form;
+    }
+
     function getCountryFlag($id_brand) { $db=DbSingleton::getTokoDb();
         if (self::$flags === null) {
             $r=$db->query("SELECT t2c.ALFA2, t2b.BRAND_ID, t2c.COUNTRY_NAME FROM `T2_BRANDS` t2b

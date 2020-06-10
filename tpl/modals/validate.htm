@@ -1,0 +1,25 @@
+<!-- Modal Validate-->
+<div class="modal fade" id="ValidateForm" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="validate-modal-header" class="modal-header bg-info">
+                <div id="validate_title">{phone_confirmation}</div>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body text-left">
+                <div class="container">
+                    <div class="row">
+                        <div id="validate_message" class="wdt100">{code_from_SMS}</div>
+                        <div class="wdt100"><br>
+                            <input id="validate_code" name="validate_code" type="text" title="code" maxlength="4" onkeypress="validate(event);"><br>
+                            <label id="validate_label" for="validate_code" class="span-red" style="display: none">{wrong_code}</label>
+                        </div>
+                    </div>
+                    <div class="row float-right">
+                        <button id="validate_btn_ok" class="btn btn-primary">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

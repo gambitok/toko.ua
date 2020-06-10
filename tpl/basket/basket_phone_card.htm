@@ -1,32 +1,32 @@
 <div class="container basket-card">
     <div class="row">
-        <div class="col-4 basket-card__title">{caption_cap}</div>
-        <div class="col-7 basket-card__content basket-card__content-medium">
+        <div class="col-4 basket-card-title">{caption_cap}</div>
+        <div class="col-7 basket-card-content basket-card-content-medium">
             <span class="tooltips" data-toggle="tooltip" data-placement="bottom" title="{country_name}">{flag} {brand_name}</span>
             <a class="span-red" href="{link}">{art_name}</a>
             <br>
             {text}
         </div>
-        <div class="col-1 basket-card__close">
+        <div class="col-1 basket-card-close">
             <button class="btn-basket pointer" onclick='deleteFromBasket({art_id},{storage_id},"{art_name}");'><i class="fa fa-trash-alt"></i></button>
         </div>
     </div>
     <div class="row">
-        <div class="col-4 basket-card__title">{date_cap}</div>
-            <div class="col-8 basket-card__content basket-card__content-small">
+        <div class="col-4 basket-card-title">{date_cap}</div>
+            <div class="col-8 basket-card-content basket-card-content-small">
             <p><span title="{date_start_cap}">{added_cap}:</span> {date1}</p>
             <p><span title="{date_update_cap}">{updated_cap}:</span> {date2}</p>
         </div>
     </div>
     <div class="row">
-        <div class="col-4 basket-card__title">{storage_short_info}</div>
-        <div class="col-8 basket-card__content">
+        <div class="col-4 basket-card-title">{storage_short_info}</div>
+        <div class="col-8 basket-card-content">
             <span class="medium-text"><i class="fas fa-stopwatch"></i> {delivery_short_info}</span>
         </div>
     </div>
     <div class="row">
-        <div class="col-4 basket-card__title">{count_cap}</div>
-        <div class="col-4 basket-card__content">
+        <div class="col-4 basket-card-title">{count_cap}</div>
+        <div class="col-4 basket-card-content">
             <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
                     <button class="btn btn-sm btn-outline-secondary" onclick="updateCountBasket(0,{art_id},{storage_id},{stock},1);">-</button>
@@ -39,17 +39,17 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-4 basket-card__title">{price_cap}</div>
-        <div class="col-8 basket-card__content basket-card__content-small">
+        <div class="col-4 basket-card-title">{price_cap}</div>
+        <div class="col-8 basket-card-content basket-card-content-small">
             <span>{price} {cur_cap}</span>{action}
         </div>
     </div>
     <div class="row">
-        <div class="col-4 basket-card__title">{total_cap}</div>
-        <div class="col-7 basket-card__content">
+        <div class="col-4 basket-card-title">{total_cap}</div>
+        <div class="col-7 basket-card-content">
             <span class="bold">{full_price} {cur_cap}</span>
         </div>
-        <div class="col-1 basket-card__close">
+        <div class="col-1 basket-card-close">
             <label class="container_check" style="margin:0;float: right;">
                 <input id="{art_id}" name="{storage_id}" type="checkbox" {checked} class="check-brand" onclick="checkBasketItem({art_id},{storage_id},this);">
                 <span class="checkmark"></span>

@@ -171,7 +171,4 @@ function showCarsForm() {
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#cars_block").html(result.content);
         }}, true);
-    // $(".cars-nav__item").on('click', function() {
-    //     toggleCarsNavigation(this);
-    // });
 }

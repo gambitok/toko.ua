@@ -1,6 +1,6 @@
 /*==== BASKET ====*/
 .basket {
-    &__header {
+    &-header {
         padding-bottom: 15px;
         span {
             font-weight: bold;
@@ -11,7 +11,7 @@
             color: #000!important;
         }
     }
-    &__table {
+    &-table {
         display: block;
         &-thead {
             font-size: 14px;
@@ -46,11 +46,11 @@
             font-size: 0.8em;
         }
     }
-    &__phone {
+    &-phone {
         display: none;
         color: gray;
     }
-    &__footer {
+    &-footer {
         &-total {
             padding-bottom: 15px;
             text-align: right;
@@ -61,7 +61,7 @@
             margin-bottom: 15px;
         }
     }
-    &__fast {
+    &-fast {
         padding-top: 30px;
         &-phone {
             margin-bottom: 15px;
@@ -83,10 +83,11 @@
     }
 }
 
+// phone
 .basket-card {
     border-bottom: 1px solid #f1f1f1;
     margin-bottom: 15px;
-    &__title {
+    &-title {
         background: #f1f1f1;
         color: #9da9b9;
         font-size: 0.7em;
@@ -94,7 +95,7 @@
         padding: 10px;
         word-break: break-word;
     }
-    &__content {
+    &-content {
         padding: 10px;
         p {
             margin: 0;
@@ -110,7 +111,7 @@
             border-color: #ccc;
         }
     }
-    &__close {
+    &-close {
         padding: 10px;
         text-align: right;
     }
@@ -139,23 +140,24 @@
             box-shadow: none;
             padding-bottom: 30px;
             a {
+                transition: all .2s linear;
                 background: #fff;
                 color: #a9a9a9;
-                padding: 10px;
+                padding: 10px 30px;
                 border-radius: 25px;
                 margin-right: 15px;
                 display: inline;
+                &.active {
+                    background: #ee7f80;
+                    color: #fff;
+                }
                 &:hover {
-                    background: #fff;
-                    color: #ee7f80;
+                    text-decoration: none;
+                    box-shadow: 0 1px 3px #000;
                 }
             }
             li {
                 display: flex;
-            }
-            .active {
-                background: #ee7f80;
-                color: #fff;
             }
         }
     }
@@ -201,4 +203,178 @@
     }
 }
 
+/*===== NEW ORDERS ====*/
+.orders {
+    box-shadow: 0 0 40px 0 rgba(0,0,0,.11);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 16px;
+    width: 100%;
+    padding: 30px;
+    &-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+        span {
+            margin-left: 30px;
+        }
+    }
+    &-block {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        display: block;
+        margin-bottom: 30px;
+        padding: 20px;
+        width: 50%;
+        &-row {
+            display: flex;
+            margin: 10px 0;
+            &__label {
+                width: 35%;
+            }
+            &__input {
+                width: 65%;
+                vertical-align: middle;
+                border: 1px solid #dadada;
+                border-radius: 5px;
+                padding: 10px;
+            }
+            &__radio {
+                cursor: pointer;
+                display: block;
+                position: relative;
+                padding-left: 35px;
+                user-select: none;
+                width: 100%;
+                &-hidden {
+                    background: #000;
+                    display: none;
+                }
+                &:hover {
+                    input~.radio-mark {
+                        background-color: #ccc;
+                    }
+                }
+                input {
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                    &:checked~.radio-mark {
+                        background-color: #f44336;
+                        &:after {
+                            display: block;
+                        }
+                    }
+                    &:checked~.orders-block-row__radio-hidden {
+                        display: block;
+                    }
+                }
+                .radio-mark {
+                    position: absolute;
+                    top: 4px;
+                    left: 4px;
+                    height: 16px;
+                    width: 16px;
+                    line-height: 16px;
+                    background-color: #eee;
+                    border-radius: 50%;
+                    &:after {
+                        background: #fff;
+                        content: "";
+                        display: none;
+                        position: absolute;
+                        top: 5px;
+                        left: 5px;
+                        width: 6px;
+                        height: 6px;
+                        border-radius: 50%;
+                    }
+                }
+            }
+        }
+    }
+    &-footer {
+        display: flex;
+        width: 50%;
+        &-about {
+            width: 65%;
+            span {
+                color: #333;
+                font-size: 14px;
+            }
+        }
+        &-button {
+            text-align: right;
+            width: 35%;
+            button {
+                background: #55bae6;
+                border: 1px solid #17a2b8;
+                border-radius: .2rem;
+                cursor: pointer;
+                color: #fff;
+                padding: 10px 30px;
+                &:hover {
+                    background: #228b94;
+                }
+            }
+        }
+    }
+}
 
+/*===== /NEW ORDERS ====*/
+
+/*==== PHONE ====*/
+@media (max-width: 768px) {
+    .orders {
+        &-title {
+            width: 100%;
+        }
+        &-block {
+            width: 100%;
+        }
+        &-footer {
+            flex-direction: column-reverse;
+            width: 100%;
+            &-about {
+                width: 100%;
+            }
+            &-button {
+                width: 100%;
+                button {
+                    margin-bottom: 15px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+/*==== /PHONE ====*/
+
+/*==== PAD ====*/
+@media (min-width: 768px) and (max-width: 992px) {
+    .orders {
+        &-title {
+            width: 100%;
+        }
+        &-block {
+            width: 100%;
+        }
+        &-footer {
+            flex-direction: column-reverse;
+            width: 100%;
+            &-about {
+                width: 100%;
+            }
+            &-button {
+                width: 100%;
+                button {
+                    margin-bottom: 15px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+/*==== /PAD ====*/

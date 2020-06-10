@@ -42,22 +42,22 @@ a, a:not([href]):not([tabindex]) {
 .page-404 {
     h1 {
         color: $site_dark_primary;
-        font-size: 2em;
+        font-size: 32px;
         font-weight: bold;
     }
     h2 {
         color: $site_dark_secondary;
-        font-size: 1.5em;
+        font-size: 24px;
     }
     ol {
-        padding-left: 1em;
+        padding-left: 30px;
     }
     ol > li {
-        margin-top: 1em;
+        margin-top: 15px;
         font-weight: bold;
     }
     ul > li {
-        font-weight: 100;
+        font-weight: 400;
     }
     ul > li > a {
         font-weight: bold;
@@ -499,7 +499,7 @@ header {
     color: #606975;
     padding: 0;
     border-bottom: 1px solid #ced4da;
-    a {
+    a, a:not([href]):not([tabindex]) {
         color: #606975;
         &:hover {
             color: #000;
@@ -534,7 +534,7 @@ header {
                 margin-right: 0;
                 padding: 0 5px;
             }
-            a {
+            a, a:not([href]):not([tabindex]) {
                 &:hover {
                     color: #000;
                     text-decoration: none;

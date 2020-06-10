@@ -63,12 +63,13 @@ class ShopClass {
                 $format_date1 = date("d.m.y H:i", strtotime($date1));
                 $format_date2 = date("d.m.y H:i", strtotime($date2));
                 $format_name=$this->getFormatAticle($art_name);
+                $format_brand=$this->getFormatAticle($brand_name);
 
                 $prefix=$language->getLangPrefix();
-                $link="search/$format_name/$brand_id/$brand_name";
+                $link="https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/";
                 $amount_field="count_".$art_id."_".$storage_id;
 
-                $location="location.href = 'https://toko.ua$prefix/order/';";
+                $location="location.href='https://toko.ua$prefix/order/';";
 
                 if ($showform->getCountryFlag($brand_id)!=false) {
                     list($flag,$country_name)=$showform->getCountryFlag($brand_id);
@@ -159,15 +160,15 @@ class ShopClass {
         return $table_basket;
     }
 
-    function showMiniBasketForm($page="") { $db = DbSingleton::getTokoDb();
+    function showMiniBasketForm() { $db = DbSingleton::getTokoDb();
         $client=new ClientClass; $exrate=new ExRateClass; $showform=new FormClass; $language=new LangClass;
         $client_id=$client->getClient()[0]; $cur=$client->getClientCurrency($client_id);
-        $where=$client->getClientWhere(); $cur_cap=$exrate->getKoursSymbol($cur);
+        $where=$client->getClientWhere();
         $bempty="<div id=\"basket_block\" class=\"content\">{basket_empty}</div>"; $sum=0;
         $form=$this->getHtmlForm("basket/basket");
         $r=$db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n=$db->num_rows($r);
         if ($n>0) {
-            $bcontent="<div><div class=\"row align-items-center\">
+            $bcontent="<div><div class=\"row align-items-center basket-table-tbody\">
                 <div class=\"col-2 col-lg-2\" title=\"{art_brand_name_cap}\">{caption_cap}</div>
                 <div class=\"col-2 col-lg-2\">&nbsp</div>
                 <div class=\"col-4 col-lg-4\">&nbsp</div>
@@ -197,9 +198,10 @@ class ShopClass {
 
                 if ($status_checked) $sum+=$full_price;
                 $format_name=$this->getFormatAticle($art_name);
+                $format_brand=$this->getFormatBrand($brand_name);
 
                 $prefix=$language->getLangPrefix();
-                $link="$prefix/catalogue/search/$format_name/$brand_id/$brand_name";
+                $link="https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/";
 
                 if ($showform->getCountryFlag($brand_id)!=false) {
                     list($flag,$country_name) = $showform->getCountryFlag($brand_id);
@@ -209,7 +211,7 @@ class ShopClass {
                     $flag=""; $country_name="";
                 }
 
-                $bcontent.="<div class=\"row align-items-center\">
+                $bcontent.="<div class=\"row align-items-center basket-table-tbody\">
                     <div class=\"col-12 col-lg-2\"><a href=\"$link\">$art_name</a></div>
                     <div class=\"col-12 col-lg-2\" title=\"$country_name\">$flag $brand_name</div>
                     <div class=\"col-12 col-lg-4\">$text</div>
@@ -219,16 +221,8 @@ class ShopClass {
                     <div class=\"col-12 col-lg-1\">$full_price</div>
                 </div>";
             }
-            if ($page=="order") $button_basket=""; else $button_basket="<button class=\"btn btn-primary\" onclick=\"goBasket();\">{go_to_basket}</button>";
 
-            $bcontent.="</div><div class=\"row wdt100 text-right mar0\">
-                <div class=\"col-4 text-left pad0\">
-                    $button_basket
-                </div>
-                <div class=\"offset-lg-4 col-lg-4 col8 text-right bold\">
-                    <span>{total_cap}: <i>$sum</i> $cur_cap</span>
-                </div>
-            </div>";
+            $bcontent.="</div>";
         } else $bcontent=$bempty;
 
         $form=str_replace("{basket_block}", "", $form);
@@ -383,7 +377,7 @@ class ShopClass {
 
     function showOrderForm() {
         $client=new ClientClass; $menu=new MenuClass; $exrate=new ExRateClass; $showform=new FormClass;
-        list($basket, $price)=$this->showMiniBasketForm("order"); list($client_id, $user)=$client->getClient();
+        list($basket, $price)=$this->showMiniBasketForm(); list($client_id, $user)=$client->getClient();
         $cur=$client->getClientCurrency($client_id); $cur_cap=$exrate->getKoursSymbol($cur);
 
         list($phone, $email, $name, $city) = $client->getOrderInfo($client_id, $user);
@@ -530,6 +524,12 @@ class ShopClass {
     function addNewAddressForm($client_id, $address) {
         $result=1;
         return $result;
+    }
+
+    function getOrderForm() {
+        $form=$this->getHtmlForm("orders/order");
+
+        return $form;
     }
 
 }

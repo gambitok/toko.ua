@@ -136,23 +136,21 @@
 
 	<link rel="icon" href="/favicon.png" type="image/png">
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-	<link rel="apple-touch-icon" sizes="192x192" href="/favicon.png">
-	<!--<link rel="manifest" href="manifest.json" />-->
+	<link rel="apple-touch-icon" href="/favicon.png" sizes="192x192">
+	<link rel="manifest" href="/manifest.json" type="text/json">
 
 	<script async src="https://www.google-analytics.com/analytics.js"></script>
 
 	<link rel="canonical" href="{canonical_link}"/>
 
+    <!--custom fonts-->
 	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
-
+    <!--fontawesome-->
 	<link rel="stylesheet" href="/fonts/fontawesome_web/css/all-minify.css">
-
 	<!--plugins styles-->
 	<link rel="stylesheet" href="/css/plugins/bootstrap.min.css">
-
 	<!--custom styles-->
 	<link rel="stylesheet" href="/css/style.min.css">
-
 	<!--plugins scripts-->
 	<script type="text/javascript" src="/js/library/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="/js/library/popper.min.js"></script>
@@ -161,8 +159,6 @@
 </head>
 
 <body>
-
-<div id="seo_footer_top"></div>
 
 <!-- Modal Garage-->
 <div class="modal fade" id="GarageForm" role="dialog" tabindex="-1">
@@ -589,28 +585,6 @@
 		</div>
 	</div>
 
-	<!--Phone Search-->
-	<div class="modal fade modal-gallery modal-phone" id="PhoneArticle" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-				<div class="modal-body text-left">
-					<div class="container">
-						<div class="input-group">
-							<input id="search_art3" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
-							<div class="input-group-append">
-								<button onClick="artSearch('search_art3');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
-							</div>
-						</div>
-                        <div id="modal-phone__history" class="modal-phone__history search"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<!-- Modal Brand-->
 	<div class="modal fade" id="BrandForm" role="dialog" tabindex="-1">
 		<div class="modal-dialog" style="max-width: 1000px;">
@@ -632,21 +606,22 @@
 		</div>
 	</div>
 
-	<!-- Modal Article-->
-	<div class="modal fade" id="ArtForm" role="dialog" tabindex="-1">
+	<!--Phone Search-->
+	<div class="modal fade modal-gallery modal-phone" id="PhoneArticle" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<span class="modal-title">{art_cap}</span>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 				<div class="modal-body text-left">
 					<div class="container">
-						<div class="row">
-							<div id="info_art">
-								{art_info}
+						<div class="input-group">
+							<input id="search_art3" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
+							<div class="input-group-append">
+								<button onClick="artSearch('search_art3');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
 							</div>
 						</div>
+                        <div id="modal-phone__history" class="modal-phone__history search"></div>
 					</div>
 				</div>
 			</div>
@@ -691,114 +666,6 @@
         </div>
     </div>
 
-	<!-- Modal Login-->
-	<div class="modal fade" id="LoginModal" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<span class="modal-title">{authorization}</span>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-				<div class="modal-body">
-					<div class="container">
-						<div class="row align-items-center">
-							<div class="offset-1 col-10">
-								<form action="" onsubmit="return false;" autocomplete="off">
-									<input class="clearAll TextBox" id="loginform" type="hidden" name="loginform" value="1">
-									<input class="clearAll TextBox" id="remember" type="hidden" name="remember" value="1">
-									<div class="auth-input">
-										<label class="auth-label">{client_login}</label><br>
-										<input class="form-control" id="userlogin" type="text" name="userlogin" value="" placeholder="{input_phone}">
-									</div><br>
-									<div class="auth-input">
-										<label class="auth-label">{client_password_cap}</label><br>
-										<input class="form-control" id="userpassword" type="password" name="userpassword" placeholder="{input_password}">
-									</div><br>
-									<input class="btn btn-primary" type="submit" value="{login}" onClick="loginForm();"><br><br>
-									<a class="dblock" href="{site_lang_prefix}/recover_password/">{forget_password}?</a>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal Region-->
-	<div class="modal fade" id="RegionForm" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<span class="modal-title">{choose_office}</span>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-				<div class="modal-body text-left">
-					<div class="container">
-						<div class="row">
-							<div id="choose_region">
-								{region_list}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal Action-->
-	<div class="modal fade" id="ActionForm" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<span class="modal-title span-red text-center wdt100">TOKO Assistance</span>
-				</div>
-				<div class="modal-body text-left">
-					<div class="container">
-						<div class="row">
-							<div class="col-12" style="text-align: center;font-size: 2.5em;">
-								<span class="span-green tooltips" data-toggle="tooltip" data-placement="bottom" data-html="true"
-									title="
-									<span class='span-red' style='font-size:1.2em'>{price_cap} 42.54 UAH, {from_cap} 20 {amount_abbr}.</span> <br>
-									{offer_valid_until}: {indefinitely_cap} <br>
-									{quantity_limited}: {no_cap}
-								">
-								<span class="fa fa-box-open"></span></span>
-							</div>
-							<div class="col-12 text-center">
-								{action_rules}
-							</div>
-							<div class="col-12" style="text-align: center;font-size: 2.5em;">
-								<span class="span-green"><span class="fa fa-box-open"></span></span>
-							</div>
-							<div class="offset-2 col-8 text-center" style="background: black; color: white; border-radius: 0.25em; line-height: 1.2; padding: 10px;">
-								<span class="span-red" style="font-size:1em">
-									{price_cap} 42.54 UAH, {from_cap} 20 {amount_abbr}.
-								</span> <br>
-								<span style="font-size:0.8em">
-									{offer_valid_until}: {indefinitely_cap} <br>
-									{quantity_limited}: {no_cap}
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!--Loader Form-->
-	<!--<div class="modal fade" id="LoaderForm" role="dialog" data-toggle="modal" data-backdrop="static" data-keyboard="false">-->
-		<!--<div class="modal-dialog">-->
-			<!--<div class="modal-content modal-loader">-->
-				<!--<div class="text-center"><img src="{image_logotype}" alt="loader"></div>-->
-				<!--<div class="loader-dots">-->
-					<!--<div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div><div class="dot dot4"></div>-->
-				<!--</div>-->
-			<!--</div>-->
-		<!--</div>-->
-	<!--</div>-->
-
 </div>
 
 <!--Mobile Navigation-->
@@ -811,7 +678,7 @@
 <!--ANCOR-->
 <div class="ancor hidden">
     <div class="ancor__link">
-        <a href="header" rel="nofollow"><span class="mob-span"><span class="fas fa-chevron-up"></span></span></a>
+        <a href="#header-top" rel="nofollow"><span class="mob-span"><span class="fas fa-chevron-up"></span></span></a>
     </div>
 </div>
 
@@ -821,11 +688,11 @@
 </body>
 </html>
 
+<!--plugin scripts-->
 <script type="text/javascript" src="/js/plugins/bigSlide.js"></script>
 <script type="text/javascript" src="/js/plugins/lazyload/lazyload.min.js"></script>
 <script type="text/javascript" src="/js/plugins/bootstrap-notify/bootstrap-notify.min.js"></script>
 <script type="text/javascript" src="/js/plugins/maskedinput.js"></script>
-
 <!--custom scripts-->
 <script type="text/javascript" src="/js/onload.js"></script>
 <script type="text/javascript" src="/js/catalogue.js"></script>
