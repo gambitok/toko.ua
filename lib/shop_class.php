@@ -530,7 +530,19 @@ class ShopClass {
 
     function getOrderForm() {
         $form=$this->getHtmlForm("orders/order");
+        $form=str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
+        $form=str_replace("{order_payment}", $this->getOrderPayment(), $form);
+        $form=$this->replaceLang($form);
+        return $form;
+    }
 
+    function getOrderDelivery() {
+        $form=$this->getHtmlForm("orders/delivery");
+        return $form;
+    }
+
+    function getOrderPayment() {
+        $form=$this->getHtmlForm("orders/payment");
         return $form;
     }
 

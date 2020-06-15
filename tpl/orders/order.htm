@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
+
 <script>
     $(document).ready(function(){
         $(".masked-phone").mask("+38(099) 999-99-99", {
@@ -21,101 +23,114 @@
     }
 </style>
 
+<style>
+    .select2-selection__rendered {
+        line-height: 46px !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 46px !important;
+    }
+    .select2-selection__arrow {
+        height: 46px !important;
+    }
+</style>
+
 <div class="orders">
 
     <div class="orders-block">
+
         <div class="orders-block-row">
-            <label class="orders-block-row__label" for="user_name">Name</label>
-            <input class="orders-block-row__input valid_field" type="text" name="user_name" id="user_name" data-attr="text">
+            <div class="orders-block-row-title">
+                <label class="orders-block-row__label" for="user_name">{name_surname}</label>
+            </div>
+            <div class="orders-block-row-content">
+                <input class="orders-block-row__input valid_field" type="text" name="user_name" id="user_name" data-attr="text" placeholder="{name_surname}">
+            </div>
         </div>
         <div class="orders-block-row">
-            <label class="orders-block-row__label" for="user_phone">Phone</label>
-            <input class="orders-block-row__input masked-phone valid_field" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone" data-attr="phone">
+            <div class="orders-block-row-title">
+                <label class="orders-block-row__label" for="user_phone">{phone_number}</label>
+            </div>
+            <div class="orders-block-row-content">
+                <input class="orders-block-row__input masked-phone valid_field" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone" data-attr="phone">
+            </div>
         </div>
         <div class="orders-block-row">
-            <label class="orders-block-row__label" for="user_city">City</label>
-            <select class="orders-block-row__input valid_field" name="user_city" id="user_city" data-attr="select">
-                <option value="0">-non selected-</option>
-                <option value="1">Kyiv</option>
-                <option value="2">Kmelnytskyi</option>
-            </select>
-        </div>
-        <div class="orders-block-row float-right">
-            <button class="btn" onclick="validFields();" id="valid_button">VALID</button>
+            <div class="orders-block-row-title">
+                <label class="orders-block-row__label" for="user_city">{city_cap}</label>
+            </div>
+            <div class="orders-block-row-content">
+                <select class="orders-block-row__input valid_field" name="user_city" id="user_city" data-attr="select">
+                    <option value="0">{not_chosen}</option>
+                    <option value="1">Kyiv</option>
+                    <option value="2">Kmelnitskii</option>
+                </select>
+            </div>
         </div>
     </div>
     <div class="orders-title">
-        <span>Contacts</span>
+        <span>{contacts_cap}</span>
     </div>
+
+    <div class="orders-block">
+        {order_delivery}
+    </div>
+    <div class="orders-title">
+        <span>{delivery_cap}</span>
+    </div>
+
+    <div class="orders-block">
+        {order_payment}
+    </div>
+    <div class="orders-title">
+        <span>{payment_cap}</span>
+    </div>
+
     <div class="orders-block">
         <div class="orders-block-row">
-            <label class="orders-block-row__radio">
-                Nova poshta
-                <input type="radio" name="user_delivery" checked>
-                <span class="radio-mark"></span>
-            </label>
+            <div class="orders-block-row-title">
+                <label class="orders-block-row__label" for="user_email">{user_email_cap}</label>
+            </div>
+            <div class="orders-block-row-content">
+                <input class="orders-block-row__input" type="email" name="user_email" id="user_email" placeholder="{user_email_cap}">
+            </div>
         </div>
         <div class="orders-block-row">
-            <label class="orders-block-row__radio">
-                Ukr poshta
-                <input type="radio" name="user_delivery">
-                <span class="radio-mark"></span>
-            </label>
+            <div class="orders-block-row-title">
+                <label class="orders-block-row__label" for="user_comment">{user_comment_cap}</label>
+            </div>
+            <div class="orders-block-row-content">
+                <textarea class="orders-block-row__input" name="user_comment" id="user_comment" placeholder="{user_comment_cap}"></textarea>
+            </div>
         </div>
     </div>
     <div class="orders-title">
-        <span>Delivery</span>
+        <span>{info_cap}</span>
     </div>
-    <div class="orders-block">
-        <div class="orders-block-row">
-            <label class="orders-block-row__radio">
-                Nalichka
-                <input type="radio" name="user_payment" checked>
-                <span class="radio-mark"></span>
-            </label>
-        </div>
-        <div class="orders-block-row">
-            <label class="orders-block-row__radio">
-                Card
-                <input type="radio" name="user_payment" checked>
-                <span class="radio-mark"></span>
-            </label>
-        </div>
-        <div class="orders-block-row">
-            <label class="orders-block-row__radio">
-                Entity
-                <input type="radio" name="user_payment" checked>
-                <span class="radio-mark"></span>
-            </label>
-        </div>
-    </div>
-    <div class="orders-title">
-        <span>Payment</span>
-    </div>
-    <div class="orders-block">
-        <div class="orders-block-row">
-            <label class="orders-block-row__label" for="user_email">Email</label>
-            <input class="orders-block-row__input" type="email" name="user_email" id="user_email" placeholder="Email">
-        </div>
-        <div class="orders-block-row">
-            <label class="orders-block-row__label" for="user_comment">Comment</label>
-            <textarea class="orders-block-row__input" name="user_comment" id="user_comment" placeholder="Comment"></textarea>
-        </div>
-    </div>
-    <div class="orders-title">
-        <span>Info</span>
-    </div>
+
     <div class="orders-footer">
         <div class="orders-footer-about">
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum in laborum odio qui. Dolorem exercitationem illo neque optio. Alias blanditiis eligendi exercitationem laborum nesciunt non nostrum numquam quibusdam unde ut.</span>
+            <span>{delivery_user_info}</span>
         </div>
         <div class="orders-footer-button">
-            <button>Order</button>
+            <button onclick="validFields();" id="valid_button">{make_order_cap}</button>
         </div>
     </div>
+
 </div>
 
+<script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" src="/js/plugins/select2/select2_ru.js"></script>
+
 <script>
+
+    $(document).ready(function() {
+        $("select").each(function() {
+            $(this).select2({language: "ru"});
+            $($(this).select2("container")).addClass("orders-block-row__input");
+        });
+    });
+
     function getPhone(str) {
         str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");
         str = str.replace("-", "");

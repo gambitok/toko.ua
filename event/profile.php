@@ -5,7 +5,7 @@ if ($client->checkUnRegClient()) {
 } else {
     $content=str_replace("{main_window}", $profile->showProfileForm(), $content);
     $content=str_replace("{profile_account}", $profile->showProfileAccount(), $content);
-    $content=str_replace("{profile_basket}", $shop->showBasketForm(), $content);
+    $content=str_replace("{profile_basket}", $shop->showMiniBasketForm()[0], $content);
     $content=str_replace("{profile_check}", $profile->showProfileCheck(), $content);
     $content=str_replace("{profile_orders}", $profile->showProfileOrders(), $content);
     $content=str_replace("{profile_file_list}", $profile->showPriceList(), $content);

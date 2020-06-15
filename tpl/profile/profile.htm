@@ -12,9 +12,9 @@
                 <li class="nav-item">
                     <a class="nav-link {profile-orders}" onclick="showProfileOrders();" id="profile-tab" data-toggle="tab" href="#profile-orders" role="tab" aria-controls="profile-orders" aria-selected="false"><span class="fas fa-history"></span> {orders}</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {profile-basket}" onclick="showProfileBasketForm();" id="basket-tab" data-toggle="tab" href="#profile-basket" role="tab" aria-controls="profile-basket" aria-selected="false"><span class="fas fa-shopping-basket"></span> {basket_cap}</a>
-				</li>
+                <!--<li class="nav-item">-->
+                    <!--<a class="nav-link {profile-basket}" onclick="showProfileBasketForm();" id="basket-tab" data-toggle="tab" href="#profile-basket" role="tab" aria-controls="profile-basket" aria-selected="false"><span class="fas fa-shopping-basket"></span> {basket_cap}</a>-->
+				<!--</li>-->
                 <li class="nav-item {check_visible}">
                     <a class="nav-link {profile-check}" onclick="showProfileCheckForm();" id="check-tab" data-toggle="tab" href="#profile-check" role="tab" aria-controls="profile-check" aria-selected="false"><span class="fas fa-credit-card"></span> {check_profile}</a>
                 </li>
@@ -35,12 +35,12 @@
 				<div class="tab-pane {profile-account}" id="profile-home" role="tabpanel" aria-labelledby="home-tab">
 					<div class="container">
 						<div class="row align-items-center">
-							<div class="col-lg-12 col-12">
+							<div class="col-12">
 								<h5>{my_office}</h5>
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-lg-12 col-12">
+							<div class="col-12">
 								<div id="profile_account">
 									{profile_account}
 								</div>
@@ -52,16 +52,16 @@
 				<div class="tab-pane {profile-orders}" id="profile-orders" role="tabpanel" aria-labelledby="profile-tab">
                     <div class="container">
                         <div class="row align-items-center">
-                            <div class="col-lg-12 col-12"><h5>{orders}</h5></div>
+                            <div class="col-12"><h5>{orders}</h5></div>
                         </div>
                         <div class="row align-items-center">
-                            <div id="radio-group" class="col-lg-12 col-12 radio-group">
+                            <div id="radio-group" class="col-12 radio-group">
                                 <input id="radio_orders" type="radio" name="cur" checked="checked" onclick="showProfileOrders();" title="{orders}">
                                 <label for="radio_orders" title="{orders}"><span class="fa fa-folder"></span></label>
                                 <input id="radio_orders_arts" type="radio" name="cur" onclick="showProfileOrdersArts('','');" title="{orders_arts}">
                                 <label for="radio_orders_arts" title="{orders_arts}"><span class="fa fa-folder-open"></span></label>
                             </div>
-                            <div class="col-lg-12 col-12">
+                            <div class="col-12">
                                 <br>
                                 <div id="profile_orders">
                                     {profile_orders}
@@ -71,27 +71,27 @@
                     </div>
 				</div>
 
-				<div class="tab-pane {profile-basket}" id="profile-basket" role="tabpanel" aria-labelledby="basket-tab">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-lg-12 col-12">
-                                <div id="profile_basket_form">
-                                    <div class="container">
-                                        {profile_basket}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-				</div>
+				<!--<div class="tab-pane {profile-basket}" id="profile-basket" role="tabpanel" aria-labelledby="basket-tab">-->
+                    <!--<div class="container">-->
+                        <!--<div class="row align-items-center">-->
+                            <!--<div class="col-12">-->
+                                <!--<div id="profile_basket_form">-->
+                                    <!--<div class="container">-->
+                                        <!--{profile_basket}-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+				<!--</div>-->
 
 				<div class="tab-pane {profile-check}" id="profile-check" role="tabpanel" aria-labelledby="check-tab">
                     <div class="container">
                         <div class="row align-items-center">
-                            <div class="col-lg-12 col-12"><h5>{check_profile}</h5></div>
+                            <div class="col-12"><h5>{check_profile}</h5></div>
                         </div>
                         <div class="row align-items-center {check_visible}">
-                            <div class="col-lg-12 col-12">
+                            <div class="col-12">
                                 <div class="row">
                                     <div class="col-12 col-lg-5">
                                         <label for="saldo_data_start">{date_cap} {from_cap}:</label>
@@ -116,12 +116,12 @@
 				<div class="tab-pane {profile-price}" id="profile-price_list" role="tabpanel" aria-labelledby="price_list-tab">
                     <div class="container">
                         <div class="row align-items-center">
-                            <div class="col-lg-12 col-12">
+                            <div class="col-12">
                                 <h5>{price_list}</h5>
                             </div>
                         </div>
                         <div class="row align-items-center {price_visible}">
-                          <div class="col-lg-12 col-12">
+                          <div class="col-12">
                               <div id="profile_file_list">
                                   {profile_file_list}
                               </div>

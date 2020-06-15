@@ -243,16 +243,37 @@
         width: 50%;
         &-row {
             display: flex;
+            flex-wrap: wrap;
             margin: 10px 0;
-            &__label {
+            width: 100%;
+            &-title {
                 width: 35%;
             }
-            &__input {
+            &-content {
                 width: 65%;
+            }
+            &-container {
+                width: 100%;
+            }
+            &-hidden {
+                display: none;
+                margin: 20px 0;
+                width: 100%;
+            }
+            &__label {
+                width: 100%;
+            }
+            &__input {
+                width: 100%;
                 vertical-align: middle;
                 border: 1px solid #dadada;
                 border-radius: 5px;
                 padding: 10px;
+                &-min {
+                    width: 30%;
+                    margin-right: 15px;
+                    margin-top: 15px;
+                }
             }
             &__radio {
                 cursor: pointer;
@@ -280,7 +301,7 @@
                             display: block;
                         }
                     }
-                    &:checked~.orders-block-row__radio-hidden {
+                    &:checked~.orders-block-row-hidden {
                         display: block;
                     }
                 }
