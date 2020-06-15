@@ -7,7 +7,7 @@ class PartsClass extends CatalogueClass {
     public $products_on_page=25;
 
     function getHeadFromStr($str_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");
         $head_id=$db->result($r,0,"HEAD_ID");
         return $head_id;
     }
@@ -114,7 +114,7 @@ class PartsClass extends CatalogueClass {
 
     function getPartsStrList($head_id) { $db = DbSingleton::getTokoDb();
         $list="<ul>";
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `HEAD_ID`='$head_id';"); $n=$db->num_rows($r);
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `HEAD_ID`='$head_id';"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $str_id = $db->result($r,$i-1,"STR_ID");
             $name = $db->result($r,$i-1,"TEX_RU");

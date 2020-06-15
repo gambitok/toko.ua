@@ -64,13 +64,14 @@ function saveProfileForm() { "use strict";
     if (email==="") email_input.addClass("required_input"); else email_input.removeClass("required_input");
 
     if ((phone!=="")&&(pass!=="")&&(name!=="")&&(email!=="")) {
-        JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone, 'email':email},
+        JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone, 'type':1},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content!==false) {
                     let text="{user_already_logged}!<br>{phone_cap}: "+result.content[0];
                     showAlertModal(text,"{error_cap}",0);
                 } else {
-                    showValidateModal(phone,validatePhone,saveProfile);
+                    // showValidateModal(phone,validatePhone,saveProfile);
+                    saveProfile();
                 }
             }}, true);
     }
@@ -91,7 +92,7 @@ function saveRegistrationForm() { "use strict";
     if (city_id===undefined) $(".select2").addClass("required_input"); else $(".select2").removeClass("required_input");
 
     if ((phone!=="")&&(pass!=="")&&(pass===pass2)&&(name!=="")&&(city_id!==undefined)) {
-        JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone, 'email':email},
+        JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content!==false) {
                 let text="{user_already_logged}!<br>{client_login}: "+result.content[0];
@@ -124,7 +125,9 @@ function saveRegistration() { "use strict";
 function loginForm() { "use strict";
     let login = $("#userlogin").val();
     let password = $("#userpassword").val();
-    if (login==="" || password==="") showAlertModal("{input_all_data}!","{error_cap}",0,focusPhone);
+    if (login==="" || password==="") {
+        showAlertModal("{input_all_data}!","{error_cap}",0,focusPhone);
+    }
     else {
         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
             function (result, errors){ if (errors) {alert(errors);} if (result){

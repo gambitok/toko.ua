@@ -8,22 +8,40 @@
     })
 </script>
 
+<style>
+    .not-valid {
+        border: 1px solid red;
+    }
+    .accept-valid {
+        border: 1px solid limegreen;
+    }
+    .btn-valid {
+        background: limegreen;
+        color: white;
+    }
+</style>
+
 <div class="orders">
+
     <div class="orders-block">
         <div class="orders-block-row">
             <label class="orders-block-row__label" for="user_name">Name</label>
-            <input class="orders-block-row__input" type="text" name="user_name" id="user_name">
+            <input class="orders-block-row__input valid_field" type="text" name="user_name" id="user_name" data-attr="text">
         </div>
         <div class="orders-block-row">
             <label class="orders-block-row__label" for="user_phone">Phone</label>
-            <input class="orders-block-row__input masked-phone" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone">
+            <input class="orders-block-row__input masked-phone valid_field" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone" data-attr="phone">
         </div>
         <div class="orders-block-row">
             <label class="orders-block-row__label" for="user_city">City</label>
-            <select class="orders-block-row__input" name="user_city" id="user_city">
-                <option value="0">Kyiv</option>
-                <option value="1">Kmelnytskyi</option>
+            <select class="orders-block-row__input valid_field" name="user_city" id="user_city" data-attr="select">
+                <option value="0">-non selected-</option>
+                <option value="1">Kyiv</option>
+                <option value="2">Kmelnytskyi</option>
             </select>
+        </div>
+        <div class="orders-block-row float-right">
+            <button class="btn" onclick="validFields();" id="valid_button">VALID</button>
         </div>
     </div>
     <div class="orders-title">
@@ -77,7 +95,7 @@
     <div class="orders-block">
         <div class="orders-block-row">
             <label class="orders-block-row__label" for="user_email">Email</label>
-            <input class="orders-block-row__input" type="email" name="user_email" id="user_email">
+            <input class="orders-block-row__input" type="email" name="user_email" id="user_email" placeholder="Email">
         </div>
         <div class="orders-block-row">
             <label class="orders-block-row__label" for="user_comment">Comment</label>
@@ -96,3 +114,78 @@
         </div>
     </div>
 </div>
+
+<script>
+    function getPhone(str) {
+        str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");
+        str = str.replace("-", "");
+        str = str.replace("-", "");
+        str = str.replace("+", "");
+        str = str.replace("(", "");
+        str = str.replace(")", "");
+        str = str.replace(" ", "");
+        return str;
+    }
+
+    function validFields() {
+        let valid=0;
+        $(".valid_field").each(function() {
+            let data_attr = $(this).attr("data-attr");
+
+            // INPUT TEXT FIELD
+            if (data_attr==="text") {
+                if ($(this).val()==="") {
+                    valid++;
+                    $(this).addClass("not-valid");
+                    $(this).removeClass("accept-valid");
+                } else {
+                    $(this).addClass("accept-valid");
+                    $(this).removeClass("not-valid");
+                }
+            }
+
+            // INPUT PHONE FIELD
+            if (data_attr==="phone") {
+                let phone = getPhone($(this).val());
+                if (phone.length!==12) {
+                    valid++;
+                    $(this).addClass("not-valid");
+                    $(this).removeClass("accept-valid");
+                } else {
+                    $(this).addClass("accept-valid");
+                    $(this).removeClass("not-valid");
+                }
+            }
+
+            // SELECT FIELD
+            if (data_attr==="select") {
+                if ($("#" + $(this).attr("id") + " option:selected").val()==="0") {
+                    valid++;
+                    $(this).addClass("not-valid");
+                    $(this).removeClass("accept-valid");
+                } else {
+                    $(this).addClass("accept-valid");
+                    $(this).removeClass("not-valid");
+                }
+            }
+
+            if ($(this).hasClass("not-valid")) {
+                $(this).addClass("tooltips");
+                $(this).attr("title", "{check_the_data}");
+                $(this).attr("data-toggle", "tooltip");
+                $(this).attr("data-placement", "right");
+                $(this).tooltip();
+                $(this).tooltip("show");
+            } else {
+                $(this).removeClass("tooltips");
+                $(this).attr("title", "");
+                $(this).tooltip("dispose");
+            }
+        });
+        if (valid===0) {
+            $("#valid_button").addClass("btn-valid");
+        } else {
+            $("#valid_button").removeClass("btn-valid");
+        }
+    }
+</script>

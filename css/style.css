@@ -455,7 +455,7 @@ header { width: 100%; color: #a9a9a9; }
 /*==== NAVIGATION =====*/
 .header-nav { background: #f44336; position: relative; z-index: 999; }
 
-.header-nav-hide { position: absolute; width: calc(100% - 10px); z-index: 999999; height: auto; }
+.header-nav-hide { position: relative; width: calc(100% + 30px); z-index: 999999; height: auto; }
 
 .header-nav nav { height: 100%; }
 
@@ -1739,6 +1739,12 @@ table thead td { border: 1px solid #000; }
 
 /*==== /BASKET ====*/
 /*===== ORDERS ====*/
+.order-success-row { margin-bottom: 15px; }
+
+.order-success-row-buttons { text-align: right; }
+
+.order-success-row-buttons input { width: 300px; text-align: center; display: inline-block; margin-left: 15px; }
+
 .order__header { margin: 0 0 15px 0; }
 
 .order__header h1 { font-size: 24px; }
@@ -1819,7 +1825,9 @@ table thead td { border: 1px solid #000; }
 
 /*===== /NEW ORDERS ====*/
 /*==== PHONE ====*/
-@media (max-width: 768px) { .orders-title { width: 100%; }
+@media (max-width: 768px) { .basket-phone { display: block; }
+  .basket-table { display: none; }
+  .orders-title { width: 100%; }
   .orders-block { width: 100%; }
   .orders-footer { flex-direction: column-reverse; width: 100%; }
   .orders-footer-about { width: 100%; }
@@ -1828,7 +1836,9 @@ table thead td { border: 1px solid #000; }
 
 /*==== /PHONE ====*/
 /*==== PAD ====*/
-@media (min-width: 768px) and (max-width: 992px) { .orders-title { width: 100%; }
+@media (min-width: 768px) and (max-width: 992px) { .basket-phone { display: block; }
+  .basket-table { display: none; }
+  .orders-title { width: 100%; }
   .orders-block { width: 100%; }
   .orders-footer { flex-direction: column-reverse; width: 100%; }
   .orders-footer-about { width: 100%; }

@@ -121,6 +121,21 @@
 
 /*===== ORDERS ====*/
 
+.order-success {
+    &-row {
+        margin-bottom: 15px;
+        &-buttons {
+            text-align: right;
+            input {
+                width: 300px;
+                text-align: center;
+                display: inline-block;
+                margin-left: 15px;
+            }
+        }
+    }
+}
+
 .order {
     &__header {
         margin: 0 0 15px 0;
@@ -325,6 +340,12 @@
 
 /*==== PHONE ====*/
 @media (max-width: 768px) {
+    .basket-phone {
+        display: block;
+    }
+    .basket-table {
+        display: none;
+    }
     .orders {
         &-title {
             width: 100%;
@@ -353,6 +374,12 @@
 
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) {
+    .basket-phone {
+        display: block;
+    }
+    .basket-table {
+        display: none;
+    }
     .orders {
         &-title {
             width: 100%;

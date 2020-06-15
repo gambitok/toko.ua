@@ -12,12 +12,13 @@ class FormClass {
     public $uploads_link = "https://toko.ua/uploads/images/catalogue";
 
     function showModalForm($name) {
-        $menu=new MenuClass;
+        $menu=new MenuClass; $language=new LangClass;
 
         $form=$this->getHtmlForm("modals/$name");
         $form=$this->replaceLang($form);
 
         // REGION MODAL
+        $form=str_replace("{site_lang_prefix}", $language->getLangPrefix(), $form);
         $form=str_replace("{region_list}", $menu->getRegionList(), $form);
         $form=str_replace("{region_list_phone}", $menu->getRegionListPhone(), $form);
 
@@ -63,7 +64,7 @@ class FormClass {
             $str_text="";
             for ($i=1;$i<=$n;$i++) {
                 $str_id=$db->result($r, $i-1, "STR_ID");
-                $r1=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1=$db->query($r1);
+                $r1=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1=$db->query($r1);
                 if ($n1>0) $str_text=$db->result($r1, 0, "TEX_LINK");
                 if ($str_text!="") break;
             }

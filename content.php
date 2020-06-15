@@ -136,7 +136,7 @@ if ($_REQUEST["w"]=="saveProfile"){$GLOBALS['_RESULT'] = array("content"=>$clien
 
 if ($_REQUEST["w"]=="saveRegistration"){$GLOBALS['_RESULT'] = array("content"=>$client->saveRegistration($_REQUEST["phone"],$_REQUEST["pass"],$_REQUEST["email"],$_REQUEST["name"],$_REQUEST["client_category"],$_REQUEST["client_city"],$_REQUEST["client_tpoint"],$_REQUEST["mailing"]));}
 
-if ($_REQUEST["w"]=="check_reg_client"){$GLOBALS['_RESULT'] = array("content"=>$client->checkRegClient($_REQUEST["phone"],$_REQUEST["email"]));}
+if ($_REQUEST["w"]=="check_reg_client"){$GLOBALS['_RESULT'] = array("content"=>$client->checkRegClient($_REQUEST["phone"],$_REQUEST["type"]));}
 
 if ($_REQUEST["w"]=="recoverPassword"){$GLOBALS['_RESULT'] = array("content"=>$client->recoverPassword($_REQUEST["phone"]));}
 

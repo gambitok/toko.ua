@@ -1,7 +1,12 @@
 <script>
-    jQuery(function($){
-        $("#reg_phone").mask("+380999999999",{placeholder:" "});
-    });
+    $(document).ready(function(){
+        $("#input_phone").val($("#true_phone").val());
+        $(".masked-phone").mask("+38(099) 999-99-99", {
+            placeholder:"+38(0__) ___-__-__",
+            autoclear: false,
+            alias: "numeric"
+        });
+    })
 </script>
 
 <div class="profile-account">
@@ -11,7 +16,8 @@
             <label class="label-required">{phone_cap}:</label>
         </div>
         <div class="col-lg-8 col-12 pad0">
-            <input id="reg_phone" title="{phone_cap}" class="form-control" type="text" value="{client_phone}">
+            <!--<input id="reg_phone" title="{phone_cap}" class="form-control" type="text" value="{client_phone}">-->
+            <input id="reg_phone" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(0__) ___-__-__" value="{client_phone}" disabled>
         </div>
     </div>
 
@@ -20,7 +26,11 @@
             <label class="label-required">{client_password_cap}:</label>
         </div>
         <div class="col-lg-8 col-12 pad0">
-            <input id="reg_password" title="{client_password_cap}" class="form-control" type="password" value="{client_password}">
+            <input id="reg_password" title="{client_password_cap}" class="form-control" type="password" value="{client_password}" onkeydown="closeDisablesButton();">
+            <div class="box" style="text-align: right; margin-top: 15px;">
+                <input id="show_pass" name="show_pass" checked type="checkbox" class="check-mark" onclick="togglePass(this);">
+                <label for="show_pass">{show_pass}</label>
+            </div>
         </div>
     </div>
 
@@ -29,7 +39,7 @@
             <label>{email_cap}:</label>
         </div>
         <div class="col-lg-8 col-12 pad0">
-            <input id="reg_email" title="{email_cap}" class="form-control" type="text" value="{client_email}">
+            <input id="reg_email" title="{email_cap}" class="form-control" type="text" value="{client_email}" onkeydown="closeDisablesButton();">
         </div>
     </div>
 
@@ -38,14 +48,20 @@
             <label class="label-required">{full_name_cap}:</label>
         </div>
         <div class="col-lg-8 col-12 pad0">
-            <input id="reg_name" title="{full_name_cap}" class="form-control" type="text" value="{client_name}">
+            <input id="reg_name" title="{full_name_cap}" class="form-control" type="text" value="{client_name}" onkeydown="closeDisablesButton();">
         </div>
     </div>
 
     <div class="row">
         <div class="col-lg-12 col-12 pad0">
-            <input type="submit" class="btn btn-primary" value="{save_cap}" onclick="saveProfileForm();">
+            <input id="submit_profile_update" type="submit" class="btn btn-primary" value="{save_cap}" onclick="saveProfileForm();" disabled>
         </div>
     </div>
 
 </div>
+
+<script>
+    function closeDisablesButton() {
+        $("#submit_profile_update").prop("disabled", false);
+    }
+</script>

@@ -248,7 +248,7 @@ function finishOrder() { "use strict";
         showAlertModal("{input_all_data}!","{error_cap}!",0);
         return true;
     } else {
-        JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone, 'email':email},
+        JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content!==false && user==="0") {
                     let text="{user_already_logged}!<br>{phone_cap}: "+result.content[0];
@@ -275,9 +275,10 @@ function finishFastOrder(name) { "use strict";
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content!==false) {
                     let text="{user_already_logged}!<br>{phone_cap}: "+result.content[0];
-                    showAlertModal(text,"{error_cap}",0,showLoginForm);
+                    showAlertModal(text,"{error_cap}", 0, showLoginForm);
                 } else {
-                    showValidateModal(phone,validatePhone,showFastOrder);
+                    //showValidateModal(phone, validatePhone, showFastOrder);
+                    showFastOrder();
                     $("#BasketForm").modal("hide");
                 }
             }}, true);
@@ -322,7 +323,8 @@ function saveClientRetail() {
     let phone=$("#reg_phone").val();
     let email=$("#reg_email").val();
     if (pass==="") {
-        showAlertModal("{input_all_data}!","{error_cap}!",0);
+        //showAlertModal("{input_all_data}!","{error_cap}!",0);
+        showNotify("{error_cap}!","{input_all_data}!","danger");
         return true;
     } else {
         JsHttpRequest.query(folder,{'w':'finish_order_success', 'client_id':client_id, 'pass':pass, 'order_id':order_id, 'name':name, 'phone':phone, 'email':email},

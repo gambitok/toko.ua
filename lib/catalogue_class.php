@@ -226,8 +226,8 @@ class CatalogueClass {
     function getGroupTreeAmount($head_id, $str_id_str) { $db=DbSingleton::getTokoDb();
         if ($str_id_str!="") $where_str="AND cs.STR_ID IN ($str_id_str)"; else $where_str="";
         $r=$db->query("SELECT cs.*, cat.TEX_RU as CAT_NAME_RU, cat.TEX_UA as CAT_NAME_UA, cat.TEX_EN as CAT_NAME_EN 
-        FROM `T2_GROUP_TREE_HEAD_STR` cs 
-            LEFT OUTER JOIN `T2_GROUP_TREE_HEAD_CAT` cat ON cat.CAT_ID=cs.CAT_ID
+        FROM `T2_GROUP_TREE_STR` cs 
+            LEFT OUTER JOIN `T2_GROUP_TREE_CATEGORY` cat ON cat.CAT_ID=cs.CAT_ID
 		WHERE cs.HEAD_ID='$head_id' $where_str ORDER BY cat.POSITION ASC, cs.POSITION ASC;"); $n=$db->num_rows($r);
         if ($n>0) return true; else return false;
     }
@@ -241,8 +241,8 @@ class CatalogueClass {
         if ($str_id_str!="") $where_str="AND cs.STR_ID IN ($str_id_str)"; else $where_str="";
         list(, $head_link)=$automan->getHeadNewDescr($head_id);
         $r=$db->query("SELECT cs.*, cat.CAT_ID
-        FROM `T2_GROUP_TREE_HEAD_STR` cs 
-            LEFT OUTER JOIN `T2_GROUP_TREE_HEAD_CAT` cat ON cat.CAT_ID=cs.CAT_ID
+        FROM `T2_GROUP_TREE_STR` cs 
+            LEFT OUTER JOIN `T2_GROUP_TREE_CATEGORY` cat ON cat.CAT_ID=cs.CAT_ID
 		WHERE cs.HEAD_ID='$head_id' $where_str ORDER BY cat.POSITION ASC, cs.POSITION ASC;"); $n=$db->num_rows($r);
         if ($n>0) {
             for ($i=1;$i<=$n;$i++) {

@@ -7,7 +7,7 @@ class ShopClass {
 
     function showBasketForm($cur=null) { $db = DbSingleton::getTokoDb();
         $client=new ClientClass; $showform=new FormClass; $exrate=new ExRateClass; $cat=new CatalogueClass; $language=new LangClass;
-        $sum=0; $sum_total=0; $disabled=$brow=$bprow=""; $location="stayInOrder();";
+        $sum=0; $sum_total=0; $disabled=$brow=$bprow=""; $location="stayInOrder();"; $location_fast="stayInOrder();";
         if ($cur==null || $cur=="NaN") $cur=1;
         $cur_cap=$exrate->getKoursSymbol($cur); $t_point=$client->getTpoint(); $where=$client->getClientWhere(); $client_id=$client->getClient()[0];
         setcookie("currency", $cur); $_SESSION["currency"]=$cur; $count=$count_total=0;
@@ -70,6 +70,7 @@ class ShopClass {
                 $amount_field="count_".$art_id."_".$storage_id;
 
                 $location="location.href='https://toko.ua$prefix/order/';";
+                $location_fast="finishFastOrder('input_phone2');";
 
                 if ($showform->getCountryFlag($brand_id)!=false) {
                     list($flag,$country_name)=$showform->getCountryFlag($brand_id);
@@ -152,6 +153,7 @@ class ShopClass {
         $table_basket=str_replace("{count_total}", $count_total, $table_basket);
         $table_basket=str_replace("{total_style}", $sum==$sum_total ? "d-none" : "", $table_basket);
         $table_basket=str_replace("{location}", $location, $table_basket);
+        $table_basket=str_replace("{location_fast}", $location_fast, $table_basket);
         $table_basket=str_replace("{currency}", $showform->getCurrencyForm(4,0,$cur), $table_basket);
         $table_basket=str_replace("{cur_cap}", $exrate->getKoursSymbol($cur), $table_basket);
         $table_basket=str_replace("{disabled}", $disabled, $table_basket);
@@ -435,7 +437,7 @@ class ShopClass {
         if($user=="undefined") $user=$this->getUser();
 
         if ($user!==0 && $user!=="0") {
-            list($phone_client, $email_client, $name_client,)=$client->getOrderInfo($client_id,$user);
+            list($phone_client, $email_client, $name_client,)=$client->getOrderInfo($client_id, $user);
             $t_point=$client->getTpointUser($client_id);
             $phone=$phone_client;
             $email=$email_client;
@@ -445,11 +447,11 @@ class ShopClass {
             if ($t_point==0) $t_point=$client->getTpoint();
             $category=140;
             $new_client=$client->regClientRetail($t_point, $name, $phone, $region, $email, $category);
-            $this->addNewRetailAddressForm($new_client,$delivery_info);
+            $this->addNewRetailAddressForm($new_client, $delivery_info);
         }
         $db->query("INSERT INTO `orders_new` (`id`,`client_id`,`client_user_id`,`cookie_id`,`tpoint_id`,`cash_id`,`name`,`email`,`phone`,`region`,`address`,`delivery`,`carrier_id`,`delivery_info`,`payment`,`payment_info`,`price_summ`,`status`) 
         VALUES ($max,$client_id,$user,'$cookie',$t_point,$cash_id,'$name','$email','$phone',$region,'',$delivery,$carrier_id,'$delivery_info',$payment,'$payment_info',$sum,1);");
-        return array($max,$new_client);
+        return array($max, $new_client);
     }
 
     function addNewAdressForm($client_id, $address) { $db=DbSingleton::getDbm();
@@ -511,7 +513,7 @@ class ShopClass {
         $form=$this->getHtmlForm("order/order_success");
         $form=str_replace("{order_id}", $order_id, $form);
         $form=str_replace("{client_id}", $user, $form);
-        list($phone,,$email,$name,,,,,,,)=$client->infoClient($client_id,$user);
+        list($phone,,$email,$name)=$client->infoClient($client_id,$user);
         if ($client->checkUnRegClient()) $logout="dflex"; else $login="dflex";
         $form=str_replace("{input_name}", $name, $form);
         $form=str_replace("{input_phone}", $phone, $form);

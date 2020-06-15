@@ -21,7 +21,7 @@ $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schema
 
 $col=0; $doc_nom=0;
 
-$r2=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE 1;"); $n2=$db->num_rows($r2);
+$r2=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE 1;"); $n2=$db->num_rows($r2);
 for ($j=1;$j<=$n2;$j++) {
 
     $tex_link=$db->result($r2,$j-1,"TEX_LINK");

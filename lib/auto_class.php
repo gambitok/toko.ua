@@ -5,18 +5,8 @@ class AutoClass {
     use Helper;
     use Variables;
 
-//    function getStrNewLinkDescr($str_id) { $db=DbSingleton::getTokoDb();
-//        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n=$db->num_rows($r);
-//        $str_text=$db->result($r,0,"TEX_RU");
-//        if ($n==0) {
-//            $r=$db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
-//            $str_text=$db->result($r,0,"TEX_TEXT");
-//        }
-//        return $str_text;
-//    }
-
     function getStrNewLink($str_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n=$db->num_rows($r);
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n=$db->num_rows($r);
         if ($n==0) {
             $r=$db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
         }
@@ -25,7 +15,7 @@ class AutoClass {
     }
 
     function getStrNewLinkStr($str_link) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `TEX_LINK`='$str_link' LIMIT 1;"); $n=$db->num_rows($r);
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `TEX_LINK`='$str_link' LIMIT 1;"); $n=$db->num_rows($r);
         if ($n==0) {
             $r=$db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `TEX_LINK`='$str_link' LIMIT 1;");
         }
@@ -40,13 +30,13 @@ class AutoClass {
     }
 
     function getCatNewLinkStr($head_id, $cat_link) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_CAT` WHERE `TEX_LINK`='$cat_link' AND `HEAD_ID`='$head_id' LIMIT 1;");
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `TEX_LINK`='$cat_link' AND `HEAD_ID`='$head_id' LIMIT 1;");
         $cat_id = $db->result($r, 0, "CAT_ID");
         return $cat_id;
     }
 
     function getHeadStr($str_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");  $n=$db->num_rows($r);
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");  $n=$db->num_rows($r);
         if ($n==0) {
             $r=$db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
         }
@@ -219,7 +209,7 @@ class AutoClass {
     function getCatNewDescr($cat_id) { $db=DbSingleton::getTokoDb();
         $language=new LangClass; $lang_id=$language->getLanguage();
         $cat_id=$this->getUrlNumber($cat_id);
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_CAT` WHERE `CAT_ID`=$cat_id LIMIT 1;"); $n=$db->num_rows($r); $TEX_TEXT=""; $TEX_LINK="";
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `CAT_ID`=$cat_id LIMIT 1;"); $n=$db->num_rows($r); $TEX_TEXT=""; $TEX_LINK="";
         if ($n>0) {
             if ($lang_id==1) $TEX_TEXT=$db->result($r,0,"TEX_RU");
             if ($lang_id==2) $TEX_TEXT=$db->result($r,0,"TEX_UA");
@@ -232,7 +222,7 @@ class AutoClass {
     function getStrNewDescr($str_id) { $db=DbSingleton::getTokoDb();
         $language=new LangClass; $lang_id=$language->getLanguage();
         $str_id=$this->getUrlNumber($str_id);
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `STR_ID`=$str_id AND `STR_ID`!=0 LIMIT 1;"); $n=$db->num_rows($r); $TEX_TEXT="";
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`=$str_id AND `STR_ID`!=0 LIMIT 1;"); $n=$db->num_rows($r); $TEX_TEXT="";
         if ($n>0) {
             if ($lang_id==1) $TEX_TEXT=$db->result($r,0,"TEX_RU");
             if ($lang_id==2) $TEX_TEXT=$db->result($r,0,"TEX_UA");
@@ -1302,7 +1292,7 @@ class AutoClass {
 
             $list.="<div class='tree-item'>";
 
-            $r2=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_CAT` WHERE `HEAD_ID`='$head_id' $where_category;"); $n2=$db->num_rows($r2);
+            $r2=$db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `HEAD_ID`='$head_id' $where_category;"); $n2=$db->num_rows($r2);
             for ($i2=1;$i2<=$n2;$i2++) {
                 $cat_id = $db->result($r2, $i2-1, "CAT_ID");
                 $cat_tex_text = $db->result($r2, $i2-1, "TEX_RU");
@@ -1312,7 +1302,7 @@ class AutoClass {
                 $list.="<div class='tree-item-title'>$title_cat</div>";
                 $list.="<div class='tree-item-list'>";
 
-                $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD_STR` WHERE `CAT_ID`='$cat_id' ORDER BY `TEX_RU` ASC;"); $n=$db->num_rows($r);
+                $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `CAT_ID`='$cat_id' ORDER BY `TEX_RU` ASC;"); $n=$db->num_rows($r);
                 for ($i=1;$i<=$n;$i++) {
                     $tex_text=$db->result($r,$i-1,"TEX_RU");
                     $tex_link=$db->result($r,$i-1,"TEX_LINK");
