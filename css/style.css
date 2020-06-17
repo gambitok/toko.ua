@@ -1781,6 +1781,8 @@ table thead td { border: 1px solid #000; }
 /*===== NEW ORDERS ====*/
 .orders { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); display: flex; flex-wrap: wrap; font-size: 16px; width: 100%; padding: 30px; }
 
+.orders-header { display: flex; width: 100%; }
+
 .orders-title { display: flex; align-items: center; margin-bottom: 30px; }
 
 .orders-title span { margin-left: 30px; }
@@ -1797,6 +1799,8 @@ table thead td { border: 1px solid #000; }
 
 .orders-block-row-hidden { display: none; margin: 20px 0; width: 100%; }
 
+.orders-block-row-display { display: block !important; }
+
 .orders-block-row__label { width: 100%; }
 
 .orders-block-row__input { width: 100%; vertical-align: middle; border: 1px solid #dadada; border-radius: 5px; padding: 10px; }
@@ -1804,8 +1808,6 @@ table thead td { border: 1px solid #000; }
 .orders-block-row__input-min { width: 30%; margin-right: 15px; margin-top: 15px; }
 
 .orders-block-row__radio { cursor: pointer; display: block; position: relative; padding-left: 35px; user-select: none; width: 100%; }
-
-.orders-block-row__radio-hidden { background: #000; display: none; }
 
 .orders-block-row__radio:hover input ~ .radio-mark { background-color: #ccc; }
 
@@ -1815,7 +1817,7 @@ table thead td { border: 1px solid #000; }
 
 .orders-block-row__radio input:checked ~ .radio-mark:after { display: block; }
 
-.orders-block-row__radio input:checked ~ .orders-block-row-hidden { display: block; }
+.orders-block-row__radio input:checked ~ .orders-block-row__radio-hidden { display: block; }
 
 .orders-block-row__radio .radio-mark { position: absolute; top: 4px; left: 4px; height: 16px; width: 16px; line-height: 16px; background-color: #eee; border-radius: 50%; }
 
@@ -1837,7 +1839,7 @@ table thead td { border: 1px solid #000; }
 /*==== PHONE ====*/
 @media (max-width: 768px) { .basket-phone { display: block; }
   .basket-table { display: none; }
-  .orders-title { width: 100%; }
+  .orders-title { width: 100%; display: none; }
   .orders-block { width: 100%; }
   .orders-footer { flex-direction: column-reverse; width: 100%; }
   .orders-footer-about { width: 100%; }
@@ -1848,7 +1850,7 @@ table thead td { border: 1px solid #000; }
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) { .basket-phone { display: block; }
   .basket-table { display: none; }
-  .orders-title { width: 100%; }
+  .orders-title { width: 100%; display: none; }
   .orders-block { width: 100%; }
   .orders-footer { flex-direction: column-reverse; width: 100%; }
   .orders-footer-about { width: 100%; }

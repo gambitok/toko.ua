@@ -1,0 +1,95 @@
+<div class="orders-block-row">
+    <label class="orders-block-row__radio">{delivery_type_1}
+        <input type="radio" name="user_delivery" checked data-tab-href="tab-1">
+        <span class="radio-mark"></span>
+    </label>
+        <div class="orders-block-row-hidden orders-block-row-display" id="tab-1">
+        <b>{closest_address}: </b><label>{tpoint_address}</label>
+    </div>
+</div>
+
+<div class="orders-block-row">
+    <label class="orders-block-row__radio">{delivery_type_2}
+        <input type="radio" name="user_delivery" data-tab-href="tab-2">
+        <span class="radio-mark"></span>
+    </label>
+    <div class="orders-block-row-hidden" id="tab-2">
+        <b>{chosen_city}: </b><label class="chosen-city">{city_cap}</label>
+        <div class="orders-block-row-input-group">
+            <input class="orders-block-row__input" type="text" placeholder="{street_cap}">
+            <input class="orders-block-row__input orders-block-row__input-min" type="text" placeholder="{house_cap}">
+            <input class="orders-block-row__input orders-block-row__input-min" type="text" placeholder="{entrance_cap}">
+        </div>
+    </div>
+</div>
+
+<div class="orders-block-row">
+    <label class="orders-block-row__radio">{delivery_type_3}
+        <input type="radio" name="user_delivery" data-tab-href="tab-3">
+        <span class="radio-mark"></span>
+    </label>
+    <div class="orders-block-row-hidden" id="tab-3">
+        <b>{chosen_city}: </b><label class="chosen-city">{city_cap}</label>
+        <div class="orders-block-row-input-group">
+            <input class="orders-block-row__input" type="text" placeholder="{street_cap}">
+            <input class="orders-block-row__input orders-block-row__input-min" type="text" placeholder="{house_cap}">
+        </div>
+    </div>
+</div>
+
+<div class="orders-block-row">
+    <label class="orders-block-row__radio">{delivery_type_4}
+        <input type="radio" name="user_delivery" data-tab-href="tab-4">
+        <span class="radio-mark"></span>
+    </label>
+    <div class="orders-block-row-hidden" id="tab-4">
+        <select class="orders-block-row__input select2-block" name="select_delivery_np" id="select_delivery_np" title="{department_cap}">
+            <option value="0">{not_chosen}</option>
+        </select>
+    </div>
+</div>
+
+<div class="orders-block-row">
+    <label class="orders-block-row__radio">{delivery_type_5}
+        <input type="radio" name="user_delivery" data-tab-href="tab-5">
+        <span class="radio-mark"></span>
+    </label>
+    <div class="orders-block-row-hidden" id="tab-5">
+        <b>{chosen_city}: </b><label class="chosen-city">{city_cap}</label>
+        <div class="orders-block-row-input-group">
+            <input class="orders-block-row__input" type="text" placeholder="{street_cap}">
+            <input class="orders-block-row__input orders-block-row__input-min" type="text" placeholder="{house_cap}">
+            <input class="orders-block-row__input orders-block-row__input-min" type="text" placeholder="{entrance_cap}">
+        </div>
+    </div>
+</div>
+
+<div class="orders-block-row">
+    <label class="orders-block-row__radio">{delivery_type_6}
+        <input type="radio" name="user_delivery" data-tab-href="tab-6">
+        <span class="radio-mark"></span>
+    </label>
+    <div class="orders-block-row-hidden" id="tab-6">
+        <select class="orders-block-row__input select2-block" name="select_delivery_up" id="select_delivery_up" title="{department_cap}">
+            <option value="0">{not_chosen}</option>
+        </select>
+    </div>
+</div>
+
+<div class="orders-block-row">
+    <label class="orders-block-row__radio">{delivery_type_7}
+        <input type="radio" name="user_delivery" data-tab-href="tab-7">
+        <span class="radio-mark"></span>
+    </label>
+    <div class="orders-block-row-hidden" id="tab-7">
+        <label>{choose_delivery_company}:</label>
+        <select class="orders-block-row__input select2-block" name="select_express" title="{delivery_type_7}">
+            <option value="0">{not_chosen}</option>
+        </select>
+        <br><br>
+        <label>{choose_department}:</label>
+        <select class="orders-block-row__input select2-block" name="select_department" title="{department_cap}">
+            <option value="0">{not_chosen}</option>
+        </select>
+    </div>
+</div>

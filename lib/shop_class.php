@@ -537,8 +537,20 @@ class ShopClass {
     }
 
     function getOrderDelivery() {
+        $client=new ClientClass; $tpoint_id=$client->getTpointUser($client->getClient()[0]);
         $form=$this->getHtmlForm("orders/delivery");
+        $form=str_replace("{tpoint_address}", $client->getTpointAddress($tpoint_id), $form);
         return $form;
+    }
+
+    function setCityDepartments($city_id) {
+        $list_np="";
+        $list_up="";
+        for ($i=1; $i<=5; $i++) {
+            $list_np.="<option value='$i'>$city_id - $i</option>";
+            $list_up.="<option value='$i'>$city_id - $i</option>";
+        }
+        return array($list_np, $list_up);
     }
 
     function getOrderPayment() {

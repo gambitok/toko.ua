@@ -1,34 +1,26 @@
 <link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
 
-<script>
-    $(document).ready(function(){
-        $(".masked-phone").mask("+38(099) 999-99-99", {
-            placeholder:"+38(0__) ___-__-__",
-            autoclear: false,
-            alias: "numeric"
-        });
-    })
-</script>
-
 <style>
+    input:disabled {
+        background-color: #eee;
+        cursor: default;
+    }
     .not-valid {
-        border: 1px solid red;
+        border: 1px solid red!important;
     }
     .accept-valid {
-        border: 1px solid limegreen;
+        border: 1px solid limegreen!important;
     }
     .btn-valid {
         background: limegreen;
         color: white;
     }
-</style>
-
-<style>
     .select2-selection__rendered {
         line-height: 46px !important;
     }
     .select2-container .select2-selection--single {
-        height: 46px !important;
+        height: 46px;
+        border: 1px solid #dadada;
     }
     .select2-selection__arrow {
         height: 46px !important;
@@ -37,8 +29,11 @@
 
 <div class="orders">
 
-    <div class="orders-block">
+    <div class="orders-header">
+        <h1>{making_order_cap}</h1>
+    </div>
 
+    <div class="orders-block">
         <div class="orders-block-row">
             <div class="orders-block-row-title">
                 <label class="orders-block-row__label" for="user_name">{name_surname}</label>
@@ -60,11 +55,17 @@
                 <label class="orders-block-row__label" for="user_city">{city_cap}</label>
             </div>
             <div class="orders-block-row-content">
-                <select class="orders-block-row__input valid_field" name="user_city" id="user_city" data-attr="select">
+                <select class="orders-block-row__input valid_field select2-block" name="user_city" id="user_city" data-attr="select" onchange="setCityVal()">
                     <option value="0">{not_chosen}</option>
                     <option value="1">Kyiv</option>
                     <option value="2">Kmelnitskii</option>
                 </select>
+            </div>
+        </div>
+        <div class="orders-block-row">
+            <div class="orders-footer-button" style="width: 100%!important;">
+                <button onclick="validFields();" id="valid_button">{continue_cap}</button>
+                <button class="none" onclick="editFields();" id="edit_button">{edit_cap}</button>
             </div>
         </div>
     </div>
@@ -72,6 +73,7 @@
         <span>{contacts_cap}</span>
     </div>
 
+    <div id="orders-info" class="none" style="display: contents;">
     <div class="orders-block">
         {order_delivery}
     </div>
@@ -113,8 +115,9 @@
             <span>{delivery_user_info}</span>
         </div>
         <div class="orders-footer-button">
-            <button onclick="validFields();" id="valid_button">{make_order_cap}</button>
+            <button>{make_order_cap}</button>
         </div>
+    </div>
     </div>
 
 </div>
@@ -122,85 +125,4 @@
 <script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>
 <script type="text/javascript" src="/js/plugins/select2/select2_ru.js"></script>
 
-<script>
-
-    $(document).ready(function() {
-        $("select").each(function() {
-            $(this).select2({language: "ru"});
-            $($(this).select2("container")).addClass("orders-block-row__input");
-        });
-    });
-
-    function getPhone(str) {
-        str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");
-        str = str.replace("-", "");
-        str = str.replace("-", "");
-        str = str.replace("+", "");
-        str = str.replace("(", "");
-        str = str.replace(")", "");
-        str = str.replace(" ", "");
-        return str;
-    }
-
-    function validFields() {
-        let valid=0;
-        $(".valid_field").each(function() {
-            let data_attr = $(this).attr("data-attr");
-
-            // INPUT TEXT FIELD
-            if (data_attr==="text") {
-                if ($(this).val()==="") {
-                    valid++;
-                    $(this).addClass("not-valid");
-                    $(this).removeClass("accept-valid");
-                } else {
-                    $(this).addClass("accept-valid");
-                    $(this).removeClass("not-valid");
-                }
-            }
-
-            // INPUT PHONE FIELD
-            if (data_attr==="phone") {
-                let phone = getPhone($(this).val());
-                if (phone.length!==12) {
-                    valid++;
-                    $(this).addClass("not-valid");
-                    $(this).removeClass("accept-valid");
-                } else {
-                    $(this).addClass("accept-valid");
-                    $(this).removeClass("not-valid");
-                }
-            }
-
-            // SELECT FIELD
-            if (data_attr==="select") {
-                if ($("#" + $(this).attr("id") + " option:selected").val()==="0") {
-                    valid++;
-                    $(this).addClass("not-valid");
-                    $(this).removeClass("accept-valid");
-                } else {
-                    $(this).addClass("accept-valid");
-                    $(this).removeClass("not-valid");
-                }
-            }
-
-            if ($(this).hasClass("not-valid")) {
-                $(this).addClass("tooltips");
-                $(this).attr("title", "{check_the_data}");
-                $(this).attr("data-toggle", "tooltip");
-                $(this).attr("data-placement", "right");
-                $(this).tooltip();
-                $(this).tooltip("show");
-            } else {
-                $(this).removeClass("tooltips");
-                $(this).attr("title", "");
-                $(this).tooltip("dispose");
-            }
-        });
-        if (valid===0) {
-            $("#valid_button").addClass("btn-valid");
-        } else {
-            $("#valid_button").removeClass("btn-valid");
-        }
-    }
-</script>
+<script type="text/javascript" src="/js/orders.js"></script>

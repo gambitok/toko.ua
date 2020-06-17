@@ -9,37 +9,37 @@ php_value error_reporting 1
 
 ErrorDocument 404 /404.html
 
-# redirect .php
+# redirect https://toko.ua/index.php => https://toko.ua
 RewriteCond %{THE_REQUEST} ^.*/index\.php
 RewriteRule ^(.*)index.php$ /$1 [R=301,L]
 RewriteCond %{THE_REQUEST} ^.*/home\.php
 RewriteRule ^(.*)home.php$ /$1 [R=301,L]
 
-# redirect .html
+# redirect https://toko.ua/index.html => https://toko.ua
 RewriteCond %{THE_REQUEST} ^.*/index\.html
 RewriteRule ^(.*)index.html /$1 [R=301,L]
 RewriteCond %{THE_REQUEST} ^.*/home\.html
 RewriteRule ^(.*)home.html /$1 [R=301,L]
 
-# redirect .htm
+# redirect https://toko.ua/index.htm => https://toko.ua
 RewriteCond %{THE_REQUEST} ^.*/index\.htm
 RewriteRule ^(.*)index.htm /$1 [R=301,L]
 RewriteCond %{THE_REQUEST} ^.*/home\.htm
 RewriteRule ^(.*)home.htm /$1 [R=301,L]
 
-# redirect many slashes
+# redirect https://toko.ua//// or https://toko.ua//catalog/ => https://toko.ua
 RewriteCond %{THE_REQUEST} \s/+(.*?)/{2,}([^\s]*)
 RewriteRule ^ %1/%2 [R=301,L,NE]
 
-# redirect page=0
+# redirect https://toko.ua/catalog/shrus?page=0 => https://toko.ua/catalog/shrus
 RewriteCond %{QUERY_STRING} /?page=0
 RewriteRule ^ %{REQUEST_URI}? [L,R=301]
 
-# redirect page=1
+# redirect https://toko.ua/catalog/shrus?page=1 => https://toko.ua/catalog/shrus
 RewriteCond %{QUERY_STRING} /?page=1
 RewriteRule ^ %{REQUEST_URI}? [L,R=301]
 
-# redirect slash
+# add slash in end
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !(.*)/$
@@ -57,6 +57,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^(.*)(/?)+$ /?link=$1&%{QUERY_STRING} [NC,L]
 
+### GZIP
 <IfModule mod_deflate.c>
     #The following line is enough for .js and .css
     AddOutputFilter DEFLATE js css
@@ -75,6 +76,7 @@ RewriteRule ^(.*)(/?)+$ /?link=$1&%{QUERY_STRING} [NC,L]
     </FilesMatch>
 </IfModule>
 
+### CASH FILES
 <ifModule mod_expires.c>
     ExpiresActive On
     ExpiresDefault "access plus 1 days"

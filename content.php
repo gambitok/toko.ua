@@ -46,6 +46,8 @@ if ($_REQUEST["w"]=="showProfileBasketForm"){$GLOBALS['_RESULT'] = array("conten
 
 if ($_REQUEST["w"]=="showBasketMinForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showBasketForm());}
 
+if ($_REQUEST["w"]=="setCityDepartments"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityDepartments($_REQUEST["city_id"]));}
+
 //=catalogue============================================================================================================
 
 //if ($_REQUEST["w"]=="select_model"){$GLOBALS['_RESULT'] = array("content"=>$automan->selectModel($_REQUEST["auto"]));}
