@@ -1781,6 +1781,8 @@ table thead td { border: 1px solid #000; }
 /*===== NEW ORDERS ====*/
 .orders { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); display: flex; flex-wrap: wrap; font-size: 16px; width: 100%; padding: 30px; }
 
+.orders h1 { font-size: 24px; }
+
 .orders-header { display: flex; width: 100%; }
 
 .orders-title { display: flex; align-items: center; margin-bottom: 30px; }
@@ -1839,8 +1841,9 @@ table thead td { border: 1px solid #000; }
 /*==== PHONE ====*/
 @media (max-width: 768px) { .basket-phone { display: block; }
   .basket-table { display: none; }
+  .orders { padding: 30px 10px; }
   .orders-title { width: 100%; display: none; }
-  .orders-block { width: 100%; }
+  .orders-block { margin-bottom: 10px; width: 100%; }
   .orders-footer { flex-direction: column-reverse; width: 100%; }
   .orders-footer-about { width: 100%; }
   .orders-footer-button { width: 100%; }
@@ -1850,8 +1853,9 @@ table thead td { border: 1px solid #000; }
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) { .basket-phone { display: block; }
   .basket-table { display: none; }
+  .orders { padding: 30px 10px; }
   .orders-title { width: 100%; display: none; }
-  .orders-block { width: 100%; }
+  .orders-block { margin-bottom: 10px; width: 100%; }
   .orders-footer { flex-direction: column-reverse; width: 100%; }
   .orders-footer-about { width: 100%; }
   .orders-footer-button { width: 100%; }

@@ -6,9 +6,19 @@ $(document).ready(function() {
         alias: "numeric"
     });
 
+    $("#user_city").select2({
+        language: {
+            searching: function() {
+                return "Something else...";
+            }
+        },
+        matcher: function () {
+            return 23;
+        }
+    });
+
     $(".select2-block").each(function() {
         $(this).select2({language: "ru"});
-        // $($(this).select2("container")).addClass("orders-block-row__input");
     });
 
     $("input[type='radio']").change(function() {
@@ -23,9 +33,16 @@ $(document).ready(function() {
 
     });
 
+    // let select2_search = $("#user_city").data("select2").dropdown.$search.val();
+    // console.log(select2_search);
+    //
+    // $("#user_city").change(function () {
+    //    console.log("1");
+    // });
+
 });
 
-/*==== MAIN =====*/
+/*==== MAIN ====*/
 function setCityVal() {
     let data = $("#user_city").select2("data");
     let city_id = data[0].value;
@@ -34,14 +51,9 @@ function setCityVal() {
     $(".chosen-city").html(city_name);
 }
 
-/*==== /MAIN =====*/
+/*==== /MAIN ====*/
 
-/*==== DELIVERY =====*/
-//
-// function setDeliveryTab(a) {
-//     $("#" + $(a).attr("data-tab-href")).addClass("orders-block-row-display");
-// }
-
+/*==== DELIVERY ====*/
 function setCityDepartments(city_id) {
     JsHttpRequest.query(folder,{'w':'setCityDepartments', 'city_id':city_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
@@ -60,16 +72,16 @@ function setCityDepartments(city_id) {
 // 6	Отделение Укрпочты (?)		Отображается в любом случаи, но если в выбранном населённом пункте есть отделения
 // 7	Другие компании экспресс доставки (?)		Отображается если выбран город, который не привязан ни к одной из ТТ (т.е. Киев или Хмельницкий)
 
-/*==== /DELIVERY =====*/
+/*==== /DELIVERY ====*/
 
-/*==== PAYMENT =====*/
+/*==== PAYMENT ====*/
 // 1	Оплата наличными при получении заказа		Отображается если способ доставки - 1, 2, 3
 // 2	Наложенный платёж		Отображается если способ доставки - 4, 5, 6, 7
 // 3	Оплата на карту Приват Банка		Отображается при любом способе доставки, в будущем оплата картой на сайте
 
-/*==== /PAYMENT =====*/
+/*==== /PAYMENT ====*/
 
-/*==== SAVE =====*/
+/*==== SAVE ====*/
 function getPhone(str) {
     str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");
     str = str.replace("-", "");
@@ -85,7 +97,6 @@ function validFields() {
     let valid=0;
     $(".valid_field").each(function() {
         let data_attr = $(this).attr("data-attr");
-
         // INPUT TEXT FIELD
         if (data_attr==="text") {
             if ($(this).val()==="") {
@@ -97,7 +108,6 @@ function validFields() {
                 $(this).removeClass("not-valid");
             }
         }
-
         // INPUT PHONE FIELD
         if (data_attr==="phone") {
             let phone = getPhone($(this).val());
@@ -110,7 +120,6 @@ function validFields() {
                 $(this).removeClass("not-valid");
             }
         }
-
         // SELECT FIELD
         if (data_attr==="select") {
             let data = $(this).select2("data");
@@ -118,30 +127,13 @@ function validFields() {
 
             if (data_id==="0") {
                 valid++;
-                // $(this).addClass("not-valid");
-                // $(this).removeClass("accept-valid");
                 $(this).next(".select2-container").find(".select2-selection--single").addClass("not-valid");
                 $(this).next(".select2-container").find(".select2-selection--single").removeClass("accept-valid");
             } else {
-                // $(this).addClass("accept-valid");
-                // $(this).removeClass("not-valid");
                 $(this).next(".select2-container").find(".select2-selection--single").addClass("accept-valid");
                 $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid");
             }
         }
-
-        // if ($(this).hasClass("not-valid")) {
-        //     $(this).addClass("tooltips");
-        //     $(this).attr("title", "{check_the_data}");
-        //     $(this).attr("data-toggle", "tooltip");
-        //     $(this).attr("data-placement", "right");
-        //     $(this).tooltip();
-        //     $(this).tooltip("show");
-        // } else {
-        //     $(this).removeClass("tooltips");
-        //     $(this).attr("title", "");
-        //     $(this).tooltip("dispose");
-        // }
     });
     if (valid===0) {
         $(".valid_field").each(function() {
@@ -152,8 +144,6 @@ function validFields() {
         $("#valid_button").addClass("none");
         $("#edit_button").removeClass("none");
         $("#orders-info").removeClass("none");
-    } else {
-
     }
 }
 
@@ -166,4 +156,4 @@ function editFields() {
     });
 }
 
-/*==== /SAVE =====*/
+/*==== /SAVE ====*/
