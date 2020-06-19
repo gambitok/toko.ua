@@ -558,4 +558,55 @@ class ShopClass {
         return $form;
     }
 
+    function getOrderDeliveryBlock($delivery_id, $city_id) { $db=DbSingleton::getDbm();
+        $result = 0;
+
+        $cities = [10108, 24861];
+
+        $r = $db->query("SELECT * FROM `orders_valid_delivery` WHERE `DELIVERY_ID`='$delivery_id' LIMIT 1;");
+
+        $valid = $db->result($r, 0, "VALID_TYPE");
+
+        if ($valid==0) {
+            $result = 1;
+        }
+
+        if ($valid==1) {
+            if (in_array($city_id, $cities)) {
+                $result = 1;
+            }
+        }
+
+        return $result;
+    }
+
+    function getOrderPaymentBlock($payment_id, $delivery_id) { $db=DbSingleton::getDbm();
+        $result = 0;
+
+        $del_types_1 = [1, 2, 3];
+        $del_types_2 = [4, 5, 6];
+
+        $r = $db->query("SELECT * FROM `orders_valid_payment` WHERE `PAYMENT_ID`='$payment_id' LIMIT 1;");
+
+        $valid = $db->result($r, 0, "VALID_TYPE");
+
+        if ($valid==0) {
+            $result = 1;
+        }
+
+        if ($valid==1) {
+            if (in_array($delivery_id, $del_types_1)) {
+                $result = 1;
+            }
+        }
+
+        if ($valid==2) {
+            if (in_array($delivery_id, $del_types_2)) {
+                $result = 1;
+            }
+        }
+
+        return $result;
+    }
+
 }

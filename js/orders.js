@@ -31,14 +31,10 @@ $(document).ready(function() {
             if($(this).is(':checked')) $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
         });
 
-    });
+       // getOrderDeliveryBlock();
+        getOrderPaymentBlock();
 
-    // let select2_search = $("#user_city").data("select2").dropdown.$search.val();
-    // console.log(select2_search);
-    //
-    // $("#user_city").change(function () {
-    //    console.log("1");
-    // });
+    });
 
 });
 
@@ -64,20 +60,53 @@ function setCityDepartments(city_id) {
         }}, true);
 }
 
-// 1	Самовывоз из магазина (бесплатно)		Отображается если выбран город, который привязан к одной из ТТ (т.е. Киев или Хмельницкий)
-// 2	Доставка курьером (бесплатно)		Отображается если выбран город, который привязан к одной из ТТ (т.е. Киев или Хмельницкий)
-// 3	Доставка курьером на ваше СТО (бесплатно)		Отображается если выбран город, который привязан к одной из ТТ (т.е. Киев или Хмельницкий)
-// 4	В отделение Новой Почты (?)		Отображается в любом случаи, но если в выбранном населённом пункте есть отделения
-// 5	Курьерская доставка Новой Почты (?)		Отображается если выбран город, который не привязан ни к одной из ТТ (т.е. Киев или Хмельницкий)
-// 6	Отделение Укрпочты (?)		Отображается в любом случаи, но если в выбранном населённом пункте есть отделения
-// 7	Другие компании экспресс доставки (?)		Отображается если выбран город, который не привязан ни к одной из ТТ (т.е. Киев или Хмельницкий)
+function getCheckedDelivery() {
+    let radio_id = 0;
+    $("input[name ='user_delivery']").each(function () {
+        if($(this).is(':checked')) {
+            radio_id = $(this).attr("data-id-delivery");
+        }
+    });
+    return radio_id;
+}
+
+function getOrderDeliveryBlock() {
+    $(".orders-block-row-delivery").each(function () {
+        let delivery_id = $(this).attr("data-tab-delivery");
+        let city_id = $("#user_city").select2("val");
+        let block = $(this);
+        block.removeClass("orders-block-row-hidden");
+        JsHttpRequest.query(folder,{'w':'getOrderDeliveryBlock', 'delivery_id':delivery_id, 'city_id':city_id},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                let status = result.content;
+                if (status==0) block.addClass("orders-block-row-hidden");
+            }}, true);
+    });
+}
+
+function uncheckRadio() {
+    $(".orders-block-row-delivery").each(function () {
+        $(this).find("label").find("input[type='radio']").prop("checked", false);
+    });
+}
+
+function getOrderPaymentBlock() {
+    $(".orders-block-row-payment").each(function () {
+        let payment_id = $(this).attr("data-tab-payment");
+        let delivery_id = getCheckedDelivery();
+        let block = $(this);
+        block.removeClass("orders-block-row-hidden");
+        JsHttpRequest.query(folder,{'w':'getOrderPaymentBlock', 'payment_id':payment_id, 'delivery_id':delivery_id},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                let status = result.content;
+                if (status==0) block.addClass("orders-block-row-hidden");
+            }}, true);
+    });
+}
 
 /*==== /DELIVERY ====*/
 
 /*==== PAYMENT ====*/
-// 1	Оплата наличными при получении заказа		Отображается если способ доставки - 1, 2, 3
-// 2	Наложенный платёж		Отображается если способ доставки - 4, 5, 6, 7
-// 3	Оплата на карту Приват Банка		Отображается при любом способе доставки, в будущем оплата картой на сайте
 
 /*==== /PAYMENT ====*/
 
@@ -145,6 +174,8 @@ function validFields() {
         $("#edit_button").removeClass("none");
         $("#orders-info").removeClass("none");
     }
+
+    getOrderDeliveryBlock();
 }
 
 function editFields() {
