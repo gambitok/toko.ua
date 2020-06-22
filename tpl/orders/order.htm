@@ -29,70 +29,84 @@
 
 <div class="orders">
 
+    <!-- HEADER -->
     <div class="orders-header">
         <h1>{making_order_cap}</h1>
     </div>
 
-    <div class="orders-block">
-        <div class="orders-block-row">
-            <div class="orders-block-row-title">
-                <label class="orders-block-row__label" for="user_name">{name_surname}</label>
+    <!-- CONTACTS -->
+    <div class="orders-container">
+        <div class="orders-block">
+            <div class="orders-block-row">
+                <div class="orders-block-row-title">
+                    <label class="orders-block-row__label" for="user_name">{name_surname}</label>
+                </div>
+                <div class="orders-block-row-content">
+                    <input class="orders-block-row__input valid_field" type="text" name="user_name" id="user_name" data-attr="text" placeholder="{name_surname}">
+                </div>
             </div>
-            <div class="orders-block-row-content">
-                <input class="orders-block-row__input valid_field" type="text" name="user_name" id="user_name" data-attr="text" placeholder="{name_surname}">
+            <div class="orders-block-row">
+                <div class="orders-block-row-title">
+                    <label class="orders-block-row__label" for="user_phone">{phone_number}</label>
+                </div>
+                <div class="orders-block-row-content">
+                    <input class="orders-block-row__input masked-phone valid_field" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone" data-attr="phone">
+                </div>
+            </div>
+            <div class="orders-block-row">
+                <div class="orders-block-row-title">
+                    <label class="orders-block-row__label" for="user_city">{city_cap}</label>
+                </div>
+                <div class="orders-block-row-content">
+                    <select class="orders-block-row__input valid_field select2-block" name="user_city" id="user_city" data-attr="select" onchange="setCityVal()">
+                        <option value="0">{not_chosen}</option>
+                        <option value="4074">Dnipro</option>
+                        <option value="24861">Kmelnitskii</option>
+                        <option value="10108">Kyiv</option>
+                        <option value="13549">Lviv</option>
+                        <option value="22739">Xarkiv</option>
+                        <option value="15628">Odesa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="orders-block-row">
+                <div class="orders-footer-button" style="width: 100%!important;">
+                    <button onclick="validFields();" id="valid_button">{continue_cap}</button>
+                    <button class="none" onclick="editFields();" id="edit_button">{edit_cap}</button>
+                </div>
             </div>
         </div>
-        <div class="orders-block-row">
-            <div class="orders-block-row-title">
-                <label class="orders-block-row__label" for="user_phone">{phone_number}</label>
-            </div>
-            <div class="orders-block-row-content">
-                <input class="orders-block-row__input masked-phone valid_field" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone" data-attr="phone">
-            </div>
-        </div>
-        <div class="orders-block-row">
-            <div class="orders-block-row-title">
-                <label class="orders-block-row__label" for="user_city">{city_cap}</label>
-            </div>
-            <div class="orders-block-row-content">
-                <select class="orders-block-row__input valid_field select2-block" name="user_city" id="user_city" data-attr="select" onchange="setCityVal()">
-                    <option value="0">{not_chosen}</option>
-                    <option value="4074">Dnipro</option>
-                    <option value="24861">Kmelnitskii</option>
-                    <option value="10108">Kyiv</option>
-                    <option value="13549">Lviv</option>
-                    <option value="22739">Xarkiv</option>
-                    <option value="15628">Odesa</option>
-                </select>
-            </div>
-        </div>
-        <div class="orders-block-row">
-            <div class="orders-footer-button" style="width: 100%!important;">
-                <button onclick="validFields();" id="valid_button">{continue_cap}</button>
-                <button class="none" onclick="editFields();" id="edit_button">{edit_cap}</button>
-            </div>
+        <div class="orders-title">
+            <span>{contacts_cap}</span>
         </div>
     </div>
-    <div class="orders-title">
-        <span>{contacts_cap}</span>
-    </div>
 
-    <div id="orders-info" class="none" style="display: contents;">
+    <div id="orders-delivery" class="none">
 
+    <!-- DELIVERY -->
+    <div class="orders-container">
         <div class="orders-block">
             {order_delivery}
         </div>
         <div class="orders-title">
             <span>{delivery_cap}</span>
         </div>
+    </div>
 
+    <div id="orders-payment" class="none">
+
+    <!-- PAYMENT -->
+    <div class="orders-container">
         <div class="orders-block">
             {order_payment}
         </div>
         <div class="orders-title">
             <span>{payment_cap}</span>
         </div>
+    </div>
 
+    <!-- INFO -->
+    <div class="orders-container">
         <div class="orders-block">
             <div class="orders-block-row">
                 <div class="orders-block-row-title">
@@ -114,20 +128,41 @@
         <div class="orders-title">
             <span>{info_cap}</span>
         </div>
+    </div>
 
-        <div class="orders-footer">
-            <div class="orders-footer-about">
-                <span>{delivery_user_info}</span>
-            </div>
-            <div class="orders-footer-button">
-                <button>{make_order_cap}</button>
-            </div>
+    <!-- FOOTER -->
+    <div class="orders-footer">
+        <div class="orders-footer-about">
+            <span>{delivery_user_info}</span>
         </div>
+        <div class="orders-footer-button">
+            <button onclick="validOrder();">{make_order_cap}</button>
+        </div>
+    </div>
+
+    </div>
+
     </div>
 
 </div>
 
+
 <script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>
-<!--<script type="text/javascript" src="/js/plugins/select2/select2_ru.js"></script>-->
 
 <script type="text/javascript" src="/js/orders.js"></script>
+
+<div class="modal" tabindex="-1" role="dialog" id="OrderModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="OrderModalContent">ORDER TEXT</div>
+            </div>
+        </div>
+    </div>
+</div>

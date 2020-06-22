@@ -1779,9 +1779,11 @@ table thead td { border: 1px solid #000; }
 .btn-basket:hover { background: #4b4e4f; color: #fff; }
 
 /*===== NEW ORDERS ====*/
-.orders { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); display: flex; flex-wrap: wrap; font-size: 16px; width: 100%; padding: 30px; }
+.orders { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); font-size: 16px; width: 100%; padding: 30px; }
 
 .orders h1 { font-size: 24px; }
+
+.orders-container { display: flex; flex-wrap: wrap; width: 100%; }
 
 .orders-header { display: flex; width: 100%; }
 

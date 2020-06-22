@@ -314,12 +314,11 @@ class ShopClass {
     }
 
     function countBasket() { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass;
-        $where=$client->getClientWhere();
+        $client=new ClientClass; $where=$client->getClientWhere();
         $r=$db->query("SELECT * FROM `basket` WHERE $where;"); $n=$db->num_rows($r);
         $n>0 ? $list=$n : $list="";
         $list=="" ? $style="none" : $style="";
-        return array($list,$style);
+        return array($list, $style);
     }
 
     function countSummBasket() { $db = DbSingleton::getTokoDb();
@@ -523,11 +522,6 @@ class ShopClass {
         return $form;
     }
 
-    function addNewAddressForm($client_id, $address) {
-        $result=1;
-        return $result;
-    }
-
     function getOrderForm() {
         $form=$this->getHtmlForm("orders/order");
         $form=str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
@@ -544,12 +538,14 @@ class ShopClass {
     }
 
     function setCityDepartments($city_id) {
-        $list_np="";
-        $list_up="";
+        $list_np="<option value='0'>{not_chosen}</option>";
+        $list_up="<option value='0'>{not_chosen}</option>";
         for ($i=1; $i<=5; $i++) {
             $list_np.="<option value='$i'>$city_id - $i</option>";
             $list_up.="<option value='$i'>$city_id - $i</option>";
         }
+        $list_np=$this->replaceLang($list_np);
+        $list_up=$this->replaceLang($list_up);
         return array($list_np, $list_up);
     }
 
@@ -609,4 +605,17 @@ class ShopClass {
         return $result;
     }
 
+    function getDeliveryFields($delivery_id) { $db=DbSingleton::getDbm();
+        $arr=[];
+        $r=$db->query("SELECT dt.* FROM `orders_valid_delivery_info` di 
+            LEFT JOIN `orders_valid_delivery_type` dt ON dt.TYPE_ID = di.TYPE_ID
+        WHERE di.`DELIVERY_ID`='$delivery_id';"); $n=$db->num_rows($r);
+        for ($i=1;$i<=$n;$i++) {
+            $type_id = $db->result($r, $i - 1, "TYPE_ID");
+            $type_name = $db->result($r, $i - 1, "TYPE_NAME");
+            $type_field = $db->result($r, $i - 1, "TYPE_FIELD");
+            $arr[$type_id] = ["name"=>$type_name, "field"=>$type_field];
+        }
+        return $arr;
+    }
 }

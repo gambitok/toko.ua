@@ -221,13 +221,16 @@
 /*===== NEW ORDERS ====*/
 .orders {
     box-shadow: 0 0 40px 0 rgba(0,0,0,.11);
-    display: flex;
-    flex-wrap: wrap;
     font-size: 16px;
     width: 100%;
     padding: 30px;
     h1 {
         font-size: 24px;
+    }
+    &-container {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
     }
     &-header {
         display: flex;

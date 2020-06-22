@@ -28,7 +28,7 @@ $catalog=new CatalogueClass; $menu=new MenuClass; $client=new ClientClass; $lang
 $showform=new FormClass; $automan=new AutoClass; $profile=new ProfileClass;
 $prod=new ProductsClass; $parameters=new ParametersClass; $search=new SearchClass;
 
-//=profile==============================================================================================================
+/*=== PROFILE ====*/
 
 if ($_REQUEST["w"]=="showProfileAccount"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileAccount());}
 
@@ -40,7 +40,7 @@ if ($_REQUEST["w"]=="setPriceList"){$GLOBALS['_RESULT'] = array("content"=>$prof
 
 if ($_REQUEST["w"]=="showProfileOrders"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileOrders());}
 
-if ($_REQUEST["w"]=="showProfileOrdersArts"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileOrdersArts($_REQUEST["dp_id"],$_REQUEST["order_id"]));}
+if ($_REQUEST["w"]=="showProfileOrdersArts"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileOrdersArts($_REQUEST["dp_id"], $_REQUEST["order_id"]));}
 
 if ($_REQUEST["w"]=="showProfileBasketForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showMiniBasketForm()[0]);}
 
@@ -48,22 +48,15 @@ if ($_REQUEST["w"]=="showBasketMinForm"){$GLOBALS['_RESULT'] = array("content"=>
 
 if ($_REQUEST["w"]=="setCityDepartments"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityDepartments($_REQUEST["city_id"]));}
 
-if ($_REQUEST["w"]=="getOrderDeliveryBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderDeliveryBlock($_REQUEST["delivery_id"],$_REQUEST["city_id"]));}
-if ($_REQUEST["w"]=="getOrderPaymentBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderPaymentBlock($_REQUEST["payment_id"],$_REQUEST["delivery_id"]));}
+if ($_REQUEST["w"]=="getOrderDeliveryBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderDeliveryBlock($_REQUEST["delivery_id"], $_REQUEST["city_id"]));}
 
-//=catalogue============================================================================================================
+if ($_REQUEST["w"]=="getOrderPaymentBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderPaymentBlock($_REQUEST["payment_id"], $_REQUEST["delivery_id"]));}
 
-//if ($_REQUEST["w"]=="select_model"){$GLOBALS['_RESULT'] = array("content"=>$automan->selectModel($_REQUEST["auto"]));}
-//
-//if ($_REQUEST["w"]=="select_modelid"){$GLOBALS['_RESULT'] = array("content"=>$automan->selectModelId($_REQUEST["model"]));}
-//
-//if ($_REQUEST["w"]=="select_group"){$GLOBALS['_RESULT'] = array("content"=>$automan->selectGroup($_REQUEST["modelid"]));}
-//
-//if ($_REQUEST["w"]=="select_end"){$GLOBALS['_RESULT'] = array("content"=>$automan->selectEnd($_REQUEST["group"]));}
+if ($_REQUEST["w"]=="getDeliveryFields"){$GLOBALS['_RESULT'] = array("content"=>$shop->getDeliveryFields($_REQUEST["delivery_id"]));}
+
+/*=== CATALOG ====*/
 
 if ($_REQUEST["w"]=="getCatalogueLink"){$GLOBALS['_RESULT'] = array("content"=>$catalog->getCatalogueLink($_REQUEST["article_nr_search"]));}
-
-//=catalogue auto=======================================================================================================
 
 if ($_REQUEST["w"]=="tab_auto"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueManufacture($_REQUEST["year"]));}
 
@@ -87,27 +80,17 @@ if ($_REQUEST["w"]=="showGarageForm"){$GLOBALS['_RESULT'] = array("content"=>$au
 
 if ($_REQUEST["w"]=="updateGarageStatus"){$GLOBALS['_RESULT'] = array("content"=>$automan->getGarageAutoCount());}
 
-//if ($_REQUEST["w"]=="showGarageBlockMin"){$GLOBALS['_RESULT'] = array("content"=>$automan->showGarageBlockMin());}
-
 if ($_REQUEST["w"]=="showAutoHistory"){$GLOBALS['_RESULT'] = array("content"=>$automan->showAutoHistory());}
 
 if ($_REQUEST["w"]=="dropAutoHistory"){$GLOBALS['_RESULT'] = array("content"=>$automan->dropAutoHistory($_REQUEST["history_id"]));}
 
-//if ($_REQUEST["w"]=="updateGarageForm"){$GLOBALS['_RESULT'] = array("content"=>$automan->showGarageBlockMin());}
-
-//if ($_REQUEST["w"]=="updateTypForm"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTypBlockMin());}
-
-//=catalogue filters====================================================================================================
+/*=== CATALOG FILTER ====*/
 
 if ($_REQUEST["w"]=="show_catalogue_filter_all"){$GLOBALS['_RESULT'] = array("content"=>$catalog->showCatalogueListFilter($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["text"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));}
 
 if ($_REQUEST["w"]=="show_model_filter_all"){$GLOBALS['_RESULT'] = array("content"=>$catalog->techModelsFilters($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["text"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));}
 
-//if ($_REQUEST["w"]=="tecModelsTreeStr"){$GLOBALS['_RESULT'] = array("content"=>$catalog->techModelsStr($_REQUEST["manuf"], $_REQUEST["mod"], $_REQUEST["modid"], $_REQUEST["gr"], $_REQUEST["str"], $_REQUEST["lvl"], $_REQUEST["par"]));}
-
-//=menu=================================================================================================================
-
-if ($_REQUEST["w"]=="setTpoint"){$GLOBALS['_RESULT'] = array("content"=>$client->setTpoint($_REQUEST["id"]));}
+/*=== MENU ====*/
 
 if ($_REQUEST["w"]=="saveSellerForm"){$GLOBALS['_RESULT'] = array("content"=>$menu->saveSellerForm($_REQUEST["company"],$_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["email"],$_REQUEST["city_id"],$_REQUEST["comment"]));}
 
@@ -115,7 +98,7 @@ if ($_REQUEST["w"]=="getSellerImage"){$GLOBALS['_RESULT'] = array("content"=>$me
 
 if ($_REQUEST["w"]=="getRegionSelect"){ $GLOBALS['_RESULT'] = array("content"=>$menu->getRegionSelect());}
 
-//=modal info===========================================================================================================
+/*=== MODALS ====*/
 
 if ($_REQUEST["w"]=="loadApplicModels2"){$GLOBALS['_RESULT'] = array("content"=>$showform->getApplModelTCD($_REQUEST["art_id_tcd"], $_REQUEST["manufacture"]));}
 
@@ -131,31 +114,33 @@ if ($_REQUEST["w"]=="showHistoryList"){$GLOBALS['_RESULT'] = array("content"=>$s
 
 if ($_REQUEST["w"]=="deleteHistoryItem"){$GLOBALS['_RESULT'] = array("content"=>$showform->deleteHistoryItem($_REQUEST["history_id"]));}
 
-//=client && login======================================================================================================
+/*=== CLIENT ====*/
 
-if ($_REQUEST["w"]=="loginClient"){$GLOBALS['_RESULT'] = array("content"=>$client->loginClient($_REQUEST["login"],$_REQUEST["password"]));}
+if ($_REQUEST["w"]=="setTpoint"){$GLOBALS['_RESULT'] = array("content"=>$client->setTpoint($_REQUEST["id"]));}
+
+if ($_REQUEST["w"]=="loginClient"){$GLOBALS['_RESULT'] = array("content"=>$client->loginClient($_REQUEST["login"], $_REQUEST["password"]));}
 
 if ($_REQUEST["w"]=="logoutClient"){$GLOBALS['_RESULT'] = array("content"=>$client->logoutClient());}
 
-if ($_REQUEST["w"]=="saveProfile"){$GLOBALS['_RESULT'] = array("content"=>$client->updateProfile($_REQUEST["phone"],$_REQUEST["pass"],$_REQUEST["email"],$_REQUEST["name"]));}
+if ($_REQUEST["w"]=="saveProfile"){$GLOBALS['_RESULT'] = array("content"=>$client->updateProfile($_REQUEST["phone"], $_REQUEST["pass"], $_REQUEST["email"], $_REQUEST["name"]));}
 
-if ($_REQUEST["w"]=="saveRegistration"){$GLOBALS['_RESULT'] = array("content"=>$client->saveRegistration($_REQUEST["phone"],$_REQUEST["pass"],$_REQUEST["email"],$_REQUEST["name"],$_REQUEST["client_category"],$_REQUEST["client_city"],$_REQUEST["client_tpoint"],$_REQUEST["mailing"]));}
+if ($_REQUEST["w"]=="saveRegistration"){$GLOBALS['_RESULT'] = array("content"=>$client->saveRegistration($_REQUEST["phone"], $_REQUEST["pass"], $_REQUEST["email"], $_REQUEST["name"],$_REQUEST["client_category"],$_REQUEST["client_city"],$_REQUEST["client_tpoint"],$_REQUEST["mailing"]));}
 
-if ($_REQUEST["w"]=="check_reg_client"){$GLOBALS['_RESULT'] = array("content"=>$client->checkRegClient($_REQUEST["phone"],$_REQUEST["type"]));}
+if ($_REQUEST["w"]=="check_reg_client"){$GLOBALS['_RESULT'] = array("content"=>$client->checkRegClient($_REQUEST["phone"], $_REQUEST["type"]));}
 
 if ($_REQUEST["w"]=="recoverPassword"){$GLOBALS['_RESULT'] = array("content"=>$client->recoverPassword($_REQUEST["phone"]));}
 
 if ($_REQUEST["w"]=="validatePhone"){$GLOBALS['_RESULT'] = array("content"=>$client->validatePhone($_REQUEST["phone"]));}
 
-if ($_REQUEST["w"]=="endValidation"){$GLOBALS['_RESULT'] = array("content"=>$client->endValidation($_REQUEST["phone"],$_REQUEST["password"]));}
+if ($_REQUEST["w"]=="endValidation"){$GLOBALS['_RESULT'] = array("content"=>$client->endValidation($_REQUEST["phone"], $_REQUEST["password"]));}
 
 if ($_REQUEST["w"]=="toggleProductView"){$GLOBALS['_RESULT'] = array("content"=>$client->toggleProductView($_REQUEST["ds"]));}
 
-if ($_REQUEST["w"]=="showProfileCheckForm"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileCheck($_REQUEST["data_start"],$_REQUEST["data_end"]));}
+if ($_REQUEST["w"]=="showProfileCheckForm"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileCheck($_REQUEST["data_start"], $_REQUEST["data_end"]));}
 
-//=language=============================================================================================================
+/*=== LANGUAGE ====*/
 
-if ($_REQUEST["w"]=="changeLangAlert"){$GLOBALS['_RESULT'] = array("content"=>$lang->changeLangAlert($_REQUEST["message"],$_REQUEST["title"]));}
+if ($_REQUEST["w"]=="changeLangAlert"){$GLOBALS['_RESULT'] = array("content"=>$lang->changeLangAlert($_REQUEST["message"], $_REQUEST["title"]));}
 
 if ($_REQUEST["w"]=="selectLang"){$GLOBALS['_RESULT'] = array("content"=>$lang->setLanguage($_REQUEST["id"]));}
 
@@ -165,13 +150,13 @@ if ($_REQUEST["w"]=="setSiteLang"){$GLOBALS['_RESULT'] = array("content"=>$lang-
 
 if ($_REQUEST["w"]=="changeLangJs"){$GLOBALS['_RESULT'] = array("content"=>$lang->changeLangJs($_REQUEST["text"]));}
 
-//=basket && order======================================================================================================
+/*=== SHOP ====*/
 
 if ($_REQUEST["w"]=="moveToBasket"){ list($old_amount, $art_name, $basket_count)=$shop->moveToBasket($_REQUEST["art_id"],$_REQUEST["brand_id"],$_REQUEST["count"],$_REQUEST["stock"],$_REQUEST["storage_id"],$_REQUEST["suppl_id"]); $GLOBALS['_RESULT'] = array("old_amount"=>$old_amount,"art_name"=>$art_name,"basket_count"=>$basket_count);}
 
-if ($_REQUEST["w"]=="deleteFromBasket"){ $GLOBALS['_RESULT'] = array("content"=>$shop->deleteFromBasket($_REQUEST["art_id"],$_REQUEST["storage_id"]));}
+if ($_REQUEST["w"]=="deleteFromBasket"){ $GLOBALS['_RESULT'] = array("content"=>$shop->deleteFromBasket($_REQUEST["art_id"], $_REQUEST["storage_id"]));}
 
-if ($_REQUEST["w"]=="checkBasketItem"){ $GLOBALS['_RESULT'] = array("content"=>$shop->checkBasketItem($_REQUEST["art_id"],$_REQUEST["storage_id"],$_REQUEST["status"]));}
+if ($_REQUEST["w"]=="checkBasketItem"){ $GLOBALS['_RESULT'] = array("content"=>$shop->checkBasketItem($_REQUEST["art_id"], $_REQUEST["storage_id"], $_REQUEST["status"]));}
 
 if ($_REQUEST["w"]=="finish_order"){ $GLOBALS['_RESULT'] = array("content"=>$shop->finishOrder($_REQUEST["client_id"],$_REQUEST["client_user_id"],$_REQUEST["tpoint_user_id"],$_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["region"],$_REQUEST["email"],$_REQUEST["delivery"],$_REQUEST["delivery_info"],$_REQUEST["payment"],$_REQUEST["payment_info"],$_REQUEST["carrier_id"]));}
 
@@ -188,16 +173,6 @@ if ($_REQUEST["w"]=="get_city_list"){ $GLOBALS['_RESULT'] = array("content"=>$sh
 if ($_REQUEST["w"]=="closeOrderArtUpdate"){ $GLOBALS['_RESULT'] = array("content"=>$profile->closeOrderArtUpdate($_REQUEST["dp_id"],$_REQUEST["art_id"],$_REQUEST["order_id"]));}
 
 if ($_REQUEST["w"]=="updateOrderArt"){ $GLOBALS['_RESULT'] = array("content"=>$profile->updateOrderArt($_REQUEST["order_id"]));}
-
-if ($_REQUEST["w"]=="addNewAddressForm"){ $GLOBALS['_RESULT'] = array("content"=>$shop->addNewAddressForm($_REQUEST["client_id"],$_REQUEST["address"]));}
-
-//=templates============================================================================================================
-
-//if ($_REQUEST["w"]=="addFilterTemplate"){ $GLOBALS['_RESULT'] = array("content"=>$template->addFilterTemplate($_REQUEST["paramId"],$_REQUEST["statusFilters"],$_REQUEST["activeFilters"],$_REQUEST["currentPageFilters"],$_REQUEST["activeProducts"],$_REQUEST["template_id"]));}
-//
-//if ($_REQUEST["w"]=="initProductsForm"){ $GLOBALS['_RESULT'] = array("content"=>$template->initProductsForm($_REQUEST["activeFilters"],$_REQUEST["currentPageFilters"],$_REQUEST["activeProducts"],$_REQUEST["page"],$_REQUEST["page_count"],$_REQUEST["template_id"]));}
-//
-//if ($_REQUEST["w"]=="clearFilters"){ $GLOBALS['_RESULT'] = array("content"=>$template->clearFilters($_REQUEST["template_id"]));}
 
 //=catalogue trigger list===============================================================================================
 
@@ -217,19 +192,19 @@ if ($_REQUEST["w"]=="showHomeCars"){ $GLOBALS['_RESULT'] = array("content"=>$sho
 
 if ($_REQUEST["w"]=="showModalForm"){ $GLOBALS['_RESULT'] = array("content"=>$showform->showModalForm($_REQUEST["form"]));}
 
-//if ($_REQUEST["w"]=="showTabCatalogueAutoMin"){ $GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueAutoMin());}
-
-//=products search======================================================================================================
+/*=== PRODUCTS ====*/
 
 if ($_REQUEST["w"]=="showCarDetailsStr"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarDetailsStr($_REQUEST["head_id"],$_REQUEST["str_id_str"]));}
-
-//if ($_REQUEST["w"]=="showCarsSelectMin"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelectMin($_REQUEST["str_id"],$_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"],$_REQUEST["fuel_id"],true));}
-
-//if ($_REQUEST["w"]=="showCarsSelected"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelected($_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"]));}
 
 if ($_REQUEST["w"]=="techCarModels"){ $GLOBALS['_RESULT'] = array("content"=>$prod->techCarModels($_REQUEST["typ_id"],$_REQUEST["str_id"]));}
 
 if ($_REQUEST["w"]=="techCarModelsFilter"){ $GLOBALS['_RESULT'] = array("content"=>$prod->techCarModelsFilter($_REQUEST["typ_id"],$_REQUEST["str_id"]));}
+
+/*=== PARAMETERS ====*/
+
+if ($_REQUEST["w"]=="showFiltersForm"){ $GLOBALS['_RESULT'] = array("content"=>$parameters->showFiltersForm($_REQUEST["template_id"],$_REQUEST["active_filters"]));}
+
+if ($_REQUEST["w"]=="showFilterOptionsForm"){ $GLOBALS['_RESULT'] = array("content"=>$parameters->showFilterOptionsForm($_REQUEST["template_id"],$_REQUEST["page"],$_REQUEST["active_filters"]));}
 
 /*==== HOME CARS ====*/
 
@@ -243,13 +218,19 @@ if ($_REQUEST["w"]=="showCarsForm2"){ $GLOBALS['_RESULT'] = array("content"=>$pr
 
 if ($_REQUEST["w"]=="showCarsSelectedForm"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelectedForm());}
 
-//=Search======================================================================================================
+/*=== SEARCH ====*/
 
 if ($_REQUEST["w"]=="showSearchParameters"){ $GLOBALS['_RESULT'] = array("content"=>$search->showSearchParameters($_REQUEST["str_id"],$_REQUEST["page"],$_REQUEST["active_filters"],$_REQUEST["type"]));}
 
-//=Products======================================================================================================
+//if ($_REQUEST["w"]=="showCarsSelectMin"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelectMin($_REQUEST["str_id"],$_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"],$_REQUEST["fuel_id"],true));}
 
-if ($_REQUEST["w"]=="showFiltersForm"){ $GLOBALS['_RESULT'] = array("content"=>$parameters->showFiltersForm($_REQUEST["template_id"],$_REQUEST["active_filters"]));}
+//if ($_REQUEST["w"]=="showCarsSelected"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelected($_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"]));}
 
-if ($_REQUEST["w"]=="showFilterOptionsForm"){ $GLOBALS['_RESULT'] = array("content"=>$parameters->showFilterOptionsForm($_REQUEST["template_id"],$_REQUEST["page"],$_REQUEST["active_filters"]));}
+//=templates============================================================================================================
+
+//if ($_REQUEST["w"]=="addFilterTemplate"){ $GLOBALS['_RESULT'] = array("content"=>$template->addFilterTemplate($_REQUEST["paramId"],$_REQUEST["statusFilters"],$_REQUEST["activeFilters"],$_REQUEST["currentPageFilters"],$_REQUEST["activeProducts"],$_REQUEST["template_id"]));}
+//
+//if ($_REQUEST["w"]=="initProductsForm"){ $GLOBALS['_RESULT'] = array("content"=>$template->initProductsForm($_REQUEST["activeFilters"],$_REQUEST["currentPageFilters"],$_REQUEST["activeProducts"],$_REQUEST["page"],$_REQUEST["page_count"],$_REQUEST["template_id"]));}
+//
+//if ($_REQUEST["w"]=="clearFilters"){ $GLOBALS['_RESULT'] = array("content"=>$template->clearFilters($_REQUEST["template_id"]));}
 

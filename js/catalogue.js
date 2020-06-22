@@ -518,7 +518,6 @@ function deleteAutoGarage(auto_id) {
             if (result.content===false) {
                 if (getCookie("auto_typ_id")==="") {
                     showCarsSelectMin(1);
-                } else {
                 }
             } else {
                 updateGarageForm();

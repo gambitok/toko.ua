@@ -21,6 +21,16 @@ $(document).ready(function() {
         $(this).select2({language: "ru"});
     });
 
+    $("input[name='user_delivery']").change(function() {
+        getOrderPaymentBlock();
+        uncheckRadioPayment();
+
+        let amount = $("input[name='user_delivery']").filter(':checked').length;
+        if (amount>0) {
+            $("#orders-payment").removeClass("none");
+        }
+    });
+
     $("input[type='radio']").change(function() {
 
         $(".orders-block-row-hidden").each(function () {
@@ -30,9 +40,6 @@ $(document).ready(function() {
         $("input[type='radio']").each(function () {
             if($(this).is(':checked')) $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
         });
-
-       // getOrderDeliveryBlock();
-        getOrderPaymentBlock();
 
     });
 
@@ -49,7 +56,7 @@ function setCityVal() {
 
 /*==== /MAIN ====*/
 
-/*==== DELIVERY ====*/
+/*==== DELIVERY + PAYMENT ====*/
 function setCityDepartments(city_id) {
     JsHttpRequest.query(folder,{'w':'setCityDepartments', 'city_id':city_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
@@ -62,11 +69,7 @@ function setCityDepartments(city_id) {
 
 function getCheckedDelivery() {
     let radio_id = 0;
-    $("input[name ='user_delivery']").each(function () {
-        if($(this).is(':checked')) {
-            radio_id = $(this).attr("data-id-delivery");
-        }
-    });
+    $("input[name ='user_delivery']:checked").attr("data-id-delivery");
     return radio_id;
 }
 
@@ -84,8 +87,15 @@ function getOrderDeliveryBlock() {
     });
 }
 
-function uncheckRadio() {
+function uncheckRadioDelivery() {
     $(".orders-block-row-delivery").each(function () {
+        $(this).find("label").find("input[type='radio']").prop("checked", false);
+        $(this).find("div").removeClass("orders-block-row-display");
+    });
+}
+
+function uncheckRadioPayment() {
+    $(".orders-block-row-payment").each(function () {
         $(this).find("label").find("input[type='radio']").prop("checked", false);
     });
 }
@@ -104,11 +114,7 @@ function getOrderPaymentBlock() {
     });
 }
 
-/*==== /DELIVERY ====*/
-
-/*==== PAYMENT ====*/
-
-/*==== /PAYMENT ====*/
+/*==== /DELIVERY + PAYMENT ====*/
 
 /*==== SAVE ====*/
 function getPhone(str) {
@@ -172,7 +178,7 @@ function validFields() {
         });
         $("#valid_button").addClass("none");
         $("#edit_button").removeClass("none");
-        $("#orders-info").removeClass("none");
+        $("#orders-delivery").removeClass("none");
     }
 
     getOrderDeliveryBlock();
@@ -181,10 +187,73 @@ function validFields() {
 function editFields() {
     $("#valid_button").removeClass("none");
     $("#edit_button").addClass("none");
-    $("#orders-info").addClass("none");
+    $("#orders-delivery").addClass("none");
+    $("#orders-payment").addClass("none");
     $(".valid_field").each(function() {
         $(this).prop("disabled", false);
     });
+
+    uncheckRadioDelivery();
+    uncheckRadioPayment();
+}
+
+function validOrder() {
+    let name = $("#user_name").val();
+    let phone = $("#user_phone").val();
+    let city = $("#user_city").select2("val");
+    let delivery = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
+
+    let delivery_type = getDeliveryTypeFields(delivery);
+
+    let payment = $("input[name ='user_payment']:checked").attr("data-id-payment");
+    let email = $("#user_email").val();
+    let comment = $("#user_comment").val();
+
+    if(delivery===undefined || payment===undefined) {
+        alert("ERROR - check DELIVERY and PAYMENT first!")
+    } else {
+        // console.log("name: " + name);
+        // console.log("phone: " + phone);
+        // console.log("city: " + city);
+        // console.log("delivery: " + delivery);
+        // console.log("delivery type: " + delivery_type);
+        // console.log("payment: " + payment);
+        // console.log("email: " + email);
+        // console.log("comment: " + comment);
+
+        JsHttpRequest.query(folder,{'w':'validOrder', 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            $("#OrderModal").modal("show");
+            $("#OrderModalContent").html(result.content);
+        }}, true);
+    }
+}
+
+// function getDeliveryFields(delivery_id) {
+//     JsHttpRequest.query(folder,{'w':'getDeliveryFields', 'delivery_id':delivery_id},
+//         function (result, errors){ if (errors) {alert(errors);} if (result) {
+//             console.log(result.content);
+//         }}, true);
+// }
+
+function getDeliveryTypeFields(delivery_id) {
+    let div = $("div[data-tab-delivery='" + delivery_id + "']");
+
+    let street = div.find("div").find("input[name='street']").val();
+    let house = div.find("div").find("input[name='house']").val();
+    let porch = div.find("div").find("input[name='porch']").val();
+    let department = div.find("select[name='department']").select2("val");
+    let delivery_express = div.find("select[name='delivery_express']").select2("val");
+
+    let arr = [];
+
+    arr["street"] = street;
+    arr["house"] = house;
+    arr["porch"] = porch;
+    arr["department"] = department;
+    arr["delivery_express"] = delivery_express;
+
+    return arr;
 }
 
 /*==== /SAVE ====*/

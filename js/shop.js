@@ -381,18 +381,12 @@ function showNewAdressForm() {
 }
 
 function addNewAddressForm() {
-    let client_id=$("#input_client").val();
+    //let client_id=$("#input_client").val();
     let address=$("#new_client_address").val();
-    JsHttpRequest.query(folder,{'w':'addNewAddressForm', 'client_id':client_id, 'address':address},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            if (result.content==1) {
-                $("#AddressForm").modal("hide");
-                let max_option = $("#select_delivery_info option:last").val();
-                $("#select_delivery_info").append(new Option(address, max_option));
-            } else {
-                showAlertModal(result.content,"{error_cap}",0);
-            }
-        }}, true);
+    $("#AddressForm").modal("hide");
+    let max_option = $("#select_delivery_info option:last").val();
+    $("#select_delivery_info").append(new Option(address, max_option));
+    //showAlertModal(result.content,"{error_cap}",0);
 }
 
 function validateForm(name, type) {

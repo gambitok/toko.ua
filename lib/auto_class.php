@@ -305,46 +305,6 @@ class AutoClass {
         return $form;
     }
 
-    function showTabCatalogueAutoMin() { $db=DbSingleton::getTokoDb();
-        $first=$second=""; $mas=[];
-        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `POSITION` DESC, `MFA_BRAND` ASC LIMIT 25;"); $n=$db->num_rows($r);
-        if ($n>0) {
-            $list="<ul class=\"manufacture_list manufacture_list_min\">";
-            for ($i=1;$i<=$n;$i++) {
-                $mfa_brand=$db->result($r,$i-1,"MFA_BRAND");
-                $mfa_id=$db->result($r,$i-1,"MFA_ID");
-                $mas[$mfa_id]=$mfa_brand;
-            }
-            asort($mas);
-            foreach ($mas as $key => $value) {
-                $mfa_brand=$value;
-                $mfa_id=intval($key);
-
-                if ($first!=substr($mfa_brand,0,1) && $second!=substr($mfa_brand,0,1)) {
-                    $first = substr($mfa_brand,0,1);
-                    $second = substr($mfa_brand,0,1);
-                    $main_class = "class=\"search__cat-auto\"";
-                } else {
-                    $first="";$main_class="";
-                    $second=substr($mfa_brand,0,1);
-                }
-                $list.="
-                <a class=\"pointer\" onclick=\"triggerTabModel($mfa_id);\">
-                    <span class=\"searchtab_model\">$first</span>
-                    <li $main_class>
-                        <span id=\"auto-$mfa_id\" class=\"auto-list\">$mfa_brand</span>
-                    </li>
-                </a>";
-            }
-            $list.="</ul>";
-            $list.="<a class=\"btn btn-main\" onclick=\"showTabCatalogueAuto();\"><i class='fas fa-chevron-downx'></i> {full_top_manuf}</a>";
-        } else $list="<span>$this->err1</span>";
-        $form=$this->getHtmlForm("cat_tab_search");
-        $form=str_replace("{catalogue_auto_list}", $list, $form);
-        $form=str_replace("{catalogue_auto_title}", "", $form);
-        return $form;
-    }
-
     function showTabCatalogueYear($onclick="", $manufacture=0, $model="") { $db=DbSingleton::getTokoDb();
         $first=$second=""; $min_date_start=1947; $max_date_end=2019;
         $date_start=$min_date_start; $date_end=$max_date_end; $col_count=0;
