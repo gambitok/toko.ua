@@ -366,6 +366,63 @@
     }
 }
 
+.cart-table {
+    border-top: 1px solid #f1f1f1;
+    margin-top: 30px;
+    padding-top: 30px;
+    &-row {
+        display: flex;
+        width: 100%;
+        &-offset {
+            margin-bottom: 30px;
+            margin-left: 70%;
+        }
+    }
+    &-cell {
+        display: inline-block;
+        font-size: 14px;
+        text-align: left;
+        padding-left: 15px;
+        &__photo {
+            width: 10%;
+            img {
+                width: calc(100% - 30px);
+            }
+        }
+        &__name {
+            width: 45%;
+        }
+        &__summ {
+            width: 15%;
+        }
+        &__amount {
+            width: 15%;
+        }
+        &__summary {
+            text-align: right!important;
+            width: 15%;
+        }
+        &__label {
+            font-weight: bold;
+            width: 15%;
+        }
+        &__price {
+            text-align: right;
+            width: 15%;
+        }
+    }
+    &-head {
+        font-weight: bold;
+        padding: 15px 0;
+    }
+    &-body {
+        padding: 15px 0;
+    }
+    &-foot {
+        padding: 15px 0;
+    }
+}
+
 /*===== /NEW ORDERS ====*/
 
 /*==== PHONE ====*/

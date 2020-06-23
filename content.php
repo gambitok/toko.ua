@@ -52,7 +52,7 @@ if ($_REQUEST["w"]=="getOrderDeliveryBlock"){$GLOBALS['_RESULT'] = array("conten
 
 if ($_REQUEST["w"]=="getOrderPaymentBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderPaymentBlock($_REQUEST["payment_id"], $_REQUEST["delivery_id"]));}
 
-if ($_REQUEST["w"]=="getDeliveryFields"){$GLOBALS['_RESULT'] = array("content"=>$shop->getDeliveryFields($_REQUEST["delivery_id"]));}
+if ($_REQUEST["w"]=="validOrder"){$GLOBALS['_RESULT'] = array("content"=>$shop->validOrder($_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["city"],$_REQUEST["delivery"],$_REQUEST["delivery_type"],$_REQUEST["payment"],$_REQUEST["email"],$_REQUEST["comment"]));}
 
 /*=== CATALOG ====*/
 

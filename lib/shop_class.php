@@ -526,6 +526,7 @@ class ShopClass {
         $form=$this->getHtmlForm("orders/order");
         $form=str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
         $form=str_replace("{order_payment}", $this->getOrderPayment(), $form);
+        $form=str_replace("{basket_range}", $this->getBasketOrder(), $form);
         $form=$this->replaceLang($form);
         return $form;
     }
@@ -605,17 +606,113 @@ class ShopClass {
         return $result;
     }
 
-    function getDeliveryFields($delivery_id) { $db=DbSingleton::getDbm();
-        $arr=[];
-        $r=$db->query("SELECT dt.* FROM `orders_valid_delivery_info` di 
-            LEFT JOIN `orders_valid_delivery_type` dt ON dt.TYPE_ID = di.TYPE_ID
-        WHERE di.`DELIVERY_ID`='$delivery_id';"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $type_id = $db->result($r, $i - 1, "TYPE_ID");
-            $type_name = $db->result($r, $i - 1, "TYPE_NAME");
-            $type_field = $db->result($r, $i - 1, "TYPE_FIELD");
-            $arr[$type_id] = ["name"=>$type_name, "field"=>$type_field];
-        }
-        return $arr;
+    function validOrder($name, $phone, $city, $delivery, $delivery_type, $payment, $email, $comment) {
+        $delivery_type_text = "";
+        $street = $delivery_type["street"];
+        $house = $delivery_type["house"];
+        $porch = $delivery_type["porch"];
+        $department = $delivery_type["department"]; // department ID
+        $delivery_express = $delivery_type["delivery_express"]; // express ID
+
+        if ($street!="undefined") $delivery_type_text.="<div>{street_cap}: $street</div>";
+        if ($house!="undefined") $delivery_type_text.="<div>{house_cap}: $house</div>";
+        if ($porch!="undefined") $delivery_type_text.="<div>{entrance_cap}: $porch</div>";
+        if ($department!="undefined") $delivery_type_text.="<div>{department_cap}: $department</div>";
+        if ($delivery_express!="undefined") $delivery_type_text.="<div>{delivery_type_7}: $delivery_express</div>";
+
+        $city_text = $this->getCityName($city);
+        $delivery_text = $this->getDeliveryName($delivery);
+        $payment_text = $this->getPaymentName($payment);
+//        $department_text = $this->getDepartmentName($department);
+//        $delivery_express_text = $this->getDepartmentExpressName($delivery_express);
+        if ($email=="") $email="{absent_cap}";
+        if ($comment=="") $comment="{absent_cap}";
+
+        $form=$this->getHtmlForm("orders/confirm");
+
+        $form=str_replace("{order_name}", $name, $form);
+        $form=str_replace("{order_phone}", $phone, $form);
+        $form=str_replace("{order_city}", $city_text, $form);
+        $form=str_replace("{order_delivery}", $delivery_text, $form);
+        $form=str_replace("{order_delivery_type}", $delivery_type_text, $form);
+        $form=str_replace("{order_payment}", $payment_text, $form);
+        $form=str_replace("{order_email}", $email, $form);
+        $form=str_replace("{order_comment}", $comment, $form);
+
+        $form=$this->replaceLang($form);
+
+        return $form;
     }
+
+    function getOrderDeliveryPrice($delivery_total) {
+        $exrate=new ExRateClass; $cur=$exrate->getCurrentKours(); $cur_cap=$exrate->getKoursSymbol($cur);
+        $list="<div class=\"cart-table-row cart-table-row-offset\">
+            <div class=\"cart-table-cell cart-table-cell__label\">{delivery_summ}</div>
+            <div class=\"cart-table-cell cart-table-cell__price\">$delivery_total $cur_cap</div>
+        </div>";
+        return $list;
+    }
+
+    function getOrderTotal($total) {
+        $exrate=new ExRateClass; $cur=$exrate->getCurrentKours(); $cur_cap=$exrate->getKoursSymbol($cur);
+        $list="<div class=\"cart-table-row cart-table-row-offset\">
+            <div class=\"cart-table-cell cart-table-cell__label\">{total_cap}</div>
+            <div class=\"cart-table-cell cart-table-cell__price\">$total $cur_cap</div>
+        </div>";
+        return $list;
+    }
+
+    function getBasketOrder() {
+        $exrate=new ExRateClass; $cur=$exrate->getCurrentKours(); $cur_cap=$exrate->getKoursSymbol($cur);
+        $form = $this->getHtmlForm("orders/basket");
+        list($basket_range, $basket_total) = $this->getBasketOrderRange();
+        $delivery_total = 10;
+        $total = floatval($basket_total) + floatval($delivery_total);
+        $form = str_replace("{basket_content}", $basket_range, $form);
+        $form = str_replace("{basket_full_price}", $basket_total." $cur_cap", $form);
+        $form = str_replace("{basket_order_delivery_price}", $this->getOrderDeliveryPrice($delivery_total), $form);
+        $form = str_replace("{basket_order_price}", $this->getOrderTotal($total), $form);
+        $form = $this->replaceLang($form);
+        return $form;
+    }
+
+    function getBasketOrderRange() { $db=DbSingleton::getTokoDb();
+        $client=new ClientClass; $where=$client->getClientWhere(); $exrate=new ExRateClass; $cur=$exrate->getCurrentKours(); $client_id=$client->getClient()[0]; $showform=new FormClass; $cur_cap=$exrate->getKoursSymbol($cur);
+        $list=""; $sum_total=0;
+        $r=$db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1 ORDER BY `date_create` DESC;"); $n=$db->num_rows($r);
+        if ($n>0) {
+            for ($i = 1; $i <= $n; $i++) {
+                $art_id = $db->result($r, $i - 1, "art_id");
+                $brand_id = $db->result($r, $i - 1, "brand_id");
+                $art_name=$this->getArticleDispl($art_id);
+                $brand_name=$this->getBrandName($brand_id);
+                $text=$this->getArticleName($art_id);
+                $amount = $db->result($r, $i - 1, "amount");
+                $price = $db->result($r, $i - 1, "price");
+                $price = $exrate->getKoursPrice($price, $cur);
+                if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
+                $full_price = $price * $amount;
+                if ($cur==1) $full_price = $client->getClientPriceRounding($client_id, $full_price);
+
+                $sum_total+=$full_price;
+
+                $name = "$text $brand_name ($art_name)";
+                $img = $showform->getArticleActivePhoto($art_id);
+
+                $photo="<img src=\"$img\" alt=\"$name\">";
+                $list.="
+                <div class='cart-table-row'>
+                    <div class=\"cart-table-cell cart-table-cell__photo\">$photo</div>
+                    <div class=\"cart-table-cell cart-table-cell__name\">$name</div>
+                    <div class=\"cart-table-cell cart-table-cell__summ\">$price $cur_cap</div>
+                    <div class=\"cart-table-cell cart-table-cell__amount\">$amount</div>
+                    <div class=\"cart-table-cell cart-table-cell__summary\">$full_price $cur_cap</div>
+                </div>";
+            }
+        } else {
+            $list="<div class='cart-table-row'>Empty</div>";
+        }
+        return array($list, $sum_total);
+    }
+
 }

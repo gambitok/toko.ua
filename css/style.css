@@ -1839,6 +1839,36 @@ table thead td { border: 1px solid #000; }
 
 .orders-footer-button button:hover { background: #228b94; }
 
+.cart-table { border-top: 1px solid #f1f1f1; margin-top: 30px; padding-top: 30px; }
+
+.cart-table-row { display: flex; width: 100%; }
+
+.cart-table-row-offset { margin-bottom: 30px; margin-left: 70%; }
+
+.cart-table-cell { display: inline-block; font-size: 14px; text-align: left; padding-left: 15px; }
+
+.cart-table-cell__photo { width: 10%; }
+
+.cart-table-cell__photo img { width: calc(100% - 30px); }
+
+.cart-table-cell__name { width: 45%; }
+
+.cart-table-cell__summ { width: 15%; }
+
+.cart-table-cell__amount { width: 15%; }
+
+.cart-table-cell__summary { text-align: right !important; width: 15%; }
+
+.cart-table-cell__label { font-weight: bold; width: 15%; }
+
+.cart-table-cell__price { text-align: right; width: 15%; }
+
+.cart-table-head { font-weight: bold; padding: 15px 0; }
+
+.cart-table-body { padding: 15px 0; }
+
+.cart-table-foot { padding: 15px 0; }
+
 /*===== /NEW ORDERS ====*/
 /*==== PHONE ====*/
 @media (max-width: 768px) { .basket-phone { display: block; }

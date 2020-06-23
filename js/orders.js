@@ -67,12 +67,6 @@ function setCityDepartments(city_id) {
         }}, true);
 }
 
-function getCheckedDelivery() {
-    let radio_id = 0;
-    $("input[name ='user_delivery']:checked").attr("data-id-delivery");
-    return radio_id;
-}
-
 function getOrderDeliveryBlock() {
     $(".orders-block-row-delivery").each(function () {
         let delivery_id = $(this).attr("data-tab-delivery");
@@ -103,7 +97,7 @@ function uncheckRadioPayment() {
 function getOrderPaymentBlock() {
     $(".orders-block-row-payment").each(function () {
         let payment_id = $(this).attr("data-tab-payment");
-        let delivery_id = getCheckedDelivery();
+        let delivery_id = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
         let block = $(this);
         block.removeClass("orders-block-row-hidden");
         JsHttpRequest.query(folder,{'w':'getOrderPaymentBlock', 'payment_id':payment_id, 'delivery_id':delivery_id},
@@ -212,15 +206,6 @@ function validOrder() {
     if(delivery===undefined || payment===undefined) {
         alert("ERROR - check DELIVERY and PAYMENT first!")
     } else {
-        // console.log("name: " + name);
-        // console.log("phone: " + phone);
-        // console.log("city: " + city);
-        // console.log("delivery: " + delivery);
-        // console.log("delivery type: " + delivery_type);
-        // console.log("payment: " + payment);
-        // console.log("email: " + email);
-        // console.log("comment: " + comment);
-
         JsHttpRequest.query(folder,{'w':'validOrder', 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             $("#OrderModal").modal("show");
@@ -228,13 +213,6 @@ function validOrder() {
         }}, true);
     }
 }
-
-// function getDeliveryFields(delivery_id) {
-//     JsHttpRequest.query(folder,{'w':'getDeliveryFields', 'delivery_id':delivery_id},
-//         function (result, errors){ if (errors) {alert(errors);} if (result) {
-//             console.log(result.content);
-//         }}, true);
-// }
 
 function getDeliveryTypeFields(delivery_id) {
     let div = $("div[data-tab-delivery='" + delivery_id + "']");
@@ -246,7 +224,6 @@ function getDeliveryTypeFields(delivery_id) {
     let delivery_express = div.find("select[name='delivery_express']").select2("val");
 
     let arr = [];
-
     arr["street"] = street;
     arr["house"] = house;
     arr["porch"] = porch;

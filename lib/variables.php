@@ -406,4 +406,32 @@ trait Variables {
         return $page_pagination;
     }
 
+    function getDeliveryName($delivery_id) { $db=DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_DELIVERY` WHERE `ID`='$delivery_id' LIMIT 1;");
+        $name = $db->result($r, 0, "TEXT");
+        $name = $this->replaceLang($name);
+        return $name;
+    }
+
+    function getDepartmentExpressName($delivery_id) { $db=DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_id' LIMIT 1;");
+        $name = $db->result($r, 0, "TEXT");
+        $name = $this->replaceLang($name);
+        return $name;
+    }
+
+    function getPaymentName($payment_id) { $db=DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_PAYMENT` WHERE `ID`='$payment_id' LIMIT 1;");
+        $name = $db->result($r, 0, "TEXT");
+        $name = $this->replaceLang($name);
+        return $name;
+    }
+
+    function getDepartmentName($department_id) { $db=DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_DEPARTMENT` WHERE `ID`='$department_id' LIMIT 1;");
+        $name = $db->result($r, 0, "TEXT");
+        $name = $this->replaceLang($name);
+        return $name;
+    }
+
 }
