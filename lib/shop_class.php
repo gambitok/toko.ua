@@ -531,10 +531,23 @@ class ShopClass {
         return $form;
     }
 
-    function getOrderDelivery() {
+    function getOrderDelivery() { $db=DbSingleton::getTokoDb();
         $client=new ClientClass; $tpoint_id=$client->getTpointUser($client->getClient()[0]);
         $form=$this->getHtmlForm("orders/delivery");
         $form=str_replace("{tpoint_address}", $client->getTpointAddress($tpoint_id), $form);
+
+        $r = $db->query("SELECT * FROM `T2_DELIVERY`;"); $n = $db->num_rows($r);
+        for ($i=1;$i<=$n;$i++) {
+            $id = $db->result($r, $i - 1, "ID");
+            $text = $db->result($r, $i - 1, "TEXT");
+            $type = $db->result($r, $i - 1, "TYPE");
+            $status = $db->result($r, $i - 1, "STATUS");
+            $display=""; if (!$status) $display="none";
+            $free=""; if ($type) $free="({free_cap})";
+            $form = str_replace("{delivery_status_$id}", $display, $form);
+            $form = str_replace("{delivery_text_$id}", $text, $form);
+            $form = str_replace("{delivery_free_$id}", $free, $form);
+        }
         return $form;
     }
 
@@ -550,8 +563,18 @@ class ShopClass {
         return array($list_np, $list_up);
     }
 
-    function getOrderPayment() {
+    function getOrderPayment() { $db=DbSingleton::getTokoDb();
         $form=$this->getHtmlForm("orders/payment");
+        $r = $db->query("SELECT * FROM `T2_PAYMENT`;"); $n = $db->num_rows($r);
+        for ($i=1;$i<=$n;$i++) {
+            $id = $db->result($r, $i - 1, "ID");
+            $text = $db->result($r, $i - 1, "TEXT");
+            //$type = $db->result($r, $i - 1, "TYPE");
+            $status = $db->result($r, $i - 1, "STATUS");
+            $display=""; if (!$status) $display="none";
+            $form = str_replace("{payment_status_$id}", $display, $form);
+            $form = str_replace("{payment_text_$id}", $text, $form);
+        }
         return $form;
     }
 
@@ -662,12 +685,18 @@ class ShopClass {
         return $list;
     }
 
-    function getBasketOrder() {
+    function getBasketOrder($delivery_id=0) {
         $exrate=new ExRateClass; $cur=$exrate->getCurrentKours(); $cur_cap=$exrate->getKoursSymbol($cur);
         $form = $this->getHtmlForm("orders/basket");
         list($basket_range, $basket_total) = $this->getBasketOrderRange();
-        $delivery_total = 10;
+        $delivery_total = $delivery_id;
         $total = floatval($basket_total) + floatval($delivery_total);
+
+        if ($delivery_id==0) {
+            $form = str_replace("{basket_order_delivery_price}", "", $form);
+            $form = str_replace("{basket_order_price}", "", $form);
+        }
+
         $form = str_replace("{basket_content}", $basket_range, $form);
         $form = str_replace("{basket_full_price}", $basket_total." $cur_cap", $form);
         $form = str_replace("{basket_order_delivery_price}", $this->getOrderDeliveryPrice($delivery_total), $form);

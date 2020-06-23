@@ -24,6 +24,7 @@ $(document).ready(function() {
     $("input[name='user_delivery']").change(function() {
         getOrderPaymentBlock();
         uncheckRadioPayment();
+        getBasketOrder();
 
         let amount = $("input[name='user_delivery']").filter(':checked').length;
         if (amount>0) {
@@ -234,3 +235,12 @@ function getDeliveryTypeFields(delivery_id) {
 }
 
 /*==== /SAVE ====*/
+
+function getBasketOrder() {
+    $("#orders-basket").html("");
+    let delivery_id = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
+    JsHttpRequest.query(folder,{'w':'getBasketOrder', 'delivery_id':delivery_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            $("#orders-basket").html(result.content);
+        }}, true);
+}

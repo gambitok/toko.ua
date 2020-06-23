@@ -1843,7 +1843,9 @@ table thead td { border: 1px solid #000; }
 
 .cart-table-row { display: flex; width: 100%; }
 
-.cart-table-row-offset { margin-bottom: 30px; margin-left: 70%; }
+.cart-table-row-offset { margin-bottom: 20px; margin-left: 70%; }
+
+.cart-table-row-offset .cart-table-cell { font-size: 18px !important; }
 
 .cart-table-cell { display: inline-block; font-size: 14px; text-align: left; padding-left: 15px; }
 
