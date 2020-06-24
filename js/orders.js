@@ -55,6 +55,19 @@ function setCityVal() {
     $(".chosen-city").html(city_name);
 }
 
+function getCityVal() {
+    let search_text = $(".select2-search__field").val();
+    let len = search_text.length;
+    if (len>2) {
+        JsHttpRequest.query(folder,{'w':'getCityVal', 'search_text':search_text},
+            function (result, errors){ if (errors) {alert(errors);} if (result) {
+                let user_city = $("#user_city");
+                user_city.html(result.content); user_city.select2();
+                console.log(result.content);
+            }}, true);
+    }
+}
+
 /*==== /MAIN ====*/
 
 /*==== DELIVERY + PAYMENT ====*/

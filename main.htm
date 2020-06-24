@@ -160,6 +160,15 @@
 
 <body>
 
+<div id="seo_form_cities_top"><!--footers_block--></div>
+<div id="seo_form_recomend_top"><!--seo_text_start--><!--seo_text_end--></div>
+<script>
+    var html_cities = $("#seo_form_cities_top").html();
+    $("#seo_form_cities_top").html("");
+    var html_recomend = $("#seo_form_recomend_top").html();
+    $("#seo_form_recomend_top").html("");
+</script>
+
 <!-- Modal Garage-->
 <div class="modal fade" id="GarageForm" role="dialog" tabindex="-1">
     <div class="modal-dialog">
@@ -454,6 +463,7 @@
 			<div id="catalogue-breadcrumbs">{main_site_breadcrumbs}</div>
 			<div id="catalogue-main">{main_window}</div>
             <div id="catalogue-seo">{main_seo_text}</div>
+            <!--<div id="seo_form_recomend_bottom"></div>-->
 		</div>
 	</section>
 
@@ -496,9 +506,11 @@
                     </div>
                 </div>
             </div>
+
             <div class="row footer__cities">
-                <div id="seo_footer_bottom" class="wdt100"><!--footers_block--></div>
+                <div id="seo_form_cities_bottom" class="wdt100"></div>
             </div>
+
         </div>
 	</footer>
 
@@ -687,6 +699,11 @@
 
 </body>
 </html>
+
+<script>
+    $("#seo_form_cities_bottom").html(html_cities);
+    $("#seo_form_recomend_bottom").html(html_recomend);
+</script>
 
 <!--plugin scripts-->
 <script type="text/javascript" src="/js/plugins/bigSlide.js"></script>

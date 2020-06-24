@@ -10,7 +10,7 @@ class ShopClass {
         $sum=0; $sum_total=0; $disabled=$brow=$bprow=""; $location="stayInOrder();"; $location_fast="stayInOrder();";
         if ($cur==null || $cur=="NaN") $cur=1;
         $cur_cap=$exrate->getKoursSymbol($cur); $t_point=$client->getTpoint(); $where=$client->getClientWhere(); $client_id=$client->getClient()[0];
-        setcookie("currency", $cur); $_SESSION["currency"]=$cur; $count=$count_total=0;
+        setcookie("currency", $cur); $_SESSION["currency"]=$cur; $count=0;
         $r=$db->query("SELECT * FROM `basket` WHERE $where ORDER BY `date_create` DESC;"); $n=$db->num_rows($r);
         if ($n>0) {
             for ($i=1;$i<=$n;$i++) {
@@ -38,7 +38,7 @@ class ShopClass {
                 if ($cur==1) $full_price = $client->getClientPriceRounding($client_id, $full_price);
 
                 if ($status_checked) $sum+=$full_price; $sum_total+=$full_price;
-                if ($status_checked) $count+=$amount; $count_total+=$amount;
+                if ($status_checked) $count+=1;
 
                 if (!($cat->checkActionPrice($art_id))) $action=""; else {
                     list(,$action_amount,$action_price)=$cat->checkActionPrice($art_id);
@@ -150,7 +150,6 @@ class ShopClass {
         $table_basket=str_replace("{sum}", $sum, $table_basket);
         $table_basket=str_replace("{sum_total}", $sum_total, $table_basket);
         $table_basket=str_replace("{count}", $count, $table_basket);
-        $table_basket=str_replace("{count_total}", $count_total, $table_basket);
         $table_basket=str_replace("{total_style}", $sum==$sum_total ? "d-none" : "", $table_basket);
         $table_basket=str_replace("{location}", $location, $table_basket);
         $table_basket=str_replace("{location_fast}", $location_fast, $table_basket);
@@ -523,7 +522,7 @@ class ShopClass {
     }
 
     function getOrderForm() {
-        $form=$this->getHtmlForm("orders/order");
+        $form=$this->getHtmlForm("orders/form");
         $form=str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
         $form=str_replace("{order_payment}", $this->getOrderPayment(), $form);
         $form=str_replace("{basket_range}", $this->getBasketOrder(), $form);
@@ -741,6 +740,17 @@ class ShopClass {
             $list="<div class='cart-table-row'>Empty</div>";
         }
         return array($list, $sum_total);
+    }
+
+    function getCityVal($search_text) { $db=DbSingleton::getTokoDb();
+        $list = "";
+        $r=$db->query("SELECT * FROM `T2_CITY` WHERE `CITY_NAME` LIKE '%$search_text%' ORDER BY `CITY_NAME`;"); $n=$db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $city_id = $db->result($r, $i-1, "CITY_ID");
+            $city_name = $db->result($r, $i-1, "CITY_NAME");
+            $list.="<option value='$city_id'>$city_name</option>";
+        }
+        return $list;
     }
 
 }
