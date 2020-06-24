@@ -1839,39 +1839,43 @@ table thead td { border: 1px solid #000; }
 
 .orders-footer-button button:hover { background: #228b94; }
 
-.cart-table { border-top: 1px solid #f1f1f1; margin-top: 30px; padding-top: 30px; }
+.cart-table { margin-top: 30px; }
 
-.cart-table-row { display: flex; width: 100%; }
+.cart-table-row { display: flex; align-items: center; min-height: 70px; border-bottom: 1px solid #f1f1f1; width: 100%; padding: 10px 0; }
 
-.cart-table-row-offset { margin-bottom: 20px; margin-left: 70%; }
+.cart-table-row-offset { margin-left: 70%; width: 30%; border: unset; }
 
 .cart-table-row-offset .cart-table-cell { font-size: 18px !important; }
 
-.cart-table-cell { display: inline-block; font-size: 14px; text-align: left; padding-left: 15px; }
+.cart-table-cell { display: inline-block; font-size: 14px; text-align: left; padding-right: 15px; }
 
-.cart-table-cell__photo { width: 10%; }
+.cart-table-cell__photo { padding-left: 15px; width: 10%; }
 
 .cart-table-cell__photo img { width: calc(100% - 30px); }
 
 .cart-table-cell__name { width: 45%; }
 
-.cart-table-cell__summ { width: 15%; }
+.cart-table-cell__summ { text-align: right; width: 15%; }
 
-.cart-table-cell__amount { width: 15%; }
+.cart-table-cell__amount { text-align: right; width: 15%; }
 
-.cart-table-cell__summary { text-align: right !important; width: 15%; }
+.cart-table-cell__summary { text-align: right; width: 15%; }
 
-.cart-table-cell__label { font-weight: bold; width: 15%; }
+.cart-table-cell__label { font-weight: bold; width: 70%; }
 
-.cart-table-cell__price { text-align: right; width: 15%; }
+.cart-table-cell__price { text-align: right; width: 30%; }
 
-.cart-table-head { font-weight: bold; padding: 15px 0; }
-
-.cart-table-body { padding: 15px 0; }
+.cart-table-head { background: #f1f1f1; font-weight: bold; }
 
 .cart-table-foot { padding: 15px 0; }
 
 /*===== /NEW ORDERS ====*/
+@media (max-width: 992px) { .cart-table-row-offset { margin-left: 0; width: 100%; }
+  .cart-table-cell { padding: 0; }
+  .cart-table-cell__photo { display: none; }
+  .cart-table-cell__name { width: 55%; }
+  .cart-table-head { display: none; } }
+
 /*==== PHONE ====*/
 @media (max-width: 768px) { .basket-phone { display: block; }
   .basket-table { display: none; }

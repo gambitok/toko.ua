@@ -367,15 +367,18 @@
 }
 
 .cart-table {
-    border-top: 1px solid #f1f1f1;
     margin-top: 30px;
-    padding-top: 30px;
     &-row {
         display: flex;
+        align-items: center;
+        min-height: 70px;
+        border-bottom: 1px solid #f1f1f1;
         width: 100%;
+        padding: 10px 0;
         &-offset {
-            margin-bottom: 20px;
             margin-left: 70%;
+            width: 30%;
+            border: unset;
             .cart-table-cell {
                 font-size: 18px!important;
             }
@@ -385,8 +388,9 @@
         display: inline-block;
         font-size: 14px;
         text-align: left;
-        padding-left: 15px;
+        padding-right: 15px;
         &__photo {
+            padding-left: 15px;
             width: 10%;
             img {
                 width: calc(100% - 30px);
@@ -396,30 +400,32 @@
             width: 45%;
         }
         &__summ {
+            text-align: right;
             width: 15%;
         }
         &__amount {
+            text-align: right;
             width: 15%;
         }
         &__summary {
-            text-align: right!important;
+            text-align: right;
             width: 15%;
         }
         &__label {
             font-weight: bold;
-            width: 15%;
+            width: 70%;
         }
         &__price {
             text-align: right;
-            width: 15%;
+            width: 30%;
         }
     }
     &-head {
+        background: #f1f1f1;
         font-weight: bold;
-        padding: 15px 0;
     }
     &-body {
-        padding: 15px 0;
+        //
     }
     &-foot {
         padding: 15px 0;
@@ -427,6 +433,29 @@
 }
 
 /*===== /NEW ORDERS ====*/
+
+@media (max-width: 992px) {
+    .cart-table {
+        &-row {
+            &-offset {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+        &-cell {
+            padding: 0;
+            &__photo {
+                display: none;
+            }
+            &__name {
+                width: 55%;
+            }
+        }
+        &-head {
+            display: none;
+        }
+    }
+}
 
 /*==== PHONE ====*/
 @media (max-width: 768px) {

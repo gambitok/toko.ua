@@ -569,7 +569,6 @@ class ShopClass {
         for ($i=1;$i<=$n;$i++) {
             $id = $db->result($r, $i - 1, "ID");
             $text = $db->result($r, $i - 1, "TEXT");
-            //$type = $db->result($r, $i - 1, "TYPE");
             $status = $db->result($r, $i - 1, "STATUS");
             $display=""; if (!$status) $display="none";
             $form = str_replace("{payment_status_$id}", $display, $form);
@@ -734,7 +733,7 @@ class ShopClass {
                     <div class=\"cart-table-cell cart-table-cell__photo\">$photo</div>
                     <div class=\"cart-table-cell cart-table-cell__name\">$name</div>
                     <div class=\"cart-table-cell cart-table-cell__summ\">$price $cur_cap</div>
-                    <div class=\"cart-table-cell cart-table-cell__amount\">$amount</div>
+                    <div class=\"cart-table-cell cart-table-cell__amount\">$amount {amount_abbr}.</div>
                     <div class=\"cart-table-cell cart-table-cell__summary\">$full_price $cur_cap</div>
                 </div>";
             }
