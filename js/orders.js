@@ -72,7 +72,8 @@ function getCityVal() {
 
 /*==== DELIVERY + PAYMENT ====*/
 function setCityDepartments(city_id) {
-    JsHttpRequest.query(folder,{'w':'setCityDepartments', 'city_id':city_id},
+    let city_ref = $("#user_city_np").select2("val");
+    JsHttpRequest.query(folder,{'w':'setCityDepartments', 'city_id':city_id, 'city_ref':city_ref},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             let select_np = $("#select_delivery_np");
             let select_up = $("#select_delivery_up");

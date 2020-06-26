@@ -21,6 +21,7 @@ require_once (RDD."/lib/search_class.php");
 require_once (RDD."/lib/pattern_class.php");
 require_once (RDD."/lib/parts_class.php");
 require_once (RDD."/js/JsHttpRequest/JsHttpRequest.php");
+require_once (RDD."/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 $JsHttpRequest = new JsHttpRequest("windows-1251");
 
 session_start();
@@ -46,7 +47,7 @@ if ($_REQUEST["w"]=="showProfileBasketForm"){$GLOBALS['_RESULT'] = array("conten
 
 if ($_REQUEST["w"]=="showBasketMinForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showBasketForm());}
 
-if ($_REQUEST["w"]=="setCityDepartments"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityDepartments($_REQUEST["city_id"]));}
+if ($_REQUEST["w"]=="setCityDepartments"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityDepartments($_REQUEST["city_id"],$_REQUEST["city_ref"]));}
 
 if ($_REQUEST["w"]=="getOrderDeliveryBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderDeliveryBlock($_REQUEST["delivery_id"], $_REQUEST["city_id"]));}
 
