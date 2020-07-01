@@ -47,7 +47,7 @@ if ($_REQUEST["w"]=="showProfileBasketForm"){$GLOBALS['_RESULT'] = array("conten
 
 if ($_REQUEST["w"]=="showBasketMinForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showBasketForm());}
 
-if ($_REQUEST["w"]=="setCityDepartments"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityDepartments($_REQUEST["city_id"],$_REQUEST["city_ref"]));}
+if ($_REQUEST["w"]=="setCityDepartments"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityDepartments($_REQUEST["city_ref"]));}
 
 if ($_REQUEST["w"]=="getOrderDeliveryBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderDeliveryBlock($_REQUEST["delivery_id"], $_REQUEST["city_id"]));}
 
@@ -58,6 +58,8 @@ if ($_REQUEST["w"]=="validOrder"){$GLOBALS['_RESULT'] = array("content"=>$shop->
 if ($_REQUEST["w"]=="getBasketOrder"){$GLOBALS['_RESULT'] = array("content"=>$shop->getBasketOrder($_REQUEST["delivery_id"]));}
 
 if ($_REQUEST["w"]=="getCityVal"){$GLOBALS['_RESULT'] = array("content"=>$shop->getCityVal($_REQUEST["search_text"]));}
+if ($_REQUEST["w"]=="setCityNPVal"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityNPVal($_REQUEST["city_id"]));}
+if ($_REQUEST["w"]=="setCityAddress"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityAddress($_REQUEST["city_id"]));}
 /*=== CATALOG ====*/
 
 if ($_REQUEST["w"]=="getCatalogueLink"){$GLOBALS['_RESULT'] = array("content"=>$catalog->getCatalogueLink($_REQUEST["article_nr_search"]));}

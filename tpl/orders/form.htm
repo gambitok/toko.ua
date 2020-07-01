@@ -58,19 +58,16 @@
                     <label class="orders-block-row__label" for="user_city">{city_cap}</label>
                 </div>
                 <div class="orders-block-row-content">
-                    <select class="orders-block-row__input valid_field select2-block" name="user_city" id="user_city" data-attr="select" onchange="setCityVal()" oninput="getCityVal();">
+                    <!--onchange="setCityVal()"-->
+                    <select class="orders-block-row__input valid_field select2-block" name="user_city" id="user_city" data-attr="select" oninput="getCityVal();" onchange="setCityVal();">
                         <option value="0">{not_chosen}</option>
-                        <option value="4074">Dnipro</option>
-                        <option value="24861">Kmelnitskii</option>
-                        <option value="10108">Kyiv</option>
-                        <option value="13549">Lviv</option>
-                        <option value="22739">Xarkiv</option>
-                        <option value="15628">Odesa</option>
+                        <!--{user_city_list}-->
+                        {user_city_main_list}
                     </select>
 
-                    <select class="orders-block-row__input valid_field select2-block" name="user_city_np" id="user_city_np" data-attr="select" title="NovaPoshta"  onchange="setCityVal()">
+                    <select style="display: none!important;" class="orders-block-row__input" name="user_city_np" id="user_city_np" data-attr="select" title="NovaPoshta">
                         <option value="0">{not_chosen}</option>
-                        {user_city_np}
+                        <!--{user_city_np}-->
                     </select>
                 </div>
             </div>
@@ -156,7 +153,7 @@
 
 </div>
 
-<script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" src="/js/plugins/select2/select2.city.min.js"></script>
 
 <script type="text/javascript" src="/js/orders.js"></script>
 

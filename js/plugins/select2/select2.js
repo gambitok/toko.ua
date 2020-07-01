@@ -1939,7 +1939,7 @@
                     '<li class="select2-search select2-search--inline">' +
                     '<input class="select2-search__field" type="search" tabindex="-1"' +
                     ' autocomplete="off" autocorrect="off" autocapitalize="none"' +
-                    ' spellcheck="false" role="textbox" aria-autocomplete="list" onkeyup="select2Soset();" onkeydown="select2Soset();"/>' +
+                    ' spellcheck="false" role="textbox" aria-autocomplete="list" onkeyup="getCityVal();"/>' +
                     '</li>'
                 );
 
@@ -4005,7 +4005,7 @@
                     '<span class="select2-search select2-search--dropdown">' +
                     '<input class="select2-search__field" type="search" tabindex="-1"' +
                     ' autocomplete="off" autocorrect="off" autocapitalize="none"' +
-                    ' spellcheck="false" role="textbox" onkeyup="select2Soset();" onkeydown="select2Soset();"/>' +
+                    ' spellcheck="false" role="textbox" onkeyup="getCityVal();"/>' +
                     '</span>'
                 );
 

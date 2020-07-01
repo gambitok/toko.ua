@@ -526,6 +526,8 @@ class ShopClass {
         $form=str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
         $form=str_replace("{order_payment}", $this->getOrderPayment(), $form);
         $form=str_replace("{basket_range}", $this->getBasketOrder(), $form);
+        //$form=str_replace("{user_city_list}", $this->getCitiesSelect(), $form);
+        $form=str_replace("{user_city_main_list}", $this->getCitiesMainSelect(), $form);
         $form=str_replace("{user_city_np}", $this->getNovaPoshtaCitiesSelect(), $form);
         $form=$this->replaceLang($form);
         return $form;
@@ -551,18 +553,13 @@ class ShopClass {
         return $form;
     }
 
-    function setCityDepartments($city_id, $city_ref) {
-//        $list_np="<option value='0'>{not_chosen}</option>";
+    function setCityDepartments($city_ref) {
         $list_up="<option value='0'>{not_chosen}</option>";
         for ($i=1; $i<=5; $i++) {
-//            $list_np.="<option value='$i'>$city_id - $i</option>";
-            $list_up.="<option value='$i'>$city_id - $i</option>";
+            $list_up.="<option value='$i'>$city_ref - $i</option>";
         }
-//        $list_np=$this->replaceLang($list_np);
-        $list_up=$this->replaceLang($list_up);
-
+        $list_up = $this->replaceLang($list_up);
         $list_np = $this->getNovaPoshtaWarehousesSelect($city_ref);
-
         return array($list_np, $list_up);
     }
 
@@ -629,6 +626,19 @@ class ShopClass {
         }
 
         return $result;
+    }
+
+    function setCityAddress($city_id) {
+        $client=new ClientClass;
+        $cities = [24861, 10108]; $city_address="";
+
+        if (in_array($city_id, $cities)) {
+            $tpoint_id=0;
+            if ($city_id==24861) $tpoint_id=1;
+            if ($city_id==10108) $tpoint_id=2;
+            $city_address = $client->getTpointAddress($tpoint_id);
+        }
+        return $city_address;
     }
 
     function validOrder($name, $phone, $city, $delivery, $delivery_type, $payment, $email, $comment) {
@@ -743,47 +753,116 @@ class ShopClass {
         return array($list, $sum_total);
     }
 
-    function getCityVal($search_text) { $db=DbSingleton::getTokoDb();
+    function getCitiesSelect() { $db=DbSingleton::getTokoDb();
         $list = "";
-        $r=$db->query("SELECT * FROM `T2_CITY` WHERE `CITY_NAME` LIKE '%$search_text%' ORDER BY `CITY_NAME`;"); $n=$db->num_rows($r);
+        $r=$db->query("SELECT * FROM `T2_LOCATION` ORDER BY `CITY_NAME` ASC;"); $n=$db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $city_id = $db->result($r, $i-1, "CITY_ID");
-            $city_name = $db->result($r, $i-1, "CITY_NAME");
+            $city_name = $db->result($r, $i-1, "CITY_NAME_CLEAR");
+            $state_name = $db->result($r, $i-1, "STATE_NAME");
+            $region_name = $db->result($r, $i-1, "REGION_NAME");
+            if ($region_name=="") $region_cap="($state_name обл.)"; else $region_cap="($state_name обл., $region_name р-он)";
+            $list.="<option value='$city_id'>$city_name $region_cap</option>";
+        }
+        return $list;
+    }
+
+    function getCitiesMainSelect() { $db=DbSingleton::getTokoDb();
+        $list = "";
+        $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `REGION_NAME`='' ORDER BY `CITY_NAME` ASC;"); $n=$db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $city_id = $db->result($r, $i-1, "CITY_ID");
+            $city_name = $db->result($r, $i-1, "CITY_NAME_CLEAR");
             $list.="<option value='$city_id'>$city_name</option>";
         }
         return $list;
     }
 
-    function getNovaPoshtaCity($name) {
-        $list = "";
-        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-        $name = iconv("windows-1251", "UTF-8", $name);
-        $arr = $np->getCities(0, $name)['data'];
-        $list.="Знайдено міст: ".count($arr);
-        foreach ($arr as $val) {
-            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-            $ref = iconv("UTF-8", "windows-1251", $val["Ref"]);
-            $list.="<br><a href='https://toko.ua/test_order/?city_ref=$ref'>".$name." ($ref)</a>";
+    function getCityVal($search_text) { $db=DbSingleton::getTokoDb();
+        // $list = "";
+        $mas=[];
+        $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR` LIKE '$search_text%' ORDER BY `CITY_NAME`;"); $n=$db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $city_id = $db->result($r, $i-1, "CITY_ID");
+            $city_name = $db->result($r, $i-1, "CITY_NAME");
+            $region_name = $db->result($r, $i-1, "REGION_NAME");
+            $state_name = $db->result($r, $i-1, "STATE_NAME");
+            $city_cap = "$city_name ($state_name обл., $region_name р-ой)";
+            // $list.="<option value='$city_id'>$city_name</option>";
+
+            $mas[$i]=["id"=>$city_id,"value"=>$city_cap];
         }
+        return $mas;
+    }
+
+    function setCityNPVal($city_id) { $db=DbSingleton::getTokoDb();
+        $list = "";
+        $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_ID`='$city_id' LIMIT 1;");
+        $city_name = $db->result($r, 0, "CITY_NAME_CLEAR");
+        $state_name = $db->result($r, 0, "NEWPOST_AREA");
+
+//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+//        $name = iconv("windows-1251", "UTF-8", $city_name);
+//        $arr = $np->getCities(0, $name)['data'];
+//
+//        $col=0;
+//        foreach ($arr as $val) {
+//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
+//            $area_ref = iconv("UTF-8", "windows-1251", $val["Area"]);
+//            $ref = iconv("UTF-8", "windows-1251", $val["Ref"]);
+//
+//            $area = $np->getArea('', $area_ref)['data'];
+//            $area_name = iconv("UTF-8", "windows-1251", $area[0]['Description']);
+//
+//            if(stripos($state_name, $area_name) !== FALSE) { $col++;
+//                var_dump($state_name." - ".$area_name);
+//                $list.="<option value='$ref'>$name ($area_name)</option>";
+//            }
+//        }
+//        if ($col==0) var_dump("empty");
+
+        $r=$db->query("SELECT * FROM `T2_CITY_NOVA` WHERE `CITY_NAME` LIKE '$city_name%' AND `AREA_NAME` LIKE '$state_name%';"); $n=$db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $ref = $db->result($r, $i - 1, "CITY_REF");
+            $name = $db->result($r, $i - 1, "CITY_NAME");
+            $area_name = $db->result($r, $i - 1, "AREA_NAME");
+            $list.="<option value='$ref'>$name ($area_name)</option>";
+        }
+        if ($n==0) var_dump("oops");
+
         return $list;
     }
 
-    function getNovaPoshtaCities() {
-        $list = "";
-        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-        $arr = $np->getCities()['data'];
-        $list.="<form method='get'>
-            <input type='text' placeholder='City name' name='city_name'>
-            <input type='submit' value='Search'>
-        </form>";
-        $list.="Всього міст: ".count($arr);
-        foreach ($arr as $val) {
-            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-            $ref = $val["Ref"];
-            $list.="<br><a href='https://toko.ua/test_order/?city_ref=$ref'>".$name." ($ref)</a>";
-        }
-        return $list;
-    }
+//    function getNovaPoshtaCity($name) {
+//        $list = "";
+//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+//        $name = iconv("windows-1251", "UTF-8", $name);
+//        $arr = $np->getCities(0, $name)['data'];
+//        $list.="Знайдено міст: ".count($arr);
+//        foreach ($arr as $val) {
+//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
+//            $ref = iconv("UTF-8", "windows-1251", $val["Ref"]);
+//            $list.="<br><a href='https://toko.ua/test_order/?city_ref=$ref'>".$name." ($ref)</a>";
+//        }
+//        return $list;
+//    }
+
+//    function getNovaPoshtaCities() {
+//        $list = "";
+//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+//        $arr = $np->getCities()['data'];
+//        $list.="<form method='get'>
+//            <input type='text' placeholder='City name' name='city_name'>
+//            <input type='submit' value='Search'>
+//        </form>";
+//        $list.="Всього міст: ".count($arr);
+//        foreach ($arr as $val) {
+//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
+//            $ref = $val["Ref"];
+//            $list.="<br><a href='https://toko.ua/test_order/?city_ref=$ref'>".$name." ($ref)</a>";
+//        }
+//        return $list;
+//    }
 
     function getNovaPoshtaCitiesSelect() {
         $list = "";
@@ -797,18 +876,18 @@ class ShopClass {
         return $list;
     }
 
-    function getNovaPoshtaWarehouses($ref) {
-        $list = "";
-        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-        $arr = $np->getWarehouses($ref)['data'];
-        $list.="Всього відділень: ".count($arr);
-        foreach ($arr as $val) {
-            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-            $war_ref = $val["Ref"];
-            $list.="<br>".$name." ($war_ref)";
-        }
-        return $list;
-    }
+//    function getNovaPoshtaWarehouses($ref) {
+//        $list = "";
+//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+//        $arr = $np->getWarehouses($ref)['data'];
+//        $list.="Всього відділень: ".count($arr);
+//        foreach ($arr as $val) {
+//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
+//            $war_ref = $val["Ref"];
+//            $list.="<br>".$name." ($war_ref)";
+//        }
+//        return $list;
+//    }
 
     function getNovaPoshtaWarehousesSelect($ref) {
         $list = "<option value=\"0\">{not_chosen}</option>";
@@ -823,23 +902,23 @@ class ShopClass {
         return $list;
     }
 
-    function setCityNovaPoshta() { $db=DbSingleton::getTokoDb();
-        $list = "";
-        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-        $arr = $np->getCities()['data'];
-        foreach ($arr as $val) {
-            $city_id = $val["CityID"];
-            $city_name = iconv("UTF-8", "windows-1251", $val["Description"]);  $city_name=str_replace("'","",$city_name);
-            $city_ref = $val["Ref"];
-
-            $area_ref = $val["Area"];
-            $area = $np->getArea('', $area_ref)['data'];
-            $area_name = iconv("UTF-8", "windows-1251", $area[0]['Description']);
-
-            $db->query("INSERT INTO `T2_CITY_NOVA` (`CITY_ID`, `CITY_NAME`, `CITY_REF`, `AREA_NAME`, `AREA_REF`) VALUES ('$city_id', '$city_name', '$city_ref', '$area_name', '$area_ref');");
-        }
-        return $list;
-    }
+//    function setCityNovaPoshta() { $db=DbSingleton::getTokoDb();
+//        $list = "";
+//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+//        $arr = $np->getCities()['data'];
+//        foreach ($arr as $val) {
+//            $city_id = $val["CityID"];
+//            $city_name = iconv("UTF-8", "windows-1251", $val["Description"]);  $city_name=str_replace("'","",$city_name);
+//            $city_ref = $val["Ref"];
+//
+//            $area_ref = $val["Area"];
+//            $area = $np->getArea('', $area_ref)['data'];
+//            $area_name = iconv("UTF-8", "windows-1251", $area[0]['Description']);
+//
+//            $db->query("INSERT INTO `T2_CITY_NOVA` (`CITY_ID`, `CITY_NAME`, `CITY_REF`, `AREA_NAME`, `AREA_REF`) VALUES ('$city_id', '$city_name', '$city_ref', '$area_name', '$area_ref');");
+//        }
+//        return $list;
+//    }
 
 
 }

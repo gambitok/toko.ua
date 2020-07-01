@@ -49,10 +49,20 @@ $(document).ready(function() {
 /*==== MAIN ====*/
 function setCityVal() {
     let data = $("#user_city").select2("data");
-    let city_id = data[0].value;
-    let city_name = data[0].text;
-    setCityDepartments(city_id);
-    $(".chosen-city").html(city_name);
+
+    if (data.length!==0) {
+        let city_id = data[0].value;
+        let city_name = data[0].text;
+        $(".chosen-city").html(city_name);
+
+        JsHttpRequest.query(folder,{'w':'setCityNPVal', 'city_id':city_id},
+            function (result, errors){ if (errors) {alert(errors);} if (result) {
+                let user_city = $("#user_city_np");
+                user_city.html(result.content);// user_city.select2();
+                //console.log(result.content);
+            }}, true);
+    }
+
 }
 
 function getCityVal() {
@@ -62,23 +72,50 @@ function getCityVal() {
         JsHttpRequest.query(folder,{'w':'getCityVal', 'search_text':search_text},
             function (result, errors){ if (errors) {alert(errors);} if (result) {
                 let user_city = $("#user_city");
-                user_city.html(result.content); user_city.select2();
-                console.log(result.content);
+                // user_city.html(result.content);
+                // user_city.val(null).trigger("change.select2");
+                user_city.append(result.content);
+                var mas=result.content;
+                var len=Object.keys(mas).length;
+                for (var i=1; i<=len; i++) {
+                    var id_city=Object.entries(mas[i])[0][1];
+                    var value_city=Object.entries(mas[i])[1][1];
+                    addOption(id_city,value_city);
+                }
+
             }}, true);
+    }
+}
+
+function addOption(id_city,value_city) {
+    let select_city=$('#user_city');
+    if (select_city.find("option[value='" + id_city + "']").length) {
+        //select_city.val(null).trigger('change');
+    } else {
+        let newOption = new Option(value_city, id_city, false, false);
+        select_city.append(newOption).val(null).trigger('change');
     }
 }
 
 /*==== /MAIN ====*/
 
 /*==== DELIVERY + PAYMENT ====*/
-function setCityDepartments(city_id) {
-    let city_ref = $("#user_city_np").select2("val");
-    JsHttpRequest.query(folder,{'w':'setCityDepartments', 'city_id':city_id, 'city_ref':city_ref},
+function setCityDepartments() {
+    let city_ref = $("#user_city_np option:selected").val();
+    JsHttpRequest.query(folder,{'w':'setCityDepartments', 'city_ref':city_ref},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            let select_np = $("#select_delivery_np");
-            let select_up = $("#select_delivery_up");
+            let select_np = $("#select_delivery_np"); select_np.html("");
+            let select_up = $("#select_delivery_up"); select_up.html("");
             select_np.html(result.content[0]); select_np.select2();
             select_up.html(result.content[1]); select_up.select2();
+        }}, true);
+}
+
+function setCityAddress() {
+    let city_id = $("#user_city").select2("val");
+    JsHttpRequest.query(folder,{'w':'setCityAddress', 'city_id':city_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            $("#tpoint_address").html(result.content);
         }}, true);
 }
 
@@ -92,8 +129,15 @@ function getOrderDeliveryBlock() {
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 let status = result.content;
                 if (status==0) block.addClass("orders-block-row-hidden");
+                //select2("val")
+                if ($("#user_city_np option:selected").val()===undefined) {
+                    $("div[data-tab-delivery='4']").addClass("orders-block-row-hidden");
+                }
             }}, true);
     });
+
+    setCityDepartments();
+    setCityAddress();
 }
 
 function uncheckRadioDelivery() {
@@ -189,7 +233,6 @@ function validFields() {
         $("#edit_button").removeClass("none");
         $("#orders-delivery").removeClass("none");
     }
-
     getOrderDeliveryBlock();
 }
 
