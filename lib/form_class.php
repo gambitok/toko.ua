@@ -13,15 +13,12 @@ class FormClass {
 
     function showModalForm($name) {
         $menu=new MenuClass; $language=new LangClass;
-
         $form=$this->getHtmlForm("modals/$name");
         $form=$this->replaceLang($form);
-
         // REGION MODAL
         $form=str_replace("{site_lang_prefix}", $language->getLangPrefix(), $form);
         $form=str_replace("{region_list}", $menu->getRegionList(), $form);
         $form=str_replace("{region_list_phone}", $menu->getRegionListPhone(), $form);
-
         return $form;
     }
 
@@ -224,7 +221,7 @@ class FormClass {
     }
 
     function showCityFormSelected($city_like, $city_id) { $db=DbSingleton::getDbm();
-        if ($city_id=="") $city_id=0; $form="";
+        if ($city_id=="") $city_id=0; $list="";
         if ($city_like!="") $where="WHERE `CITY_NAME` LIKE '%$city_like%'"; else $where="WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
         $r=$db->query("SELECT * FROM `T2_CITY` t2c
             LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID=t2c.REGION_ID)
@@ -237,9 +234,9 @@ class FormClass {
             $state=$db->result($r,$i-1,"STATE_NAME");
             if ($region=="") $location="$city"; else $location="$city - $region - $state";
             if ($id==$city_id) $checked="selected=\"selected\""; else $checked="";
-            $form.="<option value=\"$id\" $checked>$location</option>";
+            $list.="<option value=\"$id\" $checked>$location</option>";
         }
-        return $form;
+        return $list;
     }
 
     function showInfoTemplate($art_id) { $db=DbSingleton::getTokoDb();
@@ -266,6 +263,7 @@ class FormClass {
         }
     }
 
+    /*==== HISTORY ====*/
     function insertHistory($article_nr_displ, $brand_id) { $db = DbSingleton::getTokoDb();
         session_start(); $ses=session_id(); $cookie=$_COOKIE["session_id"];
         $date=date("Y-m-d H:i:s"); $client_id=$this->getClient(); $user=$this->getUser();
@@ -306,30 +304,18 @@ class FormClass {
         return $form;
     }
 
+    // PHONE HISTORY
     function showHistoryList() {
         $cat=new CatalogueClass;
         $language=new LangClass; $prefix=$language->getLangPrefix();
         $list=$this->getHistory(); $max_count=9;
-        $form="<div class=\"search-block\">
-        <div class=\"search-header\">
-        <div class='container'>
-            <div class='row'>
-                <div class='col-6'>
-                    <span>{history_cap}</span>
-                </div>
-                <div class='col-6 text-right'>
-                    <a onclick=\"deleteHistoryItem('')\">{clear_cap}</a>
-                </div>
-            </div>
-        </div>
-        </div>";
-        $form.="<ul class=\"search-nav\">";
+        $list_history="";
         for ($i=0; $i<count($list); $i++) {
             $id=$list[$i]["id"];
             $article_nr_displ=$list[$i]["article_nr_displ"];
             $brand=$list[$i]["brand"];
             $brand_link=$list[$i]["brand_link"];
-            $form.="<li class=\"search-nav__item\">
+            $list_history.="<li class=\"search-nav__item\">
                 <div class='container'>
                 <div class='row'>
                     <div class='col-10'>
@@ -346,8 +332,8 @@ class FormClass {
             </li>";
             if ($i==$max_count) break;
         }
-        $form.="</ul>";
-        $form.="</div>";
+        $form=$this->getHtmlForm("menu/history_list");
+        $form=str_replace("{history_range}",$list_history,$form);
         if (count($list)==0) $form="";
         $form=$this->replaceLang($form);
         return $form;
@@ -365,8 +351,9 @@ class FormClass {
         return true;
     }
 
-    /*==== PHOTO GALLERY ====*/
+    /*==== /HISTORY ====*/
 
+    /*==== PHOTO GALLERY ====*/
     function getArticleMainPhoto($art_id) { $db=DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n=$db->num_rows($r); $photo_name="";
         for ($i=1;$i<=$n;$i++){
@@ -418,8 +405,9 @@ class FormClass {
         }
     }
 
-    /*==== INFO FORM ====*/
+    /*==== /PHOTO GALLERY ====*/
 
+    /*==== INFO FORM ====*/
     function showPhotoGallery($art_id, $display=0) { $db=DbSingleton::getTokoDb();
         $cat=new CatalogueClass;
         $language=new LangClass; $prefix=$language->getLangPrefix();
@@ -654,7 +642,7 @@ class FormClass {
             $TYP_HP_FROM=$db->result($r,$i-1,"TYP_HP_FROM");
             $TYP_CCM=$db->result($r,$i-1,"TYP_CCM");
             $ENG_Cod=$db->result($r,$i-1,"ENG_Cod");
-            $list.="<tr class=\"pointer\" location.href=\"/catalog\";' style=\"font-size: .8em;\">
+            $list.="<tr class=\"pointer\" href=\"/catalog\" style=\"font-size: .8em;\">
                 <td>$fuel_name</td>
                 <td>$TYP_TEXT</td>
                 <td>$start - $end</td>

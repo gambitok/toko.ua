@@ -16,9 +16,9 @@ class ShopClass {
             for ($i=1;$i<=$n;$i++) {
                 $art_id = $db->result($r, $i - 1, "art_id");
                 $brand_id = $db->result($r, $i - 1, "brand_id");
-                $art_name=$this->getArticleDispl($art_id);
-                $brand_name=$this->getBrandName($brand_id);
-                $text=$this->getArticleName($art_id);
+                $art_name = $this->getArticleDispl($art_id);
+                $brand_name = $this->getBrandName($brand_id);
+                $text = $this->getArticleName($art_id);
                 $suppl_id = $db->result($r, $i - 1, "suppl_id");
                 $amount = $db->result($r, $i - 1, "amount");
                 $price = $db->result($r, $i - 1, "price");
@@ -62,8 +62,8 @@ class ShopClass {
 
                 $format_date1 = date("d.m.y H:i", strtotime($date1));
                 $format_date2 = date("d.m.y H:i", strtotime($date2));
-                $format_name=$this->getFormatAticle($art_name);
-                $format_brand=$this->getFormatAticle($brand_name);
+                $format_name = $this->getFormatAticle($art_name);
+                $format_brand = $this->getFormatAticle($brand_name);
 
                 $prefix=$language->getLangPrefix();
                 $link="https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/";
@@ -163,8 +163,7 @@ class ShopClass {
 
     function showMiniBasketForm() { $db = DbSingleton::getTokoDb();
         $client=new ClientClass; $exrate=new ExRateClass; $showform=new FormClass; $language=new LangClass;
-        $client_id=$client->getClient()[0]; $cur=$client->getClientCurrency($client_id);
-        $where=$client->getClientWhere();
+        $client_id=$client->getClient()[0]; $cur=$client->getClientCurrency($client_id); $where=$client->getClientWhere();
         $bempty="<div id=\"basket_block\" class=\"content\">{basket_empty}</div>"; $sum=0;
         $form=$this->getHtmlForm("basket/basket");
         $r=$db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n=$db->num_rows($r);
@@ -343,13 +342,11 @@ class ShopClass {
         $t_point=$client->getTpoint();
         $price=$catalogue->getArticlePrice($art_id);
         if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-
         if (!($catalogue->checkActionPrice($art_id))) {} else {
             list(,$action_amount,$action_price)=$catalogue->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price,1);
             if ($amount>=$action_amount) {$price=$action_price;}
         }
-
         if ($suppl_id==0) {
             $ddData=$catalogue->getTpointDeliveryInfo($t_point, $storage_id);
             $dd=$ddData[1];
@@ -357,7 +354,6 @@ class ShopClass {
             $ddSupplData=$catalogue->getTpointSupplDeliveryInfo($t_point, $suppl_id, $storage_id);
             $dd=$ddSupplData[1];
         }
-
         $stock=$this->getArticleStock($art_id, $storage_id);
         if ($stock==0 || $stock=="") $stock=$this->getArticleSupplStock($art_id, $suppl_id, $storage_id);
         return array(intval($dd), intval($stock), floatval($price));
@@ -521,12 +517,12 @@ class ShopClass {
         return $form;
     }
 
+    /*==== NEW ORDER FORM ====*/
     function getOrderForm() {
         $form=$this->getHtmlForm("orders/form");
         $form=str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
         $form=str_replace("{order_payment}", $this->getOrderPayment(), $form);
         $form=str_replace("{basket_range}", $this->getBasketOrder(), $form);
-        //$form=str_replace("{user_city_list}", $this->getCitiesSelect(), $form);
         $form=str_replace("{user_city_main_list}", $this->getCitiesMainSelect(), $form);
         $form=str_replace("{user_city_np}", $this->getNovaPoshtaCitiesSelect(), $form);
         $form=$this->replaceLang($form);
@@ -579,52 +575,39 @@ class ShopClass {
 
     function getOrderDeliveryBlock($delivery_id, $city_id) { $db=DbSingleton::getDbm();
         $result = 0;
-
         $cities = [10108, 24861];
-
         $r = $db->query("SELECT * FROM `orders_valid_delivery` WHERE `DELIVERY_ID`='$delivery_id' LIMIT 1;");
-
         $valid = $db->result($r, 0, "VALID_TYPE");
-
         if ($valid==0) {
             $result = 1;
         }
-
         if ($valid==1) {
             if (in_array($city_id, $cities)) {
                 $result = 1;
             }
         }
-
         return $result;
     }
 
     function getOrderPaymentBlock($payment_id, $delivery_id) { $db=DbSingleton::getDbm();
         $result = 0;
-
         $del_types_1 = [1, 2, 3];
         $del_types_2 = [4, 5, 6];
-
         $r = $db->query("SELECT * FROM `orders_valid_payment` WHERE `PAYMENT_ID`='$payment_id' LIMIT 1;");
-
         $valid = $db->result($r, 0, "VALID_TYPE");
-
         if ($valid==0) {
             $result = 1;
         }
-
         if ($valid==1) {
             if (in_array($delivery_id, $del_types_1)) {
                 $result = 1;
             }
         }
-
         if ($valid==2) {
             if (in_array($delivery_id, $del_types_2)) {
                 $result = 1;
             }
         }
-
         return $result;
     }
 
@@ -664,7 +647,6 @@ class ShopClass {
         if ($comment=="") $comment="{absent_cap}";
 
         $form=$this->getHtmlForm("orders/confirm");
-
         $form=str_replace("{order_name}", $name, $form);
         $form=str_replace("{order_phone}", $phone, $form);
         $form=str_replace("{order_city}", $city_text, $form);
@@ -673,7 +655,6 @@ class ShopClass {
         $form=str_replace("{order_payment}", $payment_text, $form);
         $form=str_replace("{order_email}", $email, $form);
         $form=str_replace("{order_comment}", $comment, $form);
-
         $form=$this->replaceLang($form);
 
         return $form;
@@ -703,12 +684,10 @@ class ShopClass {
         list($basket_range, $basket_total) = $this->getBasketOrderRange();
         $delivery_total = $delivery_id;
         $total = floatval($basket_total) + floatval($delivery_total);
-
         if ($delivery_id==0) {
             $form = str_replace("{basket_order_delivery_price}", "", $form);
             $form = str_replace("{basket_order_price}", "", $form);
         }
-
         $form = str_replace("{basket_content}", $basket_range, $form);
         $form = str_replace("{basket_full_price}", $basket_total." $cur_cap", $form);
         $form = str_replace("{basket_order_delivery_price}", $this->getOrderDeliveryPrice($delivery_total), $form);
@@ -718,16 +697,17 @@ class ShopClass {
     }
 
     function getBasketOrderRange() { $db=DbSingleton::getTokoDb();
-        $client=new ClientClass; $where=$client->getClientWhere(); $exrate=new ExRateClass; $cur=$exrate->getCurrentKours(); $client_id=$client->getClient()[0]; $showform=new FormClass; $cur_cap=$exrate->getKoursSymbol($cur);
+        $client=new ClientClass; $exrate=new ExRateClass; $showform=new FormClass;
+        $cur=$exrate->getCurrentKours(); $client_id=$client->getClient()[0]; $where=$client->getClientWhere(); $cur_cap=$exrate->getKoursSymbol($cur);
         $list=""; $sum_total=0;
         $r=$db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1 ORDER BY `date_create` DESC;"); $n=$db->num_rows($r);
         if ($n>0) {
             for ($i = 1; $i <= $n; $i++) {
                 $art_id = $db->result($r, $i - 1, "art_id");
                 $brand_id = $db->result($r, $i - 1, "brand_id");
-                $art_name=$this->getArticleDispl($art_id);
-                $brand_name=$this->getBrandName($brand_id);
-                $text=$this->getArticleName($art_id);
+                $art_name = $this->getArticleDispl($art_id);
+                $brand_name = $this->getBrandName($brand_id);
+                $text = $this->getArticleName($art_id);
                 $amount = $db->result($r, $i - 1, "amount");
                 $price = $db->result($r, $i - 1, "price");
                 $price = $exrate->getKoursPrice($price, $cur);
@@ -738,8 +718,7 @@ class ShopClass {
                 $name = "$text $brand_name ($art_name)";
                 $img = $showform->getArticleActivePhoto($art_id);
                 $photo="<img src=\"$img\" alt=\"$name\">";
-                $list.="
-                <div class='cart-table-row'>
+                $list.="<div class=\"cart-table-row\">
                     <div class=\"cart-table-cell cart-table-cell__photo\">$photo</div>
                     <div class=\"cart-table-cell cart-table-cell__name\">$name</div>
                     <div class=\"cart-table-cell cart-table-cell__summ\">$price $cur_cap</div>
@@ -748,11 +727,15 @@ class ShopClass {
                 </div>";
             }
         } else {
-            $list="<div class='cart-table-row'>Empty</div>";
+            $list="<div class=\"cart-table-row\">{empty_cap}</div>";
         }
+        $list=$this->replaceLang($list);
         return array($list, $sum_total);
     }
 
+    /*==== /NEW ORDER FORM ====*/
+
+    /*==== NOVA POSHTA API ====*/
     function getCitiesSelect() { $db=DbSingleton::getTokoDb();
         $list = "";
         $r=$db->query("SELECT * FROM `T2_LOCATION` ORDER BY `CITY_NAME` ASC;"); $n=$db->num_rows($r);
@@ -779,7 +762,6 @@ class ShopClass {
     }
 
     function getCityVal($search_text) { $db=DbSingleton::getTokoDb();
-        // $list = "";
         $mas=[];
         $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR` LIKE '$search_text%' ORDER BY `CITY_NAME`;"); $n=$db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
@@ -788,8 +770,6 @@ class ShopClass {
             $region_name = $db->result($r, $i-1, "REGION_NAME");
             $state_name = $db->result($r, $i-1, "STATE_NAME");
             $city_cap = "$city_name ($state_name обл., $region_name р-ой)";
-            // $list.="<option value='$city_id'>$city_name</option>";
-
             $mas[$i]=["id"=>$city_id,"value"=>$city_cap];
         }
         return $mas;
@@ -800,27 +780,6 @@ class ShopClass {
         $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_ID`='$city_id' LIMIT 1;");
         $city_name = $db->result($r, 0, "CITY_NAME_CLEAR");
         $state_name = $db->result($r, 0, "NEWPOST_AREA");
-
-//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-//        $name = iconv("windows-1251", "UTF-8", $city_name);
-//        $arr = $np->getCities(0, $name)['data'];
-//
-//        $col=0;
-//        foreach ($arr as $val) {
-//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-//            $area_ref = iconv("UTF-8", "windows-1251", $val["Area"]);
-//            $ref = iconv("UTF-8", "windows-1251", $val["Ref"]);
-//
-//            $area = $np->getArea('', $area_ref)['data'];
-//            $area_name = iconv("UTF-8", "windows-1251", $area[0]['Description']);
-//
-//            if(stripos($state_name, $area_name) !== FALSE) { $col++;
-//                var_dump($state_name." - ".$area_name);
-//                $list.="<option value='$ref'>$name ($area_name)</option>";
-//            }
-//        }
-//        if ($col==0) var_dump("empty");
-
         $r=$db->query("SELECT * FROM `T2_CITY_NOVA` WHERE `CITY_NAME` LIKE '$city_name%' AND `AREA_NAME` LIKE '$state_name%';"); $n=$db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $ref = $db->result($r, $i - 1, "CITY_REF");
@@ -828,41 +787,8 @@ class ShopClass {
             $area_name = $db->result($r, $i - 1, "AREA_NAME");
             $list.="<option value='$ref'>$name ($area_name)</option>";
         }
-        if ($n==0) var_dump("oops");
-
         return $list;
     }
-
-//    function getNovaPoshtaCity($name) {
-//        $list = "";
-//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-//        $name = iconv("windows-1251", "UTF-8", $name);
-//        $arr = $np->getCities(0, $name)['data'];
-//        $list.="Знайдено міст: ".count($arr);
-//        foreach ($arr as $val) {
-//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-//            $ref = iconv("UTF-8", "windows-1251", $val["Ref"]);
-//            $list.="<br><a href='https://toko.ua/test_order/?city_ref=$ref'>".$name." ($ref)</a>";
-//        }
-//        return $list;
-//    }
-
-//    function getNovaPoshtaCities() {
-//        $list = "";
-//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-//        $arr = $np->getCities()['data'];
-//        $list.="<form method='get'>
-//            <input type='text' placeholder='City name' name='city_name'>
-//            <input type='submit' value='Search'>
-//        </form>";
-//        $list.="Всього міст: ".count($arr);
-//        foreach ($arr as $val) {
-//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-//            $ref = $val["Ref"];
-//            $list.="<br><a href='https://toko.ua/test_order/?city_ref=$ref'>".$name." ($ref)</a>";
-//        }
-//        return $list;
-//    }
 
     function getNovaPoshtaCitiesSelect() {
         $list = "";
@@ -875,19 +801,6 @@ class ShopClass {
         }
         return $list;
     }
-
-//    function getNovaPoshtaWarehouses($ref) {
-//        $list = "";
-//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-//        $arr = $np->getWarehouses($ref)['data'];
-//        $list.="Всього відділень: ".count($arr);
-//        foreach ($arr as $val) {
-//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-//            $war_ref = $val["Ref"];
-//            $list.="<br>".$name." ($war_ref)";
-//        }
-//        return $list;
-//    }
 
     function getNovaPoshtaWarehousesSelect($ref) {
         $list = "<option value=\"0\">{not_chosen}</option>";
@@ -902,23 +815,6 @@ class ShopClass {
         return $list;
     }
 
-//    function setCityNovaPoshta() { $db=DbSingleton::getTokoDb();
-//        $list = "";
-//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-//        $arr = $np->getCities()['data'];
-//        foreach ($arr as $val) {
-//            $city_id = $val["CityID"];
-//            $city_name = iconv("UTF-8", "windows-1251", $val["Description"]);  $city_name=str_replace("'","",$city_name);
-//            $city_ref = $val["Ref"];
-//
-//            $area_ref = $val["Area"];
-//            $area = $np->getArea('', $area_ref)['data'];
-//            $area_name = iconv("UTF-8", "windows-1251", $area[0]['Description']);
-//
-//            $db->query("INSERT INTO `T2_CITY_NOVA` (`CITY_ID`, `CITY_NAME`, `CITY_REF`, `AREA_NAME`, `AREA_REF`) VALUES ('$city_id', '$city_name', '$city_ref', '$area_name', '$area_ref');");
-//        }
-//        return $list;
-//    }
-
+    /*==== /NOVA POSHTA API ====*/
 
 }

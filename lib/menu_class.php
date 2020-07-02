@@ -59,8 +59,7 @@ class MenuClass {
         $form=$this->getHtmlForm("news/news_state");
         $state_id = $this->getUrlNumber($state_id);
         $r=$db->query("SELECT * FROM `news` WHERE `id`='$state_id';");
-        $title=$db->result($r,0,"caption");
-        if ($title=="") $title=$this->replaceLang("{news_one_cap}"."-$state_id");
+        $title=$db->result($r,0,"caption"); if ($title=="") $title=$this->replaceLang("{news_one_cap}"."-$state_id");
         $text=$db->result($r,0,"desc");
         $date=$db->result($r,0,"data");
         $img_file=$this->getNewsImage($state_id);
@@ -104,8 +103,8 @@ class MenuClass {
         $categories=implode(",",$categories);
 
         $r=$db->query("SELECT ac.* FROM `ACTION_CLIENTS` ac
-            LEFT OUTER JOIN `ACTION_CLIENTS_LIST` acl ON (acl.action_id=ac.id)
-            LEFT OUTER JOIN `ACTION_CLIENTS_CATEGORY` acc ON (acc.action_id=ac.id)
+            LEFT JOIN `ACTION_CLIENTS_LIST` acl ON (acl.action_id=ac.id)
+            LEFT JOIN `ACTION_CLIENTS_CATEGORY` acc ON (acc.action_id=ac.id)
         WHERE (acl.client_id='$client_id' OR acc.category_id IN ($categories)) $where_arts AND ac.data>='$cur_data';"); $n=$db->num_rows($r);
         if ($n>0) {
             $list="<div class=\"row\">"; $arr=[];
@@ -131,7 +130,6 @@ class MenuClass {
                 $far_status[$key] = $row["status_new"];
                 $far_article[$key] = $row["article_nr_displ"];
             }
-
             array_multisort($far_status, SORT_DESC, $far_article, SORT_ASC, $arr);
 
             for ($i=0;$i<$n;$i++) {
@@ -193,7 +191,7 @@ class MenuClass {
         } else $list="<div class=\"content\"><h2>$err1<h2></div>";
         $list=$this->replaceLang($list);
         $group_arts=implode(",",$group_arts);
-        return array($list,$group_arts);
+        return array($list, $group_arts);
     }
 
     function getSpecialOffersFilterList($arts="") { $db = DbSingleton::getTokoDb();
@@ -225,7 +223,7 @@ class MenuClass {
         $tpoint_id=$client->getTpoint(); $lang=$language->getLanguage();
         $r=$db->query("SELECT t2.id, t2a.full_name, t2a.address 
         FROM `T_POINT` t2
-            LEFT OUTER JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
+            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
         WHERE t2.status=1 AND t2a.lang_id='$lang' ORDER BY t2.position DESC, t2a.full_name ASC;"); $n=$db->num_rows($r);
         $list="<form action=\"\" autocomplete=\"off\">"; $ch="";
         for ($i=1;$i<=$n;$i++) {
@@ -246,7 +244,7 @@ class MenuClass {
         $tpoint_id=$client->getTpoint(); $lang=$language->getLanguage();
         $r=$db->query("SELECT t2.id, t2a.full_name, t2a.address 
         FROM `T_POINT` t2
-            LEFT OUTER JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
+            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
         WHERE t2.status=1 AND t2a.lang_id='$lang' ORDER BY t2.position DESC, t2a.full_name ASC;"); $n=$db->num_rows($r);
         $list="<form action=\"\" autocomplete=\"off\">"; $ch="";
         for ($i=1;$i<=$n;$i++) {
@@ -266,7 +264,7 @@ class MenuClass {
         $lang=$language->getLanguage(); $tpoint_id=$client->getTpoint();
         $r=$db->query("SELECT t2.id, t2a.full_name, t2a.address 
         FROM `T_POINT` t2
-            LEFT OUTER JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
+            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
         WHERE t2.id='$tpoint_id' AND t2a.lang_id='$lang' ORDER BY t2.position DESC, t2a.full_name ASC;"); $n=$db->num_rows($r); $list="";
         $region=$db->result($r,0,"full_name");
         $address=$db->result($r,0,"address");
@@ -282,18 +280,18 @@ class MenuClass {
         return $list;
     }
 
-    function getLanguageSelect($id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `new_lang` WHERE `id`='$id' LIMIT 1;"); $n=$db->num_rows($r); $list="";
-        if ($n>0) {
-            $abr=$db->result($r,0,"abr");
-            $list="<a class=\"lang_select\" onClick=\"showLangForm();\">
-                <span id=\"lang_select\">
-                    {laguage_cap}: <span> $abr</span>
-                </span>
-            </a>";
-        }
-        return $list;
-    }
+//    function getLanguageSelect($id) { $db = DbSingleton::getTokoDb();
+//        $r=$db->query("SELECT * FROM `new_lang` WHERE `id`='$id' LIMIT 1;"); $n=$db->num_rows($r); $list="";
+//        if ($n>0) {
+//            $abr=$db->result($r,0,"abr");
+//            $list="<a class=\"lang_select\" onClick=\"showLangForm();\">
+//                <span id=\"lang_select\">
+//                    {laguage_cap}: <span> $abr</span>
+//                </span>
+//            </a>";
+//        }
+//        return $list;
+//    }
 
     function showContacts() { $db = DbSingleton::getTokoDb();
         $language=new LangClass;
@@ -373,46 +371,45 @@ class MenuClass {
     }
 
     function showContactsBottom() { $db=DbSingleton::getTokoDb();
-        $list="<div itemtype=\"http://schema.org/Organization\" itemscope>
-        <span itemprop=\"name\" class=\"dnone\">{seo_shop_toko}</span>
-        <ul>";
+        $list_phone=""; $list_email=""; $list_address="";
+        $form=$this->getHtmlForm("menu/contacts_bottom");
         // PHONE
         $r=$db->query("SELECT * FROM `contacts_bottom_new` WHERE `status`=1 AND `type_contact`=1;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $text=$db->result($r, $i-1, "text");
             $icon=$db->result($r, $i-1, "icon");
             $link=$db->result($r, $i-1, "link");
-            $itemprop="";
-            $list.="<li>
+            $list_phone.="<li>
                 <a href=\"tel:$link\">
                     <span class=\"fas $icon\"></span>
-                    <span $itemprop>$text</span>
+                    <span>$text</span>
                 </a>
             </li>";
         }
+        $form=str_replace("{list_phone}", $list_phone, $form);
         // EMAIL
         $r=$db->query("SELECT * FROM `contacts_bottom_new` WHERE `status`=1 AND `type_contact`=2;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $text=$db->result($r, $i-1, "text");
             $icon=$db->result($r, $i-1, "icon");
             $link=$db->result($r, $i-1, "link");
-            $itemprop="itemprop=\"email\"";
-            $list.="<li>
+            $list_email.="<li>
                 <a href=\"$link\">
                     <span class=\"fas $icon\"></span>
-                    <span $itemprop>$text</span>
+                    <span itemprop=\"email\">$text</span>
                 </a>
             </li>";
         }
+        $form=str_replace("{list_email}", $list_email, $form);
         // ADDRESS
         $r=$db->query("SELECT * FROM `contacts_bottom_new` WHERE `status`=1 AND `type_contact`=3;"); $n=$db->num_rows($r);
-        if ($n>0) $list.="<div itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\">";
+        if ($n>0) $list_address.="<div itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\">";
         for ($i=1;$i<=$n;$i++) {
             $text=$db->result($r, $i-1, "text");
             $text_short=$db->result($r, $i-1, "text_short");
             $icon=$db->result($r, $i-1, "icon");
             $link=$db->result($r, $i-1, "link");
-            $list.="<li>
+            $list_address.="<li>
                 <a href=\"$link\">
                     <span class=\"fas $icon\"></span>
                     <span itemprop=\"addressLocality\">$text_short</span>
@@ -420,17 +417,16 @@ class MenuClass {
                 </a>
             </li>";
         }
-        if ($n>0) $list.="</div>";
-
-        $list.="</ul></div>";
-        $list=$this->replaceLang($list);
-        return $list;
+        if ($n>0) $list_address.="</div>";
+        $form=str_replace("{list_address}", $list_address, $form);
+        $form=$this->replaceLang($form);
+        return $form;
     }
 
     function showBannerBottom() { $db = DbSingleton::getTokoDb();
         $form=$this->getHtmlForm("menu/banner");
         $where=$list=""; $max_symbols=50;
-        $r=$db->query("SELECT * FROM `T_ref_action` GROUP BY `REF` ORDER BY rand() LIMIT 0,18;");$n=$db->num_rows($r);
+        $r=$db->query("SELECT * FROM `T_ref_action` GROUP BY `REF` ORDER BY RAND() LIMIT 0,18;");$n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++){
             $ref=$db->result($r,$i-1,"REF");
             $where.="t2a.ARTICLE_NR_DISPL='$ref'"; if ($i<$n) $where.=" OR ";
@@ -450,20 +446,18 @@ class MenuClass {
             $brand=$db->result($r,$i-1,"BRAND_NAME");
             $info=$db->result($r,$i-1,"INFO");
             $image=$this->getCatPhoto($art_id);
-
             strlen($info)>$max_symbols ? $dots="..." : $dots="";
             $info=substr($info,0,$max_symbols).$dots;
-            $list.="
-            <div class=\"container\">
+            $list.="<div class=\"container\">
                 <a href='/search/$article_nr_search/'>
-                <div class=\"row owl-row\">
-                    <div class=\"col-5 owl-row__img\">$image</div>
-                    <div class=\"col-7 owl-row__text\">
-                         <p>$name</p>
-                         <p>$info</p>
-                         <span>$article_nr_displ ($brand)</span>
-                    </div> 
-                </div>
+                    <div class=\"row owl-row\">
+                        <div class=\"col-5 owl-row__img\">$image</div>
+                        <div class=\"col-7 owl-row__text\">
+                             <p>$name</p>
+                             <p>$info</p>
+                             <span>$article_nr_displ ($brand)</span>
+                        </div> 
+                    </div>
                 </a>
             </div>";
         }
@@ -529,8 +523,7 @@ class MenuClass {
     }
 
     function getGarageLink() {
-        $automan=new AutoClass;
-        $language=new LangClass; $prefix=$language->getLangPrefix();
+        $automan=new AutoClass; $language=new LangClass; $prefix=$language->getLangPrefix();
         $garage_count=$automan->getGarageAutoCount()[0];
         $garage_count=="" ? $garage_link="href=\"https://toko.ua$prefix/catalogue/auto/\"" : $garage_link="onclick=\"showGarageForm();\"";
         return $garage_link;

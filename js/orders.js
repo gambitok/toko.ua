@@ -49,20 +49,16 @@ $(document).ready(function() {
 /*==== MAIN ====*/
 function setCityVal() {
     let data = $("#user_city").select2("data");
-
     if (data.length!==0) {
         let city_id = data[0].value;
         let city_name = data[0].text;
         $(".chosen-city").html(city_name);
-
         JsHttpRequest.query(folder,{'w':'setCityNPVal', 'city_id':city_id},
             function (result, errors){ if (errors) {alert(errors);} if (result) {
                 let user_city = $("#user_city_np");
-                user_city.html(result.content);// user_city.select2();
-                //console.log(result.content);
+                user_city.html(result.content);
             }}, true);
     }
-
 }
 
 function getCityVal() {
@@ -72,8 +68,6 @@ function getCityVal() {
         JsHttpRequest.query(folder,{'w':'getCityVal', 'search_text':search_text},
             function (result, errors){ if (errors) {alert(errors);} if (result) {
                 let user_city = $("#user_city");
-                // user_city.html(result.content);
-                // user_city.val(null).trigger("change.select2");
                 user_city.append(result.content);
                 var mas=result.content;
                 var len=Object.keys(mas).length;
@@ -129,7 +123,6 @@ function getOrderDeliveryBlock() {
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 let status = result.content;
                 if (status==0) block.addClass("orders-block-row-hidden");
-                //select2("val")
                 if ($("#user_city_np option:selected").val()===undefined) {
                     $("div[data-tab-delivery='4']").addClass("orders-block-row-hidden");
                 }

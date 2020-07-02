@@ -48,18 +48,15 @@ if ($_REQUEST["w"]=="showProfileBasketForm"){$GLOBALS['_RESULT'] = array("conten
 if ($_REQUEST["w"]=="showBasketMinForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showBasketForm());}
 
 if ($_REQUEST["w"]=="setCityDepartments"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityDepartments($_REQUEST["city_ref"]));}
-
 if ($_REQUEST["w"]=="getOrderDeliveryBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderDeliveryBlock($_REQUEST["delivery_id"], $_REQUEST["city_id"]));}
-
 if ($_REQUEST["w"]=="getOrderPaymentBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderPaymentBlock($_REQUEST["payment_id"], $_REQUEST["delivery_id"]));}
-
 if ($_REQUEST["w"]=="validOrder"){$GLOBALS['_RESULT'] = array("content"=>$shop->validOrder($_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["city"],$_REQUEST["delivery"],$_REQUEST["delivery_type"],$_REQUEST["payment"],$_REQUEST["email"],$_REQUEST["comment"]));}
-
 if ($_REQUEST["w"]=="getBasketOrder"){$GLOBALS['_RESULT'] = array("content"=>$shop->getBasketOrder($_REQUEST["delivery_id"]));}
 
 if ($_REQUEST["w"]=="getCityVal"){$GLOBALS['_RESULT'] = array("content"=>$shop->getCityVal($_REQUEST["search_text"]));}
 if ($_REQUEST["w"]=="setCityNPVal"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityNPVal($_REQUEST["city_id"]));}
 if ($_REQUEST["w"]=="setCityAddress"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityAddress($_REQUEST["city_id"]));}
+
 /*=== CATALOG ====*/
 
 if ($_REQUEST["w"]=="getCatalogueLink"){$GLOBALS['_RESULT'] = array("content"=>$catalog->getCatalogueLink($_REQUEST["article_nr_search"]));}
@@ -148,13 +145,13 @@ if ($_REQUEST["w"]=="showProfileCheckForm"){$GLOBALS['_RESULT'] = array("content
 
 if ($_REQUEST["w"]=="changeLangAlert"){$GLOBALS['_RESULT'] = array("content"=>$lang->changeLangAlert($_REQUEST["message"], $_REQUEST["title"]));}
 
-if ($_REQUEST["w"]=="selectLang"){$GLOBALS['_RESULT'] = array("content"=>$lang->setLanguage($_REQUEST["id"]));}
-
-if ($_REQUEST["w"]=="selectLangText"){$GLOBALS['_RESULT'] = array("content"=>$menu->getLanguageSelect($_REQUEST["id"]));}
-
 if ($_REQUEST["w"]=="setSiteLang"){$GLOBALS['_RESULT'] = array("content"=>$lang->setSiteLang($_REQUEST["id"]));}
 
-if ($_REQUEST["w"]=="changeLangJs"){$GLOBALS['_RESULT'] = array("content"=>$lang->changeLangJs($_REQUEST["text"]));}
+//if ($_REQUEST["w"]=="selectLang"){$GLOBALS['_RESULT'] = array("content"=>$lang->setLanguage($_REQUEST["id"]));}
+//
+//if ($_REQUEST["w"]=="selectLangText"){$GLOBALS['_RESULT'] = array("content"=>$menu->getLanguageSelect($_REQUEST["id"]));}
+
+//if ($_REQUEST["w"]=="changeLangJs"){$GLOBALS['_RESULT'] = array("content"=>$lang->changeLangJs($_REQUEST["text"]));}
 
 /*=== SHOP ====*/
 
@@ -180,7 +177,7 @@ if ($_REQUEST["w"]=="closeOrderArtUpdate"){ $GLOBALS['_RESULT'] = array("content
 
 if ($_REQUEST["w"]=="updateOrderArt"){ $GLOBALS['_RESULT'] = array("content"=>$profile->updateOrderArt($_REQUEST["order_id"]));}
 
-//=catalogue trigger list===============================================================================================
+/*==== CATALOG TRIGGER LIST ====*/
 
 if ($_REQUEST["w"]=="triggerDetailCar"){ list($content,$header,$format,$skip_id,$title)=$catalog->triggerDetailCar($_REQUEST["type_id"],$_REQUEST["year"],$_REQUEST["manufacture"],$_REQUEST["model"],$_REQUEST["model_id"],$_REQUEST["group"],$_REQUEST["str_id"]); $GLOBALS['_RESULT'] = array("content"=>$content, "header"=>$header, "format"=>$format, "skip_id"=>$skip_id, "title"=>$title);}
 
@@ -232,7 +229,7 @@ if ($_REQUEST["w"]=="showSearchParameters"){ $GLOBALS['_RESULT'] = array("conten
 
 //if ($_REQUEST["w"]=="showCarsSelected"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelected($_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"]));}
 
-//=templates============================================================================================================
+/*==== TEMPLATES ====*/
 
 //if ($_REQUEST["w"]=="addFilterTemplate"){ $GLOBALS['_RESULT'] = array("content"=>$template->addFilterTemplate($_REQUEST["paramId"],$_REQUEST["statusFilters"],$_REQUEST["activeFilters"],$_REQUEST["currentPageFilters"],$_REQUEST["activeProducts"],$_REQUEST["template_id"]));}
 //

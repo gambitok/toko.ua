@@ -18,12 +18,4 @@ $np = new \LisDev\Delivery\NovaPoshtaApi2(
 //
 //print_r($list);
 
-//$shop->setCityNovaPoshta();
-
-//$_GET["city_ref"]=="" ? $result=$shop->getNovaPoshtaCities() : $result=$shop->getNovaPoshtaWarehouses($_GET["city_ref"]);
-//$_GET["city_name"]=="" ?: $result=$shop->getNovaPoshtaCity($_GET["city_name"]);
-
-//print_r($result);
-//die();
-
 $content=str_replace("{main_window}", $shop->getOrderForm(), $content);

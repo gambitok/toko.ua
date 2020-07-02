@@ -26,13 +26,13 @@ class LangClass {
         return $cap;
     }
 
-    function getLangCap($lang_id) {$db=DbSingleton::getTokoDb();
+    function getLangCap($lang_id) { $db=DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `new_lang` WHERE `id`='$lang_id' LIMIT 1;");
         $lang_name=$db->result($r,0,"abr");
         return $lang_name;
     }
 
-    function getLanguageSelectList($sel_id) {$db=DbSingleton::getTokoDb();
+    function getLanguageSelectList($sel_id) { $db=DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `new_lang`;"); $n=$db->num_rows($r); $list="";
         for ($i=1;$i<=$n;$i++) {
             $lang_id=$db->result($r,$i-1,"id");
@@ -53,10 +53,10 @@ class LangClass {
         return $pre;
     }
 
-    function setLanguage($id) {
-        $_SESSION["lang"] = $id;
-        return $_SESSION["lang"];
-    }
+//    function setLanguage($id) {
+//        $_SESSION["lang"] = $id;
+//        return $_SESSION["lang"];
+//    }
 
     function setSiteLang($id) {
         $_SESSION["lang"] = $id;
@@ -94,9 +94,9 @@ class LangClass {
         return array($message, $title);
     }
 
-    function changeLangJs($text) {
-        $text=$this->replaceLang($text);
-        return $text;
-    }
+//    function changeLangJs($text) {
+//        $text=$this->replaceLang($text);
+//        return $text;
+//    }
 	
 }

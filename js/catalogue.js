@@ -475,7 +475,7 @@ function copyToClipboard(element,art_name) { "use strict";
     showNotify("{done_cap}:","{art_cap} '"+art_name+"' {copied_to_clipboard}!","success");
 }
 
-/*==== Garage ========================================================================================================*/
+/*==== Garage ====*/
 
 // ADD NEW CAR TO GARAGE
 function addToGarage(typ_id=0) {
@@ -578,7 +578,7 @@ function dropAutoHistory(history_id) {
         }}, true);
 }
 
-/*==== /Garage =====*/
+/*==== /GARAGE =====*/
 
 function changeBasketCount(status, id) {
     let input_id=$("#"+id);
@@ -848,8 +848,6 @@ function showCarsSelectMin(param_id, value_id=0, fuel_id=0) {
     if (param_id==6 && value_id>0)   {typ_id=value_id;}
     if (param_id==6 && value_id!="") {typ_id=value_id;}
     if (param_id==6 && value_id==0)  {fuel_id=fuel_id_selected;}
-
-    console.log("typ_id: "+typ_id+"; fuel_id: "+fuel_id);
 
     JsHttpRequest.query(folder,{ 'w': 'showCarsSelectMin', 'str_id':str_id, 'mfa':mfa, 'model':model, 'year':year, 'modelid':modelid, 'typ_id':typ_id, 'fuel_id':fuel_id},
         function (result, errors){ if (errors) {} if (result){

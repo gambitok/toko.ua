@@ -1,14 +1,14 @@
 function showLangForm() { $("#LangForm").modal("toggle"); }
 
-function selectLang(id) { "use strict";
-    JsHttpRequest.query(folder,{'w':'selectLang', 'id':id},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            let res = result.content;
-            selectLangText(res);
-            $("#LangForm").modal("hide");
-            location.reload();
-        }}, true);
-}
+// function selectLang(id) { "use strict";
+//     JsHttpRequest.query(folder,{'w':'selectLang', 'id':id},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//             let res = result.content;
+//             selectLangText(res);
+//             $("#LangForm").modal("hide");
+//             location.reload();
+//         }}, true);
+// }
 
 function setSiteLang(id) { "use strict";
     JsHttpRequest.query(folder,{'w':'setSiteLang', 'id':id},
@@ -18,12 +18,12 @@ function setSiteLang(id) { "use strict";
         }}, true);
 }
 
-function selectLangText(id) { "use strict";
-    JsHttpRequest.query(folder,{'w':'selectLangText', 'id':id},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#lang_select").html(result.content);
-        }}, true);
-}
+// function selectLangText(id) { "use strict";
+//     JsHttpRequest.query(folder,{'w':'selectLangText', 'id':id},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//             $("#lang_select").html(result.content);
+//         }}, true);
+// }
 
 function showProfilePageOrders() { "use strict"; location.href="/profile/orders/"; }
 
