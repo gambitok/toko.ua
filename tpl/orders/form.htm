@@ -35,7 +35,11 @@
     </div>
 
     <!-- CONTACTS -->
-    <div class="orders-container">
+    <div class="orders-header">
+        <span class="orders-header__round" id="order_info_min_circle">1</span>
+        <span class="orders-header__title" id="order_info_min">{order_contacts_cap}</span>
+    </div>
+    <div class="orders-container" id="order_info_max">
         <div class="orders-block">
             <div class="orders-block-row">
                 <div class="orders-block-row-title">
@@ -73,7 +77,6 @@
             <div class="orders-block-row">
                 <div class="orders-footer-button" style="width: 100%!important;">
                     <button onclick="validFields();" id="valid_button">{continue_cap}</button>
-                    <button class="none" onclick="editFields();" id="edit_button">{edit_cap}</button>
                 </div>
             </div>
         </div>
@@ -85,8 +88,13 @@
     <div id="orders-delivery" class="none">
 
     <!-- DELIVERY -->
+    <div class="orders-header">
+        <span class="orders-header__round">2</span>
+        <span class="orders-header__title">{order_delivery_cap}</span>
+    </div>
     <div class="orders-container">
         <div class="orders-block">
+            <button onclick="validDeliveryFields();">VALID DELIVERY</button>
             {order_delivery}
         </div>
         <div class="orders-title">
@@ -137,7 +145,7 @@
             <span>{delivery_user_info}</span>
         </div>
         <div class="orders-footer-button">
-            <button onclick="validOrder();">{make_order_cap}</button>
+            <button id="make_order" disabled onclick="validOrder();">{make_order_cap}</button>
         </div>
     </div>
 

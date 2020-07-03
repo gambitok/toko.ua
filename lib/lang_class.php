@@ -94,9 +94,9 @@ class LangClass {
         return array($message, $title);
     }
 
-//    function changeLangJs($text) {
-//        $text=$this->replaceLang($text);
-//        return $text;
-//    }
+    function changeLangJs($text) {
+        $text=$this->replaceLang($text);
+        return $text;
+    }
 	
 }

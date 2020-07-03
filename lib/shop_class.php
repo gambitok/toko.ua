@@ -660,6 +660,75 @@ class ShopClass {
         return $form;
     }
 
+    function validDeliveryFields($delivery, $delivery_type) {
+        $result = true;
+        $fields = [];
+        $street = $delivery_type["street"];
+        $house = $delivery_type["house"];
+        $porch = $delivery_type["porch"];
+        $department = $delivery_type["department"]; // department ID
+        $delivery_express = $delivery_type["delivery_express"]; // express ID
+
+        switch ($delivery) {
+            case 1: {
+                break;
+            }
+            case 2: {
+                if (($street=="" || $street=="undefined") || ($house=="" || $house=="undefined") || ($porch=="" || $porch=="undefined")) {
+                    if ($street=="" || $street=="undefined") array_push($fields, "street");
+                    if ($house=="" || $house=="undefined") array_push($fields, "house");
+                    if ($porch=="" || $porch=="undefined") array_push($fields, "porch");
+                    $result = false;
+                }
+                break;
+            }
+            case 3: {
+                if (($street=="" || $street=="undefined") || ($house=="" || $house=="undefined")) {
+                    if ($street=="" || $street=="undefined") array_push($fields, "street");
+                    if ($house=="" || $house=="undefined") array_push($fields, "house");
+                    $result = false;
+                }
+                break;
+            }
+            case 4: {
+                if ($department=="0" || $department=="undefined") {
+                    if ($department=="" || $department=="undefined") array_push($fields, "department");
+                    $result = false;
+                }
+                break;
+            }
+            case 5: {
+                if (($street=="" || $street=="undefined") || ($house=="" || $house=="undefined") || ($porch=="" || $porch=="undefined")) {
+                    if ($street=="" || $street=="undefined") array_push($fields, "street");
+                    if ($house=="" || $house=="undefined") array_push($fields, "house");
+                    if ($porch=="" || $porch=="undefined") array_push($fields, "porch");
+                    $result = false;
+                }
+                break;
+            }
+            case 6: {
+                if ($department=="0" || $department=="undefined") {
+                    if ($department=="" || $department=="undefined") array_push($fields, "department");
+                    $result = false;
+                }
+                break;
+            }
+            case 7: {
+                if (($department=="0" || $department=="undefined") || ($delivery_express=="0" || $delivery_express=="undefined")) {
+                    if ($department=="" || $department=="undefined") array_push($fields, "department");
+                    if ($delivery_express=="" || $delivery_express=="undefined") array_push($fields, "delivery_express");
+                    $result = false;
+                }
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
+        return array($result, $fields);
+    }
+
     function getOrderDeliveryPrice($delivery_total) {
         $exrate=new ExRateClass; $cur=$exrate->getCurrentKours(); $cur_cap=$exrate->getKoursSymbol($cur);
         $list="<div class=\"cart-table-row cart-table-row-offset\">
@@ -675,6 +744,12 @@ class ShopClass {
             <div class=\"cart-table-cell cart-table-cell__label\">{total_cap}</div>
             <div class=\"cart-table-cell cart-table-cell__price\">$total $cur_cap</div>
         </div>";
+        return $list;
+    }
+
+    function hideOrderInfo($name, $phone, $city) {
+        $list = "<span>$name, $phone, $city</span> <a onclick=\"editFields();\">{edit_cap}</a>";
+        $list=$this->replaceLang($list);
         return $list;
     }
 
