@@ -22,8 +22,10 @@ class CatalogueClass {
     }
 
     function showCatalogueList($article_nr_search, $brand_nr_search, $status_brand=0) { $db = DbSingleton::getTokoDb();
-        $showform=new FormClass; $showform->insertHistory($article_nr_search, $brand_nr_search);
-        $kours=new ExRateClass; $cur=$kours->getCurrentKours();
+        $showform=new FormClass; $kours=new ExRateClass; $client=new ClientClass;
+        $showform->insertHistory($article_nr_search, $brand_nr_search);
+        $cur=$kours->getCurrentKours();
+        $client->toggleProductView(0);
         $article_nr_search = $this->getUrlString($article_nr_search);
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
         $r=$db->query("SELECT t2c.ART_ID
@@ -66,10 +68,8 @@ class CatalogueClass {
         $form=str_replace("{brand_value}", $brand_nr_search, $form);
         $form=str_replace("{cur_value}", $cur, $form);
 
-        $brand_name = $this->getBrandName($brand_nr_search);
-
         //search main
-        $search_main=$this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $brand_name, $list, 1, $cur, $status_brand);
+        $search_main=$this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $this->getBrandName($brand_nr_search), $list, 1, $cur, $status_brand);
         $form=str_replace("{cat_search_main}", $search_main, $form);
 
         //search filters
@@ -233,7 +233,7 @@ class CatalogueClass {
     }
 
     // HOME NAVIGATION
-    function getGroupTreeStr($head_id, $str_id_str="", $max_count=0) { $db=DbSingleton::getTokoDb();
+    function getGroupTreeStr($head_id, $str_id_str="") { $db=DbSingleton::getTokoDb();
         $automan=new AutoClass;
         $language=new LangClass; $prefix=$language->getLangPrefix();
         $arr=[]; $list="";
@@ -275,19 +275,21 @@ class CatalogueClass {
 
                 $list.="</div>";
             }
-//            $list.="<a class=\"btn btn-main\" href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/\">{show_all_cap} \"$head_name\"</a>";
+            // $list.="<a class=\"btn btn-main\" href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/\">{show_all_cap} \"$head_name\"</a>";
         }
         if ($n==0) $list="";
         $list=$this->replaceLang($list);
         return $list;
     }
 
+    /*==== CATALOG + AUTO LIST ====*/
     function techModelsList($typ_id, $str_id, $str_level, $str_id_parrent) { $db=DbSingleton::getTokoDb();
-        $automan=new AutoClass; $kours=new ExRateClass;
+        $automan=new AutoClass; $kours=new ExRateClass; $client=new ClientClass;
         $cur = $kours->getCurrentKours();
         $str_id = $this->getUrlNumber($str_id);
-        list($manufacture, $model, $model_id)=$automan->getCarInfo($typ_id);
+        list($manufacture, $model, $model_id) = $automan->getCarInfo($typ_id);
         $automan->setAutoData($manufacture, $model, $model_id, $typ_id, $str_id, $str_level, $str_id_parrent);
+        $client->toggleProductView(1);
 
         $query="SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$typ_id' GROUP BY `ART_ID`;";
         $r=$db->query($query);$n=$db->num_rows($r);$art_id_str="0";
@@ -419,7 +421,7 @@ class CatalogueClass {
 
     function getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id) {
         $client=new ClientClass; $automan=new AutoClass; $kours=new ExRateClass;
-        list($client_id,$user)=$client->getClient();
+        list($client_id, $user)=$client->getClient();
         $cash_id=$client->getClientCurrency($client_id); $cur=$kours->getCurrentKours();
         $mfa_mod_typ_text=$automan->getCarDescription($typ_id);
         $ch1=$ch2=$ch3=$cash_add="";
@@ -800,13 +802,13 @@ class CatalogueClass {
                 $mas=$this->deleteRepeatPosition($mas);
 
                 if (empty($mas)) {
-                    $list=$this->getHtmlForm("nothing_found");
-                    $list=str_replace("{error_nothing_found}", $this->err1, $list);
+                    $list = $this->getHtmlForm("nothing_found");
+                    $list = str_replace("{error_nothing_found}", $this->err1, $list);
                     return array($list, "", "", 0);
                 }
 
                 // sort by delivery and price
-                foreach ($mas as $mas_key=>$mas_val) { $mas[$mas_key]=$this->multiSort($mas[$mas_key], "dd", "price"); }
+                foreach ($mas as $mas_key=>$mas_val) { $mas[$mas_key] = $this->multiSort($mas[$mas_key], "dd", "price"); }
 
                 // sort like: first = min delivery, second = min price, else = default
                 $mas=$this->sortByMinStock($mas);
@@ -815,7 +817,7 @@ class CatalogueClass {
                 $other_storages=$this->showOtherStorages($mas, $cur);
 
                 // show search list
-                $list=$this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view);
+                $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view);
             }
             $count=count($mas); if ($count<1) { $list="$error"; unset($list_brand); $list_brand=""; unset($filters); $filters=array(); $filters["max_price"]=0; $filters["max_dd"]=0; }
         }
@@ -1242,7 +1244,7 @@ class CatalogueClass {
     }
 
     function checkOriginalEquipment($art_id, $search_number) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND `KIND` LIKE '3' AND `RELATION`=0;"); $n=$db->num_rows($r); $nom=0;
+        $r = $db->query("SELECT * FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND `KIND` LIKE '3' AND `RELATION`=0;"); $n=$db->num_rows($r); $nom=0;
         for ($i=1;$i<=$n;$i++) {
             $number = $db->result($r, $i-1, "SEARCH_NUMBER");
             if ($search_number==$number) $nom++;
@@ -1251,49 +1253,49 @@ class CatalogueClass {
     }
 
     function checkAnalogTypes($art_id, $article_nr_search, $relation_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND `SEARCH_NUMBER` LIKE '$article_nr_search' AND `KIND` IN (3,4) AND `RELATION`=$relation_id;");
-        $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND `SEARCH_NUMBER` LIKE '$article_nr_search' AND `KIND` IN (3,4) AND `RELATION`=$relation_id;");
+        $n = $db->num_rows($r);
         if ($n>0) return true; else return false;
     }
 
     function getBrandType($brand_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
-        $kind=$db->result($r,0,"KIND");
+        $r = $db->query("SELECT * FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
+        $kind = $db->result($r,0,"KIND");
         if ($kind==3) return true; else return false;
     }
 
     function getIndexTypeImage($art_id, $article_nr_search, $name, $format_name, $brand_id, $brand_nr_search) {
-        $true_art_id=$this->getArtID($article_nr_search);
-        $brand=$this->getBrandName($brand_nr_search);
+        $true_art_id = $this->getArtID($article_nr_search);
+        $brand = $this->getBrandName($brand_nr_search);
         // ANALOGS
-        $image_analog=$this->images."/tcdanalogs/clone.svg";
-        $index_type="<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_analog}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_analog} $article_nr_search $brand\">";
+        $image_analog = $this->images."/tcdanalogs/clone.svg";
+        $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_analog}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_analog} $article_nr_search $brand\">";
         // OE
         if ($this->checkOriginalEquipment($true_art_id, $format_name)) {
-            $image_analog=$this->images."/tcdanalogs/OE.svg";
-            $index_type="<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_original}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_original} $article_nr_search $brand\">";
+            $image_analog = $this->images."/tcdanalogs/OE.svg";
+            $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_original}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_original} $article_nr_search $brand\">";
         }
         // INCLUDED
         if ($this->checkAnalogTypes($art_id, $article_nr_search, 1)) {
-            $image_analog=$this->images."/tcdanalogs/chevron-square-down.svg";
-            $index_type="<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_included}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_included} $article_nr_search $brand\">";
+            $image_analog = $this->images."/tcdanalogs/chevron-square-down.svg";
+            $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_included}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_included} $article_nr_search $brand\">";
         }
         // PRESENTED
         if ($this->checkAnalogTypes($art_id, $article_nr_search, 2)) {
-            $image_analog=$this->images."/tcdanalogs/chevron-square-up.svg";
-            $index_type="<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_presented}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_presented} $article_nr_search $brand\">";
+            $image_analog = $this->images."/tcdanalogs/chevron-square-up.svg";
+            $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_presented}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_presented} $article_nr_search $brand\">";
         }
         // COMPANION
         if ($this->checkAnalogTypes($art_id, $article_nr_search, 3)) {
-            $image_analog=$this->images."/tcdanalogs/plus-square.svg";
-            $index_type="<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_companion}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_companion} $article_nr_search $brand\">";
+            $image_analog = $this->images."/tcdanalogs/plus-square.svg";
+            $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_companion}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_companion} $article_nr_search $brand\">";
         }
         // REQUESTED
         if ($article_nr_search!="") if (($name==$article_nr_search || $format_name==$article_nr_search)&&($brand_id==$brand_nr_search)) {
-            $image_analog=$this->images."/tcdanalogs/square.svg";
-            $index_type="<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_requested}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_requested} $article_nr_search $brand\">";
+            $image_analog = $this->images."/tcdanalogs/square.svg";
+            $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_requested}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_requested} $article_nr_search $brand\">";
             if ($this->getBrandType($brand_id)) {
-                $image_analog=$this->images."/tcdanalogs/OE.svg";
+                $image_analog = $this->images."/tcdanalogs/OE.svg";
                 $index_type.="<img style=\"margin-left: 5px;\" src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_original}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_original} $article_nr_search $brand\">";
             }
         }
@@ -1312,13 +1314,12 @@ class CatalogueClass {
     }
 
     function printSearchList($id, $art_id, $article_name, $brand_id, $brand_name, $text, $delivery_info, $stock, $price, $article_nr_search, $ll, $class, $hide, $border, $none, $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $view) {
-        $showform=new FormClass; $kours=new ExRateClass; $language=new LangClass; $client=new ClientClass;
-        $prefix = $language->getLangPrefix();
-        $cur=$kours->getCurrentKours(); $client_id=$this->getClient(); $kours_cap=$kours->getKoursSymbol($cur);
-
+        $showform=new FormClass; $kours=new ExRateClass; $language=new LangClass; $client=new ClientClass; $shop=new ShopClass;
         $list=$return=$return_days_alt=$return_days_img=$flag=$country_name=$instock="";
-        $format_name=$this->getFormatAticle($article_name);
-        $format_brand=$this->getFormatBrand($brand_name);
+        $prefix = $language->getLangPrefix(); $client_id = $this->getClient();
+        $cur = $kours->getCurrentKours(); $kours_cap = $kours->getKoursSymbol($cur);
+        $format_name = $this->getFormatAticle($article_name);
+        $format_brand = $this->getFormatBrand($brand_name);
 
         if ($suppl_id>0) if ($stock!=0) if ($return_days==0) {$return_days_alt="{no_exchange}"; $return_days_img=$this->images."/exchange/exchange2.png";}
             else if ($return_days==14) {$return_days_alt=""; $return_days_img="";}
@@ -1388,6 +1389,15 @@ class CatalogueClass {
         $form=str_replace("{style_class}",$class,$form);
         $form=str_replace("{style_none}",$none,$form);
         $form=str_replace("{style_hide}",$hide,$form);
+        if ($view) {
+            $link = $ll;
+            $search_number = $this->getArticleSearch($art_id);
+            $brand_link = $this->getBrandLink($brand_id);
+            $link = str_replace("{content_prefix}", $prefix, $link);
+            $link = str_replace("{content_search_number}", $search_number, $link);
+            $link = str_replace("{content_brand_link}", $brand_link, $link);
+            $form = str_replace("{product_test_offers}",$link,$form);
+        }
 
         $form=str_replace("{country_display}",($showform->getCountryFlag($brand_id)==false) ? "none" : "",$form);
         $form=str_replace("{flag_image}",$showform->getCountryFlag($brand_id)[0],$form);
@@ -1404,13 +1414,14 @@ class CatalogueClass {
         $form=str_replace("{product_image}",$showform->getArticleActivePhoto($art_id),$form);
         $form=str_replace("{product_title}","$text $brand_name $article_name",$form);
 
-        $shop=new ShopClass;
+
         $basket_amount=$shop->getBasketArticleAmount($art_id, $storage_id);
         if ($basket_amount>0) $basket_cap="{site_basket}: $basket_amount {amount_abbr}."; else $basket_cap="";
         $form=str_replace("{basket_amount}",$basket_cap,$form);
 
         $list.="$form";
-        !$view ? $list.="$ll" : $list.="";
+//        !$view ? $list.="$ll" : $list.="";
+
         $list=$this->replaceLang($list);
 
         return $list;
@@ -1559,7 +1570,7 @@ class CatalogueClass {
         return $price;
     }
 
-    function getDpClientPriceLevels($client_id){ $db = DbSingleton::getDbm();
+    function getDpClientPriceLevels($client_id) { $db = DbSingleton::getDbm();
         $price_lvl=$margin_price_lvl=$price_suppl_lvl=$margin_price_suppl_lvl=$client_vat=0;
         $r=$db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;"); $n=$db->num_rows($r);
         if ($n==1){
@@ -1572,7 +1583,7 @@ class CatalogueClass {
         return array($price_lvl, $margin_price_lvl, $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat);
     }
 
-    function getSupplVatConditions($suppl_id){ $db = DbSingleton::getDbm();
+    function getSupplVatConditions($suppl_id) { $db = DbSingleton::getDbm();
         $price_in_vat=$show_in_vat=$price_add_vat=0;
         $query="SELECT * FROM `A_CLIENTS_VAT_CONDITIONS` WHERE `client_id`='$suppl_id' LIMIT 1;";
         $r=$db->query($query); $n=$db->num_rows($r);
@@ -1892,10 +1903,13 @@ class CatalogueClass {
     }
 
     function showOtherStorages($mas, $cur) {
-        $kours=new ExRateClass;
+        $kours=new ExRateClass; $client=new ClientClass;
         $currency_cap=$kours->getKoursSymbol($cur);
-        $ll=$class=$hide=$border=$none=$checkarray=array();
-        $i=$double=$preprice=$j=0; $min_price=9999999;
+        $ll=$class=$hide=$border=$none=[];
+        $checkarray=[];
+        $i=$j=0; $min_price=9999999;
+        $double=$preprice=0;
+        $view=$client->getProductView();
 
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
@@ -1909,6 +1923,9 @@ class CatalogueClass {
                                 <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage($art_id);\">{more_cap} <span class='span-grey'>$j ".$this->getOfferCap($j)."</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
                                 <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage($art_id);\"><span class='span-grey'>{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
                             </div>";
+                            if ($view) {
+                                $ll[$i] = "<a href='https://toko.ua{content_prefix}/$this->search_link/{content_search_number}/{content_brand_link}/'>{more_cap} <span class='span-grey'>$j ".$this->getOfferCap($j)."</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class='fa fa-chevron-right'></i></a>";
+                            }
                             $hide[$i] = "none";
                             $class[$i] = "$art_id-hide";
                         }
@@ -1919,6 +1936,9 @@ class CatalogueClass {
                             <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage($art_id);\">{more_cap} <span class='span-grey'>$j ".$this->getOfferCap($j)."</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
                             <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage($art_id);\"><span class='span-grey'>{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
                         </div>";
+                        if ($view) {
+                            $ll[$i] = "<a href='https://toko.ua{content_prefix}/$this->search_link/{content_search_number}/{content_brand_link}/'>{more_cap} <span class='span-grey'>$j ".$this->getOfferCap($j)."</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class='fa fa-chevron-right'></i></a>";
+                        }
                         $hide[$i] = "none";
                         $class[$i] = "$art_id-hide";
                     }
@@ -1951,7 +1971,7 @@ class CatalogueClass {
         $border=$other_storages["border"];
         $none=$other_storages["none"];
 
-        !$view ? : $list.="<div class='row'>";;
+        !$view ?: $list.="<div class='row'>";;
 
         $cc=0;
         if ($view) {
@@ -1978,38 +1998,39 @@ class CatalogueClass {
                     $suppl_id = $val["suppl_id"];
                     $return_days = $val["return_days"];
                     $storage_id = $val["storage_id"];
-                    $list.=$this->printSearchList($i,$art_id,$name,$brand_id,$brand,$text,$delivery_info,$stock,$price,$article_nr_search,$ll[$i],$class[$i],$hide[$i],$border[$i],$none[$i],$brand_nr_search,$suppl_id,$return_days,$delivery_days,$delivery_short_info,$storage_id,$view);
+                    $list.=$this->printSearchList($i, $art_id, $name, $brand_id, $brand, $text, $delivery_info, $stock, $price, $article_nr_search, $ll[$i], $class[$i] ,$hide[$i], $border[$i], $none[$i], $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $view);
                     $i++;
                 }
             }
             $list.="</div>";
         } else $list="$error";
 
-        !$view ? : $list.="</div>";
+        !$view ?: $list.="</div>";
+
         return $list;
     }
 
-    function triggerDetailCar($type_id,$year,$manufacture,$model,$model_id,$typ_id,$str_id) {
+    function triggerDetailCar($type_id, $year, $manufacture, $model, $model_id, $typ_id, $str_id) {
         $automan=new AutoClass;
         $skip_id=0; $cat_text="";
         switch ($type_id) {
-            case 0: {$form=$automan->showTabCatalogueYear(1,$manufacture,$model);break;}
-            case 1: {$form=$automan->showTabCatalogueManufacture($year,1);break;}
-            case 2: {$form=$automan->showTabCatalogueModel($manufacture,$year,1);break;}
+            case 0: {$form = $automan->showTabCatalogueYear(1,$manufacture,$model);break;}
+            case 1: {$form = $automan->showTabCatalogueManufacture($year,1);break;}
+            case 2: {$form = $automan->showTabCatalogueModel($manufacture,$year,1);break;}
             case 3: {
-                $model_id=$automan->skipShowTabCatalogueModelId($model,$manufacture,$year);
+                $model_id = $automan->skipShowTabCatalogueModelId($model,$manufacture,$year);
                 if (!$model_id) {
-                    $form=$automan->showTabCatalogueModelId($model,$manufacture,$year,1);
+                    $form = $automan->showTabCatalogueModelId($model,$manufacture,$year,1);
                 } else {
                     $str_id!=="" ? $onclick=1 : $onclick="";
-                    $form=$automan->showTabCatalogueGroup($model_id,$model,$manufacture,$year);
+                    $form = $automan->showTabCatalogueGroup($model_id,$model,$manufacture,$year);
                     $skip_id=$model_id;
                 }
                 break;
             }
             case 4: {
                 $str_id!=="" ? $onclick=1 : $onclick="";
-                $form=$automan->showTabCatalogueGroup($model_id,$model,$manufacture,$year);break;
+                $form = $automan->showTabCatalogueGroup($model_id,$model,$manufacture,$year);break;
             }
             default: {$form="Something wrong!";break;}
         }
@@ -2019,16 +2040,16 @@ class CatalogueClass {
         if ($t_mf!="") $cat_text=" $t_mf";
         if ($t_md!="") $cat_text=" $t_mf $t_md";
         if ($t_mi!="") $cat_text=" $t_mf $t_mi";
-        $str_text=$automan->getStrDescr($str_id);
-        $title="$str_text {for_cap} $manufacture_text $model_id_text $typ_text | {site_title_short}";
+        $str_text = $automan->getStrDescr($str_id);
+        $title = "$str_text {for_cap} $manufacture_text $model_id_text $typ_text | {site_title_short}";
         if ($str_id=="")  {
             $title = "$manufacture_text $model_id_text $typ_text | {site_title_short}";
             $str_text = "$manufacture_text $model_id_text $typ_text";
         }
         $str_text = $this->formatUrlText($str_text);
 
-        $title=$this->replaceLang($title);
-        return array($form,$str_text,$cat_text,$skip_id,$title);
+        $title = $this->replaceLang($title);
+        return array($form, $str_text, $cat_text, $skip_id, $title);
     }
 
 }

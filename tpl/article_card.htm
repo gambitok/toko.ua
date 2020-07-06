@@ -15,7 +15,7 @@
             </div>
 
             <div class="row">
-                <div class="col-12">
+                <div class="col-12" style=" min-height: 70px;">
                     <a class="search__link" itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">
                         <span class="search__name">{product_text}</span>
                         <span class="search__brand">{product_brand}</span>
@@ -41,6 +41,12 @@
                 </div>
                 <div class="col-12 {product_delivery_class} {product_button}">
                     <span class="search__name">{storage_info}:</span> {product_delivery_short_info}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 article-card__main-offers">
+                    {product_test_offers}
                 </div>
             </div>
 

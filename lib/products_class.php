@@ -30,7 +30,7 @@ class ProductsClass extends CatalogueClass {
 //        return $typ_id;
 //    }
 
-    /*car Details=====================================================*/
+    /*==== CAR DETAILS (CATALOG) ====*/
 
     function techCarModels($typ_id, $str_id) {
         setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");

@@ -1035,6 +1035,7 @@ class AutoClass {
             $list.="</ul>";
         }
         $list.="</div>";
+
         return $list;
     }
 

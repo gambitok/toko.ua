@@ -24,6 +24,16 @@
     }
     &__main {
         padding: 10px;
+        &-offers {
+            a {
+                font-size: 12px;
+                &:hover {
+                    transition: .5s ease-in-out;
+                    color: #228b94!important;
+                    text-decoration: none;
+                }
+            }
+        }
     }
     &__hidden {
         display: none;
@@ -246,7 +256,7 @@
 
 .search__true_price {
     font-weight: bold;
-    font-size: 1.5em;
+    font-size: 20px;
     text-align: center;
     color: #606975;
 }

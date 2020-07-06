@@ -513,10 +513,10 @@ class MenuClass {
 
     function showHeadTemplate($head_id) {
         $catalogue=new CatalogueClass; $automan=new AutoClass;
-        $max_count=15;
+        //$max_count=15;
         list($tex_text, $text_link)=$automan->getHeadNewDescr($head_id);
         $header="<a href=\"https://toko.ua/catalog/$text_link/\">$tex_text</a>";
-        $list=$catalogue->getGroupTreeStr($head_id,"",$max_count);
+        $list=$catalogue->getGroupTreeStr($head_id,"");
         $footer="<a href=\"https://toko.ua/catalog/$text_link\">{show_all_cap} <i class=\"fa fa-chevron-right\"></i></a>";
         $footer=$this->replaceLang($footer);
         return array($list, $header, $footer);

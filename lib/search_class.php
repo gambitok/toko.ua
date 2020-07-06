@@ -196,7 +196,7 @@ class SearchClass extends CatalogueClass {
         $head_id = $automan->getHeadNewLinkStr($some_link);
 
         if ($head_id!="") {
-            if ($some_link2!="") $cat_id=$automan->getCatNewLinkStr($head_id, $some_link2); else $cat_id="";
+            if ($some_link2!="") $cat_id = $automan->getCatNewLinkStr($head_id, $some_link2); else $cat_id = "";
             $head_list = $automan->getDetailsList($head_id, $cat_id);
             $form1 = "<div class=\"content\">".$head_list."</div>";
             $car_content = "";
@@ -263,6 +263,7 @@ class SearchClass extends CatalogueClass {
         } else {
             $form1=str_replace("{seo_auto}", $automan->getAutoMfaModelList($str_id, $brand_ids[0]), $form1);
         }
+
         return array($form1, $car_content, $pages_count);
     }
 

@@ -440,12 +440,14 @@ class ClientClass {
     }
 
     function toggleProductView($ds) {
+        session_start();
         $_SESSION["display_status"]=$ds;
         if ($ds!=0 && $ds!=1) $_SESSION["display_status"]=0;
         return $_SESSION["display_status"];
     }
 
     function getProductView() {
+        session_start();
         $ds = $_SESSION["display_status"];
         if ($ds!=0 && $ds!=1) $_SESSION["display_status"]=0;
         return $_SESSION["display_status"];

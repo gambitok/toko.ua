@@ -1927,6 +1927,10 @@ table thead td { border: 1px solid #000; }
 
 .article-card__main { padding: 10px; }
 
+.article-card__main-offers a { font-size: 12px; }
+
+.article-card__main-offers a:hover { transition: .5s ease-in-out; color: #228b94 !important; text-decoration: none; }
+
 .article-card__hidden { display: none; position: absolute; background: white; z-index: 999; width: 100%; border-top: unset; top: 100%; }
 
 .article-header { margin-bottom: 15px; }
@@ -2007,7 +2011,7 @@ table thead td { border: 1px solid #000; }
 
 .search__delivery i { font-style: normal; text-transform: uppercase; color: #606975; font-weight: 700 !important; }
 
-.search__true_price { font-weight: bold; font-size: 1.5em; text-align: center; color: #606975; }
+.search__true_price { font-weight: bold; font-size: 20px; text-align: center; color: #606975; }
 
 .border-dashed { border-top: 1px dashed #ddd; }
 
