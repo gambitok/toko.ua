@@ -227,6 +227,18 @@
     h1 {
         font-size: 24px;
     }
+    &-row {
+        display: flex;
+        width: 100%;
+    }
+    &-col {
+        display: inline-block;
+        width: 33.33%;
+        &-wide {
+            width: 66.66%;
+            padding-right: 30px;
+        }
+    }
     &-container {
         display: flex;
         flex-wrap: wrap;
@@ -279,11 +291,10 @@
     }
     &-block {
         border: 1px solid #ddd;
-        border-radius: 10px;
         display: block;
         margin-bottom: 30px;
         padding: 20px;
-        width: 50%;
+        width: 100%;
         &-row {
             display: flex;
             flex-wrap: wrap;
@@ -373,7 +384,7 @@
     }
     &-footer {
         display: flex;
-        width: 50%;
+        width: 100%;
         &-about {
             width: 65%;
             span {
@@ -406,17 +417,14 @@
 }
 
 .cart-table {
-    margin-top: 30px;
+    background: #f7f7f7;
+    padding: 15px;
+    border: 1px solid #ddd;
     &-row {
         display: flex;
-        align-items: center;
-        min-height: 70px;
-        border-bottom: 1px solid #f1f1f1;
         width: 100%;
         padding: 10px 0;
         &-offset {
-            margin-left: 70%;
-            width: 30%;
             border: unset;
             .cart-table-cell {
                 font-size: 18px!important;
@@ -426,29 +434,29 @@
     &-cell {
         display: inline-block;
         font-size: 14px;
-        text-align: left;
-        padding-right: 15px;
         &__photo {
-            padding-left: 15px;
-            width: 10%;
+            width: 30%;
+            padding-right: 10px;
             img {
-                width: calc(100% - 30px);
+                width: 100%;
             }
         }
+        &__text {
+            width: 70%;
+        }
         &__name {
-            width: 45%;
+            display: block;
+            width: 100%;
         }
         &__summ {
-            text-align: right;
-            width: 15%;
+            display: block;
+            width: 100%;
         }
         &__amount {
-            text-align: right;
-            width: 15%;
+            float: left;
         }
         &__summary {
-            text-align: right;
-            width: 15%;
+            float: right;
         }
         &__label {
             font-weight: bold;
@@ -468,31 +476,27 @@
     }
     &-foot {
         padding: 15px 0;
+        border-top: 1px solid #ddd;
+        margin-top: 15px;
     }
 }
 
 /*===== /NEW ORDERS ====*/
 
 @media (max-width: 992px) {
-    .cart-table {
+    .orders {
         &-row {
-            &-offset {
-                margin-left: 0;
+            display: block;
+        }
+        &-col {
+            width: 100%;
+            &-wide {
                 width: 100%;
             }
         }
-        &-cell {
-            padding: 0;
-            &__photo {
-                display: none;
-            }
-            &__name {
-                width: 55%;
-            }
-        }
-        &-head {
-            display: none;
-        }
+    }
+    .cart-table {
+        margin-top: 30px;
     }
 }
 

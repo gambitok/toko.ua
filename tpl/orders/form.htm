@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
-
 <style>
     input:disabled {
         background-color: #eee;
@@ -29,139 +28,148 @@
 
 <div class="orders">
 
+    <input type="hidden" id="valid_info" value="0">
+    <input type="hidden" id="valid_delivery" value="0">
+    <input type="hidden" id="valid_payment" value="0">
+
     <!-- HEADER -->
     <div class="orders-header">
         <h1>{making_order_cap}</h1>
     </div>
 
-    <!-- CONTACTS -->
-    <div class="orders-header">
-        <span class="orders-header__round" id="order_info_min_circle">1</span>
-        <span class="orders-header__title" id="order_info_min">{order_contacts_cap}</span>
-    </div>
-    <div class="orders-container" id="order_info_max">
-        <div class="orders-block">
-            <div class="orders-block-row">
-                <div class="orders-block-row-title">
-                    <label class="orders-block-row__label" for="user_name">{name_surname}</label>
-                </div>
-                <div class="orders-block-row-content">
-                    <input class="orders-block-row__input valid_field" type="text" name="user_name" id="user_name" data-attr="text" placeholder="{name_surname}">
-                </div>
+    <div class="orders-row">
+        <div class="orders-col orders-col-wide">
+
+            <!-- CONTACTS -->
+            <div class="orders-header">
+                <span class="orders-header__round" id="order_info_min_circle">1</span>
+                <span class="orders-header__title" id="order_info_min">{order_contacts_cap}</span>
             </div>
-            <div class="orders-block-row">
-                <div class="orders-block-row-title">
-                    <label class="orders-block-row__label" for="user_phone">{phone_number}</label>
+            <div class="orders-container" id="order_info_max">
+                <div class="orders-block">
+                    <div class="orders-block-row">
+                        <div class="orders-block-row-title">
+                            <label class="orders-block-row__label" for="user_name">{name_surname}</label>
+                        </div>
+                        <div class="orders-block-row-content">
+                            <input class="orders-block-row__input valid_field" type="text" name="user_name" id="user_name" data-attr="text" placeholder="{name_surname}">
+                        </div>
+                    </div>
+                    <div class="orders-block-row">
+                        <div class="orders-block-row-title">
+                            <label class="orders-block-row__label" for="user_phone">{phone_number}</label>
+                        </div>
+                        <div class="orders-block-row-content">
+                            <input class="orders-block-row__input masked-phone valid_field" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone" data-attr="phone">
+                        </div>
+                    </div>
+                    <div class="orders-block-row">
+                        <div class="orders-block-row-title">
+                            <label class="orders-block-row__label" for="user_city">{city_cap}</label>
+                        </div>
+                        <div class="orders-block-row-content">
+                            <select class="orders-block-row__input valid_field select2-block" name="user_city" id="user_city" data-attr="select" oninput="getCityVal();" onchange="setCityVal();">
+                                <option value="0">{not_chosen}</option>
+                                <!--{user_city_list}-->
+                                {user_city_main_list}
+                            </select>
+
+                            <select style="display: none!important;" class="orders-block-row__input" name="user_city_np" id="user_city_np" data-attr="select" title="NovaPoshta">
+                                <option value="0">{not_chosen}</option>
+                                <!--{user_city_np}-->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="orders-block-row">
+                        <div class="orders-footer-button" style="width: 100%!important;">
+                            <button onclick="validInfoFields();" id="valid_button">{continue_cap}</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="orders-block-row-content">
-                    <input class="orders-block-row__input masked-phone valid_field" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone" data-attr="phone">
-                </div>
+                <!--<div class="orders-title">-->
+                <!--<span>{contacts_cap}</span>-->
+                <!--</div>-->
             </div>
-            <div class="orders-block-row">
-                <div class="orders-block-row-title">
-                    <label class="orders-block-row__label" for="user_city">{city_cap}</label>
-                </div>
-                <div class="orders-block-row-content">
-                    <select class="orders-block-row__input valid_field select2-block" name="user_city" id="user_city" data-attr="select" oninput="getCityVal();" onchange="setCityVal();">
-                        <option value="0">{not_chosen}</option>
-                        <!--{user_city_list}-->
-                        {user_city_main_list}
-                    </select>
 
-                    <select style="display: none!important;" class="orders-block-row__input" name="user_city_np" id="user_city_np" data-attr="select" title="NovaPoshta">
-                        <option value="0">{not_chosen}</option>
-                        <!--{user_city_np}-->
-                    </select>
+            <div id="orders-delivery" class="none">
+
+                <!-- DELIVERY -->
+                <div class="orders-header">
+                    <span class="orders-header__round">2</span>
+                    <span class="orders-header__title">{order_delivery_cap}</span>
                 </div>
+                <div class="orders-container">
+                    <div class="orders-block">
+                        {order_delivery}
+                    </div>
+                    <!--<div class="orders-title">-->
+                    <!--<span>{delivery_cap}</span>-->
+                    <!--</div>-->
+                </div>
+
+                <div id="orders-payment" class="none">
+
+                    <!-- PAYMENT -->
+                    <div class="orders-container">
+                        <div class="orders-block">
+                            {order_payment}
+                        </div>
+                        <!--<div class="orders-title">-->
+                        <!--<span>{payment_cap}</span>-->
+                        <!--</div>-->
+                    </div>
+
+                    <!-- INFO -->
+                    <div class="orders-container">
+                        <div class="orders-block">
+                            <div class="orders-block-row">
+                                <div class="orders-block-row-title">
+                                    <label class="orders-block-row__label" for="user_email">{user_email_cap}</label>
+                                </div>
+                                <div class="orders-block-row-content">
+                                    <input class="orders-block-row__input" type="email" name="user_email" id="user_email" placeholder="{user_email_cap}">
+                                </div>
+                            </div>
+                            <div class="orders-block-row">
+                                <div class="orders-block-row-title">
+                                    <label class="orders-block-row__label" for="user_comment">{user_comment_cap}</label>
+                                </div>
+                                <div class="orders-block-row-content">
+                                    <textarea class="orders-block-row__input" name="user_comment" id="user_comment" placeholder="{user_comment_cap}"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="orders-title">-->
+                        <!--<span>{info_cap}</span>-->
+                        <!--</div>-->
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="orders-footer">
+                        <div class="orders-footer-about">
+                            <span>{delivery_user_info}</span>
+                        </div>
+                        <div class="orders-footer-button">
+                            <button id="make_order"  onclick="validOrder();">{make_order_cap}</button>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
-            <div class="orders-block-row">
-                <div class="orders-footer-button" style="width: 100%!important;">
-                    <button onclick="validFields();" id="valid_button">{continue_cap}</button>
-                </div>
-            </div>
-        </div>
-        <div class="orders-title">
-            <span>{contacts_cap}</span>
-        </div>
-    </div>
 
-    <div id="orders-delivery" class="none">
-
-    <!-- DELIVERY -->
-    <div class="orders-header">
-        <span class="orders-header__round">2</span>
-        <span class="orders-header__title">{order_delivery_cap}</span>
-    </div>
-    <div class="orders-container">
-        <div class="orders-block">
-            <button onclick="validDeliveryFields();">VALID DELIVERY</button>
-            {order_delivery}
         </div>
-        <div class="orders-title">
-            <span>{delivery_cap}</span>
-        </div>
-    </div>
-
-    <div id="orders-payment" class="none">
-
-    <!-- PAYMENT -->
-    <div class="orders-container">
-        <div class="orders-block">
-            {order_payment}
-        </div>
-        <div class="orders-title">
-            <span>{payment_cap}</span>
-        </div>
-    </div>
-
-    <!-- INFO -->
-    <div class="orders-container">
-        <div class="orders-block">
-            <div class="orders-block-row">
-                <div class="orders-block-row-title">
-                    <label class="orders-block-row__label" for="user_email">{user_email_cap}</label>
-                </div>
-                <div class="orders-block-row-content">
-                    <input class="orders-block-row__input" type="email" name="user_email" id="user_email" placeholder="{user_email_cap}">
-                </div>
-            </div>
-            <div class="orders-block-row">
-                <div class="orders-block-row-title">
-                    <label class="orders-block-row__label" for="user_comment">{user_comment_cap}</label>
-                </div>
-                <div class="orders-block-row-content">
-                    <textarea class="orders-block-row__input" name="user_comment" id="user_comment" placeholder="{user_comment_cap}"></textarea>
-                </div>
+        <div class="orders-col">
+            <!-- BASKET -->
+            <div class="orders-basket" id="orders-basket">
+                {basket_range}
             </div>
         </div>
-        <div class="orders-title">
-            <span>{info_cap}</span>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <div class="orders-footer">
-        <div class="orders-footer-about">
-            <span>{delivery_user_info}</span>
-        </div>
-        <div class="orders-footer-button">
-            <button id="make_order" disabled onclick="validOrder();">{make_order_cap}</button>
-        </div>
-    </div>
-
-    </div>
-
-    </div>
-
-    <!-- BASKET -->
-    <div class="orders-basket" id="orders-basket">
-        {basket_range}
     </div>
 
 </div>
 
 <script type="text/javascript" src="/js/plugins/select2/select2.city.min.js"></script>
-
 <script type="text/javascript" src="/js/orders.js"></script>
 
 <div class="modal" tabindex="-1" role="dialog" id="OrderModal">

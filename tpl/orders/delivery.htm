@@ -87,11 +87,13 @@
         <label>{choose_delivery_company}:</label>
         <select name="delivery_express" class="orders-block-row__input select2-block" title="{delivery_text_7}">
             <option value="0">{not_chosen}</option>
+            {express_delivery_list}
         </select>
         <br><br>
         <label>{choose_department}:</label>
-        <select name="department" class="orders-block-row__input select2-block" title="{department_cap}">
-            <option value="0">{not_chosen}</option>
-        </select>
+        <!--<select name="department" class="orders-block-row__input select2-block" title="{department_cap}">-->
+            <!--<option value="0">{not_chosen}</option>-->
+        <!--</select>-->
+        <input name="delivery_express_department" class="orders-block-row__input" type="text" placeholder="{department_cap}">
     </div>
 </div>

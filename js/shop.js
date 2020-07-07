@@ -1,11 +1,6 @@
 function goHome() { location.href = "/"; }
 
-function goBasket() { location.href = "/basket"; }
-
-function stayInOrder() {
-    // showAlertModal("{basket_empty}!","{error_cap}",0);
-    showNotify("{error_cap}!","{basket_empty}!","danger");
-}
+function stayInOrder() { showNotify("{error_cap}!","{basket_empty}!","danger"); }
 
 function toggleBasket() { $("#basket_toggle").slideToggle(); }
 
@@ -221,7 +216,6 @@ function showBasketStatus() {
         }}, true);
 }
 
-
 // function closeBasketUpdate(art_id,storage_id) {
 //     JsHttpRequest.query(folder,{'w':'close_basket_update', 'art_id':art_id, 'storage_id':storage_id},
 //         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -241,7 +235,7 @@ function showBasketStatus() {
 function finishOrder() { "use strict";
     let name=$("#input_name").val();
     let phone=$("#input_phone").val();
-    let email=$("#input_email").val(); if (email===undefined) email="";
+    //let email=$("#input_email").val(); if (email===undefined) email="";
     let user=$("#input_user").val();
     let region=$("#select2-select_city-container").attr("name");
     if (name==="" || !(validationInput('input_phone')) || region==="0") {
@@ -261,28 +255,44 @@ function finishOrder() { "use strict";
 }
 
 function finishFastOrder(name) { "use strict";
-    $("#input_phone").val(""); validateForm("phone","input");
-    let phone=$("#input_phone2").val();
+    $("#input_phone").val("");
+    validateForm("phone", "input");
+    let input_phone = $("#input_phone2");
+    let phone = input_phone.val();
 
     if (!validationInput(name)) {
-        $("#input_phone2").tooltip("show");
+        input_phone.tooltip("show");
         setTimeout(function() {
-            $("#input_phone2").tooltip("hide");
+            input_phone.tooltip("hide");
         }, 5000);
         return true;
     } else {
         JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content!==false) {
-                    let text="{user_already_logged}!<br>{phone_cap}: "+result.content[0];
-                    showAlertModal(text,"{error_cap}", 0, showLoginForm);
+                    let text = "{user_already_logged}!<br>{phone_cap}: " + result.content[0];
+                    showAlertModal(text, "{error_cap}", 0, showLoginForm);
                 } else {
                     //showValidateModal(phone, validatePhone, showFastOrder);
-                    showFastOrder();
-                    $("#BasketForm").modal("hide");
+                    // showFastOrder();
+                    // $("#BasketForm").modal("hide");
+                    validateOperator(phone);
                 }
             }}, true);
     }
+}
+
+function validateOperator(phone) {
+    JsHttpRequest.query(folder,{'w':'validateOperator', 'phone':phone},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            if (result.content===false) {
+                let text = "{check_phone_data}!";
+                showAlertModal(text, "{error_cap}", 0);
+            } else {
+                showFastOrder();
+                $("#BasketForm").modal("hide");
+            }
+        }}, true);
 }
 
 function showFinishOrderForm() {

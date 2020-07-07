@@ -339,6 +339,15 @@ class ClientClass {
         return $res;
     }
 
+    function validateOperator($phone) { $db=DbSingleton::getTokoDb();
+        $result = false;
+        $phone = $this->formatValidPhone($phone);
+        $code = substr($phone, 0, 3);
+        $r=$db->query("SELECT * FROM `mobile_operators` WHERE `OPERATOR_CODE`='$code' LIMIT 1;"); $n=$db->num_rows($r);
+        if ($n>0) $result=true;
+        return $result;
+    }
+
     function getStorageByTpoint($tpoint_id) { $db=DbSingleton::getTokoDb();
         $storage_local=$storage_remote=array();
         $r=$db->query("SELECT `storage_id`, `local` FROM `T_POINT_STORAGE` WHERE `tpoint_id`='$tpoint_id' and `status`=1;"); $n=$db->num_rows($r);

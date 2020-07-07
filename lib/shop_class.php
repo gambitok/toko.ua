@@ -444,7 +444,7 @@ class ShopClass {
             $this->addNewRetailAddressForm($new_client, $delivery_info);
         }
         $db->query("INSERT INTO `orders_new` (`id`,`client_id`,`client_user_id`,`cookie_id`,`tpoint_id`,`cash_id`,`name`,`email`,`phone`,`region`,`address`,`delivery`,`carrier_id`,`delivery_info`,`payment`,`payment_info`,`price_summ`,`status`) 
-        VALUES ($max,$client_id,$user,'$cookie',$t_point,$cash_id,'$name','$email','$phone',$region,'',$delivery,$carrier_id,'$delivery_info',$payment,'$payment_info',$sum,1);");
+        VALUES ($max,$client_id,$user,'$cookie',$t_point,$cash_id,'$name','$email','$phone','$region','',$delivery,$carrier_id,'$delivery_info',$payment,'$payment_info',$sum,1);");
         return array($max, $new_client);
     }
 
@@ -533,6 +533,7 @@ class ShopClass {
         $client=new ClientClass; $tpoint_id=$client->getTpointUser($client->getClient()[0]);
         $form=$this->getHtmlForm("orders/delivery");
         $form=str_replace("{tpoint_address}", $client->getTpointAddress($tpoint_id), $form);
+        $form=str_replace("{express_delivery_list}", $this->getDeliveryExpressList(), $form);
 
         $r = $db->query("SELECT * FROM `T2_DELIVERY`;"); $n = $db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
@@ -541,7 +542,9 @@ class ShopClass {
             $type = $db->result($r, $i - 1, "TYPE");
             $status = $db->result($r, $i - 1, "STATUS");
             $display=""; if (!$status) $display="none";
-            $free=""; if ($type) $free="({free_cap})";
+            $free="";
+            if ($type==1) $free="({free_cap})";
+            if ($type==2) $free="({carrier_conditions})";
             $form = str_replace("{delivery_status_$id}", $display, $form);
             $form = str_replace("{delivery_text_$id}", $text, $form);
             $form = str_replace("{delivery_free_$id}", $free, $form);
@@ -614,14 +617,33 @@ class ShopClass {
     function setCityAddress($city_id) {
         $client=new ClientClass;
         $cities = [24861, 10108]; $city_address="";
-
         if (in_array($city_id, $cities)) {
             $tpoint_id=0;
             if ($city_id==24861) $tpoint_id=1;
             if ($city_id==10108) $tpoint_id=2;
-            $city_address = $client->getTpointAddress($tpoint_id);
+            $city_name = $this->getCityName($city_id);
+            $city_address = $city_name." - ".$client->getTpointAddress($tpoint_id);
         }
         return $city_address;
+    }
+
+    function getDeliveryExpressList() { $db=DbSingleton::getTokoDb();
+        $list = "";
+        $r=$db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` ORDER BY `ID` ASC;"); $n=$db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $id = $db->result($r, $i-1, "ID");
+            $text = $db->result($r, $i-1, "TEXT");
+            $list.="<option value='$id'>$text</option>";
+        }
+        $list = $this->replaceLang($list);
+        return $list;
+    }
+
+    function getDepartmentExpressName($delivery_express) { $db=DbSingleton::getTokoDb();
+        $r=$db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_express' LIMIT 1;");
+        $text = $db->result($r, 0, "TEXT");
+        $text = $this->replaceLang($text);
+        return $text;
     }
 
     function validOrder($name, $phone, $city, $delivery, $delivery_type, $payment, $email, $comment) {
@@ -629,22 +651,29 @@ class ShopClass {
         $street = $delivery_type["street"];
         $house = $delivery_type["house"];
         $porch = $delivery_type["porch"];
-        $department = $delivery_type["department"]; // department ID
+        $department = $delivery_type["department"];
         $delivery_express = $delivery_type["delivery_express"]; // express ID
+        $delivery_express_department = $delivery_type["delivery_express_department"];
 
-        if ($street!="undefined") $delivery_type_text.="<div>{street_cap}: $street</div>";
-        if ($house!="undefined") $delivery_type_text.="<div>{house_cap}: $house</div>";
-        if ($porch!="undefined") $delivery_type_text.="<div>{entrance_cap}: $porch</div>";
-        if ($department!="undefined") $delivery_type_text.="<div>{department_cap}: $department</div>";
-        if ($delivery_express!="undefined") $delivery_type_text.="<div>{delivery_type_7}: $delivery_express</div>";
+        $department_text = $department;
+        $delivery_express_text = $this->getDepartmentExpressName($delivery_express);
+
+        if ($porch!="") $porch = "({entrance_cap} $porch)";
+        if (($street!="undefined") && ($house!="undefined")) $delivery_type_text.="<div>{address_cap}: {street_cap} $street, {house_cap} $house $porch</div>";
+        if ($department!="undefined" && $department!="0") $delivery_type_text.="<div>{department_cap}: $department_text</div>";
+        if ($delivery_express!="undefined") $delivery_type_text.="<div>{delivery_type_7}: $delivery_express_text</div>";
+        if ($delivery_express_department!="undefined") $delivery_type_text.="<div>{department_cap}: $delivery_express_department</div>";
 
         $city_text = $this->getCityName($city);
         $delivery_text = $this->getDeliveryName($delivery);
         $payment_text = $this->getPaymentName($payment);
-//        $department_text = $this->getDepartmentName($department);
-//        $delivery_express_text = $this->getDepartmentExpressName($delivery_express);
         if ($email=="") $email="{absent_cap}";
         if ($comment=="") $comment="{absent_cap}";
+
+        if ($delivery==1) {
+            $tpoint_address = $this->setCityAddress($city);
+            $delivery_type_text="<div>$tpoint_address</div>";
+        }
 
         $form=$this->getHtmlForm("orders/confirm");
         $form=str_replace("{order_name}", $name, $form);
@@ -665,19 +694,21 @@ class ShopClass {
         $fields = [];
         $street = $delivery_type["street"];
         $house = $delivery_type["house"];
-        $porch = $delivery_type["porch"];
+        //$porch = $delivery_type["porch"];
         $department = $delivery_type["department"]; // department ID
         $delivery_express = $delivery_type["delivery_express"]; // express ID
+        $delivery_express_department = $delivery_type["delivery_express_department"];
 
         switch ($delivery) {
             case 1: {
                 break;
             }
             case 2: {
-                if (($street=="" || $street=="undefined") || ($house=="" || $house=="undefined") || ($porch=="" || $porch=="undefined")) {
+                // || ($porch=="" || $porch=="undefined")
+                if (($street=="" || $street=="undefined") || ($house=="" || $house=="undefined")) {
                     if ($street=="" || $street=="undefined") array_push($fields, "street");
                     if ($house=="" || $house=="undefined") array_push($fields, "house");
-                    if ($porch=="" || $porch=="undefined") array_push($fields, "porch");
+                    //if ($porch=="" || $porch=="undefined") array_push($fields, "porch");
                     $result = false;
                 }
                 break;
@@ -692,31 +723,32 @@ class ShopClass {
             }
             case 4: {
                 if ($department=="0" || $department=="undefined") {
-                    if ($department=="" || $department=="undefined") array_push($fields, "department");
+                    if ($department=="0" || $department=="undefined") array_push($fields, "department");
                     $result = false;
                 }
                 break;
             }
             case 5: {
-                if (($street=="" || $street=="undefined") || ($house=="" || $house=="undefined") || ($porch=="" || $porch=="undefined")) {
+                // || ($porch=="" || $porch=="undefined")
+                if (($street=="" || $street=="undefined") || ($house=="" || $house=="undefined")) {
                     if ($street=="" || $street=="undefined") array_push($fields, "street");
                     if ($house=="" || $house=="undefined") array_push($fields, "house");
-                    if ($porch=="" || $porch=="undefined") array_push($fields, "porch");
+                    //if ($porch=="" || $porch=="undefined") array_push($fields, "porch");
                     $result = false;
                 }
                 break;
             }
             case 6: {
                 if ($department=="0" || $department=="undefined") {
-                    if ($department=="" || $department=="undefined") array_push($fields, "department");
+                    if ($department=="0" || $department=="undefined") array_push($fields, "department");
                     $result = false;
                 }
                 break;
             }
             case 7: {
-                if (($department=="0" || $department=="undefined") || ($delivery_express=="0" || $delivery_express=="undefined")) {
-                    if ($department=="" || $department=="undefined") array_push($fields, "department");
-                    if ($delivery_express=="" || $delivery_express=="undefined") array_push($fields, "delivery_express");
+                if (($delivery_express_department=="" || $delivery_express_department=="undefined") || ($delivery_express=="0" || $delivery_express=="undefined")) {
+                    if ($delivery_express_department=="" || $delivery_express_department=="undefined") array_push($fields, "delivery_express_department");
+                    if ($delivery_express=="0" || $delivery_express=="undefined") array_push($fields, "delivery_express");
                     $result = false;
                 }
                 break;
@@ -731,9 +763,15 @@ class ShopClass {
 
     function getOrderDeliveryPrice($delivery_total) {
         $exrate=new ExRateClass; $cur=$exrate->getCurrentKours(); $cur_cap=$exrate->getKoursSymbol($cur);
+        if ($delivery_total>0) {
+            $del_cap = "$delivery_total $cur_cap";
+        } else {
+            $del_cap = "{free_cap}";
+        }
+        $del_cap = $this->replaceLang($del_cap);
         $list="<div class=\"cart-table-row cart-table-row-offset\">
-            <div class=\"cart-table-cell cart-table-cell__label\">{delivery_summ}</div>
-            <div class=\"cart-table-cell cart-table-cell__price\">$delivery_total $cur_cap</div>
+            <div class=\"cart-table-cell cart-table-cell__label\">{delivery_cap}</div>
+            <div class=\"cart-table-cell cart-table-cell__price\">$del_cap</div>
         </div>";
         return $list;
     }
@@ -757,7 +795,7 @@ class ShopClass {
         $exrate=new ExRateClass; $cur=$exrate->getCurrentKours(); $cur_cap=$exrate->getKoursSymbol($cur);
         $form = $this->getHtmlForm("orders/basket");
         list($basket_range, $basket_total) = $this->getBasketOrderRange();
-        $delivery_total = $delivery_id;
+        $delivery_total = $this->getDeliveryPrice($delivery_id);
         $total = floatval($basket_total) + floatval($delivery_total);
         if ($delivery_id==0) {
             $form = str_replace("{basket_order_delivery_price}", "", $form);
@@ -769,6 +807,15 @@ class ShopClass {
         $form = str_replace("{basket_order_price}", $this->getOrderTotal($total), $form);
         $form = $this->replaceLang($form);
         return $form;
+    }
+
+    function getDeliveryPrice($delivery_id) {
+        if (in_array($delivery_id, [1,2,3])) {
+            $price = 0;
+        } else {
+            $price = $delivery_id;
+        }
+        return $price;
     }
 
     function getBasketOrderRange() { $db=DbSingleton::getTokoDb();
@@ -793,12 +840,21 @@ class ShopClass {
                 $name = "$text $brand_name ($art_name)";
                 $img = $showform->getArticleActivePhoto($art_id);
                 $photo="<img src=\"$img\" alt=\"$name\">";
+                //     <div class=\"cart-table-cell cart-table-cell__summ\">$price $cur_cap</div>
+//                <div class=\"cart-table-cell cart-table-cell__photo\">$photo</div>
+//                    <div class=\"cart-table-cell cart-table-cell__name\">$name</div>
+//                    <div class=\"cart-table-cell cart-table-cell__amount\">$amount {amount_abbr}.</div>
+//                    <div class=\"cart-table-cell cart-table-cell__summary\">$full_price $cur_cap</div>
+
                 $list.="<div class=\"cart-table-row\">
                     <div class=\"cart-table-cell cart-table-cell__photo\">$photo</div>
-                    <div class=\"cart-table-cell cart-table-cell__name\">$name</div>
-                    <div class=\"cart-table-cell cart-table-cell__summ\">$price $cur_cap</div>
-                    <div class=\"cart-table-cell cart-table-cell__amount\">$amount {amount_abbr}.</div>
-                    <div class=\"cart-table-cell cart-table-cell__summary\">$full_price $cur_cap</div>
+                    <div class=\"cart-table-cell cart-table-cell__text\">
+                        <div class=\"cart-table-cell cart-table-cell__name\">$name</div>
+                        <div class=\"cart-table-cell cart-table-cell__summ\">
+                            <div class=\"cart-table-cell cart-table-cell__amount\">$amount {amount_abbr}.</div>
+                            <div class=\"cart-table-cell cart-table-cell__summary\">$full_price $cur_cap</div>
+                        </div>
+                    </div>
                 </div>";
             }
         } else {
@@ -845,7 +901,7 @@ class ShopClass {
             $region_name = $db->result($r, $i-1, "REGION_NAME");
             $state_name = $db->result($r, $i-1, "STATE_NAME");
             $city_cap = "$city_name ($state_name обл., $region_name р-ой)";
-            $mas[$i]=["id"=>$city_id,"value"=>$city_cap];
+            $mas[$i]=["id"=>$city_id, "value"=>$city_cap];
         }
         return $mas;
     }

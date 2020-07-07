@@ -427,11 +427,4 @@ trait Variables {
         return $name;
     }
 
-    function getDepartmentName($department_id) { $db=DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_DEPARTMENT` WHERE `ID`='$department_id' LIMIT 1;");
-        $name = $db->result($r, 0, "TEXT");
-        $name = $this->replaceLang($name);
-        return $name;
-    }
-
 }
