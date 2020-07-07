@@ -156,9 +156,61 @@ class ShopClass {
         $table_basket=str_replace("{currency}", $showform->getCurrencyForm(4,0,$cur), $table_basket);
         $table_basket=str_replace("{cur_cap}", $exrate->getKoursSymbol($cur), $table_basket);
         $table_basket=str_replace("{disabled}", $disabled, $table_basket);
+        $table_basket=str_replace("{basket_proposed}", $this->getProposedArts(), $table_basket); //getProposedArts
 
         $table_basket=$this->replaceLang($table_basket);
         return $table_basket;
+    }
+
+    function getProposedArts() { $db = DbSingleton::getTokoDb();
+        //DELETE ARTS FROM BASKET
+        $list="";
+        $r=$db->query("SELECT * FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS`=1;"); $n=$db->num_rows($r);
+        for ($i=1;$i<=$n;$i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
+            $list=$list.$this->getProposedArtsCard($art_id);
+        }
+        $form = $this->getHtmlForm("orders/proposed");
+        $form = str_replace("{proposed_range}", $list, $form);
+        $form = $this->replaceLang($form);
+        return $form;
+    }
+
+    function getProposedArtsCard($art_id) {
+        $cat=new CatalogueClass; $language=new LangClass; $showform=new FormClass;
+
+        $form = $this->getHtmlForm("orders/proposed_card");
+
+        $article = $showform->getArticleInfo($art_id);
+        $article_nr_displ = $article["article_nr_displ"];
+        $brand_id = $article["brand_id"];
+        $brand_name = $article["brand_name"];
+        $article_name = $article["text"];
+        $stock = $article["stock"];
+        $price = $article["price"];
+        $basket = $article["basket"];
+        $currency = $article["currency"];
+        $img = $showform->getArticleActivePhoto($art_id);
+        $prefix = $language->getLangPrefix();
+        $format_name = $cat->getFormatAticle($article_nr_displ);
+        $format_brand = $cat->getFormatBrand($brand_name);
+
+        $form = str_replace("{art_id}", $art_id, $form);
+        $form = str_replace("{brand_id}", $brand_id, $form);
+        $form = str_replace("{real_stock}", $stock, $form);
+        $form = str_replace("{basket}", $basket, $form);
+
+        $form = str_replace("{article_nr_displ}", $article_nr_displ, $form);
+        $form = str_replace("{name}", $article_name, $form);
+        $form = str_replace("{brand_name}", $brand_name, $form);
+        $form = str_replace("{price}", $price, $form);
+        $form = str_replace("{image}", $img, $form);
+        $form = str_replace("{prefix}", $prefix, $form);
+        $form = str_replace("{format_name}", $format_name, $form);
+        $form = str_replace("{format_brand}", $format_brand, $form);
+        $form = str_replace("{currency}", $currency, $form);
+
+        return $form;
     }
 
     function showMiniBasketForm() { $db = DbSingleton::getTokoDb();
@@ -787,7 +839,7 @@ class ShopClass {
 
     function hideOrderInfo($name, $phone, $city) {
         $list = "<span>$name, $phone, $city</span> <a onclick=\"editFields();\">{edit_cap}</a>";
-        $list=$this->replaceLang($list);
+        $list = $this->replaceLang($list);
         return $list;
     }
 
@@ -840,12 +892,6 @@ class ShopClass {
                 $name = "$text $brand_name ($art_name)";
                 $img = $showform->getArticleActivePhoto($art_id);
                 $photo="<img src=\"$img\" alt=\"$name\">";
-                //     <div class=\"cart-table-cell cart-table-cell__summ\">$price $cur_cap</div>
-//                <div class=\"cart-table-cell cart-table-cell__photo\">$photo</div>
-//                    <div class=\"cart-table-cell cart-table-cell__name\">$name</div>
-//                    <div class=\"cart-table-cell cart-table-cell__amount\">$amount {amount_abbr}.</div>
-//                    <div class=\"cart-table-cell cart-table-cell__summary\">$full_price $cur_cap</div>
-
                 $list.="<div class=\"cart-table-row\">
                     <div class=\"cart-table-cell cart-table-cell__photo\">$photo</div>
                     <div class=\"cart-table-cell cart-table-cell__text\">
@@ -900,7 +946,7 @@ class ShopClass {
             $city_name = $db->result($r, $i-1, "CITY_NAME");
             $region_name = $db->result($r, $i-1, "REGION_NAME");
             $state_name = $db->result($r, $i-1, "STATE_NAME");
-            $city_cap = "$city_name ($state_name обл., $region_name р-ой)";
+            $city_cap = "$city_name ($state_name обл., $region_name р-он)";
             $mas[$i]=["id"=>$city_id, "value"=>$city_cap];
         }
         return $mas;

@@ -1284,34 +1284,6 @@ table thead td { border: 1px solid #000; }
 
 /*==== /PAGINATION =====*/
 /*==== OWL CAROUSEL =====*/
-.owl-carousel { font-size: 10px; }
-
-.owl-item { border: 1px solid #a9a9a9; }
-
-.owl-item p { margin: 0; padding-bottom: 5px; text-decoration: underline; }
-
-.owl-item.row { padding-top: 15px; }
-
-.owl-prev { font-size: 25px !important; background: #a9a9a9 !important; color: #fff !important; width: 15px; height: 100%; top: 0; position: absolute; display: block !important; border: 0 solid #000; margin-left: 0; }
-
-.owl-prev i { transform: scale(1, 6); color: #ccc; }
-
-.owl-next { font-size: 25px !important; background: #a9a9a9 !important; color: #fff !important; width: 15px; height: 100%; top: 0; position: absolute; display: block !important; border: 0 solid #000; right: 0; }
-
-.owl-next i { transform: scale(1, 6); color: #ccc; }
-
-.owl-row { padding: 0 !important; }
-
-.owl-row__img { padding: 5px; width: 100%; height: 150px; }
-
-.owl-row__img img { width: 100%; height: 100%; display: block; margin: 0 auto; }
-
-.owl-row__text { padding: 5px; }
-
-.owl-row__text b { color: #000; font-size: 13px; font-weight: 700; }
-
-.owl-row__text p { font-size: 10px; text-indent: 0; text-decoration: none; }
-
 .banner_row { box-shadow: 0 1px 10px #ccc; width: 100%; background: #fff; margin: 0; padding: 1%; }
 
 .banner_row span { text-decoration: underline; }
@@ -1890,6 +1862,24 @@ table thead td { border: 1px solid #000; }
 .cart-table-head { background: #f1f1f1; font-weight: bold; }
 
 .cart-table-foot { padding: 15px 0; border-top: 1px solid #ddd; margin-top: 15px; }
+
+.proposed { border-top: 1px solid #ddd; margin-top: 15px; padding-top: 15px; }
+
+.proposed-card { display: inline-block; width: 100%; padding: 15px; }
+
+.proposed-card-row { align-items: center; display: flex; width: 100%; margin-bottom: 15px; }
+
+.proposed-card__image { width: 100%; height: 100px; }
+
+.proposed-card__image img { display: block; margin: 0 auto; max-width: 100px; max-height: 100px; }
+
+.proposed-card__text { font-size: 12px; max-height: 35px; overflow: hidden; }
+
+.proposed-card__text a { text-transform: uppercase; }
+
+.proposed-card__price { text-align: left; font-weight: bold; width: 50%; }
+
+.proposed-card__buy { text-align: right; width: 50%; }
 
 /*===== /NEW ORDERS ====*/
 @media (max-width: 992px) { .orders-row { display: block; }

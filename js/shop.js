@@ -28,6 +28,7 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) { "use st
     let count_id = $("#count_"+id);
     let basket_count_id = $("#basket_count_"+id);
     let count = count_id.val();
+    if (id==0) count = 1;
 
     if (parseInt(stock)<parseInt(count) || parseInt(count)===0) {
         var secret = parseInt(stock) + 1;
@@ -55,6 +56,7 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) { "use st
                     if (old_count>0) message_all="<br><b>{total_basket_cap}:</b> "+all_count+" {amount_abbr}.";
                     showNotify("{done_cap}:","{art_cap} '"+art_name+"' - "+message+" {added_to_basket}!" + message_all,"success");
                     showBasketStatus();
+                    showBasketForm();
                     basket_count_id.html(result["basket_count"]);
                 }}, true);
         }
@@ -66,9 +68,10 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) { "use st
                 let all_count=old_count+parseInt(count);
                 let message=count+" {amount_abbr}. ";
                 let message_all="";
-                if (old_count>0) message_all="<br><b>{total_basket_cap}:</b> "+all_count+" {amount_abbr}.";
-                showNotify("{done_cap}:","{art_cap} '"+art_name+"' - "+message+" {added_to_basket}!" + message_all,"success");
+                if (old_count>0) message_all = "<br><b>{total_basket_cap}:</b> " + all_count + " {amount_abbr}.";
+                showNotify("{done_cap}:", "{art_cap} '" + art_name + "' - " + message + " {added_to_basket}!" + message_all, "success");
                 showBasketStatus();
+                showBasketForm();
                 basket_count_id.html(result["basket_count"]);
             }}, true);
     }
@@ -310,7 +313,7 @@ function showFinishOrderForm() {
     let payment_info=$("#input_payment_info").val();
     JsHttpRequest.query(folder,{'w':'finish_order', 'client_id':client, 'client_user_id':client_user_id, 'tpoint_user_id':tpoint, 'name':name, 'phone':phone, 'region':region, 'email':email, 'delivery':delivery, 'delivery_info':delivery_info, 'payment':payment, 'payment_info':payment_info, 'carrier_id':carrier_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.href = "https://toko.ua/order/?order_id="+result.content[0]+"&client_id="+result.content[1];
+            location.href = "https://toko.ua/order/?order_id=" + result.content[0] + "&client_id=" + result.content[1];
         }}, true);
 }
 
@@ -321,7 +324,7 @@ function showFastOrder() {
     let tpoint=$("#input_tpoint").val();
     JsHttpRequest.query(folder,{'w':'finish_order', 'client_id':client, 'client_user_id':user, 'tpoint_user_id':tpoint, 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.href = "https://toko.ua/order/?order_id="+result.content[0]+"&client_id="+result.content[1];
+            location.href = "https://toko.ua/order/?order_id=" + result.content[0] + "&client_id=" + result.content[1];
         }}, true);
 }
 
@@ -392,7 +395,7 @@ function showNewAdressForm() {
 
 function addNewAddressForm() {
     //let client_id=$("#input_client").val();
-    let address=$("#new_client_address").val();
+    let address = $("#new_client_address").val();
     $("#AddressForm").modal("hide");
     let max_option = $("#select_delivery_info option:last").val();
     $("#select_delivery_info").append(new Option(address, max_option));
