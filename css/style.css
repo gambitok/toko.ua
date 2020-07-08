@@ -283,19 +283,23 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-order { padding: 30px 0; }
 
+.header-order .header-phone-drop { background: #fff; border: unset; display: none; }
+
 .header-order-logo { padding: 0; }
 
 .header-order-logo img { width: 100%; }
+
+.header-order-text span { color: #606975; font-size: 20px; }
 
 .header-order-phone ul { list-style: none; margin: 0; }
 
 .header-order-phone ul li { display: inline-block; margin-right: 30px; }
 
+.header-order-phone ul li a { color: #606975; font-size: 20px; line-height: 40px; }
+
 .header-order-phone ul li a:hover { text-decoration: underline; }
 
-.header-order-phone ul li img { width: 15px; height: 15px; }
-
-.header-order-phone ul li span { color: #000; }
+.header-order-phone ul li img { width: 30px; height: 30px; }
 
 .garage-drop { z-index: 1000 !important; width: 400% !important; left: -250%; top: 300% !important; background: #fff; overflow: unset !important; }
 
@@ -1420,6 +1424,13 @@ table thead td { border: 1px solid #000; }
 
 /* ==== PHONE ==== */
 @media (max-width: 768px) { #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
+  .cart-table { margin: 0; }
+  .orders-col-wide { padding: 0; }
+  .header-order { display: block; padding: 15px 0; }
+  .header-order .header-phone-drop { display: block; text-align: center; }
+  .header-order-logo a { width: 50%; display: block; margin: 0 auto 15px auto; }
+  .header-order-text { text-align: center; }
+  .header-order-phone { display: none; }
   .header-phone, .table-responsive, .info_block, .searchtab__appl-phone, .nav-tabs { display: block; }
   .btn-basket { float: right; }
   .order__header-total { float: left; }
@@ -1879,11 +1890,17 @@ table thead td { border: 1px solid #000; }
 
 .cart-table-foot { padding: 15px 0; border-top: 1px solid #ddd; margin-top: 15px; }
 
-.proposed { border-top: 1px solid #ddd; margin-top: 15px; padding-top: 15px; }
+.proposed { border-top: 3px solid #17a2b8; margin-top: 15px; filter: grayscale(100%); }
+
+.proposed:hover { filter: grayscale(0); }
+
+.proposed:hover .proposed-title { filter: grayscale(0); }
 
 .proposed:hover button { filter: grayscale(0); }
 
 .proposed:hover img { filter: grayscale(0); }
+
+.proposed-title { background: #17a2b8; color: #fff; display: inline-block; font-size: 16px; padding: 5px; filter: grayscale(100%); }
 
 .proposed-card { display: inline-block; width: 100%; padding: 15px; }
 
@@ -2428,6 +2445,13 @@ table thead td { border: 1px solid #000; }
 /*==== Adaptive ====*/
 /* ==== PHONE ==== */
 @media (max-width: 768px) { #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
+  .cart-table { margin: 0; }
+  .orders-col-wide { padding: 0; }
+  .header-order { display: block; padding: 15px 0; }
+  .header-order .header-phone-drop { display: block; text-align: center; }
+  .header-order-logo a { width: 50%; display: block; margin: 0 auto 15px auto; }
+  .header-order-text { text-align: center; }
+  .header-order-phone { display: none; }
   .header-phone, .table-responsive, .info_block, .searchtab__appl-phone, .nav-tabs { display: block; }
   .btn-basket { float: right; }
   .order__header-total { float: left; }

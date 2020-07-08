@@ -934,26 +934,30 @@ class ShopClass {
     /*==== /NEW ORDER FORM ====*/
 
     /*==== NOVA POSHTA API ====*/
-    function getCitiesSelect() { $db=DbSingleton::getTokoDb();
-        $list = "";
-        $r=$db->query("SELECT * FROM `T2_LOCATION` ORDER BY `CITY_NAME` ASC;"); $n=$db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $city_id = $db->result($r, $i-1, "CITY_ID");
-            $city_name = $db->result($r, $i-1, "CITY_NAME_CLEAR");
-            $state_name = $db->result($r, $i-1, "STATE_NAME");
-            $region_name = $db->result($r, $i-1, "REGION_NAME");
-            if ($region_name=="") $region_cap="($state_name обл.)"; else $region_cap="($state_name обл., $region_name р-он)";
-            $list.="<option value='$city_id'>$city_name $region_cap</option>";
-        }
-        return $list;
-    }
+//    function getCitiesSelect() { $db=DbSingleton::getTokoDb();
+//        $list = "";
+//        $r=$db->query("SELECT * FROM `T2_LOCATION` ORDER BY `CITY_NAME` ASC;"); $n=$db->num_rows($r);
+//        for ($i=1; $i<=$n; $i++) {
+//            $city_id = $db->result($r, $i-1, "CITY_ID");
+//            $city_name = $db->result($r, $i-1, "CITY_NAME_CLEAR");
+//            $state_name = $db->result($r, $i-1, "STATE_NAME");
+//            $region_name = $db->result($r, $i-1, "REGION_NAME");
+//            if ($region_name=="") $region_cap="($state_name обл.)"; else $region_cap="($state_name обл., $region_name р-он)";
+//            $list.="<option value='$city_id'>$city_name $region_cap</option>";
+//        }
+//        return $list;
+//    }
 
     function getCitiesMainSelect() { $db=DbSingleton::getTokoDb();
+        $language = new LangClass;
+        $lang_id = $language->getLanguage();
+        $postfix = "";
+        if ($lang_id==1 || $lang_id==3) $postfix = "_RU";
         $list = "";
-        $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `REGION_NAME`='' ORDER BY `CITY_NAME` ASC;"); $n=$db->num_rows($r);
+        $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `REGION_NAME`='' ORDER BY `CITY_NAME$postfix` ASC;"); $n=$db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $city_id = $db->result($r, $i-1, "CITY_ID");
-            $city_name = $db->result($r, $i-1, "CITY_NAME_CLEAR");
+            $city_name = $db->result($r, $i-1, "CITY_NAME_CLEAR$postfix");
             $list.="<option value='$city_id'>$city_name</option>";
         }
         return $list;
@@ -961,12 +965,16 @@ class ShopClass {
 
     function getCityVal($search_text) { $db=DbSingleton::getTokoDb();
         $mas=[];
-        $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR` LIKE '$search_text%' ORDER BY `CITY_NAME`;"); $n=$db->num_rows($r);
+        $language = new LangClass;
+        $lang_id = $language->getLanguage();
+        $postfix = "";
+        if ($lang_id==1 || $lang_id==3) $postfix = "_RU";
+        $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR$postfix` LIKE '$search_text%' ORDER BY `CITY_NAME$postfix`;"); $n=$db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $city_id = $db->result($r, $i-1, "CITY_ID");
-            $city_name = $db->result($r, $i-1, "CITY_NAME");
-            $region_name = $db->result($r, $i-1, "REGION_NAME");
-            $state_name = $db->result($r, $i-1, "STATE_NAME");
+            $city_name = $db->result($r, $i-1, "CITY_NAME$postfix");
+            $region_name = $db->result($r, $i-1, "REGION_NAME$postfix");
+            $state_name = $db->result($r, $i-1, "STATE_NAME$postfix");
             $city_cap = "$city_name ($state_name обл., $region_name р-он)";
             $mas[$i]=["id"=>$city_id, "value"=>$city_cap];
         }

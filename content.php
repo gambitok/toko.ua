@@ -1,6 +1,7 @@
 <?php
 
 define('RDD', dirname (__FILE__));
+date_default_timezone_set("Europe/Kiev");
 
 include_once (RDD."/lib/access.php");
 require_once (RDD."/lib/helper.php");

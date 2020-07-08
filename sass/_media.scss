@@ -12,6 +12,40 @@
         display: none
     }
 
+    .cart-table {
+        margin: 0;
+    }
+
+    .orders {
+        &-col {
+            &-wide {
+                padding: 0;
+            }
+        }
+    }
+
+    .header-order {
+        display: block;
+        padding: 15px 0;
+        .header-phone-drop {
+            display: block;
+            text-align: center;
+        }
+        &-logo {
+            a {
+                width: 50%;
+                display: block;
+                margin: 0 auto 15px auto;
+            }
+        }
+        &-text {
+            text-align: center;
+        }
+        &-phone {
+            display: none;
+        }
+    }
+
     .header-phone,
     .table-responsive,
     .info_block,
@@ -19,10 +53,6 @@
     .nav-tabs {
         display: block;
     }
-
-    //.fixed-phone {
-    //    display: block;
-    //}
 
     .btn-basket {
         float: right;

@@ -482,16 +482,28 @@
 }
 
 .proposed {
-    border-top: 1px solid #ddd;
+    border-top: 3px solid #17a2b8;
     margin-top: 15px;
-    padding-top: 15px;
+    filter: grayscale(100%);
     &:hover {
+        filter: grayscale(0);
+        .proposed-title {
+            filter: grayscale(0);
+        }
         button {
             filter: grayscale(0);
         }
         img {
             filter: grayscale(0);
         }
+    }
+    &-title {
+        background: #17a2b8;
+        color: #fff;
+        display: inline-block;
+        font-size: 16px;
+        padding: 5px;
+        filter: grayscale(100%);
     }
     &-card {
         display: inline-block;
