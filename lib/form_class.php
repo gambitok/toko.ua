@@ -135,7 +135,7 @@ class FormClass {
 
     function getArticleInfo($art_id) { $db=DbSingleton::getTokoDb();
         $cat=new CatalogueClass; $client=new ClientClass; $kours=new ExRateClass;
-        $tpoint=$client->getTpoint(); $cur=$kours->getCurrentKours();
+        $tpoint=$client->getTpoint(); $cur=$kours->getCurrentKours(); $client_id=$this->getClient();
 
         $r=$db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
         FROM `T2_ARTICLES` t2a
@@ -163,7 +163,8 @@ class FormClass {
 
         $price = $cat->getArticlePrice($art_id);
         if ($suppl_id!=0) $price = $cat->getArticleSupplPrice($art_id,$suppl_id,$storage_id);
-        $price = $kours->getKoursPrice($price,$cur);
+        $price = $kours->getKoursPrice($price, $cur);
+        if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
 
         list(,$delivery_days,$short_info) = $cat->getTpointDeliveryInfo($tpoint,$storage_id);
         if ($suppl_id!=0) list(,$delivery_days,$short_info) = $cat->getTpointSupplDeliveryInfo($tpoint,$suppl_id,$storage_id);

@@ -281,6 +281,22 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-main .icons-nav-item__status { font-size: 12px; text-transform: uppercase; background: #f44336; border: 1px solid #f44336; border-radius: 30px; color: #fff; width: 20px; height: 20px; line-height: 20px; text-align: center; }
 
+.header-order { padding: 30px 0; }
+
+.header-order-logo { padding: 0; }
+
+.header-order-logo img { width: 100%; }
+
+.header-order-phone ul { list-style: none; margin: 0; }
+
+.header-order-phone ul li { display: inline-block; margin-right: 30px; }
+
+.header-order-phone ul li a:hover { text-decoration: underline; }
+
+.header-order-phone ul li img { width: 15px; height: 15px; }
+
+.header-order-phone ul li span { color: #000; }
+
 .garage-drop { z-index: 1000 !important; width: 400% !important; left: -250%; top: 300% !important; background: #fff; overflow: unset !important; }
 
 .garage-drop-block { background: #fff; }
@@ -1865,21 +1881,27 @@ table thead td { border: 1px solid #000; }
 
 .proposed { border-top: 1px solid #ddd; margin-top: 15px; padding-top: 15px; }
 
+.proposed:hover button { filter: grayscale(0); }
+
+.proposed:hover img { filter: grayscale(0); }
+
 .proposed-card { display: inline-block; width: 100%; padding: 15px; }
 
 .proposed-card-row { align-items: center; display: flex; width: 100%; margin-bottom: 15px; }
 
 .proposed-card__image { width: 100%; height: 100px; }
 
-.proposed-card__image img { display: block; margin: 0 auto; max-width: 100px; max-height: 100px; }
+.proposed-card__image img { transition: all .3s linear; display: block; margin: 0 auto; max-width: 100px; max-height: 100px; filter: grayscale(100%); }
 
-.proposed-card__text { font-size: 12px; max-height: 35px; overflow: hidden; }
+.proposed-card__text { font-size: 12px; height: 35px; overflow: hidden; }
 
 .proposed-card__text a { text-transform: uppercase; }
 
 .proposed-card__price { text-align: left; font-weight: bold; width: 50%; }
 
 .proposed-card__buy { text-align: right; width: 50%; }
+
+.proposed-card__buy button { transition: all .3s linear; filter: grayscale(100%); }
 
 /*===== /NEW ORDERS ====*/
 @media (max-width: 992px) { .orders-row { display: block; }

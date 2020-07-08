@@ -1,10 +1,10 @@
 <?php
-$np = new \LisDev\Delivery\NovaPoshtaApi2(
-    '656d2934ac1411fdb377a1d6de96fd92',
-    'ru',
-    FALSE,
-    'curl'
-);
+//$np = new \LisDev\Delivery\NovaPoshtaApi2(
+//    '656d2934ac1411fdb377a1d6de96fd92',
+//    'ru',
+//    FALSE,
+//    'curl'
+//);
 //$arr = $np->getCities()['data'];
 //
 //$list="";
@@ -17,5 +17,7 @@ $np = new \LisDev\Delivery\NovaPoshtaApi2(
 //}
 //
 //print_r($list);
+
+$content = $shop->getHtmlForm("orders/template");
 
 $content=str_replace("{main_window}", $shop->getOrderForm(), $content);

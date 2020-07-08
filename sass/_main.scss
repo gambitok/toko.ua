@@ -688,6 +688,38 @@ header {
     }
 }
 
+.header-order {
+    padding: 30px 0;
+    &-logo {
+        padding: 0;
+        img {
+            width: 100%;
+        }
+    }
+    &-phone {
+        ul {
+            list-style: none;
+            margin: 0;
+            li {
+                display: inline-block;
+                margin-right: 30px;
+                a {
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+                img {
+                    width: 15px;
+                    height: 15px;
+                }
+                span {
+                    color: #000;
+                }
+            }
+        }
+    }
+}
+
 .garage-drop {
     z-index: 1000!important;
     width: 400%!important;

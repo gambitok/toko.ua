@@ -162,17 +162,38 @@ class ShopClass {
         return $table_basket;
     }
 
+    function getBasketArts() { $db = DbSingleton::getTokoDb();
+        $client=new ClientClass; $where=$client->getClientWhere();
+        $r=$db->query("SELECT * FROM `basket` WHERE $where ORDER BY `date_create` DESC;"); $n=$db->num_rows($r);
+        if ($n>0) {
+            $arts = [];
+            for ($i = 1; $i <= $n; $i++) {
+                $art_id = $db->result($r, $i - 1, "art_id");
+                array_push($arts, $art_id);
+            }
+            $arts = implode(",", $arts);
+        } else {
+            $arts = "";
+        }
+        return $arts;
+    }
+
     function getProposedArts() { $db = DbSingleton::getTokoDb();
-        //DELETE ARTS FROM BASKET
         $list="";
-        $r=$db->query("SELECT * FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS`=1;"); $n=$db->num_rows($r);
+        $where_arts = "";
+        $arts = $this->getBasketArts();
+        if ($arts!="") {
+            $where_arts = " AND `ART_ID` NOT IN ($arts)";
+        }
+        $r=$db->query("SELECT * FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS`=1 $where_arts;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
-            $list=$list.$this->getProposedArtsCard($art_id);
+            $list.=$this->getProposedArtsCard($art_id);
         }
         $form = $this->getHtmlForm("orders/proposed");
         $form = str_replace("{proposed_range}", $list, $form);
         $form = $this->replaceLang($form);
+        if ($n==0) $form="";
         return $form;
     }
 
