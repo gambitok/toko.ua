@@ -33,7 +33,7 @@ class TemplateClass {
         $r=$db->query("SELECT * FROM `T2_CATALOGUES_ARTS` WHERE `TEMPLATE_ID`='$template_id' GROUP BY `ART_ID`;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $art_id=$db->result($r,$i-1,"ART_ID");
-            $brand_id=$this->getBrandFromArtId($art_id);
+            $brand_id=$this->getArticleBrand($art_id);
             $r2=$db->query("SELECT * FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id';"); $n2=$db->num_rows($r2);
             for ($j=1;$j<=$n2;$j++) {
                 $param_id=$db->result($r2,$j-1,"PARAM_ID");
@@ -89,7 +89,7 @@ class TemplateClass {
 
         $products=$this->getAllProducts($template_id); $where_arts="";
         foreach ($products as $art_id=>$product) {
-            $brand_id=$this->getBrandFromArtId($art_id);
+            $brand_id=$this->getArticleBrand($art_id);
             if (!in_array($brand_id, $filters["0"])) array_push($filters["0"],$brand_id);
             $where_arts.="'$art_id',";
         }
@@ -118,7 +118,7 @@ class TemplateClass {
         $r=$db->query("SELECT * FROM `T2_CATALOGUES_ARTS` WHERE `TEMPLATE_ID`='$template_id' GROUP BY `ART_ID`;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $art_id=$db->result($r,$i-1,"ART_ID");
-            $brand_id=$this->getBrandFromArtId($art_id);
+            $brand_id=$this->getArticleBrand($art_id);
             $r2=$db->query("SELECT * FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id';"); $n2=$db->num_rows($r2);
             for ($j=1;$j<=$n2;$j++) {
                 $param_id=$db->result($r2,$j-1,"PARAM_ID");

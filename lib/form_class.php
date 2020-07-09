@@ -22,35 +22,35 @@ class FormClass {
         return $form;
     }
 
-    function getCountryFlag($id_brand) { $db=DbSingleton::getTokoDb();
+    function getCountryFlag($brand_id) { $db=DbSingleton::getTokoDb();
         if (self::$flags === null) {
-            $r=$db->query("SELECT t2c.ALFA2, t2b.BRAND_ID, t2c.COUNTRY_NAME FROM `T2_BRANDS` t2b
-                LEFT OUTER JOIN `T2_COUNTRIES` t2c on (t2c.COUNTRY_ID=t2b.COUNTRY_ID)");
+            $r=$db->query("SELECT t2c.ALFA2, t2b.BRAND_ID, t2c.COUNTRY_NAME 
+            FROM `T2_BRANDS` t2b
+                LEFT JOIN `T2_COUNTRIES` t2c on (t2c.COUNTRY_ID=t2b.COUNTRY_ID)");
             self::$flags = array_column(mysqli_fetch_all($r, MYSQLI_ASSOC), null, 'BRAND_ID');
         }
-        $flag=self::$flags[$id_brand]["ALFA2"];
-        $name_country=self::$flags[$id_brand]["COUNTRY_NAME"];
+        $flag=self::$flags[$brand_id]["ALFA2"];
+        $name_country=self::$flags[$brand_id]["COUNTRY_NAME"];
         $flag=mb_strtolower($flag);
-        if ($name_country=="") return false; else return array($flag,$name_country);
+        if ($name_country=="") return false; else return array("flag"=>$flag, "country"=>$name_country);
     }
 
     function showBrandForm($brand) { $db=DbSingleton::getTokoDb();
-        $showform=new FormClass;
-        $r=$db->query("SELECT * FROM `T2_BRAND_LINK` WHERE `brand_id`='$brand' LIMIT 1;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_BRAND_LINK` WHERE `brand_id`='$brand' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) {
-            $info=$this->getHtmlForm("brand_form");
-            $info=str_replace("{brand_form_name}",trim($db->result($r,0,"name")),$info);
-            $info=str_replace("{brand_form_country}",$showform->getCountryFlag($brand)[0],$info);
-            $info=str_replace("{brand_form_descr}",trim($db->result($r,0,"descr")),$info);
-            $info=str_replace("{brand_form_link}",trim($db->result($r,0,"link")),$info);
-            $info=str_replace("{brand_form_logo_name}",trim($db->result($r,0,"logo_name")),$info);
-        } else $info=$this->err3;
+            $info = $this->getHtmlForm("brand_form");
+            $info = str_replace("{brand_form_name}", trim($db->result($r,0,"name")), $info);
+            $info = str_replace("{brand_form_country}", $this->getCountryFlag($brand)["flag"], $info);
+            $info = str_replace("{brand_form_descr}", trim($db->result($r,0,"descr")), $info);
+            $info = str_replace("{brand_form_link}", trim($db->result($r,0,"link")), $info);
+            $info = str_replace("{brand_form_logo_name}", trim($db->result($r,0,"logo_name")), $info);
+        } else $info = $this->err3;
         return $info;
     }
 
     function checkT2Link($typ_id, $art_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_LINKS` WHERE `ART_ID`='$art_id' AND `TYP_ID`='$typ_id' LIMIT 1;");
-        $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_LINKS` WHERE `ART_ID`='$art_id' AND `TYP_ID`='$typ_id' LIMIT 1;");
+        $n = $db->num_rows($r);
         if ($n==0) return false; else return true;
     }
 
@@ -73,9 +73,9 @@ class FormClass {
 
     function showArticle($art_id) {
         $cat=new CatalogueClass; $language=new LangClass; $prod=new ProductsClass; $auto=new AutoClass;
-        $form=$this->getHtmlForm("cat_article");
-
         $auto_typ_id = $prod->getCookieAuto();
+
+        $form=$this->getHtmlForm("cat_article");
         if ($auto_typ_id!="") {
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
                 $form=str_replace("{applicable_display}", "", $form);
@@ -93,15 +93,17 @@ class FormClass {
 
         $brand_link=$this->getArtBrandLink($art_id, $brand_id);
 
-        if ($this->getCountryFlag($brand_id)!==false) {
-            list($flag, $country_name) = $this->getCountryFlag($brand_id);
-            $brand_form="
+        $flagData = $this->getCountryFlag($brand_id);
+        if ($flagData!==false) {
+            $flag = $flagData["flag"];
+            $country_name = $flagData["country"];
+            $brand_form = "
             <a href=\"$brand_link\">
                 <span title=\"$country_name\" class=\"search__brand\" data-title=\"{brand_cap}\">$brand_name</span>
             </a>
             <img class=\"flag flag-$flag flag-search\">";
         } else {
-            $brand_form="
+            $brand_form = "
             <a href=\"$brand_link\">
                 <span title=\"$brand_name\" class=\"search__brand\" data-title=\"{brand_cap}\">$brand_name</span>
             </a>";
@@ -123,7 +125,7 @@ class FormClass {
         $form=str_replace("{analogs_capa}", "$article_nr_displ $brand_name", $form);
         $form=str_replace("{analogs_link}", "https://toko.ua".$language->getLangPrefix()."/search/$format_article/$brand_id/$brand_name/", $form);
 
-        $analogs=$cat->shortSearchList($art_id);
+        $analogs = $cat->shortSearchList($art_id);
         $form=str_replace("{analogs_list}", $analogs, $form);
         $form=str_replace("{analogs_display}", $analogs=="" ? "dnone" : "", $form);
         $form=str_replace("{article_header}", "<h1>$article_name $brand_name $article_nr_displ</h1>", $form);
@@ -210,7 +212,8 @@ class FormClass {
     }
 
     function showCityForm($city_like, $city_id=""){ $db=DbSingleton::getDbm();
-        if ($city_id=="") $city_id=0; $mas=array();
+        $mas=[];
+        if ($city_id=="") $city_id=0;
         if ($city_like!="") $where="WHERE `CITY_NAME` LIKE '%$city_like%'"; else $where="WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
         $r=$db->query("SELECT * FROM `T2_CITY` t2c
             LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID=t2c.REGION_ID)
@@ -223,7 +226,7 @@ class FormClass {
             $state=$db->result($r,$i-1,"STATE_NAME");
             if ($region=="") $location="$city"; else $location="$city - $region - $state";
             if ($id==$city_id) $selected=true; else $selected=false;
-            $mas[$i]=["id"=>$id,"value"=>$location,"selected"=>$selected];
+            $mas[$i]=["id"=>$id, "value"=>$location, "selected"=>$selected];
         }
         return $mas;
     }
@@ -275,8 +278,8 @@ class FormClass {
     function insertHistory($article_nr_displ, $brand_id) { $db = DbSingleton::getTokoDb();
         session_start(); $ses=session_id(); $cookie=$_COOKIE["session_id"];
         $date=date("Y-m-d H:i:s"); $client_id=$this->getClient(); $user=$this->getUser();
-        $artData=$this->getBrandId($article_nr_displ); $max_history_count=10;
-        $art_id=$artData[1];
+        $max_history_count=10;
+        $art_id=$this->getArtID($article_nr_displ);
         if ($brand_id>0 && is_numeric($brand_id)) {
             if ($user==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user'";
             $r=$db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;"); $k=$db->result($r,0,"kilk");
@@ -297,9 +300,9 @@ class FormClass {
     }
 
     function showHistoryForm() {
-        $cat=new CatalogueClass;
+        $cat=new CatalogueClass; $client = new ClientClass;
         $language=new LangClass; $prefix=$language->getLangPrefix();
-        $list=$this->getHistory(); $result="";
+        $list=$client->getClientHistory(); $result="";
         for ($i=0;$i<count($list);$i++) { $col=$i+1;
             $article_nr_displ=$list[$i]["article_nr_displ"];
             $brand=$list[$i]["brand"];
@@ -314,9 +317,9 @@ class FormClass {
 
     // PHONE HISTORY
     function showHistoryList() {
-        $cat=new CatalogueClass;
+        $cat=new CatalogueClass; $client=new ClientClass;
         $language=new LangClass; $prefix=$language->getLangPrefix();
-        $list=$this->getHistory(); $max_count=9;
+        $list=$client->getClientHistory(); $max_count=9;
         $list_history="";
         for ($i=0; $i<count($list); $i++) {
             $id=$list[$i]["id"];
@@ -422,7 +425,7 @@ class FormClass {
         $nophoto=$this->noPhoto;
 
         $article_name=$cat->getArticleSearch($art_id);
-        $brand_name=$cat->getBrandName($cat->getBrandFromArtId($art_id));
+        $brand_name=$cat->getBrandName($cat->getArticleBrand($art_id));
         $format_name=$cat->getFormatAticle($article_name);
         $format_brand=$cat->getFormatBrand($brand_name);
 
@@ -481,7 +484,7 @@ class FormClass {
         $cat = new CatalogueClass;
 
         $article_nr_dspl=$cat->getArticleDispl($art_id);
-        $brand_name=$cat->getBrandName($cat->getBrandFromArtId($art_id));
+        $brand_name=$cat->getBrandName($cat->getArticleBrand($art_id));
         $article_name=$cat->getArticleName($art_id);
         $article_info="$article_name $brand_name $article_nr_dspl - {photo_card_cap}";
         $nophoto=$this->noPhoto;
@@ -559,7 +562,7 @@ class FormClass {
     function showInfoForm($art_id) {
         $catalogue=new CatalogueClass;
         $article_nr_displ=$catalogue->getArticleDispl($art_id);
-        $brand_name=$catalogue->getBrandName($catalogue->getBrandFromArtId($art_id));
+        $brand_name=$catalogue->getBrandName($catalogue->getArticleBrand($art_id));
         $title="<span class=\"text-dark bold\">$brand_name</span> $article_nr_displ";
         $form=$this->getHtmlForm("modals/form_info");
         $form=str_replace("{info-main__photo}",$this->showPhotoGallery($art_id),$form);

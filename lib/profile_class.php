@@ -36,9 +36,9 @@ class ProfileClass {
         $user=$this->getUser(); $client_id=$this->getClient(); $categories=[];
 
         $r=$db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+        for ($i=1; $i<=$n; $i++) {
             $category_id = $db->result($r, $i-1, "client_category");
-            array_push($categories,$category_id);
+            array_push($categories, $category_id);
         }
         $categories=implode(",",$categories);
 

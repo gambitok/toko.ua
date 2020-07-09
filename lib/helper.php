@@ -22,7 +22,7 @@ trait Helper {
         $pos = strpos($str, ".htm"); if ($pos !== false) return 0;
         $pos = strpos($str, ".html"); if ($pos !== false) return 0;
         $pos = strpos($str, ".php"); if ($pos !== false) return 0;
-        return 1;//
+        return 1;
     }
 
     function getRedirectLink($str) {
@@ -62,8 +62,8 @@ trait Helper {
     }
 
     function replaceLang($cont) {
-        $language=new LangClass;
-        $cont=$language->replaceLang($cont);
+        $language = new LangClass;
+        $cont = $language->replaceLang($cont);
         return $cont;
     }
 

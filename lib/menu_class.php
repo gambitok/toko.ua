@@ -98,9 +98,9 @@ class MenuClass {
         $r=$db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $nom=$db->num_rows($r);
         for ($i=1;$i<=$nom;$i++) {
             $category_id = $db->result($r, $i-1, "client_category");
-            array_push($categories,$category_id);
+            array_push($categories, $category_id);
         }
-        $categories=implode(",",$categories);
+        $categories=implode(",", $categories);
 
         $r=$db->query("SELECT ac.* FROM `ACTION_CLIENTS` ac
             LEFT JOIN `ACTION_CLIENTS_LIST` acl ON (acl.action_id=ac.id)
@@ -145,7 +145,11 @@ class MenuClass {
                 array_push($group_arts,$art_id);
                 $name=$catalogue->getArticleName($art_id);
                 $article_nr_search=$this->getArticleSearch($art_id);
-                list(, $brand_name, $brand_link)=$this->getBrandInfo($art_id);
+
+                $brand_id = $this->getArticleBrand($art_id);
+                $brand_name = $this->getBrandName($brand_id);
+                $brand_link = $this->getBrandLink($brand_id);
+
                 $data>0 ? $data=date("d.m.Y", strtotime($data)) : $data="{indefinitely_cap}";
                 $max_amount>0 ? $max_amount="{yes_cap}" : $max_amount="{no_cap}";
                 $link="https://toko.ua$prefix/search/$article_nr_search/$brand_link/";
@@ -467,7 +471,8 @@ class MenuClass {
 
     function getCatPhoto($art_id) { $db=DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `MAIN` DESC LIMIT 1;"); $n=$db->num_rows($r);
-        list($article_nr_search, $brand_id) = $this->getArtMainInfo($art_id);
+        $article_nr_search = $this->getArticleDispl($art_id);
+        $brand_id = $this->getArticleBrand($art_id);
         $art_name = $this->getArticleName($art_id);
         $brand_name = $this->getBrandName($brand_id);
         $art_text = "$art_name $brand_name $article_nr_search";
@@ -487,7 +492,7 @@ class MenuClass {
     }
 
     function saveSellerForm($company, $name, $phone, $email, $city_id, $comment) { $db=DbSingleton::getDbm();
-        $cookie_id=$_COOKIE["session_id"]; $max_bytes=10485760; $format_array=["txt","csv","xls","xlsx","dbf"];
+        $cookie_id=$_COOKIE["session_id"]; $max_bytes=10485760; $format_arr=["txt","csv","xls","xlsx","dbf"];
         $r=$db->query("SELECT * FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id`='$cookie_id' ORDER BY `data` DESC LIMIT 1;"); $n=$db->num_rows($r);
         $file_name=$db->result($r,0,"file_name");
         $type=$db->result($r,0,"type");
@@ -495,12 +500,12 @@ class MenuClass {
         if ($n>0) {
             $db->query("DELETE FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE 'cookie_id'='$cookie_id';");
         }
-        if (in_array($type,$format_array) && $size<=$max_bytes) {
+        if (in_array($type, $format_arr) && $size<=$max_bytes) {
             $db->query("INSERT INTO `J_SUPPLIERS_COOPERATION` (`company`,`name`,`phone`,`email`,`city_id`,`commentary`,`file_id`,`status`) 
             VALUES ('$company','$name','$phone','$email','$city_id','$comment','$file_name',166);");
             return true;
         } else {
-            return array($type,$size);
+            return array($type, $size);
         }
     }
 

@@ -138,7 +138,10 @@ function getMoreTitle($path) {
 
     elseif ($path=="article") {
         $art_id=$linka[3];
-        list($article_nr_search, $brand_id) = $cat->getArtMainInfo($art_id); $article_nr_search = strtoupper($article_nr_search);
+        $article_nr_search = $cat->getArticleDispl($art_id);
+        $brand_id = $cat->getArticleBrand($art_id);
+
+        $article_nr_search = strtoupper($article_nr_search);
         $brand_name = $cat->getBrandName($brand_id); $brand_name = strtoupper($brand_name);
         $art_name = $cat->getArticleName($art_id);
         $pretitle = "$art_name $brand_name $article_nr_search - {seo_title_article}";
@@ -301,7 +304,7 @@ function printBreadcrumbs($path) {
         }
         case "article" : {
             $art_id=$bread[3];
-            $info=$cat->getArtInfo($art_id);
+            $info=$cat->getArticleText($art_id);
             $back="<a href=\"https://toko.ua$prefix/catalog/\">{site_catalog}</a>";
             $pretitle="$a_home > $back > $info";
             $b_arr[2]=["name"=>"{site_catalog}", "item"=>"https://toko.ua$prefix/catalog/"];
@@ -642,7 +645,9 @@ function getDescription($path) {
 
     if ($path=="article") {
         $art_id=$linka[3];
-        list($article_nr_search, $brand_id) = $cat->getArtMainInfo($art_id); $article_nr_search = strtoupper($article_nr_search);
+        $article_nr_search = $cat->getArticleDispl($art_id);
+        $brand_id = $cat->getArticleBrand($art_id);
+        $article_nr_search = strtoupper($article_nr_search);
         $brand_name = $cat->getBrandName($brand_id); $brand_name = strtoupper($brand_name);
         $art_name = $cat->getArticleName($art_id);
         $description = "$art_name $brand_name $article_nr_search - {seo_description_article}";

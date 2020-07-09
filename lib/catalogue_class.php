@@ -838,7 +838,9 @@ class CatalogueClass {
         session_start(); $temp_key=session_id(); $client_id=$this->getClient();
         $tpoint=$client->getTpoint(); $view=$client->getProductView(); $cur=$kours->getCurrentKours();
         $mas=array(); $list=""; $where_art_id_str="";
-        list($article_nr_search, $brand_nr_search) = $this->getArtMainInfo($art_id_search);
+
+        $article_nr_search = $this->getArticleDispl($art_id_search);
+        $brand_nr_search = $this->getArticleBrand($art_id_search);
 
         $r=$db->query("SELECT t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2c.BRAND_ID, t2c.DISPLAY_NR, t2c.ART_ID, t2c.KIND, t2c.RELATION 
         FROM `T2_CROSS` t2c
@@ -1415,29 +1417,27 @@ class CatalogueClass {
             $link = str_replace("{content_brand_link}", $brand_link, $link);
             $form = str_replace("{product_test_offers}",$link,$form);
         }
-
-        $form=str_replace("{country_display}",($showform->getCountryFlag($brand_id)==false) ? "none" : "",$form);
-        $form=str_replace("{flag_image}",$showform->getCountryFlag($brand_id)[0],$form);
-        $form=str_replace("{country_name}",$showform->getCountryFlag($brand_id)[1],$form);
-        $form=str_replace("{instock}",$instock,$form);
-        $form=str_replace("{index_type}",$this->getIndexTypeImage($art_id,$article_nr_search,$article_name,$format_name,$brand_id,$brand_nr_search),$form);
-        $form=str_replace("{count_users}",$client->getUsersCount(),$form);
-        $form=str_replace("{data_today}",date("Y-m-d"),$form);
-        $form=str_replace("{prefix_url}",$language->getLangPrefix(),$form);
-        $form=str_replace("{tpoint_full_name}",($suppl_id==0) ? $this->getArticleStorage($storage_id) : "",$form);
+        $flagData = $showform->getCountryFlag($brand_id);
+        $form=str_replace("{country_display}", ($flagData==false) ? "none" : "", $form);
+        $form=str_replace("{flag_image}", $flagData["flag"], $form);
+        $form=str_replace("{country_name}", $flagData["country"], $form);
+        $form=str_replace("{instock}", $instock, $form);
+        $form=str_replace("{index_type}", $this->getIndexTypeImage($art_id, $article_nr_search, $article_name, $format_name, $brand_id, $brand_nr_search), $form);
+        $form=str_replace("{count_users}", $client->getUsersCount(), $form);
+        $form=str_replace("{data_today}", date("Y-m-d"), $form);
+        $form=str_replace("{prefix_url}", $language->getLangPrefix(), $form);
+        $form=str_replace("{tpoint_full_name}", ($suppl_id==0) ? $client->getArticleStorageTPoint($storage_id) : "", $form);
 
         $form=str_replace("{product_info}",$showform->getArticleInfoForm($art_id,1),$form);
         $form=str_replace("{product_button}",$price==0 ? "none" : "",$form);
         $form=str_replace("{product_image}",$showform->getArticleActivePhoto($art_id),$form);
         $form=str_replace("{product_title}","$text $brand_name $article_name",$form);
 
-
         $basket_amount=$shop->getBasketArticleAmount($art_id, $storage_id);
         if ($basket_amount>0) $basket_cap="{site_basket}: $basket_amount {amount_abbr}."; else $basket_cap="";
         $form=str_replace("{basket_amount}",$basket_cap,$form);
 
         $list.="$form";
-//        !$view ? $list.="$ll" : $list.="";
 
         $list=$this->replaceLang($list);
 
@@ -1796,9 +1796,9 @@ class CatalogueClass {
             if ($ns==0) {
                 $list[$i]=[$i,"$art_dspl","$brand","$name","$price","$cur_cap","$info","$barcode"];
                 foreach ($storages as $storage) {
-                    $stock=$this->getStockStorage($art_id,$storage);
+                    $stock=$this->getStockStorage($art_id, $storage);
                     if ($stock>10) $stock=">10";
-                    array_push($list[$i],$stock);
+                    array_push($list[$i], $stock);
                 }
             }
 
