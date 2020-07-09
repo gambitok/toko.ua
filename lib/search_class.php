@@ -30,7 +30,10 @@ class SearchClass extends CatalogueClass {
 
         if ($parts->checkTable($str_id)>0) {
             // TEMP TABLE
-            list($details_content, $filters, $brands) = $parts->showPartsCatalogue($str_id, $page, $active_filters);
+            $partsData = $parts->showPartsCatalogue($str_id, $page, $active_filters);
+            $details_content = $partsData["form"];
+            $filters = $partsData["filters"];
+            $brands = $partsData["brands"];
             $str_type = 1;
             $count_arts = $parts->getPartsCount($str_id, $active_filters);
             $count = $parts->products_on_page;
@@ -62,7 +65,7 @@ class SearchClass extends CatalogueClass {
         $translit=$prod->getCarManufTranslit($mfa_id, $model);
 
         list($mfa_text, $mod_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-        list($mod_id_text) = $automan->getAutoModelIdLink($mod_id_link); if ($mod_id_text!="") $mod_text=$mod_id_text;
+        $mod_id_text = $automan->getAutoModelIdLink($mod_id_link)["text"]; if ($mod_id_text!="") $mod_text=$mod_id_text;
         $auto_text = "$mfa_text $mod_text";
 
         $str_text = $automan->getStrNewDescr($str_id);
@@ -167,7 +170,10 @@ class SearchClass extends CatalogueClass {
         $brand_ids = $this->getActiveFilters($filters);
 
         if ($cookie_typ_id!="" && $mfa_link!="") {
-            list($mfa_link2, $mod_link2) = $automan->getCookieCarInfo($cookie_typ_id);
+            $cookieData = $automan->getCookieCarInfo($cookie_typ_id);
+            $mfa_link2 = $cookieData["mfa_link"];
+            $mod_link2 = $cookieData["model_link"];
+
             if ($mfa_link2!=$mfa_link || ($mod_link!="" && $mod_link2!=$mod_link)) {
                 $cookie_typ_id="";
                 setcookie("auto_typ_id", "", time() + (86400 * 30), "/");
@@ -189,7 +195,9 @@ class SearchClass extends CatalogueClass {
         }
 
         if ($cookie_typ_id!="" && $mfa_link=="" && $mod_link=="") {
-            list($mfa_link, $mod_link,,) = $automan->getCookieCarInfo($cookie_typ_id);
+            $cookieData = $automan->getCookieCarInfo($cookie_typ_id);
+            $mfa_link = $cookieData["mfa_link"];
+            $mod_link = $cookieData["model_link"];
         }
 
         // 1: /catalog/to_filtri
@@ -253,7 +261,7 @@ class SearchClass extends CatalogueClass {
         if ($mfa_link!="") {
             if ($mod_link!="") {
                 if ($mod_id_link!="") {
-                    $form1=str_replace("{seo_auto}", $automan->getAutoTypeList($automan->getMfaLink($mfa_link), $automan->getAutoModelIdLink($mod_id_link)[1], $str_id, $brand_ids[0]), $form1);
+                    $form1=str_replace("{seo_auto}", $automan->getAutoTypeList($automan->getMfaLink($mfa_link), $automan->getAutoModelIdLink($mod_id_link)["model_id"], $str_id, $brand_ids[0]), $form1);
                 } else {
                     $form1=str_replace("{seo_auto}", $automan->getAutoModIDList($automan->getMfaLink($mfa_link), $automan->getModLink($mod_link), $str_id, $brand_ids[0]), $form1);
                 }

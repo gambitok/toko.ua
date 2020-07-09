@@ -124,9 +124,6 @@ class AutoClass {
     function getCookieCarInfo($typ_id) { $db=DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
         $mod_id=$db->result($r,0,"TYP_MOD_ID");
-        $year=$db->result($r,0,"TYP_PCON_END");
-        if ($year==0) $year=date("Ym");
-        if (strlen($year)==6) $year=substr($year,0,4);
 
         $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
         $mfa_id=$db->result($r,0,"MOD_MFA_ID");
@@ -135,10 +132,10 @@ class AutoClass {
         $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
         $mfa_link=$db->result($r,0,"MFA_BRAND_LINK");
 
-        return array($mfa_link, $model_link, $year, $mod_id);
+        return array("mfa_link"=>$mfa_link, "model_link"=>$model_link);
     }
 
-    function getAutoDescr($mf, $ml, $mi, $gr) { $db=DbSingleton::getTokoDb();
+    function getAutoDescr($mf, $ml="", $mi="", $gr="") { $db=DbSingleton::getTokoDb();
         $manufacture=$model=$modelid=$group="";
         $ml=$this->getUrlString($ml);
         if ($mf>0 && is_numeric($mf)) {$r=$db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_ID`='$mf' LIMIT 1;"); $manufacture=$db->result($r,0,"MFA_BRAND");}
@@ -152,7 +149,7 @@ class AutoClass {
         $mfa_brand=$model="";
         if ($mf!="") {$r=$db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mf' LIMIT 1;"); $mfa_brand=$db->result($r,0,"MFA_BRAND");}
         if ($ml!="") {$r=$db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link`='$ml' LIMIT 1;"); $model=$db->result($r,0,"Model");}
-        return array ($mfa_brand, $model);
+        return array($mfa_brand, $model);
     }
 
     function getMfaBrand($mfa_id) { $db=DbSingleton::getTokoDb();
@@ -161,14 +158,14 @@ class AutoClass {
         return $mfa_brand;
     }
 
-    function getAutoModelIdLink($ml_id_link) { $db=DbSingleton::getTokoDb();
+    function getAutoModelIdLink($model_id_link) { $db=DbSingleton::getTokoDb();
         $text=$model_id="";
-        if ($ml_id_link!="") {
-            $r=$db->query("SELECT * FROM `T_models` WHERE `TEX_TEXT_link`='$ml_id_link' LIMIT 1;");
+        if ($model_id_link!="") {
+            $r=$db->query("SELECT * FROM `T_models` WHERE `TEX_TEXT_link`='$model_id_link' LIMIT 1;");
             $model_id=$db->result($r,0,"MOD_ID");
             $text=$db->result($r,0,"TEX_TEXT");
         }
-        return array($text, $model_id);
+        return array("text"=>$text, "model_id"=>$model_id);
     }
 
     function getAutoIdsLink($mf, $ml) { $db=DbSingleton::getTokoDb();
@@ -178,13 +175,13 @@ class AutoClass {
         return array ($mfa_id, $model);
     }
 
-    function getAutoIMG($mf,$ml,$mi) { $db=DbSingleton::getTokoDb();
+    function getAutoIMG($mf, $ml, $mi) { $db=DbSingleton::getTokoDb();
         $manufacture=$model=$modelid="";
         $ml=$this->getUrlString($ml);
         if ($mf>0 && is_numeric($mf)) {$r=$db->query("SELECT `LOGO` FROM `T_manufacturers` WHERE `MFA_ID`='$mf' LIMIT 1;"); $manufacture=$db->result($r,0,"LOGO");}
         if ($ml!="") {$r=$db->query("SELECT `Car_pict` FROM `T_models` WHERE `Model`='$ml' LIMIT 1;"); $model=$db->result($r,0,"Car_pict");}
         if ($mi>0 && is_numeric($mf)) {$r=$db->query("SELECT `Car_pict` FROM `T_models` WHERE `MOD_ID`='$mi' LIMIT 1;"); $modelid=$db->result($r,0,"Car_pict");}
-        return array ($manufacture, $model, $modelid);
+        return array ("mfa_image"=>$manufacture, "model_image"=>$model, "model_id_image"=>$modelid);
     }
 
     function getStrDescr($str_id) { $db=DbSingleton::getTokoDb();
@@ -251,7 +248,7 @@ class AutoClass {
         return array($str_id, $str_level, $str_id_parrent);
     }
 
-    function setAutoData($manufacture,$model,$modelid,$group,$str_id,$str_level,$str_id_parrent) {
+    function setAutoData($manufacture, $model, $modelid, $group, $str_id, $str_level, $str_id_parrent) {
         $_SESSION["manufacture"] = $manufacture;
         $_SESSION["model"] = $model;
         $_SESSION["modelid"] = $modelid;
@@ -259,6 +256,7 @@ class AutoClass {
         $_SESSION["str_id"] = $str_id;
         $_SESSION["str_level"] = $str_level;
         $_SESSION["str_id_parrent"] = $str_id_parrent;
+        return true;
     }
 
 //    function showCatalogueBlock($manufacture=null,$model=null,$modelid=null) {
@@ -411,7 +409,7 @@ class AutoClass {
     }
 
     function showTabCatalogueModel($auto, $year, $onclick="") { $db=DbSingleton::getTokoDb();
-        $list=$first=$second=""; $auto_name=$this->getAutoDescr($auto,"","","")[0];
+        $list=$first=$second=""; $manuf_cap=$this->getAutoDescr($auto)[0];
 
         if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >"; else $year_cap="";
 
@@ -428,7 +426,7 @@ class AutoClass {
 
         $db->query("UPDATE `T_manufacturers` SET `POSITION`=`POSITION`+1 WHERE `MFA_ID`='$auto' LIMIT 1;");
 
-        $list.="<span class=\"title_auto\"><i class=\"fa fa-car\"></i> $year_cap $auto_name</span><ul class=\"manufacture_list\">"; $list=$this->replaceLang($list);
+        $list.="<span class=\"title_auto\"><i class=\"fa fa-car\"></i> $year_cap $manuf_cap</span><ul class=\"manufacture_list\">"; $list=$this->replaceLang($list);
 
         for ($i=1;$i<=$n;$i++){
             $model=$db->result($r,$i-1,"Model");
@@ -504,7 +502,7 @@ class AutoClass {
 
         $form=$this->getHtmlForm("cat_tab_modelid");
         $form=str_replace("{cat_modelid}", $list, $form);
-        $auto_name=$this->getAutoDescr($auto,"","","")[0]; if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >"; else $year_cap="";
+        $auto_name=$this->getAutoDescr($auto)[0]; if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >"; else $year_cap="";
         $model!="" ? $form=str_replace("{tab_modelid_cap}", "$year_cap $auto_name > $model", $form) : $form=str_replace("{tab_modelid_cap}", "", $form);
         $form=$this->replaceLang($form);
         return $form;
@@ -512,7 +510,7 @@ class AutoClass {
 
     function showTabCatalogueGroup($modelid, $model, $auto, $year) { $db=DbSingleton::getTokoDb();
         $language=new LangClass; $prefix=$language->getLangPrefix();
-        $list=$list_phone=$year_cap=""; $mas=array();
+        $list=$list_phone=$year_cap=""; $mas=[];
         if ($year!="" && $year!="undefined" && $year!="all")
             $where_year="AND (
                 (`TYP_PCON_END`>=$year"."00 AND `TYP_PCON_END`<=$year"."12) 
@@ -589,8 +587,9 @@ class AutoClass {
 
         $form=$this->getHtmlForm("cat_tab_group");
         $form=str_replace("{cat_tab}",$list,$form);
-        list($auto_name,,$modelid_name,)=$this->getAutoDescr($auto,$model,$modelid,""); if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >";
-        $model!="" ? $form=str_replace("{tab_group_cap}","$year_cap $auto_name > $modelid_name",$form) : $form=str_replace("{tab_group_cap}", "", $form);
+        list($manuf_cap,,$model_id_cap,)=$this->getAutoDescr($auto,$model,$modelid);
+        if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >";
+        $model!="" ? $form=str_replace("{tab_group_cap}","$year_cap $manuf_cap > $model_id_cap",$form) : $form=str_replace("{tab_group_cap}", "", $form);
         $form=str_replace("{cat_tab_phone}",$list_phone,$form);
         $form=$this->replaceLang($form);
         return $form;
@@ -687,7 +686,7 @@ class AutoClass {
             $typ_text=$this->getGroupInfo($typ_id);
             list($manufacture,$model,$model_id)=$this->getCarInfo($typ_id);
             list($manufacture_cap,,$model_id_cap,)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
-            list(,,$models_img)=$this->getAutoIMG($manufacture,$model,$model_id);
+            $models_img=$this->getAutoIMG($manufacture,$model,$model_id)["model_id_image"];
             $auto_form=$this->getHtmlForm("garage/garage_selected");
             $auto_form=str_replace("{manufacture_cap}", $manufacture_cap, $auto_form);
             $auto_form=str_replace("{model_id_cap}", $model_id_cap, $auto_form);
@@ -881,8 +880,8 @@ class AutoClass {
 
     function getGarageAutoCount() { $db = DbSingleton::getTokoDb();
         $client_id=$this->getClient(); $user=$this->getUser(); $cookie=$_COOKIE["session_id"];
-        if ($user==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user'";
-        $r=$db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where;"); $n=$db->num_rows($r);
+        if ($user==0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user'";
+        $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where;"); $n = $db->num_rows($r);
         $n>0 ? $list=$n : $list="";
         $list=="" ? $style="none" : $style="";
         return array($list, $style);

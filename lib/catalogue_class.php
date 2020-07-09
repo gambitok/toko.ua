@@ -39,7 +39,6 @@ class CatalogueClass {
             $art_id_str.="'$art_id'";if ($i<$n){$art_id_str.=",";}
         }
 
-        //form replace
         $form=$this->getHtmlForm("cat_search");
         $search_main=$this->getHtmlForm("cat_search_main");
         $search_filters=$this->getHtmlForm("cat_search_filters");
@@ -725,8 +724,17 @@ class CatalogueClass {
                     $filter_price = $price;
 
                     // delivery
-                    list($delivery_info, $delivery_days, $delivery_short_info) = $this->getTpointDeliveryInfo($tpoint,$storage_id);
-                    if ($suppl_id!=0) list($delivery_info, $delivery_days, $delivery_short_info) = $this->getTpointSupplDeliveryInfo($tpoint,$suppl_id,$storage_id);
+                    $deliveryData = $this->getTpointDeliveryInfo($tpoint, $storage_id);
+                    $delivery_info = $deliveryData["info"];
+                    $delivery_days = $deliveryData["days"];
+                    $delivery_short_info = $deliveryData["short"];
+
+                    if ($suppl_id!=0) {
+                        $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
+                        $delivery_info = $deliveryData["info"];
+                        $delivery_days = $deliveryData["days"];
+                        $delivery_short_info = $deliveryData["short"];
+                    }
 
                     // filters
                     if ($filter_price>$filters["max_price"]) $filters["max_price"]=ceil($filter_price);
@@ -872,8 +880,17 @@ class CatalogueClass {
                     if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
 
                     // delivery
-                    list($delivery_info, $delivery_days, $delivery_short_info) = $this->getTpointDeliveryInfo($tpoint,$storage_id);
-                    if ($suppl_id!=0) list($delivery_info, $delivery_days, $delivery_short_info) = $this->getTpointSupplDeliveryInfo($tpoint,$suppl_id,$storage_id);
+                    $deliveryData = $this->getTpointDeliveryInfo($tpoint, $storage_id);
+                    $delivery_info = $deliveryData["info"];
+                    $delivery_days = $deliveryData["days"];
+                    $delivery_short_info = $deliveryData["short"];
+
+                    if ($suppl_id!=0) {
+                        $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
+                        $delivery_info = $deliveryData["info"];
+                        $delivery_days = $deliveryData["days"];
+                        $delivery_short_info = $deliveryData["short"];
+                    }
 
                     // ORDER BY search art and suppl_id
                     if ($art_id==$art_id_search) $status=2; else { $suppl_id==0 ? $status=1 : $status=0; }
@@ -1629,7 +1646,7 @@ class CatalogueClass {
             $info="$today<br>$time_from_del - $time_to_del";
             $short_info="$today<br>{with_cap} $time_from_del";
         }
-        return array($info, $delivery_days, $short_info);
+        return array("info"=>$info, "days"=>$delivery_days, "short"=>$short_info);
     }
 
     function getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $suppl_storage_id) { $db = DbSingleton::getTokoDb();
@@ -1652,16 +1669,16 @@ class CatalogueClass {
             $info="$today<br>$time_from_del - $time_to_del";
             $short_info="$today<br>{with_cap} $time_from_del";
         }
-        return array($info, $delivery_days, $short_info);
+        return array("info"=>$info, "days"=>$delivery_days, "short"=>$short_info);
     }
 
     function getOriginalNumbers($art_id) { $db = DbSingleton::getTokoDb();
         $language=new LangClass; $prefix=$language->getLangPrefix();
-        $arr=array();
         $r=$db->query("SELECT t2c.DISPLAY_NR, t2b.BRAND_NAME 
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
         WHERE t2c.KIND='3' AND t2c.RELATION='0' AND t2c.ART_ID='$art_id';"); $n=$db->num_rows($r);
+        $arr = [];
         if ($n>0) {
             for ($i=1;$i<=$n;$i++){
                 $art_name=$db->result($r,$i-1,"DISPLAY_NR");
@@ -1673,7 +1690,7 @@ class CatalogueClass {
                 <div class=\"col-3\">{brand_cap}</div>
                 <div class=\"col-9\">{art_cap}</div>
             </div>";
-            $i=1;
+            $i = 1;
             foreach ($arr as $arr_key=>$arr_val) {
                 $list.="<div class=\"row info__numbers-row\">
                     <div class=\"col-3 info__numbers-row-auto\">".$arr_key."</div>
@@ -1685,10 +1702,10 @@ class CatalogueClass {
                     if ($i<=count($arr_val)) $list.=", ";
                 }
                 $list.="</div></div>";
-                $i=1;
+                $i = 1;
             }
             $list.="</div>";
-        } else $list="$this->err1";
+        } else $list = $this->err1;
         return $list;
     }
 
@@ -1696,11 +1713,11 @@ class CatalogueClass {
         $language=new LangClass; $prefix=$language->getLangPrefix();
         $r=$db->query("SELECT * FROM `T2_CATALOGUES_TEMPLATES` WHERE `STATUS`=1 AND `PARENT_ID`=0;"); $n=$db->num_rows($r);
         $list="<ul class=\"goods\">";
-        for ($i=1;$i<=$n;$i++){
-            $template_id=$db->result($r,$i-1,"TEMPLATE_ID");
-            $template_link=$db->result($r,$i-1,"TEMPLATE_LINK");
-            $text=$db->result($r,$i-1,"TEMPLATE_NAME");
-            $descr=$db->result($r,$i-1,"TEMPLATE_DESCR");
+        for ($i=1; $i<=$n; $i++){
+            $template_id = $db->result($r,$i-1,"TEMPLATE_ID");
+            $template_link = $db->result($r,$i-1,"TEMPLATE_LINK");
+            $text = $db->result($r,$i-1,"TEMPLATE_NAME");
+            $descr = $db->result($r,$i-1,"TEMPLATE_DESCR");
             $link = $this->images."/templates/$template_id.png";
             $url="https://toko.ua$prefix/$this->products_link/$template_link/";
             $list.="<li class=\"goods__item\">
@@ -1712,8 +1729,8 @@ class CatalogueClass {
             </li>";
         }
         $list.="</ul>";
-        if ($n==0) $list=$this->err1;
-        $list=$this->replaceLang($list);
+        if ($n==0) $list = $this->err1;
+        $list = $this->replaceLang($list);
         return $list;
     }
 
@@ -1769,7 +1786,7 @@ class CatalogueClass {
             $name=$db->result($r, $i-1, "NAME");
             $info=$db->result($r, $i-1, "INFO");
             $barcode=$db->result($r, $i-1, "BARCODE");
-            $info=trim($info," "); $info=trim($info,"\n"); $info=trim($info,"\r");
+            $info=trim($info, " "); $info=trim($info, "\n"); $info=trim($info, "\r");
             $info=str_replace("\n", "", $info); $info=str_replace("\r", "", $info);
 
             $price=$this->getArticlePriceClient($art_id, $client_id, $cur);
@@ -2035,16 +2052,16 @@ class CatalogueClass {
             default: {$form="Something wrong!";break;}
         }
         if ($year=="all") $form = $automan->showTabCatalogueYear(1);
-        list($manufacture_text,,$model_id_text,$typ_text) = $automan->getAutoDescr($manufacture,$model,$model_id,$typ_id);
+        list($manufacture_text,,$model_id_cap,$typ_text) = $automan->getAutoDescr($manufacture,$model,$model_id,$typ_id);
         list($t_mf,$t_md,$t_mi,) = $automan->getAutoDescr($manufacture,$model,$model_id,$typ_id);
         if ($t_mf!="") $cat_text=" $t_mf";
         if ($t_md!="") $cat_text=" $t_mf $t_md";
         if ($t_mi!="") $cat_text=" $t_mf $t_mi";
         $str_text = $automan->getStrDescr($str_id);
-        $title = "$str_text {for_cap} $manufacture_text $model_id_text $typ_text | {site_title_short}";
+        $title = "$str_text {for_cap} $manufacture_text $model_id_cap $typ_text | {site_title_short}";
         if ($str_id=="")  {
-            $title = "$manufacture_text $model_id_text $typ_text | {site_title_short}";
-            $str_text = "$manufacture_text $model_id_text $typ_text";
+            $title = "$manufacture_text $model_id_cap $typ_text | {site_title_short}";
+            $str_text = "$manufacture_text $model_id_cap $typ_text";
         }
         $str_text = $this->formatUrlText($str_text);
 

@@ -16,6 +16,6 @@ if ($linka[1]=="init") {
 if ($str_id=="") {
     $content=str_replace("{main_window}", $parts->showPartsForm(), $content);
 } else {
-    $content=str_replace("{main_window}", $parts->showPartsCatalogue($str_id, $page)[0], $content);
+    $content=str_replace("{main_window}", $parts->showPartsCatalogue($str_id, $page)["form"], $content);
 }
 

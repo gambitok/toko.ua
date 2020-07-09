@@ -9,7 +9,7 @@ class ShopClass {
         $client=new ClientClass; $showform=new FormClass; $exrate=new ExRateClass; $cat=new CatalogueClass; $language=new LangClass;
         $sum=0; $sum_total=0; $disabled=$brow=$bprow=""; $location="stayInOrder();"; $location_fast="stayInOrder();";
         if ($cur==null || $cur=="NaN") $cur=1;
-        $cur_cap=$exrate->getKoursSymbol($cur); $t_point=$client->getTpoint(); $where=$client->getClientWhere(); $client_id=$client->getClient()[0];
+        $cur_cap=$exrate->getKoursSymbol($cur); $tpoint=$client->getTpoint(); $where=$client->getClientWhere(); $client_id=$client->getClient()[0];
         setcookie("currency", $cur); $_SESSION["currency"]=$cur; $count=0;
         $r=$db->query("SELECT * FROM `basket` WHERE $where ORDER BY `date_create` DESC;"); $n=$db->num_rows($r);
         if ($n>0) {
@@ -26,19 +26,29 @@ class ShopClass {
                 $date2 = date("Y-m-d H:i:s");
                 $storage_id = $db->result($r, $i - 1, "storage_id");
                 $stock = $db->result($r, $i - 1, "stock");
-                list($delivery_info,, $delivery_short_info) = $cat->getTpointDeliveryInfo($t_point,$storage_id);
-                if ($suppl_id!=0) list($delivery_info,, $delivery_short_info) = $cat->getTpointSupplDeliveryInfo($t_point,$suppl_id,$storage_id);
+
+                $deliveryData = $cat->getTpointDeliveryInfo($tpoint, $storage_id);
+                $delivery_info = $deliveryData["info"];
+                $delivery_short_info = $deliveryData["short"];
+                if ($suppl_id!=0) {
+                    $deliveryData = $cat->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
+                    $delivery_info = $deliveryData["info"];
+                    $delivery_short_info = $deliveryData["short"];
+                }
+
                 $status = $db->result($r, $i - 1, "status");
                 $status_checked = $db->result($r, $i - 1, "status_checked");
 
                 $price = $exrate->getKoursPrice($price, $cur);
-
                 if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
                 $full_price = $price * $amount;
                 if ($cur==1) $full_price = $client->getClientPriceRounding($client_id, $full_price);
 
-                if ($status_checked) $sum+=$full_price; $sum_total+=$full_price;
-                if ($status_checked) $count+=1;
+                $sum_total+=$full_price;
+                if ($status_checked) {
+                    $sum+=$full_price;
+                    $count+=1;
+                }
 
                 if (!($cat->checkActionPrice($art_id))) $action=""; else {
                     list(,$action_amount,$action_price)=$cat->checkActionPrice($art_id);
@@ -153,10 +163,12 @@ class ShopClass {
         $table_basket=str_replace("{total_style}", $sum==$sum_total ? "d-none" : "", $table_basket);
         $table_basket=str_replace("{location}", $location, $table_basket);
         $table_basket=str_replace("{location_fast}", $location_fast, $table_basket);
-        $table_basket=str_replace("{currency}", $showform->getCurrencyForm(4,0,$cur), $table_basket);
+        $table_basket=str_replace("{currency}", $showform->getCurrencyForm(4, 0, $cur), $table_basket);
         $table_basket=str_replace("{cur_cap}", $exrate->getKoursSymbol($cur), $table_basket);
         $table_basket=str_replace("{disabled}", $disabled, $table_basket);
-        $table_basket=str_replace("{basket_proposed}", $this->getProposedArts(), $table_basket); //getProposedArts
+        $table_basket=str_replace("{basket_proposed}", $this->getProposedArts(), $table_basket);
+        $table_basket=str_replace("{user_phone}", $client->getClientPhone(), $table_basket);
+        $table_basket=str_replace("{validate_class}", $client->getClientPhone()=="" ? "non_accept fa-times-circle" : "accept fa-check-circle", $table_basket);
 
         $table_basket=$this->replaceLang($table_basket);
         return $table_basket;
@@ -306,7 +318,7 @@ class ShopClass {
 
     function moveToBasket($art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id) { $db=DbSingleton::getTokoDb();
         $client=new ClientClass; $catalogue=new CatalogueClass; $exrate=new ExRateClass; $cat=new CatalogueClass;
-        $user=$client->getClient()[1]; $where=$client->getClientWhere(); $t_point=$client->getTpoint();
+        $user=$client->getClient()[1]; $where=$client->getClientWhere(); $tpoint=$client->getTpoint();
         $cookie=$_COOKIE["session_id"]; $date_time=date("Y-m-d H:i:s");
         $old_amount=0; $status_action=0;
         $art_name=$this->getArticleDispl($art_id);
@@ -325,9 +337,15 @@ class ShopClass {
         }
 
         // delivery
-        list(, $delivery_days, $short_delivery_info) = $cat->getTpointDeliveryInfo($t_point, $storage_id);
-        if ($suppl_id!=0) list(, $delivery_days, $short_delivery_info) = $cat->getTpointSupplDeliveryInfo($t_point, $suppl_id, $storage_id);
-        $short_delivery_info=$this->replaceLang($short_delivery_info);
+        $deliveryData = $cat->getTpointDeliveryInfo($tpoint, $storage_id);
+        $delivery_days = $deliveryData["days"];
+        $delivery_short_info = $deliveryData["short"];
+        if ($suppl_id!=0) {
+            $deliveryData = $cat->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
+            $delivery_days = $deliveryData["days"];
+            $delivery_short_info = $deliveryData["short"];
+        }
+        $delivery_short_info = $this->replaceLang($delivery_short_info);
 
         if ($n>0) {
             $r2=$db->query("SELECT * FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
@@ -341,7 +359,7 @@ class ShopClass {
             $db->query("UPDATE `basket` SET `amount`='$amount', `status_action`='$status_action' WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
         } else {
             $db->query("INSERT INTO `basket` (`art_id`, `brand_id`, `amount`, `price`, `stock`, `delivery`, `client_id`, `cookie_id`, `date_create`, `storage_id`, `delivery_info`, `suppl_id`,`status_action`,`status`) 
-            VALUES ('$art_id', '$brand_id', '$amount', $price, '$stock', '$delivery_days', '$user', '$cookie', '$date_time', '$storage_id', '$short_delivery_info', '$suppl_id', '$status_action', '0');");
+            VALUES ('$art_id', '$brand_id', '$amount', $price, '$stock', '$delivery_days', '$user', '$cookie', '$date_time', '$storage_id', '$delivery_short_info', '$suppl_id', '$status_action', '0');");
         }
         if ($amount>0) $amount_cap=$this->replaceLang("{site_basket}: $amount {amount_abbr}."); else $amount_cap="";
         return array($old_amount, $art_name, $amount_cap);
@@ -412,7 +430,7 @@ class ShopClass {
 
      function getUpdateData($art_id, $suppl_id, $storage_id, $amount) {
         $catalogue=new CatalogueClass; $exrate=new ExRateClass; $client=new ClientClass;
-        $t_point=$client->getTpoint();
+        $tpoint=$client->getTpoint();
         $price=$catalogue->getArticlePrice($art_id);
         if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
         if (!($catalogue->checkActionPrice($art_id))) {} else {
@@ -421,11 +439,11 @@ class ShopClass {
             if ($amount>=$action_amount) {$price=$action_price;}
         }
         if ($suppl_id==0) {
-            $ddData=$catalogue->getTpointDeliveryInfo($t_point, $storage_id);
-            $dd=$ddData[1];
+            $deliveryData = $catalogue->getTpointDeliveryInfo($tpoint, $storage_id);
+            $dd = $deliveryData["days"];
         } else {
-            $ddSupplData=$catalogue->getTpointSupplDeliveryInfo($t_point, $suppl_id, $storage_id);
-            $dd=$ddSupplData[1];
+            $deliveryData = $catalogue->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
+            $dd = $deliveryData["days"];
         }
         $stock=$this->getArticleStock($art_id, $storage_id);
         if ($stock==0 || $stock=="") $stock=$this->getArticleSupplStock($art_id, $suppl_id, $storage_id);
@@ -449,7 +467,11 @@ class ShopClass {
         list($basket, $price)=$this->showMiniBasketForm(); list($client_id, $user)=$client->getClient();
         $cur=$client->getClientCurrency($client_id); $cur_cap=$exrate->getKoursSymbol($cur);
 
-        list($phone, $email, $name, $city) = $client->getOrderInfo($client_id, $user);
+        $orderClientData = $client->getOrderInfo($client_id, $user);
+        $phone = $orderClientData["phone"];
+        $email = $orderClientData["email"];
+        $name = $orderClientData["name"];
+        $city = $orderClientData["city"];
         $t_point=$client->getTpointUser($client_id);
         $city_range=$showform->showCityFormSelected("",$city);
 
@@ -504,7 +526,11 @@ class ShopClass {
         if($user=="undefined") $user=$this->getUser();
 
         if ($user!==0 && $user!=="0") {
-            list($phone_client, $email_client, $name_client,)=$client->getOrderInfo($client_id, $user);
+            $orderClientData = $client->getOrderInfo($client_id, $user);
+            $phone_client = $orderClientData["phone"];
+            $email_client = $orderClientData["email"];
+            $name_client = $orderClientData["name"];
+
             $t_point=$client->getTpointUser($client_id);
             $phone=$phone_client;
             $email=$email_client;
@@ -580,7 +606,10 @@ class ShopClass {
         $form=$this->getHtmlForm("order/order_success");
         $form=str_replace("{order_id}", $order_id, $form);
         $form=str_replace("{client_id}", $user, $form);
-        list($phone,,$email,$name)=$client->infoClient($client_id,$user);
+        $clientData = $client->getClientInfo($client_id, $user);
+        $phone = $clientData["phone"];
+        $email = $clientData["email"];
+        $name = $clientData["name"];
         if ($client->checkUnRegClient()) $logout="dflex"; else $login="dflex";
         $form=str_replace("{input_name}", $name, $form);
         $form=str_replace("{input_phone}", $phone, $form);

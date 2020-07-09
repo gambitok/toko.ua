@@ -150,9 +150,6 @@ class PartsClass extends CatalogueClass {
     function getPartsCount($str_id, $brandy) { $dbc = DbSingleton::getTokoCacheDb();
         $where_brands="";
         if (!empty($brandy)) {
-            //$search=new SearchClass;
-            //$brand_list=$search->getBrandsList($brandy);
-            //if ($brand_list!="")
             $brand_list=implode(",", $brandy);
             if ($brand_list!="") $where_brands="WHERE `brand_id` IN ($brand_list)";
         }
@@ -165,7 +162,7 @@ class PartsClass extends CatalogueClass {
     }
 
     function showPartsCatalogue($str_id, $page=1, $brandy=[]) { $dbc = DbSingleton::getTokoCacheDb();
-        $automan=new AutoClass;
+        $automan = new AutoClass;
         $limit = $this->getSearchLimit($page);
         $str_text = $automan->getStrNewDescr($str_id); if ($str_text=="") $str_text = $automan->getStrDescr($str_id);
 
@@ -182,13 +179,13 @@ class PartsClass extends CatalogueClass {
         }
 
         $where_arts=implode(",",array_unique($arts));
-        list($list,,$filters,,$brands)=$this->searchList($where_arts, 1, 1);//
+        list($list,,$filters,,$brands) = $this->searchList($where_arts, 1, 1);
 
         $form=$this->getHtmlForm("parts_list");
         $form=str_replace("{parts_name}",$str_text,$form);
         $form=str_replace("{parts_list}",$list,$form);
 
-        return array($form,$filters,$brands);
+        return array("form"=>$form, "filters"=>$filters, "brands"=>$brands);
     }
 
     function getPartsBrandForm($str_id) { $dbc = DbSingleton::getTokoCacheDb();
@@ -210,15 +207,12 @@ class PartsClass extends CatalogueClass {
 
     function initPartsArts($str_id) { $dbc=DbSingleton::getTokoCacheDb();
         $art_ids=[];
-
         $r=$dbc->query("SELECT * FROM `XX_TABLE_TREE_$str_id` WHERE 1;"); $n=$dbc->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $art_id = $dbc->result($r,$i-1,"art_id");
             array_push($art_ids, $art_id);
         }
-
         $where_arts = implode(",", $art_ids);
-
         return $where_arts;
     }
 

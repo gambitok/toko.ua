@@ -1208,7 +1208,7 @@ class ProductsClass extends CatalogueClass {
         $form=str_replace("{typ_id}",$auto_typ_id,$form);
         list($manufacture,$model,$model_id)=$automan->getCarInfo($auto_typ_id);
         list($manufacture_cap,,$model_id_cap,)=$automan->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
-        list(,,$models_img)=$automan->getAutoIMG($manufacture,$model,$model_id);
+        $models_img=$automan->getAutoIMG($manufacture,$model,$model_id)["model_id_image"];
         $form=str_replace("{manufacture_cap}",$manufacture_cap,$form);
         $form=str_replace("{model_id_cap}",$model_id_cap,$form);
         $form=str_replace("{typ_text}",$automan->getGroupInfo($auto_typ_id),$form);

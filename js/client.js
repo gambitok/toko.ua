@@ -98,7 +98,7 @@ function saveRegistrationForm() { "use strict";
                 let text="{user_already_logged}!<br>{client_login}: "+result.content[0];
                 showAlertModal(text,"{error_cap}",0,showLoginForm);
             } else {
-                showValidateModal(phone,validatePhone,saveRegistration);
+                showValidateModal(phone, validatePhone, saveRegistration);
             }
         }}, true);
     } else {
