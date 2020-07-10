@@ -85,15 +85,15 @@
     </label>
     <div class="orders-block-row-hidden" id="tab-7">
         <label>{choose_delivery_company}:</label>
-        <select name="delivery_express" class="orders-block-row__input select2-block" title="{delivery_text_7}">
+        <select id="delivery_express" name="delivery_express" class="orders-block-row__input select2-block" title="{delivery_text_7}" onchange="setDeliveryExpressDepartment();">
             <option value="0">{not_chosen}</option>
             {express_delivery_list}
         </select>
         <br><br>
-        <label>{choose_department}:</label>
+        <label id="delivery_express_department">{choose_department}:</label>
         <!--<select name="department" class="orders-block-row__input select2-block" title="{department_cap}">-->
             <!--<option value="0">{not_chosen}</option>-->
         <!--</select>-->
-        <input name="delivery_express_department" class="orders-block-row__input" type="text" placeholder="{department_cap}">
+        <input name="delivery_express_department" class="orders-block-row__input" type="text" placeholder="{input_data_cap}">
     </div>
 </div>

@@ -23,7 +23,7 @@ $(document).ready(function() {
 
     $("input[name='user_delivery']").change(function() {
         getOrderPaymentBlock();
-        // uncheckRadioPayment();
+        uncheckRadioPayment();
         getBasketOrder();
 
         let amount = $("input[name='user_delivery']").filter(':checked').length;
@@ -138,14 +138,15 @@ function uncheckRadioDelivery() {
     });
 }
 
-// function uncheckRadioPayment() {
-//     $(".orders-block-row-payment").each(function () {
-//         $(this).find("label").find("input[type='radio']").prop("checked", false);
-//     });
-// }
+function uncheckRadioPayment() {
+    $(".orders-block-row-payment").each(function () {
+        $(this).find("label").find("input[type='radio']").prop("checked", false);
+    });
+    $("#valid_payment_block").removeClass("not-valid");
+}
 
 function getOrderPaymentBlock() {
-    let first = 0;
+    // let first = 0;
     let status = "1";
     $(".orders-block-row-payment").each(function () {
         let block = $(this);
@@ -157,13 +158,13 @@ function getOrderPaymentBlock() {
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 status = result.content;
                 if (status==="0") block.addClass("orders-block-row-hidden");
-                if (status==="1" && first===0) {
-                    block.find("label").find("input").prop("checked", true);
-                    first++;
-                }
+                // if (status==="1" && first===0) {
+                //     block.find("label").find("input").prop("checked", true);
+                //     first++;
+                // }
             }}, true);
-
     });
+    $("#valid_payment_block").removeClass("not-valid");
 }
 
 /*==== /DELIVERY + PAYMENT ====*/
@@ -210,7 +211,7 @@ function editFields() {
         $(this).prop("disabled", false);
     });
     uncheckRadioDelivery();
-    // uncheckRadioPayment();
+    uncheckRadioPayment();
     showOrderInfo();
     $("#valid_info").val(0);
 }
@@ -220,22 +221,39 @@ function getDeliveryTypeFields(delivery_id) {
     let street = div.find("div").find("input[name='street']").val();
     let house = div.find("div").find("input[name='house']").val();
     let porch = div.find("div").find("input[name='porch']").val();
-    // let department = div.find("select[name='department']").select2("val"); //select department name
-    let data = div.find("select[name='department']").select2("data"); //select department name
-    let department = "0";
-    if (data!==undefined) {
-        department = data[0].text;
-    }
-    let delivery_express = div.find("select[name='delivery_express']").select2("val");
+    let data_department = div.find("select[name='department']").select2("data");
+    let data_express = div.find("select[name='delivery_express']").select2("data");
     let delivery_express_department = div.find("div").find("input[name='delivery_express_department']").val();
+
+    let department = "0";
+    let department_id = "0";
+    let delivery_express = "0";
+
+    if (data_department!==undefined) {
+        department = data_department[0].text;
+        department_id = data_department[0].value;
+    }
+    if (data_express!==undefined) {
+        delivery_express = delivery_express[0].value;
+    }
+
     let arr = [];
     arr["street"] = street;
     arr["house"] = house;
     arr["porch"] = porch;
     arr["department"] = department;
+    arr["department_id"] = department_id;
     arr["delivery_express"] = delivery_express;
     arr["delivery_express_department"] = delivery_express_department;
     return arr;
+}
+
+function setDeliveryExpressDepartment() {
+    let delivery_express = $("#delivery_express option:selected").val();
+    JsHttpRequest.query(folder,{'w':'setDeliveryExpressDepartment', 'delivery_express':delivery_express},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            $("#delivery_express_department").html(result.content);
+        }}, true);
 }
 
 /*==== /SAVE ====*/
@@ -327,6 +345,11 @@ function validOrder() {
     div.find("div").find("select").each(function () {
         $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid");
     });
+    if (payment===undefined){
+        $("#valid_payment_block").addClass("not-valid");
+    } else {
+        $("#valid_payment_block").removeClass("not-valid");
+    }
 
     JsHttpRequest.query(folder,{'w':'validDeliveryFields', 'delivery':delivery, 'delivery_type':delivery_type},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
@@ -362,4 +385,40 @@ function validFullOrder() {
         }}, true);
 }
 
+function saveOrder() {
+    let name = $("#user_name").val();
+    let phone = $("#user_phone").val();
+    let city = $("#user_city").select2("val");
+    let delivery = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
+    let delivery_type = getDeliveryTypeFields(delivery);
+    let payment = $("input[name ='user_payment']:checked").attr("data-id-payment");
+    let email = $("#user_email").val();
+    let comment = $("#user_comment").val();
+
+    JsHttpRequest.query(folder,{'w':'saveOrder', 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            console.log('nice');
+        }}, true);
+}
+
 /*==== /VALID ORDER ====*/
+
+function setClientOrderInfo(id) {
+    JsHttpRequest.query(folder,{'w':'setClientOrderInfo', 'id':id},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            let arr = result.content;
+
+            let name = arr["name"];
+            let phone = arr["phone"];
+            let email = arr["email"];
+            let city_id = arr["city_id"];
+
+            $("#user_name").val(name);
+            $("#user_phone").val(phone);
+            $("#user_email").val(email);
+            // $("#user_city").val(city_id);
+            //
+            // validInfoFields();
+
+        }}, true);
+}

@@ -8,6 +8,7 @@ class ClientClass {
     var $default_user=0;
     var $default_tpoint=2;
     var $default_currency=1;
+    var $default_client_category=140;
 
     use Helper;
     use Variables;
@@ -217,8 +218,7 @@ class ClientClass {
     }
 
     function saveRegistration($phone, $pass, $email, $name, $client_category, $client_city, $client_tpoint, $mailing) { $db=DbSingleton::getDbm();
-        $phone = $this->getUrlString($phone);
-        $phone = $this->formatValidPhone($phone);
+        $phone = $this->formatValidPhone($this->getUrlString($phone));
         $pass = $this->getUrlString($pass);
         $email = $this->getUrlString($email);
         $name = $this->getUrlString($name);
@@ -229,14 +229,21 @@ class ClientClass {
         $client_id = $this->getClientByTpoint($client_tpoint);
         $date = date("Y-m-d H:i:s");
         list($region, $state, $country)=$this->getLocationCity($client_city); if ($client_category=="") $client_category=140;
-        $db->query("INSERT INTO `A_CLIENTS_USERS_RETAIL` (`name`, `email`, `phone`, `pass`, `client_id`, `client_category`, `data`, `country_id`, `state_id`, `region_id`, `city_id`, `mailing`, `status`) 
-        VALUES ('$name', '$email', '$phone', '$pass', $client_id, '$client_category', '$date', $country, $state, $region, $client_city, $mailing, $this->status_user_retail);");
+
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone`='$phone' LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n==0) {
+            $db->query("INSERT INTO `A_CLIENTS_USERS_RETAIL` (`name`, `email`, `phone`, `pass`, `client_id`, `client_category`, `data`, `country_id`, `state_id`, `region_id`, `city_id`, `mailing`, `status`) 
+            VALUES ('$name', '$email', '$phone', '$pass', $client_id, '$client_category', '$date', $country, $state, $region, $client_city, $mailing, $this->status_user_retail);");
+        } else {
+            $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `pass`='$pass', `email`='$email', `name`='$name' WHERE `phone`='$phone' LIMIT 1;");
+        }
+
         return true;
     }
 
-    function regClientRetail($tpoint_id, $name, $phone, $city, $email, $category) { $db=DbSingleton::getDbm();
-        $phone = $this->getUrlString($phone);
-        $phone = $this->formatValidPhone($phone);
+    function regClientRetail($tpoint_id, $name, $phone, $city, $email, $category=0) { $db=DbSingleton::getDbm();
+        if ($category==0) $category=$this->default_client_category;
+        $phone = $this->formatValidPhone($this->getUrlString($phone));
         $tpoint_id = $this->getUrlNumber($tpoint_id);
         $name = $this->getUrlString($name);
         $city = $this->getUrlString($city);
@@ -246,9 +253,17 @@ class ClientClass {
         $date = date("Y-m-d H:i:s");
         list($region, $state, $country)=$this->getLocationCity($city); if ($category=="") $category=140;
         $pass = $this->randomPassword();
-        $db->query("INSERT INTO `A_CLIENTS_USERS_RETAIL` (`name`, `email`, `phone`, `pass`, `country_id`, `state_id`, `region_id`, `city_id`, `client_id`, `data`, `status`, `client_category`) 
-        VALUES ('$name', '$email', '$phone', '$pass', '$country', '$state', '$region', '$city', $client_id, '$date', $this->status_user_retail, '$category');");
-        $r = $db->query("SELECT MAX(`id`) as max_client FROM `A_CLIENTS_USERS_RETAIL`;"); $max = intval($db->result($r,0,"max_client"));
+
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone`='$phone' LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n==0) {
+            $db->query("INSERT INTO `A_CLIENTS_USERS_RETAIL` (`name`, `email`, `phone`, `pass`, `country_id`, `state_id`, `region_id`, `city_id`, `client_id`, `data`, `status`, `client_category`) 
+            VALUES ('$name', '$email', '$phone', '$pass', '$country', '$state', '$region', '$city', $client_id, '$date', $this->status_user_retail, '$category');");
+            $r = $db->query("SELECT MAX(`id`) as max_client FROM `A_CLIENTS_USERS_RETAIL`;");
+            $max = intval($db->result($r, 0, "max_client"));
+        } else {
+            $max = intval($db->result($r, 0, "id"));
+        }
+
         return $max;
     }
 

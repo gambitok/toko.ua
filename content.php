@@ -52,8 +52,11 @@ if ($_REQUEST["w"]=="setCityDepartments"){$GLOBALS['_RESULT'] = array("content"=
 if ($_REQUEST["w"]=="getOrderDeliveryBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderDeliveryBlock($_REQUEST["delivery_id"], $_REQUEST["city_id"]));}
 if ($_REQUEST["w"]=="getOrderPaymentBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderPaymentBlock($_REQUEST["payment_id"], $_REQUEST["delivery_id"]));}
 if ($_REQUEST["w"]=="validOrder"){$GLOBALS['_RESULT'] = array("content"=>$shop->validOrder($_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["city"],$_REQUEST["delivery"],$_REQUEST["delivery_type"],$_REQUEST["payment"],$_REQUEST["email"],$_REQUEST["comment"]));}
+if ($_REQUEST["w"]=="saveOrder"){$GLOBALS['_RESULT'] = array("content"=>$shop->saveOrder($_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["city"],$_REQUEST["delivery"],$_REQUEST["delivery_type"],$_REQUEST["payment"],$_REQUEST["email"],$_REQUEST["comment"]));}
 if ($_REQUEST["w"]=="validDeliveryFields"){$GLOBALS['_RESULT'] = array("content"=>$shop->validDeliveryFields($_REQUEST["delivery"],$_REQUEST["delivery_type"]));}
 if ($_REQUEST["w"]=="getBasketOrder"){$GLOBALS['_RESULT'] = array("content"=>$shop->getBasketOrder($_REQUEST["delivery_id"]));}
+if ($_REQUEST["w"]=="setDeliveryExpressDepartment"){$GLOBALS['_RESULT'] = array("content"=>$shop->setDeliveryExpressDepartment($_REQUEST["delivery_express"]));}
+if ($_REQUEST["w"]=="setClientOrderInfo"){$GLOBALS['_RESULT'] = array("content"=>$shop->setClientOrderInfo($_REQUEST["id"]));}
 
 if ($_REQUEST["w"]=="getCityVal"){$GLOBALS['_RESULT'] = array("content"=>$shop->getCityVal($_REQUEST["search_text"]));}
 if ($_REQUEST["w"]=="setCityNPVal"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityNPVal($_REQUEST["city_id"]));}
