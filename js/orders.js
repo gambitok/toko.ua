@@ -1,11 +1,13 @@
 $(document).ready(function() {
 
+    // INIT PHONE
     $(".masked-phone").mask("+38(099) 999-99-99", {
         placeholder:"+38(0__) ___-__-__",
         autoclear: false,
         alias: "numeric"
     });
 
+    // INIT CITY
     $("#user_city").select2({
         language: {
             searching: function() {
@@ -17,36 +19,51 @@ $(document).ready(function() {
         }
     });
 
+    // INIT SELECT FIELDS
     $(".select2-block").each(function() {
         $(this).select2({language: "ru"});
     });
 
+    // ONCHANGE DELIVERY RADIO
     $("input[name='user_delivery']").change(function() {
         getOrderPaymentBlock();
         uncheckRadioPayment();
         getBasketOrder();
-
+        // SHOW PAYMENT (IF DELIVERY CHECKED)
         let amount = $("input[name='user_delivery']").filter(':checked').length;
         if (amount>0) {
             $("#orders-payment").removeClass("none");
         }
-    });
-
-    $("input[type='radio']").change(function() {
-
+        // HIDE RADIO CHILD BLOCK
         $(".orders-block-row-hidden").each(function () {
-           $(this).removeClass("orders-block-row-display");
+            $(this).removeClass("orders-block-row-display");
         });
-
+        // SHOW RADIO CHILD BLOCK (CHECKED)
         $("input[type='radio']").each(function () {
             if($(this).is(':checked')) $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
         });
-
     });
+
+    if ($("#user_city").select2("val")>0) {
+        setCityVal();
+    }
 
 });
 
-/*==== MAIN ====*/
+function getPhone(str) {
+    str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");
+    str = str.replace("-", "");
+    str = str.replace("-", "");
+    str = str.replace("+", "");
+    str = str.replace("(", "");
+    str = str.replace(")", "");
+    str = str.replace(" ", "");
+    return str;
+}
+
+/*==== INFO BLOCK ====*/
+
+// SET NOVA POSHTA DEPARTMENTS
 function setCityVal() {
     let data = $("#user_city").select2("data");
     if (data.length!==0) {
@@ -61,57 +78,59 @@ function setCityVal() {
     }
 }
 
+// ADD CITY VALUES (by SEARCH)
 function getCityVal() {
     let search_text = $(".select2-search__field").val();
-    let len = search_text.length;
-    if (len>2) {
-        JsHttpRequest.query(folder,{'w':'getCityVal', 'search_text':search_text},
-            function (result, errors){ if (errors) {alert(errors);} if (result) {
-                let user_city = $("#user_city");
-                user_city.append(result.content);
-                var mas=result.content;
-                var len=Object.keys(mas).length;
-                for (var i=1; i<=len; i++) {
-                    var id_city=Object.entries(mas[i])[0][1];
-                    var value_city=Object.entries(mas[i])[1][1];
-                    addOption(id_city,value_city);
-                }
-            }}, true);
+    if ($("#select2-user_city-results").val()!==undefined) {
+        if (search_text!==undefined) {
+            let len = search_text.length;
+            if (len>2) {
+                JsHttpRequest.query(folder,{'w':'getCityVal', 'search_text':search_text},
+                    function (result, errors){ if (errors) {alert(errors);} if (result) {
+                        let user_city = $("#user_city");
+                        user_city.append(result.content);
+                        var mas=result.content;
+                        var len=Object.keys(mas).length;
+                        for (var i=1; i<=len; i++) {
+                            var id_city=Object.entries(mas[i])[0][1];
+                            var value_city=Object.entries(mas[i])[1][1];
+                            addOption(id_city,value_city);
+                        }
+                    }}, true);
+            }
+        }
     }
-}
 
+}
 function addOption(id_city, value_city) {
-    let select_city=$('#user_city');
+    let select_city = $("#user_city");
     if (select_city.find("option[value='" + id_city + "']").length) {
-        //select_city.val(null).trigger('change');
+        //
     } else {
         let newOption = new Option(value_city, id_city, false, false);
         select_city.append(newOption).val(null).trigger('change');
     }
 }
 
-/*==== /MAIN ====*/
+/*==== /INFO BLOCK ====*/
 
 /*==== DELIVERY + PAYMENT ====*/
+
+// SET NOVA POSHTA DEPARTMENTS
 function setCityDepartments() {
     let city_ref = $("#user_city_np option:selected").val();
-    JsHttpRequest.query(folder,{'w':'setCityDepartments', 'city_ref':city_ref},
-        function (result, errors){ if (errors) {alert(errors);} if (result) {
-            let select_np = $("#select_delivery_np"); select_np.html("");
-            let select_up = $("#select_delivery_up"); select_up.html("");
-            select_np.html(result.content[0]); select_np.select2();
-            select_up.html(result.content[1]); select_up.select2();
-        }}, true);
+    if (city_ref!=="0" && city_ref!=="undefined") {
+        JsHttpRequest.query(folder,{'w':'setCityDepartments', 'city_ref':city_ref},
+            function (result, errors){ if (errors) {alert(errors);} if (result) {
+                let select_np = $("#select_delivery_np"); select_np.html("");
+                let select_up = $("#select_delivery_up"); select_up.html("");
+                select_np.html(result.content[0]); select_np.select2();
+                select_up.html(result.content[1]); select_up.select2();
+            }}, true);
+    }
 }
 
-function setCityAddress() {
-    let city_id = $("#user_city").select2("val");
-    JsHttpRequest.query(folder,{'w':'setCityAddress', 'city_id':city_id},
-        function (result, errors){ if (errors) {alert(errors);} if (result) {
-            $("#tpoint_address").html(result.content);
-        }}, true);
-}
-
+// GET DELIVERY BLOCK
 function getOrderDeliveryBlock() {
     $(".orders-block-row-delivery").each(function () {
         let delivery_id = $(this).attr("data-tab-delivery");
@@ -131,22 +150,8 @@ function getOrderDeliveryBlock() {
     setCityAddress();
 }
 
-function uncheckRadioDelivery() {
-    $(".orders-block-row-delivery").each(function () {
-        $(this).find("label").find("input[type='radio']").prop("checked", false);
-        $(this).find("div").removeClass("orders-block-row-display");
-    });
-}
-
-function uncheckRadioPayment() {
-    $(".orders-block-row-payment").each(function () {
-        $(this).find("label").find("input[type='radio']").prop("checked", false);
-    });
-    $("#valid_payment_block").removeClass("not-valid");
-}
-
+// GET PAYMENT BLOCK
 function getOrderPaymentBlock() {
-    // let first = 0;
     let status = "1";
     $(".orders-block-row-payment").each(function () {
         let block = $(this);
@@ -158,29 +163,50 @@ function getOrderPaymentBlock() {
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 status = result.content;
                 if (status==="0") block.addClass("orders-block-row-hidden");
-                // if (status==="1" && first===0) {
-                //     block.find("label").find("input").prop("checked", true);
-                //     first++;
-                // }
             }}, true);
+    });
+    $("#valid_payment_block").removeClass("not-valid");
+}
+
+// SET ADDRESS OF TPOINT (by CITY)
+function setCityAddress() {
+    let city_id = $("#user_city").select2("val");
+    JsHttpRequest.query(folder,{'w':'setCityAddress', 'city_id':city_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            $("#tpoint_address").html(result.content);
+        }}, true);
+}
+
+// UNCHECKED RADIO
+function uncheckRadioDelivery() {
+    $(".orders-block-row-delivery").each(function () {
+        $(this).find("label").find("input[type='radio']").prop("checked", false);
+        $(this).find("div").removeClass("orders-block-row-display");
+    });
+}
+function uncheckRadioPayment() {
+    $(".orders-block-row-payment").each(function () {
+        $(this).find("label").find("input[type='radio']").prop("checked", false);
     });
     $("#valid_payment_block").removeClass("not-valid");
 }
 
 /*==== /DELIVERY + PAYMENT ====*/
 
-/*==== SAVE ====*/
-function getPhone(str) {
-    str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");
-    str = str.replace("-", "");
-    str = str.replace("-", "");
-    str = str.replace("+", "");
-    str = str.replace("(", "");
-    str = str.replace(")", "");
-    str = str.replace(" ", "");
-    return str;
+/*==== SAVE ORDER ====*/
+
+// SHOW INFO BLOCK, HIDE OTHERS BLOCKS
+function editFields() {
+    $("#valid_button").removeClass("none");
+    $("#orders-delivery").addClass("none");
+    $("#orders-payment").addClass("none");
+    $(".valid_field").each(function() { $(this).prop("disabled", false); });
+    uncheckRadioDelivery();
+    uncheckRadioPayment();
+    showOrderInfo();
 }
 
+// HIDE INFO BLOCK, SHOW DELIVERY BLOCK
 function showOrderInfo() {
     $("#order_info_max").removeClass("none");
     $("#order_info_min_circle").removeClass("orders-header__round-fill");
@@ -191,6 +217,7 @@ function showOrderInfo() {
         }}, true);
 }
 
+// HIDE INFO BLOCK, SHOW DELIVERY BLOCK
 function hideOrderInfo() {
     $("#order_info_max").addClass("none");
     $("#order_info_min_circle").addClass("orders-header__round-fill");
@@ -203,19 +230,7 @@ function hideOrderInfo() {
         }}, true);
 }
 
-function editFields() {
-    $("#valid_button").removeClass("none");
-    $("#orders-delivery").addClass("none");
-    $("#orders-payment").addClass("none");
-    $(".valid_field").each(function() {
-        $(this).prop("disabled", false);
-    });
-    uncheckRadioDelivery();
-    uncheckRadioPayment();
-    showOrderInfo();
-    $("#valid_info").val(0);
-}
-
+// GET DELIVERY INFO FIELDS
 function getDeliveryTypeFields(delivery_id) {
     let div = $("div[data-tab-delivery='" + delivery_id + "']");
     let street = div.find("div").find("input[name='street']").val();
@@ -224,19 +239,16 @@ function getDeliveryTypeFields(delivery_id) {
     let data_department = div.find("select[name='department']").select2("data");
     let data_express = div.find("select[name='delivery_express']").select2("data");
     let delivery_express_department = div.find("div").find("input[name='delivery_express_department']").val();
-
     let department = "0";
     let department_id = "0";
     let delivery_express = "0";
-
     if (data_department!==undefined) {
         department = data_department[0].text;
         department_id = data_department[0].value;
     }
     if (data_express!==undefined) {
-        delivery_express = delivery_express[0].value;
+        delivery_express = data_express[0].value;
     }
-
     let arr = [];
     arr["street"] = street;
     arr["house"] = house;
@@ -248,6 +260,7 @@ function getDeliveryTypeFields(delivery_id) {
     return arr;
 }
 
+// SET DELIVERY EXPRESS CAPTION
 function setDeliveryExpressDepartment() {
     let delivery_express = $("#delivery_express option:selected").val();
     JsHttpRequest.query(folder,{'w':'setDeliveryExpressDepartment', 'delivery_express':delivery_express},
@@ -256,9 +269,7 @@ function setDeliveryExpressDepartment() {
         }}, true);
 }
 
-/*==== /SAVE ====*/
-
-/*==== BASKET ====*/
+// GET BASKET ORDER FORM
 function getBasketOrder() {
     $("#orders-basket").html("");
     let delivery_id = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
@@ -268,11 +279,12 @@ function getBasketOrder() {
         }}, true);
 }
 
-/*==== /BASKET ====*/
+/*==== /SAVE ====*/
 
-/*==== VALID FIELDS ====*/
+/*==== VALIDATION ====*/
+
+// VALID INFO FIELDS
 function validInfoFields() {
-
     let valid = 0;
     $(".valid_field").each(function() {
         let data_attr = $(this).attr("data-attr");
@@ -302,7 +314,11 @@ function validInfoFields() {
         }
         // SELECT FIELD
         if (data_attr==="select") {
-            let data_id = $(this).select2("data")[0].value;
+            let data_id = "0";
+            let data = $(this).select2("data");
+            if (data.length!==0) {
+                data_id = data[0].value;
+            }
             if (data_id==="0") {
                 valid++;
                 $(this).next(".select2-container").find(".select2-selection--single").addClass("not-valid");
@@ -322,17 +338,12 @@ function validInfoFields() {
         $("#valid_button").addClass("none");
         $("#orders-delivery").removeClass("none");
         hideOrderInfo();
-        $("#valid_info").val(1);
-    } else {
-        $("#valid_info").val(0);
+        getUserSavedData();
     }
-
     getOrderDeliveryBlock();
 }
 
-/*==== /VALID FIELDS ====*/
-
-/*==== VALID ORDER ====*/
+// VALID DELIVERY & PAYMENT FIELDS
 function validOrder() {
     let delivery = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
     let delivery_type = getDeliveryTypeFields(delivery);
@@ -368,6 +379,7 @@ function validOrder() {
         }}, true);
 }
 
+// SHOW ORDER DATA
 function validFullOrder() {
     let name = $("#user_name").val();
     let phone = $("#user_phone").val();
@@ -377,7 +389,6 @@ function validFullOrder() {
     let payment = $("input[name ='user_payment']:checked").attr("data-id-payment");
     let email = $("#user_email").val();
     let comment = $("#user_comment").val();
-
     JsHttpRequest.query(folder,{'w':'validOrder', 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             $("#OrderModal").modal("show");
@@ -385,6 +396,7 @@ function validFullOrder() {
         }}, true);
 }
 
+// FINISH ORDER
 function saveOrder() {
     let name = $("#user_name").val();
     let phone = $("#user_phone").val();
@@ -401,24 +413,77 @@ function saveOrder() {
         }}, true);
 }
 
-/*==== /VALID ORDER ====*/
+/*==== /VALIDATION ====*/
 
+/*==== USER DATA ====*/
+
+// INIT USER SAVED DATA
 function setClientOrderInfo(id) {
     JsHttpRequest.query(folder,{'w':'setClientOrderInfo', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             let arr = result.content;
-
-            let name = arr["name"];
-            let phone = arr["phone"];
-            let email = arr["email"];
+            // let name = arr["name"];
+            // let phone = arr["phone"];
+            // let email = arr["email"];
             let city_id = arr["city_id"];
+            let delivery_id = arr["delivery_id"];
+            let payment_id = arr["payment_id"];
+            let delivery_info = arr["delivery_info"];
 
-            $("#user_name").val(name);
-            $("#user_phone").val(phone);
-            $("#user_email").val(email);
-            // $("#user_city").val(city_id);
-            //
-            // validInfoFields();
+            // INFO
+            // $("#user_name").val(name);
+            // $("#user_phone").val(phone); $("#user_phone").mask("+38(099) 999-99-99", { placeholder:"+38(0__) ___-__-__", autoclear: false, alias: "numeric" });
+            // $("#user_email").val(email);
+
+            // CITY
+            $("#user_city").val(city_id); $("#user_city").select2();
+            // setCityDepartments();
+
+            // DELIVERY
+            $("input[data-id-delivery='" + delivery_id + "']").prop('checked', true);
+            $(".orders-block-row-hidden").each(function () {
+                $(this).removeClass("orders-block-row-display");
+            });
+            $("input[type='radio']").each(function () {
+                if($(this).is(':checked')) $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
+            });
+
+            // DELIVERY INFO FIELDS
+            let div = $("div[data-tab-delivery='" + delivery_id + "']");
+            div.find("div").find("input[name='street']").val(delivery_info["street"]);
+            div.find("div").find("input[name='house']").val(delivery_info["house"]);
+            div.find("div").find("input[name='porch']").val(delivery_info["porch"]);
+            div.find("select[name='department']").val(delivery_info["department"]); div.find("select[name='department']").select2();
+            div.find("select[name='delivery_express']").val(delivery_info["express"]); div.find("select[name='delivery_express']").select2();
+            div.find("div").find("input[name='delivery_express_department']").val(delivery_info["express_info"]);
+
+            // PAYMENT
+            let amount = $("input[name='user_delivery']").filter(':checked').length;
+            if (amount>0) {
+                $("#orders-payment").removeClass("none");
+            }
+            getOrderPaymentBlock();
+            $("input[data-id-payment='" + payment_id + "']").prop('checked', true);
+
+            // BASKET
+            getBasketOrder();
 
         }}, true);
+
+    $("#user_saved_info").html("");
 }
+
+// GET USER SAVED DATA (by CITY)
+function getUserSavedData() {
+    let city = $("#user_city").select2("val");
+    JsHttpRequest.query(folder,{'w':'getUserSavedData', 'city':city},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            if (result.status==1) {
+                setClientOrderInfo(result.info_id);
+            } else {
+                $("#user_saved_info").html(result.list);
+            }
+        }}, true)
+}
+
+/*==== /USER DATA ====*/

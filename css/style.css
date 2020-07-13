@@ -1782,6 +1782,16 @@ table thead td { border: 1px solid #000; }
 
 .orders h1 { font-size: 24px; }
 
+.orders-user { list-style: none; border: 1px solid #ddd; padding: 15px; margin-bottom: 30px; }
+
+.orders-user__title { color: #000; font-size: 18px; font-weight: 700; margin-bottom: 10px; margin-left: 0; }
+
+.orders-user__item { margin: 10px 0; padding-top: 10px; border-top: 1px dashed #ddd; }
+
+.orders-user__item a, .orders-user__item a:not([href]):not([tabindex]) { color: #55bae6; cursor: pointer; padding-left: 15px; }
+
+.orders-user__item a:hover, .orders-user__item a:not([href]):not([tabindex]):hover { text-decoration: underline; }
+
 .orders-row { display: flex; width: 100%; }
 
 .orders-col { display: inline-block; width: 33.33%; }
@@ -1882,9 +1892,9 @@ table thead td { border: 1px solid #000; }
 
 .cart-table-cell__summary { float: right; }
 
-.cart-table-cell__label { font-weight: bold; width: 70%; }
+.cart-table-cell__label { font-weight: bold; width: 50%; }
 
-.cart-table-cell__price { text-align: right; width: 30%; }
+.cart-table-cell__price { text-align: right; width: 50%; }
 
 .cart-table-head { background: #f1f1f1; font-weight: bold; }
 

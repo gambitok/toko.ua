@@ -227,6 +227,32 @@
     h1 {
         font-size: 24px;
     }
+    &-user {
+        list-style: none;
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 30px;
+        &__title {
+            color: #000;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            margin-left: 0;
+        }
+        &__item {
+            margin: 10px 0;
+            padding-top: 10px;
+            border-top: 1px dashed #ddd;
+            a, a:not([href]):not([tabindex]) {
+                color: #55bae6;
+                cursor: pointer;
+                padding-left: 15px;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
     &-row {
         display: flex;
         width: 100%;
@@ -463,11 +489,11 @@
         }
         &__label {
             font-weight: bold;
-            width: 70%;
+            width: 50%;
         }
         &__price {
             text-align: right;
-            width: 30%;
+            width: 50%;
         }
     }
     &-head {

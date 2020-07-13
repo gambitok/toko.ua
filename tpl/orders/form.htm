@@ -1,10 +1,5 @@
 <link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
 <style>
-    .div-link a, .div-link a:not([href]):not([tabindex]) {
-        color: #55bae6;
-        cursor: pointer;
-        text-decoration: underline;
-    }
     input:disabled {
         background-color: #eee;
         cursor: default;
@@ -33,10 +28,6 @@
 
 <div class="orders">
 
-    <input type="hidden" id="valid_info" value="0">
-    <input type="hidden" id="valid_delivery" value="0">
-    <input type="hidden" id="valid_payment" value="0">
-
     <!-- HEADER -->
     <div class="orders-header">
         <h1>{making_order_cap}</h1>
@@ -53,14 +44,12 @@
             <div class="orders-container" id="order_info_max">
                 <div class="orders-block">
 
-                    {user_info}
-
                     <div class="orders-block-row">
                         <div class="orders-block-row-title">
                             <label class="orders-block-row__label" for="user_name">{name_surname}</label>
                         </div>
                         <div class="orders-block-row-content">
-                            <input class="orders-block-row__input valid_field" type="text" name="user_name" id="user_name" data-attr="text" placeholder="{name_surname}">
+                            <input class="orders-block-row__input valid_field" type="text" name="user_name" id="user_name" data-attr="text" placeholder="{name_surname}"  value="{user_name}">
                         </div>
                     </div>
                     <div class="orders-block-row">
@@ -68,7 +57,7 @@
                             <label class="orders-block-row__label" for="user_phone">{phone_number}</label>
                         </div>
                         <div class="orders-block-row-content">
-                            <input class="orders-block-row__input masked-phone valid_field" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone" data-attr="phone">
+                            <input class="orders-block-row__input masked-phone valid_field" type="tel" placeholder="+38(0__) ___-__-__" name="user_phone" id="user_phone" data-attr="phone" value="{user_phone}">
                         </div>
                     </div>
                     <div class="orders-block-row">
@@ -103,6 +92,9 @@
                 </div>
                 <div class="orders-container">
                     <div class="orders-block">
+
+                        <div id="user_saved_info" class="orders-user"></div>
+
                         {order_delivery}
                     </div>
                 </div>
@@ -124,7 +116,7 @@
                                     <label class="orders-block-row__label" for="user_email">{user_email_cap}</label>
                                 </div>
                                 <div class="orders-block-row-content">
-                                    <input class="orders-block-row__input" type="email" name="user_email" id="user_email" placeholder="{user_email_cap}">
+                                    <input class="orders-block-row__input" type="email" name="user_email" id="user_email" placeholder="{user_email_cap}" value="{user_email}">
                                 </div>
                             </div>
                             <div class="orders-block-row">

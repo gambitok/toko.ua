@@ -58,6 +58,10 @@ if ($_REQUEST["w"]=="getBasketOrder"){$GLOBALS['_RESULT'] = array("content"=>$sh
 if ($_REQUEST["w"]=="setDeliveryExpressDepartment"){$GLOBALS['_RESULT'] = array("content"=>$shop->setDeliveryExpressDepartment($_REQUEST["delivery_express"]));}
 if ($_REQUEST["w"]=="setClientOrderInfo"){$GLOBALS['_RESULT'] = array("content"=>$shop->setClientOrderInfo($_REQUEST["id"]));}
 
+if ($_REQUEST["w"]=="getUserSavedData"){$GLOBALS['_RESULT'] = array("content"=>$shop->getUserSavedData($_REQUEST["city"]));} //
+
+if ($_REQUEST["w"]=="getUserSavedData"){ list($status, $list, $info_id)=$shop->getUserSavedData($_REQUEST["city"]); $GLOBALS['_RESULT'] = array("status"=>$status,"list"=>$list,"info_id"=>$info_id);}
+
 if ($_REQUEST["w"]=="getCityVal"){$GLOBALS['_RESULT'] = array("content"=>$shop->getCityVal($_REQUEST["search_text"]));}
 if ($_REQUEST["w"]=="setCityNPVal"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityNPVal($_REQUEST["city_id"]));}
 if ($_REQUEST["w"]=="setCityAddress"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityAddress($_REQUEST["city_id"]));}

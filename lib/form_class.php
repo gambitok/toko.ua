@@ -179,7 +179,7 @@ class FormClass {
         }
 
         $real_stock=$stock; if ($stock>10) $stock=">10";
-        $basket="moveBasket(0,'$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
+        $basket="moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
         $cur_cap=$kours->getKoursCaption($cur);
 
         $article = ["article_nr_displ"=>$article_nr_displ, "brand_id"=>$brand_id, "brand_name"=>$brand_name, "text"=>$text, "stock"=>$stock, "delivery"=>$delivery_short_info, "price"=>$price, "currency"=>$cur_cap, "delivery_days"=>$delivery_days, "basket"=>$basket];

@@ -28,7 +28,7 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) { "use st
     let count_id = $("#count_"+id);
     let basket_count_id = $("#basket_count_"+id);
     let count = count_id.val();
-    if (id==0) count = 1;
+    if (id=='one') count = 1; // for single product
 
     if (parseInt(stock)<parseInt(count) || parseInt(count)===0) {
         var secret = parseInt(stock) + 1;
