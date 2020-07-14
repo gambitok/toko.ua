@@ -965,6 +965,26 @@ header { width: 100%; color: #a9a9a9; }
 .seo_auto.title { font-weight: bold; }
 
 /*==== /SEO CARS =====*/
+.anchor-contacts { position: absolute; float: right; text-align: right; left: 90%; bottom: 5%; }
+
+.anchor-contacts-li { margin-top: 5px; padding: 5px; width: 70px; height: 70px; cursor: pointer; }
+
+.anchor-contacts-li:hover { padding: 0; }
+
+.anchor-contacts-li-hidden { display: none; }
+
+.anchor-contacts__item { transition: all .5s linear; height: 100%; width: 100%; border-radius: 100px; display: flex; color: #fff; align-items: center; justify-content: center; }
+
+.anchor-contacts__item img { width: 100%; height: 100%; padding: 15px; }
+
+.anchor-contacts__item-contacts { background: #2ecc71; }
+
+.anchor-contacts__item-telegram { background: #29a8ea; }
+
+.anchor-contacts__item-viber { background: #6359a7; }
+
+.anchor-contacts__item-facebook { background: #4064ad; }
+
 .metro { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; width: 100%; padding: 30px; }
 
 .home h1 { font-size: 24px; text-align: center; width: 100%; margin-bottom: 30px; }
@@ -1784,7 +1804,9 @@ table thead td { border: 1px solid #000; }
 
 .orders-user { list-style: none; border: 1px solid #ddd; padding: 15px; margin-bottom: 30px; }
 
-.orders-user__title { color: #000; font-size: 18px; font-weight: 700; margin-bottom: 10px; margin-left: 0; }
+.orders-user__title { color: #000; font-size: 18px; font-weight: 700; margin-bottom: 10px; margin-left: 0; display: inline; }
+
+.orders-user__toggle { float: right; cursor: pointer; }
 
 .orders-user__item { margin: 10px 0; padding-top: 10px; border-top: 1px dashed #ddd; }
 

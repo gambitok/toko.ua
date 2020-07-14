@@ -631,14 +631,13 @@ class ShopClass {
                 $street = $db->result($r, $i - 1, "DEL_STREET");
                 $house = $db->result($r, $i - 1, "DEL_HOUSE");
                 $porch = $db->result($r, $i - 1, "DEL_PORCH");
-//                $department_id = $db->result($r, $i - 1, "DEL_DEPARTMENT");
                 $department_text = $db->result($r, $i - 1, "DEL_DEPARTMENT_TEXT");
                 $express = $db->result($r, $i - 1, "DEL_EXPRESS");
                 $express_info = $db->result($r, $i - 1, "DEL_EXPRESS_INFO");
                 $delivery_info = $this->getDeliveryInfoCaption($delivery_id, $street, $house, $porch, $department_text, $express, $express_info);
                 if ($delivery_info!="") $delivery_info = "($delivery_info)";
                 $list.="<li class=\"orders-user__item\">
-                    <a onclick='setClientOrderInfo($id);'>$delivery_text $delivery_info - $payment_text</a>
+                    <a onclick='setClientOrderInfo($id);'>$i. $delivery_text $delivery_info <br> $payment_text</a>
                 </li>";
             }
             if ($n==1) {
@@ -646,7 +645,7 @@ class ShopClass {
                 $info_id = $id;
             }
             if ($n>0) {
-                $list = "<p class=\"orders-user__title\">{saved_address}:</p>".$list;
+                $list = "<div class=\"orders-user\"><p class=\"orders-user__title\">{saved_address}:</p><a class=\"orders-user__toggle\" onclick=\"ordersUserToggle();\"><i class=\"fa fa-chevron-down\"></i></a><div id=\"user_saved_info_list\">".$list."</div></div>";
             }
         }
         $list = $this->replaceLang($list);
@@ -669,9 +668,6 @@ class ShopClass {
         $form=str_replace("{order_payment}", $this->getOrderPayment(), $form);
         $form=str_replace("{basket_range}", $this->getBasketOrder(), $form);
         $form=str_replace("{user_city_main_list}", $this->getCitiesMainSelect($user_city), $form);
-//        $form=str_replace("{user_city_main_np}", $this->getCitiesMainSelect($user_city), $form);
-//        $form=str_replace("{user_city_np}", $this->getNovaPoshtaCitiesSelect(), $form);
-//        $form=str_replace("{user_info}", $this->getUserData(), $form);
         $form=str_replace("{user_name}", $user_name, $form);
         $form=str_replace("{user_phone}", $user_phone, $form);
         $form=str_replace("{user_email}", $user_email, $form);

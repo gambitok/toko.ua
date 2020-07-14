@@ -29,6 +29,7 @@ $(document).ready(function() {
         getOrderPaymentBlock();
         uncheckRadioPayment();
         getBasketOrder();
+        $("#user_saved_info_list").hide();
         // SHOW PAYMENT (IF DELIVERY CHECKED)
         let amount = $("input[name='user_delivery']").filter(':checked').length;
         if (amount>0) {
@@ -470,7 +471,7 @@ function setClientOrderInfo(id) {
 
         }}, true);
 
-    $("#user_saved_info").html("");
+    $("#user_saved_info_list").hide();
 }
 
 // GET USER SAVED DATA (by CITY)
@@ -484,6 +485,10 @@ function getUserSavedData() {
                 $("#user_saved_info").html(result.list);
             }
         }}, true)
+}
+
+function ordersUserToggle() {
+    $("#user_saved_info_list").toggle();
 }
 
 /*==== /USER DATA ====*/

@@ -2461,6 +2461,53 @@ header {
 
 /*==== /SEO CARS =====*/
 
+.anchor-contacts {
+    position: absolute;
+    float: right;
+    text-align: right;
+    left: 90%;
+    bottom: 5%;
+    &-li {
+        margin-top: 5px;
+        padding: 5px;
+        width: 70px;
+        height: 70px;
+        cursor: pointer;
+        &:hover {
+            padding: 0;
+        }
+        &-hidden {
+            display: none;
+        }
+    }
+    &__item {
+        transition: all .5s linear;
+        height: 100%;
+        width: 100%;
+        border-radius: 100px;
+        display: flex;
+        color: #fff;
+        align-items: center;
+        justify-content: center;
+        img {
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+        }
+        &-contacts {
+            background: #2ecc71;
+        }
+        &-telegram {
+            background: #29a8ea;
+        }
+        &-viber {
+            background: #6359a7;
+        }
+        &-facebook {
+            background: #4064ad;
+        }
+    }
+}
 
 
 
