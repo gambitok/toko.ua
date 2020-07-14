@@ -6,25 +6,25 @@ class AutoClass {
     use Variables;
 
     function getStrNewLink($str_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
-            $r=$db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
+            $r = $db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
         }
-        $str_text=$db->result($r,0,"TEX_LINK");
+        $str_text = $db->result($r,0,"TEX_LINK");
         return $str_text;
     }
 
     function getStrNewLinkStr($str_link) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `TEX_LINK`='$str_link' LIMIT 1;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `TEX_LINK`='$str_link' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
-            $r=$db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `TEX_LINK`='$str_link' LIMIT 1;");
+            $r = $db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `TEX_LINK`='$str_link' LIMIT 1;");
         }
-        $str_id=$db->result($r,0,"STR_ID");
+        $str_id = $db->result($r,0,"STR_ID");
         return $str_id;
     }
 
     function getHeadNewLinkStr($head_link) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `TEX_LINK`='$head_link' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `TEX_LINK`='$head_link' LIMIT 1;");
         $head_id = $db->result($r, 0, "HEAD_ID");
         return $head_id;
     }
@@ -36,16 +36,17 @@ class AutoClass {
     }
 
     function getHeadStr($str_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");  $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");  $n = $db->num_rows($r);
         if ($n==0) {
-            $r=$db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
+            $r = $db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
         }
         $head_id = $db->result($r, 0, "HEAD_ID");
         return $head_id;
     }
 
     function getCarLink($typ_id, $str_id) {
-        $language=new LangClass; $prefix=$language->getLangPrefix();
+        $language=new LangClass;
+        $prefix=$language->getLangPrefix();
         if ($typ_id>0 && $str_id>0) {
             list($mfa, $model)=$this->getCarDescriptionAll($typ_id);
             $str_text=$this->getStrNewLink($str_id);
@@ -86,38 +87,12 @@ class AutoClass {
         return $car_cap;
     }
 
-//    function getCarDescriptionShort($typ_id) { $db=DbSingleton::getTokoDb();
-//        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
-//        $mod_id=$db->result($r,0,"TYP_MOD_ID");
-//
-//        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
-//        $mfa_id=$db->result($r,0,"MOD_MFA_ID");
-//        $mod_cap=$db->result($r,0,"TEX_TEXT");
-//
-//        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
-//        $mfa_cap=$db->result($r,0,"MFA_BRAND");
-//
-//        $car_cap="$mfa_cap $mod_cap";
-//        return $car_cap;
-//    }
-
-//    function getCarStrUrl($typ_id, $str_id) {
-//        $str_text = $this->getStrNewDescr($str_id);
-//        $str_text = $this->formatUrlText($str_text);
-//        $typ_text = $this->getCarDescriptionShort($typ_id);
-//        $manuf_text = "$str_text dlya $typ_text";
-//        $manuf_text = $this->formatUrlText($manuf_text);
-//        return $manuf_text;
-//    }
-
     function getCarInfo($typ_id) { $db=DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
         $mod_id=$db->result($r,0,"TYP_MOD_ID");
-
         $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
         $mfa_id=$db->result($r,0,"MOD_MFA_ID");
         $model=$db->result($r,0,"Model");
-
         return array($mfa_id, $model, $mod_id);
     }
 
@@ -185,15 +160,16 @@ class AutoClass {
     }
 
     function getStrDescr($str_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT `DISP_TEXT` FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' AND `STR_ID`!=0 LIMIT 1;"); $n=$db->num_rows($r); $text="";
-        if ($n>0) $text=$db->result($r,0,"DISP_TEXT");
+        $r = $db->query("SELECT `DISP_TEXT` FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' AND `STR_ID`!=0 LIMIT 1;"); $n=$db->num_rows($r); $text="";
+        if ($n>0) $text = $db->result($r,0,"DISP_TEXT");
         return $text;
     }
 
     function getHeadNewDescr($head_id) { $db=DbSingleton::getTokoDb();
         $language=new LangClass; $lang_id=$language->getLanguage();
         $head_id=$this->getUrlNumber($head_id);
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `HEAD_ID`=$head_id LIMIT 1;"); $n=$db->num_rows($r); $TEX_TEXT=""; $TEX_LINK="";
+        $TEX_TEXT=""; $TEX_LINK="";
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `HEAD_ID`=$head_id LIMIT 1;"); $n=$db->num_rows($r);
         if ($n>0) {
             if ($lang_id==1) $TEX_TEXT=$db->result($r,0,"TEX_RU");
             if ($lang_id==2) $TEX_TEXT=$db->result($r,0,"TEX_UA");
@@ -206,7 +182,8 @@ class AutoClass {
     function getCatNewDescr($cat_id) { $db=DbSingleton::getTokoDb();
         $language=new LangClass; $lang_id=$language->getLanguage();
         $cat_id=$this->getUrlNumber($cat_id);
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `CAT_ID`=$cat_id LIMIT 1;"); $n=$db->num_rows($r); $TEX_TEXT=""; $TEX_LINK="";
+        $TEX_TEXT=""; $TEX_LINK="";
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `CAT_ID`=$cat_id LIMIT 1;"); $n=$db->num_rows($r);
         if ($n>0) {
             if ($lang_id==1) $TEX_TEXT=$db->result($r,0,"TEX_RU");
             if ($lang_id==2) $TEX_TEXT=$db->result($r,0,"TEX_UA");
@@ -219,7 +196,8 @@ class AutoClass {
     function getStrNewDescr($str_id) { $db=DbSingleton::getTokoDb();
         $language=new LangClass; $lang_id=$language->getLanguage();
         $str_id=$this->getUrlNumber($str_id);
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`=$str_id AND `STR_ID`!=0 LIMIT 1;"); $n=$db->num_rows($r); $TEX_TEXT="";
+        $TEX_TEXT="";
+        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`=$str_id AND `STR_ID`!=0 LIMIT 1;"); $n=$db->num_rows($r);
         if ($n>0) {
             if ($lang_id==1) $TEX_TEXT=$db->result($r,0,"TEX_RU");
             if ($lang_id==2) $TEX_TEXT=$db->result($r,0,"TEX_UA");
@@ -259,17 +237,6 @@ class AutoClass {
         return true;
     }
 
-//    function showCatalogueBlock($manufacture=null,$model=null,$modelid=null) {
-//        $form=$this->getHtmlForm("catalogue_auto");
-//        $list=$this->showTabCatalogueAuto();
-//        $form=str_replace("{catalogue_title}",$this->getHtmlForm("cat_tab_title")."<p></p>",$form);
-//        $form=str_replace("{catalogue_content}",$list,$form);
-//        $form=str_replace("{auto_manuf}",$manufacture,$form);
-//        $form=str_replace("{auto_model}",$model,$form);
-//        $form=str_replace("{auto_model_id}",$modelid,$form);
-//        return $form;
-//    }
-
     function showTabCatalogueAuto() { $db=DbSingleton::getTokoDb();
         $first=$second="";
         $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n=$db->num_rows($r);
@@ -283,8 +250,8 @@ class AutoClass {
                     $second = substr($mfa_brand,0,1);
                     $main_class = "class=\"search__cat-auto\"";
                 } else {
-                    $first="";$main_class="";
-                    $second=substr($mfa_brand,0,1);
+                    $first=""; $main_class="";
+                    $second = substr($mfa_brand, 0, 1);
                 }
                 $list.="
                 <a class=\"pointer\" onclick=\"triggerTabModel($mfa_id);\">
@@ -296,6 +263,7 @@ class AutoClass {
             }
             $list.="</ul>";
         } else $list="<span>$this->err1</span>";
+
         $form=$this->getHtmlForm("cat_tab_search");
         $form=str_replace("{catalogue_auto_list}", $list, $form);
         $form=str_replace("{catalogue_auto_title}", "", $form);
@@ -348,11 +316,11 @@ class AutoClass {
         $list.="</div>";
 
         if ($onclick=="") {
-            $form=$this->getHtmlForm("cat_tab_year");
-            $form=str_replace("{catalogue_year_list}", $list, $form);
-            $form=$this->replaceLang($form);
+            $form = $this->getHtmlForm("cat_tab_year");
+            $form = str_replace("{catalogue_year_list}", $list, $form);
+            $form = $this->replaceLang($form);
         } else {
-            $form=$list;
+            $form = $list;
         }
         return $form;
     }
@@ -381,7 +349,7 @@ class AutoClass {
 
         $first=$second="";
         if ($n>0) {
-            $list="<ul class=\"manufacture_list\">";
+            $list = "<ul class=\"manufacture_list\">";
             for ($i=1;$i<=$n;$i++) {
                 $mfa_brand=$db->result($r,$i-1,"MFA_BRAND");
                 $mfa_id=$db->result($r,$i-1,"MFA_ID");
@@ -409,10 +377,9 @@ class AutoClass {
     }
 
     function showTabCatalogueModel($auto, $year, $onclick="") { $db=DbSingleton::getTokoDb();
-        $list=$first=$second=""; $manuf_cap=$this->getAutoDescr($auto)[0];
+        $list=$first=$second="";
 
         if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >"; else $year_cap="";
-
         if ($year!="" && $year!="undefined" && $year!="all" && $year!="NaN") {
             $where_year="
             AND (
@@ -422,12 +389,11 @@ class AutoClass {
             )";
         } else $where_year="";
 
-        $r=$db->query("SELECT Model FROM `T_models` WHERE `MOD_MFA_ID`='$auto' $where_year GROUP BY `Model` ORDER BY `Model`"); $n=$db->num_rows($r);
-
         $db->query("UPDATE `T_manufacturers` SET `POSITION`=`POSITION`+1 WHERE `MFA_ID`='$auto' LIMIT 1;");
 
-        $list.="<span class=\"title_auto\"><i class=\"fa fa-car\"></i> $year_cap $manuf_cap</span><ul class=\"manufacture_list\">"; $list=$this->replaceLang($list);
+        $list.="<span class=\"title_auto\"><i class=\"fa fa-car\"></i> $year_cap ".$this->getAutoDescr($auto)[0]."</span><ul class=\"manufacture_list\">";
 
+        $r = $db->query("SELECT Model FROM `T_models` WHERE `MOD_MFA_ID`='$auto' $where_year GROUP BY `Model` ORDER BY `Model`"); $n = $db->num_rows($r);
         for ($i=1;$i<=$n;$i++){
             $model=$db->result($r,$i-1,"Model");
             if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second=substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
@@ -442,8 +408,10 @@ class AutoClass {
             </a>";
         }
         $list.="</ul>";
+
         if ($n==0) $list="<div class=\"row\"><div class=\"col-12 text-center\">$this->err1</div></div>";
-        $list=$this->replaceLang($list);
+
+        $list = $this->replaceLang($list);
         return $list;
     }
 
@@ -676,10 +644,12 @@ class AutoClass {
 //        if ($n==0) return false; else return array($manufacture, $model, $model_id, $typ_id);
 //    }
 
-    function getChosenAutoGarage($client_id, $user) { $db=DbSingleton::getTokoDb();
+
+    /*==== GARAGE ====*/
+    function getChosenAutoGarage($client_id, $user_id) { $db=DbSingleton::getTokoDb();
         $language=new LangClass; $prefix=$language->getLangPrefix();
         $cookie=$_COOKIE["session_id"];
-        if ($user==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user'";
+        if ($user_id==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user_id'";
         $r=$db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `status`=1 LIMIT 1;"); $n=$db->num_rows($r);
         if ($n>0) {
             $typ_id=$db->result($r,0,"typ_id");
@@ -701,8 +671,8 @@ class AutoClass {
     }
 
     function updateChosenAutoGarage($auto_id) { $db = DbSingleton::getTokoDb();
-        $client_id=$this->getClient(); $user=$this->getUser(); $cookie=$_COOKIE["session_id"];
-        if ($user==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user'";
+        $client_id=$this->getClient(); $user_id=$this->getUser(); $cookie=$_COOKIE["session_id"];
+        if ($user_id==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user_id'";
         $r=$db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where;"); $n=$db->num_rows($r);
         if ($n>0) {
             for ($i=1; $i<=$n; $i++) {
@@ -720,8 +690,8 @@ class AutoClass {
 
     function deleteAutoGarage($auto_id) { $db = DbSingleton::getTokoDb();
         $db->query("DELETE FROM `AUTO_GARAGE` WHERE `id`=$auto_id;");
-        $client_id=$this->getClient(); $user=$this->getUser(); $cookie=$_COOKIE["session_id"];
-        if ($user==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user'";
+        $client_id=$this->getClient(); $user_id=$this->getUser(); $cookie=$_COOKIE["session_id"];
+        if ($user_id==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user_id'";
         $r=$db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where ORDER BY `timestamp` DESC LIMIT 1;"); $n=$db->num_rows($r);
         if ($n==0) {
             setcookie("auto_typ_id", "", time()-3600, "/");
@@ -738,8 +708,8 @@ class AutoClass {
     function showGarageForm() { $db = DbSingleton::getTokoDb();
         $prod=new ProductsClass;
         $form=$this->getHtmlForm("garage/garage"); $list=$auto_form="";
-        $client_id=$this->getClient(); $user=$this->getUser(); $cookie=$_COOKIE["session_id"];
-        if ($user==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user'";
+        $client_id=$this->getClient(); $user_id=$this->getUser(); $cookie=$_COOKIE["session_id"];
+        if ($user_id==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user_id'";
         $r=$db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where;"); $n=$db->num_rows($r);
         if ($n>0) {
             for ($i=1; $i<=$n; $i++) {
@@ -768,7 +738,7 @@ class AutoClass {
                     </div>
                 </li>";
             }
-            $auto_form=$this->getChosenAutoGarage($client_id, $user);
+            $auto_form=$this->getChosenAutoGarage($client_id, $user_id);
         }
         $form=str_replace("{garage_list}", $list, $form);
         $form=str_replace("{auto_form}", $auto_form, $form);
@@ -854,9 +824,9 @@ class AutoClass {
 
     function addToGarage($typ_id) { $db = DbSingleton::getTokoDb();
         list($manufacture, $model, $model_id)=$this->getCarInfo($typ_id);
-        $client_id=$this->getClient(); $user=$this->getUser();
+        $client_id=$this->getClient(); $user_id=$this->getUser();
         $cookie=$_COOKIE["session_id"]; $max_auto=5;
-        if ($user==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user'";
+        if ($user_id==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user_id'";
         if ($manufacture!="" && $model!="" && $model_id!="" && $typ_id!="") {
             $count=$this->getGarageAutoCount()[0];
             if ($count<=$max_auto) {
@@ -867,7 +837,7 @@ class AutoClass {
                         $id = $db->result($rs, $i-1, "id");
                         $db->query("UPDATE `AUTO_GARAGE` SET `status`=0 WHERE `id`=$id;");
                     }
-                    $db->query("INSERT INTO `AUTO_GARAGE` (`client_id`,`user_id`,`cookie_id`,`typ_id`,`status`) VALUES ($client_id,$user,'$cookie',$typ_id,1);");
+                    $db->query("INSERT INTO `AUTO_GARAGE` (`client_id`,`user_id`,`cookie_id`,`typ_id`,`status`) VALUES ($client_id,$user_id,'$cookie',$typ_id,1);");
                     list($manufacture_cap,,$model_id_cap,$typ_text)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                     $text="{auto_cap} $manufacture_cap $model_id_cap $typ_text {garage_added}"; $text=$this->replaceLang($text);
                     setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
@@ -879,18 +849,28 @@ class AutoClass {
     }
 
     function getGarageAutoCount() { $db = DbSingleton::getTokoDb();
-        $client_id=$this->getClient(); $user=$this->getUser(); $cookie=$_COOKIE["session_id"];
-        if ($user==0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user'";
+        $client_id=$this->getClient(); $user_id=$this->getUser(); $cookie=$_COOKIE["session_id"];
+        if ($user_id==0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where;"); $n = $db->num_rows($r);
         $n>0 ? $list=$n : $list="";
         $list=="" ? $style="none" : $style="";
         return array($list, $style);
     }
 
+    function checkUserGarage($typ_id) { $db = DbSingleton::getTokoDb();
+        $client_id = $this->getClient(); $user_id = $this->getUser(); $cookie = $_COOKIE["session_id"];
+        if ($user_id==0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user_id'";
+        $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `typ_id`=$typ_id;");
+        $n = $db->num_rows($r);
+        if ($n == 0) return false; else return true;
+    }
+
+    /*==== HISTORY ====*/
+
     function insertAutoHistory($typ_id) { $db = DbSingleton::getTokoDb();
         $cookie=$_COOKIE["session_id"]; $date=date("Y-m-d H:i:s");
-        $client_id=$this->getClient(); $user=$this->getUser(); $max_history_count=10;
-        if ($user==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user'";
+        $client_id=$this->getClient(); $user_id=$this->getUser(); $max_history_count=10;
+        if ($user_id==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user_id'";
         $r=$db->query("SELECT COUNT(`id`) as kilk FROM `AUTO_HISTORY` WHERE $where;"); $k=$db->result($r,0,"kilk");
         if ($k>$max_history_count) {
             $r=$db->query("SELECT `id` FROM `AUTO_HISTORY` WHERE $where ORDER BY `timestamp` ASC LIMIT 1;");
@@ -902,17 +882,17 @@ class AutoClass {
                 $db->query("UPDATE `AUTO_HISTORY` SET `timestamp`='$date' WHERE $where AND `typ_id`='$typ_id';");
             else
                 $db->query("INSERT INTO `AUTO_HISTORY` (`client_id`,`client_user_id`,`cookie_id`,`typ_id`)
-                VALUES ('$client_id','$user','$cookie','$typ_id');");
+                VALUES ('$client_id','$user_id','$cookie','$typ_id');");
         }
         return true;
     }
 
     function showAutoHistory() { $db=DbSingleton::getTokoDb();
         $cookie=$_COOKIE["session_id"];
-        $user=$this->getUser(); $client_id=$this->getClient();
-        if ($user==0) $where="cookie_id='$cookie'"; else $where="client_id='$client_id' AND client_user_id='$user'";
-        $r=$db->query("SELECT `id`, `typ_id` FROM `AUTO_HISTORY`
-        WHERE $where GROUP BY `typ_id` ORDER BY `timestamp` DESC LIMIT 10;");$n=$db->num_rows($r);
+        $user_id=$this->getUser(); $client_id=$this->getClient();
+        if ($user_id==0) $where="cookie_id='$cookie'"; else $where="client_id='$client_id' AND client_user_id='$user_id'";
+        $r = $db->query("SELECT `id`, `typ_id` FROM `AUTO_HISTORY`
+        WHERE $where GROUP BY `typ_id` ORDER BY `timestamp` DESC LIMIT 10;"); $n = $db->num_rows($r);
         if ($n>0) {
             $list="";
             for ($i=1;$i<=$n;$i++){
@@ -940,21 +920,13 @@ class AutoClass {
 
     function dropAutoHistory($history_id) { $db=DbSingleton::getTokoDb();
         if ($history_id=="") {
-            $cookie=$_COOKIE["session_id"]; $user=$this->getUser(); $client_id=$this->getClient();
-            if ($user==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user'";
+            $cookie=$_COOKIE["session_id"]; $user_id=$this->getUser(); $client_id=$this->getClient();
+            if ($user_id==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user_id'";
         } else  {
             $where="`id`='$history_id'";
         }
         $db->query("DELETE FROM `AUTO_HISTORY` WHERE $where");
         return true;
-    }
-
-    function checkUserGarage($typ_id) { $db = DbSingleton::getTokoDb();
-        $client_id = $this->getClient(); $user = $this->getUser(); $cookie = $_COOKIE["session_id"];
-        if ($user == 0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user'";
-        $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `typ_id`=$typ_id;");
-        $n = $db->num_rows($r);
-        if ($n == 0) return false; else return true;
     }
 
     /*==========================================*/

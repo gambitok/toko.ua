@@ -986,8 +986,8 @@ class ProductsClass extends CatalogueClass {
         $list_manuf = $this->getCarsSearchContent("", "", $str_id)[0];
 
         if ($mfa_link!="") {
-            $mfa_id=$automan->getMfaLink($mfa_link);
-            $mfa_brand=$automan->getMfaBrand($mfa_id);
+            $mfa_id = $automan->getMfaLink($mfa_link);
+            $mfa_brand = $automan->getMfaBrand($mfa_id);
             $list_model = $this->getCarsSearchContent("manuf", $mfa_id, $str_id)[0];
             $form=str_replace("{cars_models}", $list_model, $form);
             $form=str_replace("{selected_manuf}", $mfa_id, $form);

@@ -137,7 +137,7 @@ class FormClass {
 
     function getArticleInfo($art_id) { $db=DbSingleton::getTokoDb();
         $cat=new CatalogueClass; $client=new ClientClass; $kours=new ExRateClass;
-        $tpoint=$client->getTpoint(); $cur=$kours->getCurrentKours(); $client_id=$this->getClient();
+        $tpoint = $client->getTpoint(); $cur = $kours->getCurrentKours(); $cur_cap = $kours->getKoursCaption($cur);
 
         $r=$db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
         FROM `T2_ARTICLES` t2a
@@ -166,7 +166,7 @@ class FormClass {
         $price = $cat->getArticlePrice($art_id);
         if ($suppl_id!=0) $price = $cat->getArticleSupplPrice($art_id,$suppl_id,$storage_id);
         $price = $kours->getKoursPrice($price, $cur);
-        if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
+        if ($cur==1) $price = $client->getClientPriceRounding($this->getClient(), $price);
 
         $deliveryData = $cat->getTpointDeliveryInfo($tpoint, $storage_id);
         $delivery_days = $deliveryData["days"];
@@ -178,9 +178,9 @@ class FormClass {
             $delivery_short_info = $deliveryData["short"];
         }
 
-        $real_stock=$stock; if ($stock>10) $stock=">10";
-        $basket="moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
-        $cur_cap=$kours->getKoursCaption($cur);
+        $real_stock = $stock; if ($stock>10) $stock=">10";
+        $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
+
 
         $article = ["article_nr_displ"=>$article_nr_displ, "brand_id"=>$brand_id, "brand_name"=>$brand_name, "text"=>$text, "stock"=>$stock, "delivery"=>$delivery_short_info, "price"=>$price, "currency"=>$cur_cap, "delivery_days"=>$delivery_days, "basket"=>$basket];
         return $article;
@@ -189,24 +189,23 @@ class FormClass {
     function getCurrencyForm($type_filter, $template_id, $cur) {
         $kours=new ExRateClass; $client=new ClientClass;
         $jsFilter=$cash_add=""; $ch1=$ch2=$ch3=0;
-        list($client_id,$user)=$client->getClient(); $cash_id=$client->getClientCurrency($client_id);
-        if ($cur==2) $ch2="checked=\"checked\""; elseif ($cur==3) $ch3="checked=\"checked\""; else $ch1="checked=\"checked\"";
+        $cash_id = $client->getClientCurrency($this->getClient());
+        if ($cur==2) $ch2 = "checked=\"checked\""; elseif ($cur==3) $ch3 = "checked=\"checked\""; else $ch1 = "checked=\"checked\"";
         switch ($type_filter) {
             case 1: {$jsFilter = "catalogueFilter();"; break;}
             case 2: {$jsFilter = "tecModelsFilter();"; break;}
             case 3: {$jsFilter = "catGroupFilter($template_id);"; break;}
             case 4: {$jsFilter = "showBasketForm();"; break;}
         }
-        $list="";
-        if ($cash_id==2) $cash_add="<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"$jsFilter\"><label for=\"radio_usd\">$</label>";
-        if ($cash_id==3) $cash_add="<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"$jsFilter\"><label for=\"radio_eur\">€</label>";
-        if ($user!=0) {
-            $cur_usd=$kours->getKours("dollar"); $cur_eur=$kours->getKours("euro");
-            $list.="<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"$jsFilter\">
+        if ($cash_id==2) $cash_add = "<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"$jsFilter\"><label for=\"radio_usd\">$</label>";
+        if ($cash_id==3) $cash_add = "<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"$jsFilter\"><label for=\"radio_eur\">€</label>";
+        if ($this->getUser()!=0) {
+            $cur_usd = $kours->getKours("dollar"); $cur_eur = $kours->getKours("euro");
+            $list = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"$jsFilter\">
                 <label for=\"radio_uah\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{currency_cap}: &#xA USD - $cur_usd &#xA EURO - $cur_eur\">{uah_cap}</label>
             $cash_add";
         } else {
-            $list="";
+            $list = "";
         }
         return $list;
     }
@@ -276,12 +275,12 @@ class FormClass {
 
     /*==== HISTORY ====*/
     function insertHistory($article_nr_displ, $brand_id) { $db = DbSingleton::getTokoDb();
-        session_start(); $ses=session_id(); $cookie=$_COOKIE["session_id"];
-        $date=date("Y-m-d H:i:s"); $client_id=$this->getClient(); $user=$this->getUser();
+        session_start(); $ses=session_id(); $cookie=$_COOKIE["session_id"]; $date=date("Y-m-d H:i:s");
+        $client_id = $this->getClient(); $user_id = $this->getUser();
         $max_history_count=10;
         $art_id=$this->getArtID($article_nr_displ);
         if ($brand_id>0 && is_numeric($brand_id)) {
-            if ($user==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user'";
+            if ($user_id==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user_id'";
             $r=$db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;"); $k=$db->result($r,0,"kilk");
             if ($k>$max_history_count) {
                 $r=$db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
@@ -293,7 +292,7 @@ class FormClass {
                     $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date' WHERE $where AND `article_nr_displ`='$article_nr_displ' AND `brand_id`='$brand_id';");
                 else
                     $db->query("INSERT INTO `CLIENT_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `article_nr_displ`, `brand_id`, `data`, `art_id`) 
-                    VALUES ('$client_id','$user','$ses','$cookie','$article_nr_displ','$brand_id','$date','$art_id');");
+                    VALUES ('$client_id','$user_id','$ses','$cookie','$article_nr_displ','$brand_id','$date','$art_id');");
             }
         }
         return true;
@@ -353,8 +352,8 @@ class FormClass {
     function deleteHistoryItem($id) { $db=DbSingleton::getTokoDb();
         if ($id=="") {
             $cookie=$_COOKIE["session_id"];
-            $client_id=$this->getClient(); $user=$this->getUser();
-            if ($user==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user'";
+            $client_id=$this->getClient(); $user_id=$this->getUser();
+            if ($user_id==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user_id'";
         } else {
             $where = "`id`='$id'";
         }

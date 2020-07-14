@@ -420,8 +420,7 @@ class CatalogueClass {
 
     function getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id) {
         $client=new ClientClass; $automan=new AutoClass; $kours=new ExRateClass;
-        list($client_id, $user)=$client->getClient();
-        $cash_id=$client->getClientCurrency($client_id); $cur=$kours->getCurrentKours();
+        $cash_id=$client->getClientCurrency($this->getClient()); $cur=$kours->getCurrentKours();
         $mfa_mod_typ_text=$automan->getCarDescription($typ_id);
         $ch1=$ch2=$ch3=$cash_add="";
 
@@ -439,7 +438,7 @@ class CatalogueClass {
 
         if ($cash_id==2) $cash_add="<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"tecModelsFilter();\"><label for=\"radio_usd\">$</label>";
         if ($cash_id==3) $cash_add="<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"tecModelsFilter();\"><label for=\"radio_eur\">€</label>";
-        if ($user!=0) $currency="<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>$cash_add";
+        if ($this->getUser()!=0) $currency="<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>$cash_add";
         else $currency="<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>";
 
         $search_main=str_replace("{art}", $result, $search_main);
@@ -1445,8 +1444,8 @@ class CatalogueClass {
     }
 
     function checkActionPrice($art_id) { $db = DbSingleton::getDbm();
-        $user_client_id=$this->getClient(); $categories=[]; $actions=[];
-        $r=$db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$user_client_id';"); $n=$db->num_rows($r);
+        $client_id=$this->getClient(); $categories=[]; $actions=[];
+        $r=$db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $category_id = $db->result($r, $i-1, "client_category");
             array_push($categories, $category_id);
@@ -1456,7 +1455,7 @@ class CatalogueClass {
         $r=$db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `art_id`='$art_id' and `status`=1;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $action_id=$db->result($r, $i-1, "id");
-            $r2=$db->query("SELECT * FROM `ACTION_CLIENTS_LIST` WHERE `action_id`='$action_id' AND `client_id`='$user_client_id';"); $n2=$db->num_rows($r2);
+            $r2=$db->query("SELECT * FROM `ACTION_CLIENTS_LIST` WHERE `action_id`='$action_id' AND `client_id`='$client_id';"); $n2=$db->num_rows($r2);
             if ($n2>0) array_push($actions, $action_id);
             if ($categories!="") {
                 $r3=$db->query("SELECT * FROM `ACTION_CLIENTS_CATEGORY` WHERE `action_id`='$action_id' AND `category_id` IN ($categories);"); $n3=$db->num_rows($r3);
@@ -1744,15 +1743,15 @@ class CatalogueClass {
         return $format_text;
     }
 
-    function getPriceList($user=null) { $db=DbSingleton::getTokoDb();
-        $client=new ClientClass; $kours=new ExRateClass;
-        $client_id=$client->getClientByUser($user); $tpoint_id=$client->getTpointUser($client_id);
-        $cur=$client->getClientCurrency($client_id); $cur_cap=$kours->getKoursCaption($cur);
+    function getPriceList($user_id = null) { $db=DbSingleton::getTokoDb();
+        $client = new ClientClass; $kours = new ExRateClass;
+        $client_id = $client->getClientByUser($user_id); $tpoint_id = $client->getTpointUser($client_id);
+        $cur = $client->getClientCurrency($client_id); $cur_cap = $kours->getKoursCaption($cur);
         $list=[]; $storages=[];
 
         $filials_list=["#","{art_cap}","{brand_cap}","{caption_cap}","{price_cap}","{currency}","{descrip_cap}","Barcode"];
 
-        $tpoints=$client->getOtherTpoints($tpoint_id);
+        $tpoints = $client->getOtherTpoints($tpoint_id);
         foreach ($tpoints as $tpoint) {
             list($storage_local_alien, $storage_remote_alien) = $client->getStorageByTpoint($tpoint);
             if ($tpoint==$tpoint_id) $storage_cap="{your_affiliate} -"; else $storage_cap="";
@@ -1767,17 +1766,17 @@ class CatalogueClass {
             if ($storage_remote_alien!="") {array_push($filials_list,"$storage_cap $city_remote ($address_remote) ({remote_storage})"); array_push($storages,$storage_remote_alien);}
         }
 
-        $list[0]=$filials_list;
-        $list[0]=$this->replaceLang($list[0]);
+        $list[0] = $filials_list;
+        $list[0] = $this->replaceLang($list[0]);
 
-        $r=$db->query("SELECT t2as.ART_ID, t2as.STORAGE_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2br.BARCODE 
+        $r = $db->query("SELECT t2as.ART_ID, t2as.STORAGE_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2br.BARCODE 
         FROM `T2_ARTICLES_STRORAGE` t2as
             LEFT OUTER JOIN `T2_ARTICLES` t2a ON t2a.ART_ID=t2as.ART_ID
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
             LEFT OUTER JOIN `T2_BARCODES` t2br ON t2br.ART_ID=t2a.ART_ID
         WHERE t2as.AMOUNT!=0 AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
-        GROUP BY t2a.ARTICLE_NR_DISPL;"); $n=$db->num_rows($r);
+        GROUP BY t2a.ARTICLE_NR_DISPL;"); $n = $db->num_rows($r);
 
         for ($i=1;$i<=$n;$i++) {
             $art_id=$db->result($r, $i-1, "ART_ID");
@@ -1789,14 +1788,14 @@ class CatalogueClass {
             $info=trim($info, " "); $info=trim($info, "\n"); $info=trim($info, "\r");
             $info=str_replace("\n", "", $info); $info=str_replace("\r", "", $info);
 
-            $price=$this->getArticlePriceClient($art_id, $client_id, $cur);
-            $price=str_replace(".",",","$price");
+            $price = $this->getArticlePriceClient($art_id, $client_id, $cur);
+            $price = str_replace(".", ",", "$price");
 
             $rs=$db->query("SELECT * FROM `T2_ARTICLES_NOT_EXPORT` WHERE `ART_ID`='$art_id' LIMIT 1;"); $ns=$db->num_rows($rs);
             if ($ns==0) {
-                $list[$i]=[$i,"$art_dspl","$brand","$name","$price","$cur_cap","$info","$barcode"];
+                $list[$i] = [$i,"$art_dspl","$brand","$name","$price","$cur_cap","$info","$barcode"];
                 foreach ($storages as $storage) {
-                    $stock=$this->getStockStorage($art_id, $storage);
+                    $stock = $this->getStockStorage($art_id, $storage);
                     if ($stock>10) $stock=">10";
                     array_push($list[$i], $stock);
                 }
@@ -1807,19 +1806,20 @@ class CatalogueClass {
     }
 
     function getArticlePriceRatingCash($art_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id`='$art_id' AND `in_use`=1 LIMIT 1;"); $n=$db->num_rows($r); $cash_id=2;
-        if ($n>0) $cash_id=$db->result($r,0,"cash_id");
+        $cash_id=2;
+        $r = $db->query("SELECT * FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id`='$art_id' AND `in_use`=1 LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n>0) $cash_id = $db->result($r,0,"cash_id");
         if ($cash_id==0 || $cash_id=="0") {
             $db->query("UPDATE `T2_ARTICLES_PRICE_RATING` SET `cash_id`=2 WHERE `art_id`='$art_id' AND `in_use`=1 LIMIT 1;");
-            $cash_id=2;
+            $cash_id = 2;
         }
         return $cash_id;
     }
 
     function getPriceRatingKours($price, $cash_id_from, $cash_id_to) {
-        $kours=new ExRateClass;
-        $usd_to_uah=$kours->getKours("dollar");
-        $eur_to_uah=$kours->getKours("euro");
+        $kours = new ExRateClass;
+        $usd_to_uah = $kours->getKours("dollar");
+        $eur_to_uah = $kours->getKours("euro");
         if ($cash_id_from==$cash_id_to) {$price=$price*1;}
         if ($cash_id_from==1 && $cash_id_to==2) {$price=$price/$usd_to_uah;}
         if ($cash_id_from==1 && $cash_id_to==3) {$price=$price/$eur_to_uah;}
@@ -1827,7 +1827,7 @@ class CatalogueClass {
         if ($cash_id_from==3 && $cash_id_to==1) {$price=$price*$eur_to_uah;}
         if ($cash_id_from==2 && $cash_id_to==3) {$price=$price*$usd_to_uah/$eur_to_uah;}
         if ($cash_id_from==3 && $cash_id_to==2) {$price=$price*$eur_to_uah/$usd_to_uah;}
-        $price=round($price,2);
+        $price = round($price,2);
         return $price;
     }
 
