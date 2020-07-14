@@ -2465,8 +2465,9 @@ header {
     position: absolute;
     float: right;
     text-align: right;
-    left: 90%;
-    bottom: 5%;
+    left: calc(100% - 100px);
+    bottom: 30px;
+    z-index: 999;
     &-li {
         margin-top: 5px;
         padding: 5px;

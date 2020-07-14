@@ -44,7 +44,7 @@ if ($_REQUEST["w"]=="showProfileOrders"){$GLOBALS['_RESULT'] = array("content"=>
 
 if ($_REQUEST["w"]=="showProfileOrdersArts"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileOrdersArts($_REQUEST["dp_id"], $_REQUEST["order_id"]));}
 
-if ($_REQUEST["w"]=="showProfileBasketForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showMiniBasketForm()[0]);}
+//if ($_REQUEST["w"]=="showProfileBasketForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showMiniBasketForm()[0]);}
 
 if ($_REQUEST["w"]=="showBasketMinForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showBasketForm());}
 
@@ -57,8 +57,7 @@ if ($_REQUEST["w"]=="validDeliveryFields"){$GLOBALS['_RESULT'] = array("content"
 if ($_REQUEST["w"]=="getBasketOrder"){$GLOBALS['_RESULT'] = array("content"=>$shop->getBasketOrder($_REQUEST["delivery_id"]));}
 if ($_REQUEST["w"]=="setDeliveryExpressDepartment"){$GLOBALS['_RESULT'] = array("content"=>$shop->setDeliveryExpressDepartment($_REQUEST["delivery_express"]));}
 if ($_REQUEST["w"]=="setClientOrderInfo"){$GLOBALS['_RESULT'] = array("content"=>$shop->setClientOrderInfo($_REQUEST["id"]));}
-
-if ($_REQUEST["w"]=="getUserSavedData"){$GLOBALS['_RESULT'] = array("content"=>$shop->getUserSavedData($_REQUEST["city"]));} //
+if ($_REQUEST["w"]=="dropClientOrderInfo"){$GLOBALS['_RESULT'] = array("content"=>$shop->dropClientOrderInfo($_REQUEST["id"]));}
 
 if ($_REQUEST["w"]=="getUserSavedData"){ list($status, $list, $info_id)=$shop->getUserSavedData($_REQUEST["city"]); $GLOBALS['_RESULT'] = array("status"=>$status,"list"=>$list,"info_id"=>$info_id);}
 
@@ -137,7 +136,7 @@ if ($_REQUEST["w"]=="logoutClient"){$GLOBALS['_RESULT'] = array("content"=>$clie
 
 if ($_REQUEST["w"]=="saveProfile"){$GLOBALS['_RESULT'] = array("content"=>$client->updateProfile($_REQUEST["phone"], $_REQUEST["pass"], $_REQUEST["email"], $_REQUEST["name"]));}
 
-if ($_REQUEST["w"]=="saveRegistration"){$GLOBALS['_RESULT'] = array("content"=>$client->saveRegistration($_REQUEST["phone"], $_REQUEST["pass"], $_REQUEST["email"], $_REQUEST["name"],$_REQUEST["client_category"],$_REQUEST["client_city"],$_REQUEST["client_tpoint"],$_REQUEST["mailing"]));}
+if ($_REQUEST["w"]=="saveRegistration"){$GLOBALS['_RESULT'] = array("content"=>$client->saveRegistration($_REQUEST["phone"], $_REQUEST["pass"], $_REQUEST["email"], $_REQUEST["name"],$_REQUEST["client_category"],$_REQUEST["city_id"],$_REQUEST["tpoint_id"],$_REQUEST["mailing"]));}
 
 if ($_REQUEST["w"]=="check_reg_client"){$GLOBALS['_RESULT'] = array("content"=>$client->checkRegClient($_REQUEST["phone"], $_REQUEST["type"]));}
 if ($_REQUEST["w"]=="validateOperator"){$GLOBALS['_RESULT'] = array("content"=>$client->validateOperator($_REQUEST["phone"]));}
@@ -172,7 +171,7 @@ if ($_REQUEST["w"]=="deleteFromBasket"){ $GLOBALS['_RESULT'] = array("content"=>
 
 if ($_REQUEST["w"]=="checkBasketItem"){ $GLOBALS['_RESULT'] = array("content"=>$shop->checkBasketItem($_REQUEST["art_id"], $_REQUEST["storage_id"], $_REQUEST["status"]));}
 
-if ($_REQUEST["w"]=="finish_order"){ $GLOBALS['_RESULT'] = array("content"=>$shop->finishOrder($_REQUEST["client_id"],$_REQUEST["client_user_id"],$_REQUEST["tpoint_user_id"],$_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["region"],$_REQUEST["email"],$_REQUEST["delivery"],$_REQUEST["delivery_info"],$_REQUEST["payment"],$_REQUEST["payment_info"],$_REQUEST["carrier_id"]));}
+if ($_REQUEST["w"]=="finish_order"){ $GLOBALS['_RESULT'] = array("content"=>$shop->finishOrder($_REQUEST["client_id"],$_REQUEST["client_user_id"],$_REQUEST["tpoint_id"],$_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["region"],$_REQUEST["email"],$_REQUEST["delivery"],$_REQUEST["delivery_info"],$_REQUEST["payment"],$_REQUEST["payment_info"],$_REQUEST["carrier_id"]));}
 
 if ($_REQUEST["w"]=="finish_order_success"){ $GLOBALS['_RESULT'] = array("content"=>$client->saveClientRetail($_REQUEST["client_id"],$_REQUEST["pass"],$_REQUEST["order_id"],$_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["email"]));}
 
@@ -241,10 +240,7 @@ if ($_REQUEST["w"]=="showSearchParameters"){ $GLOBALS['_RESULT'] = array("conten
 //if ($_REQUEST["w"]=="showCarsSelected"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelected($_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"]));}
 
 /*==== TEMPLATES ====*/
-
 //if ($_REQUEST["w"]=="addFilterTemplate"){ $GLOBALS['_RESULT'] = array("content"=>$template->addFilterTemplate($_REQUEST["paramId"],$_REQUEST["statusFilters"],$_REQUEST["activeFilters"],$_REQUEST["currentPageFilters"],$_REQUEST["activeProducts"],$_REQUEST["template_id"]));}
-//
 //if ($_REQUEST["w"]=="initProductsForm"){ $GLOBALS['_RESULT'] = array("content"=>$template->initProductsForm($_REQUEST["activeFilters"],$_REQUEST["currentPageFilters"],$_REQUEST["activeProducts"],$_REQUEST["page"],$_REQUEST["page_count"],$_REQUEST["template_id"]));}
-//
 //if ($_REQUEST["w"]=="clearFilters"){ $GLOBALS['_RESULT'] = array("content"=>$template->clearFilters($_REQUEST["template_id"]));}
 

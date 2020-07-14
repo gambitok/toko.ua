@@ -540,8 +540,8 @@ class ShopClass {
             $tpoint = $client->getTpointUser($client_id);
         }
 
-        $db->query("INSERT INTO `orders_new` (`id`,`client_id`,`client_user_id`,`cookie_id`,`tpoint_id`,`cash_id`,`name`,`email`,`phone`,`region`,`address`,`delivery`,`carrier_id`,`delivery_info`,`payment`,`payment_info`,`price_summ`,`status`) 
-        VALUES ($max,$client_id,$user_id,'$cookie',$tpoint,$cash_id,'$name','$email','$phone','$region','',$delivery,$carrier_id,'$delivery_info',$payment,'$payment_info',$sum,1);");
+        $db->query("INSERT INTO `orders_new` (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `delivery`, `carrier_id`, `delivery_info`, `payment`, `payment_info`, `price_summ`) 
+        VALUES ($max, $client_id, $user_id, '$cookie', $tpoint, $cash_id, '$name', '$email', '$phone', '$region', $delivery, $carrier_id, '$delivery_info', $payment, '$payment_info', $sum);");
         return array($max, $new_client);
     }
 
@@ -564,35 +564,34 @@ class ShopClass {
         return $answer;
     }
 
+    // BASKET to ORDER
     function finishOrderBasket($order_id) { $db=DbSingleton::getDbm(); $dbt=DbSingleton::getTokoDb();
         $client=new ClientClass;
-        $sum=0; $where_id=array(); $where=$client->getClientWhere();
-        $r=$dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n=$dbt->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+        $sum=0; $where=$client->getClientWhere();
+        $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n = $dbt->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
             $id = $dbt->result($r, $i - 1, "id");
-            array_push($where_id,$id);
             $art_id = $dbt->result($r, $i - 1, "art_id");
             $brand_id = $dbt->result($r, $i - 1, "brand_id");
             $amount = $dbt->result($r, $i - 1, "amount");
             $price = $dbt->result($r, $i - 1, "price");
             $suppl_id = $dbt->result($r, $i - 1, "suppl_id");
             $storage_id = $dbt->result($r, $i - 1, "storage_id");
-            $status_checked = $db->result($r, $i - 1, "status_checked");
             $status_action = $db->result($r, $i - 1, "status_action");
             $full_price = $price * $amount;
-            if ($status_checked) $sum+=$full_price;
-            $rmax=$db->query("SELECT MAX(`id`) AS max_order_str FROM `orders_str_new`;"); $max=intval($db->result($rmax,0,"max_order_str"))+1;
+            $sum+=$full_price;
+            $rmax = $db->query("SELECT MAX(`id`) AS max_order_str FROM `orders_str_new`;"); $max = intval($db->result($rmax,0,"max_order_str")) + 1;
             $db->query("INSERT INTO `orders_str_new` (`id`, `order_id`, `suppl_id`, `storage_id`, `art_id`, `brand_id`, `amount`, `price`, `summ`, `status_action`) 
             VALUES ('$max', '$order_id', '$suppl_id', '$storage_id', '$art_id', '$brand_id', '$amount', $price, '$full_price', '$status_action');");
+            $dbt->query("DELETE FROM `basket` WHERE `id`='$id';");
         }
-        if (empty($where_id)) $where_id_str="0"; else $where_id_str=implode(",",$where_id);
-        $dbt->query("DELETE FROM `basket` WHERE `id` IN ($where_id_str);");
         return $sum;
     }
 
+    // GET ORDER SUM
     function getOrderSumm($order_id) { $db=DbSingleton::getDbm();
-        $summ=0;
-        $r = $db->query("SELECT * FROM `orders_new` WHERE `id`='$order_id' LIMIT 1;"); $n=$db->num_rows($r);
+        $summ = 0;
+        $r = $db->query("SELECT * FROM `orders_new` WHERE `id`='$order_id' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) $summ = $db->result($r, 0, "price_summ");
         return $summ;
     }
@@ -638,6 +637,7 @@ class ShopClass {
                 if ($delivery_info!="") $delivery_info = "($delivery_info)";
                 $list.="<li class=\"orders-user__item\">
                     <a onclick='setClientOrderInfo($id);'>$i. $delivery_text $delivery_info <br> $payment_text</a>
+                    <a onclick='dropClientOrderInfo($id)'><i class='fa fa-times'></i></a>
                 </li>";
             }
             if ($n==1) {
@@ -645,7 +645,11 @@ class ShopClass {
                 $info_id = $id;
             }
             if ($n>0) {
-                $list = "<div class=\"orders-user\"><p class=\"orders-user__title\">{saved_address}:</p><a class=\"orders-user__toggle\" onclick=\"ordersUserToggle();\"><i class=\"fa fa-chevron-down\"></i></a><div id=\"user_saved_info_list\">".$list."</div></div>";
+                $list = "<div class=\"orders-user\">
+                    <p class=\"orders-user__title\">{saved_address}:</p>
+                    <a class=\"orders-user__toggle\" onclick=\"ordersUserToggle();\"><i class=\"fa fa-chevron-down\"></i></a>
+                    <div id=\"user_saved_info_list\">".$list."</div>
+                </div>";
             }
         }
         $list = $this->replaceLang($list);
@@ -892,8 +896,8 @@ class ShopClass {
 //             $this->addNewRetailAddressForm($new_client, $delivery_info);
 //        }
 
-//        $db->query("INSERT INTO `orders_new` (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `address`, `delivery`, `carrier_id`, `delivery_info`, `payment`, `payment_info`, `price_summ`, `delivery_id_new`, `delivery_info_new`, `payment_id_new`, `comment_new`, `status`)
-//        VALUES ($max, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '$name', '$email', '$phone', '$city_id', '', 0, 0, '', 0, '', $sum, $delivery_id, '$delivery_type_text', $payment_id, '$comment', 1);");
+//        $db->query("INSERT INTO `orders_new` (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `delivery`, `carrier_id`, `delivery_info`, `payment`, `payment_info`, `price_summ`)
+//        VALUES ($max, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '$name', '$email', '$phone', '$city_id', 0, 0, '', 0, '', $sum);");
 
         return $max;
     }
@@ -923,10 +927,10 @@ class ShopClass {
         return $max;
     }
 
-//    function dropClientOrderInfo($id) { $db = DbSingleton::getDbm();
-//        $db->query("DELETE FROM `ORDERS_CLIENT_INFO` WHERE `ID`='$id' LIMIT 1;");
-//        return true;
-//    }
+    function dropClientOrderInfo($id) { $db = DbSingleton::getDbm();
+        $db->query("DELETE FROM `ORDERS_CLIENT_INFO` WHERE `ID`='$id' LIMIT 1;");
+        return true;
+    }
 
     function getDeliveryInfoCaption($delivery_id, $street, $house, $porch, $department_text, $express, $express_info) {
         $info = "";

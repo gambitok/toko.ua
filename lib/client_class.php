@@ -217,23 +217,23 @@ class ClientClass {
         return true;
     }
 
-    function saveRegistration($phone, $pass, $email, $name, $client_category, $client_city, $client_tpoint, $mailing) { $db=DbSingleton::getDbm();
+    function saveRegistration($phone, $pass, $email, $name, $client_category, $city_id, $tpoint_id, $mailing) { $db=DbSingleton::getDbm();
         $phone = $this->formatValidPhone($this->getUrlString($phone));
         $pass = $this->getUrlString($pass);
         $email = $this->getUrlString($email);
         $name = $this->getUrlString($name);
         $client_category = $this->getUrlString($client_category);
-        $client_city = $this->getUrlNumber($client_city);
-        $client_tpoint = $this->getUrlNumber($client_tpoint);
+        $city_id = $this->getUrlNumber($city_id);
+        $tpoint_id = $this->getUrlNumber($tpoint_id);
         $mailing = $this->getUrlNumber($mailing); $mailing ? $mailing=1 : $mailing=0;
-        $client_id = $this->getClientByTpoint($client_tpoint);
+        $client_id = $this->getClientByTpoint($tpoint_id);
         $date = date("Y-m-d H:i:s");
-        list($region, $state, $country)=$this->getLocationCity($client_city); if ($client_category=="") $client_category=140;
+        list($region, $state, $country)=$this->getLocationCity($city_id); if ($client_category=="") $client_category=140;
 
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone`='$phone' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
             $db->query("INSERT INTO `A_CLIENTS_USERS_RETAIL` (`name`, `email`, `phone`, `pass`, `client_id`, `client_category`, `data`, `country_id`, `state_id`, `region_id`, `city_id`, `mailing`, `status`) 
-            VALUES ('$name', '$email', '$phone', '$pass', $client_id, '$client_category', '$date', $country, $state, $region, $client_city, $mailing, $this->status_user_retail);");
+            VALUES ('$name', '$email', '$phone', '$pass', $client_id, '$client_category', '$date', $country, $state, $region, $city_id, $mailing, $this->status_user_retail);");
         } else {
             $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `pass`='$pass', `email`='$email', `name`='$name' WHERE `phone`='$phone' LIMIT 1;");
         }

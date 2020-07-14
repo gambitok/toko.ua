@@ -8,6 +8,7 @@
     // $(".modal-backdrop").css("background-color","black");
 // }
 
+// DROPZONE FILE UPLOAD
 function showUploadForm() {
     let myDropzone = new Dropzone("#myDropzone",{ dictDefaultMessage: "Press to choose file!" });
     myDropzone.removeAllFiles(true);
@@ -22,7 +23,8 @@ function showUploadForm() {
     });
 }
 
-function showAlertModal(message, title, status, callback) { "use strict";
+// ALERT MODAL
+function showAlertModal(message, title, status, callback) {
     JsHttpRequest.query(folder,{ 'w': 'changeLangAlert', 'message':message, 'title':title },
         function (result, errors){ if (errors) {} if (result){
             $("#choose_message").html("<span>"+result.content[0]+"</span>");
@@ -36,22 +38,23 @@ function showAlertModal(message, title, status, callback) { "use strict";
         }}, true);
 }
 
-function validate(evt) { "use strict";
-    var theEvent = evt || window.event;
-    if (theEvent.type === "paste") {
-        key = event.clipboardData.getData("text/plain");
-    } else {
-        var key = theEvent.keyCode || theEvent.which;
-        key = String.fromCharCode(key);
-    }
-    var regex = /[0-9]|\./;
-    if (!regex.test(key)) {
-        theEvent.returnValue = false;
-        if(theEvent.preventDefault) theEvent.preventDefault();
-    }
-}
+// function validate(evt) {
+//     var theEvent = evt || window.event;
+//     if (theEvent.type === "paste") {
+//         key = event.clipboardData.getData("text/plain");
+//     } else {
+//         var key = theEvent.keyCode || theEvent.which;
+//         key = String.fromCharCode(key);
+//     }
+//     var regex = /[0-9]|\./;
+//     if (!regex.test(key)) {
+//         theEvent.returnValue = false;
+//         if(theEvent.preventDefault) theEvent.preventDefault();
+//     }
+// }
 
-function showValidateModal(phone, callback, callback2) { "use strict";
+// REGISTRATION VALIDATE
+function showValidateModal(phone, callback, callback2) {
     JsHttpRequest.query(folder,{ 'w': 'validatePhone', 'phone':phone},
         function (result, errors){ if (errors) {} if (result){
             $("#ValidateForm").modal("show");
@@ -59,7 +62,7 @@ function showValidateModal(phone, callback, callback2) { "use strict";
         }}, true);
 }
 
-function validatePhone(callback) { "use strict";
+function validatePhone(callback) {
     let phone = $("#reg_phone").val();
     if (phone===undefined) phone=$("#input_phone2").val();
     let password = $("#validate_code").val();
@@ -74,7 +77,7 @@ function validatePhone(callback) { "use strict";
         }}, true);
 }
 
-function togglePass(a) { "use strict";
+function togglePass(a) {
     if($(a).attr("checked") !== "checked") {
         $(a).attr("checked","checked");
         $("#reg_password").attr("type","password");
@@ -84,27 +87,12 @@ function togglePass(a) { "use strict";
     }
 }
 
-function tabNavigation(id) {
-    let tab_id=".nav-tabs a[href='#"+id+"']";
-    $(tab_id).tab("show");
-}
-
-// DELETE !!!!
-function showDropGarage() { "use strict";
-    $("#GarageForm").toggle();
-    JsHttpRequest.query(folder,{ 'w': 'showGarageForm'},
-        function (result, errors){ if (errors) {} if (result){
-            $("#GarageForm").html(result.content);
-        }}, true);
-}
-
-function showGarageForm() { "use strict";
+function showGarageForm() {
     $("#GarageForm").modal("show");
     JsHttpRequest.query(folder,{ 'w': 'showGarageForm'},
         function (result, errors){ if (errors) {} if (result){
             $("#garage_block").html(result.content);
         }}, true);
-
     JsHttpRequest.query(folder,{'w':'showCarsForm2'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#garage_404_select").html(result.content[0]);
@@ -140,12 +128,12 @@ function deleteHistoryItem(history_id) {
         }}, true);
 }
 
-function toggleBlock(block, slide) { "use strict";
+function toggleBlock(block, slide) {
     $("#" + slide).slideToggle("slow");
     $("." + block).find("i").toggleClass("icon-rotate");
 }
 
-function toggleForm(slide) { "use strict";
+function toggleForm(slide) {
     $("#" + slide).slideToggle("slow");
 }
 
@@ -153,7 +141,7 @@ function rotateIcon(a) {
     $(a).find("i").toggleClass("rotate__icon");
 }
 
-function triggerTabAuto(year) { "use strict";
+function triggerTabAuto(year) {
     $(".year-list").each(function () {$(this).removeClass("span-red");});
     $("#year-"+year).addClass("span-red");
     JsHttpRequest.query(folder,{ 'w': 'tab_auto', 'year':year },
@@ -170,7 +158,7 @@ function triggerTabAuto(year) { "use strict";
     return true;
 }
 
-function triggerTabModel(auto, year) { "use strict";
+function triggerTabModel(auto, year) {
     $(".auto-list").each(function () {$(this).removeClass("span-red");});
     $("#auto-"+auto).addClass("span-red");
     JsHttpRequest.query(folder,{ 'w': 'tab_model', 'auto':auto, 'year':year },
@@ -186,7 +174,7 @@ function triggerTabModel(auto, year) { "use strict";
     return true;
 }
 
-function triggerTabModelId(model, auto, year) { "use strict";
+function triggerTabModelId(model, auto, year) {
     $(".model-list").each(function () {$(this).removeClass("span-red");});
     $("#model-"+model).addClass("span-red");
     JsHttpRequest.query(folder,{ 'w': 'tab_modelid', 'model':model, 'auto':auto, 'year':year },
@@ -201,7 +189,7 @@ function triggerTabModelId(model, auto, year) { "use strict";
     return true;
 }
 
-function triggerTabGroup(modelid ,model, auto, year) { "use strict";
+function triggerTabGroup(modelid ,model, auto, year) {
     $(".modelid-list").each(function () {$(this).removeClass("span-red");});
     $("#modelid-"+modelid).addClass("span-red");
     JsHttpRequest.query(folder,{ 'w': 'tab_group', 'modelid':modelid, 'model':model, 'auto':auto, 'year':year },
@@ -216,7 +204,7 @@ function triggerTabGroup(modelid ,model, auto, year) { "use strict";
 }
 
 /*==== Load Catalogue page ====*/
-// function triggerTabModel2(auto,model,modelid) { "use strict";
+// function triggerTabModel2(auto,model,modelid) {
 //     window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/");
 //     $(".auto-list").each(function () {$(this).removeClass("span-red");});
 //     $("#auto-"+auto).addClass("span-red");
@@ -231,7 +219,7 @@ function triggerTabGroup(modelid ,model, auto, year) { "use strict";
 //     return true;
 // }
 //
-// function triggerTabModelId2(auto,model,modelid) { "use strict";
+// function triggerTabModelId2(auto,model,modelid) {
 //     window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/"+model+"/");
 //     $(".model-list").each(function () {$(this).removeClass("span-red");});
 //     $("#model-"+model).addClass("span-red");
@@ -245,7 +233,7 @@ function triggerTabGroup(modelid ,model, auto, year) { "use strict";
 //     return true;
 // }
 //
-// function triggerTabGroup2(auto,model,modelid) { "use strict";
+// function triggerTabGroup2(auto,model,modelid) {
 //     window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/"+model+"/"+modelid+"/");
 //     $(".modelid-list").each(function () {$(this).removeClass("span-red");});
 //     $("#modelid-"+modelid).addClass("span-red");
@@ -261,7 +249,7 @@ function triggerTabGroup(modelid ,model, auto, year) { "use strict";
 //     if (auto!==undefined && auto!=="") triggerTabModel2(auto,model,modelid);
 // }
 
-function saveSellForm() { "use strict";
+function saveSellForm() {
     let company_input=$("#reg_company"), company=company_input.val();
     let name_input=$("#reg_name"), name=name_input.val();
     let phone_input=$("#reg_phone"), phone=phone_input.val();

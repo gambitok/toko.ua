@@ -8,7 +8,8 @@ $(document).ready(function() {
     });
 
     // INIT CITY
-    $("#user_city").select2({
+    let user_city =  $("#user_city");
+    user_city.select2({
         language: {
             searching: function() {
                 return "Something else...";
@@ -45,7 +46,7 @@ $(document).ready(function() {
         });
     });
 
-    if ($("#user_city").select2("val")>0) {
+    if (user_city.select2("val")>0) {
         setCityVal();
     }
 
@@ -205,6 +206,7 @@ function editFields() {
     uncheckRadioDelivery();
     uncheckRadioPayment();
     showOrderInfo();
+    getBasketOrder();
 }
 
 // HIDE INFO BLOCK, SHOW DELIVERY BLOCK
@@ -287,7 +289,8 @@ function getBasketOrder() {
 // VALID INFO FIELDS
 function validInfoFields() {
     let valid = 0;
-    $(".valid_field").each(function() {
+    let valid_field = $(".valid_field");
+    valid_field.each(function() {
         let data_attr = $(this).attr("data-attr");
         // INPUT TEXT FIELD
         if (data_attr==="text") {
@@ -331,7 +334,7 @@ function validInfoFields() {
         }
     });
     if (valid===0) {
-        $(".valid_field").each(function() {
+        valid_field.each(function() {
             $(this).removeClass("not-valid accept-valid");
             $(this).prop("disabled", true);
             $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid accept-valid");
@@ -418,27 +421,26 @@ function saveOrder() {
 
 /*==== USER DATA ====*/
 
+function dropClientOrderInfo(id) {
+    JsHttpRequest.query(folder,{'w':'dropClientOrderInfo', 'id':id},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            getUserSavedData();
+        }}, true);
+}
+
 // INIT USER SAVED DATA
 function setClientOrderInfo(id) {
     JsHttpRequest.query(folder,{'w':'setClientOrderInfo', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             let arr = result.content;
-            // let name = arr["name"];
-            // let phone = arr["phone"];
-            // let email = arr["email"];
             let city_id = arr["city_id"];
             let delivery_id = arr["delivery_id"];
             let payment_id = arr["payment_id"];
             let delivery_info = arr["delivery_info"];
 
-            // INFO
-            // $("#user_name").val(name);
-            // $("#user_phone").val(phone); $("#user_phone").mask("+38(099) 999-99-99", { placeholder:"+38(0__) ___-__-__", autoclear: false, alias: "numeric" });
-            // $("#user_email").val(email);
-
             // CITY
-            $("#user_city").val(city_id); $("#user_city").select2();
-            // setCityDepartments();
+            let user_city = $("#user_city");
+            user_city.val(city_id); user_city.select2();
 
             // DELIVERY
             $("input[data-id-delivery='" + delivery_id + "']").prop('checked', true);
@@ -481,6 +483,7 @@ function getUserSavedData() {
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             if (result.status==1) {
                 setClientOrderInfo(result.info_id);
+                $("#user_saved_info").html("");
             } else {
                 $("#user_saved_info").html(result.list);
             }

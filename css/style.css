@@ -965,7 +965,7 @@ header { width: 100%; color: #a9a9a9; }
 .seo_auto.title { font-weight: bold; }
 
 /*==== /SEO CARS =====*/
-.anchor-contacts { position: absolute; float: right; text-align: right; left: 90%; bottom: 5%; }
+.anchor-contacts { position: absolute; float: right; text-align: right; left: calc(100% - 100px); bottom: 30px; z-index: 999; }
 
 .anchor-contacts-li { margin-top: 5px; padding: 5px; width: 70px; height: 70px; cursor: pointer; }
 
