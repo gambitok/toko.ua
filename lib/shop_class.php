@@ -657,6 +657,31 @@ class ShopClass {
     }
 
     /*==== NEW ORDER FORM ====*/
+
+    function getOrderContentForm($order_id, $user_id, $user_status) {
+
+        if ($user_status==0) {
+            $form = $this->getHtmlForm("orders/done");
+        } else {
+            $form = $this->getHtmlForm("orders/done_retail");
+        }
+
+        $form = str_replace("{order_id}", $order_id, $form);
+        $form = str_replace("{order_user_id}", $user_id, $form);
+
+        $client = new ClientClass;
+        $userData = $client->getClientInfo($client->getClientId($user_id), $user_id);
+
+        $form = str_replace("{user_phone}", $userData["phone"], $form);
+        $form = str_replace("{user_name}", $userData["name"], $form);
+        $form = str_replace("{user_email}", $userData["email"], $form);
+        $form = str_replace("{user_pass}", $userData["password"], $form);
+
+        $form = $this->replaceLang($form);
+
+        return $form;
+    }
+
     function getOrderForm() {
         $user_city = 0;
         $user_name = "";
@@ -852,54 +877,63 @@ class ShopClass {
         return $form;
     }
 
-    function saveOrder($name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment) { // $db = DbSingleton::getDbm();
+    function saveOrder($name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment) {
+        $client = new ClientClass;
+        $client_id = $this->getClient();
+        $user_id = $this->getUser();
 
         $street = $delivery_type["street"];
         $house = $delivery_type["house"];
         $porch = $delivery_type["porch"];
-//        $department = $delivery_type["department"];
         $department_id = $delivery_type["department_id"];
         $department_text = $delivery_type["department"];
         $delivery_express = $delivery_type["delivery_express"];
         $delivery_express_department = $delivery_type["delivery_express_department"];
-
-//        $delivery_express_text = $this->getDepartmentExpressName($delivery_express);
-//        $delivery_type_text = "";
-//        if ($porch!="") $porch = "({entrance_cap} $porch)";
-//        if (($street!="undefined") && ($house!="undefined")) $delivery_type_text.="{address_cap}: {street_cap} $street, {house_cap} $house $porch";
-//        if ($department_id!="undefined" && $department_id!="0") $delivery_type_text.="{department_cap}: $department";
-//        if ($delivery_express!="undefined") $delivery_type_text.="{delivery_type_7}: $delivery_express_text";
-//        if ($delivery_express_department!="undefined") $delivery_type_text.="{department_cap}: $delivery_express_department";
-//        if ($delivery_id==1) $delivery_type_text = $this->setCityAddress($city_id);
-//        $delivery_type_text = $this->replaceLang($delivery_type_text);
-
-//        $client = new ClientClass;
-        $client_id = $this->getClient();
-        $user_id = $this->getUser();
-//        $tpoint_id = $client->getTpoint();
-//        $cookie = $_COOKIE["session_id"];
-//        $cash_id = intval($client->getClientCurrency($client_id));
-
         $delivery_info = ["street"=>$street, "house"=>$house, "porch"=>$porch, "department"=>$department_id, "express"=>$delivery_express, "express_info"=>$delivery_express_department];
 
-        $max = $this->saveClientOrderInfo($client_id, $user_id, $city_id, $delivery_id, $department_text, $payment_id, $delivery_info);
-        var_dump($max);
+        $tpoint_id = $client->getTpoint();
+        $cookie = $_COOKIE["session_id"];
+        $cash_id = intval($client->getClientCurrency($client_id));
 
-//        $r = $db->query("SELECT MAX(`id`) as max_order FROM `orders_new`;"); $max = intval($db->result($r,0,"max_order"))+1;
-//        $sum = $this->finishOrderBasket($max);
+        $user_status = 0;
+        $order_id = 123;
 
-         // $new_user_id = $user_id;
+//        // CREATE CLIENT
 //        if ($user_id==0) {
-//            if ($city_id=="") $city_id = 0;
-//            if ($tpoint_id==0) $tpoint_id = $client->getTpoint();
-//             $new_user_id = $client->regClientRetail($tpoint_id, $name, $phone, $city_id, $email);
-//             $this->addNewRetailAddressForm($new_client, $delivery_info);
+//            list($client_id, $user_id) = $client->addRetailClient($name, $phone, $city_id, $email);
+//            $user_status = 1;
 //        }
+//
+//        // CREATE CLIENT ORDER INFO
+//        $order_info_id = $this->saveClientOrderInfo($client_id, $user_id, $city_id, $delivery_id, $department_text, $payment_id, $delivery_info);
+//
+//        // CREATE ORDER
+//        $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id);
+//
+//        // CREATE ORDER STR
+//        $order_sum = $this->finishOrderBasket($order_id);
+//
+//        // SET ORDER SUM
+//        $this->updateOrderSum($order_id, $order_sum);
 
-//        $db->query("INSERT INTO `orders_new` (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `delivery`, `carrier_id`, `delivery_info`, `payment`, `payment_info`, `price_summ`)
-//        VALUES ($max, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '$name', '$email', '$phone', '$city_id', 0, 0, '', 0, '', $sum);");
+        return array($order_id, $user_id, $user_status);
+    }
 
-        return $max;
+    function updateOrderSum($order_id, $order_sum) { $db = DbSingleton::getDbm();
+        $db->query("UPDATE `orders_new` SET `price_summ`='$order_sum' WHERE `id`='$order_id' LIMIT 1;");
+        return true;
+    }
+
+    function saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT MAX(`ID`) as maxim FROM `orders_new`;"); $order_id = intval($db->result($r,0,"maxim")) + 1;
+        $db->query("INSERT INTO `orders_new` (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `comment`, `order_info_id`, `price_summ`) 
+        VALUES ($order_id, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '$name', '$email', '$phone', '$city_id', '$comment', $order_info_id, 0);");
+        return $order_id;
+    }
+
+    function dropClientOrderInfo($id) { $db = DbSingleton::getDbm();
+        $db->query("UPDATE `ORDERS_CLIENT_INFO` SET `STATUS`=0 WHERE `ID`='$id' LIMIT 1;");
+        return true;
     }
 
     function saveClientOrderInfo($client_id, $user_id, $city_id, $delivery_id, $department_text, $payment_id, $delivery_info=[]) { $db = DbSingleton::getDbm();
@@ -915,21 +949,16 @@ class ShopClass {
         if ($porch=="undefined") $porch="";
         if ($express_info=="undefined") $express_info="";
 
-        $max = 0;
-        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID`=$client_id AND `USER_ID`=$user_id AND `CITY_ID`=$city_id AND `DELIVERY_ID`=$delivery_id AND `PAYMENT_ID`=$payment_id AND `DEL_STREET`='$street' AND `DEL_HOUSE`='$house' AND `DEL_PORCH`='$porch' AND `DEL_DEPARTMENT`='$department' AND `DEL_EXPRESS`=$express AND `DEL_EXPRESS_INFO`='$express_info' LIMIT 1;");
-        $n = $db->num_rows($r);
+        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID`=$client_id AND `USER_ID`=$user_id AND `CITY_ID`=$city_id AND `DELIVERY_ID`=$delivery_id AND `PAYMENT_ID`=$payment_id AND `DEL_STREET`='$street' AND `DEL_HOUSE`='$house' AND `DEL_PORCH`='$porch' AND `DEL_DEPARTMENT`='$department' AND `DEL_EXPRESS`=$express AND `DEL_EXPRESS_INFO`='$express_info' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
-            $r = $db->query("SELECT MAX(`ID`) as maxim FROM `ORDERS_CLIENT_INFO`;"); $max = intval($db->result($r,0,"maxim")) + 1;
+            $r = $db->query("SELECT MAX(`ID`) as maxim FROM `ORDERS_CLIENT_INFO`;"); $order_info_id = intval($db->result($r,0,"maxim")) + 1;
             $db->query("INSERT INTO `ORDERS_CLIENT_INFO` (`ID`, `CLIENT_ID`, `USER_ID`, `CITY_ID`, `DELIVERY_ID`, `PAYMENT_ID`, `DEL_STREET`, `DEL_HOUSE`, `DEL_PORCH`, `DEL_DEPARTMENT`, `DEL_DEPARTMENT_TEXT`, `DEL_EXPRESS`, `DEL_EXPRESS_INFO`) 
-            VALUES ($max, $client_id, $user_id, $city_id, $delivery_id, $payment_id, '$street', '$house', '$porch', '$department', '$department_text', $express, '$express_info');");
+            VALUES ($order_info_id, $client_id, $user_id, $city_id, $delivery_id, $payment_id, '$street', '$house', '$porch', '$department', '$department_text', $express, '$express_info');");
+        } else {
+            $order_info_id = $db->result($r, 0, "ID");
         }
 
-        return $max;
-    }
-
-    function dropClientOrderInfo($id) { $db = DbSingleton::getDbm();
-        $db->query("DELETE FROM `ORDERS_CLIENT_INFO` WHERE `ID`='$id' LIMIT 1;");
-        return true;
+        return $order_info_id;
     }
 
     function getDeliveryInfoCaption($delivery_id, $street, $house, $porch, $department_text, $express, $express_info) {
@@ -1131,6 +1160,12 @@ class ShopClass {
 
         // carrier tariff
         if (in_array($delivery_id, [6,7])) {
+            $price = 0;
+            $del_cap = "{carrier_conditions}";
+        }
+
+        $client = new ClientClass;
+        if (!$client->checkRetailClientCategory($this->getClient())) {
             $price = 0;
             $del_cap = "{carrier_conditions}";
         }

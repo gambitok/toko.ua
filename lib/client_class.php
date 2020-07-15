@@ -160,6 +160,12 @@ class ClientClass {
         return $city;
     }
 
+    function getClientId($user_id) { $db=DbSingleton::getDbm();
+        $r = $db->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
+        $client_id = $db->result($r, 0, "client_id");
+        return $client_id;
+    }
+
     function getClientInfo($client_id, $user_id) { $db=DbSingleton::getDbm();
         $r = $db->query("SELECT acu.name as user_name, acu.email as user_email, acu.phone as user_phone, acu.pass, acu.client_id, acu.status as user_status, ac.* 
         FROM `A_CLIENTS` ac
@@ -496,11 +502,75 @@ class ClientClass {
     }
 
     /*
+     * Create CLIENT
+     * Create WEB USER
+     * Set CATEGORY
+     * Set CONDITIONS
+     * */
+    function addRetailClient($name, $phone, $city_id, $email, $pass="", $category="") { $db = DbSingleton::getDbm();
+
+        $tpoint_client_id = $this->getClient();
+        if ($name=="") $name = $phone;
+        if ($pass=="") $pass = $this->randomPassword();
+        if ($category=="") $category = $this->default_client_category;
+        list($region_id, $state_id, $country_id) = $this->getLocationCity($city_id);
+
+        $r=$db->query("SELECT MAX(`id`) as mid FROM `A_CLIENTS`;"); $client_id=0+$db->result($r,0,"mid")+1;
+        $db->query("INSERT INTO `A_CLIENTS` (`id`, `name`, `full_name`, `phone`, `email`, `country`, `state`, `region`, `city`, `client_category`) 
+        VALUES ('$client_id', '$name', '$name', '$phone', '$email', '$country_id', '$state_id', '$region_id', '$city_id', '$category');");
+
+        $r=$db->query("SELECT MAX(`id`) as mid FROM `A_CLIENTS_USERS`;"); $user_id=0+$db->result($r,0,"mid")+1;
+        $db->query("INSERT INTO `A_CLIENTS_USERS` (`id`, `client_id`, `name`, `email`, `phone`, `pass`, `status`) 
+        VALUES ('$user_id', '$client_id', '$name', '$email', '$phone', '$pass', 1);");
+
+        $db->query("INSERT INTO `A_CLIENTS_CATEGORY` (`client_id`, `category_id`) VALUES ('$client_id', '1');");
+
+        $this->moveClientsConditionsRetail($tpoint_client_id, $client_id);
+
+        return array($client_id, $user_id);
+    }
+
+    /*
+     * MOVE CLIENT CONDITION
+     * */
+    function moveClientsConditionsRetail($tpoint_client_id, $client_id) { $db = DbSingleton::getDbm();
+        $r=$db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$tpoint_client_id' LIMIT 1;");$n=$db->num_rows($r);
+        if ($n==1){
+            $cash_id=$db->result($r,0,"cash_id");
+            $country_cash_id=$db->result($r,0,"country_cash_id");
+            $credit_cash_id=$db->result($r,0,"credit_cash_id");
+            $payment_delay=$db->result($r,0,"payment_delay");
+            $credit_limit=$db->result($r,0,"credit_limit");
+            $credit_return=$db->result($r,0,"credit_return");
+            $price_lvl=$db->result($r,0,"price_lvl");
+            $margin_price_lvl=$db->result($r,0,"margin_price_lvl");
+            $price_suppl_lvl=$db->result($r,0,"price_suppl_lvl");
+            $margin_price_suppl_lvl=$db->result($r,0,"margin_price_suppl_lvl");
+            $tpoint_id=$db->result($r,0,"tpoint_id");
+            $client_vat=$db->result($r,0,"client_vat");
+            $doc_type_id=$db->result($r,0,"doc_type_id");
+            $db->query("INSERT INTO `A_CLIENTS_CONDITIONS` (`client_id`, `cash_id`, `country_cash_id`, `credit_cash_id`, `payment_delay`, `credit_limit`, `credit_return`, `price_lvl`, `margin_price_lvl`, `price_suppl_lvl`, `margin_price_suppl_lvl`, `tpoint_id`, `client_vat`, `doc_type_id`) 
+            VALUES ('$client_id', '$cash_id', '$country_cash_id', '$credit_cash_id', '$payment_delay', '$credit_limit', '$credit_return', '$price_lvl', '$margin_price_lvl', '$price_suppl_lvl', '$margin_price_suppl_lvl', '$tpoint_id', '$client_vat', '$doc_type_id');");
+        }
+        return;
+    }
+
+    /*
         getting the user type
         default / retail
     */
     function checkRetailClient($client_id) {
         if ($client_id==10 || $client_id==26) return true; else return false;
+    }
+
+    /*
+        check client category
+    */
+    function checkRetailClientCategory($client_id) { $db=DbSingleton::getDbm();
+        $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
+        $client_category = $db->result($r, 0, "client_category");
+        // ĞÎÇÄĞ²ÁÍÈÉ ÊË²ªÍÒ
+        if ($client_category==140) return true; else return false;
     }
 
     function getUsersCount() { $db=DbSingleton::getDbm();

@@ -18,6 +18,13 @@
 //
 //print_r($list);
 
-$content = $shop->getHtmlForm("orders/template");
+$order_id = $_GET["order_id"];
+$user_id = $_GET["user_id"];
+$user_status = $_GET["user_status"];
 
-$content=str_replace("{main_window}", $shop->getOrderForm(), $content);
+if ($order_id=="") {
+    $content = $shop->getHtmlForm("orders/template");
+    $content = str_replace("{main_window}", $shop->getOrderForm(), $content);
+} else {
+    $content = str_replace("{main_window}", $shop->getOrderContentForm($order_id, $user_id, $user_status), $content);
+}
