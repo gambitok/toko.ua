@@ -102,6 +102,26 @@ class ClientClass {
         return $phone;
     }
 
+
+    function loginOrderClient($user_id) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
+
+        $client_id = $db->result($r, 0, "client_id");
+        $cash_id = $this->getClientCurrency($client_id);
+
+        $_SESSION["user"] = $user_id;
+        $_SESSION["client_id"] = $client_id;
+        $_SESSION["currency"] = $cash_id;
+        $_SESSION["tpoint"] = $this->getTpoint($client_id);
+        setcookie("client_id", $client_id, time() + (86400 * 30), "/");
+        setcookie("user", $user_id, time() + (86400 * 30), "/");
+        setcookie("currency", $cash_id, time() + (86400 * 30), "/");
+        setcookie("tpoint_id", $this->getTpoint($client_id), time() + (86400 * 30), "/");
+        setcookie("auto_typ_id", $this->getClientAutoGarage($client_id, $user_id), time() + (86400 * 30), "/");
+
+        return true;
+    }
+
     function loginClient($phone, $password) { $db=DbSingleton::getDbm();
         $phone_list = $this->formatPhone($this->getUrlString($phone));
         $password = $this->getUrlString($password);

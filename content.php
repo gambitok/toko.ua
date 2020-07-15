@@ -59,6 +59,9 @@ if ($_REQUEST["w"]=="setDeliveryExpressDepartment"){$GLOBALS['_RESULT'] = array(
 if ($_REQUEST["w"]=="setClientOrderInfo"){$GLOBALS['_RESULT'] = array("content"=>$shop->setClientOrderInfo($_REQUEST["id"]));}
 if ($_REQUEST["w"]=="dropClientOrderInfo"){$GLOBALS['_RESULT'] = array("content"=>$shop->dropClientOrderInfo($_REQUEST["id"]));}
 
+if ($_REQUEST["w"]=="saveOrderClient"){$GLOBALS['_RESULT'] = array("content"=>$shop->saveOrderClient($_REQUEST["user_id"],$_REQUEST["name"],$_REQUEST["email"],$_REQUEST["pass"]));}
+if ($_REQUEST["w"]=="loginOrderClient"){$GLOBALS['_RESULT'] = array("content"=>$client->loginOrderClient($_REQUEST["user_id"]));}
+
 if ($_REQUEST["w"]=="getUserSavedData"){ list($status, $list, $info_id)=$shop->getUserSavedData($_REQUEST["city"]); $GLOBALS['_RESULT'] = array("status"=>$status,"list"=>$list,"info_id"=>$info_id);}
 
 if ($_REQUEST["w"]=="getCityVal"){$GLOBALS['_RESULT'] = array("content"=>$shop->getCityVal($_REQUEST["search_text"]));}
