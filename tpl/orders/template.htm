@@ -70,7 +70,39 @@
     <script type="text/javascript" src="/js/library/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/JsHttpRequest/JsHttpRequest.min.js"></script>
 
-    <!--<script src="//code.jivosite.com/widget/exhzs4R9RT" async></script>-->
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/5f101b155b59f94722bad5c7/default';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
+
+    <!--Start of tawk.to Status Code-->
+    <script type="text/javascript">
+        Tawk_API = Tawk_API || {};
+        Tawk_API.onStatusChange = function (status){
+            if(status === 'online')
+            {
+                document.getElementById('status').innerHTML = '<a href="javascript:void(Tawk_API.toggle())">Online - Click to chat</a>';
+            }
+            else if(status === 'away')
+            {
+                document.getElementById('status').innerHTML = 'We are currently away';
+            }
+            else if(status === 'offline')
+            {
+                document.getElementById('status').innerHTML = 'Live chat is Offline';
+            }
+        };
+    </script>
+    <!--End of tawk.to Status Code -->
 
 </head>
 
@@ -79,6 +111,9 @@
 <div class="wrapper container-fluid">
 
     <div class="anchor-contacts">
+        <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Online chat" data-placement="left">
+            <a href="javascript:void(Tawk_API.toggle())" onclick="toggleSocialIcons()" class="anchor-contacts__item anchor-contacts__item-chats"><img src="/images/icons/socials/chats.svg" alt="Online chat"></a>
+        </div>
         <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Telegram" data-placement="left">
             <a href="https://t.me/tokoua_bot" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram"><img src="/images/icons/socials/telegram.svg" alt="Telegram"></a>
         </div>
@@ -151,6 +186,30 @@
         </div>
     </section>
 
+</div>
+
+<div id="modals" class="modals">
+    <!-- Modal Alert-->
+    <div class="modal fade" id="AlertForm" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id="alert-modal-header" class="modal-header">
+                    <div id="choose_title"></div>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body text-left">
+                    <div class="container">
+                        <div class="row">
+                            <div id="choose_message" class="wdt100"></div>
+                        </div>
+                        <div class="row float-right">
+                            <button id="alert_btn_ok" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>

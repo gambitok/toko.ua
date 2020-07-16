@@ -1167,7 +1167,7 @@ class CatalogueClass {
         return $result;
     }
 
-    function getArticlePrices($where_art_id_str){ $dbt = DbSingleton::getTokoDb();
+    function getArticlePrices($where_art_id_str) { $dbt = DbSingleton::getTokoDb();
         $client=new ClientClass;
         $client_id=$this->getClient();
         list($price_lvl, $margin_price_lvl,,,)=$this->getDpClientPriceLevels($client_id);
@@ -1184,7 +1184,7 @@ class CatalogueClass {
             if ($margin_price_lvl>0){
                 $price=floatval($price)+round($price*$margin_price_lvl/100,2);
             }
-            if ($cash_id==1) $price=$client->getClientPriceRounding($client_id, $price);
+            if ($cash_id==1) $price = $client->getClientPriceRounding($client_id, $price);
             $prices[$row["ART_ID"]] = $price;
         }
         return $prices;
@@ -1528,8 +1528,6 @@ class CatalogueClass {
             $minMarkup=$dbt->result($r,0,"minMarkup");
             $oper_price=$dbt->result($r,0,"OPER_PRICE");
             $cash_id=$dbt->result($r,0,"cash_id");
-            $price=$this->getPriceRatingKours($price, $cash_id, 1);
-
             if ($margin_price_lvl>0){
                 $price=floatval($price)+round($price*$margin_price_lvl/100,2);
             }
@@ -1539,6 +1537,7 @@ class CatalogueClass {
                 if ($price_minus>=$oper_limit) $price=$price_minus;
                 else if ($oper_limit>=$price) true; else $price=$oper_limit;
             }
+            $price=$this->getPriceRatingKours($price, $cash_id, 1);
             if ($cash_id==1) $price = $client->getClientPriceRounding($client_id, $price);
         }
         return $price;

@@ -32,8 +32,9 @@ class ClientClass {
     }
 
     function getClientByUser($user_id) { $db=DbSingleton::getDbm();
-        $r = $db->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `status`=$this->status_user LIMIT 1;");
-        $client_id = $db->result($r,0,"client_id");
+        $client_id = 0;
+        $r = $db->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `status`=$this->status_user LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n>0) $client_id = $db->result($r,0,"client_id");
         return $client_id;
     }
 
@@ -101,7 +102,6 @@ class ClientClass {
         $phone = substr($phone, -10);
         return $phone;
     }
-
 
     function loginOrderClient($user_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
@@ -476,15 +476,19 @@ class ClientClass {
         Table: myparts_dba.`T2_CITY`, myparts_dba.`T2_REGION`, myparts_dba.`T2_STATE`, myparts_dba.`T2_COUNTRIES`
     */
     function getLocationCity($city_id) { $db=DbSingleton::getDbm();
-        $r=$db->query("SELECT t2r.REGION_ID, t2s.STATE_ID, t2ct.COUNTRY_ID 
-        FROM `T2_CITY` t2c
-            LEFT OUTER JOIN `T2_REGION` t2r on t2r.REGION_ID=t2c.REGION_ID 
-            LEFT OUTER JOIN `T2_STATE` t2s on t2s.STATE_ID=t2r.STATE_ID 
-            LEFT OUTER JOIN `T2_COUNTRIES` t2ct on t2ct.COUNTRY_ID=t2s.COUNTRY_ID 
-        WHERE t2c.CITY_ID='$city_id';");
-        $region_id = $db->result($r, 0, "REGION_ID");
-        $state_id = $db->result($r, 0, "STATE_ID");
-        $country_id = $db->result($r, 0, "COUNTRY_ID");
+        if ($city_id>0) {
+            $r=$db->query("SELECT t2r.REGION_ID, t2s.STATE_ID, t2ct.COUNTRY_ID 
+            FROM `T2_CITY` t2c
+                LEFT OUTER JOIN `T2_REGION` t2r on t2r.REGION_ID=t2c.REGION_ID 
+                LEFT OUTER JOIN `T2_STATE` t2s on t2s.STATE_ID=t2r.STATE_ID 
+                LEFT OUTER JOIN `T2_COUNTRIES` t2ct on t2ct.COUNTRY_ID=t2s.COUNTRY_ID 
+            WHERE t2c.CITY_ID='$city_id';");
+            $region_id = $db->result($r, 0, "REGION_ID");
+            $state_id = $db->result($r, 0, "STATE_ID");
+            $country_id = $db->result($r, 0, "COUNTRY_ID");
+        } else {
+            $region_id = 0; $state_id = 0; $country_id = 0;
+        }
         return array($region_id, $state_id, $country_id);
     }
 
@@ -527,13 +531,12 @@ class ClientClass {
      * Set CATEGORY
      * Set CONDITIONS
      * */
-    function addRetailClient($name, $phone, $city_id, $email, $pass="", $category="") { $db = DbSingleton::getDbm();
-
-        $tpoint_client_id = $this->getClient();
+    function addRetailClient($tpoint_client_id, $phone, $name="", $city_id=0, $email="", $pass="", $category="") { $db = DbSingleton::getDbm();
         if ($name=="") $name = $phone;
         if ($pass=="") $pass = $this->randomPassword();
         if ($category=="") $category = $this->default_client_category;
         list($region_id, $state_id, $country_id) = $this->getLocationCity($city_id);
+        $phone = $this->formatValidPhone($phone);
 
         $r=$db->query("SELECT MAX(`id`) as mid FROM `A_CLIENTS`;"); $client_id=0+$db->result($r,0,"mid")+1;
         $db->query("INSERT INTO `A_CLIENTS` (`id`, `name`, `full_name`, `phone`, `email`, `country`, `state`, `region`, `city`, `client_category`) 
@@ -554,8 +557,8 @@ class ClientClass {
      * MOVE CLIENT CONDITION
      * */
     function moveClientsConditionsRetail($tpoint_client_id, $client_id) { $db = DbSingleton::getDbm();
-        $r=$db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$tpoint_client_id' LIMIT 1;");$n=$db->num_rows($r);
-        if ($n==1){
+        $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$tpoint_client_id' LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n==1) {
             $cash_id=$db->result($r,0,"cash_id");
             $country_cash_id=$db->result($r,0,"country_cash_id");
             $credit_cash_id=$db->result($r,0,"credit_cash_id");
@@ -572,7 +575,7 @@ class ClientClass {
             $db->query("INSERT INTO `A_CLIENTS_CONDITIONS` (`client_id`, `cash_id`, `country_cash_id`, `credit_cash_id`, `payment_delay`, `credit_limit`, `credit_return`, `price_lvl`, `margin_price_lvl`, `price_suppl_lvl`, `margin_price_suppl_lvl`, `tpoint_id`, `client_vat`, `doc_type_id`) 
             VALUES ('$client_id', '$cash_id', '$country_cash_id', '$credit_cash_id', '$payment_delay', '$credit_limit', '$credit_return', '$price_lvl', '$margin_price_lvl', '$price_suppl_lvl', '$margin_price_suppl_lvl', '$tpoint_id', '$client_vat', '$doc_type_id');");
         }
-        return;
+        return true;
     }
 
     /*
@@ -643,19 +646,42 @@ class ClientClass {
         getting a rounded price value
         Table: myparts_dba.`A_CLIENTS`
     */
-    function getClientPriceRounding($client_id, $price) { $db=DbSingleton::getDbm();
+    function getClientPriceRounding($client_id, $price) { $db = DbSingleton::getDbm();
         if ($client_id>0) {
-            $r=$db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n=$db->num_rows($r);
+            $r=$db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n = $db->num_rows($r);
             if ($n>0) {
                 $rounding_price = $db->result($r,0,"rounding_price");
-                if ($rounding_price==1) $price=round($price*100,-1)/100;
+                if ($rounding_price==1) $price=round($price*100, -1)/100;
                 if ($rounding_price==2) $price=round($price);
             }
         }
         return $price;
     }
 
-    function getClientPhone() { $db=DbSingleton::getDbm();
+    /*
+     * Check if user authorized
+     * by PHONE
+     * */
+    function getAuthorizedUser($phone) { $db = DbSingleton::getDbm();
+        $user_id = 0; $client_id = 0; $status = false;
+        $phone = $this->formatValidPhone($phone);
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n>0) {
+            $user_id = $db->result($r, 0, "id");
+            $client_id = $db->result($r, 0, "client_id");
+        }
+        if ($client_id>0) { // ÍÀÉØËÎ ÊË²ªÍÒÀ ÏÎ ÍÎÌÅÐÓ
+            if (!$this->checkRetailClientCategory($client_id)) { // ÍÀÉØËÎ ÊË²ªÍÒÀ-ÌÀÃÀÇ²ÍÀ
+                $status = true;
+            }
+        }
+        return array($status, $user_id);
+    }
+
+    /*
+     * get user phone
+     * */
+    function getClientPhone() { $db = DbSingleton::getDbm();
         $user_id = $this->getUser();
         if ($user_id>0) {
             $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
@@ -666,22 +692,24 @@ class ClientClass {
         return $phone;
     }
 
+    /*
+     * get user history
+     * */
     function getClientHistory() { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass;
-        $history=array(); $col=0;
-        $cookie=$_COOKIE["session_id"]; if ($cookie=="" || $cookie==NULL) $cookie=0;
-        list($client_id, $user_id)=$client->getClient();
-        if ($user_id==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user_id'";
-        $r=$db->query("SELECT * FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++){
-            $id=$db->result($r,$i-1,"id");
-            $art_name=$db->result($r,$i-1,"article_nr_displ");
-            $brand_id=$db->result($r,$i-1,"brand_id");
-            $brand_link=$this->getBrandLink($brand_id);
-            $art_name=strtoupper($art_name);
-            $brand=$this->getBrandName($brand_id);
+        $history = []; $col = 0;
+        $cookie = $_COOKIE["session_id"]; if ($cookie=="" || $cookie==NULL) $cookie=0;
+        list($client_id, $user_id) = $this->getClient();
+        if ($user_id==0) $where = "`cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `client_user_id`='$user_id'";
+        $r = $db->query("SELECT * FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $id = $db->result($r, $i-1, "id");
+            $art_name = $db->result($r, $i-1, "article_nr_displ");
+            $brand_id = $db->result($r, $i-1, "brand_id");
+            $brand_link = $this->getBrandLink($brand_id);
+            $art_name = strtoupper($art_name);
+            $brand = $this->getBrandName($brand_id);
             if ($brand!="") {
-                $history[$col]=["id"=>$id,"article_nr_displ"=>$art_name,"brand_id"=>$brand_id,"brand"=>$brand,"brand_link"=>$brand_link];
+                $history[$col] = ["id"=>$id, "article_nr_displ"=>$art_name, "brand_id"=>$brand_id, "brand"=>$brand, "brand_link"=>$brand_link];
                 $col++;
             }
         }

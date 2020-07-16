@@ -977,6 +977,8 @@ header { width: 100%; color: #a9a9a9; }
 
 .anchor-contacts__item img { width: 100%; height: 100%; padding: 15px; }
 
+.anchor-contacts__item-chats { background: #228b94; }
+
 .anchor-contacts__item-contacts { background: #2ecc71; }
 
 .anchor-contacts__item-telegram { background: #29a8ea; }

@@ -13,17 +13,17 @@ function showProfilePageOrders() { location.href="/profile/orders/"; }
 function focusPhone() { $("#userlogin").focus(); }
 
 function showLoginForm() {
-    let phone=$("#reg_phone").val();
-    if (phone===undefined || phone==="") phone=$("#input_phone").val();
-    if (phone===undefined || phone==="") phone=$("#input_phone2").val();
-    let form="login";
+    let phone = $("#reg_phone").val();
+    if (phone===undefined || phone==="") phone = $("#input_phone").val();
+    if (phone===undefined || phone==="") phone = $("#input_phone2").val();
+    let form = "login";
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modals").append(result.content);
             $("#LoginModal").modal("show");
             $("#userpassword").val("");
             $("#userlogin").val(phone);
-            document.getElementById("userpassword").select();
+            // document.getElementById("userpassword").select();
         }}, true);
 }
 

@@ -333,16 +333,31 @@ function validInfoFields() {
             }
         }
     });
+    // ALL OK
     if (valid===0) {
-        valid_field.each(function() {
-            $(this).removeClass("not-valid accept-valid");
-            $(this).prop("disabled", true);
-            $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid accept-valid");
-        });
-        $("#valid_button").addClass("none");
-        $("#orders-delivery").removeClass("none");
-        hideOrderInfo();
-        getUserSavedData();
+        // CHECK LOGIN USERS
+
+        let phone = $("#user_phone").val();
+        JsHttpRequest.query(folder,{'w':'getAuthorizedUser', 'phone':phone},
+            function (result, errors){ if (errors) {alert(errors);} if (result) {
+                let status = result.content[0];
+                let user_id = result.content[1];
+                if (status) {
+                    showLoginForm();
+                } else {
+                    valid_field.each(function() {
+                        $(this).removeClass("not-valid accept-valid");
+                        $(this).prop("disabled", true);
+                        $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid accept-valid");
+                    });
+                    $("#valid_button").addClass("none");
+                    $("#orders-delivery").removeClass("none");
+                    hideOrderInfo();
+                    getUserSavedData(user_id);
+                }
+                $("#order_user_id").val(user_id);
+            }}, true);
+
     }
     getOrderDeliveryBlock();
 }
@@ -402,6 +417,7 @@ function validFullOrder() {
 
 // FINISH ORDER
 function saveOrder() {
+    let user_id = $("#order_user_id").val();
     let name = $("#user_name").val();
     let phone = $("#user_phone").val();
     let city = $("#user_city").select2("val");
@@ -411,7 +427,7 @@ function saveOrder() {
     let email = $("#user_email").val();
     let comment = $("#user_comment").val();
 
-    JsHttpRequest.query(folder,{'w':'saveOrder', 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment},
+    JsHttpRequest.query(folder,{'w':'saveOrder', 'user_id':user_id, 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             let order_id = result.content[0];
             let user_id = result.content[1];
@@ -427,7 +443,8 @@ function saveOrder() {
 function dropClientOrderInfo(id) {
     JsHttpRequest.query(folder,{'w':'dropClientOrderInfo', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            getUserSavedData();
+            let user_id = $("#order_user_id").val();
+            getUserSavedData(user_id);
         }}, true);
 }
 
@@ -480,9 +497,9 @@ function setClientOrderInfo(id) {
 }
 
 // GET USER SAVED DATA (by CITY)
-function getUserSavedData() {
+function getUserSavedData(user_id) {
     let city = $("#user_city").select2("val");
-    JsHttpRequest.query(folder,{'w':'getUserSavedData', 'city':city},
+    JsHttpRequest.query(folder,{'w':'getUserSavedData', 'user_id':user_id, 'city':city},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             if (result.status==1) {
                 setClientOrderInfo(result.info_id);
@@ -510,7 +527,7 @@ function saveOrderClient() {
             // зберегти дані користувача
             // авторизуватись
             location.href = "https://toko.ua/profile/orders/";
-        }}, true)
+        }}, true);
 }
 
 function loginOrderClient() {
@@ -519,7 +536,7 @@ function loginOrderClient() {
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             // авторизуватисьsad
             location.href = "https://toko.ua/profile/orders/";
-        }}, true)
+        }}, true);
 }
 
 /*==== /ORDER DONE ====*/

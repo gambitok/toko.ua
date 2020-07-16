@@ -615,9 +615,11 @@ class ShopClass {
     }
 
     // GET CLIENT DELIVERY DATA (by CITY, USER_ID)
-    function getUserSavedData($city_id) { $db = DbSingleton::getDbm();
-        $user_id = $this->getUser();
-        $client_id = $this->getClient();
+    function getUserSavedData($user_id, $city_id) { $db = DbSingleton::getDbm();
+        $client = new ClientClass;
+        if ($user_id==0 || $user_id=="" || $user_id=="undefined") $user_id = $this->getUser();
+        $client_id = $client->getClientByUser($user_id);
+
         $list = ""; $status = 0; $info_id = 0; $id = 0;
         if ($user_id>0) {
             $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID`='$client_id' AND `USER_ID`='$user_id' AND `CITY_ID`='$city_id' AND `STATUS`=1;"); $n = $db->num_rows($r);
@@ -691,6 +693,7 @@ class ShopClass {
         }
 
         $form=$this->getHtmlForm("orders/form");
+        $form=str_replace("{order_user_id}", $user_id, $form);
         $form=str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
         $form=str_replace("{order_payment}", $this->getOrderPayment(), $form);
         $form=str_replace("{basket_range}", $this->getBasketOrder(), $form);
@@ -875,10 +878,14 @@ class ShopClass {
         return $form;
     }
 
-    function saveOrder($name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment) {
+    function saveOrder($user_id, $name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment) {
         $client = new ClientClass;
-        $client_id = $this->getClient();
-        $user_id = $this->getUser();
+        if ($user_id==0 || $user_id=="" || $user_id=="undefined") $user_id = $this->getUser();
+        $client_id = $client->getClientByUser($user_id);
+        $tpoint_id = $client->getTpoint();
+        $cookie = $_COOKIE["session_id"];
+        $cash_id = intval($client->getClientCurrency($client_id));
+        $user_status = 0;
 
         $street = $delivery_type["street"];
         $house = $delivery_type["house"];
@@ -889,30 +896,17 @@ class ShopClass {
         $delivery_express_department = $delivery_type["delivery_express_department"];
         $delivery_info = ["street"=>$street, "house"=>$house, "porch"=>$porch, "department"=>$department_id, "express"=>$delivery_express, "express_info"=>$delivery_express_department];
 
-        $tpoint_id = $client->getTpoint();
-        $cookie = $_COOKIE["session_id"];
-        $cash_id = intval($client->getClientCurrency($client_id));
+        // CREATE CLIENT
+        if ($user_id==0) {
+            list($client_id, $user_id) = $client->addRetailClient($client_id, $phone, $name, $city_id, $email);
+            $user_status = 1;
+        }
 
-        $user_status = 0;
-        $order_id = 123;
+        // CREATE CLIENT ORDER INFO
+        $order_info_id = $this->saveClientOrderInfo($client_id, $user_id, $city_id, $delivery_id, $department_text, $payment_id, $delivery_info);
 
-//        // CREATE CLIENT
-//        if ($user_id==0) {
-//            list($client_id, $user_id) = $client->addRetailClient($name, $phone, $city_id, $email);
-//            $user_status = 1;
-//        }
-//
-//        // CREATE CLIENT ORDER INFO
-//        $order_info_id = $this->saveClientOrderInfo($client_id, $user_id, $city_id, $delivery_id, $department_text, $payment_id, $delivery_info);
-//
-//        // CREATE ORDER
-//        $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id);
-//
-//        // CREATE ORDER STR
-//        $order_sum = $this->finishOrderBasket($order_id);
-//
-//        // SET ORDER SUM
-//        $this->updateOrderSum($order_id, $order_sum);
+        // CREATE ORDER
+        $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id);
 
         return array($order_id, $user_id, $user_status);
     }
@@ -923,9 +917,16 @@ class ShopClass {
     }
 
     function saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id) { $db = DbSingleton::getDbm();
+        $client = new ClientClass;
+        $phone = $client->formatValidPhone($phone);
+        // CREATE ORDER
         $r = $db->query("SELECT MAX(`ID`) as maxim FROM `orders_new`;"); $order_id = intval($db->result($r,0,"maxim")) + 1;
         $db->query("INSERT INTO `orders_new` (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `comment`, `order_info_id`, `price_summ`) 
         VALUES ($order_id, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '$name', '$email', '$phone', '$city_id', '$comment', $order_info_id, 0);");
+        // CREATE ORDER STR
+        $order_sum = $this->finishOrderBasket($order_id);
+        // SET ORDER SUM
+        $this->updateOrderSum($order_id, $order_sum);
         return $order_id;
     }
 
