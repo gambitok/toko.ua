@@ -564,8 +564,8 @@ class ShopClass {
 
     // BASKET to ORDER
     function finishOrderBasket($order_id) { $db=DbSingleton::getDbm(); $dbt=DbSingleton::getTokoDb();
-        $client=new ClientClass;
-        $sum=0; $where=$client->getClientWhere();
+        $client = new ClientClass;
+        $sum = 0; $where = $client->getClientWhere();
         $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n = $dbt->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $id = $dbt->result($r, $i - 1, "id");
@@ -586,6 +586,46 @@ class ShopClass {
         return $sum;
     }
 
+    /* DELIVERY INDEX ADD*/
+    function setDeliveryIndex($order_id) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT * FROM `orders_new` WHERE `ID`='$order_id' LIMIT 1;");
+        $order_info_id = $db->result($r, 0, "order_info_id");
+
+        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `ID`='$order_info_id' LIMIT 1;");
+        $delivery_id = $db->result($r, 0, "DELIVERY_ID");
+
+        if (in_array($delivery_id, [4,5])) {
+            list($art_id, $brand_id, $storage_id, $price) = $this->getDeliveryIndex($delivery_id);
+            $rmax = $db->query("SELECT MAX(`id`) AS max_order_str FROM `orders_str_new`;"); $max = intval($db->result($rmax,0,"max_order_str")) + 1;
+            $db->query("INSERT INTO `orders_str_new` (`id`, `order_id`, `suppl_id`, `storage_id`, `art_id`, `brand_id`, `amount`, `price`, `summ`, `status_action`) 
+            VALUES ('$max', '$order_id', '0', '$storage_id', '$art_id', '$brand_id', '1', $price, '$price', '0');");
+        }
+
+        return true;
+    }
+    function getDeliveryIndex($delivery_id) {
+        $art_id = 0;
+        $brand_id = 0;
+        $storage_id = 0;
+        $price = 0;
+
+        if (in_array($delivery_id, [4,5])) {
+            // NOVA POSHTA
+            if ($delivery_id==4) {
+                $art_id = 100060075;
+            }
+
+            // NOVA POSHTA KURER
+            if ($delivery_id==5) {
+                $art_id = 100060076;
+            }
+
+            $brand_id = $this->getArticleBrand($art_id);
+        }
+
+        return array($art_id, $brand_id, $storage_id, $price);
+    }
+
     // GET ORDER SUM
     function getOrderSumm($order_id) { $db=DbSingleton::getDbm();
         $summ = 0;
@@ -595,9 +635,9 @@ class ShopClass {
     }
 
     function showRegistrationSuccessForm($order_id, $user_id) {
-        $client=new ClientClass;
-        $client_id=$client->getClient()[0];
-        $login=$logout="none";
+        $client = new ClientClass;
+        $client_id = $this->getClient();
+        $login = $logout = "none";
         $form = $this->getHtmlForm("order/order_success");
         $form = str_replace("{order_id}", $order_id, $form);
         $form = str_replace("{client_id}", $user_id, $form);
@@ -606,11 +646,11 @@ class ShopClass {
         $email = $clientData["email"];
         $name = $clientData["name"];
         if ($client->checkUnRegClient()) $logout="dflex"; else $login="dflex";
-        $form=str_replace("{input_name}", $name, $form);
-        $form=str_replace("{input_phone}", $phone, $form);
-        $form=str_replace("{input_email}", $email, $form);
-        $form=str_replace("{status_login}", $login, $form);
-        $form=str_replace("{status_logout}", $logout, $form);
+        $form = str_replace("{input_name}", $name, $form);
+        $form = str_replace("{input_phone}", $phone, $form);
+        $form = str_replace("{input_email}", $email, $form);
+        $form = str_replace("{status_login}", $login, $form);
+        $form = str_replace("{status_logout}", $logout, $form);
         return $form;
     }
 
@@ -705,7 +745,7 @@ class ShopClass {
         return $form;
     }
 
-    function getClientUserData($user_id) { $db=DbSingleton::getDbm();
+    function getClientUserData($user_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
         $user_name = $db->result($r, 0, "name");
         $user_phone = $db->result($r, 0, "phone");
@@ -716,7 +756,7 @@ class ShopClass {
         return array($user_name, $user_phone, $user_email, $user_city);
     }
 
-    function getOrderDelivery() { $db=DbSingleton::getTokoDb();
+    function getOrderDelivery() { $db = DbSingleton::getTokoDb();
         $client=new ClientClass; $tpoint_id=$client->getTpointUser($client->getClient()[0]);
         $form=$this->getHtmlForm("orders/delivery");
         $form=str_replace("{tpoint_address}", $client->getTpointAddress($tpoint_id), $form);
@@ -745,7 +785,7 @@ class ShopClass {
         return array($list_np, $list_up);
     }
 
-    function getOrderPayment() { $db=DbSingleton::getTokoDb();
+    function getOrderPayment() { $db = DbSingleton::getTokoDb();
         $form=$this->getHtmlForm("orders/payment");
         $r = $db->query("SELECT * FROM `T2_PAYMENT`;"); $n = $db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
@@ -759,7 +799,7 @@ class ShopClass {
         return $form;
     }
 
-    function getOrderDeliveryBlock($delivery_id, $city_id) { $db=DbSingleton::getDbm();
+    function getOrderDeliveryBlock($delivery_id, $city_id) { $db = DbSingleton::getDbm();
         $result = 0;
         $r = $db->query("SELECT * FROM `orders_valid_delivery` WHERE `DELIVERY_ID`='$delivery_id' LIMIT 1;");
         $valid_main = $db->result($r, 0, "VALID_TYPE_MAIN");
@@ -781,7 +821,7 @@ class ShopClass {
         return $result;
     }
 
-    function getOrderPaymentBlock($payment_id, $delivery_id) { $db=DbSingleton::getDbm();
+    function getOrderPaymentBlock($payment_id, $delivery_id) { $db = DbSingleton::getDbm();
         $result = 0;
         $del_types_1 = [1, 2, 3];
         $del_types_2 = [4, 5, 6];
@@ -816,7 +856,7 @@ class ShopClass {
         return $city_address;
     }
 
-    function getDeliveryExpressList() { $db=DbSingleton::getTokoDb();
+    function getDeliveryExpressList() { $db = DbSingleton::getTokoDb();
         $list = "";
         $r=$db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` ORDER BY `ID` ASC;"); $n=$db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
@@ -828,7 +868,7 @@ class ShopClass {
         return $list;
     }
 
-    function getDepartmentExpressName($delivery_express) { $db=DbSingleton::getTokoDb();
+    function getDepartmentExpressName($delivery_express) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_express' LIMIT 1;");
         $text = $db->result($r, 0, "TEXT");
         $text = $this->replaceLang($text);
@@ -1110,8 +1150,8 @@ class ShopClass {
     }
 
     function getOrderTotal($total) {
-        $exrate=new ExRateClass; $cur=$exrate->getCurrentKours(); $cur_cap=$exrate->getKoursSymbol($cur);
-        $list="<div class=\"cart-table-row cart-table-row-offset\">
+        $exrate = new ExRateClass; $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
+        $list = "<div class=\"cart-table-row cart-table-row-offset\">
             <div class=\"cart-table-cell cart-table-cell__label\">{total_cap}</div>
             <div class=\"cart-table-cell cart-table-cell__price\">$total $cur_cap</div>
         </div>";
@@ -1124,8 +1164,8 @@ class ShopClass {
         return $list;
     }
 
-    function getBasketOrder($delivery_id=0) {
-        $exrate=new ExRateClass;
+    function getBasketOrder($delivery_id = 0) {
+        $exrate = new ExRateClass;
         $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
         $form = $this->getHtmlForm("orders/basket");
         list($basket_range, $basket_total) = $this->getBasketOrderRange();
@@ -1190,7 +1230,7 @@ class ShopClass {
         $client_id=$client->getClient()[0]; $where=$client->getClientWhere();
         $cur=$exrate->getCurrentKours(); $cur_cap=$exrate->getKoursSymbol($cur);
         $list=""; $sum_total=0;
-        $r=$db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1 ORDER BY `date_create` DESC;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1 ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
             for ($i = 1; $i <= $n; $i++) {
                 $art_id = $db->result($r, $i - 1, "art_id");
@@ -1207,9 +1247,8 @@ class ShopClass {
                 $sum_total+=$full_price;
                 $name = "$text $brand_name ($art_name)";
                 $img = $showform->getArticleActivePhoto($art_id);
-                $photo="<img src=\"$img\" alt=\"$name\">";
                 $list.="<div class=\"cart-table-row\">
-                    <div class=\"cart-table-cell cart-table-cell__photo\">$photo</div>
+                    <div class=\"cart-table-cell cart-table-cell__photo\"><img src=\"$img\" alt=\"$name\"></div>
                     <div class=\"cart-table-cell cart-table-cell__text\">
                         <div class=\"cart-table-cell cart-table-cell__name\">$name</div>
                         <div class=\"cart-table-cell cart-table-cell__summ\">
@@ -1220,9 +1259,9 @@ class ShopClass {
                 </div>";
             }
         } else {
-            $list="<div class=\"cart-table-row\">{empty_cap}</div>";
+            $list = "<div class=\"cart-table-row\">{empty_cap}</div>";
         }
-        $list=$this->replaceLang($list);
+        $list = $this->replaceLang($list);
         return array($list, $sum_total);
     }
 
