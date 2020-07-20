@@ -70,17 +70,19 @@
     <script type="text/javascript" src="/js/library/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/JsHttpRequest/JsHttpRequest.min.js"></script>
 
-    <script type="text/javascript">
-        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-        (function(){
-            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-            s1.async=true;
-            s1.src='https://embed.tawk.to/5f101b155b59f94722bad5c7/default';
-            s1.charset='UTF-8';
-            s1.setAttribute('crossorigin','*');
-            s0.parentNode.insertBefore(s1,s0);
-        })();
-    </script>
+    <!--<script type="text/javascript">-->
+        <!--var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();-->
+        <!--(function(){-->
+            <!--var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];-->
+            <!--s1.async=true;-->
+            <!--s1.src='https://embed.tawk.to/5f101b155b59f94722bad5c7/default';-->
+            <!--s1.charset='UTF-8';-->
+            <!--s1.setAttribute('crossorigin','*');-->
+            <!--s0.parentNode.insertBefore(s1,s0);-->
+        <!--})();-->
+    <!--</script>-->
+
+    <!--<script src="//code.jivosite.com/widget/exhzs4R9RT" async></script>-->
 
 </head>
 
@@ -89,6 +91,9 @@
 <div class="wrapper container-fluid">
 
     <div class="anchor-contacts">
+        <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="JIVO" data-placement="left">
+            <a href="javascript:jivo_api.open()" onclick="toggleSocialIcons()" class="anchor-contacts__item anchor-contacts__item-chats"><img src="/images/icons/socials/chats.svg" alt="JIVO"></a>
+        </div>
         <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Online chat" data-placement="left">
             <a href="javascript:void(Tawk_API.toggle())" onclick="toggleSocialIcons()" class="anchor-contacts__item anchor-contacts__item-chats"><img src="/images/icons/socials/chats.svg" alt="Online chat"></a>
         </div>

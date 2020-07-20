@@ -736,11 +736,11 @@ class ShopClass {
         $form=str_replace("{order_user_id}", $user_id, $form);
         $form=str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
         $form=str_replace("{order_payment}", $this->getOrderPayment(), $form);
-        $form=str_replace("{basket_range}", $this->getBasketOrder(), $form);
         $form=str_replace("{user_city_main_list}", $this->getCitiesMainSelect($user_city), $form);
         $form=str_replace("{user_name}", $user_name, $form);
         $form=str_replace("{user_phone}", $user_phone, $form);
         $form=str_replace("{user_email}", $user_email, $form);
+        $form=str_replace("{basket_range}", $this->getBasketOrder(), $form);
         $form=$this->replaceLang($form);
         return $form;
     }

@@ -8,17 +8,24 @@ $(document).ready(function() {
     });
 
     // INIT CITY
-    let user_city =  $("#user_city");
-    user_city.select2({
-        language: {
-            searching: function() {
-                return "Something else...";
+    let user_city = $("#user_city");
+
+    if (user_city.length!==0) {
+        user_city.select2({
+            language: {
+                searching: function() {
+                    return "Something else...";
+                }
+            },
+            matcher: function () {
+                return 23;
             }
-        },
-        matcher: function () {
-            return 23;
+        });
+
+        if (user_city.select2("val")>0) {
+            setCityVal();
         }
-    });
+    }
 
     // INIT SELECT FIELDS
     $(".select2-block").each(function() {
@@ -46,9 +53,6 @@ $(document).ready(function() {
         });
     });
 
-    if (user_city.select2("val")>0) {
-        setCityVal();
-    }
 
 });
 
@@ -335,29 +339,41 @@ function validInfoFields() {
     });
     // ALL OK
     if (valid===0) {
-        // CHECK LOGIN USERS
-
-        let phone = $("#user_phone").val();
-        JsHttpRequest.query(folder,{'w':'getAuthorizedUser', 'phone':phone},
-            function (result, errors){ if (errors) {alert(errors);} if (result) {
-                let status = result.content[0];
-                let user_id = result.content[1];
-                if (status) {
-                    showLoginForm();
-                } else {
-                    valid_field.each(function() {
-                        $(this).removeClass("not-valid accept-valid");
-                        $(this).prop("disabled", true);
-                        $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid accept-valid");
-                    });
-                    $("#valid_button").addClass("none");
-                    $("#orders-delivery").removeClass("none");
-                    hideOrderInfo();
-                    getUserSavedData(user_id);
-                }
-                $("#order_user_id").val(user_id);
-            }}, true);
-
+        let order_user_id = $("#user_id").val();
+        // CHECK IF USER LOGIN
+        if (order_user_id==0 || order_user_id==undefined) {
+            // CHECK LOGIN USERS
+            let phone = $("#user_phone").val();
+            JsHttpRequest.query(folder,{'w':'getAuthorizedUser', 'phone':phone},
+                function (result, errors){ if (errors) {alert(errors);} if (result) {
+                    let status = result.content[0];
+                    let user_id = result.content[1];
+                    if (status) {
+                        showLoginForm();
+                    } else {
+                        valid_field.each(function() {
+                            $(this).removeClass("not-valid accept-valid");
+                            $(this).prop("disabled", true);
+                            $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid accept-valid");
+                        });
+                        $("#valid_button").addClass("none");
+                        $("#orders-delivery").removeClass("none");
+                        hideOrderInfo();
+                        getUserSavedData(user_id);
+                    }
+                    $("#order_user_id").val(user_id);
+                }}, true);
+        } else {
+            valid_field.each(function() {
+                $(this).removeClass("not-valid accept-valid");
+                $(this).prop("disabled", true);
+                $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid accept-valid");
+            });
+            $("#valid_button").addClass("none");
+            $("#orders-delivery").removeClass("none");
+            hideOrderInfo();
+            getUserSavedData(order_user_id);
+        }
     }
     getOrderDeliveryBlock();
 }
