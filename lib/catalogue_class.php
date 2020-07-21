@@ -619,6 +619,7 @@ class CatalogueClass {
             $article_search = $val["search_number"];
             $brand_id = $val["brand_id"];
             $r=$db->query("SELECT * FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`='$brand_id' AND `KIND`=3 AND `RELATION`=0;"); $n=$db->num_rows($r);
+            $art_id_str = rtrim($art_id_str, ",");
             if ($art_id_str!="") $art_id_str.=",";
             for ($i=1; $i<=$n; $i++) {
                 $cross_art_id = $db->result($r, $i - 1, "ART_ID");
@@ -1437,6 +1438,7 @@ class CatalogueClass {
         $form=str_replace("{basket_amount}",$basket_cap,$form);
 
         $list.="$form";
+        if (!$view) $list.="$ll";
 
         $list=$this->replaceLang($list);
 
