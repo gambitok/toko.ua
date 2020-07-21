@@ -921,6 +921,33 @@ class ShopClass {
         return $form;
     }
 
+    function saveFastOrder($phone) {
+        $client = new ClientClass;
+
+        list(, $user_id) = $client->getAuthorizedUser($phone);
+        $client_id = $client->getClientByUser($user_id);
+        $user_status = 0;
+
+        // CREATE CLIENT
+        if ($user_id==0) {
+            list($client_id, $user_id) = $client->addRetailClient($this->getClient(), $phone);
+            $user_status = 1;
+        }
+
+        $tpoint_id = $client->getTpoint();
+        $cookie = $_COOKIE["session_id"];
+        $cash_id = intval($client->getClientCurrency($client_id));
+
+        // CREATE CLIENT ORDER INFO
+//        $delivery_info = ["street"=>"", "house"=>"", "porch"=>"", "department"=>0, "express"=>0, "express_info"=>""];
+//        $order_info_id = $this->saveClientOrderInfo($client_id, $user_id, 0, 0, "", 0, $delivery_info, "", "");
+
+        // CREATE ORDER
+        $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0);
+
+        return array($order_id, $user_id, $user_status);
+    }
+
     function saveOrder($user_id, $name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment, $recipient_name, $recipient_phone) {
         $client = new ClientClass;
         if ($user_id==0 || $user_id=="" || $user_id=="undefined") {

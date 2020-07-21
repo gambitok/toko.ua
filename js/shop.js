@@ -288,14 +288,21 @@ function showFinishOrderForm() {
 }
 
 function showFastOrder() {
+    // let phone = $("#input_phone2").val();
+    // let client = $("#input_client").val();
+    // let user = $("#input_user").val();
+    // let tpoint_id = $("#input_tpoint").val();
+    // JsHttpRequest.query(folder,{'w':'finish_order', 'client_id':client, 'client_user_id':user, 'tpoint_id':tpoint_id, 'phone':phone},
+    //     function (result, errors){ if (errors) {alert(errors);} if (result){
+    //         location.href = "https://toko.ua/order/?order_id=" + result.content[0] + "&client_id=" + result.content[1];
+    //     }}, true);
+
     let phone = $("#input_phone2").val();
-    let client = $("#input_client").val();
-    let user = $("#input_user").val();
-    let tpoint_id = $("#input_tpoint").val();
-    JsHttpRequest.query(folder,{'w':'finish_order', 'client_id':client, 'client_user_id':user, 'tpoint_id':tpoint_id, 'phone':phone},
+    JsHttpRequest.query(folder,{'w':'finish_fast_order', 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.href = "https://toko.ua/order/?order_id=" + result.content[0] + "&client_id=" + result.content[1];
+            location.href = "https://toko.ua/order/?order_id=" + result.content[0] + "&user_id=" + result.content[1] + "&user_status=" + result.content[2];
         }}, true);
+
 }
 
 function saveClientRetail() {

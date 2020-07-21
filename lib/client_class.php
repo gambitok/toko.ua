@@ -554,8 +554,8 @@ class ClientClass {
         $phone = $this->formatValidPhone($phone);
 
         $r=$db->query("SELECT MAX(`id`) as mid FROM `A_CLIENTS`;"); $client_id=0+$db->result($r,0,"mid")+1;
-        $db->query("INSERT INTO `A_CLIENTS` (`id`, `name`, `full_name`, `phone`, `email`, `country`, `state`, `region`, `city`, `client_category`) 
-        VALUES ('$client_id', '$name', '$name', '$phone', '$email', '$country_id', '$state_id', '$region_id', '$city_id', '$category');");
+        $db->query("INSERT INTO `A_CLIENTS` (`id`, `name`, `full_name`, `phone`, `email`, `country`, `state`, `region`, `city`, `client_category`, `rounding_price`) 
+        VALUES ('$client_id', '$name', '$name', '$phone', '$email', '$country_id', '$state_id', '$region_id', '$city_id', '$category', 2);");
 
         $r=$db->query("SELECT MAX(`id`) as mid FROM `A_CLIENTS_USERS`;"); $user_id=0+$db->result($r,0,"mid")+1;
         $db->query("INSERT INTO `A_CLIENTS_USERS` (`id`, `client_id`, `name`, `email`, `phone`, `pass`, `status`) 
