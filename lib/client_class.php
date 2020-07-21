@@ -31,6 +31,21 @@ class ClientClass {
         return array($client_id, $user_id);
     }
 
+    function getTpointID() {
+        if ($_COOKIE["tpoint_id"]!="") $_SESSION["tpoint_id"]=$_COOKIE["tpoint_id"];
+        if ($_SESSION["tpoint_id"]=="" || $_SESSION["tpoint_id"]==0 || $_SESSION["tpoint_id"]==NULL) {
+            $_SESSION["tpoint_id"]=$this->default_tpoint;
+        }
+        $tpoint_id = $_SESSION["tpoint_id"];
+        return $tpoint_id;
+    }
+
+    function getDefaultStorageID($tpoint_id) { $db=DbSingleton::getDbm();
+        $r = $db->query("SELECT * FROM `T_POINT_STORAGE` WHERE `tpoint_id`='$tpoint_id' AND `default`=1 LIMIT 1;");
+        $storage_id = $db->result($r, 0, "storage_id");
+        return $storage_id;
+    }
+
     function getClientByUser($user_id) { $db=DbSingleton::getDbm();
         $client_id = 0;
         $r = $db->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `status`=$this->status_user LIMIT 1;"); $n = $db->num_rows($r);
@@ -325,7 +340,7 @@ class ClientClass {
         return $cash_id;
     }
 
-    function getTpoint($client_id=0) { $db=DbSingleton::getDbm();
+    function getTpoint($client_id = 0) { $db=DbSingleton::getDbm();
         if ($client_id==0) {$clientData=$this->getClient(); $client_id=$clientData[0];}
         $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id';");
         $tpoint_id = $db->result($r,0,"tpoint_id");
@@ -714,6 +729,14 @@ class ClientClass {
             }
         }
         return $history;
+    }
+
+    function dropClient($client_id) { $db = DbSingleton::getDbm();
+        $db->query("DELETE FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
+        $db->query("DELETE FROM `A_CLIENTS_USERS` WHERE `client_id`='$client_id' LIMIT 1;");
+        $db->query("DELETE FROM `A_CLIENTS_CATEGORY` WHERE `client_id`='$client_id' LIMIT 1;");
+        $db->query("DELETE FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;");
+        return "deleted client: #$client_id";
     }
 
 }

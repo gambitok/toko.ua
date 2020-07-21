@@ -132,14 +132,57 @@
                         </div>
                     </div>
 
+                    <!-- Recipient -->
+                    <div class="orders-container">
+                        <div class="orders-block">
+                            <div class="orders-header__title" style="margin-left: 0;">
+                                {who_recipient_cap}?
+                            </div>
+
+                            <div class="orders-block-row orders-block-row-recipient" data-tab-delivery="1">
+                                <label class="orders-block-row__radio">{i_am_cap}
+                                    <input type="radio" name="user_recipient" data-tab-href="tab-recipient-1" data-id-recipient="1" checked>
+                                    <span class="radio-mark"></span>
+                                </label>
+                            </div>
+
+                            <div class="orders-block-row orders-block-row-recipient" data-tab-recipient="2">
+
+                                <label class="orders-block-row__radio">{another_person_cap}
+                                    <input type="radio" name="user_recipient" data-tab-href="tab-recipient-2" data-id-recipient="2">
+                                    <span class="radio-mark"></span>
+                                </label>
+
+                                <div class="orders-block-row-hidden" id="tab-recipient-2">
+
+                                    <div class="orders-block-row">
+                                        <div class="orders-block-row-title">
+                                            <label class="orders-block-row__label" for="user_recipient_name">{name_surname}</label>
+                                        </div>
+                                        <div class="orders-block-row-content">
+                                            <input class="orders-block-row__input" type="text" name="user_recipient_name" id="user_recipient_name" placeholder="{name_surname}" value="">
+                                        </div>
+                                    </div>
+                                    <div class="orders-block-row">
+                                        <div class="orders-block-row-title">
+                                            <label class="orders-block-row__label" for="user_recipient_phone">{phone_number}</label>
+                                        </div>
+                                        <div class="orders-block-row-content">
+                                            <input class="orders-block-row__input masked-phone" type="tel" placeholder="+38(0__) ___-__-__" name="user_recipient_phone" id="user_recipient_phone" data-attr="phone" value="">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
                     <!-- FOOTER -->
                     <div class="orders-footer">
                         <div class="orders-footer-about">
                             <span>{delivery_user_info}</span>
                         </div>
-                        <!--<div class="orders-footer-button">-->
-                            <!--<button id="make_order" onclick="validOrder();">{make_order_cap}</button>-->
-                        <!--</div>-->
                     </div>
 
                 </div>

@@ -583,46 +583,49 @@ class ShopClass {
             VALUES ('$max', '$order_id', '$suppl_id', '$storage_id', '$art_id', '$brand_id', '$amount', $price, '$full_price', '$status_action');");
             $dbt->query("DELETE FROM `basket` WHERE `id`='$id';");
         }
+        if ($order_id>0 && $n>0) {
+            $delivery_sum = $this->setDeliveryIndex($order_id);
+            $sum+=$delivery_sum;
+        }
         return $sum;
     }
 
-    /* DELIVERY INDEX ADD*/
+    /*==== DELIVERY INDEX ADD ====*/
     function setDeliveryIndex($order_id) { $db = DbSingleton::getDbm();
+        $client = new ClientClass;
+        $price = 0;
         $r = $db->query("SELECT * FROM `orders_new` WHERE `ID`='$order_id' LIMIT 1;");
         $order_info_id = $db->result($r, 0, "order_info_id");
-
+        $tpoint_id = $db->result($r, 0, "tpoint_id");
+        $client_id = $db->result($r, 0, "client_id");
         $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `ID`='$order_info_id' LIMIT 1;");
         $delivery_id = $db->result($r, 0, "DELIVERY_ID");
-
-        if (in_array($delivery_id, [4,5])) {
-            list($art_id, $brand_id, $storage_id, $price) = $this->getDeliveryIndex($delivery_id);
+        if (in_array($delivery_id, [4,5]) && ($client->checkRetailClientCategory($client_id))) {
+            list($art_id, $brand_id, $storage_id, $price) = $this->getDeliveryIndex($delivery_id, $tpoint_id);
             $rmax = $db->query("SELECT MAX(`id`) AS max_order_str FROM `orders_str_new`;"); $max = intval($db->result($rmax,0,"max_order_str")) + 1;
             $db->query("INSERT INTO `orders_str_new` (`id`, `order_id`, `suppl_id`, `storage_id`, `art_id`, `brand_id`, `amount`, `price`, `summ`, `status_action`) 
             VALUES ('$max', '$order_id', '0', '$storage_id', '$art_id', '$brand_id', '1', $price, '$price', '0');");
         }
-
-        return true;
+        return $price;
     }
-    function getDeliveryIndex($delivery_id) {
+    function getDeliveryIndex($delivery_id, $tpoint_id) {
+        $cat = new CatalogueClass;
+        $client = new ClientClass;
         $art_id = 0;
         $brand_id = 0;
         $storage_id = 0;
         $price = 0;
-
         if (in_array($delivery_id, [4,5])) {
-            // NOVA POSHTA
             if ($delivery_id==4) {
-                $art_id = 100060075;
+                $art_id = 100060075; // NOVA POSHTA
             }
-
-            // NOVA POSHTA KURER
             if ($delivery_id==5) {
-                $art_id = 100060076;
+                $art_id = 100060076; // NOVA POSHTA KURER
             }
-
             $brand_id = $this->getArticleBrand($art_id);
+            $storage_id = $client->getDefaultStorageID($tpoint_id);
+            $price = $cat->getArticlePrice($art_id);
         }
-
         return array($art_id, $brand_id, $storage_id, $price);
     }
 
@@ -918,10 +921,14 @@ class ShopClass {
         return $form;
     }
 
-    function saveOrder($user_id, $name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment) {
+    function saveOrder($user_id, $name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment, $recipient_name, $recipient_phone) {
         $client = new ClientClass;
-        if ($user_id==0 || $user_id=="" || $user_id=="undefined") $user_id = $this->getUser();
-        $client_id = $client->getClientByUser($user_id);
+        if ($user_id==0 || $user_id=="" || $user_id=="undefined") {
+            $user_id = $this->getUser();
+            $client_id = $this->getClient();
+        } else {
+            $client_id = $client->getClientByUser($user_id);
+        }
         $tpoint_id = $client->getTpoint();
         $cookie = $_COOKIE["session_id"];
         $cash_id = intval($client->getClientCurrency($client_id));
@@ -938,12 +945,13 @@ class ShopClass {
 
         // CREATE CLIENT
         if ($user_id==0) {
-            list($client_id, $user_id) = $client->addRetailClient($client_id, $phone, $name, $city_id, $email);
+            $tpoint_client_id = $client_id;
+            list($client_id, $user_id) = $client->addRetailClient($tpoint_client_id, $phone, $name, $city_id, $email);
             $user_status = 1;
         }
 
         // CREATE CLIENT ORDER INFO
-        $order_info_id = $this->saveClientOrderInfo($client_id, $user_id, $city_id, $delivery_id, $department_text, $payment_id, $delivery_info);
+        $order_info_id = $this->saveClientOrderInfo($client_id, $user_id, $city_id, $delivery_id, $department_text, $payment_id, $delivery_info, $recipient_name, $recipient_phone);
 
         // CREATE ORDER
         $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id);
@@ -977,7 +985,7 @@ class ShopClass {
         return true;
     }
 
-    function saveClientOrderInfo($client_id, $user_id, $city_id, $delivery_id, $department_text, $payment_id, $delivery_info=[]) { $db = DbSingleton::getDbm();
+    function saveClientOrderInfo($client_id, $user_id, $city_id, $delivery_id, $department_text, $payment_id, $delivery_info=[], $recipient_name="", $recipient_phone="") { $db = DbSingleton::getDbm();
         $street = $delivery_info["street"];
         $house = $delivery_info["house"];
         $porch = $delivery_info["porch"];
@@ -993,8 +1001,8 @@ class ShopClass {
         $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID`=$client_id AND `USER_ID`=$user_id AND `CITY_ID`=$city_id AND `DELIVERY_ID`=$delivery_id AND `PAYMENT_ID`=$payment_id AND `DEL_STREET`='$street' AND `DEL_HOUSE`='$house' AND `DEL_PORCH`='$porch' AND `DEL_DEPARTMENT`='$department' AND `DEL_EXPRESS`=$express AND `DEL_EXPRESS_INFO`='$express_info' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
             $r = $db->query("SELECT MAX(`ID`) as maxim FROM `ORDERS_CLIENT_INFO`;"); $order_info_id = intval($db->result($r,0,"maxim")) + 1;
-            $db->query("INSERT INTO `ORDERS_CLIENT_INFO` (`ID`, `CLIENT_ID`, `USER_ID`, `CITY_ID`, `DELIVERY_ID`, `PAYMENT_ID`, `DEL_STREET`, `DEL_HOUSE`, `DEL_PORCH`, `DEL_DEPARTMENT`, `DEL_DEPARTMENT_TEXT`, `DEL_EXPRESS`, `DEL_EXPRESS_INFO`) 
-            VALUES ($order_info_id, $client_id, $user_id, $city_id, $delivery_id, $payment_id, '$street', '$house', '$porch', '$department', '$department_text', $express, '$express_info');");
+            $db->query("INSERT INTO `ORDERS_CLIENT_INFO` (`ID`, `CLIENT_ID`, `USER_ID`, `CITY_ID`, `DELIVERY_ID`, `PAYMENT_ID`, `DEL_NAME`, `DEL_PHONE`, `DEL_STREET`, `DEL_HOUSE`, `DEL_PORCH`, `DEL_DEPARTMENT`, `DEL_DEPARTMENT_TEXT`, `DEL_EXPRESS`, `DEL_EXPRESS_INFO`) 
+            VALUES ($order_info_id, $client_id, $user_id, $city_id, $delivery_id, $payment_id, '$recipient_name', '$recipient_phone', '$street', '$house', '$porch', '$department', '$department_text', $express, '$express_info');");
         } else {
             $order_info_id = $db->result($r, 0, "ID");
         }
@@ -1075,10 +1083,12 @@ class ShopClass {
         $department = $db->result($r, 0, "DEL_DEPARTMENT");
         $express = $db->result($r, 0, "DEL_EXPRESS");
         $express_info = $db->result($r, 0, "DEL_EXPRESS_INFO");
+        $recipient_name = $db->result($r, 0, "DEL_NAME");
+        $recipient_phone = $db->result($r, 0, "DEL_PHONE");
 
         $delivery_info = ["street"=>$street, "house"=>$house, "porch"=>$porch, "department"=>$department, "express"=>$express, "express_info"=>$express_info];
 
-        return array("city_id"=>$city_id, "delivery_id"=>$delivery_id, "payment_id"=>$payment_id, "delivery_info"=>$delivery_info);
+        return array("city_id"=>$city_id, "delivery_id"=>$delivery_id, "payment_id"=>$payment_id, "delivery_info"=>$delivery_info, "recipient_name"=>$recipient_name, "recipient_phone"=>$recipient_phone);
     }
 
     function validDeliveryFields($delivery, $delivery_type) {
@@ -1172,7 +1182,7 @@ class ShopClass {
 
         list($delivery_total, $delivery_total_text) = $this->getDeliveryPrice($delivery_id);
 
-        $total = floatval($basket_total) + floatval($delivery_total);
+        $total = $basket_total + $delivery_total;
         if ($delivery_id==0) {
             $form = str_replace("{basket_order_delivery_price}", "", $form);
             $form = str_replace("{basket_order_price}", "", $form);
@@ -1188,15 +1198,22 @@ class ShopClass {
     }
 
     function getDeliveryPrice($delivery_id) {
-        $exrate = new ExRateClass;
+        $exrate = new ExRateClass; $client = new ClientClass; $cat = new CatalogueClass;
         $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
         $price = 0; $price_cur = 0;
 
         // NOVA POSHTA
-        if ($delivery_id==4) $price = 40;
-        if ($delivery_id==5) $price = 60;
+        if ($delivery_id==4) {
+            $price = $cat->getArticlePrice(100060075); // NP
+        }
+        if ($delivery_id==5) {
+            $price = $cat->getArticlePrice(100060076); // NP KURER
+        }
 
-        if ($price>0) $price_cur = $exrate->getKoursFromUAH($price, $cur);
+        if ($price>0) {
+            $price_cur = $exrate->getKoursFromUAH($price, $cur);
+            $price_cur = $client->getClientPriceRounding($this->getClient(), $price_cur);
+        }
 
         if ($price_cur>0) {
             $del_cap = "$price_cur $cur_cap";
@@ -1210,7 +1227,6 @@ class ShopClass {
             $del_cap = "{carrier_conditions}";
         }
 
-        $client = new ClientClass;
         if (!$client->checkRetailClientCategory($this->getClient())) {
             $price = 0;
             $del_cap = "{carrier_conditions}";

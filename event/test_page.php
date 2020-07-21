@@ -2,6 +2,12 @@
 
 $content = str_replace("{main_window}", $shop->getHtmlForm("test"), $content);
 
+//$arr = [1256,1260,1261,1263];
+//foreach ($arr as $client_id) {
+//    $message = $client->dropClient($client_id);
+//    print $message;
+//}
+
 //$content = str_replace("{detail_form}", $automan->getDetailsList(), $content);
 //$content = str_replace("{auto_form}", $automan->getAutoModList(), $content);
 

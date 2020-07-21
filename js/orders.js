@@ -53,6 +53,16 @@ $(document).ready(function() {
         });
     });
 
+    $($("input[name='user_recipient']")).each(function () {
+        if($(this).is(':checked')) $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
+    });
+
+    $("input[name='user_recipient']").change(function() {
+        $($("input[name='user_recipient']")).each(function () {
+            $("#" + $(this).attr("data-tab-href")).removeClass("orders-block-row-display");
+        });
+        $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
+    });
 
 });
 
@@ -339,7 +349,7 @@ function validInfoFields() {
     });
     // ALL OK
     if (valid===0) {
-        let order_user_id = $("#user_id").val();
+        let order_user_id = $("#order_user_id").val();
         // CHECK IF USER LOGIN
         if (order_user_id==0 || order_user_id==undefined) {
             // CHECK LOGIN USERS
@@ -442,8 +452,10 @@ function saveOrder() {
     let payment = $("input[name ='user_payment']:checked").attr("data-id-payment");
     let email = $("#user_email").val();
     let comment = $("#user_comment").val();
+    let recipient_name = $("#user_recipient_name").val();
+    let recipient_phone = $("#user_recipient_phone").val();
 
-    JsHttpRequest.query(folder,{'w':'saveOrder', 'user_id':user_id, 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment},
+    JsHttpRequest.query(folder,{'w':'saveOrder', 'user_id':user_id, 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment, 'recipient_name':recipient_name, 'recipient_phone':recipient_phone},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             let order_id = result.content[0];
             let user_id = result.content[1];
@@ -473,6 +485,24 @@ function setClientOrderInfo(id) {
             let delivery_id = arr["delivery_id"];
             let payment_id = arr["payment_id"];
             let delivery_info = arr["delivery_info"];
+            let recipient_name = arr["recipient_name"];
+            let recipient_phone = arr["recipient_phone"];
+
+            if (recipient_name==="" && recipient_phone==="") {
+                $("input[data-id-recipient='1']").prop("checked", true);
+                $("input[data-id-recipient='2']").prop("checked", false);
+            } else {
+                $("input[data-id-recipient='2']").prop("checked", true);
+                $("input[data-id-recipient='1']").prop("checked", false);
+            }
+
+            $("#user_recipient_name").val(recipient_name);
+            $("#user_recipient_phone").val(recipient_phone);
+            $("#user_recipient_phone").mask("+38(099) 999-99-99", {
+                placeholder:"+38(0__) ___-__-__",
+                autoclear: false,
+                alias: "numeric"
+            });
 
             // CITY
             let user_city = $("#user_city");
