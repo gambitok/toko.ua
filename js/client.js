@@ -65,7 +65,7 @@ function saveRegistrationForm() {
     let pass2_input=$("#reg_repassword"), pass2=pass2_input.val();
     let name_input=$("#reg_name"), name=name_input.val();
     // let email_input=$("#reg_email"), email=email_input.val();
-    let city_id=$("#reg_city option:selected").val();
+    let city_id=$("#user_city option:selected").val();
 
     if (phone==="") phone_input.addClass("required_input"); else phone_input.removeClass("required_input");
     if (pass==="") pass_input.addClass("required_input"); else pass_input.removeClass("required_input");
@@ -94,7 +94,7 @@ function saveRegistration() {
     let email = $("#reg_email").val();
     let name = $("#reg_name").val();
     let client_category = $("#reg_category option:selected").val();
-    let city_id = $("#reg_city option:selected").val();
+    let city_id = $("#user_city option:selected").val();
     let tpoint_id = $("#reg_tpoint option:selected").val();
     let mailing = $("#reg_mailing").prop("checked");
     JsHttpRequest.query(folder,{'w':'saveRegistration', 'phone':phone, 'pass':pass, 'email':email, 'name':name, 'client_category':client_category, 'city_id':city_id, 'tpoint_id':tpoint_id, 'mailing':mailing},

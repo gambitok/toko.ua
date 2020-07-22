@@ -9,7 +9,6 @@
 //    $content=str_replace("{main_window}", $shop->showRegistrationSuccessForm($_GET["order_id"], $_GET["client_id"]), $content);
 //}
 
-
 $order_id = $_GET["order_id"];
 $user_id = $_GET["user_id"];
 $user_status = $_GET["user_status"];

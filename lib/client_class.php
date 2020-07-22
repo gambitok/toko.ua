@@ -412,6 +412,7 @@ class ClientClass {
         $r = $db->query("SELECT * FROM `mobile_operators` WHERE `OPERATOR_CODE`='$code' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) $result = true;
 
+        // ONLY FOR USER PHONE
         $user_id = $this->getUser();
         if ($user_id>0) {
             $user_phone = $this->getClientPhone();

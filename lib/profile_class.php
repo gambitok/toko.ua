@@ -682,12 +682,13 @@ class ProfileClass {
 	/*==== REGISTRATION ====*/
 
     function showRegistrationForm() {
-        $menu=new MenuClass;
+        $menu=new MenuClass; $shop=new ShopClass;
         $form=$this->getHtmlForm("profile/registration");
         $form=str_replace("{type_form}", $menu->showTypeForm(), $form);
         $form=str_replace("{region_form}", $menu->getRegionForm(), $form);
         $form=str_replace("{category_options}", $this->getManualOptions("customers_categories"), $form);
         $form=str_replace("{tpoint_options}", $this->getRegionSelect(), $form);
+        $form=str_replace("{user_city_main_list}", $shop->getCitiesMainSelect(), $form);
         return $form;
     }
 

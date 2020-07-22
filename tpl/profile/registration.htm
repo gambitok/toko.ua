@@ -9,6 +9,33 @@
     })
 </script>
 
+<style>
+    input:disabled {
+        background-color: #eee;
+        cursor: default;
+    }
+    .not-valid {
+        border: 1px solid red!important;
+    }
+    .accept-valid {
+        border: 1px solid limegreen!important;
+    }
+    .btn-valid {
+        background: limegreen;
+        color: white;
+    }
+    .select2-selection__rendered {
+        line-height: 46px !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 46px;
+        border: 1px solid #dadada;
+    }
+    .select2-selection__arrow {
+        height: 46px !important;
+    }
+</style>
+
 <div class="content">
 	<div class="container">
 		<div class="registration">
@@ -91,14 +118,22 @@
 					<label class="label-required">{location_cap}:</label>
 				</div>
 				<div class="col-lg-8 col-12 pad0">
-					<select id="reg_city" title="{location_cap}" class="form-control select2-city pointer" onchange="validateForm('city','select')">
+
+					<select id="user_city" title="{location_cap}" class="form-control" data-attr="select" oninput="getCityVal();" onchange="setCityVal();">
+                        <option value="0">{not_chosen}</option>
+                        {user_city_main_list}
 					</select>
+
+                    <select style="display: none!important;" class="orders-block-row__input" name="user_city_np" id="user_city_np" data-attr="select" title="NovaPoshta">
+                        <option value="0">{not_chosen}</option>
+                    </select>
+
 					<div class="float-left city-inline">
 						<ul class="list-inline">
 							<li class="list-inline-item">{for_example}:</li>
 							<li class="list-inline-item"><button id="10108" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>
 							<li class="list-inline-item"><button id="22739" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kharkiv} </button></li>
-							<li class="list-inline-item"> <button id="13549" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
+							<li class="list-inline-item"><button id="13549" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
 							<li class="list-inline-item"><button id="4074" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_dnepr} </button></li>
 						</ul>
 					</div>
@@ -124,11 +159,10 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>
-<script type="text/javascript" src="/js/plugins/select2/select2_ru.js"></script>
+<script type="text/javascript" src="/js/plugins/select2/select2.city.min.js"></script>
 
 <script>
-    var $example = $('.select2-city').select2({
+    var $example = $("#user_city").select2({
         language: "ru"
     });
 
@@ -140,16 +174,37 @@
         minimumResultsForSearch: -1
     });
 
+    setTimeout(function () {
+        $("#user_city").select2();
+    }, 1500);
+</script>
+
+<!--<script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>-->
+<!--<script type="text/javascript" src="/js/plugins/select2/select2_ru.js"></script>-->
+
+<script>
+    // var $example = $('.select2-city').select2({
+    //     language: "ru"
+    // });
+    //
+    // $('.select2-delivery').select2({
+    //     minimumResultsForSearch: -1
+    // });
+    //
+    // $('.select2-payment').select2({
+    //     minimumResultsForSearch: -1
+    // });
+
     function triggerCity(a) {
         sendSelect2('',true,a);
     }
 
-    function select2Soset() {
-        var city_like = $('.select2-search__field').val();
-        if (city_like.length>2) {
-            sendSelect2(city_like);
-        }
-    }
+    // function select2Soset() {
+    //     var city_like = $('.select2-search__field').val();
+    //     if (city_like.length>2) {
+    //         sendSelect2(city_like);
+    //     }
+    // }
 
     function sendSelect2(city_like,trig,a) {
         JsHttpRequest.query(folder,{'w':'get_city_list', 'city_like':city_like},

@@ -107,9 +107,9 @@ class CatalogueClass {
             $art_id_str.="'$art_id'";if ($i<$n){$art_id_str.=",";}
         }
 
-        $brand_filter=json_decode($brand_filter);
-        if(count($brand_filter)>1) $brand_filter=implode(",", $brand_filter); else $brand_filter="";
-        $exp_price=explode(",",$price_f); $exp_deliv=explode(",",$deliv_f);
+        $brand_filter = json_decode($brand_filter);
+        if(count($brand_filter)>1) $brand_filter = implode(",", $brand_filter); else $brand_filter = "";
+        $exp_price = explode(",", $price_f); $exp_deliv = explode(",", $deliv_f);
 
         list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($art_id_str, $article_nr_search, $brand_filter, $text_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand_nr_search, $order_value, 1);
 
@@ -161,7 +161,7 @@ class CatalogueClass {
                 $photo = $showform->getShortArticlePhoto($art_id);
                 $count = $this->countBrandItems($search_number, $brand_id);
                 if ($count==0) $count_zero++; else { $exist_search_number=strtolower($search_number); $exist_brand_link=$brand_link; }
-                $mas[$i] = ["search_number"=>$search_number,"text"=>$text,"brand_id"=>$brand_id,"brand_name"=>$brand_name,"brand_link"=>$brand_link,"count"=>$count,"name"=>$name,"photo"=>$photo];
+                $mas[$i] = ["search_number"=>$search_number, "text"=>$text, "brand_id"=>$brand_id, "brand_name"=>$brand_name, "brand_link"=>$brand_link, "count"=>$count, "name"=>$name, "photo"=>$photo];
             }
 
             usort($mas,"myBrandCmp");
@@ -548,7 +548,7 @@ class CatalogueClass {
         return $form;
     }
 
-    function createTemporarySearchTable($temp_key) { $db=DbSingleton::getTokoDb();
+    function createTemporarySearchTable($temp_key) { $db = DbSingleton::getTokoDb();
         $db->query("CREATE TEMPORARY TABLE IF NOT EXISTS `TEMP_ARTICLES_$temp_key` (
             `art_id` INT(100) NOT NULL,
             `name` VARCHAR(100),
@@ -685,7 +685,7 @@ class CatalogueClass {
         return $list_brand;
     }
 
-    function searchList($where_art_id_str, $type_filter=1, $view=0, $article_nr_search="", $brand_nr_search="") { $db=DbSingleton::getTokoDb();
+    function searchList($where_art_id_str, $type_filter=1, $view=0, $article_nr_search="", $brand_nr_search="") { $db = DbSingleton::getTokoDb();
         $kours=new ExRateClass; $client=new ClientClass;
         $client_id=$this->getClient();
         $tpoint=$client->getTpoint();
@@ -833,7 +833,7 @@ class CatalogueClass {
         return array($list, $list_brand, $filters, $count, $brand_ids);
     }
 
-    function shortSearchList($art_id_search) { $db=DbSingleton::getTokoDb();
+    function shortSearchList($art_id_search) { $db = DbSingleton::getTokoDb();
         $kours=new ExRateClass; $client=new ClientClass;
         session_start(); $temp_key=session_id(); $client_id=$this->getClient();
         $tpoint=$client->getTpoint(); $view=$client->getProductView(); $cur=$kours->getCurrentKours();
@@ -1191,7 +1191,7 @@ class CatalogueClass {
         return $prices;
     }
 
-    function getTpointSupplDeliveriesInfo($tpoint_id){ $db = DbSingleton::getTokoDb();
+    function getTpointSupplDeliveriesInfo($tpoint_id) { $db = DbSingleton::getTokoDb();
         $week_day=date("N"); $cur_time=date("H:i:s"); $result=[];
         $r=$db->query("SELECT `delivery_days`, `week_day`, `time_from_del`, `time_to_del`, `suppl_storage_id`, `suppl_id` 
         FROM `T_POINT_SUPPL_DELIVERY_TIME` 
@@ -1277,7 +1277,7 @@ class CatalogueClass {
         if ($n>0) return true; else return false;
     }
 
-    function getBrandType($brand_id) { $db=DbSingleton::getTokoDb();
+    function getBrandType($brand_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
         $kind = $db->result($r,0,"KIND");
         if ($kind==3) return true; else return false;
@@ -1321,7 +1321,7 @@ class CatalogueClass {
         return $index_type;
     }
 
-    function getSuppLStorageVisible($suppl_id, $storage_id) { $db=DbSingleton::getDbm();
+    function getSuppLStorageVisible($suppl_id, $storage_id) { $db = DbSingleton::getDbm();
         if ($suppl_id>0) {
             $r=$db->query("SELECT * FROM `A_CLIENTS_STORAGE` WHERE `client_id`='$suppl_id' AND `id`='$storage_id' LIMIT 1;"); $n=$db->num_rows($r);
             if ($n>0) {
@@ -1744,7 +1744,7 @@ class CatalogueClass {
         return $format_text;
     }
 
-    function getPriceList($user_id = null) { $db=DbSingleton::getTokoDb();
+    function getPriceList($user_id = null) { $db = DbSingleton::getTokoDb();
         $client = new ClientClass; $kours = new ExRateClass;
         $client_id = $client->getClientByUser($user_id); $tpoint_id = $client->getTpointUser($client_id);
         $cur = $client->getClientCurrency($client_id); $cur_cap = $kours->getKoursCaption($cur);
@@ -1806,7 +1806,7 @@ class CatalogueClass {
         return $list;
     }
 
-    function getArticlePriceRatingCash($art_id) { $db=DbSingleton::getTokoDb();
+    function getArticlePriceRatingCash($art_id) { $db = DbSingleton::getTokoDb();
         $cash_id=2;
         $r = $db->query("SELECT * FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id`='$art_id' AND `in_use`=1 LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) $cash_id = $db->result($r,0,"cash_id");
@@ -2032,28 +2032,28 @@ class CatalogueClass {
         $automan=new AutoClass;
         $skip_id=0; $cat_text="";
         switch ($type_id) {
-            case 0: {$form = $automan->showTabCatalogueYear(1,$manufacture,$model);break;}
-            case 1: {$form = $automan->showTabCatalogueManufacture($year,1);break;}
-            case 2: {$form = $automan->showTabCatalogueModel($manufacture,$year,1);break;}
+            case 0: {$form = $automan->showTabCatalogueYear(1, $manufacture, $model);break;}
+            case 1: {$form = $automan->showTabCatalogueManufacture($year, 1);break;}
+            case 2: {$form = $automan->showTabCatalogueModel($manufacture, $year, 1);break;}
             case 3: {
-                $model_id = $automan->skipShowTabCatalogueModelId($model,$manufacture,$year);
+                $model_id = $automan->skipShowTabCatalogueModelId($model, $manufacture, $year);
                 if (!$model_id) {
-                    $form = $automan->showTabCatalogueModelId($model,$manufacture,$year,1);
+                    $form = $automan->showTabCatalogueModelId($model, $manufacture, $year, 1);
                 } else {
                     $str_id!=="" ? $onclick=1 : $onclick="";
-                    $form = $automan->showTabCatalogueGroup($model_id,$model,$manufacture,$year);
+                    $form = $automan->showTabCatalogueGroup($model_id, $model, $manufacture, $year);
                     $skip_id=$model_id;
                 }
                 break;
             }
             case 4: {
                 $str_id!=="" ? $onclick=1 : $onclick="";
-                $form = $automan->showTabCatalogueGroup($model_id,$model,$manufacture,$year);break;
+                $form = $automan->showTabCatalogueGroup($model_id, $model, $manufacture, $year);break;
             }
             default: {$form="Something wrong!";break;}
         }
         if ($year=="all") $form = $automan->showTabCatalogueYear(1);
-        list($manufacture_text,,$model_id_cap,$typ_text) = $automan->getAutoDescr($manufacture,$model,$model_id,$typ_id);
+        list($manufacture_text,,$model_id_cap,$typ_text) = $automan->getAutoDescr($manufacture, $model, $model_id, $typ_id);
         list($t_mf,$t_md,$t_mi,) = $automan->getAutoDescr($manufacture,$model,$model_id,$typ_id);
         if ($t_mf!="") $cat_text=" $t_mf";
         if ($t_md!="") $cat_text=" $t_mf $t_md";

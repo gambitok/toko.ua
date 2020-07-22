@@ -371,7 +371,17 @@ class ProductsClass extends CatalogueClass {
         return $form;
     }
 
-    /*SELECT CAR =====================================================*/
+    function getCarManufTranslit($mfa_id, $model="") { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
+        $mfa_translit = $db->result($r,0,"MFA_BRAND_TRANSLIT"); $text = "";
+        if ($mfa_translit!="") $text = "($mfa_translit)";
+        if ($model!="") {
+            $r = $db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `Model_TRANSLIT`!='' LIMIT 1;");
+            $model_translit = $db->result($r,0,"Model_TRANSLIT");
+            if ($model_translit!="") $text="($mfa_translit $model_translit)";
+        }
+        return $text;
+    }
 
 //    function showCarsSelect($str_text="", $mfa="", $model="") {
 //        $form=$this->getHtmlForm("cars_form");
@@ -445,18 +455,6 @@ class ProductsClass extends CatalogueClass {
 //        return array($mfa_id, $mfa_brand);
 //    }
 
-    function getCarManufTranslit($mfa_id, $model="") { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
-        $mfa_translit=$db->result($r,0,"MFA_BRAND_TRANSLIT"); $text="";
-        if ($mfa_translit!="") $text="($mfa_translit)";
-        if ($model!="") {
-            $r=$db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `Model_TRANSLIT`!='' LIMIT 1;");
-            $model_translit=$db->result($r,0,"Model_TRANSLIT");
-            if ($model_translit!="") $text="($mfa_translit $model_translit)";
-        }
-        return $text;
-    }
-
 //    function getCarModelsList($mfa_id) { $db = DbSingleton::getTokoDb();
 //        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
 //        $list=""; $first=$second="";
@@ -513,8 +511,6 @@ class ProductsClass extends CatalogueClass {
 //    function drawStyle($list) {
 //        return "<div class=\"car_form-select_card\">$list</div>";
 //    }
-
-    /*SELECT CAR MIN======================================*/
 
 //    function showCarsSelectMin($str_text, $mfa, $model, $year="", $model_id="", $typ_id="", $fuel_id="", $ajax=false) {
 //        $automan=new AutoClass;
@@ -648,8 +644,6 @@ class ProductsClass extends CatalogueClass {
 //        return $form;
 //    }
 
-    /*================================================================================================================*/
-
 //    function showCarsSelected($mfa="", $model="", $year="", $model_id="", $typ_id="") {
 //        $form=$this->getHtmlForm("cars_form_min");
 //        $style_title="car_form-selected"; $style_disabled="car_form-disabled";
@@ -765,8 +759,6 @@ class ProductsClass extends CatalogueClass {
 //        $form=$this->replaceLang($form);
 //        return $form;
 //    }
-
-    /*================================================================================================================*/
 
 //    function getCarManufListMin($type=0) { $db = DbSingleton::getTokoDb();
 //        $first=$second="";
@@ -910,16 +902,6 @@ class ProductsClass extends CatalogueClass {
 //        return $list;
 //    }
 
-    function getBodyCarImage($mod_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' LIMIT 1;");
-        $body_id = $db->result($r, 0, "BODY_ID");
-        $r=$db->query("SELECT * FROM `T_types_body_car` WHERE `BODY_ID`='$body_id' AND `LANG_ID`=16 LIMIT 1;");
-        $image = $db->result($r, 0, "LOGO");
-        $name = $db->result($r, 0, "TYPE_BODY");
-        $path="https://toko.ua/uploads/images/body-types/$image";
-        return array($name, $path);
-    }
-
 //    function getCarTypeListMin($mod_id, $str_id="", $type=0) { $db = DbSingleton::getTokoDb();
 //        $automan=new AutoClass;
 //        $str_link = $automan->getStrNewLink($str_id);
@@ -980,8 +962,19 @@ class ProductsClass extends CatalogueClass {
 //        return $list;
 //    }
 
-    function getCarsSearch($str_id="", $mfa_link="", $mod_link="") { $automan = new AutoClass;
-        $form=$this->getHtmlForm("cars/cars");
+    function getBodyCarImage($mod_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' LIMIT 1;");
+        $body_id = $db->result($r, 0, "BODY_ID");
+        $r = $db->query("SELECT * FROM `T_types_body_car` WHERE `BODY_ID`='$body_id' AND `LANG_ID`=16 LIMIT 1;");
+        $image = $db->result($r, 0, "LOGO");
+        $name = $db->result($r, 0, "TYPE_BODY");
+        $path="https://toko.ua/uploads/images/body-types/$image";
+        return array($name, $path);
+    }
+
+    function getCarsSearch($str_id="", $mfa_link="", $mod_link="") {
+        $automan = new AutoClass;
+        $form = $this->getHtmlForm("cars/cars");
 
         $list_manuf = $this->getCarsSearchContent("", "", $str_id)[0];
 
@@ -994,7 +987,7 @@ class ProductsClass extends CatalogueClass {
             $form=str_replace("{cars_manufacturer}", $mfa_brand, $form);
 
             if ($mod_link!="") {
-                $model=$automan->getModLink($mod_link);
+                $model = $automan->getModLink($mod_link);
                 $list_years = $this->getCarsSearchContent("model", $mfa_id."_".$model, $str_id)[0];
                 $form=str_replace("{cars_years}", $list_years, $form);
                 $form=str_replace("{selected_model}", $mfa_id."_".$model, $form);
@@ -1008,52 +1001,45 @@ class ProductsClass extends CatalogueClass {
         $form=str_replace("{selected_manuf}", 0, $form);
         $form=str_replace("{selected_model}", 0, $form);
         $form=str_replace("{active_nav}", "", $form);
-
-//        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("manuf", "648")[0], $form);
-//        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("model", "648_Sportage")[0], $form);
-//        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("years", "648_Sportage_2015")[0], $form);
-//        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("bodyc", "8751")[0], $form);
-//        $form=str_replace("{cars_manufactures}", $this->getCarsSearchContent("engin", "8751_2.0_15")[0], $form);
         $form=$this->replaceLang($form);
         return $form;
     }
 
     function getCarsSearchContent($type="", $value="", $str_id="") { $db = DbSingleton::getTokoDb();
-        $automan=new AutoClass;
-        $list = ""; $title=""; $n=0;
-        $nav=""; $tab="";
-        $str_link=$automan->getStrNewLink($str_id);
+        $automan = new AutoClass;
+        $list = ""; $title=""; $n=0; $nav = ""; $tab = "";
+        $str_link = $automan->getStrNewLink($str_id);
 
         // MANUFACTURE
         if ($type=="") {
             $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n=$db->num_rows($r);
-            for ($i=1;$i<=$n;$i++) {
+            for ($i=1; $i<=$n; $i++) {
                 $mfa_id = $db->result($r, $i - 1, "MFA_ID");
                 $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
                 $list.="<div data-url=\"manuf/$mfa_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$mfa_brand</div>";
             }
             $title = "{auto_cap}";
-            $nav="{auto_cap}"; $tab="cars-tab1";
+            $nav = "{auto_cap}"; $tab = "cars-tab1";
         }
 
         // MODEL
         if ($type=="manuf") {
             $mfa_id = $value;
-            $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
-            for ($i=1;$i<=$n;$i++) {
+            $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
+            for ($i=1; $i<=$n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
                 $model_cap = $mfa_id."_".$model;
                 $list.="<div data-url=\"model/$model_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$model</div>";
             }
             $title = $automan->getMfaBrand($mfa_id);
-            $nav="manuf"; $tab="cars-tab2";
+            $nav = "manuf"; $tab = "cars-tab2";
         }
 
         // YEAR
         if ($type=="model") {
             list($mfa_id, $model) = explode("_", $value);
             $min_date_start=1947; $max_date_end=2019; $n=1;
-            $r=$db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
+            $r = $db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
                 CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
             FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id';");
             $date_start = $db->result($r,0,"min_year");
@@ -1067,7 +1053,7 @@ class ProductsClass extends CatalogueClass {
                 $list.="<div data-url=\"years/$year_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$year</div>";
             }
             $title = $model;
-            $nav="model"; $tab="cars-tab3";
+            $nav = "model"; $tab = "cars-tab3";
         }
 
         // BODY (MODEL_ID)
@@ -1077,15 +1063,14 @@ class ProductsClass extends CatalogueClass {
                 ((`MOD_PCON_END`>=".$year."00 AND `MOD_PCON_END`<=".$year."12)
                 OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`>=".$year."00)
                 OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`=0))";
-            $r=$db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id' $where;"); $n=$db->num_rows($r);
-            for ($i=1;$i<=$n;$i++) {
+            $r = $db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id' $where;"); $n = $db->num_rows($r);
+            for ($i=1; $i<=$n; $i++) {
                 $mod_id = $db->result($r, $i - 1, "MOD_ID");
                 $tex_text = $db->result($r, $i - 1, "TEX_TEXT");
-                $image=$db->result($r, $i - 1, "Car_pict");
-                $img_path="https://toko.ua/uploads/images/models/$image";
+                $image = $db->result($r, $i - 1, "Car_pict"); $img_path = "https://toko.ua/uploads/images/models/$image";
                 list($body_name, $body_path) = $this->getBodyCarImage($mod_id);
-                $d_start=$db->result($r,$i-1,"MOD_PCON_START"); $d_start=substr($d_start,0,4);
-                $d_end=$db->result($r,$i-1,"MOD_PCON_END"); $d_end=substr($d_end,0,4); if ($d_end==0) $d_end="{cur_time}";
+                $d_start = $db->result($r,$i-1,"MOD_PCON_START"); $d_start=substr($d_start,0,4);
+                $d_end = $db->result($r,$i-1,"MOD_PCON_END"); $d_end=substr($d_end,0,4); if ($d_end==0) $d_end="{cur_time}";
 
                 $list.="<div data-url=\"bodyc/$mod_id\" class=\"cars-tab__block-item cars-tab__block-item-body\" onclick=\"toggleCarsTab(this)\">
                     <div class='bodyc'>
@@ -1107,7 +1092,7 @@ class ProductsClass extends CatalogueClass {
                 </div>";
             }
             $title = $year;
-            $nav="years"; $tab="cars-tab4";
+            $nav = "years"; $tab = "cars-tab4";
         }
 
         // ENGINE
@@ -1119,13 +1104,13 @@ class ProductsClass extends CatalogueClass {
                 $typ_id = $db->result($r, $i-1, "TYP_ID");
                 $count_types = $db->result($r, $i-1, "count_types");
                 $volume_cm = $db->result($r, $i-1, "VOLUME_CM");
-                $fuel_id = $db->result($r, $i-1, "FUEL_ID"); $fuel_text=$this->getFuelName($fuel_id);
+                $fuel_id = $db->result($r, $i-1, "FUEL_ID"); $fuel_text = $this->getFuelName($fuel_id);
                 $fuel_cap = $mod_id."_".$volume_cm."_".$fuel_id;
                 if ($count_types==1) $onclick = "setCookie('auto_typ_id','$typ_id'); addToGarage('$typ_id'); location.href='https://toko.ua/catalog/$str_link';"; else $onclick = "toggleCarsTab(this)";
                 $list.="<div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"$onclick\">$volume_cm $fuel_text</div>";
             }
             $title = $this->getModIdText($mod_id);
-            $nav="bodyc"; $tab="cars-tab5";
+            $nav = "bodyc"; $tab = "cars-tab5";
         }
 
         // MODIFICATION
@@ -1151,19 +1136,19 @@ class ProductsClass extends CatalogueClass {
                 </a></div>";
             }
             $title = $volume_cm." ".$this->getFuelName($fuel_id);
-            $nav="engin"; $tab="cars-tab6";
+            $nav = "engin"; $tab = "cars-tab6";
         }
 
         // TYP SELECTED
         if ($type=="modif") {
             $typ_id = $value;
             $title = $this->getTypIdText($typ_id);
-            $nav="modif"; $tab="cars-tab6";
+            $nav = "modif"; $tab = "cars-tab6";
         }
 
-        if ($n==0) { $list="<div style='margin: 30px auto;'>{nothing_found}</div>"; }
+        if ($n==0) $list = "<div style='margin: 30px auto;'>{nothing_found}</div>";
 
-        $list=$this->replaceLang($list);
+        $list = $this->replaceLang($list);
 
         return array($list, $title, $nav, $tab);
     }
@@ -1202,13 +1187,13 @@ class ProductsClass extends CatalogueClass {
     }
 
     function getCarsGarage() {
-        $automan=new AutoClass;
+        $automan = new AutoClass;
         $auto_typ_id = $this->getCookieAuto();
         $form=$this->getHtmlForm("garage/garage_typ_block");
-        $form=str_replace("{typ_id}",$auto_typ_id,$form);
-        list($manufacture,$model,$model_id)=$automan->getCarInfo($auto_typ_id);
-        list($manufacture_cap,,$model_id_cap,)=$automan->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
-        $models_img=$automan->getAutoIMG($manufacture,$model,$model_id)["model_id_image"];
+        $form=str_replace("{typ_id}", $auto_typ_id, $form);
+        list($manufacture, $model, $model_id) = $automan->getCarInfo($auto_typ_id);
+        list($manufacture_cap,, $model_id_cap,) = $automan->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
+        $models_img = $automan->getAutoIMG($manufacture,$model,$model_id)["model_id_image"];
         $form=str_replace("{manufacture_cap}",$manufacture_cap,$form);
         $form=str_replace("{model_id_cap}",$model_id_cap,$form);
         $form=str_replace("{typ_text}",$automan->getGroupInfo($auto_typ_id),$form);
@@ -1238,9 +1223,9 @@ class ProductsClass extends CatalogueClass {
     function showCarsForm2() {
         $form = $this->getCarsSearch();
         $auto_typ_id = $this->getCookieAuto();
-        $status=0;
-        if ($auto_typ_id!="") $status=1;
-        return array($form,$status);
+        $status = 0;
+        if ($auto_typ_id!="") $status = 1;
+        return array($form, $status);
     }
 
     // SELECTED CAR FORM

@@ -2,7 +2,9 @@
 
 $page=$_GET["page"]; $page!=NULL ?: $page=1;
 
-$linka=findLinks(); $some_link=$linka[1]; $some_link2=$linka[2];
+$linka=findLinks();
+$some_link=$linka[1];
+$some_link2=$linka[2];
 
 if (preg_match('~^\p{Lu}~u', $some_link)) {
     $new_link=strtolower($some_link);

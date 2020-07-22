@@ -1,5 +1,13 @@
 <?php
 
+// REDIRECT OLD TOKO LINKS (dep=23)
+$w = $_GET["w"];
+if ($w=="modelfind") {
+    $art = $_GET["art"];
+    $art = $catalogue->getUrlString($art);
+    header("Location: /search/$art/", TRUE, 301);
+}
+
 $content=str_replace("{main_window}", $catalogue->getHtmlForm("main_form"), $content);
 
 // Поиск по автомобилю

@@ -255,7 +255,7 @@ function saveSellForm() {
     let phone_input=$("#reg_phone"), phone=phone_input.val();
     let email_input=$("#reg_email"), email=email_input.val();
     let upload_file=$("#upload_image"), file_id=upload_file.text();
-    let city_id=$("#reg_city option:selected").val();
+    let city_id=$("#user_city option:selected").val();
     let comment_input=$("#reg_comment"), comment=comment_input.val();
 
     if (company==="") company_input.addClass("required_input"); else company_input.removeClass("required_input");

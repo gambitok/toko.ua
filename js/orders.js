@@ -21,7 +21,6 @@ $(document).ready(function() {
                 return 23;
             }
         });
-
         if (user_city.select2("val")>0) {
             setCityVal();
         }

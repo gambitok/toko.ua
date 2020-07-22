@@ -1,6 +1,6 @@
 <?php
 
-$linka=findLinks();
+$linka = findLinks();
 $article_nr_search = $linka[1];
 $brand_link = $linka[2];
 
