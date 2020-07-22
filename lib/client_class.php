@@ -384,10 +384,7 @@ class ClientClass {
         $phone = $this->formatValidPhone($phone);
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r); $n2 = 0;
-//        if ($n==0) {
-//            $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone`='$phone' AND `status`=$this->status_user_retail LIMIT 1;");
-//            $n2 = $db->num_rows($r);
-//        }
+
         $client_phone = $db->result($r, 0, "phone");
         $client_pass = $db->result($r, 0, "pass");
 
@@ -414,6 +411,13 @@ class ClientClass {
         $code = substr($phone, 0, 3);
         $r = $db->query("SELECT * FROM `mobile_operators` WHERE `OPERATOR_CODE`='$code' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) $result = true;
+
+        $user_id = $this->getUser();
+        if ($user_id>0) {
+            $user_phone = $this->getClientPhone();
+            if ($phone!==$user_phone) $result = false;
+        }
+
         return $result;
     }
 

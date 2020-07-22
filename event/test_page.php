@@ -2,7 +2,7 @@
 
 $content = str_replace("{main_window}", $shop->getHtmlForm("test"), $content);
 
-//$arr = [1264];
+//$arr = [1263];
 //foreach ($arr as $client_id) {
 //    $message = $client->dropClient($client_id);
 //    print $message;
