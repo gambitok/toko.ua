@@ -778,8 +778,59 @@ class SearchClass extends CatalogueClass {
         return true;
     }
 
-    function getSeoLinking($str_id, $h1, $filters, $brands) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `SEO_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n=$db->num_rows($r);
+    function getSeoLinkingIndex() { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_ARTICLES` ORDER BY RAND() LIMIT 1;");
+        $article_nr_displ = $db->result($r, 0, "ARTICLE_NR_DISPL");
+        $brand_id = $db->result($r, 0, "BRAND_ID"); $brand_name = $this->getBrandName($brand_id);
+        return array("product"=>$article_nr_displ, "brand"=>$brand_name);
+    }
+
+    function getSeoArticleLinking($art_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `SEO_ART_STR` WHERE `ART_ID`='$art_id' LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n==0) {
+
+            $main_h1 = ""; // ????
+
+            $text = $this->getArticleName($art_id);
+            $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
+            $article_nr_displ = $this->getArticleDispl($art_id);
+
+            $page_h1 = "$text $brand_name $article_nr_displ - {seo_title_article}";
+
+            $product1 = $this->getSeoLinkingIndex()["product"];
+            $product2 = $this->getSeoLinkingIndex()["product"];
+            $product3 = $this->getSeoLinkingIndex()["product"];
+
+            $tags_brand_1 = $this->getSeoLinkingIndex()["brand"];
+            $tags_brand_2 = $this->getSeoLinkingIndex()["brand"];
+
+            $geo_nominative = $this->getSeoLinkingParam("CITY", 1);
+            $cat_random = $this->getSeoLinkingParam("CATEGORY", 1);
+            $bigramma_random = $this->getSeoLinkingParam("GRAMMA", 1);
+
+            $list = "{_still_search} $main_h1? {_go_store_toko} {_choose_best}: $product1, $product2 {or_cap} $product3. {_lowest_prices} $cat_random {_high_quality_category} $main_h1. {_cooperate} {_popular_brands} $tags_brand_1 {and_cap} $tags_brand_2, {_presented_in_section} $cat_random. {_most_reliable} $bigramma_random. {_right_choice} $page_h1. {_fast_order} $geo_nominative {_other_cities}.";
+
+            $list = $this->replaceLang($list);
+            $list = str_replace(str_split("{}"), "", $list);
+            $list = explode(" ", $list);
+            $seo_text = "";
+
+            foreach ($list as $value) {
+                $value = $this->getSeoListingValue($value);
+                $seo_text.="$value ";
+            }
+
+            $db->query("INSERT INTO `SEO_ART_STR` (`ART_ID`, `TEXT`) VALUES ('$art_id', '$seo_text');");
+
+        } else {
+            $seo_text = $db->result($r, 0, "TEXT");
+        }
+
+        return $seo_text;
+    }
+
+    function getSeoLinking($str_id, $h1, $filters, $brands) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `SEO_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
             $automan=new AutoClass; $kours=new ExRateClass;
 
@@ -800,12 +851,13 @@ class SearchClass extends CatalogueClass {
 
             $list="{_offer} {_buy} $h1 {_for} {_best_price} {_delivery} {_and} {_choose} $parrent_h1 {_such} {_models} {_example} $brand {_in} {_shop} {_toko} . {_call} {_manager} {_help} $ngramma {_for} {_best_price} {_from} $min_price {_to} $max_price {_exactly} {_auto} {_shop2} {_toko} {_bring_category} $category {_in_city} $city {_other_city}";
 
-            $list=$this->replaceLang($list);
-            $list=str_replace(str_split("{}"),"",$list);
-            $list=explode(" ", $list); $seo_text="";
+            $list = $this->replaceLang($list);
+            $list = str_replace(str_split("{}"), "", $list);
+            $list = explode(" ", $list);
+            $seo_text = "";
 
             foreach ($list as $value) {
-                $value=$this->getSeoListingValue($value);
+                $value = $this->getSeoListingValue($value);
                 $seo_text.="$value ";
             }
 
