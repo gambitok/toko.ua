@@ -763,14 +763,14 @@ class SearchClass extends CatalogueClass {
     }
 
     function getStrLinkingPage($page_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_LINKING` WHERE `ID`='$page_id' LIMIT 1;");
+        $r=$db->query("SELECT `LINK`, `TEXT` FROM `T_LINKING` WHERE `ID`='$page_id' LIMIT 1;");
         $link = $db->result($r, 0, "LINK");
         $text = $db->result($r, 0, "TEXT");
         return array($link, $text);
     }
 
     function initStrLinking($str_id) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T_LINKING` ORDER BY RAND() LIMIT 6"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT `ID` FROM `T_LINKING` ORDER BY RAND() LIMIT 6;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $page_id = $db->result($r, $i-1, "ID");
             $db->query("INSERT INTO `T_LINKING_PAGE` (`STR_ID`, `PAGE_ID`, `SORT_ID`) VALUES ('$str_id', '$page_id', '$i');");
@@ -779,7 +779,7 @@ class SearchClass extends CatalogueClass {
     }
 
     function getSeoLinkingArticle() { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_ARTICLES` ORDER BY RAND() LIMIT 3;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` ORDER BY RAND() LIMIT 3;"); $n = $db->num_rows($r);
         $arts = [];
         for ($i=1; $i<=$n; $i++) {
             $article_nr_displ = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
@@ -790,7 +790,7 @@ class SearchClass extends CatalogueClass {
     }
 
     function getSeoLinkingBrand() { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_ARTICLES` ORDER BY RAND() LIMIT 2;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` ORDER BY RAND() LIMIT 2;"); $n = $db->num_rows($r);
         $brands = [];
         for ($i=1; $i<=$n; $i++) {
             $brand_id = $db->result($r, $i - 1, "BRAND_ID"); $brand_name = $this->getBrandName($brand_id);
@@ -801,7 +801,7 @@ class SearchClass extends CatalogueClass {
     }
 
     function getSeoArticleLinking($art_id) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `SEO_ART_STR` WHERE `ART_ID`='$art_id' LIMIT 1;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `TEXT` FROM `SEO_ART_STR` WHERE `ART_ID`='$art_id' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
 
             $main_h1 = ""; // CATALOG PARRENT
@@ -849,7 +849,7 @@ class SearchClass extends CatalogueClass {
     }
 
     function getSeoLinking($str_id, $h1, $filters, $brands) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `SEO_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `TEXT` FROM `SEO_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
             $automan=new AutoClass; $kours=new ExRateClass;
 
@@ -890,7 +890,7 @@ class SearchClass extends CatalogueClass {
     }
 
     function getSeoListingValue($value) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `SEO_LISTING` WHERE `LIST_KEY`='$value' ORDER BY RAND() LIMIT 1;"); $n=$db->num_rows($r);
+        $r=$db->query("SELECT `TEXT` FROM `SEO_LISTING` WHERE `LIST_KEY`='$value' ORDER BY RAND() LIMIT 1;"); $n=$db->num_rows($r);
         if ($n>0) {
             $name = $db->result($r, 0, "TEXT");
         } else {
@@ -909,5 +909,95 @@ class SearchClass extends CatalogueClass {
         $params=implode(", ",$params);
         return $params;
     }
+
+    function getCatalogParamForm() {
+        $form = $this->getHtmlForm("catalog/form");
+        $form = str_replace("{catalog_range}", $this->getCatalogParamList(), $form);
+        return $form;
+    }
+
+    function getCatalogParamList() { $db = DbSingleton::getTokoDb();
+        $list = "<ul class='list-inline'>";
+        $r = $db->query("SELECT * FROM `T2_TREE_GROUP` WHERE 1 ORDER BY `TEX_RU`;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $group_id = $db->result($r, $i-1, "GROUP_ID");
+            $text = $db->result($r, $i-1, "TEX_RU");
+            $list.="<li>
+                <a href='https://toko.ua/test_catalog/$group_id'>$text</a>
+            </li>";
+        }
+        $list.="</ul>";
+        return $list;
+    }
+
+    /*==== TEST CATALOG ====*/
+
+    function getCatalogParamGroup($group_id) {
+        $form = $this->getHtmlForm("catalog/list");
+        $data = $this->getCatalogParamGroupList($group_id);
+        $form = str_replace("{catalog_range}", $data[0], $form);
+        $form = str_replace("{catalog_params}", $data[1], $form);
+        return $form;
+    }
+
+    function getCatalogParamGroupList($group_id) { $db = DbSingleton::getTokoDb();
+        $list = "<table class='table'>
+            <thead>
+                <tr>
+                    <td>ART_ID</td>
+                    <td>ARTICLE</td>
+                    <td>BRAND</td>
+                    <td>NAME</td>
+                </tr>
+            </thead>
+        ";
+        $arr = [];
+        $r = $db->query("SELECT * FROM `T2_TREE_ARTS` WHERE `GROUP_ID`='$group_id';"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $art_id = $db->result($r, $i-1, "ART_ID");
+            $article_nr_displ = $this->getArticleDispl($art_id);
+            $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
+            $text = $this->getArticleName($art_id);
+            $arr = $this->getCatArtParams($art_id, $arr);
+
+            $list.="<tr>
+                <td>$art_id</td>
+                <td>$article_nr_displ</td>
+                <td>$brand_name</td>
+                <td>$text</td>
+            </tr>";
+        }
+        $list.="</table>";
+
+        $params="";
+        foreach ($arr as $param_id=>$mas) {
+            $param_name = $this->getParamName($param_id);
+            $params.="<b>$param_name:</b><br>";
+            foreach ($mas as $param_value) {
+                $params.="$param_value<br>";
+            }
+        }
+
+        return array($list, $params);
+    }
+
+    function getCatArtParams($art_id, $arr) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `PARAM_ID`, `PARAM_VALUE` FROM `T2_GOODS_GROUP_PARAMS_VALUE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $param_id = $db->result($r, $i - 1, "PARAM_ID");
+            $param_value = $db->result($r, $i - 1, "PARAM_VALUE");
+            if (empty($arr[$param_id])) $arr[$param_id] = [];
+            array_push($arr[$param_id], $param_value);
+            $arr[$param_id] = array_unique($arr[$param_id]);
+        }
+        return $arr;
+    }
+
+    function getParamName($param_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `NAME` FROM `GOODS_GROUP_TEMPLATE_PARAMS` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
+        $param_name = $db->result($r, 0, "NAME");
+        return $param_name;
+    }
+
 
 }
