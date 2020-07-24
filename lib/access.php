@@ -7,10 +7,10 @@ function setCookies() {
 }
 
 function getAccess() { $db=DbSingleton::getTokoDb();
-    $list_ip=array();
-    $r=$db->query("SELECT `ip` FROM `ip_access`;"); $n=$db->num_rows($r);
-    for ($i=1;$i<=$n;$i++){
-        $ip=$db->result($r, $i-1, "ip");
+    $list_ip = array();
+    $r = $db->query("SELECT `ip` FROM `ip_access`;"); $n = $db->num_rows($r);
+    for ($i=1; $i<=$n; $i++){
+        $ip = $db->result($r, $i-1, "ip");
         array_push($list_ip, $ip);
     }
     return $list_ip;
@@ -44,100 +44,46 @@ function getContent($content) {
     return $content;
 }
 
-function checkLangVariable($variable) { $db=DbSingleton::getTokoDb();
-    $r=$db->query("SELECT * FROM `new_lang_wd` WHERE `variable`='$variable' LIMIT 1;"); $n=$db->num_rows($r);
+function checkLangVariable($variable) { $db = DbSingleton::getTokoDb();
+    $r = $db->query("SELECT * FROM `new_lang_wd` WHERE `variable`='$variable' LIMIT 1;"); $n = $db->num_rows($r);
     if ($n>0) return true; else return false;
 }
 
 function getTitle($path) {
-    $language=new LangClass;
-    $path=str_replace("/","",$path);
-    $prefix=getMoreTitle($path);
-    if ($path!="") $title="$prefix"; else $title="{site_title}";
-    $title=$language->replaceLang($title);
+    $language = new LangClass;
+    $path = str_replace("/","",$path);
+    $prefix = getMoreTitle($path);
+    if ($path!="") $title = "$prefix"; else $title="{site_title}";
+    $title = $language->replaceLang($title);
     return $title;
 }
 
-/*
-function printMoreTitle($path) {
-    $automan=new AutoClass; $cat=new CatalogueClass; $menu=new MenuClass; $pattern=new PatternClass;
-
-    switch ($path) {
-        case "search" : {
-            break;
-        }
-        case "article" : {
-            break;
-        }
-        case "catalog" : {
-            break;
-        }
-        case "products" : {
-            break;
-        }
-        case "basket" : {
-            break;
-        }
-        case "order" : {
-            break;
-        }
-        case "news" : {
-            break;
-        }
-        case "contacts" : {
-            break;
-        }
-        case "signin" : {
-            break;
-        }
-        case "registration" : {
-            break;
-        }
-        case "profile" : {
-            break;
-        }
-        case "sell" : {
-            break;
-        }
-        case "special_offers" : {
-            break;
-        }
-        default : {
-            $pretitle="";
-            break;
-        }
-    }
-
-    return $pretitle;
-}
-*/
-
 function getMoreTitle($path) {
-    $automan=new AutoClass; $cat=new CatalogueClass; $menu=new MenuClass; $pattern=new PatternClass; $search=new SearchClass; $prod=new ProductsClass;
+    $automan=new AutoClass; $cat=new CatalogueClass; $menu=new MenuClass; $search=new SearchClass; $prod=new ProductsClass; $pattern=new PatternClass;
 
     $linka=findLinks(); $pretitle="";
 
     if ($path=="search") {
         $article_nr_search = $linka[1];
         $brand_link = $linka[2];
-        $brand_link!="" ? $brand_id = $cat->getCatalogueBrandID($brand_link) : $brand_id=0;
+        $brand_link!="" ? $brand_id = $cat->getCatalogueBrandID($brand_link) : $brand_id = 0;
         if ($article_nr_search=="") {
-            $pretitle="{site_title_short}";
+            $pretitle = "{site_title_short}";
         } else {
             if ($brand_id==0) {
-                $pretitle="{search_results} $article_nr_search | {site_title_short}";
+                $pretitle = "{search_results} $article_nr_search | {site_title_short}";
             } else {
-                $art_id=$cat->getArticleId($article_nr_search, $brand_id);
-                $art_name=$cat->getArticleName($art_id);
-                $brand_name=$cat->getBrandName($brand_id);
-                $article_nr_search=strtoupper($article_nr_search);
-                $pretitle="$brand_name $article_nr_search - $art_name | {site_title_short}";
+                $art_id = $cat->getArticleId($article_nr_search, $brand_id);
+                $art_name = $cat->getArticleName($art_id);
+                $brand_name = $cat->getBrandName($brand_id);
+                $article_nr_search = strtoupper($article_nr_search);
+                $pretitle = "$brand_name $article_nr_search - $art_name | {site_title_short}";
             }
         }
     }
 
     elseif ($path=="article") {
-        $art_id=$linka[3];
+        $art_id = $linka[3];
         $article_nr_search = $cat->getArticleDispl($art_id);
         $brand_id = $cat->getArticleBrand($art_id);
 
@@ -150,22 +96,21 @@ function getMoreTitle($path) {
 
     elseif ($path=="products") {
         if ($linka[1]=="") {
-            $pretitle="{professional_catalogs_sh}";
+            $pretitle = "{professional_catalogs_sh}";
         } else {
-            $template_id=$pattern->getTemplateID($linka[1]);
+            $template_id = $pattern->getTemplateID($linka[1]);
             if ($template_id=="") {
-                $pretitle="{seo_404_title}";
+                $pretitle = "{seo_404_title}";
             } else {
                 $pager = "";
                 if ($_GET['page']!==NULL && $_GET['page']>0) {$pager=" - {pager_cap}".$_GET['page'];}
-                $pattern=new PatternClass;
-                $result=explode($linka[1]."/", $_SERVER["REQUEST_URI"], 2); $link=ltrim($result[1]);
+                $result = explode($linka[1]."/", $_SERVER["REQUEST_URI"], 2); $link=ltrim($result[1]);
                 if ($link!="") {
                     $template_filter_name = $pattern->showTemplateTitle($template_id, $pattern->getTemplateLinkParams($template_id, $link));
                 } else {
-                    $template_filter_name=$pattern->getTemplateName($template_id);
+                    $template_filter_name = $pattern->getTemplateName($template_id);
                 }
-                $pretitle="$template_filter_name $pager | {site_title_short}";
+                $pretitle = "$template_filter_name $pager | {site_title_short}";
             }
         }
     }
@@ -175,21 +120,21 @@ function getMoreTitle($path) {
         $mod_link = $linka[2];
         if ($mfa_link=="") $pretitle = "{site_catalog} - {seo_details_title}";
         if ($mfa_link!="") {
-            list($mfa_brand, $model_text)=$automan->getAutoDescrLink($mfa_link, $mod_link);
-            list($mfa_id, $model)=$automan->getAutoIdsLink($mfa_link, $mod_link);
-            $translit=$prod->getCarManufTranslit($mfa_id, $model);
+            list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
+            list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
+            $translit = $prod->getCarManufTranslit($mfa_id, $model);
 
             if ($mfa_link!="") {
-                $mm="$mfa_brand $model_text";
+                $mm = "$mfa_brand $model_text";
                 if ($translit!="") $mm.=" $translit";
-            } else $mm="";
+            } else $mm = "";
             $pretitle = "{details_on_cap}";
             $mm=="" ?: $pretitle.=" $mm";
 
             $postfix = $cat->replaceLang("{seo_title_lvl3}");
             $postfix = str_replace("{title_lvl1}", $pretitle, $postfix);
 
-            $pretitle="$pretitle - $postfix";
+            $pretitle = "$pretitle - $postfix";
         }
     }
 
@@ -197,15 +142,15 @@ function getMoreTitle($path) {
         $pager = "";
         if ($_GET['page']!==NULL && $_GET['page']>0) {$pager="- {pager_cap}".$_GET['page'];}
 
-        $result=explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2); $link=ltrim($result[1]);
-        $arr=explode("/", $link);
-        $str_link=""; $mfa_link=""; $mod_link="";
-        if (!empty($arr[0])) $str_link = $arr[0]; $filters="";
+        $result = explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2); $link=ltrim($result[1]);
+        $arr = explode("/", $link);
+        $str_link = ""; $mfa_link = ""; $mod_link = "";
+        if (!empty($arr[0])) $str_link = $arr[0]; $filters = "";
         if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $filters = "";
         if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
         if (!empty($arr[1])) ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
 
-        $filters_cap="";
+        $filters_cap = "";
         if ($filters!="") {
             $brand_ids = $search->getActiveFilters($filters);
             foreach ($brand_ids[0] as $brand_id) {
@@ -239,14 +184,14 @@ function getMoreTitle($path) {
             $seo_title_lvl2 = $cat->replaceLang("{seo_title_lvl2}");
             $seo_title_lvl2 = str_replace("{title_lvl1}", $head_text, $seo_title_lvl2);
 
-            list($mfa_brand, $model_text)=$automan->getAutoDescrLink($mfa_link, $mod_link);
-            list($mfa_id, $model)=$automan->getAutoIdsLink($mfa_link, $mod_link);
-            $translit=$prod->getCarManufTranslit($mfa_id, $model);
+            list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
+            list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
+            $translit = $prod->getCarManufTranslit($mfa_id, $model);
 
             if ($mfa_link!="") {
-                $mm="{for_cap} $mfa_brand $model_text";
+                $mm = "{for_cap} $mfa_brand $model_text";
                 if ($translit!="") $mm.=" $translit";
-            } else $mm="";
+            } else $mm = "";
             $pretitle = "$str_text";
             $mm=="" ?: $pretitle.=" $mm";
             $filters_cap=="" ?: $pretitle.=": $filters_cap";
@@ -259,11 +204,11 @@ function getMoreTitle($path) {
 
     elseif ($path=="news") {
         if ($linka[1]=="") {
-            $pretitle="{site_$path} - {seo_state_title}";
+            $pretitle = "{site_$path} - {seo_state_title}";
         }
         if ($linka[1]=="state") {
-            $state_name=$menu->getNewsStateTitle($linka[2]);
-            $pretitle="$state_name - {seo_state_title}";
+            $state_name = $menu->getNewsStateTitle($linka[2]);
+            $pretitle = "$state_name - {seo_state_title}";
         }
     }
 
@@ -272,7 +217,7 @@ function getMoreTitle($path) {
     }
 
     if ($path=="uk" || $path=="en") {
-        $pretitle="{site_title}";
+        $pretitle = "{site_title}";
     }
 
     return $pretitle;
@@ -282,7 +227,7 @@ function printBreadcrumbs($path) {
     $cat=new CatalogueClass; $menu=new MenuClass; $pattern=new PatternClass; $automan=new AutoClass; $search=new SearchClass;
 
     $language=new LangClass; $prefix=$language->getLangPrefix();
-    $bread=findLinks();
+    $bread = findLinks();
     $section = $path;
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     if (strpos($actual_link,"?")!==false) $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
@@ -469,12 +414,12 @@ function printBreadcrumbs($path) {
         }
     }
 
-    $form="";
+    $form = "";
     if ($pretitle!="") {
         $form = getHtmlForm("menu/breadcrumbs");
         $form = str_replace("{bread_text}", $pretitle, $form);
     }
-    $form=$cat->replaceLang($form);
+    $form = $cat->replaceLang($form);
 
     foreach ($b_arr as $key=>$val) {
         $title=$val["name"];
@@ -505,133 +450,9 @@ function printBreadcrumbs($path) {
     return array($form, $script);
 }
 
-/*
-function getBreadcrumbs($path) {
-    $automan=new AutoClass; $cat=new CatalogueClass; $menu=new MenuClass; $pattern=new PatternClass;
-    $language=new LangClass; $prefix=$language->getLangPrefix();
-
-    $form=getHtmlForm("menu/breadcrumbs");
-    $linka=findLinks(); $pretitle="";
-    $w=$linka[1];
-    $article_nr_search=$manufacture=$template_id=$state_id=$linka[2];
-    $article_nr_search=str_replace("%20"," ",$article_nr_search);
-    $state_name=$menu->getNewsStateTitle($state_id);
-    $brand_name=$brand_id=$model=$linka[3]; $brand_name=str_replace("%20"," ",$brand_name);
-    $brand=$model_id=$linka[4]; $brand=str_replace("%20"," ",$brand);
-
-    if ($path!=="") {
-        $pretitle="<a href=\"https://toko.ua$prefix/\"><i class=\"fa fa-home\"></i></a> <i class='fa fa-angle-right'></i> ";
-    }
-
-    if ($path=="catalogue") {
-        if ($w=="") {
-            $pretitle.="{site_$path}";
-        }
-        if ($w=="search") {
-            if ($article_nr_search=="") {
-                $pretitle.="{search_cap}";
-            } else {
-                if ($brand=="") $brand=$cat->getBrandIdArt($article_nr_search);
-                $article_nr_search=strtoupper($article_nr_search);
-                $brand=strtoupper($brand);
-                $pretitle.="{search_cap} <i class='fa fa-angle-right'></i> $brand $article_nr_search";
-            }
-        }
-        if ($w=="filter") {
-            $template_id=$pattern->getTemplateID($linka[2]);
-            $template_filter_name=$pattern->getTemplateName($template_id);
-            if ($template_id==null) $template_filter_name="{car_lamps}";
-            $param_id=$_GET["param"];
-            $value_id=$_GET["value"];
-            $pretitle.="<a href='https://toko.ua$prefix/catalogue/templates/'>{professional_catalogs_sh}</a> <i class='fa fa-angle-right'></i> ";
-            $value_id!=""
-                ? $value_name=$pattern->getCatalogueParamName($param_id,$template_id)." - ".$pattern->getCatalogueValueName($value_id,$template_id)." "
-                : $value_name="";
-            $value_id!=""
-                ? $pretitle.="<a href='https://toko.ua$prefix/catalogue/filter/$template_id/'>$template_filter_name</a> <i class='fa fa-angle-right'></i> $value_name"
-                : $pretitle.="$template_filter_name";
-        }
-        if ($w=="templates") {
-            $pretitle.="{professional_catalogs_sh}";
-        }
-        if ($w=="auto") {
-            $pretitle.="{search_detail_cap}";
-        }
-        if ($w=="article") {
-            if ($brand_name=="") $brand_name=$cat->getBrandIdArt($article_nr_search);
-            $article_nr_search=strtoupper($article_nr_search);
-            $brand_name=strtoupper($brand_name);
-            $pretitle.="$brand_name $article_nr_search";
-        }
-    }
-
-    elseif ($path=="search") {
-        $article_nr_search=$linka[1];
-        $brand=$linka[2];
-        if ($article_nr_search=="") {
-            $pretitle.="{search_cap}";
-        } else {
-            if ($brand=="") $brand=$cat->getBrandIdArt($article_nr_search);
-            $article_nr_search=strtoupper($article_nr_search);
-            $brand=strtoupper($brand);
-            $pretitle.="{search_cap} <i class='fa fa-angle-right'></i> $brand $article_nr_search";
-        }
-    }
-
-    elseif ($path=="article") {
-        $art_id=$linka[3];
-        list($article_nr_search, $brand_id) = $cat->getArtMainInfo($art_id);
-        $brand_name = $cat->getBrandName($brand_id);
-        $pretitle.="{art_cap} <i class='fa fa-angle-right'></i> $brand_name $article_nr_search";
-    }
-
-    elseif ($path=="template" || $path=="pattern" || $path=="products") {
-        if ($w=="") {
-            $pretitle.="{professional_catalogs_sh}";
-        } else {
-            $template_id=$pattern->getTemplateID($w);
-            $pretitle.="<a href='https://toko.ua$prefix/$path/'>{professional_catalogs_sh}</a> <i class='fa fa-angle-right'></i> ";
-            if ($template_id=="") {
-                $pretitle.="{seo_404_title}";
-            } else {
-                $template_filter_name=$pattern->getTemplateName($template_id);
-                $pretitle.="$template_filter_name";
-            }
-        }
-    }
-
-    elseif ($path=="details" || $path=="catalog") {
-        if ($w=="") {
-            $pretitle.="{spare_parts_catalog_cap}";
-        } else {
-            $str_text=$w;
-            $str_id=$automan->getStrNewLinkStr($str_text);
-            $str_descr=$automan->getStrNewLinkDescr($str_id);
-            $pretitle.="<a href=\"https://toko.ua$prefix/catalog/\">{spare_parts_catalog_cap}</a> <i class='fa fa-angle-right'></i> $str_descr";
-        }
-    }
-
-    elseif ($path=="news" || $path=="special_offers" || $path=="contacts" || $path=="sell") {
-        if ($w=="") {
-            $pretitle.="<h1 style='display: inline; font-size: 1rem;'>{site_$path}</h1>";
-        }
-        if ($w=="state") {
-            $pretitle.="<a href=\"https://toko.ua$prefix/$path/\">{site_$path}</a> <i class='fa fa-angle-right'></i> $state_name";
-        }
-    }
-
-    else {
-        $pretitle="";
-        $form="";
-    }
-
-    $form=str_replace("{bread_text}",$pretitle,$form);
-    return $form;
-}
-*/
-
 function getHtmlForm($name) {
-    $form=""; $form_htm=RDD."/tpl/$name.htm"; if (file_exists("$form_htm")){ $form = file_get_contents($form_htm);} //$form = iconv("UTF-8", "windows-1251", $form);
+    $form=""; $form_htm=RDD."/tpl/$name.htm"; if (file_exists("$form_htm")) { $form = file_get_contents($form_htm); }
+    // $form = iconv("UTF-8", "windows-1251", $form);
     return $form;
 }
 
@@ -751,12 +572,13 @@ function getPhpContent($file) {
     return $contents;
 }
 
-function translateContent($content) { $db=DbSingleton::getTokoDb();
+function translateContent($content) { $db = DbSingleton::getTokoDb();
     $language=new LangClass;
     $r=$db->query("SELECT `variable` FROM `new_lang_wd`;"); $n=$db->num_rows($r);
     for ($i=1;$i<=$n;$i++) {
         $code=$db->result($r,$i-1,"variable");
-        $word=$language->getLanguageName($code); //$word = iconv("windows-1251", "UTF-8", $word);
+        $word=$language->getLanguageName($code);
+        //$word = iconv("windows-1251", "UTF-8", $word);
         $content=str_replace("{".$code."}",$word,$content);
     }
     return $content;
