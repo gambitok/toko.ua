@@ -19,8 +19,7 @@ class LangClass {
     }
 
     function getTexCapLanguage($lang_id) {
-        $cap="";
-        if ($lang_id==1) $cap="RU";
+        $cap="RU";
         if ($lang_id==2) $cap="UA";
         if ($lang_id==3) $cap="EN";
         return $cap;

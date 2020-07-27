@@ -416,4 +416,12 @@ trait Variables {
         return $brand_link;
     }
 
+    function getGroupName($group_id) { $db=DbSingleton::getTokoDb();
+        $language = new LangClass;
+        $lang_id = $language->getLanguage(); $prefix = $language->getTexCapLanguage($lang_id);
+        $r = $db->query("SELECT `TEX_$prefix` FROM `T2_TREE_GROUP` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        $group_name = $db->result($r, 0, "TEX_$prefix");
+        return $group_name;
+    }
+
 }

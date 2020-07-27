@@ -236,9 +236,9 @@ function printBreadcrumbs($path) {
     $a_section="<a href=\"https://toko.ua$prefix/$section/\">{site_$section}</a>";
     $h_section="{site_$section}";
 
-    $list="";
-    $b_arr=[];
-    $b_arr[1]=["name"=>"{seo_site_toko}", "item"=>"https://toko.ua$prefix/"];
+    $list = "";
+    $b_arr = [];
+    $b_arr[1] = ["name"=>"{seo_site_toko}", "item"=>"https://toko.ua$prefix/"];
 
     switch ($section) {
         case "search" : {
@@ -281,32 +281,32 @@ function printBreadcrumbs($path) {
             list($head_text, $head_link) = $automan->getHeadNewDescr($head_id);
 
             if ($str_text=="") {
-                $pretitle="$a_home > $h_section";
-                $b_arr[2]=["name"=>"$h_section", "item"=>"$actual_link"];
+                $pretitle = "$a_home > $h_section";
+                $b_arr[2] = ["name"=>"$h_section", "item"=>"$actual_link"];
             } else {
                 $title = $automan->getStrNewDescr($str_id); if ($title=="") $title = $automan->getStrDescr($str_id);
 
                 $str_link = $automan->getStrNewLink($str_id);
                 $h1_text = $cat->getStaticH1("/catalog/$str_link/");
-                if ($h1_text!="") $title=$h1_text;
+                if ($h1_text!="") $title = $h1_text;
 
                 if ($str_id=="") {
                     $cat_text = $bread[2];
                     if ($cat_text=="") {
-                        $pretitle="$a_home > $a_section > $head_text";
+                        $pretitle = "$a_home > $a_section > $head_text";
                     } else {
                         $cat_id = $automan->getCatNewLinkStr($head_id, $cat_text);
                         list($cat_text) = $automan->getCatNewDescr($cat_id);
-                        $back="<a href='/catalog/$head_link/'>$head_text</a>";
-                        $pretitle="$a_home > $a_section > $back > $cat_text";
+                        $back = "<a href='/catalog/$head_link/'>$head_text</a>";
+                        $pretitle = "$a_home > $a_section > $back > $cat_text";
                     }
                 } else {
-                    list($mfa_brand, $model_text)=$automan->getAutoDescrLink($mfa_link, $mod_link);
+                    list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
 
                     if ($mfa_link=="") {
-                        $back="<a href='/catalog/$head_link/'>$head_text</a>";
-                        $back_str="<a href='/catalog/$str_link/'>$title</a>";
-                        $pretitle="$a_home > $a_section > $back > ";
+                        $back = "<a href='/catalog/$head_link/'>$head_text</a>";
+                        $back_str  = "<a href='/catalog/$str_link/'>$title</a>";
+                        $pretitle = "$a_home > $a_section > $back > ";
                         if ($filters_cap!="") $pretitle.=" $back_str > $filters_cap"; else $pretitle.=" $title";
                     } else {
                         if ($mod_link=="") {
@@ -326,8 +326,8 @@ function printBreadcrumbs($path) {
                     }
                 }
 
-                $b_arr[2]=["name"=>"{site_catalog}", "item"=>"https://toko.ua$prefix/catalog/"];
-                $b_arr[3]=["name"=>"$title", "item"=>"$actual_link"];
+                $b_arr[2] = ["name"=>"{site_catalog}", "item"=>"https://toko.ua$prefix/catalog/"];
+                $b_arr[3] = ["name"=>"$title", "item"=>"$actual_link"];
             }
             break;
         }
@@ -336,8 +336,8 @@ function printBreadcrumbs($path) {
             $template_id = $pattern->getTemplateID($template_link);
             $result = explode($template_link."/", $_SERVER["REQUEST_URI"], 2); $link=ltrim($result[1]);
             if ($template_link=="") {
-                $pretitle="$a_home > $h_section";
-                $b_arr[2]=["name"=>"$h_section", "item"=>"$actual_link"];
+                $pretitle = "$a_home > $h_section";
+                $b_arr[2] = ["name"=>"$h_section", "item"=>"$actual_link"];
             } else {
                 if ($link=="") {
                     $title = $pattern->showTemplateTitle($template_id, $pattern->getTemplateLinkParams($template_id, $link));
@@ -422,8 +422,8 @@ function printBreadcrumbs($path) {
     $form = $cat->replaceLang($form);
 
     foreach ($b_arr as $key=>$val) {
-        $title=$val["name"];
-        $link=$val["item"];
+        $title = $val["name"];
+        $link = $val["item"];
         $list.="
         {
             \"@type\": \"ListItem\",
@@ -432,11 +432,11 @@ function printBreadcrumbs($path) {
             \"item\": \"$link\"
         },";
     }
-    $list=rtrim($list, ",");
+    $list = rtrim($list, ",");
 
-    $script="";
+    $script = "";
 
-    if (count($b_arr)>1) $script="
+    if (count($b_arr)>1) $script = "
     <script type=\"application/ld+json\">
     {
         \"@context\": \"http://schema.org\",
@@ -458,36 +458,36 @@ function getHtmlForm($name) {
 
 function getDescription($path) {
     $language=new LangClass; $cat=new CatalogueClass; $search=new SearchClass; $prod=new ProductsClass; $automan=new AutoClass;
-    $linka=findLinks();
-    $path=str_replace("/","",$path);
-    $prefix=getMoreTitle($path);
+    $linka = findLinks();
+    $path = str_replace("/", "", $path);
+    $prefix = getMoreTitle($path);
 
-    if ($path!="") $description="{seo_description} $prefix {seo_description2}"; else $description="{seo_description} {seo_description2}";
+    if ($path!="") $description = "{seo_description} $prefix {seo_description2}"; else $description = "{seo_description} {seo_description2}";
 
     if ($path=="article") {
-        $art_id=$linka[3];
+        $art_id = $linka[3];
         $article_nr_search = $cat->getArticleDispl($art_id);
         $brand_id = $cat->getArticleBrand($art_id);
         $article_nr_search = strtoupper($article_nr_search);
         $brand_name = $cat->getBrandName($brand_id); $brand_name = strtoupper($brand_name);
         $art_name = $cat->getArticleName($art_id);
         $description = "$art_name $brand_name $article_nr_search - {seo_description_article}";
-        $description = ltrim($description," ");
+        $description = ltrim($description, " ");
     }
 
     if ($path=="catalog") {
         $pager = "";
-        if ($_GET['page']!==NULL && $_GET['page']>0) {$pager="- {pager_cap}".$_GET['page'];}
+        if ($_GET['page']!==NULL && $_GET['page']>0) { $pager = "- {pager_cap}".$_GET['page']; }
 
-        $result=explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2); $link=ltrim($result[1]);
-        $arr=explode("/", $link);
+        $result = explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2); $link = ltrim($result[1]);
+        $arr = explode("/", $link);
         $str_link=""; $mfa_link=""; $mod_link="";
         if (!empty($arr[0])) $str_link = $arr[0]; $filters="";
         if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $filters = "";
         if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
         if (!empty($arr[1])) ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
 
-        $filters_cap="";
+        $filters_cap = "";
         if ($filters!="") {
             $brand_ids = $search->getActiveFilters($filters);
             foreach ($brand_ids[0] as $brand_id) {
@@ -536,8 +536,8 @@ function getDescription($path) {
         if ($str_link=="") $description = "{seo_description} {seo_description2}";
 
     }
-    $description=$language->replaceLang($description);
-    $_GET["page"]==0 ?: $description="";
+    $description = $language->replaceLang($description);
+    $_GET["page"]==0 ?: $description = "";
     return $description;
 }
 
