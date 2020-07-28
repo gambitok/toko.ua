@@ -1,13 +1,10 @@
 $(document).ready(function() {
-
     // hide if manuf checked
     if ($("div[data-type='manuf']").attr("data-id")!=="0") toggleCarsNavigation();
-
+    // hide on mobile
     if (detectmob()) {
-        // hide on mobile
         if ($("div[data-type='manuf']").attr("data-id")==="0") toggleCarsNavigation($("div[data-type='manuf']"));
     }
-
 });
 
 function toggleCarsTab(index) {
@@ -35,6 +32,7 @@ function toggleCarsTab(index) {
 
     toggleCarsNavigation(next, type, attr);
 
+    // Scroll on Mobile
     if (detectmob()) {
         document.getElementById("scrollManuf").scrollIntoView();
     }
@@ -67,7 +65,6 @@ function toggleCarsNavigation(index, type, attr) {
     if (type===undefined) { type = $(data_pred).attr("data-type"); }
     if (attr===undefined) { attr = $(data_pred).attr("data-id"); }
     if (type===undefined && attr===undefined) { type=""; attr=0; }
-
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
         // Uncheck Non-Active Nav
@@ -88,7 +85,6 @@ function toggleCarsNavigation(index, type, attr) {
             });
             let index_tab = $("#" + $(index).attr("data-tab"));
             index_tab.addClass("cars-tab__block-active");
-
             getCarsSearchContent(type, attr);
         }
     }
@@ -98,13 +94,10 @@ function getCarsSearchContent(type, attr) {
     let str_id = $("#details_str_id").val();
     JsHttpRequest.query(folder,{'w':'getCarsSearchContent', 'type':type, 'attr':attr, 'str_id':str_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-
             let tab = $("#" + result.tab);
             tab.html(result.list);
-
             let nav = $("div[data-type='" + result.nav + "']");
             nav.html(result.title);
-
         }}, true);
 }
 
@@ -116,7 +109,6 @@ function clearCarsBlock(data_tab) {
                 let active_tab = $("div[data-tab='cars-tab" + i + "']");
                 active_tab.removeClass("cars-nav__item-active");
                 active_tab.removeClass("cars-nav__item-checked");
-
                 JsHttpRequest.query(folder,{'w':'clearCarsBlock', 'sel_tab':i, 'cur_tab':cur_tab},
                     function (result, errors){ if (errors) {alert(errors);} if (result) {
                         // default Classes

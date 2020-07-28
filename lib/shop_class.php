@@ -146,6 +146,8 @@ class ShopClass {
 
         $table_basket = $this->replaceLang($table_basket);
 
+        if ($n==0) $table_basket=$this->replaceLang($this->getHtmlForm("basket/basket_error"));
+
         return $table_basket;
     }
 

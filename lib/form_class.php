@@ -210,7 +210,7 @@ class FormClass {
         return $list;
     }
 
-    function showCityForm($city_like, $city_id=""){ $db=DbSingleton::getDbm();
+    function showCityForm($city_like, $city_id="") { $db=DbSingleton::getDbm();
         $mas=[];
         if ($city_id=="") $city_id=0;
         if ($city_like!="") $where="WHERE `CITY_NAME` LIKE '%$city_like%'"; else $where="WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
@@ -299,16 +299,17 @@ class FormClass {
     }
 
     function showHistoryForm() {
-        $cat=new CatalogueClass; $client = new ClientClass;
-        $language=new LangClass; $prefix=$language->getLangPrefix();
-        $list=$client->getClientHistory(); $result="";
+        $cat = new CatalogueClass; $client = new ClientClass;
+        $language = new LangClass; $prefix = $language->getLangPrefix();
+        $list=$client->getClientHistory();
+        $result="";
         for ($i=0;$i<count($list);$i++) { $col=$i+1;
             $article_nr_displ=$list[$i]["article_nr_displ"];
             $brand=$list[$i]["brand"];
             $brand_link=$list[$i]["brand_link"];
             $result.="<li>$col. <a href=\"https://toko.ua$prefix/$cat->search_link/$article_nr_displ/$brand_link/\">$article_nr_displ ($brand)</a></li>";
         }
-        !empty($list) ? : $result.="<p>{empty_history}</p>";
+        !empty($list) ?: $result.="<p>{empty_history}</p>";
         $form=$this->getHtmlForm("menu/history_block");
         $form=str_replace("{history_block}", $result, $form);
         return $form;
@@ -327,17 +328,17 @@ class FormClass {
             $brand_link=$list[$i]["brand_link"];
             $list_history.="<li class=\"search-nav__item\">
                 <div class='container'>
-                <div class='row'>
-                    <div class='col-10'>
-                        <a href=\"https://toko.ua$prefix/$cat->search_link/$article_nr_displ/$brand_link/\">
-                            <i class='fa fa-history'></i>
-                            $brand $article_nr_displ
-                        </a>
+                    <div class='row'>
+                        <div class='col-10'>
+                            <a href=\"https://toko.ua$prefix/$cat->search_link/$article_nr_displ/$brand_link/\">
+                                <i class='fa fa-history'></i>
+                                $brand $article_nr_displ
+                            </a>
+                        </div>
+                        <div class='col-2'>
+                            <a class='float-right' onclick='deleteHistoryItem($id)'><i class='fa fa-times'></i></a>
+                        </div>
                     </div>
-                    <div class='col-2'>
-                        <a class='float-right' onclick='deleteHistoryItem($id)'><i class='fa fa-times'></i></a>
-                    </div>
-                </div>
                 </div>
             </li>";
             if ($i==$max_count) break;
@@ -419,8 +420,8 @@ class FormClass {
 
     /*==== INFO FORM ====*/
     function showPhotoGallery($art_id, $display=0) { $db=DbSingleton::getTokoDb();
-        $cat=new CatalogueClass;
-        $language=new LangClass; $prefix=$language->getLangPrefix();
+        $cat=new CatalogueClass; $language=new LangClass;
+        $prefix=$language->getLangPrefix();
         $nophoto=$this->noPhoto;
 
         $article_name=$cat->getArticleSearch($art_id);
