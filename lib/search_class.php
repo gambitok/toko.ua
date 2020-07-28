@@ -916,7 +916,7 @@ class SearchClass extends CatalogueClass {
 
     function getCatalogParamList() { $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT * FROM `T2_TREE_GROUP` WHERE 1 ORDER BY `TEX_RU`;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `GROUP_ID`, `TEX_RU` FROM `T2_TREE_GROUP` ORDER BY `TEX_RU`;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $group_id = $db->result($r, $i-1, "GROUP_ID");
             $text = $db->result($r, $i-1, "TEX_RU");
@@ -937,38 +937,43 @@ class SearchClass extends CatalogueClass {
         $form = str_replace("{catalog_title}", $data["title"], $form);
         $form = str_replace("{catalog_amount}", $data["amount"], $form);
 
-        $str = $this->getCatalogFilters($filters);
-        var_dump($str);
+//        $str = $this->getCatalogFilters($filters);
+//        var_dump($str);
 
         return $form;
     }
 
     function getCatalogFilters($filters) {
         $arr = [];
-
         foreach ($filters as $filter) {
-
             $string = explode("=", $filter);
-
             $param_id = $string[0];
-
             $values = explode(",", $string[1]);
-
             foreach ($values as $value_id) {
                 if (empty($arr[$param_id])) $arr[$param_id] = [];
                 array_push($arr[$param_id], $value_id);
             }
-
         }
-
         return $arr;
+    }
+
+    function getValueID($value_link, $param_id, $group_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE` WHERE `VALUE_LINK`='$value_link' AND `PARAM_ID`='$param_id' AND `GROUP_ID`='$group_id' LIMIT 1;");
+        $value_id = $db->result($r, 0, "VALUE_ID");
+        return $value_id;
+    }
+
+    function getParamID($param_link, $group_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS` WHERE `PARAM_LINK`='$param_link' AND `GROUP_ID`='$group_id' LIMIT 1;");
+        $param_id = $db->result($r, 0, "PARAM_ID");
+        return $param_id;
     }
 
     function getCatalogParamGroupList($group_id) { $db = DbSingleton::getTokoDb();
         $list = "";
         $arr_params = [];
         $arr_params[0] = [];
-        $r = $db->query("SELECT * FROM `T2_TREE_ARTS` WHERE `GROUP_ID`='$group_id';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE_ARTS` WHERE `GROUP_ID`='$group_id';"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $art_id = $db->result($r, $i-1, "ART_ID");
             $article_nr_displ = $this->getArticleDispl($art_id);

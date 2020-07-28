@@ -1734,6 +1734,26 @@ class CatalogueClass {
         return $list;
     }
 
+    function showCatalogProducts() { $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT `GROUP_ID`, `TEX_RU`, `TEX_LINK` FROM `T2_TREE_GROUP` ORDER BY `TEX_RU`;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $group_id = $db->result($r, $i-1, "GROUP_ID");
+            $text = $db->result($r, $i-1, "TEX_RU");
+            $link = $db->result($r, $i-1, "TEX_LINK");
+            $list.="<li>
+                <a href='/products/$link'>$group_id. $text</a>
+            </li>";
+        }
+        return $list;
+    }
+
+    function getCatalogProductID($link) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP` WHERE `TEX_LINK`='$link' LIMIT 1;");
+        $group_id = $db->result($r, 0, "GROUP_ID");
+        return $group_id;
+    }
+
     function formatUrlText($text) {
         $format_text = mb_convert_encoding($text,"UTF-8","Windows-1251");
         $format_text = $this->translit($format_text);

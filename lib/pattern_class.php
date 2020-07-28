@@ -107,15 +107,15 @@ class PatternClass extends CatalogueClass {
             $active_filters = $this->getTemplateLinkParams($template_id, $link);
             $products = $this->getCurrentProducts($template_id, $page, $active_filters);
             $products_form = $this->getProductsForm($products);
-            $count_arts = $this->getProductsCount($template_id,$active_filters);
+            $count_arts = $this->getProductsCount($template_id, $active_filters);
 
             $form=str_replace("{products_list}",$products_form,$form);
             $form=str_replace("{products_name}",$this->getTemplateLink($template_id),$form);
             $form=str_replace("{products_title}",$this->showTemplateTitle($template_id, $active_filters),$form);
             $form=str_replace("{products_checked}",$this->showCheckedFilters($template_id, $active_filters),$form);
 
-            $form=str_replace("{products_pagination}",$this->getTemplatePaginationForm($count_arts,$page),$form);
-            $form=str_replace("{products_count}",$this->getTemplateCurrentPage($count_arts,$page),$form);
+            $form=str_replace("{products_pagination}",$this->getTemplatePaginationForm($count_arts, $page),$form);
+            $form=str_replace("{products_count}",$this->getTemplateCurrentPage($count_arts, $page),$form);
             $form=str_replace("{products_filters}",$this->showFiltersForm($template_id, $active_filters),$form);
             $form=str_replace("{products_lang_prefix}",$language->getLangPrefix(),$form);
         } else {

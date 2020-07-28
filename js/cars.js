@@ -1,8 +1,7 @@
 $(document).ready(function() {
 
-    // $(".cars-nav__item").on('click', function() {
-    //     toggleCarsNavigation(this);
-    // });
+    // hide if manuf checked
+    if ($("div[data-type='manuf']").attr("data-id")!=="0") toggleCarsNavigation();
 
     if (detectmob()) {
         // hide on mobile
