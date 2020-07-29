@@ -398,37 +398,37 @@
 }
 
 .show_basket {
+    color: #606975;
+    border-radius: .25rem;
     cursor: pointer;
     font-size: 16px;
     background: 0 0;
-    color: #606975;
     width: 37px;
     height: 37px;
     padding: 8px 0 0 8px;
-    border-radius: .25rem;
     &:hover {
         color: #228b94;
     }
 }
 
 .show_count {
-    width: 36px;
-    text-align: center;
     margin-bottom: 5px;
+    text-align: center;
+    width: 36px;
 }
 
 .search_title {
     padding-bottom: 15px;
     h1 {
+        color: #606975;
         display: inline;
         font-size: 22px;
         font-weight: bold;
-        color: #606975;
         text-transform: uppercase;
     }
     span {
-        font-size: 22px;
         color: #606975;
+        font-size: 22px;
     }
 }
 
@@ -436,10 +436,10 @@
 
 /*==== GOODS ====*/
 .gg__row {
-    width: 100%;
-    padding: 15px 0;
-    margin: 0;
     font-size: 14px;
+    margin: 0;
+    padding: 15px 0;
+    width: 100%;
     .move_basket {
         background: #228b94;
         color: #fff;
@@ -450,10 +450,10 @@
     }
     &-shop {
         span {
+            float: right;
             font-size: 20px;
             font-weight: 700;
             padding-bottom: 10px;
-            float: right;
         }
         input {
             text-align: center;
@@ -465,8 +465,8 @@
         border-radius: .25em;
         cursor: pointer;
         padding: 5px;
-        width: 100%;
         text-align: center;
+        width: 100%;
     }
 }
 
@@ -474,13 +474,13 @@
 
 /*==== SIDE FILTERS, SIDE TREE ====*/
 .side-brands {
+    background: #fff;
     box-shadow: 0 1px 4px #ccc;
-    padding: 20px 15px;
+    font-size: 11px;
     margin-right: auto;
     margin-left: auto;
+    padding: 20px 15px;
     width: 100%;
-    font-size: 11px;
-    background: #fff;
     &-title {
         font-size: 14px;
         margin-bottom: 2em;
@@ -497,8 +497,8 @@
             padding-left: 0;
             span {
                 color: #9da9b9;
-                font-size: 10px;
                 float: right!important;
+                font-size: 10px;
                 text-align: right!important;
             }
         }
@@ -506,13 +506,13 @@
 }
 
 .side-menu {
-    padding: 20px 15px;
-    margin-right: auto;
-    margin-left: auto;
-    width: 100%;
-    font-size: 11px;
     background: #fff;
     box-shadow: 0 1px 4px #ccc;
+    font-size: 11px;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 20px 15px;
+    width: 100%;
     h1 {
         font-size: 16px;
     }
@@ -525,13 +525,13 @@
 }
 
 .side-tree {
-    padding: 20px 15px;
-    margin-right: auto;
-    margin-left: auto;
-    width: 100%;
-    font-size: 11px;
     background: #fff;
     box-shadow: 0 1px 4px #ccc;
+    font-size: 11px;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 20px 15px;
+    width: 100%;
     &-title {
         font-size: 14px;
     }
@@ -543,9 +543,9 @@
     &-return {
         padding: 10px 0;
         a {
+            color: #004084!important;
             font-size: 1.2em;
             font-weight: 700;
-            color: #004084!important;
         }
     }
     &-min {
@@ -567,15 +567,15 @@
 
 /*==== RESULT TABLE ====*/
 .auto_table {
+    background: #fff;
+    box-shadow: 0 1px 10px #ccc;
+    font-size: 0.8em;
     margin-right: auto;
     margin-left: auto;
-    font-size: 0.8em;
-    height: 100%;
-    padding: 0 3%;
-    width: 100%;
-    background: #fff;
     margin-bottom: 15px;
-    box-shadow: 0 1px 10px #ccc;
+    padding: 0 3%;
+    height: 100%;
+    width: 100%;
     button {
         width: 100%;
         height: 28px;
@@ -762,11 +762,11 @@
 /*==== PHONE ====*/
 @media (max-width:992px) {
     .cat_result_table {
-        padding: 0
+        padding: 0;
     }
 
     .cat_search {
-        margin-left: 10px
+        margin-left: 10px;
     }
 
     .tables__count,
@@ -776,9 +776,9 @@
     }
 
     .tables__info {
-        text-align: right;
         padding-right: 15px;
         padding-left: 15px;
+        text-align: right;
     }
 
     .border-line {
@@ -807,9 +807,9 @@
     .search_title {
         padding: 0;
         h1, span {
+            color: #606975;
             font-size: 1.2em;
             font-weight: bold;
-            color: #606975;
             text-transform: uppercase;
         }
         .col-12 {

@@ -2137,35 +2137,35 @@ table thead td { border: 1px solid #000; }
 
 .toggle_history p { font-size: 14px; margin: 8px; }
 
-.show_basket { cursor: pointer; font-size: 16px; background: 0 0; color: #606975; width: 37px; height: 37px; padding: 8px 0 0 8px; border-radius: .25rem; }
+.show_basket { color: #606975; border-radius: .25rem; cursor: pointer; font-size: 16px; background: 0 0; width: 37px; height: 37px; padding: 8px 0 0 8px; }
 
 .show_basket:hover { color: #228b94; }
 
-.show_count { width: 36px; text-align: center; margin-bottom: 5px; }
+.show_count { margin-bottom: 5px; text-align: center; width: 36px; }
 
 .search_title { padding-bottom: 15px; }
 
-.search_title h1 { display: inline; font-size: 22px; font-weight: bold; color: #606975; text-transform: uppercase; }
+.search_title h1 { color: #606975; display: inline; font-size: 22px; font-weight: bold; text-transform: uppercase; }
 
-.search_title span { font-size: 22px; color: #606975; }
+.search_title span { color: #606975; font-size: 22px; }
 
 /*==== /SEARCH ====*/
 /*==== GOODS ====*/
-.gg__row { width: 100%; padding: 15px 0; margin: 0; font-size: 14px; }
+.gg__row { font-size: 14px; margin: 0; padding: 15px 0; width: 100%; }
 
 .gg__row .move_basket { background: #228b94; color: #fff; padding-left: 6px; }
 
 .gg__row-art li { padding-bottom: 5px; }
 
-.gg__row-shop span { font-size: 20px; font-weight: 700; padding-bottom: 10px; float: right; }
+.gg__row-shop span { float: right; font-size: 20px; font-weight: 700; padding-bottom: 10px; }
 
 .gg__row-shop input { text-align: center; width: 100%; }
 
-.gg__row-basket { background: #228b94; border-radius: .25em; cursor: pointer; padding: 5px; width: 100%; text-align: center; }
+.gg__row-basket { background: #228b94; border-radius: .25em; cursor: pointer; padding: 5px; text-align: center; width: 100%; }
 
 /*==== /GOODS ====*/
 /*==== SIDE FILTERS, SIDE TREE ====*/
-.side-brands { box-shadow: 0 1px 4px #ccc; padding: 20px 15px; margin-right: auto; margin-left: auto; width: 100%; font-size: 11px; background: #fff; }
+.side-brands { background: #fff; box-shadow: 0 1px 4px #ccc; font-size: 11px; margin-right: auto; margin-left: auto; padding: 20px 15px; width: 100%; }
 
 .side-brands-title { font-size: 14px; margin-bottom: 2em; }
 
@@ -2177,9 +2177,9 @@ table thead td { border: 1px solid #000; }
 
 .side-brands-item__price { padding-left: 0; }
 
-.side-brands-item__price span { color: #9da9b9; font-size: 10px; float: right !important; text-align: right !important; }
+.side-brands-item__price span { color: #9da9b9; float: right !important; font-size: 10px; text-align: right !important; }
 
-.side-menu { padding: 20px 15px; margin-right: auto; margin-left: auto; width: 100%; font-size: 11px; background: #fff; box-shadow: 0 1px 4px #ccc; }
+.side-menu { background: #fff; box-shadow: 0 1px 4px #ccc; font-size: 11px; margin-right: auto; margin-left: auto; padding: 20px 15px; width: 100%; }
 
 .side-menu h1 { font-size: 16px; }
 
@@ -2187,7 +2187,7 @@ table thead td { border: 1px solid #000; }
 
 .side-menu-item { padding: 10px; }
 
-.side-tree { padding: 20px 15px; margin-right: auto; margin-left: auto; width: 100%; font-size: 11px; background: #fff; box-shadow: 0 1px 4px #ccc; }
+.side-tree { background: #fff; box-shadow: 0 1px 4px #ccc; font-size: 11px; margin-right: auto; margin-left: auto; padding: 20px 15px; width: 100%; }
 
 .side-tree-title { font-size: 14px; }
 
@@ -2195,7 +2195,7 @@ table thead td { border: 1px solid #000; }
 
 .side-tree-return { padding: 10px 0; }
 
-.side-tree-return a { font-size: 1.2em; font-weight: 700; color: #004084 !important; }
+.side-tree-return a { color: #004084 !important; font-size: 1.2em; font-weight: 700; }
 
 .side-tree-min { margin: 0; padding: 0; }
 
@@ -2205,7 +2205,7 @@ table thead td { border: 1px solid #000; }
 
 /*==== /SIDE FILTERS, SIDE TREE ====*/
 /*==== RESULT TABLE ====*/
-.auto_table { margin-right: auto; margin-left: auto; font-size: 0.8em; height: 100%; padding: 0 3%; width: 100%; background: #fff; margin-bottom: 15px; box-shadow: 0 1px 10px #ccc; }
+.auto_table { background: #fff; box-shadow: 0 1px 10px #ccc; font-size: 0.8em; margin-right: auto; margin-left: auto; margin-bottom: 15px; padding: 0 3%; height: 100%; width: 100%; }
 
 .auto_table button { width: 100%; height: 28px; border-radius: .25rem; padding: 0; }
 
@@ -2279,14 +2279,14 @@ table thead td { border: 1px solid #000; }
 @media (max-width: 992px) { .cat_result_table { padding: 0; }
   .cat_search { margin-left: 10px; }
   .tables__count, .tables__price, .tables__stock { padding: 0; }
-  .tables__info { text-align: right; padding-right: 15px; padding-left: 15px; }
+  .tables__info { padding-right: 15px; padding-left: 15px; text-align: right; }
   .border-line { border-top: 3px solid #deedf3; margin-top: 15px; }
   .auto_table--col { padding-bottom: 15px; }
   .show_hidden { height: 0 !important; margin: 0; padding: 15px !important; }
   .show_more { margin-right: 5px; }
   .search_template { padding: 3% 2% !important; }
   .search_title { padding: 0; }
-  .search_title h1, .search_title span { font-size: 1.2em; font-weight: bold; color: #606975; text-transform: uppercase; }
+  .search_title h1, .search_title span { color: #606975; font-size: 1.2em; font-weight: bold; text-transform: uppercase; }
   .search_title .col-12 { padding: 0; }
   .tables__row { margin-left: 5px; margin-right: 5px; padding: 0; }
   .tables__title { display: none; }
@@ -2314,31 +2314,31 @@ table thead td { border: 1px solid #000; }
 /*==== NEWS STATE ====*/
 .news-state h1 { font-size: 20px; }
 
-.news-state h2 { color: #999; font-size: 10pt; }
+.news-state h2 { color: #999; font-size: 13px; }
 
 .news-state ul { list-style: none; }
 
-.news-state table { width: 100% !important; border-collapse: collapse; }
+.news-state table { border-collapse: collapse; width: 100% !important; }
 
-.news-state img { width: 50%; max-width: 500px; display: block; margin: 0 auto; border: 1px solid #8c8c8c; box-shadow: 6px 6px 10px 0 rgba(0, 0, 0, 0.1); padding: 10px; }
+.news-state img { border: 1px solid #8c8c8c; box-shadow: 6px 6px 10px 0 rgba(0, 0, 0, 0.1); display: block; max-width: 500px; margin: 0 auto; padding: 10px; width: 50%; }
 
 /*==== /NEWS STATE ====*/
 /*==== NEWS LIST ====*/
-.news-block h2 { font-size: 1.5em; padding: 15px 0; }
+.news-block h2 { font-size: 20px; padding: 15px 0; }
 
-.news-block h3 { font-size: 15px; }
+.news-block h3 { font-size: 15px; font-weight: normal; }
 
-.news-block__item { margin-left: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; background: #fff; box-shadow: 0 1px 10px #ccc; padding: 15px; margin-right: 15px; width: 100%; }
+.news-block__item { background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 1px 10px #ccc; margin: 0 15px 15px 0; padding: 15px; width: 100%; }
 
-.news-block__item a { font-size: 10pt; color: #000; }
+.news-block__item a { color: #000; font-size: 13px; }
 
-.news-block__item h4 { color: #999; font-size: 10pt; }
+.news-block__item h4 { color: #999; font-size: 13px; font-weight: normal; }
 
-.news-block__item h5 { text-transform: uppercase; color: #4d82cb; margin-top: 3%; }
+.news-block__item h5 { color: #4d82cb; font-weight: normal; margin-top: 3%; text-transform: uppercase; }
 
-.news-block__item img { width: 100%; border: 1px solid #8c8c8c; box-shadow: 6px 6px 10px 0 rgba(0, 0, 0, 0.1); padding: 10px; }
+.news-block__item img { border: 1px solid #8c8c8c; box-shadow: 6px 6px 10px 0 rgba(0, 0, 0, 0.1); padding: 10px; width: 100%; }
 
-.news-block__item p { margin: 0; font-size: 12pt; }
+.news-block__item p { font-size: 16px; margin: 0; }
 
 /*==== /NEWS LIST ====*/
 /*==== PHONE ====*/

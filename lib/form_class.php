@@ -22,7 +22,7 @@ class FormClass {
         return $form;
     }
 
-    function getCountryFlag($brand_id) { $db=DbSingleton::getTokoDb();
+    function getCountryFlag($brand_id) { $db = DbSingleton::getTokoDb();
         if (self::$flags === null) {
             $r=$db->query("SELECT t2c.ALFA2, t2b.BRAND_ID, t2c.COUNTRY_NAME 
             FROM `T2_BRANDS` t2b
@@ -35,7 +35,7 @@ class FormClass {
         if ($name_country=="") return false; else return array("flag"=>$flag, "country"=>$name_country);
     }
 
-    function showBrandForm($brand) { $db=DbSingleton::getTokoDb();
+    function showBrandForm($brand) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T2_BRAND_LINK` WHERE `brand_id`='$brand' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) {
             $info = $this->getHtmlForm("brand_form");
@@ -48,25 +48,25 @@ class FormClass {
         return $info;
     }
 
-    function checkT2Link($typ_id, $art_id) { $db=DbSingleton::getTokoDb();
+    function checkT2Link($typ_id, $art_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T2_LINKS` WHERE `ART_ID`='$art_id' AND `TYP_ID`='$typ_id' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n==0) return false; else return true;
     }
 
-    function getArtBrandLink($art_id, $brand_id) { $db=DbSingleton::getTokoDb();
-        $link="";
-        $r=$db->query("SELECT * FROM `T2_TREE` WHERE `ART_ID`='$art_id';"); $n=$db->num_rows($r);
+    function getArtBrandLink($art_id, $brand_id) { $db = DbSingleton::getTokoDb();
+        $link = "";
+        $r = $db->query("SELECT * FROM `T2_TREE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
         if ($n>0) {
-            $str_text="";
+            $str_text = "";
             for ($i=1;$i<=$n;$i++) {
-                $str_id=$db->result($r, $i-1, "STR_ID");
-                $r1=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1=$db->query($r1);
-                if ($n1>0) $str_text=$db->result($r1, 0, "TEX_LINK");
+                $str_id = $db->result($r, $i-1, "STR_ID");
+                $r1 = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1=$db->query($r1);
+                if ($n1>0) $str_text = $db->result($r1, 0, "TEX_LINK");
                 if ($str_text!="") break;
             }
-            $brand_link=$this->getBrandLink($brand_id);
-            if ($str_text!="") $link="https://toko.ua/catalog/$str_text/brandy=$brand_link/";
+            $brand_link = $this->getBrandLink($brand_id);
+            if ($str_text!="") $link = "https://toko.ua/catalog/$str_text/brandy=$brand_link/";
         }
         return $link;
     }
@@ -75,13 +75,13 @@ class FormClass {
         $cat=new CatalogueClass; $language=new LangClass; $prod=new ProductsClass; $auto=new AutoClass;
         $auto_typ_id = $prod->getCookieAuto();
 
-        $form=$this->getHtmlForm("cat_article");
+        $form = $this->getHtmlForm("cat_article");
         if ($auto_typ_id!="") {
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
-                $form=str_replace("{applicable_display}", "", $form);
-                list($manufacture, $model, $model_id)=$auto->getCarInfo($auto_typ_id);
-                list($manufacture_cap,, $model_id_cap,)=$auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
-                $form=str_replace("{applicable_cap}", "<a href='https://toko.ua/catalog/'>$manufacture_cap $model_id_cap</a>", $form);
+                $form = str_replace("{applicable_display}", "", $form);
+                list($manufacture, $model, $model_id) = $auto->getCarInfo($auto_typ_id);
+                list($manufacture_cap,, $model_id_cap,) = $auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
+                $form = str_replace("{applicable_cap}", "<a href='https://toko.ua/catalog/'>$manufacture_cap $model_id_cap</a>", $form);
             }
         }
 
@@ -91,7 +91,7 @@ class FormClass {
         $brand_name = $article["brand_name"];
         $article_name = $article["text"];
 
-        $brand_link=$this->getArtBrandLink($art_id, $brand_id);
+        $brand_link = $this->getArtBrandLink($art_id, $brand_id);
 
         $flagData = $this->getCountryFlag($brand_id);
         if ($flagData!==false) {
@@ -128,6 +128,8 @@ class FormClass {
         $analogs = $cat->shortSearchList($art_id);
         $form=str_replace("{analogs_list}", $analogs, $form);
         $form=str_replace("{analogs_display}", $analogs=="" ? "dnone" : "", $form);
+        $form=str_replace("{analogs_header}", "$brand_name $format_article ('$article_nr_displ, $article_nr_displ, $brand_name $article_nr_displ)", $form);
+
         $form=str_replace("{article_header}", "<h1>$article_name $brand_name $article_nr_displ</h1>", $form);
         $form=str_replace("{applicable_display}", "none", $form);
 
@@ -135,7 +137,7 @@ class FormClass {
         return $form;
     }
 
-    function getArticleInfo($art_id) { $db=DbSingleton::getTokoDb();
+    function getArticleInfo($art_id) { $db = DbSingleton::getTokoDb();
         $cat=new CatalogueClass; $client=new ClientClass; $kours=new ExRateClass;
         $tpoint = $client->getTpoint(); $cur = $kours->getCurrentKours(); $cur_cap = $kours->getKoursCaption($cur);
 
@@ -178,9 +180,8 @@ class FormClass {
             $delivery_short_info = $deliveryData["short"];
         }
 
-        $real_stock = $stock; if ($stock>10) $stock=">10";
+        $real_stock = $stock; if ($stock>10) $stock = ">10";
         $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
-
 
         $article = ["article_nr_displ"=>$article_nr_displ, "brand_id"=>$brand_id, "brand_name"=>$brand_name, "text"=>$text, "stock"=>$stock, "delivery"=>$delivery_short_info, "price"=>$price, "currency"=>$cur_cap, "delivery_days"=>$delivery_days, "basket"=>$basket];
         return $article;
@@ -210,7 +211,7 @@ class FormClass {
         return $list;
     }
 
-    function showCityForm($city_like, $city_id="") { $db=DbSingleton::getDbm();
+    function showCityForm($city_like, $city_id="") { $db = DbSingleton::getDbm();
         $mas=[];
         if ($city_id=="") $city_id=0;
         if ($city_like!="") $where="WHERE `CITY_NAME` LIKE '%$city_like%'"; else $where="WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
@@ -230,26 +231,27 @@ class FormClass {
         return $mas;
     }
 
-    function showCityFormSelected($city_like, $city_id) { $db=DbSingleton::getDbm();
-        if ($city_id=="") $city_id=0; $list="";
-        if ($city_like!="") $where="WHERE `CITY_NAME` LIKE '%$city_like%'"; else $where="WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
-        $r=$db->query("SELECT * FROM `T2_CITY` t2c
+    function showCityFormSelected($city_like, $city_id) { $db = DbSingleton::getDbm();
+        $list = "";
+        if ($city_id=="") $city_id = 0;
+        if ($city_like!="") $where = "WHERE `CITY_NAME` LIKE '%$city_like%'"; else $where = "WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
+        $r = $db->query("SELECT * FROM `T2_CITY` t2c
             LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID=t2c.REGION_ID)
             LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID=t2r.STATE_ID)
-        $where;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $id=$db->result($r,$i-1,"CITY_ID");
-            $city=$db->result($r,$i-1,"CITY_NAME");
-            $region=$db->result($r,$i-1,"REGION_NAME");
-            $state=$db->result($r,$i-1,"STATE_NAME");
-            if ($region=="") $location="$city"; else $location="$city - $region - $state";
-            if ($id==$city_id) $checked="selected=\"selected\""; else $checked="";
+        $where;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $id = $db->result($r,$i-1,"CITY_ID");
+            $city = $db->result($r,$i-1,"CITY_NAME");
+            $region = $db->result($r,$i-1,"REGION_NAME");
+            $state = $db->result($r,$i-1,"STATE_NAME");
+            if ($region=="") $location = "$city"; else $location = "$city - $region - $state";
+            if ($id==$city_id) $checked = "selected=\"selected\""; else $checked = "";
             $list.="<option value=\"$id\" $checked>$location</option>";
         }
         return $list;
     }
 
-    function showInfoTemplate($art_id) { $db=DbSingleton::getTokoDb();
+    function showInfoTemplate($art_id) { $db = DbSingleton::getTokoDb();
         $info="";
         if (!isset(self::$infoTemplates[$art_id])) {
             $r=$db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
@@ -265,7 +267,7 @@ class FormClass {
         return $info;
     }
 
-    public static function cacheInfoTemplates($where_art_id_str) { $db=DbSingleton::getTokoDb();
+    public static function cacheInfoTemplates($where_art_id_str) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `TEXT`, `VALUE`, `ART_ID` FROM `T2_INFO` WHERE `ART_ID` IN ($where_art_id_str) AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
         $infoTemplates = mysqli_fetch_all($r, MYSQLI_ASSOC);
         foreach ($infoTemplates as $infoTemplate) {
@@ -301,9 +303,9 @@ class FormClass {
     function showHistoryForm() {
         $cat = new CatalogueClass; $client = new ClientClass;
         $language = new LangClass; $prefix = $language->getLangPrefix();
-        $list=$client->getClientHistory();
-        $result="";
-        for ($i=0;$i<count($list);$i++) { $col=$i+1;
+        $list = $client->getClientHistory();
+        $result = "";
+        for ($i=0; $i<count($list); $i++) { $col=$i+1;
             $article_nr_displ=$list[$i]["article_nr_displ"];
             $brand=$list[$i]["brand"];
             $brand_link=$list[$i]["brand_link"];
@@ -317,10 +319,10 @@ class FormClass {
 
     // PHONE HISTORY
     function showHistoryList() {
-        $cat=new CatalogueClass; $client=new ClientClass;
-        $language=new LangClass; $prefix=$language->getLangPrefix();
-        $list=$client->getClientHistory(); $max_count=9;
-        $list_history="";
+        $cat = new CatalogueClass; $client = new ClientClass;
+        $language = new LangClass; $prefix = $language->getLangPrefix();
+        $list = $client->getClientHistory(); $max_count = 9;
+        $list_history = "";
         for ($i=0; $i<count($list); $i++) {
             $id=$list[$i]["id"];
             $article_nr_displ=$list[$i]["article_nr_displ"];
@@ -343,18 +345,18 @@ class FormClass {
             </li>";
             if ($i==$max_count) break;
         }
-        $form=$this->getHtmlForm("menu/history_list");
-        $form=str_replace("{history_range}",$list_history,$form);
-        if (count($list)==0) $form="";
-        $form=$this->replaceLang($form);
+        $form = $this->getHtmlForm("menu/history_list");
+        $form = str_replace("{history_range}", $list_history, $form);
+        if (count($list)==0) $form = "";
+        $form = $this->replaceLang($form);
         return $form;
     }
 
-    function deleteHistoryItem($id) { $db=DbSingleton::getTokoDb();
+    function deleteHistoryItem($id) { $db = DbSingleton::getTokoDb();
         if ($id=="") {
-            $cookie=$_COOKIE["session_id"];
-            $client_id=$this->getClient(); $user_id=$this->getUser();
-            if ($user_id==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user_id'";
+            $cookie = $_COOKIE["session_id"];
+            $client_id = $this->getClient(); $user_id = $this->getUser();
+            if ($user_id==0) $where = "`cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `client_user_id`='$user_id'";
         } else {
             $where = "`id`='$id'";
         }
@@ -365,50 +367,52 @@ class FormClass {
     /*==== /HISTORY ====*/
 
     /*==== PHOTO GALLERY ====*/
-    function getArticleMainPhoto($art_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n=$db->num_rows($r); $photo_name="";
+    function getArticleMainPhoto($art_id) { $db = DbSingleton::getTokoDb();
+        $photo_name = "";
+        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
         for ($i=1;$i<=$n;$i++){
-            $photo_name=trim($db->result($r,$i-1,"PHOTO_NAME"));
+            $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
         }
-        if ($photo_name=="") $photo_name=$this->noPhoto;
+        if ($photo_name=="") $photo_name = $this->noPhoto;
         return $photo_name;
     }
 
-    function getArticleActivePhoto($art_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n=$db->num_rows($r); $photo_name="";
+    function getArticleActivePhoto($art_id) { $db = DbSingleton::getTokoDb();
+        $photo_name = "";
+        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
         for ($i=1;$i<=$n;$i++){
-            $photo_name=trim($db->result($r,$i-1,"PHOTO_NAME"));
+            $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
         }
-        $photo_name=="" ? $photo_name=$this->noPhoto : $photo_name="$this->uploads_link/$photo_name";
+        $photo_name=="" ? $photo_name = $this->noPhoto : $photo_name = "$this->uploads_link/$photo_name";
         return $photo_name;
     }
 
-    function checkArticlePhoto($art_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n=$db->num_rows($r);
+    function checkArticlePhoto($art_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) return 1; else return 0;
     }
 
-    function getShortArticlePhoto($art_id) { $db=DbSingleton::getTokoDb();
-        $photo_name="";
-        $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $photo_name=trim($db->result($r,$i-1,"PHOTO_NAME"));
+    function getShortArticlePhoto($art_id) { $db = DbSingleton::getTokoDb();
+        $photo_name = "";
+        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
         }
-        $photo_name=="" ? $photo_name=$this->noPhoto : $photo_name="$this->uploads_link/".$photo_name;
-        $photo="<img itemprop=\"image\" src=\"$photo_name\" alt=\"Article\">";
+        $photo_name=="" ? $photo_name = $this->noPhoto : $photo_name = "$this->uploads_link/".$photo_name;
+        $photo = "<img itemprop=\"image\" src=\"$photo_name\" alt=\"Article\">";
         return $photo;
     }
 
     function getArticlePhotos($art_id) {
         if (!isset(self::$articlePhotos[$art_id])) {
-            $db=DbSingleton::getTokoDb();
+            $db = DbSingleton::getTokoDb();
             $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;");
             self::$articlePhotos[$art_id] = mysqli_fetch_all($r, MYSQLI_ASSOC);
         }
         return self::$articlePhotos[$art_id];
     }
 
-    public static function cacheArticlesPhotos($where_art_id_str) { $db=DbSingleton::getTokoDb();
+    public static function cacheArticlesPhotos($where_art_id_str) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID` IN ($where_art_id_str) AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;");
         $photos = mysqli_fetch_all($r, MYSQLI_ASSOC);
         foreach ($photos as $photo) {
@@ -419,20 +423,20 @@ class FormClass {
     /*==== /PHOTO GALLERY ====*/
 
     /*==== INFO FORM ====*/
-    function showPhotoGallery($art_id, $display=0) { $db=DbSingleton::getTokoDb();
+    function showPhotoGallery($art_id, $display=0) { $db = DbSingleton::getTokoDb();
         $cat=new CatalogueClass; $language=new LangClass;
         $prefix=$language->getLangPrefix();
         $nophoto=$this->noPhoto;
-
+        $list="";
         $article_name=$cat->getArticleSearch($art_id);
         $brand_name=$cat->getBrandName($cat->getArticleBrand($art_id));
         $format_name=$cat->getFormatAticle($article_name);
         $format_brand=$cat->getFormatBrand($brand_name);
 
-        $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n=$db->num_rows($r); $list="";
-        for ($i=1;$i<=$n;$i++){
-            $photo_name=trim($db->result($r,$i-1,"PHOTO_NAME"));
-            $i==1 ? $active="active" : $active="";
+        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
+            $i==1 ? $active = "active" : $active = "";
 
             if ($display==1) {
                 $list.="<div class=\"carousel-item $active\">
@@ -448,7 +452,7 @@ class FormClass {
             }
         }
         if ($n>0) {
-            $info="<div class=\"row\">
+            $info = "<div class=\"row\">
                 <div class=\"col-12\">
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\">
                         <div class=\"carousel-inner\" role=\"listbox\">$list</div>
@@ -464,7 +468,7 @@ class FormClass {
                 </div>
             </div>";
         } else {
-            $info="<div class=\"row\">
+            $info = "<div class=\"row\">
                 <div class=\"col-12\">
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\">
                         <div class=\"carousel-inner\" role=\"listbox\">
@@ -476,24 +480,25 @@ class FormClass {
                 </div>
             </div>";
         }
-        $info=$this->replaceLang($info);
+        $info = $this->replaceLang($info);
         return $info;
     }
 
-    function showArticlePhotoGallery($art_id) { $db=DbSingleton::getTokoDb();
+    function showArticlePhotoGallery($art_id) { $db = DbSingleton::getTokoDb();
         $cat = new CatalogueClass;
 
-        $article_nr_dspl=$cat->getArticleDispl($art_id);
-        $brand_name=$cat->getBrandName($cat->getArticleBrand($art_id));
-        $article_name=$cat->getArticleName($art_id);
-        $article_info="$article_name $brand_name $article_nr_dspl - {photo_card_cap}";
-        $nophoto=$this->noPhoto;
+        $article_nr_dspl = $cat->getArticleDispl($art_id);
+        $brand_name = $cat->getBrandName($cat->getArticleBrand($art_id));
+        $article_name = $cat->getArticleName($art_id);
+        $article_info = "$article_name $brand_name $article_nr_dspl - {photo_card_cap}";
+        $nophoto = $this->noPhoto;
+        $list = "";
 
-        $r=$db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n=$db->num_rows($r); $list="";
-        for ($i=1;$i<=$n;$i++) {
+        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
             $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
-            $i==1 ? $active="active" : $active="";
-            $page_cap="<div class=\"carousel-caption\">{page_cap} $i {of_cap} $n</div>";
+            $i==1 ? $active = "active" : $active = "";
+            $page_cap = "<div class=\"carousel-caption\">{page_cap} $i {of_cap} $n</div>";
             $list.="<div class=\"carousel-item $active\">
                 <div class=\"search__photo\" style='height: 400px'>
                     <img itemprop=\"image\" src=\"$this->uploads_link/$photo_name\" alt=\"$article_info #$i\" title=\"$article_info #$i\">
@@ -502,7 +507,7 @@ class FormClass {
             </div>";
         }
         if ($n==0) {
-            $gallery="<div class=\"row\">
+            $gallery = "<div class=\"row\">
                 <div class=\"col-12\">
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\" style='border: 1px solid #e9e9e9;border-radius: .25em;'>
                         <div class=\"carousel-inner\" role=\"listbox\">
@@ -516,7 +521,7 @@ class FormClass {
                 </div>
             </div>";
         } else {
-            $gallery="<div class=\"row\">
+            $gallery = "<div class=\"row\">
                 <div class=\"col-12\">
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\" style='border: 1px solid #e9e9e9;border-radius: .25em;'>
                         <div class=\"carousel-inner\" role=\"listbox\">$list</div>
@@ -533,12 +538,12 @@ class FormClass {
             </div>";
         }
 
-        $info = $this->getArticleInfoForm($art_id,1);
-        if ($info!="") $info = "<div style='border:1px solid #e9e9e9;border-radius:.25em; padding:10px;'>$info</div>";
+        $info = $this->getArticleInfoForm($art_id, 1);
+        if ($info!="") $info = "<div style='border:1px solid #e9e9e9; border-radius:.25em; padding:10px;'>$info</div>";
         $applicability = $this->getApplManufTCD($art_id);
         $originals = $cat->getOriginalNumbers($art_id);
 
-        $form="
+        $form = "
         <nav id=\"nav-Content\">
             <div class=\"nav nav-tabs\" id=\"nav-tab\" role=\"tablist\">
                 <a class=\"nav-item nav-link active\" id=\"nav-1-tab\" data-toggle=\"tab\" href=\"#nav-1\" role=\"tab\" aria-controls=\"nav-1\" aria-selected=\"true\">{info_cap}</a>
@@ -555,48 +560,48 @@ class FormClass {
             <div class=\"tab-pane fade\" id=\"nav-3\" role=\"tabpanel\" aria-labelledby=\"nav-3-tab\">$originals</div>
         </div>";
 
-        $form=$this->replaceLang($form);
+        $form = $this->replaceLang($form);
         return $form;
     }
 
     function showInfoForm($art_id) {
-        $catalogue=new CatalogueClass;
-        $article_nr_displ=$catalogue->getArticleDispl($art_id);
-        $brand_name=$catalogue->getBrandName($catalogue->getArticleBrand($art_id));
-        $title="<span class=\"text-dark bold\">$brand_name</span> $article_nr_displ";
-        $form=$this->getHtmlForm("modals/form_info");
-        $form=str_replace("{info-main__photo}",$this->showPhotoGallery($art_id),$form);
-        $form=str_replace("{info-main__parameters}",$this->getArticleInfoForm($art_id),$form);
-        $form=str_replace("{info-applicability}",$this->getApplManufTCD($art_id),$form);
-        $form=str_replace("{info-original}",$catalogue->getOriginalNumbers($art_id),$form);
-        $form=$this->replaceLang($form);
+        $catalogue = new CatalogueClass;
+        $article_nr_displ = $catalogue->getArticleDispl($art_id);
+        $brand_name = $catalogue->getBrandName($catalogue->getArticleBrand($art_id));
+        $title = "<span class=\"text-dark bold\">$brand_name</span> $article_nr_displ";
+        $form = $this->getHtmlForm("modals/form_info");
+        $form = str_replace("{info-main__photo}",$this->showPhotoGallery($art_id),$form);
+        $form = str_replace("{info-main__parameters}",$this->getArticleInfoForm($art_id),$form);
+        $form = str_replace("{info-applicability}",$this->getApplManufTCD($art_id),$form);
+        $form = str_replace("{info-original}",$catalogue->getOriginalNumbers($art_id),$form);
+        $form = $this->replaceLang($form);
         return array($form, $title);
     }
 
     function getApplManufTCD($art_id) { $db = DbSingleton::getTokoDb();
-        $typ_id_str=$list="";
-        $r=$db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID`='$art_id';"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $typ_id=$db->result($r,$i-1,"TYP_ID");
+        $typ_id_str = $list = "";
+        $r = $db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $typ_id = $db->result($r,$i-1,"TYP_ID");
             $typ_id_str.="$typ_id";
             if ($i<$n) {$typ_id_str.=",";}
         }
         if ($typ_id_str!="") {
-            $r=$db->query("SELECT man.MFA_ID, man.MFA_BRAND 
+            $r = $db->query("SELECT man.MFA_ID, man.MFA_BRAND 
             FROM `T_types` tt 
                 INNER JOIN `T_models` tm ON tm.MOD_ID=tt.TYP_MOD_ID 
                 INNER JOIN `T_manufacturers` man ON man.MFA_ID=tm.MOD_MFA_ID 
             WHERE tt.TYP_ID IN ($typ_id_str) AND tt.ACTIVE=1 
-            GROUP BY man.MFA_ID ORDER BY man.MFA_BRAND ASC;"); $n=$db->num_rows($r);
+            GROUP BY man.MFA_ID ORDER BY man.MFA_BRAND ASC;"); $n = $db->num_rows($r);
             if ($n>0) {
                 for ($i=1;$i<=$n;$i++){
-                    $brand_id=$db->result($r,$i-1,"MFA_ID");
-                    $brand=$db->result($r,$i-1,"MFA_BRAND");
+                    $brand_id = $db->result($r,$i-1,"MFA_ID");
+                    $brand = $db->result($r,$i-1,"MFA_BRAND");
                     $list.="<a class=\"padr15 load_app pointer\" onclick='loadApplicModels2(\"$art_id\",\"$brand_id\",this)'><i class=\"fas fa-car\"></i>$brand</a>";
                 }
-            } else $list=$this->err1;
+            } else $list = $this->err1;
         }
-        else $list=$this->err1;
+        else $list = $this->err1;
         return $list;
     }
 
@@ -635,15 +640,15 @@ class FormClass {
 
     function getApplModelInfoTCD($art_id, $typ_id) { $db = DbSingleton::getTokoDb();
         //DELETE????????
-        $automan=new AutoClass;
-        $form=$this->getHtmlForm("cat_modif_group_form");
+        $automan= new AutoClass;
+        $list="";
         $r=$db->query("SELECT tt.*, man.MFA_ID, tm.Model, tm.MOD_ID
         FROM `T2_LINKS` tl 
             INNER JOIN `T_types` tt ON tt.TYP_ID=tl.TYP_ID 
             INNER JOIN `T_models` tm ON tm.MOD_ID=tt.TYP_MOD_ID 
             INNER JOIN `T_manufacturers` man ON man.MFA_ID=tm.MOD_MFA_ID
         WHERE tl.ART_ID='$art_id' AND tt.TYP_ID='$typ_id' AND tt.ACTIVE=1 
-        GROUP BY tm.MOD_ID ORDER BY tt.TYP_TEXT ASC;"); $n=$db->num_rows($r); $list="";
+        GROUP BY tm.MOD_ID ORDER BY tt.TYP_TEXT ASC;"); $n=$db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $TYP_TEXT=$db->result($r,$i-1,"TYP_TEXT");
             $fuel=$db->result($r,$i-1,"FUEL_ID"); $fuel_name=$automan->getFuelName($fuel);
@@ -662,13 +667,14 @@ class FormClass {
                 <td>$ENG_Cod</td>
             </tr>";
         }
+        $form=$this->getHtmlForm("cat_modif_group_form");
         $form=str_replace("{list}",$list,$form);
         $form="<div>".$form."</div>";
         $form=$this->replaceLang($form);
         return $form;
     }
 
-    function getArticleInfoForm($art_id, $display=0) { $db=DbSingleton::getTokoDb();
+    function getArticleInfoForm($art_id, $display=0) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;"); $n=$db->num_rows($r); $info="";
         if ($n>0) {
             !$display ? $class="info__table" : $class="info__table_min";
@@ -690,10 +696,9 @@ class FormClass {
         return $info;
     }
 
-    function getCarsBanner() { $db=DbSingleton::getTokoDb();
-        $form=$this->getHtmlForm("home/banner");
+    function getCarsBanner() { $db = DbSingleton::getTokoDb();
         $indicators=""; $items=""; $k=0;
-        $r=$db->query("SELECT * FROM `banner` WHERE `STATUS`=1 ORDER BY `POSITION` ASC;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `banner` WHERE `STATUS`=1 ORDER BY `POSITION` ASC;"); $n = $db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $title = $db->result($r, $i - 1, "TITLE");
             $text = $db->result($r, $i - 1, "TEXT");
@@ -704,24 +709,25 @@ class FormClass {
             $items.="<div class=\"carousel-item $class\">".$this->getCarsBannerItem($title, $text, "/images/banners/".$image)."</div>";
             $k++;
         }
-        $form=str_replace("{carousel_indicators}", $indicators, $form);
-        $form=str_replace("{carousel_items}", $items, $form);
+        $form = $this->getHtmlForm("home/banner");
+        $form = str_replace("{carousel_indicators}", $indicators, $form);
+        $form = str_replace("{carousel_items}", $items, $form);
 
         return $form;
     }
 
     function getCarsBannerItem($title, $text, $image) {
-        $form=$this->getHtmlForm("home/banner_item");
-        $form=str_replace("{banner_title}", $title, $form);
-        $form=str_replace("{banner_text}", $text, $form);
-        $form=str_replace("{banner_image}", $image, $form);
+        $form = $this->getHtmlForm("home/banner_item");
+        $form = str_replace("{banner_title}", $title, $form);
+        $form = str_replace("{banner_text}", $text, $form);
+        $form = str_replace("{banner_image}", $image, $form);
         return $form;
     }
 
-    function showHomeCars() { $db=DbSingleton::getTokoDb();
+    function showHomeCars() { $db = DbSingleton::getTokoDb();
         $language=new LangClass; $prefix=$language->getLangPrefix();
-        $list="<div class='seo_details'><div class='seo-ul'>";
-        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `POSITION` DESC LIMIT 0,25;"); $n=$db->num_rows($r);
+        $list = "<div class='seo_details'><div class='seo-ul'>";
+        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `POSITION` DESC LIMIT 0,25;"); $n = $db->num_rows($r);
         $arr = [];
         for ($i=1;$i<=$n;$i++) {
             $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
