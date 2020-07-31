@@ -263,23 +263,29 @@ class MenuClass {
         return $list;
     }
 
+    /*
+     * GET Tpoint Form
+     * (choose office)
+     * */
     function getRegionSelect() { $db = DbSingleton::getDbm();
-        $client=new ClientClass; $language=new LangClass;
-        $lang=$language->getLanguage(); $tpoint_id=$client->getTpoint();
-        $r=$db->query("SELECT t2.id, t2a.full_name, t2a.address 
+        $language = new LangClass; $client = new ClientClass;
+        $lang = $language->getLanguage();
+        $tpoint_id = $client->getTpoint();
+        $list="";
+        $r = $db->query("SELECT t2.id, t2a.full_name, t2a.address 
         FROM `T_POINT` t2
             LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
-        WHERE t2.id='$tpoint_id' AND t2a.lang_id='$lang' ORDER BY t2.position DESC, t2a.full_name ASC;"); $n=$db->num_rows($r); $list="";
-        $region=$db->result($r,0,"full_name");
-        $address=$db->result($r,0,"address");
+        WHERE t2.id='$tpoint_id' AND t2a.lang_id='$lang' ORDER BY t2.position DESC, t2a.full_name ASC;"); $n = $db->num_rows($r);
+        $region = $db->result($r, 0, "full_name");
+        $address = $db->result($r, 0, "address");
         if ($n>0) {
-            $list="<span><span class=\"fas fa-map-marker-alt\"></span> {choose_office}:</span>
+            $list = "<span><span class=\"fas fa-map-marker-alt\"></span> {choose_office}:</span>
             <a class=\"pointer\" onClick=\"showRegionForm();\">
                 <span id=\"region_select\">
                     <span>$region ($address)</span>
                 </span>
             </a>";
-            $list=$this->replaceLang($list);
+            $list = $this->replaceLang($list);
         }
         return $list;
     }

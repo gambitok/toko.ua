@@ -31,14 +31,14 @@ class ClientClass {
         return array($client_id, $user_id);
     }
 
-    function getTpointID() {
-        if ($_COOKIE["tpoint_id"]!="") $_SESSION["tpoint_id"] = $_COOKIE["tpoint_id"];
-        if ($_SESSION["tpoint_id"]=="" || $_SESSION["tpoint_id"]==0 || $_SESSION["tpoint_id"]==NULL) {
-            $_SESSION["tpoint_id"] = $this->default_tpoint;
-        }
-        $tpoint_id = $_SESSION["tpoint_id"];
-        return $tpoint_id;
-    }
+//    function getTpointID() {
+//        if ($_COOKIE["tpoint_id"]!="") $_SESSION["tpoint_id"] = $_COOKIE["tpoint_id"];
+//        if ($_SESSION["tpoint_id"]=="" || $_SESSION["tpoint_id"]==0 || $_SESSION["tpoint_id"]==NULL) {
+//            $_SESSION["tpoint_id"] = $this->default_tpoint;
+//        }
+//        $tpoint_id = $_SESSION["tpoint_id"];
+//        return $tpoint_id;
+//    }
 
     function getDefaultStorageID($tpoint_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `T_POINT_STORAGE` WHERE `tpoint_id`='$tpoint_id' AND `default`=1 LIMIT 1;");
@@ -170,12 +170,12 @@ class ClientClass {
         $_SESSION["user"] = $this->default_user;              // Retail User
         $_SESSION["currency"] = $this->default_currency;      // UAH Currency
         $_SESSION["tpoint"] = $this->default_tpoint;          // KHM City
-        setcookie("tpoint_id", "", time()-3600);
-        setcookie("client_id", "", time()-3600);
-        setcookie("user", "", time()-3600);
+        setcookie("tpoint_id", "", time() - 3600);
+        setcookie("client_id", "", time() - 3600);
+        setcookie("user", "", time() - 3600);
         setcookie("currency", $this->default_currency);
-        setcookie("action_status", "", time()-3600, "/");
-        setcookie("auto_typ_id", "", time()-3600, "/");
+        setcookie("action_status", "", time() - 3600, "/");
+        setcookie("auto_typ_id", "", time() - 3600, "/");
         return true;
     }
 
@@ -231,10 +231,10 @@ class ClientClass {
     }
 
     function getOrderInfo($client_id, $user_id) { $db = DbSingleton::getDbm();
-        $r=$db->query("SELECT acu.name, acu.email, acu.phone, ac.city 
+        $r = $db->query("SELECT acu.name, acu.email, acu.phone, ac.city 
         FROM `A_CLIENTS` ac
             LEFT OUTER JOIN `A_CLIENTS_USERS` acu ON (acu.client_id=ac.id)
-        WHERE acu.id='$user_id' AND acu.client_id='$client_id' AND acu.status=$this->status_user LIMIT 1;"); $n=$db->num_rows($r);
+        WHERE acu.id='$user_id' AND acu.client_id='$client_id' AND acu.status=$this->status_user LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
             $r=$db->query("SELECT acu.name, acu.email, acu.phone, acu.city_id as city 
             FROM `A_CLIENTS` ac
@@ -351,9 +351,9 @@ class ClientClass {
     }
 
     function getTpoint($client_id = 0) { $db = DbSingleton::getDbm();
-        if ($client_id==0) $client_id = $this->getClient();
+        if ($client_id==0) $client_id = $this->getClient()[0];
         $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id';");
-        $tpoint_id = $db->result($r,0,"tpoint_id");
+        $tpoint_id = $db->result($r, 0, "tpoint_id");
         if ($tpoint_id=="" || $tpoint_id==0) $tpoint_id = $this->default_tpoint;
         return $tpoint_id;
     }
@@ -370,7 +370,8 @@ class ClientClass {
         $_SESSION["tpoint"] = $tpoint_id;
         $_SESSION["client_id"] = $client_id;
         setcookie("tpoint_id", $tpoint_id, time() + (86400 * 30), "/");
-        return $_SESSION["tpoint"];
+        setcookie("client_id", $client_id, time() + (86400 * 30), "/");
+        return $tpoint_id;
     }
 
     function setTpointRetail() {
@@ -506,6 +507,7 @@ class ClientClass {
         Table: myparts_dba.`T2_CITY`, myparts_dba.`T2_REGION`, myparts_dba.`T2_STATE`, myparts_dba.`T2_COUNTRIES`
     */
     function getLocationCity($city_id) { $db = DbSingleton::getDbm();
+        $region_id = 0; $state_id = 0; $country_id = 0;
         if ($city_id>0) {
             $r = $db->query("SELECT t2r.REGION_ID, t2s.STATE_ID, t2ct.COUNTRY_ID 
             FROM `T2_CITY` t2c
@@ -516,8 +518,6 @@ class ClientClass {
             $region_id = $db->result($r, 0, "REGION_ID");
             $state_id = $db->result($r, 0, "STATE_ID");
             $country_id = $db->result($r, 0, "COUNTRY_ID");
-        } else {
-            $region_id = 0; $state_id = 0; $country_id = 0;
         }
         return array($region_id, $state_id, $country_id);
     }
@@ -626,7 +626,7 @@ class ClientClass {
         if ($client_category==140) return true; else return false;
     }
 
-    function getUsersCount() { $db=DbSingleton::getDbm();
+    function getUsersCount() { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `status`=1;");
         $count = $db->num_rows($r);
         return $count;
