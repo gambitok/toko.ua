@@ -67,6 +67,21 @@ trait Helper {
         return $cont;
     }
 
+    function getLanguage() {
+        if ($_SESSION["lang"]=="" || $_SESSION["lang"]==0) $_SESSION["lang"] = 1;
+        $lang = $_SESSION["lang"];
+        return $lang;
+    }
+
+    function getLangPrefix() {
+        $lang = $this->getLanguage();
+        $pre = "";
+        if ($lang==1) $pre = "";
+        if ($lang==2) $pre = "/uk";
+        if ($lang==3) $pre = "/en";
+        return $pre;
+    }
+
     function getManualName($key) { $db=DbSingleton::getDbm();
         $r=$db->query("SELECT `mcaption` FROM `manual` WHERE `id`='$key';");
         $caption=$db->result($r,0,"mcaption");
