@@ -2341,6 +2341,32 @@ table thead td { border: 1px solid #000; }
 .news-block__item p { font-size: 16px; margin: 0; }
 
 /*==== /NEWS LIST ====*/
+/*==== REVIEWS ====*/
+.reviews-title { color: #000; font-size: 30px; font-weight: 700; margin-bottom: 30px; }
+
+.reviews-block { display: flex; flex-wrap: wrap; }
+
+.reviews-block-item { box-shadow: 0 2px 8px grey; margin: 10px; padding: 15px; width: calc(33.33% - 20px); }
+
+.reviews-block-item__title { font-size: 20px; font-weight: bold; }
+
+.reviews-block-item__title h1 { font-size: 30px; font-weight: 700; margin-bottom: 15px; text-align: center; }
+
+.reviews-block-item__image img { display: block; margin: 15px auto; max-width: 100%; }
+
+.reviews-block-item__text { font-size: 16px; font-weight: 400; }
+
+.reviews-block-item__text a, .reviews-block-item__text a:not([href]):not([tabindex]) { color: #55bae6; }
+
+.reviews-block-item__text ol, .reviews-block-item__text ul { margin-left: 30px; }
+
+.reviews-block-item__date { color: #999; font-size: 13px; font-weight: 400; }
+
+.reviews-block-item__link a { color: #000; font-size: 16px; }
+
+.reviews-block-item__link a:hover { text-decoration: underline; }
+
+/*==== /REVIEWS ====*/
 /*==== PHONE ====*/
 @media (max-width: 992px) { .news-block, .news-block img, .news-block__item { max-width: 100%; }
   .news-block__item .overflow { width: 100%; } }

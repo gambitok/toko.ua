@@ -20,6 +20,15 @@ class MenuClass {
         return $title;
     }
 
+    function getReviewStateTitle($state_id) { $db = DbSingleton::getTokoDb();
+        $state_id = $this->getUrlNumber($state_id);
+        $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID`='$state_id' LIMIT 1;");
+        $title = $db->result($r, 0, "TITLE");
+        $title = str_replace(str_split('.+\/:*?"<>|!?'), "", $title);
+        if ($title=="") $title = $this->replaceLang("{state_one_cap}"."-$state_id");
+        return $title;
+    }
+
     function showNews() { $db = DbSingleton::getTokoDb();
         $cat = new CatalogueClass;
         $lang = $this->getLanguage(); if ($lang==2) $lang=5;
@@ -86,29 +95,29 @@ class MenuClass {
 
     function getSpecialOffersList($template_id, $update_actions) { $db = DbSingleton::getDbm();
         $catalogue=new CatalogueClass; $kours=new ExRateClass; $showform=new FormClass;
-        $prefix=$this->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $err1=$this->err1; $client_id=$this->getClient(); $categories=[]; $group_arts=[];
         $where_arts=""; $status_new=0; $cur_data=date("Y-m-d");
 
         if ($template_id!="" && $template_id!="0") {
-            $arts=$this->getGoodsGroupArts($template_id);
-            if ($arts!="") $where_arts="AND ac.art_id IN ($arts)";
+            $arts = $this->getGoodsGroupArts($template_id);
+            if ($arts!="") $where_arts = "AND ac.art_id IN ($arts)";
         }
 
-        $r=$db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $nom=$db->num_rows($r);
-        for ($i=1;$i<=$nom;$i++) {
+        $r = $db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $nom = $db->num_rows($r);
+        for ($i=1; $i<=$nom; $i++) {
             $category_id = $db->result($r, $i-1, "client_category");
             array_push($categories, $category_id);
         }
         $categories=implode(",", $categories);
 
-        $r=$db->query("SELECT ac.* FROM `ACTION_CLIENTS` ac
+        $r = $db->query("SELECT ac.* FROM `ACTION_CLIENTS` ac
             LEFT JOIN `ACTION_CLIENTS_LIST` acl ON (acl.action_id=ac.id)
             LEFT JOIN `ACTION_CLIENTS_CATEGORY` acc ON (acc.action_id=ac.id)
-        WHERE (acl.client_id='$client_id' OR acc.category_id IN ($categories)) $where_arts AND ac.data>='$cur_data';"); $n=$db->num_rows($r);
+        WHERE (acl.client_id='$client_id' OR acc.category_id IN ($categories)) $where_arts AND ac.data>='$cur_data';"); $n = $db->num_rows($r);
         if ($n>0) {
-            $list="<div class=\"row\">"; $arr=[];
-            for ($i=1;$i<=$n;$i++){
+            $list = "<div class=\"row\">"; $arr = [];
+            for ($i=1; $i<=$n; $i++){
                 $art_id=$db->result($r,$i-1,"art_id");
                 $article_nr_displ=$this->getArticleDispl($art_id);
                 $amount=$db->result($r,$i-1,"amount");
@@ -132,7 +141,7 @@ class MenuClass {
             }
             array_multisort($far_status, SORT_DESC, $far_article, SORT_ASC, $arr);
 
-            for ($i=0;$i<$n;$i++) {
+            for ($i=0; $i<$n; $i++) {
                 $art_id=$arr[$i]["art_id"];
                 $article_nr_displ=$arr[$i]["article_nr_displ"];
                 $amount=$arr[$i]["amount"];
@@ -201,7 +210,7 @@ class MenuClass {
 
     function getSpecialOffersFilterList($arts="") { $db = DbSingleton::getTokoDb();
         $list = ""; $arts = trim($arts, ",");
-        $arts!="" ? $where_arts="WHERE t2gg.ART_ID IN ($arts)" : $where_arts="";
+        $arts!="" ? $where_arts = "WHERE t2gg.ART_ID IN ($arts)" : $where_arts = "";
         $r = $db->query("SELECT gg.* FROM `GOODS_GROUP` gg 
             LEFT OUTER JOIN `T2_GOODS_GROUP` t2gg ON (t2gg.GOODS_GROUP_ID=gg.ID)
         $where_arts GROUP BY t2gg.GOODS_GROUP_ID;"); $n = $db->num_rows($r);
@@ -215,7 +224,7 @@ class MenuClass {
 
     function getGoodsGroupArts($template_id) { $db = DbSingleton::getTokoDb();
         $arts = [];
-        $r = $db->query("SELECT * FROM `T2_GOODS_GROUP` WHERE `GOODS_GROUP_ID`='$template_id';");$n = $db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_GOODS_GROUP` WHERE `GOODS_GROUP_ID`='$template_id';"); $n = $db->num_rows($r);
         for($i=1; $i<=$n; $i++) {
             $art_id = $db->result($r,$i-1,"ART_ID");
             array_push($arts, $art_id);
@@ -278,7 +287,7 @@ class MenuClass {
         $client = new ClientClass;
         $lang = $this->getLanguage();
         $tpoint_id = $client->getTpoint();
-        $list="";
+        $list = "";
         $r = $db->query("SELECT t2.id, t2a.full_name, t2a.address 
         FROM `T_POINT` t2
             LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
@@ -346,8 +355,8 @@ class MenuClass {
     function getLanguageList() { $db = DbSingleton::getTokoDb();
         $language = $this->getLanguage();
         $ch=$style="";
-        $r=$db->query("SELECT * FROM `new_lang`;"); $n=$db->num_rows($r);
-        $list="<form action=\"\" autocomplete=\"off\">";
+        $r = $db->query("SELECT * FROM `new_lang`;"); $n = $db->num_rows($r);
+        $list = "<form action=\"\" autocomplete=\"off\">";
         for ($i=1;$i<=$n;$i++){
             $id=$db->result($r,$i-1,"id");
             $abr=$db->result($r,$i-1,"abr");
@@ -364,11 +373,11 @@ class MenuClass {
 	
     function getNewsImage($news_id) { $db=DbSingleton::getTokoDb();
         $lang = $this->getLanguage(); if ($lang!=1) $lang=5;
-        $r = $db->query("SELECT * FROM `news_galery` WHERE `cat`='$news_id' ORDER BY `main` DESC;"); $n = $db->num_rows($r); $file="";
+        $file = "";
+        $r = $db->query("SELECT * FROM `news_galery` WHERE `cat`='$news_id' ORDER BY `main` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
             $id = $db->result($r,0,"id");
             if (file_exists("uploads/images/news/$lang/$news_id/$id.jpg")) { $file="$id.jpg"; }
-            if (!file_exists("uploads/images/news/$lang/$news_id/$id.jpg")) { $file=""; }
         }
         return $file;
     }
@@ -490,7 +499,7 @@ class MenuClass {
         return $form;
     }
 
-    function saveSellerForm($company, $name, $phone, $email, $city_id, $comment) { $db=DbSingleton::getDbm();
+    function saveSellerForm($company, $name, $phone, $email, $city_id, $comment) { $db = DbSingleton::getDbm();
         $cookie_id = $_COOKIE["session_id"];
         $max_bytes = 10485760; $format_arr = ["txt", "csv", "xls", "xlsx", "dbf"];
         $r = $db->query("SELECT * FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id`='$cookie_id' ORDER BY `data` DESC LIMIT 1;"); $n = $db->num_rows($r);
@@ -509,7 +518,7 @@ class MenuClass {
         }
     }
 
-    function getSellerImage() { $db=DbSingleton::getDbm();
+    function getSellerImage() { $db = DbSingleton::getDbm();
         $cookie_id = $_COOKIE["session_id"];
         $r = $db->query("SELECT `file_name`, `real_file_name` FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id`='$cookie_id' ORDER BY `data` DESC LIMIT 1;");
         $real_file_name = $db->result($r, 0, "real_file_name");
@@ -552,28 +561,24 @@ class MenuClass {
     /*
      * Reviews Form
      * */
-
     function showReviews() { $db = DbSingleton::getTokoDb();
+        $cat = new CatalogueClass;
         $prefix = $this->getLangPrefix();
         $list = "";
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `STATUS`=1 ORDER BY `data` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
             for ($i=1; $i<=$n; $i++) {
-                $state_id = $db->result($r, $i-1,"ID");
-                $title = $db->result($r, $i-1,"TITLE");
-                $text = $db->result($r, $i-1,"TEXT");
-                $date = $db->result($r, $i-1,"DATA");
-                $img = $db->result($r, $i-1,"IMG");
-                $list.="<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"row news-block__item\">
-                    <div class=\"col-8\">
-                        <h4>$date</h4>
-                        <h2 itemprop=\"name\">$title</h2>
-                        <h3 itemprop=\"description\">$text</h3><br>
-                        <a itemprop=\"url\" href=\"$prefix/reviews/state/$state_id/\">{details_cap} <span class=\"fas fa-angle-right\"></span></a>
-                    </div>
-                    <div class=\"col-4 pad10\">
-                        <img itemprop=\"image\" src=\"/uploads/images/reviews/$img\">
-                    </div>
+                $state_id = $db->result($r, $i-1, "ID");
+                $title = $db->result($r, $i-1, "TITLE");
+                // $text = $db->result($r, $i-1,"TEXT");
+                $date = $db->result($r, $i-1, "DATA");
+                $img = $db->result($r, $i-1, "IMG");
+                $transcript = $cat->formatUrlText($title);
+                $list.="<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"reviews-block-item\">
+                        <div class=\"reviews-block-item__date\">$date</div>
+                        <div class=\"reviews-block-item__title\" itemprop=\"name\">$title</div>
+                        <div class=\"reviews-block-item__image\"><img src=\"https://portal.myparts.pro/uploads/images/saved/$img\" alt=\"$title\"></div>
+                        <div class=\"reviews-block-item__link\"><a itemprop=\"url\" href=\"$prefix/reviews/state/$state_id/$transcript\">{details_cap} <span class=\"fas fa-angle-right\"></span></a></div>
                 </div>";
             }
         }
@@ -582,18 +587,20 @@ class MenuClass {
         return $form;
     }
 
+    /*
+     * Reviews Item Form
+     * */
     function getReviewsState($state_id) { $db = DbSingleton::getTokoDb();
         $state_id = $this->getUrlNumber($state_id);
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID`='$state_id';");
         $title = $db->result($r, 0, "TITLE");
         $text = $db->result($r, 0, "TEXT");
         $date = $db->result($r, 0, "DATA");
-        $img = $db->result($r, 0, "IMG");
-        $list = "<div class=\"news-state\">
-            <h1>$title</h1>
-            <h2>$date</h2>
-            <img itemprop=\"image\" src=\"/uploads/images/reviews/$img\">
-            <div itemprop=\"description\">$text</div>
+        // $img = $db->result($r, 0, "IMG");
+        $list = "<div class=\"reviews\">
+            <div class=\"reviews-block-item__date\">$date</div>
+            <div class=\"reviews-block-item__title\" itemprop=\"name\"><h1>$title</h1></div>
+            <div class=\"reviews-block-item__text\" itemprop=\"description\">$text</div>
         </div>";
         $form = $this->getHtmlForm("reviews/card");
         $form = str_replace("{state_id}", $state_id, $form);

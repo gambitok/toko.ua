@@ -125,9 +125,9 @@ trait Helper {
         return $array;
     }
 
-    function getWeekdayAbr($week_day){
+    function getWeekdayAbr($week_day) {
         $wks = array ( '1' => "Пн", '2' => "Вт", '3' => "Ср", '4' => "Чт", '5' => "Пт", '6' => "Сб", '7' => "Нд");
-        $wks["$week_day"]=iconv("UTF-8", "Windows-1251", $wks["$week_day"]);
+        $wks["$week_day"] = iconv("UTF-8", "Windows-1251", $wks["$week_day"]);
         return $wks["$week_day"];
     }
 
@@ -162,10 +162,10 @@ trait Helper {
     }
 
     function getOfferCap($i) {
-        $cap1="{offer_cap}";
-        $cap2="{offer_pair_cap}";
-        $cap3="{offer_tenths_cap}";
-        $cap="";
+        $cap1 = "{offer_cap}";
+        $cap2 = "{offer_pair_cap}";
+        $cap3 = "{offer_tenths_cap}";
+        $cap = "";
         $mas1 = [1];
         $mas2 = [2,3,4];
         $mas3 = [0,5,6,7,8,9];

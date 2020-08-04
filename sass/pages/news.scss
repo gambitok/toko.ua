@@ -74,6 +74,69 @@
 
 /*==== /NEWS LIST ====*/
 
+/*==== REVIEWS ====*/
+.reviews {
+    &-title {
+        color: #000;
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 30px;
+    }
+    &-block {
+        display: flex;
+        flex-wrap: wrap;
+        &-item {
+            box-shadow: 0 2px 8px grey;
+            margin: 10px;
+            padding: 15px;
+            width: calc(33.33% - 20px);
+            &__title {
+                font-size: 20px;
+                font-weight: bold;
+                h1 {
+                    font-size: 30px;
+                    font-weight: 700;
+                    margin-bottom: 15px;
+                    text-align: center;
+                }
+            }
+            &__image {
+                img {
+                    display: block;
+                    margin: 15px auto;
+                    max-width: 100%;
+                }
+            }
+            &__text {
+                font-size: 16px;
+                font-weight: 400;
+                a, a:not([href]):not([tabindex]) {
+                    color: #55bae6;
+                }
+                ol, ul {
+                    margin-left: 30px;
+                }
+            }
+            &__date {
+                color: #999;
+                font-size: 13px;
+                font-weight: 400;
+            }
+            &__link {
+                a {
+                    color: #000;
+                    font-size: 16px;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*==== /REVIEWS ====*/
+
 /*==== PHONE ====*/
 @media (max-width:992px) {
     .news-block,

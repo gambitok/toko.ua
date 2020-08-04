@@ -211,6 +211,15 @@ function getMoreTitle($path) {
             $pretitle = "$state_name - {seo_state_title}";
         }
     }
+    elseif ($path=="reviews") {
+        if ($linka[1]=="") {
+            $pretitle = "{site_$path} - {seo_state_title}";
+        }
+        if ($linka[1]=="state") {
+            $state_name = $menu->getReviewStateTitle($linka[2]);
+            $pretitle = "$state_name - {seo_state_title}";
+        }
+    }
 
     else {
         if (checkLangVariable("site_$path")) $pretitle="{site_$path} - {seo_title}"; else $pretitle="{seo_404_title}";
@@ -370,6 +379,18 @@ function printBreadcrumbs($path) {
             $b_arr[2]=["name"=>"$h_section", "item"=>"https://toko.ua$prefix/news/"];
             if ($bread[1]=="state") {
                 $state_name=$menu->getNewsStateTitle($bread[2]);
+                $info="$a_section > ".$state_name;
+                $b_arr[3]=["name"=>$state_name, "item"=>"$actual_link"];
+            } else {
+                $info="$h_section";
+            }
+            $pretitle="$a_home > $info";
+            break;
+        }
+        case "reviews" : {
+            $b_arr[2]=["name"=>"$h_section", "item"=>"https://toko.ua$prefix/reviews/"];
+            if ($bread[1]=="state") {
+                $state_name=$menu->getReviewStateTitle($bread[2]);
                 $info="$a_section > ".$state_name;
                 $b_arr[3]=["name"=>$state_name, "item"=>"$actual_link"];
             } else {
