@@ -63,6 +63,11 @@ $(document).ready(function() {
         $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
     });
 
+    // CHECK LOGIN
+    if ($("#order_user_status").val()==true) {
+        validInfoFields();
+    }
+
 });
 
 function getPhone(str) {

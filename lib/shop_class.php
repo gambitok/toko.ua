@@ -8,9 +8,9 @@ class ShopClass {
     function showBasketForm($cur=null) { $db = DbSingleton::getTokoDb();
         $client=new ClientClass; $showform=new FormClass; $exrate=new ExRateClass; $catalogue=new CatalogueClass; $language=new LangClass;
         $sum = 0; $sum_total = 0; $count = 0;
-        $disabled=$brow=$bprow=""; $location="stayInOrder();"; $location_fast="stayInOrder();"; if ($cur==null || $cur=="NaN") $cur=1;
-        $client_id = $this->getClient(); $tpoint_id = $client->getTpoint(); $where = $client->getClientWhere();
-        setcookie("currency", $cur); $_SESSION["currency"] = $cur;  $prefix = $language->getLangPrefix();
+        $disabled = $brow = $bprow = ""; $location="stayInOrder();"; $location_fast="stayInOrder();";
+        $client_id = $this->getClient(); $tpoint_id = $client->getTpoint(); $where = $client->getClientWhere(); $prefix = $language->getLangPrefix();
+        if ($cur==null || $cur=="NaN") $cur = 1; setcookie("currency", $cur); $_SESSION["currency"] = $cur;
 
         $r = $db->query("SELECT * FROM `basket` WHERE $where ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
@@ -146,7 +146,7 @@ class ShopClass {
 
         $table_basket = $this->replaceLang($table_basket);
 
-        if ($n==0) $table_basket=$this->replaceLang($this->getHtmlForm("basket/basket_error"));
+        if ($n==0) $table_basket = $this->replaceLang($this->getHtmlForm("basket/basket_error"));
 
         return $table_basket;
     }
@@ -158,7 +158,7 @@ class ShopClass {
             list(, $action_amount, $action_price) = $catalogue->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price, $cur);
             if ($suppl_id==0) $true_price = $catalogue->getArticlePrice($art_id); else $true_price = $catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-            $true_price = round($exrate->getKoursPrice($true_price, $cur),2);
+            $true_price = round($exrate->getKoursPrice($true_price, $cur), 2);
             if ($amount>=$action_amount) {
                 $true_cap = "<br><span class=\"span-outline\">$true_price $cur_cap</span>";
                 $true_clr = "";
@@ -176,8 +176,8 @@ class ShopClass {
     }
 
     function getBasketArts() { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $where=$client->getClientWhere();
-        $r=$db->query("SELECT * FROM `basket` WHERE $where ORDER BY `date_create` DESC;"); $n=$db->num_rows($r);
+        $client = new ClientClass; $where = $client->getClientWhere();
+        $r = $db->query("SELECT * FROM `basket` WHERE $where ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
             $arts = [];
             for ($i = 1; $i <= $n; $i++) {
@@ -197,8 +197,8 @@ class ShopClass {
         if ($arts!="") {
             $where_arts = " AND `ART_ID` NOT IN ($arts)";
         }
-        $r=$db->query("SELECT * FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS`=1 $where_arts;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+        $r = $db->query("SELECT * FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS`=1 $where_arts;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $list.=$this->getProposedArtsCard($art_id);
         }
@@ -210,7 +210,7 @@ class ShopClass {
     }
 
     function getProposedArtsCard($art_id) {
-        $catalogue=new CatalogueClass; $language=new LangClass; $showform=new FormClass;
+        $catalogue = new CatalogueClass; $language = new LangClass; $showform = new FormClass;
 
         $form = $this->getHtmlForm("orders/proposed_card");
 
@@ -247,11 +247,11 @@ class ShopClass {
     }
 
     function showMiniBasketForm() { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $exrate=new ExRateClass; $showform=new FormClass; $language=new LangClass;
-        $client_id=$this->getClient(); $cur=$client->getClientCurrency($client_id); $where=$client->getClientWhere();
-        $sum=0;
+        $client = new ClientClass; $exrate = new ExRateClass; $showform = new FormClass; $language = new LangClass;
+        $client_id = $this->getClient(); $cur = $client->getClientCurrency($client_id); $where = $client->getClientWhere(); $prefix = $language->getLangPrefix();
+        $sum = 0;
 
-        $r=$db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n = $db->num_rows($r);
         if ($n>0) {
             $bcontent="<div><div class=\"row align-items-center basket-table-tbody\">
                 <div class=\"col-2 col-lg-2\" title=\"{art_brand_name_cap}\">{caption_cap}</div>
@@ -265,16 +265,16 @@ class ShopClass {
             for ($i=1; $i<=$n; $i++) {
                 $art_id = $db->result($r, $i - 1, "art_id");
                 $brand_id = $db->result($r, $i - 1, "brand_id");
-                $art_name=$this->getArticleDispl($art_id);
-                $brand_name=$this->getBrandName($brand_id);
-                $text=$this->getArticleName($art_id);
+                $art_name = $this->getArticleDispl($art_id);
+                $brand_name = $this->getBrandName($brand_id);
+                $text = $this->getArticleName($art_id);
                 $amount = $db->result($r, $i - 1, "amount");
                 $price = $db->result($r, $i - 1, "price");
                 $dd = $db->result($r, $i - 1, "delivery");
                 $del = $db->result($r, $i - 1, "delivery_info");
                 $status_checked = $db->result($r, $i - 1, "status_checked");
                 if(!$client->checkUnRegClient()) {
-                    $price=$exrate->getKoursPrice($price,$cur);
+                    $price = $exrate->getKoursPrice($price, $cur);
                 }
                 $full_price = $price * $amount;
 
@@ -282,21 +282,19 @@ class ShopClass {
                 if ($cur==1) $full_price = $client->getClientPriceRounding($client_id, $full_price);
 
                 if ($status_checked) $sum+=$full_price;
-                $format_name=$this->getFormatAticle($art_name);
-                $format_brand=$this->getFormatBrand($brand_name);
+                $format_name = $this->getFormatAticle($art_name);
+                $format_brand = $this->getFormatBrand($brand_name);
 
-                $prefix=$language->getLangPrefix();
-                $link="https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/";
+                $link = "https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/";
 
                 $flagData = $showform->getCountryFlag($brand_id);
                 if ($flagData!=false) {
                     $flag = $flagData["flag"];
                     $country_name = $flagData["country"];
-
-                    $flag="<img class=\"flag flag-$flag flag-search\">";
-                    $country_name="{brand_manuf}: $country_name";
+                    $flag = "<img class=\"flag flag-$flag flag-search\">";
+                    $country_name = "{brand_manuf}: $country_name";
                 } else {
-                    $flag=""; $country_name="";
+                    $flag = ""; $country_name = "";
                 }
 
                 $bcontent.="<div class=\"row align-items-center basket-table-tbody\">
@@ -313,30 +311,30 @@ class ShopClass {
             $bcontent.="</div>";
         } else $bcontent="<div id=\"basket_block\" class=\"content\">{basket_empty}</div>";
 
-        $form=$this->getHtmlForm("basket/basket");
-        $form=str_replace("{basket_block}", "", $form);
-        $form=str_replace("{basket_content}", $bcontent, $form);
-        $form=$this->replaceLang($form);
+        $form = $this->getHtmlForm("basket/basket");
+        $form = str_replace("{basket_block}", "", $form);
+        $form = str_replace("{basket_content}", $bcontent, $form);
+        $form = $this->replaceLang($form);
         return array($form, $sum);
     }
 
-    function moveToBasket($art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id) { $db=DbSingleton::getTokoDb();
-        $client=new ClientClass; $catalogue=new CatalogueClass; $exrate=new ExRateClass; $cat=new CatalogueClass;
-        $user_id=$this->getUser(); $where=$client->getClientWhere(); $tpoint_id=$client->getTpoint();
-        $cookie=$_COOKIE["session_id"]; $date_time=date("Y-m-d H:i:s");
-        $old_amount=0; $status_action=0;
-        $art_name=$this->getArticleDispl($art_id);
+    function moveToBasket($art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id) { $db = DbSingleton::getTokoDb();
+        $client = new ClientClass; $catalogue = new CatalogueClass; $exrate = new ExRateClass; $cat = new CatalogueClass;
+        $user_id = $this->getUser(); $where = $client->getClientWhere(); $tpoint_id = $client->getTpoint();
+        $cookie = $_COOKIE["session_id"]; $date_time = date("Y-m-d H:i:s");
+        $old_amount = 0; $status_action = 0;
+        $art_name = $this->getArticleDispl($art_id);
 
-        $r=$db->query("SELECT `amount` FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;"); $n=$db->num_rows($r);
-        $price=$catalogue->getArticlePrice($art_id);
-        if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+        $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;"); $n = $db->num_rows($r);
+        $price = $catalogue->getArticlePrice($art_id);
+        if ($suppl_id!=0) $price = $catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
 
         if (!($catalogue->checkActionPrice($art_id))) {} else {
             list($action_id, $action_amount, $action_price) = $catalogue->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price,1); // to UAH
             if ($amount>=$action_amount) {
-                $status_action=$action_id;
-                $price=$action_price;
+                $status_action = $action_id;
+                $price = $action_price;
             }
         }
 
@@ -376,88 +374,88 @@ class ShopClass {
     }
 
     function deleteFromBasket($art_id, $storage_id) { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $where=$client->getClientWhere();
+        $client = new ClientClass; $where = $client->getClientWhere();
         $db->query("DELETE FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
         return true;
     }
 
     function checkStatusBasket() { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $where=$client->getClientWhere();
-        $r=$db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n=$db->num_rows($r);
+        $client = new ClientClass; $where = $client->getClientWhere();
+        $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n = $db->num_rows($r);
         $n>0 ? $result=true : $result=false;
         return $result;
     }
 
     function checkBasketItem($art_id, $storage_id, $status) { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $where=$client->getClientWhere();
+        $client = new ClientClass; $where = $client->getClientWhere();
         $db->query("UPDATE `basket` SET `status_checked`=$status WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
         return true;
     }
 
     function updateBasketForm($art_id, $amount, $storage_id) { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $catalogue=new CatalogueClass;
-        $where=$client->getClientWhere(); $status_action=0;
+        $client = new ClientClass; $catalogue = new CatalogueClass;
+        $where = $client->getClientWhere(); $status_action = 0;
         if (!($catalogue->checkActionPrice($art_id))) {} else {
-            list($action_id, $action_amount,)=$catalogue->checkActionPrice($art_id);
-            if ($amount>=$action_amount) $status_action=$action_id;
+            list($action_id, $action_amount,) = $catalogue->checkActionPrice($art_id);
+            if ($amount>=$action_amount) $status_action = $action_id;
         }
         $db->query("UPDATE `basket` SET `amount`='$amount', `status_action`='$status_action' WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
         return true;
     }
 
     function countBasket() { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $where=$client->getClientWhere();
-        $r=$db->query("SELECT * FROM `basket` WHERE $where;"); $n=$db->num_rows($r);
+        $client = new ClientClass; $where = $client->getClientWhere();
+        $r = $db->query("SELECT * FROM `basket` WHERE $where;"); $n = $db->num_rows($r);
         $n>0 ? $list=$n : $list="";
         $list=="" ? $style="none" : $style="";
         return array($list, $style);
     }
 
     function countSummBasket() { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $exrate=new ExRateClass;
-        $where=$client->getClientWhere(); $list=0;
-        $r=$db->query("SELECT * FROM `basket` WHERE $where;"); $n=$db->num_rows($r);
+        $client = new ClientClass; $exrate = new ExRateClass;
+        $where = $client->getClientWhere(); $summary = 0;
+        $r = $db->query("SELECT * FROM `basket` WHERE $where;"); $n = $db->num_rows($r);
         if ($n>0) {
-            for ($i=1;$i<=$n;$i++) {
-                $price=floatval($db->result($r, $i-1, "price"));
-                $price=$exrate->getKoursPrice($price,$exrate->getCurrentKours());
-                $stock=intval($db->result($r, $i-1, "amount"));
-                $sum=$price*$stock;
-                $list=$list+$sum;
+            for ($i=1; $i<=$n; $i++) {
+                $price = floatval($db->result($r, $i-1, "price"));
+                $price = $exrate->getKoursPrice($price, $exrate->getCurrentKours());
+                $stock = intval($db->result($r, $i-1, "amount"));
+                $sum = $price * $stock;
+                $summary+=$sum;
             }
-        } else $list=0;
-        $cur_cap=$exrate->getKoursSymbol($exrate->getCurrentKours());
-        $list.=" $cur_cap";
-        return $list;
+        } else $summary = 0;
+        $cur_cap = $exrate->getKoursSymbol($exrate->getCurrentKours());
+        $summary.=" $cur_cap";
+        return $summary;
     }
 
      function getUpdateData($art_id, $suppl_id, $storage_id, $amount) {
-        $catalogue=new CatalogueClass; $exrate=new ExRateClass; $client=new ClientClass;
-        $tpoint_id=$client->getTpoint();
-        $price=$catalogue->getArticlePrice($art_id);
-        if ($suppl_id!=0) $price=$catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+        $catalogue = new CatalogueClass; $exrate = new ExRateClass; $client = new ClientClass;
+        $tpoint_id = $client->getTpoint();
+        $price = $catalogue->getArticlePrice($art_id);
+        if ($suppl_id!=0) $price = $catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
         if (!($catalogue->checkActionPrice($art_id))) {} else {
-            list(,$action_amount,$action_price)=$catalogue->checkActionPrice($art_id);
-            $action_price = $exrate->getKoursFromUSA($action_price,1);
-            if ($amount>=$action_amount) {$price=$action_price;}
+            list(, $action_amount, $action_price) = $catalogue->checkActionPrice($art_id);
+            $action_price = $exrate->getKoursFromUSA($action_price, 1);
+            if ($amount>=$action_amount) {$price = $action_price;}
         }
         if ($suppl_id==0) {
             $deliveryData = $catalogue->getTpointDeliveryInfo($tpoint_id, $storage_id);
         } else {
             $deliveryData = $catalogue->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
         }
-         $dd = $deliveryData["days"];
+        $dd = $deliveryData["days"];
         $stock = $this->getArticleStock($art_id, $storage_id);
         if ($stock==0 || $stock=="") $stock = $this->getArticleSupplStock($art_id, $suppl_id, $storage_id);
         return array(intval($dd), intval($stock), floatval($price));
      }
 
-     function getClientDeliveryInfo($client_id) { $db=DbSingleton::getDbm();
-        $client=new ClientClass;
-        $true_client=$client->getClient(); $list="";
-        if ($client->checkRetailClient($true_client)) $where_type=" AND `type_id`=1"; else $where_type=" AND `type_id`=2";
-        $r=$db->query("SELECT * FROM `A_CLIENTS_USERS_ADDRESS` WHERE `client_id`='$client_id' $where_type;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+     function getClientDeliveryInfo($client_id) { $db = DbSingleton::getDbm();
+        $client = new ClientClass;
+        $true_client = $client->getClient(); $list = "";
+        if ($client->checkRetailClient($true_client)) $where_type = " AND `type_id`=1"; else $where_type=" AND `type_id`=2";
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_ADDRESS` WHERE `client_id`='$client_id' $where_type;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
             $address = $db->result($r, $i-1, "address");
             $list.="<option value=\"$i\">$address</option>";
         }
@@ -465,9 +463,9 @@ class ShopClass {
      }
 
     function showOrderForm() {
-        $client=new ClientClass; $menu=new MenuClass; $exrate=new ExRateClass; $showform=new FormClass;
-        list($basket, $price)=$this->showMiniBasketForm(); list($client_id, $user_id)=$client->getClient();
-        $cur=$client->getClientCurrency($client_id); $cur_cap=$exrate->getKoursSymbol($cur);
+        $client = new ClientClass; $menu = new MenuClass; $exrate = new ExRateClass; $showform = new FormClass;
+        list($basket, $price) = $this->showMiniBasketForm(); list($client_id, $user_id) = $client->getClient();
+        $cur = $client->getClientCurrency($client_id); $cur_cap = $exrate->getKoursSymbol($cur);
 
         $orderClientData = $client->getOrderInfo($client_id, $user_id);
         $phone = $orderClientData["phone"];
@@ -477,12 +475,12 @@ class ShopClass {
         $tpoint_id = $client->getTpointUser($client_id);
         $city_range = $showform->showCityFormSelected("", $city);
 
-        if ($client->checkUnRegClient()) $valid="fas fa-times-circle non_accept validate_input"; else $valid="fas fa-check-circle accept validate_input";
+        if ($client->checkUnRegClient()) $valid = "fas fa-times-circle non_accept validate_input"; else $valid = "fas fa-check-circle accept validate_input";
 
-        $delivery_range=$menu->getManualOptions("delivery_type");
-        $carrier_id_range=$menu->getManualOptions("carrier_id");
-        $payment_range=$menu->getManualOptions("payment");
-        $delivery_info_select=$this->getClientDeliveryInfo($client_id);
+        $delivery_range = $menu->getManualOptions("delivery_type");
+        $carrier_id_range = $menu->getManualOptions("carrier_id");
+        $payment_range = $menu->getManualOptions("payment");
+        $delivery_info_select = $this->getClientDeliveryInfo($client_id);
 
         $form=$this->getHtmlForm("order/order");
         $form=str_replace("{show_basket}",$basket,$form);
@@ -501,7 +499,6 @@ class ShopClass {
         $form=str_replace("{delivery_info_select}",$delivery_info_select,$form);
         $form=str_replace("{carrier_id_range}",$carrier_id_range,$form);
         $form=str_replace("{payment_range}",$payment_range,$form);
-
         if ($client->checkUnRegClient()) {
             $order_type_caption="{new_buyer}";
             $order_type_display="inline";
@@ -509,7 +506,6 @@ class ShopClass {
             $order_type_caption="{check_the_data}";
             $order_type_display="none";
         }
-
         $form=str_replace("{order_type_caption}",$order_type_caption,$form);
         $form=str_replace("{order_type_display}",$order_type_display,$form);
         return $form;
@@ -517,12 +513,12 @@ class ShopClass {
 
     function finishOrder($client_id, $user_id, $tpoint_id, $name, $phone, $region, $email, $delivery, $delivery_info, $payment, $payment_info, $carrier_id) { $db = DbSingleton::getDbm();
         $client=new ClientClass;
-        if ($payment=="") $payment=117;
-		if ($delivery=="") $delivery=118;
-		if ($carrier_id=="") $carrier_id=0;
+        if ($payment=="") $payment = 117;
+		if ($delivery=="") $delivery = 118;
+		if ($carrier_id=="") $carrier_id = 0;
         if ($client_id=="undefined") $client_id = $this->getClient();
         if ($user_id=="undefined") $user_id = $this->getUser();
-        $cookie=$_COOKIE["session_id"]; $cash_id=intval($client->getClientCurrency($client_id));
+        $cookie = $_COOKIE["session_id"]; $cash_id = intval($client->getClientCurrency($client_id));
 
         $r = $db->query("SELECT MAX(`id`) as max_order FROM `orders_new`;"); $max = intval($db->result($r,0,"max_order"))+1;
         $sum = $this->finishOrderBasket($max); $new_client = $user_id;
@@ -545,27 +541,27 @@ class ShopClass {
         return array($max, $new_client);
     }
 
-    function addNewAdressForm($client_id, $address) { $db=DbSingleton::getDbm();
+    function addNewAdressForm($client_id, $address) { $db = DbSingleton::getDbm();
         $user_id = $this->getUser();
         $answer = "";
         if ($client_id>0 && $address!="") {
             if ($user_id!=0 && $user_id!="0") $db->query("INSERT INTO `A_CLIENTS_USERS_ADDRESS` (`client_id`, `address`) VALUES ('$client_id', '$address');");
-            $answer=1;
+            $answer = 1;
         }
         return $answer;
     }
 
-    function addNewRetailAddressForm($client_id, $address) { $db=DbSingleton::getDbm();
-        $answer="";
+    function addNewRetailAddressForm($client_id, $address) { $db = DbSingleton::getDbm();
+        $answer = "";
         if ($client_id>0 && $address!="") {
             $db->query("INSERT INTO `A_CLIENTS_USERS_ADDRESS` (`client_id`, `address`, `type_id`) VALUES ('$client_id', '$address', '2');");
-            $answer=1;
+            $answer = 1;
         }
         return $answer;
     }
 
     // BASKET to ORDER
-    function finishOrderBasket($order_id) { $db=DbSingleton::getDbm(); $dbt=DbSingleton::getTokoDb();
+    function finishOrderBasket($order_id) { $db = DbSingleton::getDbm(); $dbt = DbSingleton::getTokoDb();
         $client = new ClientClass;
         $sum = 0; $where = $client->getClientWhere();
         $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n = $dbt->num_rows($r);
@@ -595,13 +591,13 @@ class ShopClass {
     /*==== DELIVERY INDEX ADD ====*/
     function setDeliveryIndex($order_id) { $db = DbSingleton::getDbm();
         $client = new ClientClass;
-        $price = 0;
         $r = $db->query("SELECT * FROM `orders_new` WHERE `ID`='$order_id' LIMIT 1;");
         $order_info_id = $db->result($r, 0, "order_info_id");
         $tpoint_id = $db->result($r, 0, "tpoint_id");
         $client_id = $db->result($r, 0, "client_id");
         $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `ID`='$order_info_id' LIMIT 1;");
         $delivery_id = $db->result($r, 0, "DELIVERY_ID");
+        $price = 0;
         if (in_array($delivery_id, [4,5]) && ($client->checkRetailClientCategory($client_id))) {
             list($art_id, $brand_id, $storage_id, $price) = $this->getDeliveryIndex($delivery_id, $tpoint_id);
             $rmax = $db->query("SELECT MAX(`id`) AS max_order_str FROM `orders_str_new`;"); $max = intval($db->result($rmax,0,"max_order_str")) + 1;
@@ -611,8 +607,7 @@ class ShopClass {
         return $price;
     }
     function getDeliveryIndex($delivery_id, $tpoint_id) {
-        $cat = new CatalogueClass;
-        $client = new ClientClass;
+        $cat = new CatalogueClass; $client = new ClientClass;
         $art_id = 0;
         $brand_id = 0;
         $storage_id = 0;
@@ -632,17 +627,17 @@ class ShopClass {
     }
 
     // GET ORDER SUM
-    function getOrderSumm($order_id) { $db=DbSingleton::getDbm();
+    function getOrderSumm($order_id) { $db = DbSingleton::getDbm();
         $summ = 0;
         $r = $db->query("SELECT * FROM `orders_new` WHERE `id`='$order_id' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) $summ = $db->result($r, 0, "price_summ");
         return $summ;
     }
 
+    // REGISTRATION SUCCESS FORM
     function showRegistrationSuccessForm($order_id, $user_id) {
         $client = new ClientClass;
         $client_id = $this->getClient();
-        $login = $logout = "none";
         $form = $this->getHtmlForm("order/order_success");
         $form = str_replace("{order_id}", $order_id, $form);
         $form = str_replace("{client_id}", $user_id, $form);
@@ -650,12 +645,11 @@ class ShopClass {
         $phone = $clientData["phone"];
         $email = $clientData["email"];
         $name = $clientData["name"];
-        if ($client->checkUnRegClient()) $logout="dflex"; else $login="dflex";
         $form = str_replace("{input_name}", $name, $form);
         $form = str_replace("{input_phone}", $phone, $form);
         $form = str_replace("{input_email}", $email, $form);
-        $form = str_replace("{status_login}", $login, $form);
-        $form = str_replace("{status_logout}", $logout, $form);
+        $form = str_replace("{status_login}", $client->checkUnRegClient() ? "none" : "dflex", $form);
+        $form = str_replace("{status_logout}", $client->checkUnRegClient() ? "dflex" : "none", $form);
         return $form;
     }
 
@@ -702,9 +696,8 @@ class ShopClass {
     }
 
     /*==== NEW ORDER FORM ====*/
-
     function getOrderContentForm($order_id, $user_id, $user_status) {
-
+        $client = new ClientClass;
         if ($user_status==0) {
             $form = $this->getHtmlForm("orders/done");
         } else {
@@ -714,9 +707,7 @@ class ShopClass {
         $form = str_replace("{order_id}", $order_id, $form);
         $form = str_replace("{order_user_id}", $user_id, $form);
 
-        $client = new ClientClass;
         $userData = $client->getClientInfo($client->getClientId($user_id), $user_id);
-
         $form = str_replace("{user_phone}", $userData["phone"], $form);
         $form = str_replace("{user_name}", $userData["name"], $form);
         $form = str_replace("{user_email}", $userData["email"], $form);
@@ -728,25 +719,26 @@ class ShopClass {
     }
 
     function getOrderForm() {
-        $user_city = 0;
-        $user_name = "";
-        $user_phone = "";
-        $user_email = "";
         $user_id = $this->getUser();
+        $user_city = 0; $user_name = ""; $user_phone = ""; $user_email = ""; $status = false;
         if ($user_id>0) {
             list($user_name, $user_phone, $user_email, $user_city) = $this->getClientUserData($user_id);
+            if ($user_id>0 && $user_phone!="" && $user_name!="" && $user_city!="") {
+                $status = true;
+            }
         }
 
-        $form=$this->getHtmlForm("orders/form");
-        $form=str_replace("{order_user_id}", $user_id, $form);
-        $form=str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
-        $form=str_replace("{order_payment}", $this->getOrderPayment(), $form);
-        $form=str_replace("{user_city_main_list}", $this->getCitiesMainSelect($user_city), $form);
-        $form=str_replace("{user_name}", $user_name, $form);
-        $form=str_replace("{user_phone}", $user_phone, $form);
-        $form=str_replace("{user_email}", $user_email, $form);
-        $form=str_replace("{basket_range}", $this->getBasketOrder(), $form);
-        $form=$this->replaceLang($form);
+        $form = $this->getHtmlForm("orders/form");
+        $form = str_replace("{order_user_id}", $user_id, $form);
+        $form = str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
+        $form = str_replace("{order_payment}", $this->getOrderPayment(), $form);
+        $form = str_replace("{user_city_main_list}", $this->getCitiesMainSelect($user_city), $form);
+        $form = str_replace("{user_name}", $user_name, $form);
+        $form = str_replace("{user_phone}", $user_phone, $form);
+        $form = str_replace("{user_email}", $user_email, $form);
+        $form = str_replace("{basket_range}", $this->getBasketOrder(), $form);
+        $form = str_replace("{order_user_status}", $status, $form);
+        $form = $this->replaceLang($form);
         return $form;
     }
 
@@ -762,21 +754,23 @@ class ShopClass {
     }
 
     function getOrderDelivery() { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $tpoint_id=$client->getTpointUser($client->getClient()[0]);
-        $form=$this->getHtmlForm("orders/delivery");
-        $form=str_replace("{tpoint_address}", $client->getTpointAddress($tpoint_id), $form);
-        $form=str_replace("{express_delivery_list}", $this->getDeliveryExpressList(), $form);
+        $client = new ClientClass;
+        $tpoint_id = $client->getTpointUser($this->getClient());
+
+        $form = $this->getHtmlForm("orders/delivery");
+        $form = str_replace("{tpoint_address}", $client->getTpointAddress($tpoint_id), $form);
+        $form = str_replace("{express_delivery_list}", $this->getDeliveryExpressList(), $form);
 
         $r = $db->query("SELECT * FROM `T2_DELIVERY`;"); $n = $db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+        for ($i=1; $i<=$n; $i++) {
             $id = $db->result($r, $i - 1, "ID");
             $text = $db->result($r, $i - 1, "TEXT");
             $type = $db->result($r, $i - 1, "TYPE");
             $status = $db->result($r, $i - 1, "STATUS");
-            $display=""; if (!$status) $display="none";
-            $free="";
-            if ($type==1) $free="({free_cap})";
-            if ($type==2) $free="({carrier_conditions})";
+            $display = ""; if (!$status) $display = "none";
+            $free = "";
+            if ($type==1) $free = "({free_cap})";
+            if ($type==2) $free = "({carrier_conditions})";
             $form = str_replace("{delivery_status_$id}", $display, $form);
             $form = str_replace("{delivery_text_$id}", $text, $form);
             $form = str_replace("{delivery_free_$id}", $free, $form);
@@ -791,13 +785,13 @@ class ShopClass {
     }
 
     function getOrderPayment() { $db = DbSingleton::getTokoDb();
-        $form=$this->getHtmlForm("orders/payment");
+        $form = $this->getHtmlForm("orders/payment");
         $r = $db->query("SELECT * FROM `T2_PAYMENT`;"); $n = $db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+        for ($i=1; $i<=$n; $i++) {
             $id = $db->result($r, $i - 1, "ID");
             $text = $db->result($r, $i - 1, "TEXT");
             $status = $db->result($r, $i - 1, "STATUS");
-            $display=""; if (!$status) $display="none";
+            $display = ""; if (!$status) $display = "none";
             $form = str_replace("{payment_status_$id}", $display, $form);
             $form = str_replace("{payment_text_$id}", $text, $form);
         }
@@ -849,12 +843,12 @@ class ShopClass {
     }
 
     function setCityAddress($city_id) {
-        $client=new ClientClass;
-        $cities = [24861, 10108]; $city_address="";
+        $client = new ClientClass;
+        $cities = [24861, 10108]; $city_address = "";
         if (in_array($city_id, $cities)) {
-            $tpoint_id=0;
-            if ($city_id==24861) $tpoint_id=1;
-            if ($city_id==10108) $tpoint_id=2;
+            $tpoint_id = 0;
+            if ($city_id==24861) $tpoint_id = 1;
+            if ($city_id==10108) $tpoint_id = 2;
             $city_name = $this->getCityName($city_id);
             $city_address = $city_name." - ".$client->getTpointAddress($tpoint_id);
         }
@@ -863,7 +857,7 @@ class ShopClass {
 
     function getDeliveryExpressList() { $db = DbSingleton::getTokoDb();
         $list = "";
-        $r=$db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` ORDER BY `ID` ASC;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` ORDER BY `ID` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $id = $db->result($r, $i-1, "ID");
             $text = $db->result($r, $i-1, "TEXT");
@@ -874,7 +868,7 @@ class ShopClass {
     }
 
     function getDepartmentExpressName($delivery_express) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_express' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_express' LIMIT 1;");
         $text = $db->result($r, 0, "TEXT");
         $text = $this->replaceLang($text);
         return $text;
@@ -901,24 +895,24 @@ class ShopClass {
         $city_text = $this->getCityName($city);
         $delivery_text = $this->getDeliveryName($delivery);
         $payment_text = $this->getPaymentName($payment);
-        if ($email=="") $email="{absent_cap}";
-        if ($comment=="") $comment="{absent_cap}";
+        if ($email=="") $email = "{absent_cap}";
+        if ($comment=="") $comment = "{absent_cap}";
 
         if ($delivery==1) {
             $tpoint_address = $this->setCityAddress($city);
-            $delivery_type_text="<div>$tpoint_address</div>";
+            $delivery_type_text = "<div>$tpoint_address</div>";
         }
 
-        $form=$this->getHtmlForm("orders/confirm");
-        $form=str_replace("{order_name}", $name, $form);
-        $form=str_replace("{order_phone}", $phone, $form);
-        $form=str_replace("{order_city}", $city_text, $form);
-        $form=str_replace("{order_delivery}", $delivery_text, $form);
-        $form=str_replace("{order_delivery_type}", $delivery_type_text, $form);
-        $form=str_replace("{order_payment}", $payment_text, $form);
-        $form=str_replace("{order_email}", $email, $form);
-        $form=str_replace("{order_comment}", $comment, $form);
-        $form=$this->replaceLang($form);
+        $form = $this->getHtmlForm("orders/confirm");
+        $form = str_replace("{order_name}", $name, $form);
+        $form = str_replace("{order_phone}", $phone, $form);
+        $form = str_replace("{order_city}", $city_text, $form);
+        $form = str_replace("{order_delivery}", $delivery_text, $form);
+        $form = str_replace("{order_delivery_type}", $delivery_type_text, $form);
+        $form = str_replace("{order_payment}", $payment_text, $form);
+        $form = str_replace("{order_email}", $email, $form);
+        $form = str_replace("{order_comment}", $comment, $form);
+        $form = $this->replaceLang($form);
 
         return $form;
     }
@@ -939,10 +933,6 @@ class ShopClass {
         $tpoint_id = $client->getTpoint();
         $cookie = $_COOKIE["session_id"];
         $cash_id = intval($client->getClientCurrency($client_id));
-
-        // CREATE CLIENT ORDER INFO
-//        $delivery_info = ["street"=>"", "house"=>"", "porch"=>"", "department"=>0, "express"=>0, "express_info"=>""];
-//        $order_info_id = $this->saveClientOrderInfo($client_id, $user_id, 0, 0, "", 0, $delivery_info, "", "");
 
         // CREATE ORDER
         $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0);
@@ -1022,10 +1012,10 @@ class ShopClass {
         $express = $delivery_info["express"];
         $express_info = $delivery_info["express_info"];
 
-        if ($street=="undefined") $street="";
-        if ($house=="undefined") $house="";
-        if ($porch=="undefined") $porch="";
-        if ($express_info=="undefined") $express_info="";
+        if ($street=="undefined") $street = "";
+        if ($house=="undefined") $house = "";
+        if ($porch=="undefined") $porch = "";
+        if ($express_info=="undefined") $express_info = "";
 
         $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID`=$client_id AND `USER_ID`=$user_id AND `CITY_ID`=$city_id AND `DELIVERY_ID`=$delivery_id AND `PAYMENT_ID`=$payment_id AND `DEL_STREET`='$street' AND `DEL_HOUSE`='$house' AND `DEL_PORCH`='$porch' AND `DEL_DEPARTMENT`='$department' AND `DEL_EXPRESS`=$express AND `DEL_EXPRESS_INFO`='$express_info' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
@@ -1041,7 +1031,6 @@ class ShopClass {
 
     function getDeliveryInfoCaption($delivery_id, $street, $house, $porch, $department_text, $express, $express_info) {
         $info = "";
-
         switch ($delivery_id) {
             case 1: {
                 break;
@@ -1077,7 +1066,6 @@ class ShopClass {
                 break;
             }
         }
-
         return $info;
     }
 
@@ -1189,7 +1177,8 @@ class ShopClass {
     }
 
     function getOrderTotal($total) {
-        $exrate = new ExRateClass; $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
+        $exrate = new ExRateClass;
+        $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
         $list = "<div class=\"cart-table-row cart-table-row-offset\">
             <div class=\"cart-table-cell cart-table-cell__label\">{total_cap}</div>
             <div class=\"cart-table-cell cart-table-cell__price\">$total $cur_cap</div>
@@ -1262,7 +1251,7 @@ class ShopClass {
         }
 
         $del_cap = $this->replaceLang($del_cap);
-        $list="<div class=\"cart-table-row cart-table-row-offset\">
+        $list = "<div class=\"cart-table-row cart-table-row-offset\">
             <div class=\"cart-table-cell cart-table-cell__label\">{delivery_cap}</div>
             <div class=\"cart-table-cell cart-table-cell__price\">$del_cap</div>
         </div>";
@@ -1270,14 +1259,14 @@ class ShopClass {
         return array($price, $list);
     }
 
-    function getBasketOrderRange() { $db=DbSingleton::getTokoDb();
-        $client=new ClientClass; $exrate=new ExRateClass; $showform=new FormClass;
-        $client_id=$client->getClient()[0]; $where=$client->getClientWhere();
-        $cur=$exrate->getCurrentKours(); $cur_cap=$exrate->getKoursSymbol($cur);
-        $list=""; $sum_total=0;
+    function getBasketOrderRange() { $db = DbSingleton::getTokoDb();
+        $client = new ClientClass; $exrate = new ExRateClass; $showform = new FormClass;
+        $client_id = $this->getClient(); $where = $client->getClientWhere();
+        $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
+        $list = ""; $sum_total = 0;
         $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1 ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
-            for ($i = 1; $i <= $n; $i++) {
+            for ($i=1; $i<=$n; $i++) {
                 $art_id = $db->result($r, $i - 1, "art_id");
                 $brand_id = $db->result($r, $i - 1, "brand_id");
                 $art_name = $this->getArticleDispl($art_id);
@@ -1310,7 +1299,7 @@ class ShopClass {
         return array($list, $sum_total);
     }
 
-    function setDeliveryExpressDepartment($delivery_express) { $db=DbSingleton::getTokoDb();
+    function setDeliveryExpressDepartment($delivery_express) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_express' LIMIT 1;");
         $text_type = $db->result($r, 0, "TEXT_TYPE");
         $text_type = $this->replaceLang($text_type);
@@ -1320,17 +1309,16 @@ class ShopClass {
     /*==== /NEW ORDER FORM ====*/
 
     /*==== NOVA POSHTA API ====*/
-    function getCitiesMainSelect($user_city = 0) { $db=DbSingleton::getTokoDb();
+    function getCitiesMainSelect($user_city = 0) { $db = DbSingleton::getTokoDb();
         $language = new LangClass;
         $lang_id = $language->getLanguage();
-        $postfix = ""; $where_user_city = "";
+        $postfix = ""; $where_user_city = ""; $list = "";
         if ($lang_id==1 || $lang_id==3) $postfix = "_RU";
-        $list = "";
         if ($user_city>0) {
             $where_user_city = "OR `CITY_ID`='$user_city'";
         }
 
-        $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `REGION_NAME`='' $where_user_city ORDER BY `CITY_NAME$postfix` ASC;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `REGION_NAME`='' $where_user_city ORDER BY `CITY_NAME$postfix` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $city_id = $db->result($r, $i-1, "CITY_ID");
             $city_name = $db->result($r, $i-1, "CITY_NAME_CLEAR$postfix");
@@ -1340,13 +1328,12 @@ class ShopClass {
         return $list;
     }
 
-    function getCityVal($search_text) { $db=DbSingleton::getTokoDb();
+    function getCityVal($search_text) { $db = DbSingleton::getTokoDb();
         $language = new LangClass;
         $lang_id = $language->getLanguage();
-        $mas = [];
-        $postfix = "";
+        $mas = []; $postfix = "";
         if ($lang_id==1 || $lang_id==3) $postfix = "_RU";
-        $r=$db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR$postfix` LIKE '$search_text%' ORDER BY `CITY_NAME$postfix`;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR$postfix` LIKE '$search_text%' ORDER BY `CITY_NAME$postfix`;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $city_id = $db->result($r, $i-1, "CITY_ID");
             $city_name = $db->result($r, $i-1, "CITY_NAME$postfix");
@@ -1358,12 +1345,12 @@ class ShopClass {
         return $mas;
     }
 
-    function setCityNPVal($city_id) { $db=DbSingleton::getTokoDb();
+    function setCityNPVal($city_id) { $db = DbSingleton::getTokoDb();
         $list = "";
         $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_ID`='$city_id' LIMIT 1;");
         $city_name = $db->result($r, 0, "CITY_NAME_CLEAR");
         $state_name = $db->result($r, 0, "NEWPOST_AREA");
-        $r = $db->query("SELECT * FROM `T2_CITY_NOVA` WHERE `CITY_NAME` LIKE '$city_name%' AND `AREA_NAME` LIKE '$state_name%';"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_CITY_NOVA` WHERE `CITY_NAME` LIKE '$city_name%' AND `AREA_NAME` LIKE '$state_name%';"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $ref = $db->result($r, $i - 1, "CITY_REF");
             $name = $db->result($r, $i - 1, "CITY_NAME");
