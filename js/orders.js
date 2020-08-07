@@ -120,7 +120,6 @@ function getCityVal() {
             }
         }
     }
-
 }
 function addOption(id_city, value_city) {
     let select_city = $("#user_city");
@@ -405,7 +404,7 @@ function validOrder() {
     div.find("div").find("select").each(function () {
         $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid");
     });
-    if (payment===undefined){
+    if (payment===undefined) {
         $("#valid_payment_block").addClass("not-valid");
     } else {
         $("#valid_payment_block").removeClass("not-valid");
@@ -510,7 +509,8 @@ function setClientOrderInfo(id) {
 
             // CITY
             let user_city = $("#user_city");
-            user_city.val(city_id); user_city.select2();
+            user_city.val(city_id);
+            user_city.select2();
 
             // DELIVERY
             $("input[data-id-delivery='" + delivery_id + "']").prop('checked', true);
@@ -574,8 +574,7 @@ function saveOrderClient() {
     let pass = $("#user_pass").val();
     JsHttpRequest.query(folder,{'w':'saveOrderClient', 'user_id':user_id, 'name':name, 'email':email, 'pass':pass},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            // зберегти дані користувача
-            // авторизуватись
+            // save data users & login
             location.href = "https://toko.ua/profile/orders/";
         }}, true);
 }
@@ -584,7 +583,7 @@ function loginOrderClient() {
     let user_id = $("#order_user_id").val();
     JsHttpRequest.query(folder,{'w':'loginOrderClient', 'user_id':user_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            // авторизуватисьsad
+            // login
             location.href = "https://toko.ua/profile/orders/";
         }}, true);
 }
