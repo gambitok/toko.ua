@@ -102,7 +102,7 @@ class CatalogueClass {
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
         WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
         ORDER BY t2n.NAME ASC;"); $n = $db->num_rows($r);
-        $art_id_str=""; $brand_name="";
+        $art_id_str = ""; $brand_name = "";
         for ($i=1; $i<=$n; $i++) {
             $brand_name = $db->result($r, $i-1, "BRAND_NAME");
             $art_id = $db->result($r, $i-1, "ART_ID");
@@ -116,9 +116,9 @@ class CatalogueClass {
         list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($art_id_str, $article_nr_search, $brand_filter, $text_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand_nr_search, $order_value, 1);
 
         //form replace
-        $search_main=$this->getHtmlForm("cat_search_main");
-        $search_filters=$this->getHtmlForm("cat_search_filters");
-        $search_brands=$this->getHtmlForm("cat_search_brands");
+        $search_main = $this->getHtmlForm("cat_search_main");
+        $search_filters = $this->getHtmlForm("cat_search_filters");
+        $search_brands = $this->getHtmlForm("cat_search_brands");
         //search main
         $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $brand_name, $list, 1, $cur);
         $search_main = $this->replaceLang($search_main);
@@ -134,8 +134,8 @@ class CatalogueClass {
     }
 
     function showBrandList($article_search, $article_nr_search) { $db = DbSingleton::getTokoDb();
-        $showform=new FormClass; $language=new LangClass;
-        $prefix=$language->getLangPrefix();
+        $showform = new FormClass;
+        $prefix = $this->getLangPrefix();
 
         $count_zero=$exist_search_number=0; $exist_brand_link="";
         $result=$currency=$list=""; $colon="col-lg-12 col-12";
@@ -152,7 +152,7 @@ class CatalogueClass {
         GROUP BY t2c.BRAND_ID;"); $n=$db->num_rows($r);
 
         if ($article_search!="") {
-            for ($i=1;$i<=$n;$i++) {
+            for ($i=1; $i<=$n; $i++) {
                 $art_id = $db->result($r,$i-1,"ART_ID");
                 $search_number = $db->result($r,$i-1,"SEARCH_NUMBER");
                 $text = $db->result($r,$i-1,"DISPLAY_NR");
@@ -167,7 +167,7 @@ class CatalogueClass {
             }
 
             usort($mas,"myBrandCmp");
-            for ($i=0;$i<$n;$i++){
+            for ($i=0; $i<$n; $i++) {
                 $search_number=$mas[$i]["search_number"]; $search_number=strtolower($search_number);
                 $text=$mas[$i]["text"];
                 $brand_name=$mas[$i]["brand_name"];
@@ -211,40 +211,39 @@ class CatalogueClass {
     }
 
     function getDetailsList() { $db = DbSingleton::getTokoDb();
-        $language=new LangClass; $prefix=$language->getLangPrefix(); $automan=new AutoClass;
-        $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1;"); $n=$db->num_rows($r); $list="";
-        for ($i=1;$i<=$n;$i++){
-            $head_id=$db->result($r,$i-1,"HEAD_ID");
-            $tex_text=$db->result($r,$i-1,"TEX_$lang_cap");
-            list(, $text_link)=$automan->getHeadNewDescr($head_id);
-            $header="<a href=\"https://toko.ua$prefix/catalog/$text_link/\">$tex_text</a>";
+        $language = new LangClass; $automan = new AutoClass;
+        $prefix = $language->getLangPrefix(); $lang_id = $language->getLanguage(); $lang_cap = $language->getTexCapLanguage($lang_id);
+        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1;"); $n = $db->num_rows($r); $list = "";
+        for ($i=1; $i<=$n; $i++) {
+            $head_id = $db->result($r,$i-1,"HEAD_ID");
+            $tex_text = $db->result($r,$i-1,"TEX_$lang_cap");
+            list(, $text_link) = $automan->getHeadNewDescr($head_id);
+            $header = "<a href=\"https://toko.ua$prefix/catalog/$text_link/\">$tex_text</a>";
             $list.="<li class=\"header-nav__li\" data-nav-id=\"$head_id\">$header</li>";
         }
         return $list;
     }
 
     function getGroupTreeAmount($head_id, $str_id_str) { $db = DbSingleton::getTokoDb();
-        if ($str_id_str!="") $where_str="AND cs.STR_ID IN ($str_id_str)"; else $where_str="";
-        $r=$db->query("SELECT cs.*, cat.TEX_RU as CAT_NAME_RU, cat.TEX_UA as CAT_NAME_UA, cat.TEX_EN as CAT_NAME_EN 
+        if ($str_id_str!="") $where_str = "AND cs.STR_ID IN ($str_id_str)"; else $where_str = "";
+        $r = $db->query("SELECT cs.*, cat.TEX_RU as CAT_NAME_RU, cat.TEX_UA as CAT_NAME_UA, cat.TEX_EN as CAT_NAME_EN 
         FROM `T2_GROUP_TREE_STR` cs 
             LEFT OUTER JOIN `T2_GROUP_TREE_CATEGORY` cat ON cat.CAT_ID=cs.CAT_ID
-		WHERE cs.HEAD_ID='$head_id' $where_str ORDER BY cat.POSITION ASC, cs.POSITION ASC;"); $n=$db->num_rows($r);
+		WHERE cs.HEAD_ID='$head_id' $where_str ORDER BY cat.POSITION ASC, cs.POSITION ASC;"); $n = $db->num_rows($r);
         if ($n>0) return true; else return false;
     }
 
     // HOME NAVIGATION
     function getGroupTreeStr($head_id, $str_id_str="") { $db = DbSingleton::getTokoDb();
-        $automan=new AutoClass; $language=new LangClass;
-        $prefix=$language->getLangPrefix();
+        $automan = new AutoClass; $language = new LangClass;
+        $prefix=$language->getLangPrefix(); $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
         $arr=[]; $list="";
-        $lang_id=$language->getLanguage(); $lang_cap=$language->getTexCapLanguage($lang_id);
-        if ($str_id_str!="") $where_str="AND cs.STR_ID IN ($str_id_str)"; else $where_str="";
-        list(, $head_link)=$automan->getHeadNewDescr($head_id);
-        $r=$db->query("SELECT cs.*, cat.CAT_ID
+        if ($str_id_str!="") $where_str = "AND cs.STR_ID IN ($str_id_str)"; else $where_str = "";
+        list(, $head_link) = $automan->getHeadNewDescr($head_id);
+        $r = $db->query("SELECT cs.*, cat.CAT_ID
         FROM `T2_GROUP_TREE_STR` cs 
             LEFT OUTER JOIN `T2_GROUP_TREE_CATEGORY` cat ON cat.CAT_ID=cs.CAT_ID
-		WHERE cs.HEAD_ID='$head_id' $where_str ORDER BY cat.POSITION ASC, cs.POSITION ASC;"); $n=$db->num_rows($r);
+		WHERE cs.HEAD_ID='$head_id' $where_str ORDER BY cat.POSITION ASC, cs.POSITION ASC;"); $n = $db->num_rows($r);
         if ($n>0) {
             for ($i=1;$i<=$n;$i++) {
                 $CAT_ID=$db->result($r,$i-1,"CAT_ID");
@@ -257,7 +256,7 @@ class CatalogueClass {
             }
             foreach ($arr as $key=>$value) {
                 list($CAT_NAME, $CAT_LINK) = $automan->getCatNewDescr($key);
-                $list.="<div class='tree-item'>";
+                $list.="<div class=\"tree-item\">";
 
                 $list.="<div class=\"tree-item-title\">
                     <a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$CAT_LINK/\">$CAT_NAME</a>
@@ -278,8 +277,8 @@ class CatalogueClass {
             }
             // $list.="<a class=\"btn btn-main\" href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/\">{show_all_cap} \"$head_name\"</a>";
         }
-        if ($n==0) $list="";
-        $list=$this->replaceLang($list);
+        if ($n==0) $list = "";
+        $list = $this->replaceLang($list);
         return $list;
     }
 
@@ -330,15 +329,15 @@ class CatalogueClass {
         $str_text = $automan->getStrNewDescr($str_id);
         if ($str_text=="") $str_text = $automan->getStrDescr($str_id);
 
-        $query="SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$typ_id' GROUP BY `ART_ID`;";
-        $r=$db->query($query);$n=$db->num_rows($r);$art_id_str="0";
-        for ($i=1;$i<=$n;$i++) {
+        $query = "SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$typ_id' GROUP BY `ART_ID`;";
+        $r = $db->query($query); $n = $db->num_rows($r); $art_id_str = "0";
+        for ($i=1; $i<=$n; $i++) {
             $art_id=$db->result($r,$i-1,"ART_ID");if ($art_id!=""){$art_id_str.=",$art_id";}
         }
 
-        $query="SELECT * FROM `T2_TREE` WHERE `ART_ID` IN ($art_id_str) AND `STR_ID`=$str_id;";
-        $r=$db->query($query);$n=$db->num_rows($r);$str_id_str="0";
-        for ($i=1;$i<=$n;$i++){
+        $query = "SELECT * FROM `T2_TREE` WHERE `ART_ID` IN ($art_id_str) AND `STR_ID`=$str_id;";
+        $r = $db->query($query); $n = $db->num_rows($r); $str_id_str = "0";
+        for ($i=1; $i<=$n; $i++){
             $art_id=$db->result($r,$i-1,"ART_ID");$str_id_str.=",$art_id";
         }
 
@@ -375,18 +374,18 @@ class CatalogueClass {
     function getSearchMain($search_main, $article_nr_search, $brand_id, $brand_name, $list, $type_filter, $cur, $status_brand=0) {
         $client = new ClientClass; $showform = new FormClass;
         session_start(); $_SESSION["brand_id"] = $brand_id;
-        if ($status_brand==1) $brand_name=$this->getBrandIdArt($article_nr_search);
-        $article_nr_displ=$this->getArtDispl($article_nr_search);
-        $result="<span class=\"span-dark\">{offers_request} <h1 class=\"span-red\">$brand_name $article_nr_displ</h1> {and_analogs}</span>";
-        $currency=$showform->getCurrencyForm($type_filter, 0, $cur);
-        $result=$this->replaceLang($result);
-        $radio_view=$this->getHtmlForm("products_view_radio");
-        $radio_view=str_replace("{checked_table}",$client->getProductView()==0 ? "checked" : "",$radio_view);
-        $radio_view=str_replace("{checked_cards}",$client->getProductView()==1 ? "checked" : "",$radio_view);
-        $search_main=str_replace("{art}", $result, $search_main);
-        $search_main=str_replace("{currency}", $currency, $search_main);
-        $search_main=str_replace("{products_view}", $radio_view, $search_main);
-        $search_main=str_replace("{search_result}", $list, $search_main);
+        if ($status_brand==1) $brand_name = $this->getBrandIdArt($article_nr_search);
+        $article_nr_displ = $this->getArtDispl($article_nr_search);
+        $result = "<span class=\"span-dark\">{offers_request} <h1 class=\"span-red\">$brand_name $article_nr_displ</h1> {and_analogs}</span>";
+        $currency = $showform->getCurrencyForm($type_filter, 0, $cur);
+        $result = $this->replaceLang($result);
+        $radio_view = $this->getHtmlForm("products_view_radio");
+        $radio_view = str_replace("{checked_table}",$client->getProductView()==0 ? "checked" : "",$radio_view);
+        $radio_view = str_replace("{checked_cards}",$client->getProductView()==1 ? "checked" : "",$radio_view);
+        $search_main = str_replace("{art}", $result, $search_main);
+        $search_main = str_replace("{currency}", $currency, $search_main);
+        $search_main = str_replace("{products_view}", $radio_view, $search_main);
+        $search_main = str_replace("{search_result}", $list, $search_main);
         return $search_main;
     }
 
@@ -468,8 +467,8 @@ class CatalogueClass {
 
     function getSearchTree($search_tree, $td_array, $typ_id, $status_str, $str_id) {
         //DELETE?
-        $automan=new AutoClass; $language=new LangClass;
-        $prefix=$language->getLangPrefix();
+        $automan=new AutoClass;
+        $prefix=$this->getLangPrefix();
         if ($str_id==0) list($str_id, $slvl,)=$automan->getAutoStrData(); else list($slvl,)=$automan->getStrParams($str_id);
         $tree=""; $lvl=1; $parrents=$this->getStrParrents($str_id, $slvl);
 
@@ -694,8 +693,8 @@ class CatalogueClass {
         $tpoint = $client->getTpoint();
         if (!$view) $view = $client->getProductView(); $cur = $kours->getCurrentKours();
         session_start(); $temp_key = session_id();
+        $filters = $mas = $brands = $brand_ids = []; $list_brand = "";
         $filters["max_price"]=$filters["max_dd"]=$count=$main_brand=0;
-        $filters=$mas=$brands = array(); $list_brand = ""; $brand_ids = [];
         $filters["min_price"] = 99999999;
 
         $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
@@ -740,10 +739,10 @@ class CatalogueClass {
                     }
 
                     // filters
-                    if ($filter_price>$filters["max_price"]) $filters["max_price"]=ceil($filter_price);
-                    if ($filter_price<$filters["min_price"]) $filters["min_price"]=ceil($filter_price);
+                    if ($filter_price>$filters["max_price"]) $filters["max_price"] = ceil($filter_price);
+                    if ($filter_price<$filters["min_price"]) $filters["min_price"] = ceil($filter_price);
 
-                    if ($delivery_days>$filters["max_dd"]) $filters["max_dd"]=$delivery_days;
+                    if ($delivery_days>$filters["max_dd"]) $filters["max_dd"] = $delivery_days;
 
                     // ORDER BY search art and suppl_id
                     if (($name==$article_nr_search || $format_name==$article_nr_search) && $brand_id==$brand_nr_search) $status=2; else { $suppl_id==0 ? $status=1 : $status=0; }
@@ -808,9 +807,9 @@ class CatalogueClass {
                 $list_brand = $this->getListBrand($brands, $main_brand, $cur, $jsFilterModel, []);
 
                 // delete empty stocks and prices
-                $mas=$this->deleteEmptyPosition($mas);
-                $mas=$this->deleteSupplPosition($mas);
-                $mas=$this->deleteRepeatPosition($mas);
+                $mas = $this->deleteEmptyPosition($mas);
+                $mas = $this->deleteSupplPosition($mas);
+                $mas = $this->deleteRepeatPosition($mas);
 
                 if (empty($mas)) {
                     $list = $this->getHtmlForm("nothing_found");
@@ -1065,7 +1064,7 @@ class CatalogueClass {
                     $brand_id = $db->result($r, $i-1, "BRAND_ID");
                     $brand = $db->result($r, $i-1, "BRAND_NAME");
                     $suppl_id = $db->result($r, $i-1, "suppl_id");
-                    $name = $db->result($r, $i-1, "ARTICLE_NR_DISPL"); $format_name=$this->getFormatAticle($name);
+                    $name = $db->result($r, $i-1, "ARTICLE_NR_DISPL"); $format_name = $this->getFormatAticle($name);
                     $text = $db->result($r, $i-1, "NAME");
                     $return_days = $db->result($r, $i-1, "return_delay");
                     $stock = intval($db->result($r, $i-1, "AMOUNT"));
@@ -1110,9 +1109,9 @@ class CatalogueClass {
                 }
 
                 // delete empty stocks and prices
-                $mas=$this->deleteEmptyPosition($mas);
-                $mas=$this->deleteSupplPosition($mas);
-                $mas=$this->deleteRepeatPosition($mas);
+                $mas = $this->deleteEmptyPosition($mas);
+                $mas = $this->deleteSupplPosition($mas);
+                $mas = $this->deleteRepeatPosition($mas);
 
                 if (empty($mas)) {
                     $list = $this->getHtmlForm("nothing_found");
@@ -1224,7 +1223,7 @@ class CatalogueClass {
     function getArticleSupplPrices($where_art_id_str) { $dbt = DbSingleton::getTokoDb(); $db = DbSingleton::getDbm();
         $kours = new ExRateClass; $client = new ClientClass;
         $tpoint = $client->getTpoint(); $client_id = $this->getClient(); $price = 0;
-        list(,,$price_suppl_lvl,$margin_price_suppl_lvl,$client_vat) = $this->getDpClientPriceLevels($client_id);
+        list(,, $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat) = $this->getDpClientPriceLevels($client_id);
         $query = "SELECT t2a.ART_ID, t2si.client_storage_id, t2si.price_usd, t2si.suppl_id, acvc.*, t2si.suppl_id, tpsf.margin, tpsf.delivery, tpsf.margin2 
         FROM `T2_ARTICLES` t2a 
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
@@ -1267,7 +1266,7 @@ class CatalogueClass {
 
     function checkOriginalEquipment($art_id, $search_number) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND `KIND` LIKE '3' AND `RELATION`=0;"); $n=$db->num_rows($r); $nom=0;
-        for ($i=1;$i<=$n;$i++) {
+        for ($i=1; $i<=$n; $i++) {
             $number = $db->result($r, $i-1, "SEARCH_NUMBER");
             if ($search_number==$number) $nom++;
         }
@@ -1326,9 +1325,9 @@ class CatalogueClass {
 
     function getSuppLStorageVisible($suppl_id, $storage_id) { $db = DbSingleton::getDbm();
         if ($suppl_id>0) {
-            $r=$db->query("SELECT * FROM `A_CLIENTS_STORAGE` WHERE `client_id`='$suppl_id' AND `id`='$storage_id' LIMIT 1;"); $n=$db->num_rows($r);
+            $r = $db->query("SELECT * FROM `A_CLIENTS_STORAGE` WHERE `client_id`='$suppl_id' AND `id`='$storage_id' LIMIT 1;"); $n = $db->num_rows($r);
             if ($n>0) {
-                $visible=$db->result($r,0,"visible");
+                $visible = $db->result($r, 0, "visible");
                 if ($visible==0) return false;
             }
         }
@@ -1336,9 +1335,9 @@ class CatalogueClass {
     }
 
     function printSearchList($id, $art_id, $article_name, $brand_id, $brand_name, $text, $delivery_info, $stock, $price, $article_nr_search, $ll, $class, $hide, $border, $none, $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $view) {
-        $showform=new FormClass; $kours=new ExRateClass; $language=new LangClass; $client=new ClientClass; $shop=new ShopClass;
+        $showform=new FormClass; $kours=new ExRateClass; $client=new ClientClass; $shop=new ShopClass;
         $list=$return=$return_days_alt=$return_days_img=$flag=$country_name=$instock="";
-        $prefix = $language->getLangPrefix(); $client_id = $this->getClient();
+        $prefix = $this->getLangPrefix(); $client_id = $this->getClient();
         $cur = $kours->getCurrentKours(); $kours_cap = $kours->getKoursSymbol($cur);
         $format_name = $this->getFormatAticle($article_name);
         $format_brand = $this->getFormatBrand($brand_name);
@@ -1428,7 +1427,7 @@ class CatalogueClass {
         $form=str_replace("{index_type}", $this->getIndexTypeImage($art_id, $article_nr_search, $article_name, $format_name, $brand_id, $brand_nr_search), $form);
         $form=str_replace("{count_users}", $client->getUsersCount(), $form);
         $form=str_replace("{data_today}", date("Y-m-d"), $form);
-        $form=str_replace("{prefix_url}", $language->getLangPrefix(), $form);
+        $form=str_replace("{prefix_url}", $prefix, $form);
         $form=str_replace("{tpoint_full_name}", ($suppl_id==0) ? $client->getArticleStorageTPoint($storage_id) : "", $form);
 
         $form=str_replace("{product_info}",$showform->getArticleInfoForm($art_id,1),$form);
@@ -1450,20 +1449,20 @@ class CatalogueClass {
 
     function checkActionPrice($art_id) { $db = DbSingleton::getDbm();
         $client_id=$this->getClient(); $categories=[]; $actions=[];
-        $r=$db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n = $db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $category_id = $db->result($r, $i-1, "client_category");
             array_push($categories, $category_id);
         }
-        $categories=implode(",", $categories);
+        $categories = implode(",", $categories);
 
-        $r=$db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `art_id`='$art_id' and `status`=1;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $action_id=$db->result($r, $i-1, "id");
-            $r2=$db->query("SELECT * FROM `ACTION_CLIENTS_LIST` WHERE `action_id`='$action_id' AND `client_id`='$client_id';"); $n2=$db->num_rows($r2);
+        $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `art_id`='$art_id' and `status`=1;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $action_id = $db->result($r, $i-1, "id");
+            $r2 = $db->query("SELECT * FROM `ACTION_CLIENTS_LIST` WHERE `action_id`='$action_id' AND `client_id`='$client_id';"); $n2 = $db->num_rows($r2);
             if ($n2>0) array_push($actions, $action_id);
             if ($categories!="") {
-                $r3=$db->query("SELECT * FROM `ACTION_CLIENTS_CATEGORY` WHERE `action_id`='$action_id' AND `category_id` IN ($categories);"); $n3=$db->num_rows($r3);
+                $r3 = $db->query("SELECT * FROM `ACTION_CLIENTS_CATEGORY` WHERE `action_id`='$action_id' AND `category_id` IN ($categories);"); $n3 = $db->num_rows($r3);
                 if ($n3>0) array_push($actions, $action_id);
             }
         }
@@ -1497,30 +1496,65 @@ class CatalogueClass {
         return $result;
     }
 
+    /*
+     * Export Price Rating (CRON)
+     * */
     function getArticlePriceClient($art_id, $client_id, $cur) { $dbt = DbSingleton::getTokoDb();
-        $client=new ClientClass;
+        $client = new ClientClass;
         list($price_lvl, $margin_price_lvl) = $this->getDpClientPriceLevels($client_id);
-        $query = "SELECT t2apr.price_$price_lvl, t2si.price_usd as suppl_price_usd 
+        $markup_min = $client->getClientMarkupMin($client_id);
+        $query = "SELECT t2apr.price_$price_lvl, t2apr.minMarkup, t2aps.OPER_PRICE
         FROM `T2_ARTICLES` t2a 
             LEFT OUTER JOIN `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id=t2a.ART_ID)
-            LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID)
+            LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID=t2a.ART_ID)
         WHERE t2a.ART_ID='$art_id' AND t2apr.in_use='1' LIMIT 1;";
         $r = $dbt->query($query); $n = $dbt->num_rows($r); $price = 0;
         if ($n==1) {
             $price = $dbt->result($r,0,"price_".$price_lvl);
+            $minMarkup=$dbt->result($r,0,"minMarkup");
+            $oper_price=$dbt->result($r,0,"OPER_PRICE");
             $float_price = floatval($price);
-            if ($margin_price_lvl>0) { $price = $float_price + round($price * $margin_price_lvl / 100, 2); }
-            $cash_id_to = $cur;
-            $cash_id_from = $this->getArticlePriceRatingCash($art_id);
-            $price = $this->getPriceRatingKours($price, $cash_id_from, $cash_id_to);
+            // 1
+            if ($margin_price_lvl>0) {
+                $price = $float_price + round($price * $margin_price_lvl / 100, 2);
+            }
+            // 2
+            if ($margin_price_lvl<0 && $markup_min==0) {
+                $price_minus = $price + ($price * $margin_price_lvl / 100);
+                $oper_limit = $oper_price + ($oper_price * $minMarkup / 100);
+                if ($price_minus>=$oper_limit) $price = $price_minus;
+                elseif ($oper_limit>=$price) true;
+                else $price = $oper_limit;
+            }
+            // 3
+            $art_cash_id = $this->getArticlePriceRatingCash($art_id);
+            if ($margin_price_lvl<0 && $markup_min>0) {
+                $price = $this->getPriceRatingKours($price, $art_cash_id, 2);
+                $proc_price_margin = $price - ($price * abs($margin_price_lvl) / 100);
+                $proc_oper_price_min = $oper_price + ($oper_price * $markup_min / 100);
+                if ($proc_price_margin>=$proc_oper_price_min) {
+                    $price = $proc_price_margin;
+                } else {
+                    if (($proc_price_margin < $proc_oper_price_min) && ($proc_oper_price_min > $price)) {
+                        true;
+                    } else {
+                        $price = $proc_oper_price_min;
+                    }
+                }
+                $price = $this->getPriceRatingKours($price, 2, $art_cash_id);
+            }
+
+            $price = $this->getPriceRatingKours($price, $art_cash_id, 1);
+            if ($art_cash_id==1) $price = $client->getClientPriceRounding($client_id, $price);
         }
-        if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
         return $price;
     }
 
     function getArticlePrice($art_id) { $dbt = DbSingleton::getTokoDb();
         $client = new ClientClass;
-        $client_id = $this->getClient(); $price = 0;
+        $client_id = $this->getClient();
+        $markup_min = $client->getClientMarkupMin($client_id);
+        $price = 0;
         list($price_lvl, $margin_price_lvl) = $this->getDpClientPriceLevels($client_id);
         $query = "SELECT t2apr.price_$price_lvl, t2apr.cash_id, t2apr.minMarkup, t2aps.OPER_PRICE
         FROM `T2_ARTICLES` t2a 
@@ -1536,13 +1570,29 @@ class CatalogueClass {
             if ($margin_price_lvl>0) {
                 $price = floatval($price) + round($price * $margin_price_lvl / 100, 2);
             }
-            if ($margin_price_lvl<0) {
+            if ($margin_price_lvl<0 && $markup_min==0) {
                 $price_minus = $price + ($price * $margin_price_lvl / 100);
                 $oper_limit = $oper_price + ($oper_price * $minMarkup / 100);
                 if ($price_minus>=$oper_limit) $price = $price_minus;
                 elseif ($oper_limit>=$price) true;
                 else $price = $oper_limit;
             }
+            if ($margin_price_lvl<0 && $markup_min>0) {
+                $price = $this->getPriceRatingKours($price, $cash_id, 2);
+                $proc_price_margin = $price - ($price * abs($margin_price_lvl) / 100);
+                $proc_oper_price_min = $oper_price + ($oper_price * $markup_min / 100);
+                if ($proc_price_margin>=$proc_oper_price_min) {
+                    $price = $proc_price_margin;
+                } else {
+                    if (($proc_price_margin < $proc_oper_price_min) && ($proc_oper_price_min > $price)) {
+                        true;
+                    } else {
+                        $price = $proc_oper_price_min;
+                    }
+                }
+                $price = $this->getPriceRatingKours($price, 2, $cash_id);
+            }
+
             $price = $this->getPriceRatingKours($price, $cash_id, 1);
             if ($cash_id==1) $price = $client->getClientPriceRounding($client_id, $price);
         }
@@ -1677,8 +1727,7 @@ class CatalogueClass {
     }
 
     function getOriginalNumbers($art_id) { $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
-        $prefix = $language->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $r = $db->query("SELECT t2c.DISPLAY_NR, t2b.BRAND_NAME 
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
@@ -1715,7 +1764,7 @@ class CatalogueClass {
     }
 
     function showCatalogueTemplates() { $db = DbSingleton::getTokoDb();
-        $language = new LangClass; $prefix = $language->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $r = $db->query("SELECT * FROM `T2_CATALOGUES_TEMPLATES` WHERE `STATUS`=1 AND `PARENT_ID`=0;"); $n = $db->num_rows($r);
         $list = "<ul class=\"goods\">";
         for ($i=1; $i<=$n; $i++) {
@@ -1834,7 +1883,7 @@ class CatalogueClass {
     function getArticlePriceRatingCash($art_id) { $db = DbSingleton::getTokoDb();
         $cash_id=2;
         $r = $db->query("SELECT * FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id`='$art_id' AND `in_use`=1 LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n>0) $cash_id = $db->result($r,0,"cash_id");
+        if ($n>0) $cash_id = $db->result($r, 0, "cash_id");
         if ($cash_id==0 || $cash_id=="0") {
             $db->query("UPDATE `T2_ARTICLES_PRICE_RATING` SET `cash_id`=2 WHERE `art_id`='$art_id' AND `in_use`=1 LIMIT 1;");
             $cash_id = 2;

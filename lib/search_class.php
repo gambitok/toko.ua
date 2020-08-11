@@ -699,8 +699,8 @@ class SearchClass extends CatalogueClass {
 
     // details
     function showSearchList($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $price, $stock, $delivery_info, $delivery_days, $storage_id, $suppl_id) {
-        $showform = new FormClass; $language = new LangClass; $kours = new ExRateClass;
-        $prefix = $language->getLangPrefix();
+        $showform = new FormClass; $kours = new ExRateClass;
+        $prefix = $this->getLangPrefix();
         $format_name = $this->getFormatAticle($article_nr_displ);
         $format_brand = $this->getFormatBrand($brand_name);
         $cur = $kours->getCurrentKours();
@@ -723,7 +723,7 @@ class SearchClass extends CatalogueClass {
         $form=str_replace("{product_real_stock}",$stock,$form);
         $form=str_replace("{product_storage_id}",$storage_id,$form);
         $form=str_replace("{product_suppl_id}",$suppl_id,$form);
-        $form=str_replace("{prefix_url}",$language->getLangPrefix(),$form);
+        $form=str_replace("{prefix_url}",$prefix,$form);
         $form=str_replace("{product_info}",$showform->getArticleInfoForm($art_id, 1),$form);
         $form=str_replace("{product_delivery_short_info}",str_replace("<br>", " ", $delivery_info),$form);
         $form=str_replace("{product_delivery_class}",($delivery_days==0) ? "delivery-red" : ($delivery_days==1 ? "delivery-blue" : ($delivery_days>1 ? "delivery-dark" : "")),$form);
@@ -734,8 +734,7 @@ class SearchClass extends CatalogueClass {
     }
 
     function getStrLinking($str_id) { $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
-        $prefix = $language->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $list = "<div class=\"details-offers__linking\">";
         $list.="<div><span>{popular_cap}</span> <i class='fa fa-angle-down'></i></div>";
         $list.="<div><ul>";

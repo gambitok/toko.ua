@@ -754,4 +754,10 @@ class ClientClass {
         return "deleted client: #$client_id";
     }
 
+    function getClientMarkupMin($client_id) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT `markup_min` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;");
+        $markup_min = $db->result($r, 0, "markup_min");
+        return $markup_min;
+    }
+
 }

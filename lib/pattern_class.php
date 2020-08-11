@@ -100,7 +100,6 @@ class PatternClass extends CatalogueClass {
     }
 
     function showProductsForm($template_id, $page=1, $link="") { $db = DbSingleton::getTokoDb(); $count_arts=0;
-        $language=new LangClass;
         $r=$db->query("SHOW TABLES LIKE 'XX_TABLE_TEMPLATE_$template_id';"); $n=$db->num_rows($r);
         if ($n>0) {
             $form = $this->getHtmlForm("patterns");
@@ -117,7 +116,7 @@ class PatternClass extends CatalogueClass {
             $form=str_replace("{products_pagination}",$this->getTemplatePaginationForm($count_arts, $page),$form);
             $form=str_replace("{products_count}",$this->getTemplateCurrentPage($count_arts, $page),$form);
             $form=str_replace("{products_filters}",$this->showFiltersForm($template_id, $active_filters),$form);
-            $form=str_replace("{products_lang_prefix}",$language->getLangPrefix(),$form);
+            $form=str_replace("{products_lang_prefix}",$this->getLangPrefix(),$form);
         } else {
             $form = $this->getHtmlForm("error/404");
         }
@@ -155,7 +154,7 @@ class PatternClass extends CatalogueClass {
     }
 
     function showCheckedFilters($template_id, $active_filters) {
-        $language=new LangClass; $prefix=$language->getLangPrefix();
+        $prefix=$this->getLangPrefix();
         $title = "<div style=\"padding: 15px 0;\">";
         $template_name = $this->getTemplateLink($template_id);
         foreach ($active_filters as $param_id=>$values) {
@@ -177,7 +176,7 @@ class PatternClass extends CatalogueClass {
     }
 
     function showFiltersForm($template_id, $active_filters=[]) {
-        $language=new LangClass; $prefix=$language->getLangPrefix();
+        $prefix=$this->getLangPrefix();
         $template_name = $this->getTemplateLink($template_id);
 
         $mas=[]; $amount_max=5; $amount_values=0; $filters_list="";

@@ -12,11 +12,11 @@ class FormClass {
     public $uploads_link = "https://toko.ua/uploads/images/catalogue";
 
     function showModalForm($name) {
-        $menu=new MenuClass; $language=new LangClass;
+        $menu=new MenuClass;
         $form=$this->getHtmlForm("modals/$name");
         $form=$this->replaceLang($form);
         // REGION MODAL
-        $form=str_replace("{site_lang_prefix}", $language->getLangPrefix(), $form);
+        $form=str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
         $form=str_replace("{region_list}", $menu->getRegionList(), $form);
         $form=str_replace("{region_list_phone}", $menu->getRegionListPhone(), $form);
         return $form;
@@ -72,7 +72,7 @@ class FormClass {
     }
 
     function showArticle($art_id) {
-        $cat=new CatalogueClass; $language=new LangClass; $prod=new ProductsClass; $auto=new AutoClass;
+        $cat=new CatalogueClass; $prod=new ProductsClass; $auto=new AutoClass;
         $auto_typ_id = $prod->getCookieAuto();
 
         $form = $this->getHtmlForm("cat_article");
@@ -123,7 +123,7 @@ class FormClass {
         $form=str_replace("{art_basket}", $article["basket"], $form);
         $form=str_replace("{art_images}", $this->showArticlePhotoGallery($art_id), $form);
         $form=str_replace("{analogs_capa}", "$article_nr_displ $brand_name", $form);
-        $form=str_replace("{analogs_link}", "https://toko.ua".$language->getLangPrefix()."/search/$format_article/$brand_id/$brand_name/", $form);
+        $form=str_replace("{analogs_link}", "https://toko.ua".$this->getLangPrefix()."/search/$format_article/$brand_id/$brand_name/", $form);
 
         $analogs = $cat->shortSearchList($art_id);
         $form=str_replace("{analogs_list}", $analogs, $form);
@@ -302,7 +302,7 @@ class FormClass {
 
     function showHistoryForm() {
         $cat = new CatalogueClass; $client = new ClientClass;
-        $language = new LangClass; $prefix = $language->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $list = $client->getClientHistory();
         $result = "";
         for ($i=0; $i<count($list); $i++) { $col=$i+1;
@@ -320,7 +320,7 @@ class FormClass {
     // PHONE HISTORY
     function showHistoryList() {
         $cat = new CatalogueClass; $client = new ClientClass;
-        $language = new LangClass; $prefix = $language->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $list = $client->getClientHistory(); $max_count = 9;
         $list_history = "";
         for ($i=0; $i<count($list); $i++) {
@@ -424,8 +424,8 @@ class FormClass {
 
     /*==== INFO FORM ====*/
     function showPhotoGallery($art_id, $display=0) { $db = DbSingleton::getTokoDb();
-        $cat=new CatalogueClass; $language=new LangClass;
-        $prefix=$language->getLangPrefix();
+        $cat=new CatalogueClass;
+        $prefix=$this->getLangPrefix();
         $nophoto=$this->noPhoto;
         $list="";
         $article_name=$cat->getArticleSearch($art_id);
@@ -725,7 +725,7 @@ class FormClass {
     }
 
     function showHomeCars() { $db = DbSingleton::getTokoDb();
-        $language=new LangClass; $prefix=$language->getLangPrefix();
+        $prefix=$this->getLangPrefix();
         $list = "<div class='seo_details'><div class='seo-ul'>";
         $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `POSITION` DESC LIMIT 0,25;"); $n = $db->num_rows($r);
         $arr = [];

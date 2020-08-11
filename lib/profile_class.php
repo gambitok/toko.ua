@@ -33,7 +33,7 @@ class ProfileClass {
     }
 
     function getSpecialOffers() { $db=DbSingleton::getDbm();
-        $language = new LangClass; $prefix = $language->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $user_id = $this->getUser(); $client_id = $this->getClient(); $categories = [];
 
         $r=$db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n=$db->num_rows($r);
@@ -67,8 +67,8 @@ class ProfileClass {
     }
 
     function getNewsInfo() { $db=DbSingleton::getDbm(); $dbt=DbSingleton::getTokoDb();
-        $language=new LangClass; $prefix=$language->getLangPrefix();
-        $user_id=$this->getUser(); $lang=$language->getLanguage(); if ($lang!=1) $lang=5;
+        $prefix=$this->getLangPrefix();
+        $user_id=$this->getUser(); $lang=$this->getLanguage(); if ($lang!=1) $lang=5;
         $r=$db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
         $update_news=$db->result($r,0,"update_news");
         $r = $dbt->query("SELECT * FROM `news` WHERE `data`>'$update_news' AND `lang_id`='$lang' AND `status`=1;"); $n = $dbt->num_rows($r);
@@ -596,7 +596,7 @@ class ProfileClass {
         $r=$db->query("SELECT `status` FROM `cron_task_prices` WHERE `user_id`='$user_id' AND `status`=1;"); $n=$db->num_rows($r);
         if ($n>0) return "forming..."; else {
             $db->query("INSERT INTO `cron_task_prices` (`user_id`,`filename`,`date`,`status`) VALUES ('$user_id','$filename','$date',1);");
-            $text="date-start: ".$date;
+            $text = "date-start: ".$date;
             return $text;
         }
     }

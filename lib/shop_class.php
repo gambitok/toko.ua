@@ -6,10 +6,10 @@ class ShopClass {
     use Variables;
 
     function showBasketForm($cur=null) { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $showform=new FormClass; $exrate=new ExRateClass; $catalogue=new CatalogueClass; $language=new LangClass;
+        $client=new ClientClass; $showform=new FormClass; $exrate=new ExRateClass; $catalogue=new CatalogueClass;
         $sum = 0; $sum_total = 0; $count = 0;
         $disabled = $brow = $bprow = ""; $location="stayInOrder();"; $location_fast="stayInOrder();";
-        $client_id = $this->getClient(); $tpoint_id = $client->getTpoint(); $where = $client->getClientWhere(); $prefix = $language->getLangPrefix();
+        $client_id = $this->getClient(); $tpoint_id = $client->getTpoint(); $where = $client->getClientWhere(); $prefix = $this->getLangPrefix();
         if ($cur==null || $cur=="NaN") $cur = 1; setcookie("currency", $cur); $_SESSION["currency"] = $cur;
 
         $r = $db->query("SELECT * FROM `basket` WHERE $where ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
@@ -210,7 +210,7 @@ class ShopClass {
     }
 
     function getProposedArtsCard($art_id) {
-        $catalogue = new CatalogueClass; $language = new LangClass; $showform = new FormClass;
+        $catalogue = new CatalogueClass; $showform = new FormClass;
 
         $form = $this->getHtmlForm("orders/proposed_card");
 
@@ -224,7 +224,7 @@ class ShopClass {
         $basket = $article["basket"];
         $currency = $article["currency"];
         $img = $showform->getArticleActivePhoto($art_id);
-        $prefix = $language->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $format_name = $catalogue->getFormatAticle($article_nr_displ);
         $format_brand = $catalogue->getFormatBrand($brand_name);
 
@@ -247,8 +247,8 @@ class ShopClass {
     }
 
     function showMiniBasketForm() { $db = DbSingleton::getTokoDb();
-        $client = new ClientClass; $exrate = new ExRateClass; $showform = new FormClass; $language = new LangClass;
-        $client_id = $this->getClient(); $cur = $client->getClientCurrency($client_id); $where = $client->getClientWhere(); $prefix = $language->getLangPrefix();
+        $client = new ClientClass; $exrate = new ExRateClass; $showform = new FormClass;
+        $client_id = $this->getClient(); $cur = $client->getClientCurrency($client_id); $where = $client->getClientWhere(); $prefix = $this->getLangPrefix();
         $sum = 0;
 
         $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n = $db->num_rows($r);
@@ -1310,8 +1310,7 @@ class ShopClass {
 
     /*==== NOVA POSHTA API ====*/
     function getCitiesMainSelect($user_city = 0) { $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
-        $lang_id = $language->getLanguage();
+        $lang_id = $this->getLanguage();
         $postfix = ""; $where_user_city = ""; $list = "";
         if ($lang_id==1 || $lang_id==3) $postfix = "_RU";
         if ($user_city>0) {
@@ -1329,8 +1328,7 @@ class ShopClass {
     }
 
     function getCityVal($search_text) { $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
-        $lang_id = $language->getLanguage();
+        $lang_id = $this->getLanguage();
         $mas = []; $postfix = "";
         if ($lang_id==1 || $lang_id==3) $postfix = "_RU";
         $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR$postfix` LIKE '$search_text%' ORDER BY `CITY_NAME$postfix`;"); $n = $db->num_rows($r);

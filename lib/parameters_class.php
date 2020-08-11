@@ -58,7 +58,7 @@ class ParametersClass {
     }
 
     function showCheckedFilters($template_id, $active_filters) {
-        $language=new LangClass; $prefix=$language->getLangPrefix();
+        $prefix=$this->getLangPrefix();
         $title = "<div style=\"padding: 15px 0;\">";
         $template_name = $this->getTemplateLink($template_id);
         foreach ($active_filters as $param_id=>$values) {
@@ -286,7 +286,7 @@ class ParametersClass {
     }
 
     function showFiltersForm($template_id, $active_filters=[]) { $db = DbSingleton::getTokoDb();
-        $language=new LangClass; $prefix=$language->getLangPrefix();
+        $prefix=$this->getLangPrefix();
         $template_name = $this->getTemplateLink($template_id);
 
         $current_products_arts = implode(",", array_keys($this->getExistedProducts($this->getCurrentProducts($template_id))));
