@@ -908,6 +908,8 @@ class SearchClass extends CatalogueClass {
         return $params;
     }
 
+    /*==== TEST CATALOG ====*/
+
     function getCatalogParamForm() {
         $form = $this->getHtmlForm("catalog/form");
         $form = str_replace("{catalog_range}", $this->getCatalogParamList(), $form);
@@ -916,18 +918,46 @@ class SearchClass extends CatalogueClass {
 
     function getCatalogParamList() { $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT `GROUP_ID`, `TEX_RU` FROM `T2_TREE_GROUP` ORDER BY `TEX_RU`;"); $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $group_id = $db->result($r, $i-1, "GROUP_ID");
-            $text = $db->result($r, $i-1, "TEX_RU");
-            $list.="<li>
-                <a href='https://toko.ua/test_catalog/$group_id'>$group_id. $text</a>
-            </li>";
-        }
-        return $list;
-    }
+//        $r = $db->query("SELECT `GROUP_ID`, `TEX_RU` FROM `T2_TREE_GROUP` ORDER BY `TEX_RU`;"); $n = $db->num_rows($r);
+//        for ($i=1; $i<=$n; $i++) {
+//            $group_id = $db->result($r, $i-1, "GROUP_ID");
+//            $text = $db->result($r, $i-1, "TEX_RU");
+//            $list.="<li>
+//                <a href='https://toko.ua/test_catalog/$group_id'>$group_id. $text</a>
+//            </li>";
+//        }
 
-    /*==== TEST CATALOG ====*/
+        $arr = [];
+        $r = $db->query("SELECT * FROM `T2_TREE_HCG` WHERE 1;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $head_id = $db->result($r, $i-1, "HEAD_ID");
+            $cat_id = $db->result($r, $i-1, "CAT_ID");
+            $group_id = $db->result($r, $i-1, "GROUP_ID");
+            if (empty($arr[$head_id])) $arr[$head_id] = [];
+            if (empty($arr[$head_id][$cat_id])) $arr[$head_id][$cat_id] = [];
+            array_push($arr[$head_id][$cat_id], $group_id);
+        }
+
+        foreach ($arr as $head_id=>$cats) {
+            $head_name = $this->getHeadName($head_id);
+            $list.="<li><div><a>$head_name</a></div><ul>";
+            foreach ($cats as $cat_id=>$groups) {
+                $cat_name = $this->getCatName($cat_id);
+                $list.="<li><div><a>$cat_name</a></div><ul>";
+                foreach ($groups as $group_id) {
+                    $group_name = $this->getGroupName($group_id);
+                    $list.="<li><div><a href='https://toko.ua/test_catalog/$group_id'>$group_name</a></div></li>";
+                }
+                $list.="</ul></li>";
+            }
+            $list.="</ul></li>";
+        }
+
+        $form = $this->getHtmlForm("catalog/range");
+        $form = str_replace("{catalog_range}", $list, $form);
+
+        return $form;
+    }
 
     function getCatalogParamGroup($group_id, $filters) {
         $form = $this->getHtmlForm("catalog/list");

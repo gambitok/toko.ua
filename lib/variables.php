@@ -416,6 +416,22 @@ trait Variables {
         return $brand_link;
     }
 
+    function getHeadName($head_id) { $db=DbSingleton::getTokoDb();
+        $language = new LangClass;
+        $lang_id = $language->getLanguage(); $prefix = $language->getTexCapLanguage($lang_id);
+        $r = $db->query("SELECT `TEX_$prefix` FROM `T2_TREE_HEAD` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        $group_name = $db->result($r, 0, "TEX_$prefix");
+        return $group_name;
+    }
+
+    function getCatName($cat_id) { $db=DbSingleton::getTokoDb();
+        $language = new LangClass;
+        $lang_id = $language->getLanguage(); $prefix = $language->getTexCapLanguage($lang_id);
+        $r = $db->query("SELECT `TEX_$prefix` FROM `T2_TREE_CAT` WHERE `CAT_ID`='$cat_id' LIMIT 1;");
+        $group_name = $db->result($r, 0, "TEX_$prefix");
+        return $group_name;
+    }
+
     function getGroupName($group_id) { $db=DbSingleton::getTokoDb();
         $language = new LangClass;
         $lang_id = $language->getLanguage(); $prefix = $language->getTexCapLanguage($lang_id);
