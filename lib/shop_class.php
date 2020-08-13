@@ -6,9 +6,9 @@ class ShopClass {
     use Variables;
 
     function showBasketForm($cur=null) { $db = DbSingleton::getTokoDb();
-        $client=new ClientClass; $showform=new FormClass; $exrate=new ExRateClass; $catalogue=new CatalogueClass;
+        $client = new ClientClass; $showform = new FormClass; $exrate = new ExRateClass; $catalogue = new CatalogueClass;
         $sum = 0; $sum_total = 0; $count = 0;
-        $disabled = $brow = $bprow = ""; $location="stayInOrder();"; $location_fast="stayInOrder();";
+        $disabled = $brow = $bprow = ""; $location = "stayInOrder();"; $location_fast = "stayInOrder();";
         $client_id = $this->getClient(); $tpoint_id = $client->getTpoint(); $where = $client->getClientWhere(); $prefix = $this->getLangPrefix();
         if ($cur==null || $cur=="NaN") $cur = 1; setcookie("currency", $cur); $_SESSION["currency"] = $cur;
 
@@ -429,138 +429,140 @@ class ShopClass {
         return $summary;
     }
 
-     function getUpdateData($art_id, $suppl_id, $storage_id, $amount) {
-        $catalogue = new CatalogueClass; $exrate = new ExRateClass; $client = new ClientClass;
-        $tpoint_id = $client->getTpoint();
-        $price = $catalogue->getArticlePrice($art_id);
-        if ($suppl_id!=0) $price = $catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-        if (!($catalogue->checkActionPrice($art_id))) {} else {
-            list(, $action_amount, $action_price) = $catalogue->checkActionPrice($art_id);
-            $action_price = $exrate->getKoursFromUSA($action_price, 1);
-            if ($amount>=$action_amount) {$price = $action_price;}
-        }
-        if ($suppl_id==0) {
-            $deliveryData = $catalogue->getTpointDeliveryInfo($tpoint_id, $storage_id);
-        } else {
-            $deliveryData = $catalogue->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
-        }
-        $dd = $deliveryData["days"];
-        $stock = $this->getArticleStock($art_id, $storage_id);
-        if ($stock==0 || $stock=="") $stock = $this->getArticleSupplStock($art_id, $suppl_id, $storage_id);
-        return array(intval($dd), intval($stock), floatval($price));
-     }
+//     function getUpdateData($art_id, $suppl_id, $storage_id, $amount) {
+//        $catalogue = new CatalogueClass; $exrate = new ExRateClass; $client = new ClientClass;
+//        $tpoint_id = $client->getTpoint();
+//        $price = $catalogue->getArticlePrice($art_id);
+//        if ($suppl_id!=0) $price = $catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+//        if (!($catalogue->checkActionPrice($art_id))) {} else {
+//            list(, $action_amount, $action_price) = $catalogue->checkActionPrice($art_id);
+//            $action_price = $exrate->getKoursFromUSA($action_price, 1);
+//            if ($amount>=$action_amount) {$price = $action_price;}
+//        }
+//        if ($suppl_id==0) {
+//            $deliveryData = $catalogue->getTpointDeliveryInfo($tpoint_id, $storage_id);
+//        } else {
+//            $deliveryData = $catalogue->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
+//        }
+//        $dd = $deliveryData["days"];
+//        $stock = $this->getArticleStock($art_id, $storage_id);
+//        if ($stock==0 || $stock=="") $stock = $this->getArticleSupplStock($art_id, $suppl_id, $storage_id);
+//        return array(intval($dd), intval($stock), floatval($price));
+//     }
 
-     function getClientDeliveryInfo($client_id) { $db = DbSingleton::getDbm();
-        $client = new ClientClass;
-        $true_client = $client->getClient(); $list = "";
-        if ($client->checkRetailClient($true_client)) $where_type = " AND `type_id`=1"; else $where_type=" AND `type_id`=2";
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_ADDRESS` WHERE `client_id`='$client_id' $where_type;"); $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $address = $db->result($r, $i-1, "address");
-            $list.="<option value=\"$i\">$address</option>";
-        }
-        return $list;
-     }
+//     function getClientDeliveryInfo($client_id) { $db = DbSingleton::getDbm();
+//        $client = new ClientClass;
+//        $true_client = $client->getClient(); $list = "";
+//        if ($client->checkRetailClient($true_client)) $where_type = " AND `type_id`=1"; else $where_type=" AND `type_id`=2";
+//        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_ADDRESS` WHERE `client_id`='$client_id' $where_type;"); $n = $db->num_rows($r);
+//        for ($i=1; $i<=$n; $i++) {
+//            $address = $db->result($r, $i-1, "address");
+//            $list.="<option value=\"$i\">$address</option>";
+//        }
+//        return $list;
+//     }
 
-    function showOrderForm() {
-        $client = new ClientClass; $menu = new MenuClass; $exrate = new ExRateClass; $showform = new FormClass;
-        list($basket, $price) = $this->showMiniBasketForm(); list($client_id, $user_id) = $client->getClient();
-        $cur = $client->getClientCurrency($client_id); $cur_cap = $exrate->getKoursSymbol($cur);
+//    function showOrderForm() {
+//        $client = new ClientClass; $menu = new MenuClass; $exrate = new ExRateClass; $showform = new FormClass;
+//        list($basket, $price) = $this->showMiniBasketForm(); list($client_id, $user_id) = $client->getClient();
+//        $cur = $client->getClientCurrency($client_id); $cur_cap = $exrate->getKoursSymbol($cur);
+//
+//        $orderClientData = $client->getOrderInfo($client_id, $user_id);
+//        $phone = $orderClientData["phone"];
+//        $email = $orderClientData["email"];
+//        $name = $orderClientData["name"];
+//        $city = $orderClientData["city"];
+//        $tpoint_id = $client->getTpointUser($client_id);
+//        $city_range = $showform->showCityFormSelected("", $city);
+//
+//        if ($client->checkUnRegClient()) $valid = "fas fa-times-circle non_accept validate_input"; else $valid = "fas fa-check-circle accept validate_input";
+//
+//        $delivery_range = $menu->getManualOptions("delivery_type");
+//        $carrier_id_range = $menu->getManualOptions("carrier_id");
+//        $payment_range = $menu->getManualOptions("payment");
+//        $delivery_info_select = $this->getClientDeliveryInfo($client_id);
+//
+//        $form=$this->getHtmlForm("order/order");
+//        $form=str_replace("{show_basket}",$basket,$form);
+//        $form=str_replace("{full_price}",$price,$form);
+//        $form=str_replace("{currency_cap}",$cur_cap,$form);
+//        $form=str_replace("{name_value}",$name,$form);
+//        $form=str_replace("{phone_value}",$phone,$form);
+//        $form=str_replace("{email_value}",$email,$form);
+//        $form=str_replace("{valid}",$valid,$form);
+//        $form=str_replace("{client_value}",$client_id,$form);
+//        $form=str_replace("{user_value}",$user_id,$form);
+//        $form=str_replace("{tpoint_value}",$tpoint_id,$form);
+//        $form=str_replace("{city_range}",$city_range,$form);
+//        $form=str_replace("{category_options}", $this->getManualOptions("customers_categories"), $form);
+//        $form=str_replace("{delivery_range}",$delivery_range,$form);
+//        $form=str_replace("{delivery_info_select}",$delivery_info_select,$form);
+//        $form=str_replace("{carrier_id_range}",$carrier_id_range,$form);
+//        $form=str_replace("{payment_range}",$payment_range,$form);
+//        if ($client->checkUnRegClient()) {
+//            $order_type_caption="{new_buyer}";
+//            $order_type_display="inline";
+//        } else {
+//            $order_type_caption="{check_the_data}";
+//            $order_type_display="none";
+//        }
+//        $form=str_replace("{order_type_caption}",$order_type_caption,$form);
+//        $form=str_replace("{order_type_display}",$order_type_display,$form);
+//        return $form;
+//    }
 
-        $orderClientData = $client->getOrderInfo($client_id, $user_id);
-        $phone = $orderClientData["phone"];
-        $email = $orderClientData["email"];
-        $name = $orderClientData["name"];
-        $city = $orderClientData["city"];
-        $tpoint_id = $client->getTpointUser($client_id);
-        $city_range = $showform->showCityFormSelected("", $city);
+//    function finishOrder($client_id, $user_id, $tpoint_id, $name, $phone, $region, $email, $delivery, $delivery_info, $payment, $payment_info, $carrier_id) { $db = DbSingleton::getDbm();
+//        $client=new ClientClass;
+//        if ($payment=="") $payment = 117;
+//		if ($delivery=="") $delivery = 118;
+//		if ($carrier_id=="") $carrier_id = 0;
+//        if ($client_id=="undefined") $client_id = $this->getClient();
+//        if ($user_id=="undefined") $user_id = $this->getUser();
+//        $cookie = $_COOKIE["session_id"]; $cash_id = intval($client->getClientCurrency($client_id));
+//
+//        $r = $db->query("SELECT MAX(`id`) as max_order FROM `orders_new`;"); $max = intval($db->result($r,0,"max_order"))+1;
+//        $sum = $this->finishOrderBasket($max); $new_client = $user_id;
+//
+//        if ($user_id==0) {
+//            if ($region=="") $region = 0;
+//            if ($tpoint_id==0) $tpoint_id = $client->getTpoint();
+//            $new_client = $client->regClientRetail($tpoint_id, $name, $phone, $region, $email);
+//            $this->addNewRetailAddressForm($new_client, $delivery_info);
+//        } else {
+//            $orderClientData = $client->getOrderInfo($client_id, $user_id);
+//            $phone = $orderClientData["phone"];
+//            $email = $orderClientData["email"];
+//            $name = $orderClientData["name"];
+//            $tpoint_id = $client->getTpointUser($client_id);
+//        }
+//
+//        $db->query("INSERT INTO `orders_new` (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `delivery`, `carrier_id`, `delivery_info`, `payment`, `payment_info`, `price_summ`)
+//        VALUES ($max, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '$name', '$email', '$phone', '$region', $delivery, $carrier_id, '$delivery_info', $payment, '$payment_info', $sum);");
+//        return array($max, $new_client);
+//    }
 
-        if ($client->checkUnRegClient()) $valid = "fas fa-times-circle non_accept validate_input"; else $valid = "fas fa-check-circle accept validate_input";
+//    function addNewAdressForm($client_id, $address) { $db = DbSingleton::getDbm();
+//        $user_id = $this->getUser();
+//        $answer = "";
+//        if ($client_id>0 && $address!="") {
+//            if ($user_id!=0 && $user_id!="0") $db->query("INSERT INTO `A_CLIENTS_USERS_ADDRESS` (`client_id`, `address`) VALUES ('$client_id', '$address');");
+//            $answer = 1;
+//        }
+//        return $answer;
+//    }
 
-        $delivery_range = $menu->getManualOptions("delivery_type");
-        $carrier_id_range = $menu->getManualOptions("carrier_id");
-        $payment_range = $menu->getManualOptions("payment");
-        $delivery_info_select = $this->getClientDeliveryInfo($client_id);
+//    function addNewRetailAddressForm($client_id, $address) { $db = DbSingleton::getDbm();
+//        $answer = "";
+//        if ($client_id>0 && $address!="") {
+//            $db->query("INSERT INTO `A_CLIENTS_USERS_ADDRESS` (`client_id`, `address`, `type_id`) VALUES ('$client_id', '$address', '2');");
+//            $answer = 1;
+//        }
+//        return $answer;
+//    }
 
-        $form=$this->getHtmlForm("order/order");
-        $form=str_replace("{show_basket}",$basket,$form);
-        $form=str_replace("{full_price}",$price,$form);
-        $form=str_replace("{currency_cap}",$cur_cap,$form);
-        $form=str_replace("{name_value}",$name,$form);
-        $form=str_replace("{phone_value}",$phone,$form);
-        $form=str_replace("{email_value}",$email,$form);
-        $form=str_replace("{valid}",$valid,$form);
-        $form=str_replace("{client_value}",$client_id,$form);
-        $form=str_replace("{user_value}",$user_id,$form);
-        $form=str_replace("{tpoint_value}",$tpoint_id,$form);
-        $form=str_replace("{city_range}",$city_range,$form);
-        $form=str_replace("{category_options}", $this->getManualOptions("customers_categories"), $form);
-        $form=str_replace("{delivery_range}",$delivery_range,$form);
-        $form=str_replace("{delivery_info_select}",$delivery_info_select,$form);
-        $form=str_replace("{carrier_id_range}",$carrier_id_range,$form);
-        $form=str_replace("{payment_range}",$payment_range,$form);
-        if ($client->checkUnRegClient()) {
-            $order_type_caption="{new_buyer}";
-            $order_type_display="inline";
-        } else {
-            $order_type_caption="{check_the_data}";
-            $order_type_display="none";
-        }
-        $form=str_replace("{order_type_caption}",$order_type_caption,$form);
-        $form=str_replace("{order_type_display}",$order_type_display,$form);
-        return $form;
-    }
+/*==== NEW ORDER FORM ====*/
 
-    function finishOrder($client_id, $user_id, $tpoint_id, $name, $phone, $region, $email, $delivery, $delivery_info, $payment, $payment_info, $carrier_id) { $db = DbSingleton::getDbm();
-        $client=new ClientClass;
-        if ($payment=="") $payment = 117;
-		if ($delivery=="") $delivery = 118;
-		if ($carrier_id=="") $carrier_id = 0;
-        if ($client_id=="undefined") $client_id = $this->getClient();
-        if ($user_id=="undefined") $user_id = $this->getUser();
-        $cookie = $_COOKIE["session_id"]; $cash_id = intval($client->getClientCurrency($client_id));
-
-        $r = $db->query("SELECT MAX(`id`) as max_order FROM `orders_new`;"); $max = intval($db->result($r,0,"max_order"))+1;
-        $sum = $this->finishOrderBasket($max); $new_client = $user_id;
-
-        if ($user_id==0) {
-            if ($region=="") $region = 0;
-            if ($tpoint_id==0) $tpoint_id = $client->getTpoint();
-            $new_client = $client->regClientRetail($tpoint_id, $name, $phone, $region, $email);
-            $this->addNewRetailAddressForm($new_client, $delivery_info);
-        } else {
-            $orderClientData = $client->getOrderInfo($client_id, $user_id);
-            $phone = $orderClientData["phone"];
-            $email = $orderClientData["email"];
-            $name = $orderClientData["name"];
-            $tpoint_id = $client->getTpointUser($client_id);
-        }
-
-        $db->query("INSERT INTO `orders_new` (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `delivery`, `carrier_id`, `delivery_info`, `payment`, `payment_info`, `price_summ`) 
-        VALUES ($max, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '$name', '$email', '$phone', '$region', $delivery, $carrier_id, '$delivery_info', $payment, '$payment_info', $sum);");
-        return array($max, $new_client);
-    }
-
-    function addNewAdressForm($client_id, $address) { $db = DbSingleton::getDbm();
-        $user_id = $this->getUser();
-        $answer = "";
-        if ($client_id>0 && $address!="") {
-            if ($user_id!=0 && $user_id!="0") $db->query("INSERT INTO `A_CLIENTS_USERS_ADDRESS` (`client_id`, `address`) VALUES ('$client_id', '$address');");
-            $answer = 1;
-        }
-        return $answer;
-    }
-
-    function addNewRetailAddressForm($client_id, $address) { $db = DbSingleton::getDbm();
-        $answer = "";
-        if ($client_id>0 && $address!="") {
-            $db->query("INSERT INTO `A_CLIENTS_USERS_ADDRESS` (`client_id`, `address`, `type_id`) VALUES ('$client_id', '$address', '2');");
-            $answer = 1;
-        }
-        return $answer;
-    }
-
-    // BASKET to ORDER
+    /*==== BASKET to ORDER ====*/
     function finishOrderBasket($order_id) { $db = DbSingleton::getDbm(); $dbt = DbSingleton::getTokoDb();
         $client = new ClientClass;
         $sum = 0; $where = $client->getClientWhere();
@@ -588,7 +590,7 @@ class ShopClass {
         return $sum;
     }
 
-    /*==== DELIVERY INDEX ADD ====*/
+    /*==== ADD DELIVERY INDEX ====*/
     function setDeliveryIndex($order_id) { $db = DbSingleton::getDbm();
         $client = new ClientClass;
         $r = $db->query("SELECT * FROM `orders_new` WHERE `ID`='$order_id' LIMIT 1;");
@@ -606,6 +608,8 @@ class ShopClass {
         }
         return $price;
     }
+
+    /*==== GET Delivery index ====*/
     function getDeliveryIndex($delivery_id, $tpoint_id) {
         $cat = new CatalogueClass; $client = new ClientClass;
         $art_id = 0;
@@ -628,30 +632,29 @@ class ShopClass {
 
     // GET ORDER SUM
     function getOrderSumm($order_id) { $db = DbSingleton::getDbm();
-        $summ = 0;
-        $r = $db->query("SELECT * FROM `orders_new` WHERE `id`='$order_id' LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n>0) $summ = $db->result($r, 0, "price_summ");
+        $r = $db->query("SELECT `price_summ` FROM `orders_new` WHERE `id`='$order_id' LIMIT 1;"); $n = $db->num_rows($r);
+        $n>0 ? $summ = $db->result($r, 0, "price_summ") : $summ = 0;
         return $summ;
     }
 
-    // REGISTRATION SUCCESS FORM
-    function showRegistrationSuccessForm($order_id, $user_id) {
-        $client = new ClientClass;
-        $client_id = $this->getClient();
-        $form = $this->getHtmlForm("order/order_success");
-        $form = str_replace("{order_id}", $order_id, $form);
-        $form = str_replace("{client_id}", $user_id, $form);
-        $clientData = $client->getClientInfo($client_id, $user_id);
-        $phone = $clientData["phone"];
-        $email = $clientData["email"];
-        $name = $clientData["name"];
-        $form = str_replace("{input_name}", $name, $form);
-        $form = str_replace("{input_phone}", $phone, $form);
-        $form = str_replace("{input_email}", $email, $form);
-        $form = str_replace("{status_login}", $client->checkUnRegClient() ? "none" : "dflex", $form);
-        $form = str_replace("{status_logout}", $client->checkUnRegClient() ? "dflex" : "none", $form);
-        return $form;
-    }
+//    // REGISTRATION SUCCESS FORM
+//    function showRegistrationSuccessForm($order_id, $user_id) {
+//        $client = new ClientClass;
+//        $client_id = $this->getClient();
+//        $form = $this->getHtmlForm("order/order_success");
+//        $form = str_replace("{order_id}", $order_id, $form);
+//        $form = str_replace("{client_id}", $user_id, $form);
+//        $clientData = $client->getClientInfo($client_id, $user_id);
+//        $phone = $clientData["phone"];
+//        $email = $clientData["email"];
+//        $name = $clientData["name"];
+//        $form = str_replace("{input_name}", $name, $form);
+//        $form = str_replace("{input_phone}", $phone, $form);
+//        $form = str_replace("{input_email}", $email, $form);
+//        $form = str_replace("{status_login}", $client->checkUnRegClient() ? "none" : "dflex", $form);
+//        $form = str_replace("{status_logout}", $client->checkUnRegClient() ? "dflex" : "none", $form);
+//        return $form;
+//    }
 
     // GET CLIENT DELIVERY DATA (by CITY, USER_ID)
     function getUserSavedData($user_id, $city_id) { $db = DbSingleton::getDbm();
@@ -695,7 +698,7 @@ class ShopClass {
         return array($status, $list, $info_id);
     }
 
-    /*==== NEW ORDER FORM ====*/
+    /*==== Get Success Order Form ====*/
     function getOrderContentForm($order_id, $user_id, $user_status) {
         $client = new ClientClass;
         if ($user_status==0) {
@@ -718,16 +721,17 @@ class ShopClass {
         return $form;
     }
 
+    /*==== GET Order Form ====*/
     function getOrderForm() {
+        $client = new ClientClass;
         $user_id = $this->getUser();
         $user_city = 0; $user_name = ""; $user_phone = ""; $user_email = ""; $status = false;
         if ($user_id>0) {
-            list($user_name, $user_phone, $user_email, $user_city) = $this->getClientUserData($user_id);
+            list($user_name, $user_phone, $user_email, $user_city) = $client->getClientUserData($user_id);
             if ($user_id>0 && $user_phone!="" && $user_name!="" && $user_city!="") {
                 $status = true;
             }
         }
-
         $form = $this->getHtmlForm("orders/form");
         $form = str_replace("{order_user_id}", $user_id, $form);
         $form = str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
@@ -742,25 +746,12 @@ class ShopClass {
         return $form;
     }
 
-    function getClientUserData($user_id) { $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
-        $user_name = $db->result($r, 0, "name");
-        $user_phone = $db->result($r, 0, "phone");
-        $user_email = $db->result($r, 0, "email");
-        $user_city = 0;
-        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `USER_ID`='$user_id' ORDER BY `ID` DESC LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n>0) $user_city = $db->result($r, 0, "CITY_ID");
-        return array($user_name, $user_phone, $user_email, $user_city);
-    }
-
+    /*==== GET Order Delivery Form ====*/
     function getOrderDelivery() { $db = DbSingleton::getTokoDb();
         $client = new ClientClass;
-        $tpoint_id = $client->getTpointUser($this->getClient());
-
         $form = $this->getHtmlForm("orders/delivery");
-        $form = str_replace("{tpoint_address}", $client->getTpointAddress($tpoint_id), $form);
+        $form = str_replace("{tpoint_address}", $client->getTpointAddress($client->getTpointUser($this->getClient())), $form);
         $form = str_replace("{express_delivery_list}", $this->getDeliveryExpressList(), $form);
-
         $r = $db->query("SELECT * FROM `T2_DELIVERY`;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $id = $db->result($r, $i - 1, "ID");
@@ -778,12 +769,7 @@ class ShopClass {
         return $form;
     }
 
-    function setCityDepartments($city_ref) {
-        $list_up = "<option value='0'>{not_chosen}</option>";
-        $list_np = $this->getNovaPoshtaWarehousesSelect($city_ref);
-        return array($list_np, $list_up);
-    }
-
+    /*==== GET Order Payment Form ====*/
     function getOrderPayment() { $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("orders/payment");
         $r = $db->query("SELECT * FROM `T2_PAYMENT`;"); $n = $db->num_rows($r);
@@ -798,12 +784,12 @@ class ShopClass {
         return $form;
     }
 
+    /*==== GET AJAX Order Delivery Form ====*/
     function getOrderDeliveryBlock($delivery_id, $city_id) { $db = DbSingleton::getDbm();
         $result = 0;
         $r = $db->query("SELECT * FROM `orders_valid_delivery` WHERE `DELIVERY_ID`='$delivery_id' LIMIT 1;");
         $valid_main = $db->result($r, 0, "VALID_TYPE_MAIN");
         $valid_other = $db->result($r, 0, "VALID_TYPE_OTHER");
-
         // MAIN CITTIES
         if (in_array($city_id, [10108, 24861])) {
             if ($valid_main) {
@@ -816,10 +802,10 @@ class ShopClass {
                 $result = 1;
             }
         }
-
         return $result;
     }
 
+    /*==== GET AJAX Order Delivery Form ====*/
     function getOrderPaymentBlock($payment_id, $delivery_id) { $db = DbSingleton::getDbm();
         $result = 0;
         $del_types_1 = [1, 2, 3];
@@ -842,6 +828,7 @@ class ShopClass {
         return $result;
     }
 
+    /*==== SET City Address ====*/
     function setCityAddress($city_id) {
         $client = new ClientClass;
         $cities = [24861, 10108]; $city_address = "";
@@ -855,6 +842,7 @@ class ShopClass {
         return $city_address;
     }
 
+    /*==== GET Delivery Express ====*/
     function getDeliveryExpressList() { $db = DbSingleton::getTokoDb();
         $list = "";
         $r = $db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` ORDER BY `ID` ASC;"); $n = $db->num_rows($r);
@@ -865,13 +853,6 @@ class ShopClass {
         }
         $list = $this->replaceLang($list);
         return $list;
-    }
-
-    function getDepartmentExpressName($delivery_express) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_express' LIMIT 1;");
-        $text = $db->result($r, 0, "TEXT");
-        $text = $this->replaceLang($text);
-        return $text;
     }
 
     function validOrder($name, $phone, $city, $delivery, $delivery_type, $payment, $email, $comment) {
@@ -917,29 +898,26 @@ class ShopClass {
         return $form;
     }
 
+    /*==== SAVE Fast Order ====*/
     function saveFastOrder($phone) {
         $client = new ClientClass;
-
         list(, $user_id) = $client->getAuthorizedUser($phone);
         $client_id = $client->getClientByUser($user_id);
         $user_status = 0;
-
         // CREATE CLIENT
         if ($user_id==0) {
             list($client_id, $user_id) = $client->addRetailClient($this->getClient(), $phone);
             $user_status = 1;
         }
-
         $tpoint_id = $client->getTpoint();
         $cookie = $_COOKIE["session_id"];
         $cash_id = intval($client->getClientCurrency($client_id));
-
         // CREATE ORDER
         $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0);
-
         return array($order_id, $user_id, $user_status);
     }
 
+    /*==== SAVE Order ====*/
     function saveOrder($user_id, $name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment, $recipient_name, $recipient_phone) {
         $client = new ClientClass;
         if ($user_id==0 || $user_id=="" || $user_id=="undefined") {
@@ -978,11 +956,6 @@ class ShopClass {
         return array($order_id, $user_id, $user_status);
     }
 
-    function updateOrderSum($order_id, $order_sum) { $db = DbSingleton::getDbm();
-        $db->query("UPDATE `orders_new` SET `price_summ`='$order_sum' WHERE `id`='$order_id' LIMIT 1;");
-        return true;
-    }
-
     function saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id) { $db = DbSingleton::getDbm();
         $client = new ClientClass;
         $phone = $client->formatValidPhone($phone);
@@ -993,7 +966,7 @@ class ShopClass {
         // CREATE ORDER STR
         $order_sum = $this->finishOrderBasket($order_id);
         // SET ORDER SUM
-        $this->updateOrderSum($order_id, $order_sum);
+        $db->query("UPDATE `orders_new` SET `price_summ`='$order_sum' WHERE `id`='$order_id' LIMIT 1;");
         return $order_id;
     }
 
@@ -1090,7 +1063,6 @@ class ShopClass {
 
     function setClientOrderInfo($id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `ID`='$id' AND `STATUS`=1;");
-
         $city_id = $db->result($r, 0, "CITY_ID");
         $delivery_id = $db->result($r, 0, "DELIVERY_ID");
         $payment_id = $db->result($r, 0, "PAYMENT_ID");
@@ -1102,9 +1074,7 @@ class ShopClass {
         $express_info = $db->result($r, 0, "DEL_EXPRESS_INFO");
         $recipient_name = $db->result($r, 0, "DEL_NAME");
         $recipient_phone = $db->result($r, 0, "DEL_PHONE");
-
         $delivery_info = ["street"=>$street, "house"=>$house, "porch"=>$porch, "department"=>$department, "express"=>$express, "express_info"=>$express_info];
-
         return array("city_id"=>$city_id, "delivery_id"=>$delivery_id, "payment_id"=>$payment_id, "delivery_info"=>$delivery_info, "recipient_name"=>$recipient_name, "recipient_phone"=>$recipient_phone);
     }
 
@@ -1117,7 +1087,6 @@ class ShopClass {
         $department_id = $delivery_type["department_id"]; // department ID
         $delivery_express = $delivery_type["delivery_express"]; // express ID
         $delivery_express_department = $delivery_type["delivery_express_department"];
-
         switch ($delivery) {
             case 1: {
                 break;
@@ -1172,7 +1141,6 @@ class ShopClass {
                 break;
             }
         }
-
         return array($result, $fields);
     }
 
@@ -1316,7 +1284,6 @@ class ShopClass {
         if ($user_city>0) {
             $where_user_city = "OR `CITY_ID`='$user_city'";
         }
-
         $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `REGION_NAME`='' $where_user_city ORDER BY `CITY_NAME$postfix` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $city_id = $db->result($r, $i-1, "CITY_ID");
@@ -1358,16 +1325,22 @@ class ShopClass {
         return $list;
     }
 
-    function getNovaPoshtaCitiesSelect() {
-        $list = "";
-        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-        $arr = $np->getCities()['data'];
-        foreach ($arr as $val) {
-            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-            $ref = $val["Ref"];
-            $list.="<option value='$ref'>$name</option>";
-        }
-        return $list;
+//    function getNovaPoshtaCitiesSelect() {
+//        $list = "";
+//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+//        $arr = $np->getCities()['data'];
+//        foreach ($arr as $val) {
+//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
+//            $ref = $val["Ref"];
+//            $list.="<option value='$ref'>$name</option>";
+//        }
+//        return $list;
+//    }
+
+    function setCityDepartments($city_ref) {
+        $list_up = "<option value='0'>{not_chosen}</option>";
+        $list_np = $this->getNovaPoshtaWarehousesSelect($city_ref);
+        return array($list_np, $list_up);
     }
 
     function getNovaPoshtaWarehousesSelect($ref) {

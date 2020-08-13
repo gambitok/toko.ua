@@ -174,7 +174,7 @@ if ($_REQUEST["w"]=="deleteFromBasket"){ $GLOBALS['_RESULT'] = array("content"=>
 
 if ($_REQUEST["w"]=="checkBasketItem"){ $GLOBALS['_RESULT'] = array("content"=>$shop->checkBasketItem($_REQUEST["art_id"], $_REQUEST["storage_id"], $_REQUEST["status"]));}
 
-if ($_REQUEST["w"]=="finish_order"){ $GLOBALS['_RESULT'] = array("content"=>$shop->finishOrder($_REQUEST["client_id"],$_REQUEST["client_user_id"],$_REQUEST["tpoint_id"],$_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["region"],$_REQUEST["email"],$_REQUEST["delivery"],$_REQUEST["delivery_info"],$_REQUEST["payment"],$_REQUEST["payment_info"],$_REQUEST["carrier_id"]));}
+//if ($_REQUEST["w"]=="finish_order"){ $GLOBALS['_RESULT'] = array("content"=>$shop->finishOrder($_REQUEST["client_id"],$_REQUEST["client_user_id"],$_REQUEST["tpoint_id"],$_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["region"],$_REQUEST["email"],$_REQUEST["delivery"],$_REQUEST["delivery_info"],$_REQUEST["payment"],$_REQUEST["payment_info"],$_REQUEST["carrier_id"]));}
 
 if ($_REQUEST["w"]=="finish_fast_order"){ $GLOBALS['_RESULT'] = array("content"=>$shop->saveFastOrder($_REQUEST["phone"]));}
 

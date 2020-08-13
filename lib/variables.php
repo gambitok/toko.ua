@@ -185,14 +185,14 @@ trait Variables {
 
     /*==== PHOTO =====================================================================================================*/
 
-    function getArticlePhoto($art_id) { $db=DbSingleton::getTokoDb();
+    function getArticlePhoto($art_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `MAIN` DESC, `PHOTO_NAME` ASC LIMIT 1;");
         $photo_name = $db->result($r,0,"PHOTO_NAME");
         $photo_src = "https://toko.ua/uploads/images/catalogue/$photo_name";
         return $photo_src;
     }
 
-    function getBasketArticlePhoto($art_id) { $db=DbSingleton::getTokoDb();
+    function getBasketArticlePhoto($art_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `MAIN` DESC, `PHOTO_NAME` ASC LIMIT 1;"); $n=$db->num_rows($r);
         $photo_name = $db->result($r, 0, "PHOTO_NAME");
         $photo_src = "https://toko.ua/uploads/images/catalogue/$photo_name";
@@ -236,7 +236,7 @@ trait Variables {
         return array($pay_type_id, $name);
     }
 
-    function getFuelName($fuel_id) { $db=DbSingleton::getTokoDb();
+    function getFuelName($fuel_id) { $db = DbSingleton::getTokoDb();
         $language = new LangClass;
         $lang_id = $language->getLanguage();
         $fuel_id = $this->getUrlNumber($fuel_id);
@@ -268,7 +268,7 @@ trait Variables {
         return $link;
     }
 
-    function getCatalogueBrandLink2($article_nr_search) { $db=DbSingleton::getTokoDb();
+    function getCatalogueBrandLink2($article_nr_search) { $db = DbSingleton::getTokoDb();
         $brand_link="";
         $r=$db->query("SELECT * FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search';"); $n=$db->num_rows($r);
         if ($n==1) {
@@ -316,21 +316,21 @@ trait Variables {
         return $page_pagination;
     }
 
-    function getDeliveryName($delivery_id) { $db=DbSingleton::getTokoDb();
+    function getDeliveryName($delivery_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT` FROM `T2_DELIVERY` WHERE `ID`='$delivery_id' LIMIT 1;");
         $name = $db->result($r, 0, "TEXT");
         $name = $this->replaceLang($name);
         return $name;
     }
 
-    function getDepartmentExpressName($delivery_id) { $db=DbSingleton::getTokoDb();
+    function getDepartmentExpressName($delivery_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT` FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_id' LIMIT 1;");
         $name = $db->result($r, 0, "TEXT");
         $name = $this->replaceLang($name);
         return $name;
     }
 
-    function getPaymentName($payment_id) { $db=DbSingleton::getTokoDb();
+    function getPaymentName($payment_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT` FROM `T2_PAYMENT` WHERE `ID`='$payment_id' LIMIT 1;");
         $name = $db->result($r, 0, "TEXT");
         $name = $this->replaceLang($name);
@@ -350,73 +350,73 @@ trait Variables {
 
     /*==== TEMPLATE VARIABLES ========================================================================================*/
 
-    public function getTemplateID($template_link) { $db=DbSingleton::getTokoDb();
+    public function getTemplateID($template_link) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEMPLATE_ID` FROM `T2_CATALOGUES_TEMPLATES` WHERE `TEMPLATE_LINK`='$template_link' LIMIT 1;");
         $template_id = $db->result($r,0,"TEMPLATE_ID");
         return $template_id;
     }
-    public function getTemplateName($template_id) { $db=DbSingleton::getTokoDb();
+    public function getTemplateName($template_id) { $db = DbSingleton::getTokoDb();
         $template_id = $this->getUrlNumber($template_id);
         $r = $db->query("SELECT `TEMPLATE_NAME` FROM `T2_CATALOGUES_TEMPLATES` WHERE `TEMPLATE_ID`='$template_id' LIMIT 1;");
         $template_name = $db->result($r,0,"TEMPLATE_NAME");
         return $template_name;
     }
-    public function getTemplateLink($template_id) { $db=DbSingleton::getTokoDb();
+    public function getTemplateLink($template_id) { $db = DbSingleton::getTokoDb();
         $template_id = $this->getUrlNumber($template_id);
         $r = $db->query("SELECT `TEMPLATE_LINK` FROM `T2_CATALOGUES_TEMPLATES` WHERE `TEMPLATE_ID`='$template_id' LIMIT 1;");
         $template_link = $db->result($r,0,"TEMPLATE_LINK");
         return $template_link;
     }
 
-    public function getCatalogueParamID($param_link, $template_id=1) { $db=DbSingleton::getTokoDb();
+    public function getCatalogueParamID($param_link, $template_id=1) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `PARAM_ID` FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id' AND `PARAM_LINK`='$param_link' LIMIT 1;");
         $param_id=$db->result($r,0,"PARAM_ID");
         return $param_id;
     }
-    public function getCatalogueParamName($param_id, $template_id=1) { $db=DbSingleton::getTokoDb();
+    public function getCatalogueParamName($param_id, $template_id=1) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `PARAM_NAME` FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id' AND `PARAM_ID`='$param_id' LIMIT 1;");
         $param_name=$db->result($r,0,"PARAM_NAME");
         return $param_name;
     }
-    public function getCatalogueParamLink($param_id) { $db=DbSingleton::getTokoDb();
+    public function getCatalogueParamLink($param_id) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `PARAM_LINK` FROM `T2_CATALOGUES_PARAMS` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
         $param_link=$db->result($r,0,"PARAM_LINK");
         return $param_link;
     }
-    public function getParamFromValue($value_id) { $db=DbSingleton::getTokoDb();
+    public function getParamFromValue($value_id) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `PARAM_ID` FROM `T2_CATALOGUES_VALUES` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
         $param_id=$db->result($r,0,"PARAM_ID");
         return $param_id;
     }
 
-    public function getCatalogueValueID($value_link, $param_id, $template_id=1) { $db=DbSingleton::getTokoDb();
+    public function getCatalogueValueID($value_link, $param_id, $template_id=1) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `VALUE_ID` FROM `T2_CATALOGUES_VALUES` WHERE `TEMPLATE_ID`='$template_id' AND `PARAM_ID`='$param_id' AND `VALUE_LINK`='$value_link' LIMIT 1;");
         $value_id=$db->result($r,0,"VALUE_ID");
         return $value_id;
     }
-    public function getCatalogueValueName($value_id, $template_id=1) { $db=DbSingleton::getTokoDb();
+    public function getCatalogueValueName($value_id, $template_id=1) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `PARAM_VALUE` FROM `T2_CATALOGUES_VALUES` WHERE `TEMPLATE_ID`='$template_id' AND `VALUE_ID`='$value_id' LIMIT 1;");
         $param_value=$db->result($r,0,"PARAM_VALUE");
         return $param_value;
     }
-    public function getCatalogueValueLink($value_id) { $db=DbSingleton::getTokoDb();
+    public function getCatalogueValueLink($value_id) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `VALUE_LINK` FROM `T2_CATALOGUES_VALUES` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
         $value_link=$db->result($r,0,"VALUE_LINK");
         return $value_link;
     }
 
-    public function getCatalogueBrandID($brand_link) { $db=DbSingleton::getTokoDb();
+    public function getCatalogueBrandID($brand_link) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE `BRAND_LINK`='$brand_link' LIMIT 1;");
         $brand_id=$db->result($r,0,"BRAND_ID");
         return $brand_id;
     }
-    public function getCatalogueBrandLink($brand_id) { $db=DbSingleton::getTokoDb();
+    public function getCatalogueBrandLink($brand_id) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT `BRAND_LINK` FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
         $brand_link=$db->result($r,0,"BRAND_LINK");
         return $brand_link;
     }
 
-    function getHeadName($head_id) { $db=DbSingleton::getTokoDb();
+    function getHeadName($head_id) { $db = DbSingleton::getTokoDb();
         $language = new LangClass;
         $lang_id = $language->getLanguage(); $prefix = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT `TEX_$prefix` FROM `T2_TREE_HEAD` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
@@ -424,7 +424,7 @@ trait Variables {
         return $group_name;
     }
 
-    function getCatName($cat_id) { $db=DbSingleton::getTokoDb();
+    function getCatName($cat_id) { $db = DbSingleton::getTokoDb();
         $language = new LangClass;
         $lang_id = $language->getLanguage(); $prefix = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT `TEX_$prefix` FROM `T2_TREE_CAT` WHERE `CAT_ID`='$cat_id' LIMIT 1;");
@@ -432,12 +432,18 @@ trait Variables {
         return $group_name;
     }
 
-    function getGroupName($group_id) { $db=DbSingleton::getTokoDb();
+    function getGroupName($group_id) { $db = DbSingleton::getTokoDb();
         $language = new LangClass;
         $lang_id = $language->getLanguage(); $prefix = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT `TEX_$prefix` FROM `T2_TREE_GROUP` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
         $group_name = $db->result($r, 0, "TEX_$prefix");
         return $group_name;
+    }
+
+    function getParamName($param_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
+        $param_name = $db->result($r, 0, "PARAM_NAME");
+        return $param_name;
     }
 
 }

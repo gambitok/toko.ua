@@ -72,7 +72,7 @@ class FormClass {
     }
 
     function showArticle($art_id) {
-        $cat=new CatalogueClass; $prod=new ProductsClass; $auto=new AutoClass;
+        $cat = new CatalogueClass; $prod = new ProductsClass; $auto = new AutoClass;
         $auto_typ_id = $prod->getCookieAuto();
 
         $form = $this->getHtmlForm("cat_article");

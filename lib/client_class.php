@@ -760,4 +760,16 @@ class ClientClass {
         return $markup_min;
     }
 
+    /*==== Get User Data + User Order Info ====*/
+    function getClientUserData($user_id) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
+        $user_name = $db->result($r, 0, "name");
+        $user_phone = $db->result($r, 0, "phone");
+        $user_email = $db->result($r, 0, "email");
+        $user_city = 0;
+        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `USER_ID`='$user_id' ORDER BY `ID` DESC LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n>0) $user_city = $db->result($r, 0, "CITY_ID");
+        return array($user_name, $user_phone, $user_email, $user_city);
+    }
+
 }
