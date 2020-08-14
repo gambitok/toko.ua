@@ -206,9 +206,9 @@ class PartsClass extends CatalogueClass {
     }
 
     function initPartsArts($str_id) { $dbc=DbSingleton::getTokoCacheDb();
-        $art_ids=[];
-        $r=$dbc->query("SELECT * FROM `XX_TABLE_TREE_$str_id` WHERE 1;"); $n=$dbc->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+        $art_ids = [];
+        $r = $dbc->query("SELECT `art_id` FROM `XX_TABLE_TREE_$str_id` WHERE 1;"); $n = $dbc->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
             $art_id = $dbc->result($r,$i-1,"art_id");
             array_push($art_ids, $art_id);
         }

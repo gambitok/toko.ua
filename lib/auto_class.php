@@ -161,42 +161,39 @@ class AutoClass {
     }
 
     function getHeadNewDescr($head_id) { $db = DbSingleton::getTokoDb();
-        $lang_id = $this->getLanguage();
+        $language = new LangClass;
+        $lang_id = $this->getLanguage(); $prefix = $language->getTexCapLanguage($lang_id);
         $head_id = $this->getUrlNumber($head_id);
         $TEX_TEXT = ""; $TEX_LINK = "";
-        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `HEAD_ID`=$head_id LIMIT 1;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `TEX_$prefix`, `TEX_LINK` FROM `T2_GROUP_TREE_HEAD` WHERE `HEAD_ID`=$head_id LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) {
-            if ($lang_id==1) $TEX_TEXT = $db->result($r, 0, "TEX_RU");
-            if ($lang_id==2) $TEX_TEXT = $db->result($r, 0, "TEX_UA");
-            if ($lang_id==3) $TEX_TEXT = $db->result($r, 0, "TEX_EN");
+            $TEX_TEXT = $db->result($r, 0, "TEX_$prefix");
             $TEX_LINK = $db->result($r, 0, "TEX_LINK");
         }
         return array($TEX_TEXT, $TEX_LINK);
     }
 
     function getCatNewDescr($cat_id) { $db = DbSingleton::getTokoDb();
-        $lang_id=$this->getLanguage();
-        $cat_id=$this->getUrlNumber($cat_id);
-        $TEX_TEXT=""; $TEX_LINK="";
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `CAT_ID`=$cat_id LIMIT 1;"); $n=$db->num_rows($r);
+        $language = new LangClass;
+        $lang_id = $this->getLanguage(); $prefix = $language->getTexCapLanguage($lang_id);
+        $cat_id = $this->getUrlNumber($cat_id);
+        $TEX_TEXT = ""; $TEX_LINK = "";
+        $r = $db->query("SELECT `TEX_$prefix`, `TEX_LINK` FROM `T2_GROUP_TREE_CATEGORY` WHERE `CAT_ID`=$cat_id LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) {
-            if ($lang_id==1) $TEX_TEXT=$db->result($r,0,"TEX_RU");
-            if ($lang_id==2) $TEX_TEXT=$db->result($r,0,"TEX_UA");
-            if ($lang_id==3) $TEX_TEXT=$db->result($r,0,"TEX_EN");
-            $TEX_LINK=$db->result($r,0,"TEX_LINK");
+            $TEX_TEXT = $db->result($r,0,"TEX_$prefix");
+            $TEX_LINK = $db->result($r,0,"TEX_LINK");
         }
         return array($TEX_TEXT, $TEX_LINK);
     }
 
     function getStrNewDescr($str_id) { $db = DbSingleton::getTokoDb();
-        $lang_id=$this->getLanguage();
-        $str_id=$this->getUrlNumber($str_id);
-        $TEX_TEXT="";
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`=$str_id AND `STR_ID`!=0 LIMIT 1;"); $n=$db->num_rows($r);
+        $language = new LangClass;
+        $lang_id = $this->getLanguage(); $prefix = $language->getTexCapLanguage($lang_id);
+        $str_id = $this->getUrlNumber($str_id);
+        $TEX_TEXT = "";
+        $r = $db->query("SELECT `TEX_$prefix` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`=$str_id AND `STR_ID`!=0 LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) {
-            if ($lang_id==1) $TEX_TEXT=$db->result($r,0,"TEX_RU");
-            if ($lang_id==2) $TEX_TEXT=$db->result($r,0,"TEX_UA");
-            if ($lang_id==3) $TEX_TEXT=$db->result($r,0,"TEX_EN");
+            $TEX_TEXT = $db->result($r,0,"TEX_$prefix");
         }
         return $TEX_TEXT;
     }
@@ -807,7 +804,7 @@ class AutoClass {
         return $text;
     }
 
-    function getSeoContent($mfa_link, $mod_link="") {
+    function getSeoContent($title, $mfa_link, $mod_link="") {
         $form = $this->getHtmlForm("seo_content");
         $mfa_id = $this->getMfaLink($mfa_link); if ($mfa_link=="") $mfa_id="";
         $model = $this->getModLink($mod_link);
@@ -816,6 +813,7 @@ class AutoClass {
         } else {
             $form = str_replace("{seo_list}", $this->getDetailsList("", "", $mfa_link, $mod_link), $form);
         }
+            $form = str_replace("{seo_header}", $title, $form);
         return $form;
     }
 

@@ -19,7 +19,7 @@ require_once (RDD."/lib/exrate_class.php");
 require_once (RDD."/lib/auto_class.php");
 require_once (RDD."/lib/parameters_class.php");
 require_once (RDD."/lib/search_class.php");
-require_once (RDD."/lib/pattern_class.php");
+//require_once (RDD."/lib/pattern_class.php");
 require_once (RDD."/lib/parts_class.php");
 require_once (RDD."/lib/template_class.php");
 require_once (RDD."/js/JsHttpRequest/JsHttpRequest.php");

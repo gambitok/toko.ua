@@ -36,13 +36,12 @@ class SearchClass extends CatalogueClass {
             $count_arts = $parts->getPartsCount($str_id, $active_filters);
             $count = $parts->products_on_page;
             $pages_count = ceil($count_arts / $count);
-            if ($count_arts<$count) $pages_count=1;
-
-            $form = str_replace("{details_listing}", $this->getSeoLinking($str_id, $h1, $filters, $brands), $form);
+            if ($count_arts<$count) $pages_count = 1;
 
             $where_arts = $parts->initPartsArts($str_id);
             $filters_form = $this->printBrandsList(array_unique($this->getBrandIds($where_arts)), array_unique($active_filters), $this->getActualLink());
 
+            $form = str_replace("{details_listing}", $this->getSeoLinking($str_id, $h1, $filters, $brands), $form);
             $form = str_replace("{details_brands}", $filters_form, $form);
         } else {
             // T2_TREE
@@ -64,7 +63,7 @@ class SearchClass extends CatalogueClass {
         $translit = $prod->getCarManufTranslit($mfa_id, $model);
 
         list($mfa_text, $mod_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-        $mod_id_text = $automan->getAutoModelIdLink($mod_id_link)["text"]; if ($mod_id_text!="") $mod_text=$mod_id_text;
+        $mod_id_text = $automan->getAutoModelIdLink($mod_id_link)["text"]; if ($mod_id_text!="") $mod_text = $mod_id_text;
         $auto_text = "$mfa_text $mod_text";
 
         $str_text = $automan->getStrNewDescr($str_id);
@@ -75,7 +74,7 @@ class SearchClass extends CatalogueClass {
         $h1 = $str_text;
         if ($auto_text!="" && $auto_text!=" ") $h1.=" {for_cap} $auto_text $translit";
 
-        $filters = $this->getFiltersTitle($active_filters,1);
+        $filters = $this->getFiltersTitle($active_filters, 1);
 
         $pager = $this->getPagerTitle($page);
 
@@ -145,8 +144,11 @@ class SearchClass extends CatalogueClass {
         return array($suppl_array, $storage_array, $stock_array, $n);
     }
 
+    /*
+     * Route CATALOG Pages
+     * */
     function catalogRouter($link, $some_link, $some_link2="") {
-        $prod=new ProductsClass; $automan=new AutoClass;
+        $prod = new ProductsClass; $automan = new AutoClass;
 
         $page = $_GET["page"]; $page!=NULL ?: $page=1;
 
@@ -376,75 +378,9 @@ class SearchClass extends CatalogueClass {
     function getSearchLimit($page) {
         $count = $this->products_on_page;
         $off = $count * $page - $count;
-        $off>=0 ? $limit = " LIMIT $count OFFSET $off": $limit = "";
+        $off>=0 ? $limit = " LIMIT $count OFFSET $off" : $limit = "";
         return $limit;
     }
-
-//    function getPagination($n, $page) {
-//        $count = $this->products_on_page;
-//        $pages_count = ceil($n / $count);
-//        if ($n<$count) $pages_count = 1;
-//        $pagination = "";
-//
-//        $min_count = 5;
-//        $max_count = $pages_count - $min_count + 1;
-//        $pred_page = $page-1; $next_page = $page+1;
-//        if ($page==1) $disabled_pred = "disabled"; else $disabled_pred = "";
-//        if ($page==$pages_count) $disabled_next = "disabled"; else $disabled_next = "";
-//
-//        if ($pages_count>5) {
-//
-//            if ($page<$min_count) {
-//                for ($i=1; $i<=$min_count; $i++) {
-//                    $i==$page ? $active="active" : $active="";
-//                    $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
-//                }
-//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
-//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pages_count\">$pages_count</a></li>";
-//            }
-//
-//            if ($page>$max_count) {
-//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
-//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
-//                for ($i=$max_count; $i<=$pages_count; $i++) {
-//                    $i==$page ? $active="active" : $active="";
-//                    $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
-//                }
-//            }
-//
-//            if ($page>=$min_count && $page<=$max_count) {
-//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
-//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
-//
-//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pred_page\">$pred_page</a></li>";
-//                $pagination.="<li class=\"page-item active\"><a class=\"page-link\" href=\"?page=$page\">$page</a></li>";
-//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$next_page\">$next_page</a></li>";
-//
-//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
-//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pages_count\">$pages_count</a></li>";
-//            }
-//
-//        } else {
-//            for ($i=1; $i<=$pages_count; $i++) {
-//                $i==$page ? $active="active" : $active="";
-//                $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
-//            }
-//        }
-//
-//        $list = "<div class=\"row\">
-//            <nav aria-label=\"Page navigation\" class=\"img-center\" style='margin-top: 2em'>
-//                <ul class=\"pagination\">
-//                    <li class=\"page-item $disabled_pred\"><a class=\"page-link\" href=\"?page=$pred_page\"><i class=\"fa fa-chevron-left\"></i> <span class=\"span-media\">{previous_cap}</span></a></li>
-//                    $pagination
-//                    <li class=\"page-item $disabled_next\"><a class=\"page-link\" href=\"?page=$next_page\"><span class=\"span-media\">{next_cap}</span> <i class=\"fa fa-chevron-right\"></i></a></li>
-//                </ul>
-//            </nav>
-//        </div>";
-//
-//        if ($pages_count<=1) $list = "";
-//
-//        return $list;
-//    }
 
     function getTrueSearchArts($str_id, $brandy) { $db = DbSingleton::getTokoDb();
         $where_brands = "";
