@@ -48,12 +48,6 @@ class FormClass {
         return $info;
     }
 
-    function checkT2Link($typ_id, $art_id) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_LINKS` WHERE `ART_ID`='$art_id' AND `TYP_ID`='$typ_id' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n==0) return false; else return true;
-    }
-
     function getArtBrandLink($art_id, $brand_id) { $db = DbSingleton::getTokoDb();
         $link = "";
         $r = $db->query("SELECT * FROM `T2_TREE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
@@ -72,8 +66,8 @@ class FormClass {
     }
 
     function showArticle($art_id) {
-        $cat = new CatalogueClass; $prod = new ProductsClass; $auto = new AutoClass;
-        $auto_typ_id = $prod->getCookieAuto();
+        $cat = new CatalogueClass; $auto = new AutoClass;
+        $auto_typ_id = $this->getCookieAuto();
 
         $form = $this->getHtmlForm("cat_article");
         if ($auto_typ_id!="") {

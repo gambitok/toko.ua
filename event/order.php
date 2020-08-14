@@ -1,5 +1,5 @@
 <?php
-//
+
 //if (empty($_GET["order_id"]))
 //    $content=str_replace("{main_window}", $shop->showOrderForm(), $content);
 //else {

@@ -2,7 +2,7 @@
 
 class SearchClass extends CatalogueClass {
 
-    public $products_on_page=12;
+    public $products_on_page = 12;
 
     function getActualLink() {
         $link = $_SERVER["REQUEST_URI"];
@@ -51,6 +51,7 @@ class SearchClass extends CatalogueClass {
             $details_content = "";
             $form = str_replace("{details_brands}", "", $form);
         }
+
         $form = str_replace("{details_str_type}", $str_type, $form);
         $form = str_replace("{details_content}", $details_content, $form);
         return array($form, $pages_count);
@@ -149,13 +150,13 @@ class SearchClass extends CatalogueClass {
 
         $page = $_GET["page"]; $page!=NULL ?: $page=1;
 
-        $details_form = $prod->getHtmlForm("details_offers");
+        $details_form = $this->getHtmlForm("details_offers");
 
         $form1=""; $car_content=""; $pages_count=0; $str_id="";
 
         $str_link=""; $mfa_link=""; $mod_link=""; $mod_id_link=""; $filters="";
 
-        $cookie_typ_id = $prod->getCookieAuto();
+        $cookie_typ_id = $this->getCookieAuto();
 
         $arr = explode("/", $link);
 
@@ -379,71 +380,71 @@ class SearchClass extends CatalogueClass {
         return $limit;
     }
 
-    function getPagination($n, $page) {
-        $count = $this->products_on_page;
-        $pages_count = ceil($n / $count);
-        if ($n<$count) $pages_count = 1;
-        $pagination="";
-
-        $min_count = 5;
-        $max_count = $pages_count - $min_count + 1;
-        $pred_page = $page-1; $next_page = $page+1;
-        if ($page==1) $disabled_pred = "disabled"; else $disabled_pred = "";
-        if ($page==$pages_count) $disabled_next = "disabled"; else $disabled_next = "";
-
-        if ($pages_count>5) {
-
-            if ($page<$min_count) {
-                for ($i=1; $i<=$min_count; $i++) {
-                    $i==$page ? $active="active" : $active="";
-                    $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
-                }
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pages_count\">$pages_count</a></li>";
-            }
-
-            if ($page>$max_count) {
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
-                for ($i=$max_count; $i<=$pages_count; $i++) {
-                    $i==$page ? $active="active" : $active="";
-                    $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
-                }
-            }
-
-            if ($page>=$min_count && $page<=$max_count) {
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
-
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pred_page\">$pred_page</a></li>";
-                $pagination.="<li class=\"page-item active\"><a class=\"page-link\" href=\"?page=$page\">$page</a></li>";
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$next_page\">$next_page</a></li>";
-
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pages_count\">$pages_count</a></li>";
-            }
-
-        } else {
-            for ($i=1; $i<=$pages_count; $i++) {
-                $i==$page ? $active="active" : $active="";
-                $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
-            }
-        }
-
-        $list = "<div class=\"row\">
-            <nav aria-label=\"Page navigation\" class=\"img-center\" style='margin-top: 2em'>
-                <ul class=\"pagination\">
-                    <li class=\"page-item $disabled_pred\"><a class=\"page-link\" href=\"?page=$pred_page\"><i class=\"fa fa-chevron-left\"></i> <span class=\"span-media\">{previous_cap}</span></a></li>
-                    $pagination
-                    <li class=\"page-item $disabled_next\"><a class=\"page-link\" href=\"?page=$next_page\"><span class=\"span-media\">{next_cap}</span> <i class=\"fa fa-chevron-right\"></i></a></li>
-                </ul>
-            </nav>
-        </div>";
-
-        if ($pages_count<=1) $list = "";
-
-        return $list;
-    }
+//    function getPagination($n, $page) {
+//        $count = $this->products_on_page;
+//        $pages_count = ceil($n / $count);
+//        if ($n<$count) $pages_count = 1;
+//        $pagination = "";
+//
+//        $min_count = 5;
+//        $max_count = $pages_count - $min_count + 1;
+//        $pred_page = $page-1; $next_page = $page+1;
+//        if ($page==1) $disabled_pred = "disabled"; else $disabled_pred = "";
+//        if ($page==$pages_count) $disabled_next = "disabled"; else $disabled_next = "";
+//
+//        if ($pages_count>5) {
+//
+//            if ($page<$min_count) {
+//                for ($i=1; $i<=$min_count; $i++) {
+//                    $i==$page ? $active="active" : $active="";
+//                    $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
+//                }
+//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
+//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pages_count\">$pages_count</a></li>";
+//            }
+//
+//            if ($page>$max_count) {
+//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
+//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
+//                for ($i=$max_count; $i<=$pages_count; $i++) {
+//                    $i==$page ? $active="active" : $active="";
+//                    $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
+//                }
+//            }
+//
+//            if ($page>=$min_count && $page<=$max_count) {
+//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
+//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
+//
+//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pred_page\">$pred_page</a></li>";
+//                $pagination.="<li class=\"page-item active\"><a class=\"page-link\" href=\"?page=$page\">$page</a></li>";
+//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$next_page\">$next_page</a></li>";
+//
+//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
+//                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pages_count\">$pages_count</a></li>";
+//            }
+//
+//        } else {
+//            for ($i=1; $i<=$pages_count; $i++) {
+//                $i==$page ? $active="active" : $active="";
+//                $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
+//            }
+//        }
+//
+//        $list = "<div class=\"row\">
+//            <nav aria-label=\"Page navigation\" class=\"img-center\" style='margin-top: 2em'>
+//                <ul class=\"pagination\">
+//                    <li class=\"page-item $disabled_pred\"><a class=\"page-link\" href=\"?page=$pred_page\"><i class=\"fa fa-chevron-left\"></i> <span class=\"span-media\">{previous_cap}</span></a></li>
+//                    $pagination
+//                    <li class=\"page-item $disabled_next\"><a class=\"page-link\" href=\"?page=$next_page\"><span class=\"span-media\">{next_cap}</span> <i class=\"fa fa-chevron-right\"></i></a></li>
+//                </ul>
+//            </nav>
+//        </div>";
+//
+//        if ($pages_count<=1) $list = "";
+//
+//        return $list;
+//    }
 
     function getTrueSearchArts($str_id, $brandy) { $db = DbSingleton::getTokoDb();
         $where_brands = "";
@@ -636,67 +637,6 @@ class SearchClass extends CatalogueClass {
         return array($suppl_array, $storage_array, $stock_array, $n);
     }
 
-//    function getTrueSearchList($art_ids, $page=1, $brandy="") { $db=DbSingleton::getTokoDb();
-//        $kours=new ExRateClass; $client=new ClientClass;
-//        $client_id=$this->getClient();
-//        $limit=$this->getSearchLimit($page);
-//        $cur=$kours->getCurrentKours();
-//        $tpoint=$client->getTpoint();
-//
-//        $where_brands="";
-//        if ($brandy!="") {
-//            $brand_list=$this->getBrandsList($brandy);
-//            if ($brand_list!="") $where_brands="AND t2b.BRAND_ID IN ($brand_list)";
-//        }
-//
-//        $r=$db->query("SELECT AA.* FROM (
-//            SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2b.BRAND_POSITION, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
-//            FROM `T2_ARTICLES` t2a
-//                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-//                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-//                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
-//            WHERE t2a.ART_ID IN ($art_ids) $where_brands AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0)
-//            UNION ALL
-//            SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2b.BRAND_POSITION, t2n.INFO, t2si.stock_suppl, t2si.client_storage_id, t2si.suppl_id, t2si.return_delay
-//            FROM `T2_ARTICLES` t2a
-//                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-//                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-//                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
-//            WHERE t2a.ART_ID IN ($art_ids) $where_brands AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
-//        ) as AA GROUP BY AA.ART_ID ORDER BY AA.BRAND_POSITION DESC $limit
-//        "); $n=$db->num_rows($r);
-//
-//        $mas=[];
-//        for ($i=1;$i<=$n;$i++) {
-//            $art_id = $db->result($r,$i-1,"ART_ID");
-//            $brand_id = $db->result($r,$i-1,"BRAND_ID");
-//            $brand = $db->result($r,$i-1,"BRAND_NAME");
-//            $name = $db->result($r,$i-1,"ARTICLE_NR_DISPL");
-//            $article_name = $db->result($r,$i-1,"NAME");
-//            $suppl_id = $db->result($r,$i-1,"suppl_id");
-//            $stock = intval($db->result($r,$i-1,"AMOUNT"));
-//            $storage_id = $db->result($r,$i-1,"storage_id");
-//
-//            $price = $this->getArticlePrice($art_id);
-//            if ($suppl_id!=0) $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-//            $price = $kours->getKoursPrice($price, $cur);
-//            if ($cur==1) { $price=$client->getClientPriceRounding($client_id, $price); }
-//
-//            list(,$delivery_days,$delivery_short_info) = $this->getTpointDeliveryInfo($tpoint,$storage_id);
-//            if ($suppl_id!=0) list(,$delivery_days,$delivery_short_info) = $this->getTpointSupplDeliveryInfo($tpoint,$suppl_id,$storage_id);
-//
-//            $mas[$i]=["art_id"=>$art_id, "article_nr_displ"=>$name, "brand_id"=>$brand_id, "brand_name"=>$brand, "article_name"=>$article_name, "price"=>$price, "stock"=>$stock, "delivery_info"=>$delivery_short_info, "delivery_days"=>$delivery_days, "storage_id"=>$storage_id, "suppl_id"=>$suppl_id];
-//        }
-//
-//        $list="<div class=\"row\">";
-//        foreach ($mas as $key=>$row) {
-//            $list.=$this->showSearchList($key, $row["art_id"], $row["article_nr_displ"], $row["brand_id"], $row["brand_name"], $row["article_name"], $row["price"], $row["stock"], $row["delivery_info"], $row["delivery_days"], $row["storage_id"], $row["suppl_id"]);
-//        }
-//        $list.="</div>";
-//
-//        return $list;
-//    }
-
     // details
     function showSearchList($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $price, $stock, $delivery_info, $delivery_days, $storage_id, $suppl_id) {
         $showform = new FormClass; $kours = new ExRateClass;
@@ -883,7 +823,7 @@ class SearchClass extends CatalogueClass {
     }
 
     function getSeoListingValue($value) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT `TEXT` FROM `SEO_LISTING` WHERE `LIST_KEY`='$value' ORDER BY RAND() LIMIT 1;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT `TEXT` FROM `SEO_LISTING` WHERE `LIST_KEY`='$value' ORDER BY RAND() LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) {
             $name = $db->result($r, 0, "TEXT");
         } else {
@@ -902,202 +842,5 @@ class SearchClass extends CatalogueClass {
         $params = implode(", ", $params);
         return $params;
     }
-
-    /*==== TEST CATALOG ====*/
-
-    function getCatalogParamForm() {
-        $form = $this->getHtmlForm("catalog/form");
-        $form = str_replace("{catalog_range}", $this->getCatalogParamList(), $form);
-        return $form;
-    }
-
-    function getCatalogParamList() { $db = DbSingleton::getTokoDb();
-        $arr = [];
-        $list = "";
-        $r = $db->query("SELECT * FROM `T2_TREE_HCG` WHERE 1;"); $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $head_id = $db->result($r, $i-1, "HEAD_ID");
-            $cat_id = $db->result($r, $i-1, "CAT_ID");
-            $group_id = $db->result($r, $i-1, "GROUP_ID");
-            if (empty($arr[$head_id])) $arr[$head_id] = [];
-            if (empty($arr[$head_id][$cat_id])) $arr[$head_id][$cat_id] = [];
-            array_push($arr[$head_id][$cat_id], $group_id);
-        }
-
-        foreach ($arr as $head_id=>$cats) {
-            $head_name = $this->getHeadName($head_id);
-            $list.="<li><div><a>$head_name</a></div><ul>";
-            foreach ($cats as $cat_id=>$groups) {
-                $cat_name = $this->getCatName($cat_id);
-                $list.="<li><div><a>$cat_name</a></div><ul>";
-                foreach ($groups as $group_id) {
-                    $group_name = $this->getGroupName($group_id);
-                    $list.="<li><div><a href='https://toko.ua/test_catalog/$group_id'>$group_name</a></div></li>";
-                }
-                $list.="</ul></li>";
-            }
-            $list.="</ul></li>";
-        }
-
-        $form = $this->getHtmlForm("catalog/range");
-        $form = str_replace("{catalog_range}", $list, $form);
-
-        return $form;
-    }
-
-//    function getCatalogFilters($filters) {
-//        $arr = [];
-//        foreach ($filters as $filter) {
-//            $string = explode("=", $filter);
-//            $param_id = $string[0];
-//            $values = explode(",", $string[1]);
-//            foreach ($values as $value_id) {
-//                if (empty($arr[$param_id])) $arr[$param_id] = [];
-//                array_push($arr[$param_id], $value_id);
-//            }
-//        }
-//        return $arr;
-//    }
-
-//    function getValueID($value_link, $param_id, $group_id) { $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE` WHERE `VALUE_LINK`='$value_link' AND `PARAM_ID`='$param_id' AND `GROUP_ID`='$group_id' LIMIT 1;");
-//        $value_id = $db->result($r, 0, "VALUE_ID");
-//        return $value_id;
-//    }
-//
-//    function getParamID($param_link, $group_id) { $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS` WHERE `PARAM_LINK`='$param_link' AND `GROUP_ID`='$group_id' LIMIT 1;");
-//        $param_id = $db->result($r, 0, "PARAM_ID");
-//        return $param_id;
-//    }
-
-    function getCatalogParamGroup($group_id, $filters) {
-        $data = $this->getCatalogParamGroupList($group_id);
-        $form = $this->getHtmlForm("catalog/list");
-        $form = str_replace("{catalog_range}", $data["list"], $form);
-        $form = str_replace("{catalog_params}", $data["params"], $form);
-        $form = str_replace("{catalog_title}", $data["title"], $form);
-        $form = str_replace("{catalog_amount}", $data["amount"], $form);
-
-        $prod = new ProductsClass; $automan = new AutoClass;
-        $auto_typ_id = $prod->getCookieAuto();
-        $auto_typ_id!="" ? $auto_name = $automan->getCarDescription($auto_typ_id) : $auto_name = "";
-
-        $form = str_replace("{catalog_auto}", "{choosen_auto}: ".$auto_name, $form);
-//        $str = $this->getCatalogFilters($filters);
-        return $form;
-    }
-
-    function getParamsStr($arr) {
-        $str = "";
-        foreach ($arr as $param_id => $values) {
-            $param_name = $this->getParamName($param_id);
-            $str.="<b>$param_name:</b> ";
-            foreach ($values as $value) {
-                $str.="$value, ";
-            }
-            $str = trim($str, ", ");
-            $str.="<br>";
-        }
-        return $str;
-    }
-
-    function getCatalogParamGroupList($group_id) { $db = DbSingleton::getTokoDb();
-        $list = "";
-        $arr_params = [];
-        $arr_params[0] = [];
-        $prod = new ProductsClass; $showform = new FormClass;
-        $auto_typ_id = $prod->getCookieAuto();
-
-        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE_ARTS` WHERE `GROUP_ID`='$group_id' LIMIT 300;"); $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $art_id = $db->result($r, $i-1, "ART_ID");
-            $article_nr_displ = $this->getArticleDispl($art_id);
-            $brand_id = $this->getArticleBrand($art_id);
-            $brand_name = $this->getBrandName($brand_id);
-            $text = $this->getArticleName($art_id);
-
-            $params = $this->getCatArtParams($art_id);
-            $brands[0] = [$brand_id];
-            $arr_params = $this->mergeArray($arr_params, $params);
-            $arr_params = $this->mergeArray($arr_params, $brands);
-
-            $str_params = $this->getParamsStr($params);
-
-            $auto_cap = "";
-            if ($showform->checkT2Link($auto_typ_id, $art_id)) $auto_cap = "<p style='background: #2fcc71; color: #fff; width: 100%;'>{is_applicable}</p>";
-
-            $list.="<tr>
-                <td>$art_id</td>
-                <td>$article_nr_displ $auto_cap</td>
-                <td>$brand_name</td>
-                <td>$text</td>
-                <td>$str_params</td>
-            </tr>";
-        }
-
-        $amount = $n;
-        $title = $this->getGroupName($group_id);
-
-        // GET PARAMS
-        $params = "";
-        foreach ($arr_params as $param_id=>$mas) {
-            $params_li = "";
-            if ($param_id==0) {
-                $param_name = $this->replaceLang("{brands_cap}");
-                foreach ($mas as $brand_id) {
-                    $param_value = $this->getBrandName($brand_id);
-                    $params_li.="<li>$param_value</li>";
-                }
-            } else {
-                $param_name = $this->getParamName($param_id);
-                foreach ($mas as $param_value) {
-                    $params_li.="<li>$param_value</li>";
-                }
-            }
-            $params.="<div class=\"param-title\">$param_name:</div>
-            <ul id=\"param-$param_id\" class=\"list-inline template-list list-hide\">
-                $params_li
-            </ul>";
-            if (count($mas)>5) {
-                $params.="
-                    <a class=\"pointer underline\" onclick=\"toggleListParams(this, $param_id);\">
-                        <span class=\"show\">{more_cap}</span>
-                        <span class=\"none\">{hide_cap}</span>         
-                    </a>
-                ";
-            }
-        }
-        return array("list"=>$list, "params"=>$params, "title"=>$title, "amount"=>$amount);
-    }
-
-    function mergeArray($arr1, $arr2) {
-        $data = [];
-        foreach ($arr1 as $key => $value){
-            if (empty($data[$key])) $data[$key]=[];
-            $data[$key] = $value;
-        }
-        foreach ($arr2 as $key => $value){
-            if (empty($data[$key])) $data[$key]=[];
-            $data[$key] = array_unique(array_merge($data[$key], $value));
-        }
-        return $data;
-    }
-
-    function getCatArtParams($art_id) { $db = DbSingleton::getTokoDb();
-        $arr = [];
-        $r = $db->query("SELECT t2a.`PARAM_ID`, t2t.`PARAM_VALUE` FROM `T2_TREE_ARTS_PARAMS_VALUE` t2a 
-            LEFT JOIN `T2_TREE_VALUE` t2t ON (t2t.`VALUE_ID` = t2a.`VALUE_ID`)
-        WHERE t2a.`ART_ID`='$art_id';"); $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $param_id = $db->result($r, $i - 1, "PARAM_ID");
-            $param_value = $db->result($r, $i - 1, "PARAM_VALUE");
-            if (empty($arr[$param_id])) $arr[$param_id] = [];
-            array_push($arr[$param_id], $param_value);
-            $arr[$param_id] = array_unique($arr[$param_id]);
-        }
-        return $arr;
-    }
-
 
 }

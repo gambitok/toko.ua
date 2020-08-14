@@ -2,6 +2,8 @@
 
 trait Variables {
 
+    /*==== FORMAT VAR ================================================================================================*/
+
     function getFormatAticle($name) {
         $format_name = str_replace(str_split('.,+-\/:*?"<>| '), "", $name);
         return $format_name;
@@ -114,6 +116,7 @@ trait Variables {
     }
 
     /*==== ARTICLE_NR ================================================================================================*/
+
     /*
      * ARTICLE_NR_SEARCH => ARTICLE_NR_DISPL
      * */
@@ -237,8 +240,7 @@ trait Variables {
     }
 
     function getFuelName($fuel_id) { $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
-        $lang_id = $language->getLanguage();
+        $lang_id = $this->getLanguage();
         $fuel_id = $this->getUrlNumber($fuel_id);
         if ($lang_id==1) $lang_id=16;
         if ($lang_id==2) $lang_id=41;
@@ -260,8 +262,7 @@ trait Variables {
     }
 
     function getCatalogueLink($article_nr_search) {
-        $language = new LangClass;
-        $prefix = $language->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $article_nr_search = $this->getUrlString($article_nr_search);
         $brand_link = $this->getCatalogueBrandLink2($article_nr_search);
         $link = "https://toko.ua$prefix/search/$article_nr_search/$brand_link";
@@ -444,6 +445,24 @@ trait Variables {
         $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
         $param_name = $db->result($r, 0, "PARAM_NAME");
         return $param_name;
+    }
+
+//    function getValueID($value_link, $param_id, $group_id) { $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE` WHERE `VALUE_LINK`='$value_link' AND `PARAM_ID`='$param_id' AND `GROUP_ID`='$group_id' LIMIT 1;");
+//        $value_id = $db->result($r, 0, "VALUE_ID");
+//        return $value_id;
+//    }
+//
+//    function getParamID($param_link, $group_id) { $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS` WHERE `PARAM_LINK`='$param_link' AND `GROUP_ID`='$group_id' LIMIT 1;");
+//        $param_id = $db->result($r, 0, "PARAM_ID");
+//        return $param_id;
+//    }
+
+    function getCookieAuto() {
+        $auto_typ_id = $_COOKIE["auto_typ_id"];
+        if ($auto_typ_id>0 && $auto_typ_id!="") $typ_id = $auto_typ_id; else $typ_id = "";
+        return $typ_id;
     }
 
 }

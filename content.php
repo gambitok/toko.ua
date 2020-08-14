@@ -21,6 +21,7 @@ require_once (RDD."/lib/parameters_class.php");
 require_once (RDD."/lib/search_class.php");
 require_once (RDD."/lib/pattern_class.php");
 require_once (RDD."/lib/parts_class.php");
+require_once (RDD."/lib/template_class.php");
 require_once (RDD."/js/JsHttpRequest/JsHttpRequest.php");
 require_once (RDD."/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 $JsHttpRequest = new JsHttpRequest("windows-1251");
@@ -28,9 +29,9 @@ $JsHttpRequest = new JsHttpRequest("windows-1251");
 session_start();
 $catalog=new CatalogueClass; $menu=new MenuClass; $client=new ClientClass; $lang=new LangClass; $shop=new ShopClass;
 $showform=new FormClass; $automan=new AutoClass; $profile=new ProfileClass;
-$prod=new ProductsClass; $parameters=new ParametersClass; $search=new SearchClass;
+$prod=new ProductsClass; $parameters=new ParametersClass; $search=new SearchClass; $template = new TemplateClass;
 
-/*=== PROFILE ====*/
+/*==== PROFILE ====*/
 
 if ($_REQUEST["w"]=="showProfileAccount"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileAccount());}
 
@@ -43,8 +44,6 @@ if ($_REQUEST["w"]=="setPriceList"){$GLOBALS['_RESULT'] = array("content"=>$prof
 if ($_REQUEST["w"]=="showProfileOrders"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileOrders());}
 
 if ($_REQUEST["w"]=="showProfileOrdersArts"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileOrdersArts($_REQUEST["dp_id"], $_REQUEST["order_id"]));}
-
-//if ($_REQUEST["w"]=="showProfileBasketForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showMiniBasketForm()[0]);}
 
 if ($_REQUEST["w"]=="showBasketMinForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showBasketForm());}
 
@@ -69,7 +68,7 @@ if ($_REQUEST["w"]=="setCityNPVal"){$GLOBALS['_RESULT'] = array("content"=>$shop
 if ($_REQUEST["w"]=="setCityAddress"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityAddress($_REQUEST["city_id"]));}
 if ($_REQUEST["w"]=="hideOrderInfo"){$GLOBALS['_RESULT'] = array("content"=>$shop->hideOrderInfo($_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["city"]));}
 
-/*=== CATALOG ====*/
+/*==== CATALOG ====*/
 
 if ($_REQUEST["w"]=="getCatalogueLink"){$GLOBALS['_RESULT'] = array("content"=>$catalog->getCatalogueLink($_REQUEST["article_nr_search"]));}
 
@@ -81,7 +80,7 @@ if ($_REQUEST["w"]=="tab_modelid"){$GLOBALS['_RESULT'] = array("content"=>$autom
 
 if ($_REQUEST["w"]=="tab_group"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueGroup($_REQUEST["modelid"], $_REQUEST["model"], $_REQUEST["auto"], $_REQUEST["year"]));}
 
-/*=== GARAGE ====*/
+/*==== GARAGE ====*/
 
 if ($_REQUEST["w"]=="addToGarage"){$GLOBALS['_RESULT'] = array("content"=>$automan->addToGarage($_REQUEST["typ_id"]));}
 
@@ -99,13 +98,13 @@ if ($_REQUEST["w"]=="showAutoHistory"){$GLOBALS['_RESULT'] = array("content"=>$a
 
 if ($_REQUEST["w"]=="dropAutoHistory"){$GLOBALS['_RESULT'] = array("content"=>$automan->dropAutoHistory($_REQUEST["history_id"]));}
 
-/*=== CATALOG FILTER ====*/
+/*==== CATALOG FILTER ====*/
 
 if ($_REQUEST["w"]=="show_catalogue_filter_all"){$GLOBALS['_RESULT'] = array("content"=>$catalog->showCatalogueListFilter($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["text"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));}
 
 if ($_REQUEST["w"]=="show_model_filter_all"){$GLOBALS['_RESULT'] = array("content"=>$catalog->techModelsFilters($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["text"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));}
 
-/*=== MENU ====*/
+/*==== MENU ====*/
 
 if ($_REQUEST["w"]=="saveSellerForm"){$GLOBALS['_RESULT'] = array("content"=>$menu->saveSellerForm($_REQUEST["company"],$_REQUEST["name"],$_REQUEST["phone"],$_REQUEST["email"],$_REQUEST["city_id"],$_REQUEST["comment"]));}
 
@@ -113,7 +112,7 @@ if ($_REQUEST["w"]=="getSellerImage"){$GLOBALS['_RESULT'] = array("content"=>$me
 
 if ($_REQUEST["w"]=="getRegionSelect"){ $GLOBALS['_RESULT'] = array("content"=>$menu->getRegionSelect());}
 
-/*=== MODALS ====*/
+/*==== MODALS ====*/
 
 if ($_REQUEST["w"]=="loadApplicModels2"){$GLOBALS['_RESULT'] = array("content"=>$showform->getApplModelTCD($_REQUEST["art_id_tcd"], $_REQUEST["manufacture"]));}
 
@@ -129,7 +128,7 @@ if ($_REQUEST["w"]=="showHistoryList"){$GLOBALS['_RESULT'] = array("content"=>$s
 
 if ($_REQUEST["w"]=="deleteHistoryItem"){$GLOBALS['_RESULT'] = array("content"=>$showform->deleteHistoryItem($_REQUEST["history_id"]));}
 
-/*=== CLIENT ====*/
+/*==== CLIENT ====*/
 
 if ($_REQUEST["w"]=="setTpoint"){$GLOBALS['_RESULT'] = array("content"=>$client->setTpoint($_REQUEST["id"]));}
 
@@ -154,7 +153,7 @@ if ($_REQUEST["w"]=="toggleProductView"){$GLOBALS['_RESULT'] = array("content"=>
 
 if ($_REQUEST["w"]=="showProfileCheckForm"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileCheck($_REQUEST["data_start"], $_REQUEST["data_end"]));}
 
-/*=== LANGUAGE ====*/
+/*==== LANGUAGE ====*/
 
 if ($_REQUEST["w"]=="changeLangAlert"){$GLOBALS['_RESULT'] = array("content"=>$lang->changeLangAlert($_REQUEST["message"], $_REQUEST["title"]));}
 
@@ -166,7 +165,7 @@ if ($_REQUEST["w"]=="setSiteLang"){$GLOBALS['_RESULT'] = array("content"=>$lang-
 
 if ($_REQUEST["w"]=="changeLangJs"){$GLOBALS['_RESULT'] = array("content"=>$lang->changeLangJs($_REQUEST["text"]));}
 
-/*=== SHOP ====*/
+/*==== SHOP ====*/
 
 if ($_REQUEST["w"]=="moveToBasket"){ list($old_amount, $art_name, $basket_count)=$shop->moveToBasket($_REQUEST["art_id"],$_REQUEST["brand_id"],$_REQUEST["count"],$_REQUEST["stock"],$_REQUEST["storage_id"],$_REQUEST["suppl_id"]); $GLOBALS['_RESULT'] = array("old_amount"=>$old_amount,"art_name"=>$art_name,"basket_count"=>$basket_count);}
 
@@ -212,7 +211,7 @@ if ($_REQUEST["w"]=="showHomeCars"){ $GLOBALS['_RESULT'] = array("content"=>$sho
 
 if ($_REQUEST["w"]=="showModalForm"){ $GLOBALS['_RESULT'] = array("content"=>$showform->showModalForm($_REQUEST["form"]));}
 
-/*=== PRODUCTS ====*/
+/*==== PRODUCTS ====*/
 
 if ($_REQUEST["w"]=="showCarDetailsStr"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarDetailsStr($_REQUEST["head_id"],$_REQUEST["str_id_str"]));}
 
@@ -220,7 +219,7 @@ if ($_REQUEST["w"]=="techCarModels"){ $GLOBALS['_RESULT'] = array("content"=>$pr
 
 if ($_REQUEST["w"]=="techCarModelsFilter"){ $GLOBALS['_RESULT'] = array("content"=>$prod->techCarModelsFilter($_REQUEST["typ_id"],$_REQUEST["str_id"]));}
 
-/*=== PARAMETERS ====*/
+/*==== PARAMETERS ====*/
 
 if ($_REQUEST["w"]=="showFiltersForm"){ $GLOBALS['_RESULT'] = array("content"=>$parameters->showFiltersForm($_REQUEST["template_id"],$_REQUEST["active_filters"]));}
 
@@ -238,7 +237,7 @@ if ($_REQUEST["w"]=="showCarsForm2"){ $GLOBALS['_RESULT'] = array("content"=>$pr
 
 if ($_REQUEST["w"]=="showCarsSelectedForm"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelectedForm());}
 
-/*=== SEARCH ====*/
+/*==== SEARCH ====*/
 
 if ($_REQUEST["w"]=="showSearchParameters"){ $GLOBALS['_RESULT'] = array("content"=>$search->showSearchParameters($_REQUEST["str_id"],$_REQUEST["page"],$_REQUEST["active_filters"],$_REQUEST["type"]));}
 

@@ -2,14 +2,14 @@
 
 trait Helper {
 
-    var $images="/images";
-    var $uplImages="/uploads/images";
-    var $uploads="/uploads";
-    var $noPhoto="/images/no_photo.png";
-    protected $err1="{nothing_found}";
-    protected $err2="{not_specified}";
-    protected $err3="{no_info}";
-    protected $mess1="-{not_chosen}-";
+    var $images = "/images";
+    var $uplImages = "/uploads/images";
+    var $uploads = "/uploads";
+    var $noPhoto = "/images/no_photo.png";
+    protected $err1 = "{nothing_found}";
+    protected $err2 = "{not_specified}";
+    protected $err3 = "{no_info}";
+    protected $mess1 = "-{not_chosen}-";
 
     function getHtmlForm($name) {
         $form=""; $form_htm=RDD."/tpl/$name.htm"; if (file_exists("$form_htm")){ $form = file_get_contents($form_htm);}
@@ -50,14 +50,14 @@ trait Helper {
     }
 
     function getClient() {
-        $client=new ClientClass;
-        $clientData=$client->getClient(); $client_id=$clientData[0];
+        $client = new ClientClass;
+        $clientData = $client->getClient(); $client_id = $clientData[0];
         return $client_id;
     }
 
     function getUser() {
-        $client=new ClientClass;
-        $clientData=$client->getClient(); $user=$clientData[1];
+        $client = new ClientClass;
+        $clientData = $client->getClient(); $user = $clientData[1];
         return $user;
     }
 
@@ -88,16 +88,16 @@ trait Helper {
         return $caption;
     }
 
-    function getManualNameCaption($key,$mid) { $db=DbSingleton::getDbm();
+    function getManualNameCaption($key, $mid) { $db=DbSingleton::getDbm();
         $r=$db->query("SELECT `mcaption` FROM `manual` WHERE `key`='$key' AND `mid`='$mid' LIMIT 1;");
         $caption=$db->result($r,0,"mcaption");
         return $caption;
     }
 
-    function getManualOptions($key) { $db=DbSingleton::getDbm();
-        $language=new LangClass; $lang_id=$language->getLanguage();
-        $r = $db->query("SELECT * FROM `manual` WHERE `key`='$key' ORDER BY mid ASC;"); $n = $db->num_rows($r); $options = "";
-        for ($i=1;$i<=$n;$i++) {
+    function getManualOptions($key) { $db = DbSingleton::getDbm();
+        $lang_id = $this->getLanguage(); $options = "";
+        $r = $db->query("SELECT * FROM `manual` WHERE `key`='$key' ORDER BY mid ASC;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
             $id = $db->result($r, $i - 1, "id");
             $rs = $db->query("SELECT * FROM `A_CUSTOMERS_CATEGORIES` WHERE `manual_id`='$id' AND `lang_id`='$lang_id' LIMIT 1;");
             $caption = $db->result($rs, 0, "caption");
@@ -149,7 +149,7 @@ trait Helper {
     }
 
     function randomPassword() {
-//        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        // $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $kol=4;
         $alphabet = "1234567890";
         $pass = array();
@@ -161,6 +161,9 @@ trait Helper {
         return implode($pass);
     }
 
+    /*
+     * Get text Offer variable
+     * */
     function getOfferCap($i) {
         $cap1 = "{offer_cap}";
         $cap2 = "{offer_pair_cap}";
@@ -178,13 +181,19 @@ trait Helper {
         return $cap;
     }
 
+    /*
+     * Check ARTID in PHOTO
+     * */
     function checkPhoto($ref) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT COUNT(*) as col FROM `T2_PHOTOS` WHERE `ART_ID`='$ref' AND `ACTIVE`=1;");
-        $n=intval($db->result($r,0,"col"));
+        $r = $db->query("SELECT COUNT(`ART_ID`) as col FROM `T2_PHOTOS` WHERE `ART_ID`='$ref' AND `ACTIVE`=1;");
+        $n = intval($db->result($r, 0, "col"));
         $n > 0 ? $res = true : $res = false;
         return $res;
     }
 
+    /*
+     * Get `Seoshield` H1
+     * */
     function getStaticH1($uri) {
         $static_data = include $_SERVER["DOCUMENT_ROOT"].'/seoshield-client/data/static_meta.cache.php';
         $static_h1 = "";
@@ -193,6 +202,32 @@ trait Helper {
         }
         $static_h1 = iconv("UTF-8", "windows-1251", $static_h1);
         return $static_h1;
+    }
+
+    /*
+     * Associate arrays
+     * array_1 + array2
+     * */
+    function mergeArray($arr1, $arr2) {
+        $data = [];
+        foreach ($arr1 as $key => $value){
+            if (empty($data[$key])) $data[$key]=[];
+            $data[$key] = $value;
+        }
+        foreach ($arr2 as $key => $value){
+            if (empty($data[$key])) $data[$key]=[];
+            $data[$key] = array_unique(array_merge($data[$key], $value));
+        }
+        return $data;
+    }
+
+    /*
+     * Check ARTID in TYPID
+     * */
+    function checkT2Link($typ_id, $art_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `ART_ID`='$art_id' AND `TYP_ID`='$typ_id' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n==0) return false; else return true;
     }
 
 }

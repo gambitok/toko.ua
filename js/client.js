@@ -201,15 +201,6 @@ function showProfileOrdersArts(dp_id, order_id) {
         }}, true);
 }
 
-// function showProfileBasketForm() {
-//     window.history.pushState("basket", "Profile", "/profile/basket/");
-//     $("#profile_basket_form").html("<div class=\"loader\"></div>");
-//     JsHttpRequest.query(folder,{'w':'showProfileBasketForm'},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             $("#profile_basket_form").html(result.content);
-//         }}, true);
-// }
-
 function showProfileCheckForm() {
     window.history.pushState("check", "Profile", "/profile/check/");
     let data_start = $("#saldo_data_start").val(); if (data_start===undefined) data_start=0;

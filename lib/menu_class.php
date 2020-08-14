@@ -31,7 +31,7 @@ class MenuClass {
 
     function showNews() { $db = DbSingleton::getTokoDb();
         $cat = new CatalogueClass;
-        $lang = $this->getLanguage(); if ($lang==2) $lang=5;
+        $lang = $this->getLanguage(); if ($lang==2) $lang = 5;
         $prefix = $this->getLangPrefix();
         $list = ""; $err1 = $this->err1; $date_cur = date("Y-m-d");
         $r = $db->query("SELECT * FROM `news` WHERE `lang_id`='$lang' AND `data`<='$date_cur' AND `status`=1 ORDER BY `data` DESC;"); $n = $db->num_rows($r);
@@ -45,8 +45,8 @@ class MenuClass {
                 $date=$db->result($r,$i-1,"data");
                 $img_file=$this->getNewsImage($state_id);
                 $img_file!=""
-                    ? $img="<img itemprop=\"image\" src=\"/thumb.php?image=news/$lang/$state_id/$img_file&size=280\">"
-                    : $img="";
+                    ? $img = "<img itemprop=\"image\" src=\"/thumb.php?image=news/$lang/$state_id/$img_file&size=280\">"
+                    : $img = "";
                 $list.="<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"row news-block__item\">
                     <div class=\"col-8\">
                         <h4>$date</h4>
@@ -109,7 +109,7 @@ class MenuClass {
             $category_id = $db->result($r, $i-1, "client_category");
             array_push($categories, $category_id);
         }
-        $categories=implode(",", $categories);
+        $categories = implode(",", $categories);
 
         $r = $db->query("SELECT ac.* FROM `ACTION_CLIENTS` ac
             LEFT JOIN `ACTION_CLIENTS_LIST` acl ON (acl.action_id=ac.id)
@@ -244,7 +244,7 @@ class MenuClass {
         FROM `T_POINT` t2
             LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
         WHERE t2.status=1 AND t2a.lang_id='$lang' ORDER BY t2.position DESC, t2a.full_name ASC;"); $n = $db->num_rows($r);
-        $list="<form action=\"\" autocomplete=\"off\">"; $ch="";
+        $list = "<form action=\"\" autocomplete=\"off\">"; $ch = "";
         for ($i=1; $i<=$n; $i++) {
             $id=$db->result($r,$i-1,"id");
             $region=$db->result($r,$i-1,"full_name");
@@ -311,7 +311,7 @@ class MenuClass {
         $r = $db->query("SELECT * FROM `contacts_new` WHERE `lang_id`='$lang_id' AND `status`=1;"); $n=$db->num_rows($r);
         $list = "";
         if ($n>0) {
-            for ($i=1;$i<=$n;$i++) {
+            for ($i=1; $i<=$n; $i++) {
                 $title=$db->result($r,$i-1,"title");
                 $address=$db->result($r,$i-1,"address");
                 $schedule=$db->result($r,$i-1,"schedule");
@@ -371,13 +371,13 @@ class MenuClass {
         return $list;
     }
 	
-    function getNewsImage($news_id) { $db=DbSingleton::getTokoDb();
-        $lang = $this->getLanguage(); if ($lang!=1) $lang=5;
+    function getNewsImage($news_id) { $db = DbSingleton::getTokoDb();
+        $lang = $this->getLanguage(); if ($lang!=1) $lang = 5;
         $file = "";
         $r = $db->query("SELECT * FROM `news_galery` WHERE `cat`='$news_id' ORDER BY `main` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
             $id = $db->result($r,0,"id");
-            if (file_exists("uploads/images/news/$lang/$news_id/$id.jpg")) { $file="$id.jpg"; }
+            if (file_exists("uploads/images/news/$lang/$news_id/$id.jpg")) { $file = "$id.jpg"; }
         }
         return $file;
     }
@@ -444,11 +444,11 @@ class MenuClass {
             $where.="t2a.ARTICLE_NR_DISPL='$ref'"; if ($i<$n) $where.=" OR ";
         }
         $where = "AND ($where)";
-        $r=$db->query("SELECT t2a.*, t2b.BRAND_ID, t2b.BRAND_NAME, t2n.NAME, t2n.INFO 
+        $r = $db->query("SELECT t2a.*, t2b.BRAND_ID, t2b.BRAND_NAME, t2n.NAME, t2n.INFO 
         FROM `T2_ARTICLES` t2a 
             LEFT JOIN `T2_NAMES` t2n on t2n.ART_ID=t2a.ART_ID
             LEFT JOIN `T2_BRANDS` t2b on t2b.BRAND_ID=t2a.BRAND_ID
-        WHERE t2n.LANG_ID=16 $where LIMIT 0,18;"); $n=$db->num_rows($r);
+        WHERE t2n.LANG_ID=16 $where LIMIT 0,18;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $art_id = $db->result($r,$i-1,"ART_ID");
             $article_nr_displ = $db->result($r,$i-1,"ARTICLE_NR_DISPL");
@@ -570,15 +570,14 @@ class MenuClass {
             for ($i=1; $i<=$n; $i++) {
                 $state_id = $db->result($r, $i-1, "ID");
                 $title = $db->result($r, $i-1, "TITLE");
-                // $text = $db->result($r, $i-1,"TEXT");
                 $date = $db->result($r, $i-1, "DATA");
                 $img = $db->result($r, $i-1, "IMG");
                 $transcript = $cat->formatUrlText($title);
                 $list.="<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"reviews-block-item\">
-                        <div class=\"reviews-block-item__date\">$date</div>
-                        <div class=\"reviews-block-item__title\" itemprop=\"name\">$title</div>
-                        <div class=\"reviews-block-item__image\"><img src=\"https://portal.myparts.pro/uploads/images/saved/$img\" alt=\"$title\"></div>
-                        <div class=\"reviews-block-item__link\"><a itemprop=\"url\" href=\"$prefix/reviews/state/$state_id/$transcript\">{details_cap} <span class=\"fas fa-angle-right\"></span></a></div>
+                    <div class=\"reviews-block-item__date\">$date</div>
+                    <div class=\"reviews-block-item__title\" itemprop=\"name\">$title</div>
+                    <div class=\"reviews-block-item__image\"><img src=\"https://portal.myparts.pro/uploads/images/saved/$img\" alt=\"$title\"></div>
+                    <div class=\"reviews-block-item__link\"><a itemprop=\"url\" href=\"$prefix/reviews/state/$state_id/$transcript\">{details_cap} <span class=\"fas fa-angle-right\"></span></a></div>
                 </div>";
             }
         }
@@ -596,7 +595,6 @@ class MenuClass {
         $title = $db->result($r, 0, "TITLE");
         $text = $db->result($r, 0, "TEXT");
         $date = $db->result($r, 0, "DATA");
-        // $img = $db->result($r, 0, "IMG");
         $list = "<div class=\"reviews\">
             <div class=\"reviews-block-item__date\">$date</div>
             <div class=\"reviews-block-item__title\" itemprop=\"name\"><h1>$title</h1></div>

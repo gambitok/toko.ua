@@ -1,6 +1,6 @@
 <?php
 
-class TemplateClass {
+class TemplateClass2 {
 
     use Helper;
     use Variables;

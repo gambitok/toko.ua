@@ -502,6 +502,7 @@ class CatalogueClass {
         $treeFilter=str_replace("{tree_catalogue}", "https://toko.ua$prefix/$this->catalog_link/", $treeFilter);
         $treeFilter=str_replace("{tree_catalogue_class}", $status_str, $treeFilter);
         $search_tree=str_replace("{tree}", $treeFilter, $search_tree);
+        $search_tree = $this->replaceLang($search_tree);
         return $search_tree;
     }
 

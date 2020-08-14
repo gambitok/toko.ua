@@ -64,8 +64,8 @@ class ShopClass {
                     $flag = ""; $country_name = "";
                 }
 
-                if ($status_checked) $checked="checked=\"checked\""; else $checked="";
-                if ($this->checkStatusBasket()) $disabled=""; else $disabled="disabled";
+                if ($status_checked) $checked = "checked=\"checked\""; else $checked = "";
+                if ($this->checkStatusBasket()) $disabled = ""; else $disabled = "disabled";
 
                 $brow.=$this->getHtmlForm("basket/basket_card");
                 $brow=str_replace("{art_id}", $art_id, $brow);
@@ -176,7 +176,8 @@ class ShopClass {
     }
 
     function getBasketArts() { $db = DbSingleton::getTokoDb();
-        $client = new ClientClass; $where = $client->getClientWhere();
+        $client = new ClientClass;
+        $where = $client->getClientWhere();
         $r = $db->query("SELECT * FROM `basket` WHERE $where ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
             $arts = [];
@@ -205,14 +206,12 @@ class ShopClass {
         $form = $this->getHtmlForm("orders/proposed");
         $form = str_replace("{proposed_range}", $list, $form);
         $form = $this->replaceLang($form);
-        if ($n==0) $form="";
+        if ($n==0) $form = "";
         return $form;
     }
 
     function getProposedArtsCard($art_id) {
         $catalogue = new CatalogueClass; $showform = new FormClass;
-
-        $form = $this->getHtmlForm("orders/proposed_card");
 
         $article = $showform->getArticleInfo($art_id);
         $article_nr_displ = $article["article_nr_displ"];
@@ -228,11 +227,11 @@ class ShopClass {
         $format_name = $catalogue->getFormatAticle($article_nr_displ);
         $format_brand = $catalogue->getFormatBrand($brand_name);
 
+        $form = $this->getHtmlForm("orders/proposed_card");
         $form = str_replace("{art_id}", $art_id, $form);
         $form = str_replace("{brand_id}", $brand_id, $form);
         $form = str_replace("{real_stock}", $stock, $form);
         $form = str_replace("{basket}", $basket, $form);
-
         $form = str_replace("{article_nr_displ}", $article_nr_displ, $form);
         $form = str_replace("{name}", $article_name, $form);
         $form = str_replace("{brand_name}", $brand_name, $form);
@@ -319,18 +318,18 @@ class ShopClass {
     }
 
     function moveToBasket($art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id) { $db = DbSingleton::getTokoDb();
-        $client = new ClientClass; $catalogue = new CatalogueClass; $exrate = new ExRateClass; $cat = new CatalogueClass;
+        $client = new ClientClass; $exrate = new ExRateClass; $cat = new CatalogueClass;
         $user_id = $this->getUser(); $where = $client->getClientWhere(); $tpoint_id = $client->getTpoint();
         $cookie = $_COOKIE["session_id"]; $date_time = date("Y-m-d H:i:s");
         $old_amount = 0; $status_action = 0;
         $art_name = $this->getArticleDispl($art_id);
 
         $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;"); $n = $db->num_rows($r);
-        $price = $catalogue->getArticlePrice($art_id);
-        if ($suppl_id!=0) $price = $catalogue->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+        $price = $cat->getArticlePrice($art_id);
+        if ($suppl_id!=0) $price = $cat->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
 
-        if (!($catalogue->checkActionPrice($art_id))) {} else {
-            list($action_id, $action_amount, $action_price) = $catalogue->checkActionPrice($art_id);
+        if (!($cat->checkActionPrice($art_id))) {} else {
+            list($action_id, $action_amount, $action_price) = $cat->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price,1); // to UAH
             if ($amount>=$action_amount) {
                 $status_action = $action_id;
@@ -367,27 +366,31 @@ class ShopClass {
     }
 
     function getBasketArticleAmount($art_id, $storage_id) { $db=DbSingleton::getTokoDb();
-        $client = new ClientClass; $where = $client->getClientWhere();
+        $client = new ClientClass;
+        $where = $client->getClientWhere();
         $r = $db->query("SELECT * FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
         $amount = $db->result($r, 0, "amount");
         return $amount;
     }
 
     function deleteFromBasket($art_id, $storage_id) { $db = DbSingleton::getTokoDb();
-        $client = new ClientClass; $where = $client->getClientWhere();
+        $client = new ClientClass;
+        $where = $client->getClientWhere();
         $db->query("DELETE FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
         return true;
     }
 
     function checkStatusBasket() { $db = DbSingleton::getTokoDb();
-        $client = new ClientClass; $where = $client->getClientWhere();
+        $client = new ClientClass;
+        $where = $client->getClientWhere();
         $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n = $db->num_rows($r);
-        $n>0 ? $result=true : $result=false;
+        $n>0 ? $result = true : $result = false;
         return $result;
     }
 
     function checkBasketItem($art_id, $storage_id, $status) { $db = DbSingleton::getTokoDb();
-        $client = new ClientClass; $where = $client->getClientWhere();
+        $client = new ClientClass;
+        $where = $client->getClientWhere();
         $db->query("UPDATE `basket` SET `status_checked`=$status WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
         return true;
     }
@@ -404,7 +407,8 @@ class ShopClass {
     }
 
     function countBasket() { $db = DbSingleton::getTokoDb();
-        $client = new ClientClass; $where = $client->getClientWhere();
+        $client = new ClientClass;
+        $where = $client->getClientWhere();
         $r = $db->query("SELECT * FROM `basket` WHERE $where;"); $n = $db->num_rows($r);
         $n>0 ? $list=$n : $list="";
         $list=="" ? $style="none" : $style="";
@@ -1163,12 +1167,13 @@ class ShopClass {
     function getBasketOrder($delivery_id = 0) {
         $exrate = new ExRateClass;
         $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
-        $form = $this->getHtmlForm("orders/basket");
         list($basket_range, $basket_total) = $this->getBasketOrderRange();
 
         list($delivery_total, $delivery_total_text) = $this->getDeliveryPrice($delivery_id);
 
         $total = $basket_total + $delivery_total;
+
+        $form = $this->getHtmlForm("orders/basket");
         if ($delivery_id==0) {
             $form = str_replace("{basket_order_delivery_price}", "", $form);
             $form = str_replace("{basket_order_price}", "", $form);

@@ -22,7 +22,7 @@ require_once (RDD."/lib/client_class.php");                 //user configuration
 require_once (RDD."/lib/profile_class.php");                //user configuration (profile form)
 require_once (RDD."/lib/lang_class.php");                   //multilanguage
 require_once (RDD."/lib/exrate_class.php");                 //exchange rate
-//require_once (RDD."/lib/template_class.php");               //templates (profile catalogs)
+require_once (RDD."/lib/template_class.php");               //templates (NEW CATALOG)
 require_once (RDD."/lib/search_class.php");                 //search (products cards)
 require_once (RDD."/js/JsHttpRequest/JsHttpRequest.php");   //ajax requests
 require_once (RDD."/lib/class.phpmailer.php");
@@ -45,7 +45,7 @@ $shop=new ShopClass;
 $client=new ClientClass;
 $profile=new ProfileClass;
 $language=new LangClass;
-//$template=new TemplateClass;
+$template=new TemplateClass;
 $search=new SearchClass;
 $parameters=new ParametersClass;
 $pattern=new PatternClass;

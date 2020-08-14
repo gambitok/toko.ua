@@ -640,7 +640,6 @@ class AutoClass {
     }
 
     function showGarageForm() { $db = DbSingleton::getTokoDb();
-        $prod=new ProductsClass;
         $form=$this->getHtmlForm("garage/garage");
         $list=$auto_form="";
         $client_id=$this->getClient(); $user_id=$this->getUser(); $cookie=$_COOKIE["session_id"];
@@ -651,7 +650,7 @@ class AutoClass {
                 $id=$db->result($r, $i-1, "id");
                 $typ_id=$db->result($r, $i-1, "typ_id");
                 list($manufacture, $model, $model_id)=$this->getCarInfo($typ_id);
-                if ($typ_id!=$prod->getCookieAuto()) {
+                if ($typ_id!=$this->getCookieAuto()) {
                     $status_cap="{select_cap}";
                     $status_disable="";
                     $status_btn="onclick='updateChosenAutoGarage($id);'";
@@ -684,45 +683,43 @@ class AutoClass {
     }
 
     function addToGarage($typ_id) { $db = DbSingleton::getTokoDb();
-        list($manufacture, $model, $model_id)=$this->getCarInfo($typ_id);
-        $client_id=$this->getClient(); $user_id=$this->getUser();
-        $cookie=$_COOKIE["session_id"]; $max_auto=5;
-        if ($user_id==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user_id'";
+        $client_id = $this->getClient(); $user_id = $this->getUser();
+        list($manufacture, $model, $model_id) = $this->getCarInfo($typ_id);
+        $cookie = $_COOKIE["session_id"]; $max_auto = 5;
+        if ($user_id==0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user_id'";
         if ($manufacture!="" && $model!="" && $model_id!="" && $typ_id!="") {
-            $count=$this->getGarageAutoCount()[0];
+            $count = $this->getGarageAutoCount()[0];
             if ($count<=$max_auto) {
-                $r=$db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `typ_id`=$typ_id;"); $n=$db->num_rows($r);
-                if ($n==0){
-                    $rs=$db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `status`=1;"); $ns=$db->num_rows($rs);
+                $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `typ_id`=$typ_id;"); $n = $db->num_rows($r);
+                if ($n==0) {
+                    $rs = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `status`=1;"); $ns = $db->num_rows($rs);
                     for ($i=1; $i<=$ns; $i++) {
                         $id = $db->result($rs, $i-1, "id");
                         $db->query("UPDATE `AUTO_GARAGE` SET `status`=0 WHERE `id`=$id;");
                     }
                     $db->query("INSERT INTO `AUTO_GARAGE` (`client_id`,`user_id`,`cookie_id`,`typ_id`,`status`) VALUES ($client_id,$user_id,'$cookie',$typ_id,1);");
-                    list($manufacture_cap,,$model_id_cap,$typ_text)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
-                    $text="{auto_cap} $manufacture_cap $model_id_cap $typ_text {garage_added}"; $text=$this->replaceLang($text);
+                    list($manufacture_cap,,$model_id_cap,$typ_text) = $this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                     setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
-                    $result=$text;
-                } else {$result=true;}
-            } else {$result=false;}
-        } else {$result=false;}
+                    $result = $this->replaceLang("{auto_cap} $manufacture_cap $model_id_cap $typ_text {garage_added}");
+                } else { $result=true; }
+            } else { $result=false; }
+        } else { $result=false; }
         return $result;
     }
 
     function getGarageAutoCount() { $db = DbSingleton::getTokoDb();
-        $client_id=$this->getClient(); $user_id=$this->getUser(); $cookie=$_COOKIE["session_id"];
+        $client_id = $this->getClient(); $user_id = $this->getUser(); $cookie = $_COOKIE["session_id"];
         if ($user_id==0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where;"); $n = $db->num_rows($r);
-        $n>0 ? $list=$n : $list="";
-        $list=="" ? $style="none" : $style="";
+        $n>0 ? $list = $n : $list = "";
+        $list=="" ? $style = "none" : $style = "";
         return array($list, $style);
     }
 
     function checkUserGarage($typ_id) { $db = DbSingleton::getTokoDb();
         $client_id = $this->getClient(); $user_id = $this->getUser(); $cookie = $_COOKIE["session_id"];
         if ($user_id==0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user_id'";
-        $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `typ_id`=$typ_id;");
-        $n = $db->num_rows($r);
+        $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `typ_id`=$typ_id;"); $n = $db->num_rows($r);
         if ($n == 0) return false; else return true;
     }
 
@@ -781,10 +778,10 @@ class AutoClass {
 
     function dropAutoHistory($history_id) { $db=DbSingleton::getTokoDb();
         if ($history_id=="") {
-            $cookie=$_COOKIE["session_id"]; $user_id=$this->getUser(); $client_id=$this->getClient();
-            if ($user_id==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user_id'";
-        } else  {
-            $where="`id`='$history_id'";
+            $user_id = $this->getUser(); $client_id = $this->getClient(); $cookie = $_COOKIE["session_id"];
+            if ($user_id==0) $where = "`cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `client_user_id`='$user_id'";
+        } else {
+            $where = "`id`='$history_id'";
         }
         $db->query("DELETE FROM `AUTO_HISTORY` WHERE $where");
         return true;
@@ -811,13 +808,13 @@ class AutoClass {
     }
 
     function getSeoContent($mfa_link, $mod_link="") {
-        $form=$this->getHtmlForm("seo_content");
+        $form = $this->getHtmlForm("seo_content");
         $mfa_id = $this->getMfaLink($mfa_link); if ($mfa_link=="") $mfa_id="";
         $model = $this->getModLink($mod_link);
         if ($model=="") {
-            $form=str_replace("{seo_list}", $this->getAutoModList($mfa_id).$this->getDetailsList("", "", $mfa_link, $mod_link), $form);
+            $form = str_replace("{seo_list}", $this->getAutoModList($mfa_id).$this->getDetailsList("", "", $mfa_link, $mod_link), $form);
         } else {
-            $form=str_replace("{seo_list}", $this->getDetailsList("", "", $mfa_link, $mod_link), $form);
+            $form = str_replace("{seo_list}", $this->getDetailsList("", "", $mfa_link, $mod_link), $form);
         }
         return $form;
     }
@@ -1046,7 +1043,7 @@ class AutoClass {
             $head_id = $db->result($r3, $i3-1, "HEAD_ID");
             $head_tex_text = $db->result($r3, $i3-1, "TEX_RU");
             $head_tex_link = $db->result($r3, $i3-1, "TEX_LINK");
-            $head!="" ? $title="<div class='tree-block-title__text'><h1>$head_tex_text</h1></div>" : $title="<span><a href='https://toko.ua$prefix/catalog/$head_tex_link/'>$head_tex_text</a></span>";
+            $head!="" ? $title = "<div class='tree-block-title__text'><h1>$head_tex_text</h1></div>" : $title = "<span><a href='https://toko.ua$prefix/catalog/$head_tex_link/'>$head_tex_text</a></span>";
             $category=="" ?: $title="";
 
             $list.="<div class='tree-item'>";
@@ -1056,7 +1053,7 @@ class AutoClass {
                 $cat_id = $db->result($r2, $i2-1, "CAT_ID");
                 $cat_tex_text = $db->result($r2, $i2-1, "TEX_RU");
                 $cat_tex_link = $db->result($r2, $i2-1, "TEX_LINK");
-                $category!="" ? $title_cat="<h1>$cat_tex_text</h1>" : $title_cat="<a href='https://toko.ua$prefix/catalog/$head_tex_link/$cat_tex_link/'>$cat_tex_text</a>";
+                $category!="" ? $title_cat = "<h1>$cat_tex_text</h1>" : $title_cat = "<a href='https://toko.ua$prefix/catalog/$head_tex_link/$cat_tex_link/'>$cat_tex_text</a>";
 
                 $list.="<div class='tree-item-title'>$title_cat</div>";
                 $list.="<div class='tree-item-list'>";
