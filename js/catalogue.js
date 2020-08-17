@@ -966,3 +966,11 @@ function toggleAutoBlock(block,slide) { "use strict";
     else if ($("#typ_id_select").val()==="") { $("#select_typid").addClass("car_form-selected");}
     else if (($("#typ_id_select").val()!=="" && $("#fuel_id_select").val()==="")) { $("#select_modification").addClass("car_form-selected");}
 }
+
+function setParamsAuto(group_id, type) {
+    JsHttpRequest.query(folder,{'w':'setParamsAuto', 'type':type},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            location.href = "https://toko.ua/test_catalog/"+group_id+"/";
+        }}, true);
+
+}

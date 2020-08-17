@@ -241,6 +241,8 @@ if ($_REQUEST["w"]=="showCarsSelectedForm"){ $GLOBALS['_RESULT'] = array("conten
 
 if ($_REQUEST["w"]=="showSearchParameters"){ $GLOBALS['_RESULT'] = array("content"=>$search->showSearchParameters($_REQUEST["str_id"],$_REQUEST["page"],$_REQUEST["active_filters"],$_REQUEST["type"]));}
 
+
+if ($_REQUEST["w"]=="setParamsAuto"){ $GLOBALS['_RESULT'] = array("content"=>$template->setParamsAuto($_REQUEST["type"]));}
 //if ($_REQUEST["w"]=="showCarsSelectMin"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelectMin($_REQUEST["str_id"],$_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"],$_REQUEST["fuel_id"],true));}
 
 //if ($_REQUEST["w"]=="showCarsSelected"){ $GLOBALS['_RESULT'] = array("content"=>$prod->showCarsSelected($_REQUEST["mfa"],$_REQUEST["model"],$_REQUEST["year"],$_REQUEST["modelid"],$_REQUEST["typ_id"]));}

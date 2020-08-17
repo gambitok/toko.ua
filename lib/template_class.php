@@ -26,20 +26,28 @@ class TemplateClass extends CatalogueClass {
      * */
     function getGroupCount($group_id, $active_filters, $auto_typ_id) { $dbc = DbSingleton::getTokoCacheDb();
         $table = $this->table_group.$group_id;
-
+        $count = 0;
         $where = $this->getActiveFiltersWhere($active_filters);
 
         $r = $dbc->query("SHOW TABLES LIKE '$table';"); $n = $dbc->num_rows($r);
         if ($n>0) {
             $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1 $where;");
             $n = $dbc->result($r, 0, "col_arts");
+            $count = $n;
 
-//            if ($auto_typ_id>0) {
-//                $r = $dbc->query("SELECT `art_id` FROM `$table` WHERE 1 $where;");
-//                $n = $dbc->num_rows($r);
-//            }
+            if ($_SESSION["param-auto"]==2) {
+                $count = 0;
+                $r = $dbc->query("SELECT `art_id` FROM `$table` WHERE 1 $where;"); $n = $dbc->num_rows($r);
+                for ($i=1; $i<=$n; $i++) {
+                    $art_id = $dbc->result($r, $i-1, "art_id");
+                    if ($this->checkT2Link($auto_typ_id, $art_id)) {
+                        $count++;
+                    }
+                }
+            }
+
         }
-        return $n;
+        return $count;
     }
 
     function getGroupFilters($group_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
@@ -49,7 +57,7 @@ class TemplateClass extends CatalogueClass {
         $r = $db->query("SELECT COUNT(`PARAM_ID`) as count_params FROM `T2_TREE_PARAMS` WHERE 1;");
         $max_param = $db->result($r, 0, "count_params");
 
-        $r = $dbc->query("SELECT * FROM `AA_TABLE_GROUP_$group_id` GROUP BY `brand_id`;"); $n = $dbc->num_rows($r);
+        $r = $dbc->query("SELECT * FROM `AA_TABLE_GROUP_$group_id` WHERE 1 $where GROUP BY `brand_id`;"); $n = $dbc->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $brand_id = $dbc->result($r, $i - 1, "brand_id");
             array_push($params[0], $brand_id);
@@ -358,7 +366,7 @@ class TemplateClass extends CatalogueClass {
         $form = str_replace("{catalog_pages}", $this->getPagesCount($count_arts), $form);
         $form = str_replace("{catalog_pagination}", $this->getPagination($count_arts, $page), $form);
         $form = str_replace("{catalog_checked_filters}", $this->showCheckedFilters($group_id, $active_filters), $form);
-        $form = str_replace("{catalog_params_auto}", $this->getParamsAuto($auto_typ_id), $form);
+        $form = str_replace("{catalog_params_auto}", $this->getParamsAuto($group_id, $auto_typ_id), $form);
         $form = str_replace("{catalog_auto}", "{choosen_auto}: ".($auto_typ_id!="" ? $automan->getCarDescription($auto_typ_id) : "-"), $form);
 
         return $form;
@@ -377,10 +385,15 @@ class TemplateClass extends CatalogueClass {
         $r = $dbc->query("SELECT `art_id` FROM `AA_TABLE_GROUP_$group_id` WHERE 1 $where $limit;"); $n = $dbc->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $art_id = $dbc->result($r, $i-1, "art_id");
-            array_push($arts, $art_id);
-//            if ($this->checkT2Link($auto_typ_id, $art_id)) {
-//                array_push($arts, $art_id);
-//            }
+
+            if ($_SESSION["param-auto"]==2) {
+                if ($this->checkT2Link($auto_typ_id, $art_id)) {
+                    array_push($arts, $art_id);
+                }
+            } else {
+                array_push($arts, $art_id);
+            }
+
         }
 
         $where_arts = implode(",", array_unique($arts));
@@ -458,6 +471,11 @@ class TemplateClass extends CatalogueClass {
         }
 
         $link = "";
+
+        foreach ($active_filters as $param=>$values) {
+            if (empty($values)) unset($active_filters[$param]);
+        }
+
         foreach ($active_filters as $param=>$values) {
             if ($param==0) {
                 $param_link = "brandy";
@@ -466,7 +484,6 @@ class TemplateClass extends CatalogueClass {
             }
             $link.="/$param_link=";
 
-            if (empty($values)) $link = "";
             foreach ($values as $value) {
                 if ($param==0) {
                     $value_link = $this->getBrandLink($value);
@@ -599,7 +616,7 @@ class TemplateClass extends CatalogueClass {
         }
 
         $list = "<div class=\"row\">
-            <nav aria-label=\"Page navigation\" class=\"img-center\" style='margin-top: 2em;'>
+            <nav aria-label=\"Page navigation\" class=\"img-center\" style='margin-top: 30px;'>
                 <ul class=\"pagination\">
                     <li class=\"page-item $disabled_pred\"><a class=\"page-link\" href=\"?page=$pred_page\"><i class=\"fa fa-chevron-left\"></i> <span class=\"span-media\">{previous_cap}</span></a></li>
                     $pagination
@@ -615,22 +632,39 @@ class TemplateClass extends CatalogueClass {
     /*
      * Get PARAMS AUTO list
      * */
-    function getParamsAuto($auto_typ_id) {
+    function getParamsAuto($group_id, $auto_typ_id) {
+        $type = $_SESSION["param-auto"];
+
         if ($auto_typ_id=="") {
             $list = "";
         } else {
+
+            if ($type==2) {
+                $type2 = "<i class='fa fa-check-circle'></i>";
+                $type1 = "<i class='far fa-circle'></i>";
+            } else {
+                $type1 = "<i class='fa fa-check-circle'></i>";
+                $type2 = "<i class='far fa-circle'></i>";
+            }
+
             $list = "
                 <div class='param-title'>
                     {auto_cap}:
-                </div>         
-                <ul class='list-inline template-list'>
-                    <li><a href='/'><i class='fa fa-check-circle'></i> {all_cap} {offer_pair_cap}</a></li>
-                    <li><a href='/'><i class='far fa-circle'></i> {auto_cap} {offer_pair_cap}</a></li>
+                </div>
+                 <ul class='list-inline template-list'>
+                    <li><a class='pointer' onclick='setParamsAuto($group_id, 1)'>$type1 {all_cap} {offer_pair_cap}</a></li>
+                    <li><a class='pointer' onclick='setParamsAuto($group_id, 2)'>$type2 {auto_cap} {offer_pair_cap}</a></li>
                 </ul>
             ";
         }
         $list = $this->replaceLang($list);
         return $list;
+    }
+
+    function setParamsAuto($type) {
+        session_start();
+        $_SESSION["param-auto"] = $type;
+        return true;
     }
 
 }
