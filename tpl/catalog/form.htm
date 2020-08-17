@@ -1,0 +1,22 @@
+<link href="/js/plugins/jquery.treefilter/jquery.treefilter.custom.css" rel="stylesheet">
+
+<div class="metro">
+    <h1>CATALOG</h1>
+    <ul class='list-inline'>
+        {catalog_range}
+    </ul>
+</div>
+
+<script src="/js/plugins/jquery.treefilter/jquery.treefilter.js"></script>
+
+<script>
+    $(document).ready(function() {
+        var tree = new treefilter($("#my-tree"), {
+            searcher : $("input#my-search")
+        });
+        $(".tree-head").on('click', function(){
+            $(this).next().toggleClass("dnone");
+            $(this).toggleClass("check-head");
+        });
+    });
+</script>

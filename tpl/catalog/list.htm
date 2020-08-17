@@ -1,0 +1,34 @@
+<div class="metro">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-3 template_filters" style="padding: 0">
+                <a class="btn btn-warning" href="/test_catalog/{group_id}">{clear_cap}</a>
+                {catalog_params_auto}
+                {catalog_params}
+            </div>
+            <div class="col-9">
+                <h1>{catalog_title}</h1>
+                <h2>{catalog_auto}</h2>
+                <h2>{results_cap}: {catalog_amount}</h2>
+                <h2>{page_quantity}: {catalog_amount_arts}</h2>
+                <h2>{page_cap}: {catalog_page} {of_cap} {catalog_pages}</h2>
+                <div class="template_checked">
+                    {catalog_checked_filters}
+                </div>
+                <hr>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            {catalog_list}
+                        </div>
+                    </div>
+                </div>
+                <div class="template_pagination">
+                    {catalog_pagination}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,32 @@
+<div class="metro">
+
+    <input type="hidden" id="order_id" value="{order_id}">
+    <input type="hidden" id="order_user_id" value="{order_user_id}">
+
+    <h1>{order_cap} #{order_id} {status_off}!</h1>
+
+    <table class="table">
+        <tr>
+            <td>{phone_number}</td>
+            <td><input type="text" class="form-control" id="user_phone" value="{user_phone}" title="{phone_number}" disabled></td>
+        </tr>
+        <tr>
+            <td>{name_surname}</td>
+            <td><input type="text" class="form-control" id="user_name" value="{user_name}" title="{name_surname}"></td>
+        </tr>
+        <tr>
+            <td>{email_cap}</td>
+            <td><input type="text" class="form-control" id="user_email" value="{user_email}" title="{email_cap}"></td>
+        </tr>
+        <tr>
+            <td>{client_password_cap}</td>
+            <td><input type="text" class="form-control" id="user_pass" value="{user_pass}" title="{client_password_cap}"></td>
+        </tr>
+    </table>
+
+    <div class="text-right">
+        <button class="btn" onclick="saveOrderClient();">{order_success_save}</button>
+        <button class="btn" onclick="loginOrderClient();">{order_success_delete}</button>
+    </div>
+
+</div>

@@ -1,0 +1,104 @@
+@charset "windows-1251";
+/* CSS Document */
+
+.tf-tree, .tf-tree li {
+  list-style: none;
+  padding-left: 0;
+  line-height: 20px;
+}
+
+.tf-tree .tf-child-true > ul {
+  display: none;
+  padding-left: 0;
+}
+
+.tf-tree .tf-child-true {
+  cursor: pointer;
+  position: relative;
+}
+
+.tf-tree .tf-child-true a{
+  cursor: pointer;
+  position: relative;
+  color: black;
+}
+
+.tf-tree .tf-child-false a{
+  cursor: pointer;
+  position: relative;
+  color: #004084;
+}
+
+.tf-tree .tf-child-true a:hover {
+	color: lightcoral;
+	text-decoration: underline;
+}
+
+.tf-tree .tf-child-false a:hover {
+	color: lightcoral;
+	text-decoration: underline;
+}
+
+.tf-tree .tf-child-true:before {
+  display: block;
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  line-height: 20px;
+  text-align: center;
+  transition: .1s linear;
+  content: " ";
+  background: url('misc.png') 0 -59px no-repeat;
+}
+
+.tf-tree .tf-child-true.tf-open > div {
+  font-weight: bold;
+  content: "";
+}
+
+.tf-tree .tf-child-true.tf-open > ul { display: block; }
+
+.tf-tree .tf-child-true.tf-open:before { 
+	content: " "; 
+	background: url('misc.png') -18px -82px no-repeat #fff;
+}
+
+.tf-tree .tf-child-false {
+  cursor: pointer;
+  position: relative;
+}
+
+.tf-tree .tf-child-false:before {
+  display: block;
+  position: absolute;
+  top: -1px;
+  left: 0;
+  content: " ";
+  background: url('misc.png') 0 -20px no-repeat;	
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.tf-tree .tf-closed { 
+	content: " ";
+  	background: url('misc.png') 0 -59px no-repeat;
+	font-weight: normal; 
+}
+
+.tf-tree .tf-selected {
+  background: #fff;
+  color: #08f;
+  border-radius: 20px;
+}
+
+.tf-tree ul.tf-search-result { display: block }
+
+.tf-tree ul.tf-search-result > li { display: none; }
+
+.tf-tree ul.tf-search-result > li.tf-search-result { display: block; }

@@ -168,7 +168,7 @@ class PartsClass extends CatalogueClass {
 
         $where_brands="";
         if (!empty($brandy)) {
-            $brand_list=implode(",", $brandy);
+            $brand_list = implode(",", $brandy);
             if ($brand_list!="") $where_brands="WHERE `brand_id` IN ($brand_list)";
         }
 

@@ -441,23 +441,39 @@ trait Variables {
         return $group_name;
     }
 
+    /* GROUP VALUES */
+    function getValueID($value_link, $param_id, $group_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE` WHERE `VALUE_LINK`='$value_link' AND `PARAM_ID`='$param_id' AND `GROUP_ID`='$group_id' LIMIT 1;");
+        $value_id = $db->result($r, 0, "VALUE_ID");
+        return $value_id;
+    }
+    function getValueName($value_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `PARAM_VALUE` FROM `T2_TREE_VALUE` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
+        $value_name = $db->result($r, 0, "PARAM_VALUE");
+        return $value_name;
+    }
+    function getValueLink($value_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `VALUE_LINK` FROM `T2_TREE_VALUE` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
+        $value_link = $db->result($r, 0, "VALUE_LINK");
+        return $value_link;
+    }
+
+    /* GROUP PARAMS */
+    function getParamID($param_link, $group_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS` WHERE `PARAM_LINK`='$param_link' AND `GROUP_ID`='$group_id' LIMIT 1;");
+        $param_id = $db->result($r, 0, "PARAM_ID");
+        return $param_id;
+    }
     function getParamName($param_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
         $param_name = $db->result($r, 0, "PARAM_NAME");
         return $param_name;
     }
-
-//    function getValueID($value_link, $param_id, $group_id) { $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE` WHERE `VALUE_LINK`='$value_link' AND `PARAM_ID`='$param_id' AND `GROUP_ID`='$group_id' LIMIT 1;");
-//        $value_id = $db->result($r, 0, "VALUE_ID");
-//        return $value_id;
-//    }
-//
-//    function getParamID($param_link, $group_id) { $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS` WHERE `PARAM_LINK`='$param_link' AND `GROUP_ID`='$group_id' LIMIT 1;");
-//        $param_id = $db->result($r, 0, "PARAM_ID");
-//        return $param_id;
-//    }
+    function getParamLink($param_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `PARAM_LINK` FROM `T2_TREE_PARAMS` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
+        $param_link = $db->result($r, 0, "PARAM_LINK");
+        return $param_link;
+    }
 
     function getCookieAuto() {
         $auto_typ_id = $_COOKIE["auto_typ_id"];

@@ -77,6 +77,7 @@ class PatternClass extends CatalogueClass {
                     $count_upd++;
                 }
             }
+
         }
 
         return array($count_add, $count_upd);
