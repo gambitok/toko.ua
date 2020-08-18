@@ -57,7 +57,7 @@ class TemplateClass extends CatalogueClass {
         $r = $db->query("SELECT COUNT(`PARAM_ID`) as count_params FROM `T2_TREE_PARAMS` WHERE 1;");
         $max_param = $db->result($r, 0, "count_params");
 
-        $r = $dbc->query("SELECT * FROM `AA_TABLE_GROUP_$group_id` WHERE 1 $where GROUP BY `brand_id`;"); $n = $dbc->num_rows($r);
+        $r = $dbc->query("SELECT * FROM `AA_TABLE_GROUP_$group_id` WHERE 1 GROUP BY `brand_id`;"); $n = $dbc->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $brand_id = $dbc->result($r, $i - 1, "brand_id");
             array_push($params[0], $brand_id);
@@ -175,35 +175,6 @@ class TemplateClass extends CatalogueClass {
         $dbc->query("DELETE FROM `$table` WHERE `status`=0;");
 
         return "TABLE: $table, UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
-    }
-
-    /*
-     * Get GROUP List, Filters
-     * */
-    function showGroupForm($group_id, $page=1, $brandy=[]) { $dbc = DbSingleton::getTokoCacheDb();
-        $table = $this->table_group.$group_id;
-        $limit = $this->getSearchLimit($page);
-
-        $where_brands="";
-        if (!empty($brandy)) {
-            $brand_list = implode(",", $brandy);
-            if ($brand_list!="") $where_brands = "WHERE `brand_id` IN ($brand_list)";
-        }
-
-        $arts = [];
-        $r = $dbc->query("SELECT * FROM `$table` $where_brands $limit;"); $n = $dbc->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $art_id = $dbc->result($r, $i-1, "art_id");
-            array_push($arts, $art_id);
-        }
-
-        $where_arts = implode(",", array_unique($arts));
-        list($list,,$filters,,$brands) = $this->searchList($where_arts, 1, 1);
-
-        $form = $this->getHtmlForm("catalog/group_list");
-        $form = str_replace("{group_list}", $list, $form);
-
-        return array("form"=>$form, "filters"=>$filters, "brands"=>$brands);
     }
 
     /*
@@ -404,43 +375,45 @@ class TemplateClass extends CatalogueClass {
 
     function getParamsList($group_id, $arr_params, $active_filters) {
         $params = "";
-        foreach ($arr_params as $param_id=>$mas) {
-            $params_li = "";
-            // BRANDS
-            if ($param_id==0) {
-                $param_name = $this->replaceLang("{brands_cap}");
-                foreach ($mas as $brand_id) {
-                    $param_value = $this->getBrandName($brand_id);
-                    $link = $this->getParamsListLink($active_filters, 0, $brand_id);
-                    $checked = "<i class='far fa-square'></i>";
-                    if (in_array($brand_id, $active_filters[0])) {
-                        $checked = "<i class='fa fa-check-square'></i>";
-                    }
-                    $params_li.="<li><a href=\"/test_catalog/$group_id/$link\">$checked $param_value</a></li>";
-                }
+        $arr = [];
+
+        foreach ($arr_params as $param_id=>$values) {
+            $arr[$param_id] = [];
+            foreach ($values as $value_id) {
+                $param_id==0 ? $param_value = $this->getBrandName($value_id) : $param_value = $this->getValueName($value_id);
+                $link = $this->getParamsListLink($active_filters, $param_id, $value_id);
+                (in_array($value_id, $active_filters[$param_id])) ? $checked = 1 : $checked = 0;
+                $arr[$param_id][$value_id] = ['name'=>$param_value, 'link'=>$link, 'status'=>$checked];
             }
-            // PARAMS
-            else {
-                $param_name = $this->getParamName($param_id);
-                foreach ($mas as $value_id) {
-                    $param_value = $this->getValueName($value_id);
-                    $link = $this->getParamsListLink($active_filters, $param_id, $value_id);
-                    $checked = "<i class='far fa-square'></i>";
-                    if (in_array($value_id, $active_filters[$param_id])) {
-                        $checked = "<i class='fa fa-check-square'></i>";
-                    }
-                    $params_li.="<li><a href=\"/test_catalog/$group_id/$link\">$checked $param_value</a></li>";
-                }
+        }
+
+        foreach ($arr as $param_id=>$values) {
+            $params_li = "";
+            $param_id==0 ? $param_name = $this->replaceLang("{brands_cap}") : $param_name = $this->getParamName($param_id);
+
+            $far_status = []; $far_name = [];
+            foreach ($values as $key => $row) {
+                $far_status[$key] = $row["status"];
+                $far_name[$key] = $row["name"];
+            }
+            array_multisort($far_status, SORT_DESC, $far_name, SORT_ASC, $values);
+
+            foreach ($values as $value_id=>$var) {
+                $name = $var["name"];
+                $link = $var["link"];
+                $status = $var["status"];
+                $status ? $checked = "<i class='fa fa-check-square'></i>" : $checked = "<i class='far fa-square'></i>";
+                $params_li.="<li><a href=\"/test_catalog/$group_id/$link\">$checked $name</a></li>";
             }
             $params.="<div class=\"param-title\">$param_name:</div>
             <ul id=\"param-$param_id\" class=\"list-inline template-list list-hide\">
                 $params_li
             </ul>";
-            if (count($mas)>5) {
+            if (count($values)>5) {
                 $params.="
                     <a class=\"pointer underline\" onclick=\"toggleListParams(this, $param_id);\">
                         <span class=\"show\">{more_cap}</span>
-                        <span class=\"none\">{hide_cap}</span>         
+                        <span class=\"none\">{hide_cap}</span>
                     </a>
                 ";
             }
