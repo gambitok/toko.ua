@@ -339,8 +339,7 @@ trait Variables {
     }
 
     function getSearchMessages($type_filter) {
-        $form_404 = $this->getHtmlForm("error/404_tree");
-        $form_404 = $this->replaceLang($form_404);
+        $form_404 = $this->replaceLang($this->getHtmlForm("error/404_tree"));
         switch ($type_filter) {
             case 1:  { $error="<h5 class=\"error_message\">$this->err1</h5>"; $list=""; $jsFilterModel="catalogueFilter();"; break; }
             case 2:  { $error="$form_404"; $list=""; $jsFilterModel="tecModelsFilter();"; break; }

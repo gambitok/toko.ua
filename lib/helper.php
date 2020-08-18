@@ -33,19 +33,19 @@ trait Helper {
     }
 
     function getUrlString($str) {
-        $str = str_replace("'","",$str);
-        $str = str_replace("`","",$str);
-        $str = str_replace(",","",$str);
-        $str = str_replace('"',"",$str);
-        $str = str_replace("%20"," ",$str);
-        $str = str_replace("%60","",$str);
-        $str = str_replace("&nbsp;","",$str);
-        $str = str_replace("&rsquo;","",$str);
+        $str = str_replace("'", "", $str);
+        $str = str_replace("`", "", $str);
+        $str = str_replace(",", "", $str);
+        $str = str_replace('"', "", $str);
+        $str = str_replace("%20", " ", $str);
+        $str = str_replace("%60", "", $str);
+        $str = str_replace("&nbsp;", "", $str);
+        $str = str_replace("&rsquo;", "", $str);
         return $str;
     }
 
     function getUrlNumber($number) {
-        if (!is_numeric($number)) $number=0;
+        if (!is_numeric($number)) $number = 0;
         return $number;
     }
 
@@ -83,14 +83,14 @@ trait Helper {
     }
 
     function getManualName($key) { $db=DbSingleton::getDbm();
-        $r=$db->query("SELECT `mcaption` FROM `manual` WHERE `id`='$key';");
-        $caption=$db->result($r,0,"mcaption");
+        $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `id`='$key';");
+        $caption = $db->result($r, 0, "mcaption");
         return $caption;
     }
 
     function getManualNameCaption($key, $mid) { $db=DbSingleton::getDbm();
-        $r=$db->query("SELECT `mcaption` FROM `manual` WHERE `key`='$key' AND `mid`='$mid' LIMIT 1;");
-        $caption=$db->result($r,0,"mcaption");
+        $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `key`='$key' AND `mid`='$mid' LIMIT 1;");
+        $caption = $db->result($r, 0, "mcaption");
         return $caption;
     }
 
@@ -150,7 +150,7 @@ trait Helper {
 
     function randomPassword() {
         // $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-        $kol=4;
+        $kol = 4;
         $alphabet = "1234567890";
         $pass = array();
         $alphaLength = strlen($alphabet) - 1;
@@ -174,10 +174,10 @@ trait Helper {
         $mas3 = [0,5,6,7,8,9];
         $mas4 = [11,12,13,14,15,16,17,18,19];
         $mod = $i%10;
-        if (in_array($mod,$mas1)) $cap=$cap1;
-        if (in_array($mod,$mas2)) $cap=$cap2;
-        if (in_array($mod,$mas3) || in_array($i,$mas4)) $cap=$cap3;
-        $cap=$this->replaceLang($cap);
+        if (in_array($mod, $mas1)) $cap = $cap1;
+        if (in_array($mod, $mas2)) $cap = $cap2;
+        if (in_array($mod,$mas3) || in_array($i, $mas4)) $cap = $cap3;
+        $cap = $this->replaceLang($cap);
         return $cap;
     }
 
@@ -211,11 +211,11 @@ trait Helper {
     function mergeArray($arr1, $arr2) {
         $data = [];
         foreach ($arr1 as $key => $value){
-            if (empty($data[$key])) $data[$key]=[];
+            if (empty($data[$key])) $data[$key] = [];
             $data[$key] = $value;
         }
         foreach ($arr2 as $key => $value){
-            if (empty($data[$key])) $data[$key]=[];
+            if (empty($data[$key])) $data[$key] = [];
             $data[$key] = array_unique(array_merge($data[$key], $value));
         }
         return $data;

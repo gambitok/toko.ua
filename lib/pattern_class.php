@@ -100,8 +100,9 @@ class PatternClass extends CatalogueClass {
         return $where;
     }
 
-    function showProductsForm($template_id, $page=1, $link="") { $db = DbSingleton::getTokoDb(); $count_arts=0;
-        $r=$db->query("SHOW TABLES LIKE 'XX_TABLE_TEMPLATE_$template_id';"); $n=$db->num_rows($r);
+    function showProductsForm($template_id, $page=1, $link="") { $db = DbSingleton::getTokoDb();
+        $count_arts = 0;
+        $r = $db->query("SHOW TABLES LIKE 'XX_TABLE_TEMPLATE_$template_id';"); $n = $db->num_rows($r);
         if ($n>0) {
             $form = $this->getHtmlForm("patterns");
             $active_filters = $this->getTemplateLinkParams($template_id, $link);
@@ -122,11 +123,10 @@ class PatternClass extends CatalogueClass {
             $form = $this->getHtmlForm("error/404");
         }
 
-        $form=$this->replaceLang($form);
+        $form = $this->replaceLang($form);
 
-        $count = $this->products_on_page;
-        $pages_count = ceil($count_arts / $count);
-        if ($count_arts<$count) $pages_count=1;
+        $pages_count = ceil($count_arts / $this->products_on_page);
+        if ($count_arts<$this->products_on_page) $pages_count=1;
 
         return array($form, $pages_count);
     }

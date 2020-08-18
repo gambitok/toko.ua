@@ -147,21 +147,18 @@ class SearchClass extends CatalogueClass {
     /*
      * Route CATALOG Pages
      * */
-    function catalogRouter($link, $some_link, $some_link2="") {
+    function catalogRouter($link, $some_link, $page, $some_link2) {
         $prod = new ProductsClass; $automan = new AutoClass;
-
-        $page = $_GET["page"]; $page!=NULL ?: $page=1;
 
         $details_form = $this->getHtmlForm("details_offers");
 
-        $form1=""; $car_content=""; $pages_count=0; $str_id="";
+        $form=""; $form_car=""; $pages_count=0; $str_id="";
 
         $str_link=""; $mfa_link=""; $mod_link=""; $mod_id_link=""; $filters="";
 
         $cookie_typ_id = $this->getCookieAuto();
 
         $arr = explode("/", $link);
-
         if (!empty($arr[0])) $str_link = $arr[0];
         if (!empty($arr[3])) ((strpos($arr[4], "=") !== false)) ? $filters = $arr[4] : $filters = "";
         if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $mod_id_link = $arr[3];
@@ -186,13 +183,13 @@ class SearchClass extends CatalogueClass {
             if ($cookie_typ_id=="") {
                 $str_ids = "";
                 $typ_id = "";
-                $car_content = $prod->getCarsSearch("", $mfa_link, $mod_link);
+                $form_car = $prod->getCarsSearch("", $mfa_link, $mod_link);
             } else {
                 $str_ids = $prod->getStrIds($cookie_typ_id);
                 $typ_id = $cookie_typ_id;
-                $car_content = $prod->getCarsGarage();
+                $form_car = $prod->getCarsGarage();
             }
-            $form1 = $prod->getCarDetails($str_ids, $typ_id);
+            $form = $prod->getCarDetails($str_ids, $typ_id);
         }
 
         if ($cookie_typ_id!="" && $mfa_link=="" && $mod_link=="") {
@@ -207,8 +204,8 @@ class SearchClass extends CatalogueClass {
         if ($head_id!="") {
             if ($some_link2!="") $cat_id = $automan->getCatNewLinkStr($head_id, $some_link2); else $cat_id = "";
             $head_list = $automan->getDetailsList($head_id, $cat_id);
-            $form1 = "<div class=\"content\">".$head_list."</div>";
-            $car_content = "";
+            $form_car = "";
+            $form = "<div class=\"content\">".$head_list."</div>";
         } else {
 
             if ($str_link!="" && ($filters=="" || $filters!="") && $mfa_link=="" && $mod_link=="") {
@@ -216,8 +213,8 @@ class SearchClass extends CatalogueClass {
                 // 3: /catalog/shrus/brandy=bosch
                 $str_id = $automan->getStrNewLinkStr($str_link);
                 list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link);
-                $car_content = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
-                $form1 = $details_form;
+                $form_car = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
+                $form = $details_form;
             }
 
             if ($str_link!="" && ($filters=="" || $filters!="") && $mfa_link!="") {
@@ -232,23 +229,23 @@ class SearchClass extends CatalogueClass {
                     if ($mfa_link!="" && $mod_link!="") {
                         if ($mod_id_link!="") {
                             // 7: /catalog/shrus/kia/sportage/sl-8751/
-                            $car_content = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
+                            $form_car = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
                         } else {
                             // 7: /catalog/shrus/kia/sportage/
-                            $car_content = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
+                            $form_car = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
                         }
                     } else {
-                        $car_content = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
+                        $form_car = $prod->getCarsSearch($str_id, $mfa_link, $mod_link);
                     }
-                    $form1 = $details_form;
+                    $form = $details_form;
                 }
 
                 if ($cookie_typ_id!="") {
                     // 8: /catalog/shrus + TYP
                     // 9: /catalog/shrus/brandy=bosch + TYP
                     $str_id = $automan->getStrNewLinkStr($str_link);
-                    $car_content = $prod->getCarsGarage();
-                    $form1 = $prod->techCarModels($cookie_typ_id, $str_id);
+                    $form_car = $prod->getCarsGarage();
+                    $form = $prod->techCarModels($cookie_typ_id, $str_id);
                 }
 
             }
@@ -262,24 +259,23 @@ class SearchClass extends CatalogueClass {
         if ($mfa_link!="") {
             if ($mod_link!="") {
                 if ($mod_id_link!="") {
-                    $form1=str_replace("{seo_auto}", $automan->getAutoTypeList($automan->getMfaLink($mfa_link), $automan->getAutoModelIdLink($mod_id_link)["model_id"], $str_id, $brand_ids[0]), $form1);
+                    $form = str_replace("{seo_auto}", $automan->getAutoTypeList($automan->getMfaLink($mfa_link), $automan->getAutoModelIdLink($mod_id_link)["model_id"], $str_id, $brand_ids[0]), $form);
                 } else {
-                    $form1=str_replace("{seo_auto}", $automan->getAutoModIDList($automan->getMfaLink($mfa_link), $automan->getModLink($mod_link), $str_id, $brand_ids[0]), $form1);
+                    $form = str_replace("{seo_auto}", $automan->getAutoModIDList($automan->getMfaLink($mfa_link), $automan->getModLink($mod_link), $str_id, $brand_ids[0]), $form);
                 }
             } else {
-                $form1=str_replace("{seo_auto}", $automan->getAutoModList($automan->getMfaLink($mfa_link), $str_id, $brand_ids[0]), $form1);
+                $form = str_replace("{seo_auto}", $automan->getAutoModList($automan->getMfaLink($mfa_link), $str_id, $brand_ids[0]), $form);
             }
         } else {
-            $form1=str_replace("{seo_auto}", $automan->getAutoMfaModelList($str_id, $brand_ids[0]), $form1);
+            $form = str_replace("{seo_auto}", $automan->getAutoMfaModelList($str_id, $brand_ids[0]), $form);
         }
 
-        return array($form1, $car_content, $pages_count);
+        return array($form, $form_car, $pages_count);
     }
 
     function getActiveFilters($filters) {
         $active_filters = [];
         $arr = explode(";", $filters);
-
         foreach ($arr as $variable) {
             $param = substr($variable, 0, strpos($variable, "="));
             if ($param=="brandy") {
@@ -292,7 +288,6 @@ class SearchClass extends CatalogueClass {
                 }
             }
         }
-
         return $active_filters;
     }
 
@@ -555,7 +550,7 @@ class SearchClass extends CatalogueClass {
     }
 
     function getCatalogueSearchParams($art_id, $where_brands) { $db = DbSingleton::getTokoDb();
-        $suppl_array=$storage_array=$stock_array=[];
+        $suppl_array = $storage_array = $stock_array = [];
         $r = $db->query("SELECT t2asc.STORAGE_ID as storage_id, 0 as suppl_id, t2asc.AMOUNT
         FROM `T2_ARTICLES` t2a
             LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc on t2asc.ART_ID=t2a.ART_ID
@@ -621,7 +616,7 @@ class SearchClass extends CatalogueClass {
             $r = $db->query("SELECT * FROM `T_LINKING_PAGE` WHERE `STR_ID`='$str_id';"); $n = $db->num_rows($r);
         }
 
-        for ($i=1;$i<=$n;$i++) {
+        for ($i=1; $i<=$n; $i++) {
             $page_id = $db->result($r, $i-1, "PAGE_ID");
             $sort_id = $db->result($r, $i-1, "SORT_ID");
             list($page_link, $page_text) = $this->getStrLinkingPage($page_id);
@@ -720,7 +715,7 @@ class SearchClass extends CatalogueClass {
     function getSeoLinking($str_id, $h1, $filters, $brands) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT` FROM `SEO_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
-            $automan=new AutoClass; $kours=new ExRateClass;
+            $automan = new AutoClass; $kours = new ExRateClass;
 
             $head_id = $automan->getHeadStr($str_id);
             list($head_text) = $automan->getHeadNewDescr($head_id);

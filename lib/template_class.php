@@ -83,27 +83,24 @@ class TemplateClass extends CatalogueClass {
      * */
     function initGroupTable($group_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
         $table = $this->table_group.$group_id;
-
 //        if ($this->checkGroupTable($group_id)>0) $dbc->query("UPDATE `$table` SET `status`=0 WHERE 1;");
         if ($this->checkGroupTable($group_id)>0) $dbc->query("DROP TABLE `$table`;");
 
         $products = [];
-        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE_ARTS` WHERE `GROUP_ID`='$group_id' GROUP BY `ART_ID`;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE_ARTS` WHERE `GROUP_ID`='$group_id' GROUP BY `ART_ID`;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $art_id = $db->result($r, $i-1, "ART_ID");
-
             if (empty($products[$art_id])) $products[$art_id] = [];
         }
 
         $params_arr = [];
-        $r = $db->query("SELECT `ART_ID`, `PARAM_ID`, `VALUE_ID` FROM `T2_TREE_ARTS_PARAMS_VALUE` WHERE `GROUP_ID`='$group_id';"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT `ART_ID`, `PARAM_ID`, `VALUE_ID` FROM `T2_TREE_ARTS_PARAMS_VALUE` WHERE `GROUP_ID`='$group_id';"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $art_id = $db->result($r, $i-1, "ART_ID");
             $param_id = $db->result($r, $i-1, "PARAM_ID");
             $value_id = $db->result($r, $i-1, "VALUE_ID");
             if (empty($products[$art_id][$param_id])) $products[$art_id][$param_id] = [];
             array_push($products[$art_id][$param_id], $value_id);
-
             if ($param_id>0) array_push($params_arr, $param_id);
         }
 
@@ -126,20 +123,24 @@ class TemplateClass extends CatalogueClass {
 
         $count_add = 0; $count_upd = 0;
         foreach ($products as $art_id=>$params) {
-            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT
+            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT as amount, t2asc.STORAGE_ID as storage_id, 0 as suppl_id
             FROM `T2_ARTICLES` t2a
                 LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
             WHERE t2a.ART_ID IN ($art_id) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0) 
             GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
             UNION ALL
-            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl
+            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl as amount, t2si.client_storage_id as storage_id, t2si.suppl_id
             FROM `T2_ARTICLES` t2a
                 LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
             WHERE t2a.ART_ID IN ($art_id) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
             GROUP BY t2a.ART_ID, t2si.client_storage_id;");
 
-            $stock = $db->num_rows($r);
             $brand_id = $db->result($r, 0, "BRAND_ID");
+            $stock = intval($db->result($r, 0, "amount"));
+            $suppl_id = $db->result($r, 0, "suppl_id");
+            $storage_id = $db->result($r, 0, "storage_id");
+            $price = $this->getArticlePrice($art_id);
+            if ($suppl_id!=0) $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
 
             $params_values = ""; $params_column = ""; $set_column = "";
             foreach ($params as $param_id=>$values) {
@@ -147,16 +148,16 @@ class TemplateClass extends CatalogueClass {
                 foreach ($values as $value_id) {
                     array_push($params_arr, $value_id);
                 }
-                $params_values.="'".implode(",",$params_arr)."',";
+                $params_values.="'".implode(",", $params_arr)."',";
                 $params_column.="`param_$param_id`,";
 
-                $set_column.="`param_$param_id`='".implode(",",$params_arr)."',";
+                $set_column.="`param_$param_id`='".implode(",", $params_arr)."',";
             }
             $params_values = rtrim($params_values, ",");
             $params_column = rtrim($params_column, ",");
             $set_column = rtrim($set_column, ",");
 
-            if ($stock>0) {
+            if ($stock>0 && $price>0) {
                 $r2 = $dbc->query("SELECT * FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;"); $n = $dbc->num_rows($r2);
                 if ($n==0) {
                     if ($params_column!="") $params_column = ", $params_column";
@@ -318,6 +319,7 @@ class TemplateClass extends CatalogueClass {
 
         if (!empty($active_filters)) {
             $active_filters = $this->getActiveFilters($this->getCatalogFilters($active_filters), $group_id);
+//            $active_filters = $this->getActiveFilters2($group_id, $this->getCurrentFilters($group_id), $this->getCatalogFilters($active_filters));
         }
 
         $data = $this->getCatalogParamGroupList($group_id, $page, $active_filters, $auto_typ_id); // GROUP LIST
@@ -368,6 +370,7 @@ class TemplateClass extends CatalogueClass {
         }
 
         $where_arts = implode(",", array_unique($arts));
+
         list($list) = $this->searchList($where_arts, 1, 1);
 
         return array("list"=>$list);
@@ -443,26 +446,16 @@ class TemplateClass extends CatalogueClass {
             }
         }
 
-        $link = "";
-
         foreach ($active_filters as $param=>$values) {
             if (empty($values)) unset($active_filters[$param]);
         }
 
+        $link = "";
         foreach ($active_filters as $param=>$values) {
-            if ($param==0) {
-                $param_link = "brandy";
-            } else {
-                $param_link = $this->getParamLink($param);
-            }
+            $param==0 ? $param_link = "brandy" : $param_link = $this->getParamLink($param);
             $link.="/$param_link=";
-
             foreach ($values as $value) {
-                if ($param==0) {
-                    $value_link = $this->getBrandLink($value);
-                } else {
-                    $value_link = $this->getValueLink($value);
-                }
+                $param==0 ? $value_link = $this->getBrandLink($value) : $value_link = $this->getValueLink($value);
                 $link.="$value_link,";
             }
             $link = rtrim($link, ",");
@@ -611,7 +604,6 @@ class TemplateClass extends CatalogueClass {
         if ($auto_typ_id=="") {
             $list = "";
         } else {
-
             if ($type==2) {
                 $type2 = "<i class='fa fa-check-circle'></i>";
                 $type1 = "<i class='far fa-circle'></i>";
@@ -619,7 +611,6 @@ class TemplateClass extends CatalogueClass {
                 $type1 = "<i class='fa fa-check-circle'></i>";
                 $type2 = "<i class='far fa-circle'></i>";
             }
-
             $list = "
                 <div class='param-title'>
                     {auto_cap}:
@@ -639,5 +630,109 @@ class TemplateClass extends CatalogueClass {
         $_SESSION["param-auto"] = $type;
         return true;
     }
+
+//    function getCurrentFilters($group_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
+//        $table = $this->table_group.$group_id;
+//        $current_filters = [];  $current_filters[0] = [];
+//
+//        $r = $db->query("SELECT COUNT(`PARAM_ID`) as count_params FROM `T2_TREE_PARAMS` WHERE 1;");
+//        $max_param = $db->result($r, 0, "count_params");
+//
+//        $r = $dbc->query("SELECT * FROM `$table` WHERE 1;"); $n = $dbc->num_rows($r);
+//        for ($i=1; $i<=$n; $i++) {
+//            $brand_id = $dbc->result($r, $i-1, "brand_id");
+//            array_push($current_filters[0], $brand_id);
+//            for ($param_id=1; $param_id<=$max_param; $param_id++) {
+//                $value_ids = $dbc->result($r, $i-1, "param_$param_id");
+//                $current_filters[$param_id] = explode(",",$value_ids);
+//            }
+//        }
+//        return $current_filters;
+//    }
+//
+//    function getActiveFilters2($group_id, $current, $active) {
+//        $new_filters = [];
+//        $current_products = $this->getCurrentProducts($group_id);
+//        foreach ($current as $param_id=>$values) {
+//            if (empty($new_filters[$param_id])) $new_filters[$param_id]=[];
+//            if (!empty($active[$param_id])) {
+//                $new_filters[$param_id] = $this->getCheckParamFilters($current_products, $active, $param_id, 1);
+//            } else {
+//                $new_filters[$param_id] = $this->getCheckParamFilters($current_products, $active, $param_id);
+//            }
+//        }
+//        return $new_filters;
+//    }
+//
+//    function getCurrentProducts($group_id, $page=0, $active_filters=[]) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
+//        $table = $this->table_group.$group_id;
+//        $limit = ""; if ($page>0) $limit = $this->getSearchLimit($page);
+//        $where = ""; if (!empty($active_filters)) $where = $this->getFiltersRequest($active_filters);
+//        $products = [];
+//
+//        $r = $db->query("SELECT COUNT(`PARAM_ID`) as count_params FROM `T2_TREE_PARAMS` WHERE 1;");
+//        $max_param = $db->result($r, 0, "count_params");
+//
+//        $r = $dbc->query("SELECT * FROM `$table` WHERE 1 $where $limit;"); $n = $dbc->num_rows($r);
+//        for ($i=1; $i<=$n; $i++) {
+//            $art_id = $dbc->result($r, $i-1, "art_id");
+//            $brand_id = $dbc->result($r, $i-1, "brand_id");
+//            if (empty($products[$art_id][0])) $products[$art_id][0] = [];
+//            array_push($products[$art_id][0], $brand_id);
+//            for($param_id=1; $param_id<=$max_param; $param_id++) {
+//                $value_ids = $dbc->result($r, $i-1, "param_$param_id");
+//                if ($value_ids!="")
+//                $products[$art_id][$param_id] = explode(",", $value_ids);
+//            }
+//        }
+//        return $products;
+//    }
+//
+//    function getFiltersRequest($active_filters) {
+//        $where="";
+//        foreach ($active_filters as $param_id=>$values) {
+//            if ($param_id==0) {
+//                $where.=" AND `brand_id` IN (".implode(",",$values).")";
+//            } else {
+//                $vls = [];
+//                if (!empty($values)) {
+//                    $where.=" AND `param_$param_id` IN (";
+//                    foreach ($values as $value_id) {
+//                        array_push($vls, $value_id);
+//                    }
+//                    $where.="".implode(",",$vls).")";
+//                }
+//            }
+//        }
+//        return $where;
+//    }
+//
+//    function getCheckParamFilters($products, $sep_filters, $param_id, $status=0) {
+//        if ($status) unset($sep_filters[$param_id]);
+//        $fproducts = []; $rfilters = [];
+//        foreach ($products as $art_id=>$params) { $count_params=0;
+//            foreach ($params as $par_id=>$values) { $count_values=0;
+//                foreach ($values as $value_id) {
+//                    if (in_array($value_id, $sep_filters[$par_id])) $count_values++;
+//                }
+//                if ($count_values>0) $count_params++;
+//            }
+//            if ($count_params==count($sep_filters)) {
+//                if (empty($fproducts[$art_id])) $fproducts[$art_id]=[];
+//                $fproducts[$art_id]=$products[$art_id];
+//            }
+//        }
+//        foreach ($fproducts as $art_id=>$params) {
+//            foreach ($params as $par_id=>$values) {
+//                if ($par_id==$param_id) {
+//                    if (empty($rfilters[$par_id])) $rfilters[$par_id]=[];
+//                    foreach ($values as $value_id) {
+//                        if (!in_array($value_id, $rfilters[$par_id])) array_push($rfilters[$par_id], $value_id);
+//                    }
+//                }
+//            }
+//        }
+//        return $rfilters[$param_id];
+//    }
 
 }

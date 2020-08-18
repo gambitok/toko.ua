@@ -286,7 +286,7 @@ class ParametersClass {
     }
 
     function showFiltersForm($template_id, $active_filters=[]) { $db = DbSingleton::getTokoDb();
-        $prefix=$this->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $template_name = $this->getTemplateLink($template_id);
 
         $current_products_arts = implode(",", array_keys($this->getExistedProducts($this->getCurrentProducts($template_id))));
@@ -372,7 +372,6 @@ class ParametersClass {
     }
 
     function showFilterOptionsForm($template_id, $page=1, $active_filters=[]) {
-        //$active_filters = $this->getTemplateLinkParams($template_id, $link);
         $active_products = $this->getActiveProducts($this->getCurrentProducts($template_id), $active_filters);
         $products_count = $this->getActiveProductsCount($template_id, $active_products);
         $checked_filters = $this->showCheckedFilters($template_id, $active_filters);

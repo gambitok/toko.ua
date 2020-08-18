@@ -18,7 +18,7 @@ class ProductsClass extends CatalogueClass {
         if ($str_level==NULL && $str_id_parrent==NULL) {
             $list = $this->searchList("0", 2)[0]; // error TREE
         } else {
-            $list = $this->techModelsList($typ_id, $str_id, $str_level, $str_id_parrent)[0];
+            $list = $this->techModelsList($typ_id, $str_id)[0];
         }
 
         $form=$this->getHtmlForm("cat_new_search");
@@ -83,8 +83,8 @@ class ProductsClass extends CatalogueClass {
             $art_id_str.=",$art_id";
         }
 
-        $str_level = $automan->getAutoStrData()[1];
-        $str_id_parrent = $automan->getAutoStrData()[2];
+//        $str_level = $automan->getAutoStrData()[1];
+//        $str_id_parrent = $automan->getAutoStrData()[2];
         $status_str = "";
 
         if ($true_str_level==NULL && $true_str_id_parrent==NULL) {
@@ -92,7 +92,7 @@ class ProductsClass extends CatalogueClass {
             $list_brand="<div id=\"cat_search_brands\"></div>";
             $status_str="dnone";
         } else {
-            list(, $list_brand, $list_filters) = $this->techModelsList($typ_id, $str_id, $str_level, $str_id_parrent);
+            list(, $list_brand, $list_filters) = $this->techModelsList($typ_id, $str_id);
         }
 
         $r = $db->query("SELECT `STR_ID`, `ART_ID` FROM `T2_TREE` WHERE `ART_ID` IN ($art_id_str);"); $n = $db->num_rows($r);
@@ -191,7 +191,6 @@ class ProductsClass extends CatalogueClass {
     function getCarDetails($str_id_str, $typ_id) { $db = DbSingleton::getTokoDb();
         $language = new LangClass;
         $lang_id = $language->getLanguage(); $lang_cap = $language->getTexCapLanguage($lang_id);
-
         $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD`;"); $n = $db->num_rows($r);
         $list = "<ul class='head-list'>";
         for ($i=1; $i<=$n; $i++) {
@@ -214,13 +213,12 @@ class ProductsClass extends CatalogueClass {
             }
         }
         $list.="</ul>";
-
-        $form=$this->getHtmlForm("cat_car_details");
-        $form=str_replace("{tree_headers}",$list,$form);
-        $form=str_replace("{typ_id}",$typ_id,$form);
-        $form=str_replace("{typ_display}",$typ_id=="" ? "none" : "",$form);
-        $form=str_replace("{tree_str_ids}",$str_id_str,$form);
-        $form=$this->replaceLang($form);
+        $form = $this->getHtmlForm("cat_car_details");
+        $form = str_replace("{tree_headers}", $list, $form);
+        $form = str_replace("{typ_id}", $typ_id, $form);
+        $form = str_replace("{typ_display}", $typ_id=="" ? "none" : "", $form);
+        $form = str_replace("{tree_str_ids}", $str_id_str, $form);
+        $form = $this->replaceLang($form);
         return $form;
     }
 
@@ -365,33 +363,27 @@ class ProductsClass extends CatalogueClass {
     function getCarsSearch($str_id="", $mfa_link="", $mod_link="") {
         $automan = new AutoClass;
         $form = $this->getHtmlForm("cars/cars");
-
-        $list_manuf = $this->getCarsSearchContent("", "", $str_id)[0];
-
         if ($mfa_link!="") {
             $mfa_id = $automan->getMfaLink($mfa_link);
             $mfa_brand = $automan->getMfaBrand($mfa_id);
             $list_model = $this->getCarsSearchContent("manuf", $mfa_id, $str_id)[0];
-            $form=str_replace("{cars_models}", $list_model, $form);
-            $form=str_replace("{selected_manuf}", $mfa_id, $form);
-            $form=str_replace("{cars_manufacturer}", $mfa_brand, $form);
-
+            $form = str_replace("{cars_models}", $list_model, $form);
+            $form = str_replace("{selected_manuf}", $mfa_id, $form);
+            $form = str_replace("{cars_manufacturer}", $mfa_brand, $form);
             if ($mod_link!="") {
                 $model = $automan->getModLink($mod_link);
-                $list_years = $this->getCarsSearchContent("model", $mfa_id."_".$model, $str_id)[0];
-                $form=str_replace("{cars_years}", $list_years, $form);
-                $form=str_replace("{selected_model}", $mfa_id."_".$model, $form);
-                $form=str_replace("{cars_model}", $model, $form);
-                $form=str_replace("{active_nav}", "years", $form);
+                $form = str_replace("{cars_years}", $this->getCarsSearchContent("model", $mfa_id."_".$model, $str_id)[0], $form);
+                $form = str_replace("{selected_model}", $mfa_id."_".$model, $form);
+                $form = str_replace("{cars_model}", $model, $form);
+                $form = str_replace("{active_nav}", "years", $form);
             }
-            $form=str_replace("{active_nav}", "model", $form);
+            $form = str_replace("{active_nav}", "model", $form);
         }
-
-        $form=str_replace("{cars_manufactures}", $list_manuf, $form);
-        $form=str_replace("{selected_manuf}", 0, $form);
-        $form=str_replace("{selected_model}", 0, $form);
-        $form=str_replace("{active_nav}", "", $form);
-        $form=$this->replaceLang($form);
+        $form = str_replace("{cars_manufactures}", $this->getCarsSearchContent("", "", $str_id)[0], $form);
+        $form = str_replace("{selected_manuf}", 0, $form);
+        $form = str_replace("{selected_model}", 0, $form);
+        $form = str_replace("{active_nav}", "", $form);
+        $form = $this->replaceLang($form);
         return $form;
     }
 

@@ -18,7 +18,7 @@ if (!$catalogue->checkRedirectLink($some_link)) {
 
 $result = explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2); $link = ltrim($result[1]);
 
-list($form1, $car_content, $pages_count) = $search->catalogRouter($link, $some_link, $some_link2);
+list($form1, $car_content, $pages_count) = $search->catalogRouter($link, $some_link, $page, $some_link2);
 
 if ($page>1) if ($page>$pages_count) {
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
