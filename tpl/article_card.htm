@@ -16,6 +16,7 @@
 
             <div class="row">
                 <div class="col-12" style=" min-height: 70px;">
+                    <div class="tables__delivery applicable">{product_auto_appl}</div>
                     <a class="search__link" itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">
                         <span class="search__name">{product_text}</span>
                         <span class="search__brand">{product_brand}</span>
@@ -24,7 +25,20 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row {soldout_row_status}">
+                <div class="col-12">
+                    <div style="
+                    color: darkgray;
+                    padding: 5px;
+                    border: 3px double #ccc;
+                    width: 100%;
+                    text-align: center;
+                    font-size: 20px;">
+                        {sold_out_cap}</div>
+                </div>
+            </div>
+
+            <div class="row {price_row_status}">
                 <div class="col-7 padr0">
                     <span class="search__name">{price_cap}: </span>
                     <span class="search__true_price">{product_price}</span>
@@ -35,7 +49,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row {price_row_status}">
                 <div class="col-12 {product_button}">
                     <span class="search__name">{in_stock}:</span> {product_stock} {amount_abbr}.
                 </div>

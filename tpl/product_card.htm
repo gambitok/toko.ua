@@ -10,7 +10,7 @@
     <div class="col-lg-2 col-4 tables__name {style_none}">
         <a class="pointer" onClick="showBrandForm({brand_id});">
             <h2 id="brand{product_i}" class="search__brand">{product_brand}</h2>
-            <span class="flag-search tooltips {country_display}" data-toggle="tooltip" data-placement="bottom" title="{brand_manuf}: {country_name}"><span class="flag flag-{flag_image}"></span><br>
+            <span class="flag-search tooltips {country_display}" data-toggle="tooltip" data-placement="bottom" title="{brand_manuf}: {country_name}"><span class="flag flag-{flag_image}"></span></span><br>
             <span id="{art_id}" data-title="{art_cap}">
                 <a itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">
                     <h3 itemprop="name" id="{product_i}" class="search__art">{product_name}</h3>
@@ -51,6 +51,7 @@
 
     <!--NAME & INFO-->
     <div class="col-lg-3 col-8 tables__text {style_none}">
+        <div class="tables__delivery applicable">{product_auto_appl}</div>
         <!--<span itemprop="description" class="search__name" data-title="{caption_cap}">{product_text}</span>-->
         <span class="search__name" data-title="{caption_cap}">{product_text}</span>
         <div class="tables__info">
@@ -85,6 +86,7 @@
 
     <!--PRICE & AMOUNT-->
     <div class="col-lg-4 col-12 tables__box">
+
         <div class="row">
             <div class="col-8">
                 <div itemprop="offers" itemtype="https://schema.org/Offer" itemscope class="buy-price-group tables__price" data-title="{price_cap}">

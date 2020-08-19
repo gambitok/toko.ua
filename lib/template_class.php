@@ -142,40 +142,53 @@ class TemplateClass extends CatalogueClass {
             $price = $this->getArticlePrice($art_id);
             if ($suppl_id!=0) $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
 
-            $params_values = ""; $params_column = ""; $set_column = "";
-            foreach ($params as $param_id=>$values) {
-                $params_arr = [];
-                foreach ($values as $value_id) {
-                    array_push($params_arr, $value_id);
+            $status = 0;
+            if ($price>0) {
+                if ($stock>0) {
+                    // visible suppl storage
+                    if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+                        $status = 1;
+                    }
                 }
-                $params_values.="'".implode(",", $params_arr)."',";
-                $params_column.="`param_$param_id`,";
+            }
 
-                $set_column.="`param_$param_id`='".implode(",", $params_arr)."',";
+            $params_values = ""; $params_column = ""; // $set_column = "";
+            foreach ($params as $param_id=>$values) {
+                if ($param_id>0) {
+                    $params_arr = [];
+                    foreach ($values as $value_id) {
+                        array_push($params_arr, $value_id);
+                    }
+                    $params_values.="'".implode(",", $params_arr)."',";
+                    $params_column.="`param_$param_id`,";
+
+//                    $set_column.="`param_$param_id`='".implode(",", $params_arr)."',";
+                }
             }
             $params_values = rtrim($params_values, ",");
             $params_column = rtrim($params_column, ",");
-            $set_column = rtrim($set_column, ",");
+//            $set_column = rtrim($set_column, ",");
 
-            if ($stock>0 && $price>0) {
+//            if ($stock>0 && $price>0) {
                 $r2 = $dbc->query("SELECT * FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;"); $n = $dbc->num_rows($r2);
                 if ($n==0) {
                     if ($params_column!="") $params_column = ", $params_column";
                     if ($params_values!="") $params_values = ", $params_values";
-                    $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status` $params_column) VALUES ('$art_id', '$brand_id', 1 $params_values);");
+                    $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status` $params_column) VALUES ('$art_id', '$brand_id', $status $params_values);");
                     $count_add++;
-                } else {
-                    if ($set_column!="") $set_column = ", $set_column";
-                    $dbc->query("UPDATE `$table` SET `status`=1 $set_column WHERE `art_id`='$art_id' LIMIT 1;");
-                    $count_upd++;
                 }
-            }
+//                else {
+//                    if ($set_column!="") $set_column = ", $set_column";
+//                    $dbc->query("UPDATE `$table` SET `status`=1 $set_column WHERE `art_id`='$art_id' LIMIT 1;");
+//                    $count_upd++;
+//                }
+//            }
         }
 
-        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table` WHERE `status`=0"); $count_del = $dbc->result($r, 0, "count_nulls") + 0;
-        $dbc->query("DELETE FROM `$table` WHERE `status`=0;");
+//        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table` WHERE `status`=0"); $count_del = $dbc->result($r, 0, "count_nulls") + 0;
+//        $dbc->query("DELETE FROM `$table` WHERE `status`=0;");
 
-        return "TABLE: $table, UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
+        return "TABLE: $table, UPDATED: $count_upd, ADDED: $count_add, DELETED: 0";
     }
 
     /*
@@ -356,7 +369,7 @@ class TemplateClass extends CatalogueClass {
         $limit = $this->getSearchLimit($page);
         $where = $this->getActiveFiltersWhere($active_filters);
 
-        $r = $dbc->query("SELECT `art_id` FROM `AA_TABLE_GROUP_$group_id` WHERE 1 $where $limit;"); $n = $dbc->num_rows($r);
+        $r = $dbc->query("SELECT `art_id` FROM `AA_TABLE_GROUP_$group_id` WHERE 1 $where ORDER BY `status` DESC $limit;"); $n = $dbc->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $art_id = $dbc->result($r, $i-1, "art_id");
             if ($_SESSION["param-auto"]==2) {
@@ -370,7 +383,7 @@ class TemplateClass extends CatalogueClass {
 
         $where_arts = implode(",", array_unique($arts));
 
-        list($list) = $this->searchList($where_arts, 1, 1);
+        list($list) = $this->searchListTest($where_arts, 1, 1);
 
         return array("list"=>$list);
     }
@@ -385,7 +398,7 @@ class TemplateClass extends CatalogueClass {
                 $param_id==0 ? $param_value = $this->getBrandName($value_id) : $param_value = $this->getValueName($value_id);
                 $link = $this->getParamsListLink($active_filters, $param_id, $value_id);
                 (in_array($value_id, $active_filters[$param_id])) ? $checked = 1 : $checked = 0;
-                $arr[$param_id][$value_id] = ['name'=>$param_value, 'link'=>$link, 'status'=>$checked];
+                $arr[$param_id][$value_id] = ['id'=>$value_id, 'name'=>$param_value, 'link'=>$link, 'status'=>$checked];
             }
         }
 
@@ -401,11 +414,12 @@ class TemplateClass extends CatalogueClass {
             array_multisort($far_status, SORT_DESC, $far_name, SORT_ASC, $values);
 
             foreach ($values as $value_id=>$var) {
+                $id = $var["id"];
                 $name = $var["name"];
                 $link = $var["link"];
                 $status = $var["status"];
                 $status ? $checked = "<i class='fa fa-check-square'></i>" : $checked = "<i class='far fa-square'></i>";
-                $params_li.="<li><a href=\"/test_catalog/$group_id/$link\">$checked $name</a></li>";
+                $params_li.="<li><a href=\"/test_catalog/$group_id/$link\">$checked $name ($id)</a></li>";
             }
             $params.="<div class=\"param-title\">$param_name:</div>
             <ul id=\"param-$param_id\" class=\"list-inline template-list list-hide\">
