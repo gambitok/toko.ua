@@ -83,7 +83,6 @@ class TemplateClass extends CatalogueClass {
      * */
     function initGroupTable($group_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
         $table = $this->table_group.$group_id;
-//        if ($this->checkGroupTable($group_id)>0) $dbc->query("UPDATE `$table` SET `status`=0 WHERE 1;");
         if ($this->checkGroupTable($group_id)>0) $dbc->query("DROP TABLE `$table`;");
 
         $products = [];
@@ -121,55 +120,82 @@ class TemplateClass extends CatalogueClass {
             PRIMARY KEY (`id`)
         ) ENGINE = MYISAM;");
 
-        $count_add = 0; $count_upd = 0;
+        $count_add = 0;
         foreach ($products as $art_id=>$params) {
-            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT as amount, t2asc.STORAGE_ID as storage_id, 0 as suppl_id
-            FROM `T2_ARTICLES` t2a
-                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
-            WHERE t2a.ART_ID IN ($art_id) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0) 
-            GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
-            UNION ALL
-            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl as amount, t2si.client_storage_id as storage_id, t2si.suppl_id
-            FROM `T2_ARTICLES` t2a
-                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
-            WHERE t2a.ART_ID IN ($art_id) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
-            GROUP BY t2a.ART_ID, t2si.client_storage_id;");
+//            $r = $db->query("SELECT tbl.`ART_ID`, tbl.`BRAND_ID`, SUM(tbl.`amount`) as amount, tbl.`storage_id`, tbl.`suppl_id` FROM (SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT as amount, t2asc.STORAGE_ID as storage_id, 0 as suppl_id
+//            FROM `T2_ARTICLES` t2a
+//                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
+//            WHERE t2a.ART_ID IN ($art_id)
+//            GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
+//            UNION ALL
+//            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl as amount, t2si.client_storage_id as storage_id, t2si.suppl_id
+//            FROM `T2_ARTICLES` t2a
+//                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
+//            WHERE t2a.ART_ID IN ($art_id)
+//            GROUP BY t2a.ART_ID, t2si.client_storage_id) tbl GROUP BY tbl.ART_ID;"); $n = $db->num_rows($r);
+//
+//            if ($n>0) {
+//                $brand_id = $db->result($r, 0, "BRAND_ID");
+//                if ($brand_id>0) {
+//                    $stock = intval($db->result($r, 0, "amount"));
+//                    $suppl_id = $db->result($r, 0, "suppl_id");
+//                    $storage_id = $db->result($r, 0, "storage_id");
+//                    $price = $this->getArticlePrice($art_id);
+//                    if ($suppl_id!=0) $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+//
+//                    $status = 0;
+//                    if ($price>0) {
+//                        if ($stock>0) {
+//                            if ($suppl_id==0) {
+//                                $status = 1;
+//                            } else {
+//                                if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+//                                    $status = 1;
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    $params_values = ""; $params_column = "";
+//                    foreach ($params as $param_id=>$values) {
+//                        if ($param_id>0) {
+//                            $params_arr = [];
+//                            foreach ($values as $value_id) {
+//                                array_push($params_arr, $value_id);
+//                            }
+//                            $params_values.="'".implode(",", $params_arr)."',";
+//                            $params_column.="`param_$param_id`,";
+//                        }
+//                    }
+//                    $params_values = rtrim($params_values, ",");
+//                    $params_column = rtrim($params_column, ",");
+//
+//                    $r2 = $dbc->query("SELECT * FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;"); $n = $dbc->num_rows($r2);
+//                    if ($n==0) {
+//                        if ($params_column!="") $params_column = ", $params_column";
+//                        if ($params_values!="") $params_values = ", $params_values";
+//                        $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status` $params_column) VALUES ('$art_id', '$brand_id', $status $params_values);");
+//                        $count_add++;
+//                    }
+//                }
+//            }
+            $brand_id = $this->getArticleBrand($art_id);
+            $status = $this->searchRange($art_id);
 
-            $brand_id = $db->result($r, 0, "BRAND_ID");
-            $stock = intval($db->result($r, 0, "amount"));
-            $suppl_id = $db->result($r, 0, "suppl_id");
-            $storage_id = $db->result($r, 0, "storage_id");
-            $price = $this->getArticlePrice($art_id);
-            if ($suppl_id!=0) $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-
-            $status = 0;
-            if ($price>0) {
-                if ($stock>0) {
-                    // visible suppl storage
-                    if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
-                        $status = 1;
+            $params_values = ""; $params_column = "";
+                foreach ($params as $param_id=>$values) {
+                    if ($param_id>0) {
+                        $params_arr = [];
+                        foreach ($values as $value_id) {
+                            array_push($params_arr, $value_id);
+                        }
+                        $params_values.="'".implode(",", $params_arr)."',";
+                        $params_column.="`param_$param_id`,";
                     }
                 }
-            }
+                $params_values = rtrim($params_values, ",");
+                $params_column = rtrim($params_column, ",");
 
-            $params_values = ""; $params_column = ""; // $set_column = "";
-            foreach ($params as $param_id=>$values) {
-                if ($param_id>0) {
-                    $params_arr = [];
-                    foreach ($values as $value_id) {
-                        array_push($params_arr, $value_id);
-                    }
-                    $params_values.="'".implode(",", $params_arr)."',";
-                    $params_column.="`param_$param_id`,";
-
-//                    $set_column.="`param_$param_id`='".implode(",", $params_arr)."',";
-                }
-            }
-            $params_values = rtrim($params_values, ",");
-            $params_column = rtrim($params_column, ",");
-//            $set_column = rtrim($set_column, ",");
-
-//            if ($stock>0 && $price>0) {
                 $r2 = $dbc->query("SELECT * FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;"); $n = $dbc->num_rows($r2);
                 if ($n==0) {
                     if ($params_column!="") $params_column = ", $params_column";
@@ -177,18 +203,49 @@ class TemplateClass extends CatalogueClass {
                     $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status` $params_column) VALUES ('$art_id', '$brand_id', $status $params_values);");
                     $count_add++;
                 }
-//                else {
-//                    if ($set_column!="") $set_column = ", $set_column";
-//                    $dbc->query("UPDATE `$table` SET `status`=1 $set_column WHERE `art_id`='$art_id' LIMIT 1;");
-//                    $count_upd++;
-//                }
-//            }
+
         }
 
-//        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table` WHERE `status`=0"); $count_del = $dbc->result($r, 0, "count_nulls") + 0;
-//        $dbc->query("DELETE FROM `$table` WHERE `status`=0;");
+        return "TABLE: $table, ADDED: $count_add";
+    }
 
-        return "TABLE: $table, UPDATED: $count_upd, ADDED: $count_add, DELETED: 0";
+    function searchRange($art_id) { $db = DbSingleton::getTokoDb();
+
+        $status = 0;
+
+        // FROM TOKO
+        $summ_amount = 0;
+        $r = $db->query("SELECT `AMOUNT` FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $amount = $db->result($r, $i-1, "AMOUNT");
+            $summ_amount+=$amount;
+        }
+
+        if ($summ_amount>0) {
+            $price = $this->getArticlePrice($art_id);
+            if ($price>0) $status = 1;
+        }
+
+        // FROM SUPPL
+        else {
+            $r = $db->query("SELECT `stock_suppl`, `suppl_id`, `client_storage_id` FROM `T2_SUPPL_IMPORT` WHERE `art_id`='$art_id';"); $n = $db->num_rows($r);
+            for ($i=1; $i<=$n; $i++) {
+                $amount = $db->result($r, $i-1, "stock_suppl");
+                $suppl_id = $db->result($r, $i-1, "suppl_id");
+                $storage_id = $db->result($r, $i-1, "client_storage_id");
+                if ($amount>0) {
+                    $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+                    if ($price>0) {
+                        if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+                            $status = 1; break;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return $status;
     }
 
     /*
@@ -317,7 +374,7 @@ class TemplateClass extends CatalogueClass {
             }
         }
         $form.="</div>";
-        if (empty($active_filters)) $form="";
+        if (empty($active_filters)) $form = "";
         return $form;
     }
 
@@ -329,14 +386,9 @@ class TemplateClass extends CatalogueClass {
 
         $auto_typ_id = $this->getCookieAuto();
 
-//        $active_filters = [];
-//        $checked_filters = [];
-//        if (!empty($filters)) {
-//            $active_filters = $this->getActiveFilters($this->getCatalogFilters($active_filters), $group_id);
         $current_filters = $this->getCurrentFilters($group_id);
         $checked_filters = $this->getActiveFilters($this->getCatalogFilters($filters), $group_id);
         $active_filters = $this->getActiveFilters2($group_id, $current_filters, $checked_filters);
-//        }
 
         $data = $this->getCatalogParamGroupList($group_id, $page, $checked_filters, $auto_typ_id); // GROUP LIST
 
@@ -398,7 +450,7 @@ class TemplateClass extends CatalogueClass {
                 $param_id==0 ? $param_value = $this->getBrandName($value_id) : $param_value = $this->getValueName($value_id);
                 $link = $this->getParamsListLink($active_filters, $param_id, $value_id);
                 (in_array($value_id, $active_filters[$param_id])) ? $checked = 1 : $checked = 0;
-                $arr[$param_id][$value_id] = ['id'=>$value_id, 'name'=>$param_value, 'link'=>$link, 'status'=>$checked];
+                if ($value_id>0) $arr[$param_id][$value_id] = ['id'=>$value_id, 'name'=>$param_value, 'link'=>$link, 'status'=>$checked];
             }
         }
 
@@ -414,12 +466,12 @@ class TemplateClass extends CatalogueClass {
             array_multisort($far_status, SORT_DESC, $far_name, SORT_ASC, $values);
 
             foreach ($values as $value_id=>$var) {
-                $id = $var["id"];
+                // $id = $var["id"];
                 $name = $var["name"];
                 $link = $var["link"];
                 $status = $var["status"];
                 $status ? $checked = "<i class='fa fa-check-square'></i>" : $checked = "<i class='far fa-square'></i>";
-                $params_li.="<li><a href=\"/test_catalog/$group_id/$link\">$checked $name ($id)</a></li>";
+                $params_li.="<li><a href=\"/test_catalog/$group_id/$link\">$checked $name</a></li>";
             }
             $params.="<div class=\"param-title\">$param_name:</div>
             <ul id=\"param-$param_id\" class=\"list-inline template-list list-hide\">

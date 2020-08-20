@@ -32,12 +32,12 @@ RewriteCond %{THE_REQUEST} \s/+(.*?)/{2,}([^\s]*)
 RewriteRule ^ %1/%2 [R=301,L,NE]
 
 # redirect https://toko.ua/catalog/shrus?page=0 => https://toko.ua/catalog/shrus
-RewriteCond %{QUERY_STRING} /?page=0
-RewriteRule ^ %{REQUEST_URI}? [L,R=301]
+#RewriteCond %{QUERY_STRING} /?page=0
+#RewriteRule ^ %{REQUEST_URI}? [L,R=301]
 
 # redirect https://toko.ua/catalog/shrus?page=1 => https://toko.ua/catalog/shrus
-RewriteCond %{QUERY_STRING} /?page=1
-RewriteRule ^ %{REQUEST_URI}? [L,R=301]
+#RewriteCond %{QUERY_STRING} /?page=1
+#RewriteRule ^ %{REQUEST_URI}? [L,R=301]
 
 # add slash in end
 RewriteEngine On
