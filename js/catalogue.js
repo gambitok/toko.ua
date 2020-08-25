@@ -644,144 +644,144 @@ function showCarDetailsStrMin(head_id) {
 
 /*==== /NEW STR CAR DETAILS ====*/
 
-function triggerDetailCar(type_id, value_id) {
-    $("#toggle_manuf_list").show();
+// function triggerDetailCar(type_id, value_id) {
+//     $("#toggle_manuf_list").show();
+//
+//     let str_id = $("#str_id").val();
+//     let str_level = $("#str_level").val();
+//     let str_id_parrent = $("#str_id_parrent").val();
+//
+//     let s_yr = $("#select_year");
+//     let s_mf = $("#select_manufacture");
+//     let s_md = $("#select_model");
+//     let s_mi = $("#select_model_id");
+//     let s_gr = $("#select_group");
+//
+//     let r_yr = $("#str_year");
+//     let r_mf = $("#str_manufacture");
+//     let r_md = $("#str_model");
+//     let r_mi = $("#str_model_id");
+//     let r_gr = $("#str_group");
+//
+//     let r_ti = $("#str_type");
+//
+//     $(".btn-select").each(function () {$(this).removeClass("btn-active");});
+//
+//     if (r_ti.val()!=="0") {
+//         if (r_yr.val()==="") {
+//             type_id=parseInt(r_ti.val());
+//             r_yr.val(value_id);
+//             switch (type_id) {
+//                 case 1: {value_id=parseInt(r_yr.val());break;}
+//                 case 2: {value_id=parseInt(r_mf.val());break;}
+//                 case 3: {value_id=r_md.val();break;}
+//                 case 4: {value_id=parseInt(r_mi.val());break;}
+//             }
+//         }
+//         if (r_yr.val()==="all") {
+//             type_id=0;
+//             r_yr.val("");
+//         }
+//     }
+//
+//     if (value_id===undefined) {
+//         switch (type_id) {
+//             case 0: {s_yr.addClass("btn-active");break;}
+//             case 1: {s_mf.addClass("btn-active");break;}
+//             case 2: {s_md.addClass("btn-active");break;}
+//             case 3: {s_mi.addClass("btn-active");break;}
+//             case 4: {s_gr.addClass("btn-active");break;}
+//         }
+//     } else {
+//         switch (type_id) {
+//             case 0: {s_yr.addClass("btn-active");break;}
+//             case 1: {r_yr.val(value_id);s_mf.addClass("btn-active");break;}
+//             case 2: {r_mf.val(value_id);s_md.addClass("btn-active");break;}
+//             case 3: {r_md.val(value_id);s_mi.addClass("btn-active");break;}
+//             case 4: {r_mi.val(value_id);s_gr.addClass("btn-active");break;}
+//         }
+//     }
+//
+//     if (value_id!==undefined) {
+//         switch (type_id) {
+//             case 0: {s_mf.attr("disabled", 'disabled');s_md.attr("disabled", 'disabled');s_mi.attr("disabled", 'disabled');s_gr.attr("disabled", 'disabled');break;}
+//             case 1: {s_mf.removeAttr("disabled");s_md.attr("disabled", 'disabled');s_mi.attr("disabled", 'disabled');s_gr.attr("disabled", 'disabled');break;}
+//             case 2: {s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.attr("disabled", 'disabled');s_gr.attr("disabled", 'disabled');break;}
+//             case 3: {s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");s_gr.attr("disabled", 'disabled');break;}
+//             case 4: {s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");s_gr.removeAttr("disabled");break;}
+//         }
+//     } else {
+//         switch (type_id) {
+//             case 0: {s_yr.addClass("btn-active");s_mf.removeAttr("disabled");break;}
+//             case 1: {s_mf.addClass("btn-active");s_mf.removeAttr("disabled");break;}
+//             case 2: {s_md.addClass("btn-active");s_mf.removeAttr("disabled");s_md.removeAttr("disabled");break;}
+//             case 3: {s_mi.addClass("btn-active");s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");break;}
+//             case 4: {s_gr.addClass("btn-active");s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");s_gr.removeAttr("disabled");break;}
+//         }
+//     }
+//
+//     let year = r_yr.val();
+//     let manufacture = r_mf.val();
+//     let model = r_md.val();
+//     let model_id = r_mi.val();
+//     let group = r_gr.val();
+//
+//     switch (type_id) {
+//         case 1: {manufacture="";model="";model_id="";group="";break;}
+//         case 2: {model="";model_id="";group="";break;}
+//         case 3: {model_id="";group="";break;}
+//         case 4: {group="";break;}
+//     }
+//
+//     JsHttpRequest.query(folder,{'w':'triggerDetailCar', 'type_id':type_id, 'value_id':value_id, 'year':year, 'manufacture':manufacture, 'model':model, 'model_id':model_id, 'group':group, 'str_id':str_id},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//
+//             $("#select_form_car").html(result.content);
+//             $("#toggle_manuf_list").html(result.content);
+//             $("#str_str_text").val(result.header);
+//             $("#breadcrumb_auto").text(result.format);
+//
+//             if (result.skip_id>0) {
+//                 model_id=result.skip_id;
+//                 if (model_id>0) {
+//                     r_mi.val(model_id);
+//                     s_mi.removeClass("btn-active");
+//                     s_gr.addClass("btn-active");
+//                 }
+//             }
+//
+//             if (value_id!==undefined) {
+//                 let car_code="/";
+//                 if (year!=="") car_code+=year+"/";
+//                 if (year==="") car_code+="all/";
+//                 if (manufacture!=="") car_code+=manufacture+"/";
+//                 if (model!=="") car_code+=model+"/";
+//                 if (model_id!=="") car_code+=model_id+"/";
+//                 if (group!=="") car_code+=group+"/";
+//
+//                 if (str_id==="") {
+//                     window.history.pushState("catalogue", "Auto", "/catalogue/findmodel/"+car_code+"/"+result.header+"/");
+//                     document.title = result.title;
+//                 } else {
+//                     window.history.pushState("catalogue", "Auto", "/catalogue/finddetail/"+result.header+""+"/"+str_id+"/"+str_level+"/"+str_id_parrent+car_code);
+//                     document.title = result.title;
+//                 }
+//             }
+//
+//         }}, true);
+// }
 
-    let str_id = $("#str_id").val();
-    let str_level = $("#str_level").val();
-    let str_id_parrent = $("#str_id_parrent").val();
-
-    let s_yr = $("#select_year");
-    let s_mf = $("#select_manufacture");
-    let s_md = $("#select_model");
-    let s_mi = $("#select_model_id");
-    let s_gr = $("#select_group");
-
-    let r_yr = $("#str_year");
-    let r_mf = $("#str_manufacture");
-    let r_md = $("#str_model");
-    let r_mi = $("#str_model_id");
-    let r_gr = $("#str_group");
-
-    let r_ti = $("#str_type");
-
-    $(".btn-select").each(function () {$(this).removeClass("btn-active");});
-
-    if (r_ti.val()!=="0") {
-        if (r_yr.val()==="") {
-            type_id=parseInt(r_ti.val());
-            r_yr.val(value_id);
-            switch (type_id) {
-                case 1: {value_id=parseInt(r_yr.val());break;}
-                case 2: {value_id=parseInt(r_mf.val());break;}
-                case 3: {value_id=r_md.val();break;}
-                case 4: {value_id=parseInt(r_mi.val());break;}
-            }
-        }
-        if (r_yr.val()==="all") {
-            type_id=0;
-            r_yr.val("");
-        }
-    }
-
-    if (value_id===undefined) {
-        switch (type_id) {
-            case 0: {s_yr.addClass("btn-active");break;}
-            case 1: {s_mf.addClass("btn-active");break;}
-            case 2: {s_md.addClass("btn-active");break;}
-            case 3: {s_mi.addClass("btn-active");break;}
-            case 4: {s_gr.addClass("btn-active");break;}
-        }
-    } else {
-        switch (type_id) {
-            case 0: {s_yr.addClass("btn-active");break;}
-            case 1: {r_yr.val(value_id);s_mf.addClass("btn-active");break;}
-            case 2: {r_mf.val(value_id);s_md.addClass("btn-active");break;}
-            case 3: {r_md.val(value_id);s_mi.addClass("btn-active");break;}
-            case 4: {r_mi.val(value_id);s_gr.addClass("btn-active");break;}
-        }
-    }
-
-    if (value_id!==undefined) {
-        switch (type_id) {
-            case 0: {s_mf.attr("disabled", 'disabled');s_md.attr("disabled", 'disabled');s_mi.attr("disabled", 'disabled');s_gr.attr("disabled", 'disabled');break;}
-            case 1: {s_mf.removeAttr("disabled");s_md.attr("disabled", 'disabled');s_mi.attr("disabled", 'disabled');s_gr.attr("disabled", 'disabled');break;}
-            case 2: {s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.attr("disabled", 'disabled');s_gr.attr("disabled", 'disabled');break;}
-            case 3: {s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");s_gr.attr("disabled", 'disabled');break;}
-            case 4: {s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");s_gr.removeAttr("disabled");break;}
-        }
-    } else {
-        switch (type_id) {
-            case 0: {s_yr.addClass("btn-active");s_mf.removeAttr("disabled");break;}
-            case 1: {s_mf.addClass("btn-active");s_mf.removeAttr("disabled");break;}
-            case 2: {s_md.addClass("btn-active");s_mf.removeAttr("disabled");s_md.removeAttr("disabled");break;}
-            case 3: {s_mi.addClass("btn-active");s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");break;}
-            case 4: {s_gr.addClass("btn-active");s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");s_gr.removeAttr("disabled");break;}
-        }
-    }
-
-    let year = r_yr.val();
-    let manufacture = r_mf.val();
-    let model = r_md.val();
-    let model_id = r_mi.val();
-    let group = r_gr.val();
-
-    switch (type_id) {
-        case 1: {manufacture="";model="";model_id="";group="";break;}
-        case 2: {model="";model_id="";group="";break;}
-        case 3: {model_id="";group="";break;}
-        case 4: {group="";break;}
-    }
-
-    JsHttpRequest.query(folder,{'w':'triggerDetailCar', 'type_id':type_id, 'value_id':value_id, 'year':year, 'manufacture':manufacture, 'model':model, 'model_id':model_id, 'group':group, 'str_id':str_id},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-
-            $("#select_form_car").html(result.content);
-            $("#toggle_manuf_list").html(result.content);
-            $("#str_str_text").val(result.header);
-            $("#breadcrumb_auto").text(result.format);
-
-            if (result.skip_id>0) {
-                model_id=result.skip_id;
-                if (model_id>0) {
-                    r_mi.val(model_id);
-                    s_mi.removeClass("btn-active");
-                    s_gr.addClass("btn-active");
-                }
-            }
-
-            if (value_id!==undefined) {
-                let car_code="/";
-                if (year!=="") car_code+=year+"/";
-                if (year==="") car_code+="all/";
-                if (manufacture!=="") car_code+=manufacture+"/";
-                if (model!=="") car_code+=model+"/";
-                if (model_id!=="") car_code+=model_id+"/";
-                if (group!=="") car_code+=group+"/";
-
-                if (str_id==="") {
-                    window.history.pushState("catalogue", "Auto", "/catalogue/findmodel/"+car_code+"/"+result.header+"/");
-                    document.title = result.title;
-                } else {
-                    window.history.pushState("catalogue", "Auto", "/catalogue/finddetail/"+result.header+""+"/"+str_id+"/"+str_level+"/"+str_id_parrent+car_code);
-                    document.title = result.title;
-                }
-            }
-
-        }}, true);
-}
-
-function showTabCatalogueAuto() {
-    JsHttpRequest.query(folder,{ 'w': 'showTabCatalogueAuto'},
-        function (result, errors){ if (errors) {} if (result){
-            $("#cat_tab_search").html(result.content);
-            let link = $("#link_auto"); link.removeClass("disabled"); link.trigger("click");
-            $("#link_model").addClass("disabled");
-            $("#link_modelid").addClass("disabled");
-            $("#link_group").addClass("disabled");
-            $(".bootstrap-switch-label").text($(".bootstrap-switch-handle-off").text());
-        }}, true);
-}
+// function showTabCatalogueAuto() {
+//     JsHttpRequest.query(folder,{ 'w': 'showTabCatalogueAuto'},
+//         function (result, errors){ if (errors) {} if (result){
+//             $("#cat_tab_search").html(result.content);
+//             let link = $("#link_auto"); link.removeClass("disabled"); link.trigger("click");
+//             $("#link_model").addClass("disabled");
+//             $("#link_modelid").addClass("disabled");
+//             $("#link_group").addClass("disabled");
+//             $(".bootstrap-switch-label").text($(".bootstrap-switch-handle-off").text());
+//         }}, true);
+// }
 
 function showCarsSelectLink() {
     let str_text = $("#str_text_select").val();

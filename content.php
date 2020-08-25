@@ -72,13 +72,13 @@ if ($_REQUEST["w"]=="hideOrderInfo"){$GLOBALS['_RESULT'] = array("content"=>$sho
 
 if ($_REQUEST["w"]=="getCatalogueLink"){$GLOBALS['_RESULT'] = array("content"=>$catalog->getCatalogueLink($_REQUEST["article_nr_search"]));}
 
-if ($_REQUEST["w"]=="tab_auto"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueManufacture($_REQUEST["year"]));}
+//if ($_REQUEST["w"]=="tab_auto"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueManufacture($_REQUEST["year"]));}
+//
+//if ($_REQUEST["w"]=="tab_model"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueModel($_REQUEST["auto"], $_REQUEST["year"]));}
+//
+//if ($_REQUEST["w"]=="tab_modelid"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueModelId($_REQUEST["model"], $_REQUEST["auto"], $_REQUEST["year"]));}
 
-if ($_REQUEST["w"]=="tab_model"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueModel($_REQUEST["auto"], $_REQUEST["year"]));}
-
-if ($_REQUEST["w"]=="tab_modelid"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueModelId($_REQUEST["model"], $_REQUEST["auto"], $_REQUEST["year"]));}
-
-if ($_REQUEST["w"]=="tab_group"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueGroup($_REQUEST["modelid"], $_REQUEST["model"], $_REQUEST["auto"], $_REQUEST["year"]));}
+//if ($_REQUEST["w"]=="tab_group"){$GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueGroup($_REQUEST["modelid"], $_REQUEST["model"], $_REQUEST["auto"], $_REQUEST["year"]));}
 
 /*==== GARAGE ====*/
 
@@ -195,7 +195,7 @@ if ($_REQUEST["w"]=="updateOrderArt"){ $GLOBALS['_RESULT'] = array("content"=>$p
 
 /*==== CATALOG TRIGGER LIST ====*/
 
-if ($_REQUEST["w"]=="triggerDetailCar"){ list($content,$header,$format,$skip_id,$title)=$catalog->triggerDetailCar($_REQUEST["type_id"],$_REQUEST["year"],$_REQUEST["manufacture"],$_REQUEST["model"],$_REQUEST["model_id"],$_REQUEST["group"],$_REQUEST["str_id"]); $GLOBALS['_RESULT'] = array("content"=>$content, "header"=>$header, "format"=>$format, "skip_id"=>$skip_id, "title"=>$title);}
+//if ($_REQUEST["w"]=="triggerDetailCar"){ list($content,$header,$format,$skip_id,$title)=$catalog->triggerDetailCar($_REQUEST["type_id"],$_REQUEST["year"],$_REQUEST["manufacture"],$_REQUEST["model"],$_REQUEST["model_id"],$_REQUEST["group"],$_REQUEST["str_id"]); $GLOBALS['_RESULT'] = array("content"=>$content, "header"=>$header, "format"=>$format, "skip_id"=>$skip_id, "title"=>$title);}
 
 if ($_REQUEST["w"]=="showHeadTemplate"){ list($content,$header,$footer)=$menu->showHeadTemplate($_REQUEST["head_id"]); $GLOBALS['_RESULT'] = array("content"=>$content,"header"=>$header,"footer"=>$footer);}
 
@@ -205,7 +205,7 @@ if ($_REQUEST["w"]=="checkActionClients"){ $GLOBALS['_RESULT'] = array("content"
 
 if ($_REQUEST["w"]=="showManufactureDetails"){ $GLOBALS['_RESULT'] = array("content"=>$catalog->getGroupTreeStr($_REQUEST["head_id"],$_REQUEST["str_id_str"]));}
 
-if ($_REQUEST["w"]=="showTabCatalogueAuto"){ $GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueAuto());}
+//if ($_REQUEST["w"]=="showTabCatalogueAuto"){ $GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueAuto());}
 
 if ($_REQUEST["w"]=="showHomeCars"){ $GLOBALS['_RESULT'] = array("content"=>$showform->showHomeCars());}
 

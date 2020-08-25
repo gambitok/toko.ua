@@ -1,10 +1,26 @@
-<div class="metro">
+<style>
+    .order_success a {
+        color: #2d8bfa;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="metro order_success">
 
     <input type="hidden" id="order_id" value="{order_id}">
     <input type="hidden" id="order_user_id" value="{order_user_id}">
 
-    <h1>{order_cap} #{order_id} {status_off}!</h1>
-    <h2>{order_succes}</h2>
+    <h1>{your_order} ¹{order_id} {accepted_cap} <i style="color: #2fcc71" class="fa fa-check-circle"></i></h1>
+
+    <p>{order_processing} <a href="/profile">{order_processing_2}</a>, {order_processing_3}:</p>
+    <p class="text-center">
+        <a href="tel:0970803060">(097) 080 30 60</a>, <a href="tel:0500803060">(050) 080 30 60</a>, <a href="tel:0930803060">(093) 080 30 60</a>
+    </p>
+    <p class="text-center"><b>{order_thanks}!</b></p>
+    <p>{order_socials}:</p>
+    <p class="text-center">
+        <a href="https://www.facebook.com/TOKOGROUP/">Facebook</a>, <a href="https://www.instagram.com/tokogroup/">Instagram</a>
+    </p>
 
     <div class="text-right">
         <a class="btn" href="https://toko.ua/profile/orders/">{order_success_show}</a>

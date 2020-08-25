@@ -160,7 +160,7 @@ class FormClass {
         $storage_id = $db->result($r,0,"storage_id");
 
         $price = $cat->getArticlePrice($art_id);
-        if ($suppl_id!=0) $price = $cat->getArticleSupplPrice($art_id,$suppl_id,$storage_id);
+        if ($suppl_id!=0) $price = $cat->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
         $price = $kours->getKoursPrice($price, $cur);
         if ($cur==1) $price = $client->getClientPriceRounding($this->getClient(), $price);
 
@@ -182,8 +182,8 @@ class FormClass {
     }
 
     function getCurrencyForm($type_filter, $template_id, $cur) {
-        $kours=new ExRateClass; $client=new ClientClass;
-        $jsFilter=$cash_add=""; $ch1=$ch2=$ch3=0;
+        $kours = new ExRateClass; $client = new ClientClass;
+        $jsFilter = $cash_add = ""; $ch1 = $ch2 = $ch3 = 0;
         $cash_id = $client->getClientCurrency($this->getClient());
         if ($cur==2) $ch2 = "checked=\"checked\""; elseif ($cur==3) $ch3 = "checked=\"checked\""; else $ch1 = "checked=\"checked\"";
         switch ($type_filter) {
@@ -205,22 +205,25 @@ class FormClass {
         return $list;
     }
 
+    /*
+     * Get City Form
+     * */
     function showCityForm($city_like, $city_id="") { $db = DbSingleton::getDbm();
-        $mas=[];
-        if ($city_id=="") $city_id=0;
+        $mas = [];
+        if ($city_id=="") $city_id = 0;
         if ($city_like!="") $where="WHERE `CITY_NAME` LIKE '%$city_like%'"; else $where="WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
-        $r=$db->query("SELECT * FROM `T2_CITY` t2c
+        $r = $db->query("SELECT * FROM `T2_CITY` t2c
             LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID=t2c.REGION_ID)
             LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID=t2r.STATE_ID)
-        $where;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $id=$db->result($r,$i-1,"CITY_ID");
-            $city=$db->result($r,$i-1,"CITY_NAME");
-            $region=$db->result($r,$i-1,"REGION_NAME");
-            $state=$db->result($r,$i-1,"STATE_NAME");
-            if ($region=="") $location="$city"; else $location="$city - $region - $state";
-            if ($id==$city_id) $selected=true; else $selected=false;
-            $mas[$i]=["id"=>$id, "value"=>$location, "selected"=>$selected];
+        $where;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $id = $db->result($r,$i-1,"CITY_ID");
+            $city = $db->result($r,$i-1,"CITY_NAME");
+            $region = $db->result($r,$i-1,"REGION_NAME");
+            $state = $db->result($r,$i-1,"STATE_NAME");
+            if ($region=="") $location = "$city"; else $location = "$city - $region - $state";
+            if ($id==$city_id) $selected = true; else $selected = false;
+            $mas[$i] = ["id"=>$id, "value"=>$location, "selected"=>$selected];
         }
         return $mas;
     }
@@ -246,13 +249,13 @@ class FormClass {
     }
 
     function showInfoTemplate($art_id) { $db = DbSingleton::getTokoDb();
-        $info="";
+        $info = "";
         if (!isset(self::$infoTemplates[$art_id])) {
-            $r=$db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
+            $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
             self::$infoTemplates[$art_id] = mysqli_fetch_all($r, MYSQLI_ASSOC);
         }
         if (self::$infoTemplates[$art_id]) {
-            $info="<ul class=\"inline-list\">";
+            $info = "<ul class=\"inline-list\">";
             foreach (self::$infoTemplates[$art_id] as $infoTemplate) {
                 $info.="<li><span class=\"bold\">{$infoTemplate['TEXT']}</span>: {$infoTemplate['VALUE']}</li>";
             }
@@ -271,24 +274,24 @@ class FormClass {
 
     /*==== HISTORY ====*/
     function insertHistory($article_nr_displ, $brand_id) { $db = DbSingleton::getTokoDb();
-        session_start(); $ses=session_id(); $cookie=$_COOKIE["session_id"]; $date=date("Y-m-d H:i:s");
+        session_start(); $ses = session_id(); $cookie = $_COOKIE["session_id"]; $date = date("Y-m-d H:i:s");
         $client_id = $this->getClient(); $user_id = $this->getUser();
-        $max_history_count=10;
-        $art_id=$this->getArtID($article_nr_displ);
+        $max_history_count = 10;
+        $art_id = $this->getArtID($article_nr_displ);
         if ($brand_id>0 && is_numeric($brand_id)) {
-            if ($user_id==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user_id'";
-            $r=$db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;"); $k=$db->result($r,0,"kilk");
+            if ($user_id==0) $where = "`cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `client_user_id`='$user_id'";
+            $r = $db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;"); $k = $db->result($r, 0, "kilk");
             if ($k>$max_history_count) {
-                $r=$db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
-                $id=$db->result($r,0,"id");
+                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
+                $id = $db->result($r,0,"id");
                 $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date', `article_nr_displ`='$article_nr_displ', `brand_id`='$brand_id', `art_id`='$art_id' WHERE `id`='$id';");
             } else {
-                $r=$db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ`='$article_nr_displ' AND `brand_id`='$brand_id';"); $n=$db->num_rows($r);
+                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ`='$article_nr_displ' AND `brand_id`='$brand_id';"); $n = $db->num_rows($r);
                 if ($n>0)
                     $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date' WHERE $where AND `article_nr_displ`='$article_nr_displ' AND `brand_id`='$brand_id';");
                 else
                     $db->query("INSERT INTO `CLIENT_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `article_nr_displ`, `brand_id`, `data`, `art_id`) 
-                    VALUES ('$client_id','$user_id','$ses','$cookie','$article_nr_displ','$brand_id','$date','$art_id');");
+                    VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$article_nr_displ', '$brand_id', '$date', '$art_id');");
             }
         }
         return true;
@@ -300,14 +303,14 @@ class FormClass {
         $list = $client->getClientHistory();
         $result = "";
         for ($i=0; $i<count($list); $i++) { $col=$i+1;
-            $article_nr_displ=$list[$i]["article_nr_displ"];
-            $brand=$list[$i]["brand"];
-            $brand_link=$list[$i]["brand_link"];
+            $article_nr_displ = $list[$i]["article_nr_displ"];
+            $brand = $list[$i]["brand"];
+            $brand_link = $list[$i]["brand_link"];
             $result.="<li>$col. <a href=\"https://toko.ua$prefix/$cat->search_link/$article_nr_displ/$brand_link/\">$article_nr_displ ($brand)</a></li>";
         }
         !empty($list) ?: $result.="<p>{empty_history}</p>";
-        $form=$this->getHtmlForm("menu/history_block");
-        $form=str_replace("{history_block}", $result, $form);
+        $form = $this->getHtmlForm("menu/history_block");
+        $form = str_replace("{history_block}", $result, $form);
         return $form;
     }
 
@@ -318,10 +321,10 @@ class FormClass {
         $list = $client->getClientHistory(); $max_count = 9;
         $list_history = "";
         for ($i=0; $i<count($list); $i++) {
-            $id=$list[$i]["id"];
-            $article_nr_displ=$list[$i]["article_nr_displ"];
-            $brand=$list[$i]["brand"];
-            $brand_link=$list[$i]["brand_link"];
+            $id = $list[$i]["id"];
+            $article_nr_displ = $list[$i]["article_nr_displ"];
+            $brand = $list[$i]["brand"];
+            $brand_link = $list[$i]["brand_link"];
             $list_history.="<li class=\"search-nav__item\">
                 <div class='container'>
                     <div class='row'>
@@ -365,7 +368,7 @@ class FormClass {
         $photo_name = "";
         $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
         for ($i=1;$i<=$n;$i++){
-            $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
+            $photo_name = trim($db->result($r, $i-1, "PHOTO_NAME"));
         }
         if ($photo_name=="") $photo_name = $this->noPhoto;
         return $photo_name;
@@ -418,20 +421,19 @@ class FormClass {
 
     /*==== INFO FORM ====*/
     function showPhotoGallery($art_id, $display=0) { $db = DbSingleton::getTokoDb();
-        $cat=new CatalogueClass;
-        $prefix=$this->getLangPrefix();
-        $nophoto=$this->noPhoto;
-        $list="";
-        $article_name=$cat->getArticleSearch($art_id);
-        $brand_name=$cat->getBrandName($cat->getArticleBrand($art_id));
-        $format_name=$cat->getFormatAticle($article_name);
-        $format_brand=$cat->getFormatBrand($brand_name);
+        $cat = new CatalogueClass;
+        $prefix = $this->getLangPrefix();
+        $nophoto = $this->noPhoto;
+        $list = "";
+        $article_name = $cat->getArticleSearch($art_id);
+        $brand_name = $cat->getBrandName($cat->getArticleBrand($art_id));
+        $format_name = $cat->getFormatAticle($article_name);
+        $format_brand = $cat->getFormatBrand($brand_name);
 
         $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
             $i==1 ? $active = "active" : $active = "";
-
             if ($display==1) {
                 $list.="<div class=\"carousel-item $active\">
                     <a itemprop=\"url\" href=\"https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/\">
@@ -669,36 +671,50 @@ class FormClass {
     }
 
     function getArticleInfoForm($art_id, $display=0) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;"); $n=$db->num_rows($r); $info="";
+        $cat = new CatalogueClass;
+        $info = "";
+        $prefix = $this->getLangPrefix();
+        $article_name = $cat->getArticleSearch($art_id);
+        $brand_name = $cat->getBrandName($cat->getArticleBrand($art_id));
+        $format_name = $cat->getFormatAticle($article_name);
+        $format_brand = $cat->getFormatBrand($brand_name);
+        $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;"); $n = $db->num_rows($r);
         if ($n>0) {
-            !$display ? $class="info__table" : $class="info__table_min";
+            !$display ? $class = "info__table" : $class = "info__table_min";
             $info.="<table class='$class'>";
-            for ($i=1;$i<=$n;$i++) {
-                $text=$db->result($r, $i-1, "TEXT");
-                $value=$db->result($r, $i-1, "VALUE");
+            $n<=5 ? $max = $n : $max = 5;
+            for ($i=1; $i<=$max; $i++) {
+                $text = $db->result($r, $i-1, "TEXT");
+                $value = $db->result($r, $i-1, "VALUE");
                 $info.="<tr>
                     <td class='text-left bold'>$text</td> 
                     <td class=\"text-right\">$value</td>
                 </tr>";
             }
             $info.="</table>";
-            !$display ?: $info="<div style='padding: 10px;'>$info</div>";
+            $n<=5 ?: $info.="<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
+                <a href='https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/'>
+                    {more_read}
+                </a>    
+            </p>";
+            !$display ?: $info = "<div style='padding: 10px;'>$info</div>";
         } else {
-            !$display ? $info="{info_cap}" : $info="";
+            !$display ? $info = "{info_cap}" : $info = "";
         }
-        $info=str_replace('"',"",$info);
+        $info = str_replace('"', "", $info);
+        $info = $this->replaceLang($info);
         return $info;
     }
 
     function getCarsBanner() { $db = DbSingleton::getTokoDb();
-        $indicators=""; $items=""; $k=0;
+        $indicators = ""; $items = ""; $k = 0;
         $r = $db->query("SELECT * FROM `banner` WHERE `STATUS`=1 ORDER BY `POSITION` ASC;"); $n = $db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+        for ($i=1; $i<=$n; $i++) {
             $title = $db->result($r, $i - 1, "TITLE");
             $text = $db->result($r, $i - 1, "TEXT");
             $image = $db->result($r, $i - 1, "IMAGE");
 
-            $k==0 ? $class="active" : $class="";
+            $k==0 ? $class = "active" : $class = "";
             $indicators.="<li data-target=\"#carouselBanner\" data-slide-to=\"$k\" class=\"$class\"></li>";
             $items.="<div class=\"carousel-item $class\">".$this->getCarsBannerItem($title, $text, "/images/banners/".$image)."</div>";
             $k++;
@@ -706,7 +722,6 @@ class FormClass {
         $form = $this->getHtmlForm("home/banner");
         $form = str_replace("{carousel_indicators}", $indicators, $form);
         $form = str_replace("{carousel_items}", $items, $form);
-
         return $form;
     }
 
@@ -719,15 +734,15 @@ class FormClass {
     }
 
     function showHomeCars() { $db = DbSingleton::getTokoDb();
-        $prefix=$this->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $list = "<div class='seo_details'><div class='seo-ul'>";
         $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `POSITION` DESC LIMIT 0,25;"); $n = $db->num_rows($r);
         $arr = [];
-        for ($i=1;$i<=$n;$i++) {
+        for ($i=1; $i<=$n; $i++) {
             $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
             $mfa_image = $db->result($r, $i - 1, "LOGO_SVG");
-            $arr[$i]=["brand"=>$mfa_brand, "link"=>$mfa_link, "image"=>$mfa_image];
+            $arr[$i] = ["brand"=>$mfa_brand, "link"=>$mfa_link, "image"=>$mfa_image];
         }
         sort($arr);
         foreach ($arr as $value) {

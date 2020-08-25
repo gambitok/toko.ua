@@ -161,7 +161,7 @@ class CatalogueClass {
                 $name = $db->result($r,$i-1,"NAME");
                 $photo = $showform->getShortArticlePhoto($art_id);
                 $count = $this->countBrandItems($search_number, $brand_id);
-                if ($count==0) $count_zero++; else { $exist_search_number=strtolower($search_number); $exist_brand_link=$brand_link; }
+                if ($count==0) $count_zero++; else { $exist_search_number = strtolower($search_number); $exist_brand_link = $brand_link; }
                 $mas[$i] = ["search_number"=>$search_number, "text"=>$text, "brand_id"=>$brand_id, "brand_name"=>$brand_name, "brand_link"=>$brand_link, "count"=>$count, "name"=>$name, "photo"=>$photo];
             }
 
@@ -410,27 +410,27 @@ class CatalogueClass {
     }
 
     function getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id) {
-        $client=new ClientClass; $automan=new AutoClass; $kours=new ExRateClass;
-        $cash_id=$client->getClientCurrency($this->getClient()); $cur=$kours->getCurrentKours();
-        $mfa_mod_typ_text=$automan->getCarDescription($typ_id);
+        $client = new ClientClass; $automan = new AutoClass; $kours = new ExRateClass;
+        $cash_id = $client->getClientCurrency($this->getClient()); $cur = $kours->getCurrentKours();
+        $mfa_mod_typ_text = $automan->getCarDescription($typ_id);
         $ch1=$ch2=$ch3=$cash_add="";
 
-        $str_link=$automan->getStrNewLink($str_id);
-        $h1_text=$this->getStaticH1("/catalog/$str_link/");
-        if ($h1_text!="") $str_text=$h1_text;
+        $str_link = $automan->getStrNewLink($str_id);
+        $h1_text = $this->getStaticH1("/catalog/$str_link/");
+        if ($h1_text!="") $str_text = $h1_text;
 
         if ($str_text=="") {
-            $result="<h1>{details_for} $mfa_mod_typ_text</h1>";
+            $result = "<h1>{details_for} $mfa_mod_typ_text</h1>";
         } else {
-            $result="<h1>$str_text</h1>";
+            $result = "<h1>$str_text</h1>";
         }
 
-        if ($cur==2) $ch2="checked=\"checked\""; else if ($cur==3) $ch3="checked=\"checked\""; else $ch1="checked=\"checked\"";
+        if ($cur==2) $ch2 = "checked=\"checked\""; else if ($cur==3) $ch3 = "checked=\"checked\""; else $ch1 = "checked=\"checked\"";
 
-        if ($cash_id==2) $cash_add="<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"tecModelsFilter();\"><label for=\"radio_usd\">$</label>";
-        if ($cash_id==3) $cash_add="<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"tecModelsFilter();\"><label for=\"radio_eur\">€</label>";
-        if ($this->getUser()!=0) $currency="<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>$cash_add";
-        else $currency="<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>";
+        if ($cash_id==2) $cash_add = "<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"tecModelsFilter();\"><label for=\"radio_usd\">$</label>";
+        if ($cash_id==3) $cash_add = "<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"tecModelsFilter();\"><label for=\"radio_eur\">€</label>";
+        if ($this->getUser()!=0) $currency = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>$cash_add";
+        else $currency = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>";
 
         $search_main=str_replace("{art}", $result, $search_main);
         $search_main=str_replace("{currency}", $cash_id==1 || $str_text=="" ? "" : $currency, $search_main);
@@ -530,15 +530,15 @@ class CatalogueClass {
             case 3:  $jsFilter = "catGroupFilter";break;
             default: $jsFilter = "catalogueFilter";break;
         }
-        $form=$this->getHtmlForm("cat_search_header");
-        $form=str_replace("{cat_js_filter}",$jsFilter,$form);
-        $form=str_replace("{cat_sort_1}",$sort1,$form);
-        $form=str_replace("{cat_sort_2}",$sort2,$form);
-        $form=str_replace("{cat_sort_3}",$sort3,$form);
-        $form=str_replace("{cat_sort_4}",$sort4,$form);
-        $form=str_replace("{cat_storage_info}",$storage_info,$form);
-        $form=str_replace("{cat_product_view}", !$view ? "" : "none", $form);
-        if ($type_filter==3) $form="";
+        $form = $this->getHtmlForm("cat_search_header");
+        $form = str_replace("{cat_js_filter}",$jsFilter,$form);
+        $form = str_replace("{cat_sort_1}",$sort1,$form);
+        $form = str_replace("{cat_sort_2}",$sort2,$form);
+        $form = str_replace("{cat_sort_3}",$sort3,$form);
+        $form = str_replace("{cat_sort_4}",$sort4,$form);
+        $form = str_replace("{cat_storage_info}",$storage_info,$form);
+        $form = str_replace("{cat_product_view}", !$view ? "" : "none", $form);
+        if ($type_filter==3) $form = "";
         return $form;
     }
 
@@ -648,10 +648,10 @@ class CatalogueClass {
         }
 
         foreach ($brands as $key=>$value) {
-            $min_price=$value["price"]; $brand_id=$value["brand_id"]; $val_brand=$value["brand"];
+            $min_price = $value["price"]; $brand_id = $value["brand_id"]; $val_brand = $value["brand"];
 
             if ($brand_filter!="") {
-                $brand_array=explode(",", $brand_filter);
+                $brand_array = explode(",", $brand_filter);
                 if (in_array($brand_id, $brand_array)) $checked="checked=\"checked\""; else $checked="";
             }
 
@@ -660,10 +660,10 @@ class CatalogueClass {
             }
 
             if ($brand_id!="") if ($brand_id==$main_brand) {
-                $checked="checked=\"checked\" disabled=\"true\"";
-                $main_brand_class="main-brand";
+                $checked = "checked=\"checked\" disabled=\"true\"";
+                $main_brand_class = "main-brand";
             } else {
-                $main_brand_class="";
+                $main_brand_class = "";
             }
 
             $list_brand.=$this->getHtmlForm("cat_brand_range");
@@ -675,7 +675,7 @@ class CatalogueClass {
             $list_brand=str_replace("{currency_cap}",$currency_cap,$list_brand);
             $list_brand=str_replace("{jsFilterModel}",$jsFilterModel,$list_brand);
         }
-        $list_brand=$this->replaceLang($list_brand);
+        $list_brand = $this->replaceLang($list_brand);
         return $list_brand;
     }
 
@@ -1441,7 +1441,7 @@ class CatalogueClass {
             $form = str_replace("{price_row_status}", "", $form);
             $form = str_replace("{soldout_row_status}", "none", $form);
         } else {
-//            // PRICE & STOCK = 0
+           // PRICE & STOCK = 0
             $form = str_replace("{price_row_status}", "none", $form);
             $form = str_replace("{soldout_row_status}", "", $form);
         }
@@ -2119,57 +2119,55 @@ class CatalogueClass {
         return $list;
     }
 
-    function triggerDetailCar($type_id, $year, $manufacture, $model, $model_id, $typ_id, $str_id) {
-        $automan = new AutoClass;
-        $skip_id = 0;
-        switch ($type_id) {
-            case 0: { $form = $automan->showTabCatalogueYear(1, $manufacture, $model); break; }
-            case 1: { $form = $automan->showTabCatalogueManufacture($year, 1); break; }
-            case 2: { $form = $automan->showTabCatalogueModel($manufacture, $year, 1); break; }
-            case 3: {
-                $model_id = $automan->skipShowTabCatalogueModelId($model, $manufacture, $year);
-                if (!$model_id) {
-                    $form = $automan->showTabCatalogueModelId($model, $manufacture, $year, 1);
-                } else {
-                    $str_id!=="" ? $onclick=1 : $onclick="";
-                    $form = $automan->showTabCatalogueGroup($model_id, $model, $manufacture, $year);
-                    $skip_id = $model_id;
-                }
-                break;
-            }
-            case 4: {
-                $str_id!=="" ? $onclick=1 : $onclick="";
-                $form = $automan->showTabCatalogueGroup($model_id, $model, $manufacture, $year); break;
-            }
-            default: { $form = "Something wrong!"; break; }
-        }
-        if ($year=="all") $form = $automan->showTabCatalogueYear(1);
-        list($manufacture_text,, $model_id_cap, $typ_text) = $automan->getAutoDescr($manufacture, $model, $model_id, $typ_id);
-        list($t_mf, $t_md, $t_mi,) = $automan->getAutoDescr($manufacture, $model, $model_id, $typ_id);
-        $cat_text = "";
-        if ($t_mf!="") $cat_text = " $t_mf";
-        if ($t_md!="") $cat_text = " $t_mf $t_md";
-        if ($t_mi!="") $cat_text = " $t_mf $t_mi";
-        $str_text = $automan->getStrDescr($str_id);
-        $title = "$str_text {for_cap} $manufacture_text $model_id_cap $typ_text | {site_title_short}";
-        if ($str_id=="")  {
-            $title = "$manufacture_text $model_id_cap $typ_text | {site_title_short}";
-            $str_text = "$manufacture_text $model_id_cap $typ_text";
-        }
-        $str_text = $this->formatUrlText($str_text);
-
-        $title = $this->replaceLang($title);
-        return array($form, $str_text, $cat_text, $skip_id, $title);
-    }
+//    function triggerDetailCar($type_id, $year, $manufacture, $model, $model_id, $typ_id, $str_id) {
+//        $automan = new AutoClass;
+//        $skip_id = 0;
+//        switch ($type_id) {
+//            case 0: { $form = $automan->showTabCatalogueYear(1, $manufacture, $model); break; }
+//            case 1: { $form = $automan->showTabCatalogueManufacture($year, 1); break; }
+//            case 2: { $form = $automan->showTabCatalogueModel($manufacture, $year, 1); break; }
+//            case 3: {
+//                $model_id = $automan->skipShowTabCatalogueModelId($model, $manufacture, $year);
+//                if (!$model_id) {
+//                    $form = $automan->showTabCatalogueModelId($model, $manufacture, $year, 1);
+//                } else {
+//                    $str_id!=="" ? $onclick=1 : $onclick="";
+//                    $form = $automan->showTabCatalogueGroup($model_id, $model, $manufacture, $year);
+//                    $skip_id = $model_id;
+//                }
+//                break;
+//            }
+//            case 4: {
+//                $str_id!=="" ? $onclick=1 : $onclick="";
+//                $form = $automan->showTabCatalogueGroup($model_id, $model, $manufacture, $year); break;
+//            }
+//            default: { $form = "Something wrong!"; break; }
+//        }
+//        if ($year=="all") $form = $automan->showTabCatalogueYear(1);
+//        list($manufacture_text,, $model_id_cap, $typ_text) = $automan->getAutoDescr($manufacture, $model, $model_id, $typ_id);
+//        list($t_mf, $t_md, $t_mi,) = $automan->getAutoDescr($manufacture, $model, $model_id, $typ_id);
+//        $cat_text = "";
+//        if ($t_mf!="") $cat_text = " $t_mf";
+//        if ($t_md!="") $cat_text = " $t_mf $t_md";
+//        if ($t_mi!="") $cat_text = " $t_mf $t_mi";
+//        $str_text = $automan->getStrDescr($str_id);
+//        $title = "$str_text {for_cap} $manufacture_text $model_id_cap $typ_text | {site_title_short}";
+//        if ($str_id=="")  {
+//            $title = "$manufacture_text $model_id_cap $typ_text | {site_title_short}";
+//            $str_text = "$manufacture_text $model_id_cap $typ_text";
+//        }
+//        $str_text = $this->formatUrlText($str_text);
+//
+//        $title = $this->replaceLang($title);
+//        return array($form, $str_text, $cat_text, $skip_id, $title);
+//    }
 
     function searchListTest($where_art_id_str, $type_filter=1, $view=0) { $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass; $client = new ClientClass;
         $client_id = $this->getClient(); $tpoint_id = $client->getTpoint(); $cur = $kours->getCurrentKours();
         if (!$view) $view = $client->getProductView();
         session_start(); $temp_key = session_id();
-
         $mas = [];
-
         list($error, , $list) = $this->getSearchMessages($type_filter);
 
         if ($where_art_id_str!="") {

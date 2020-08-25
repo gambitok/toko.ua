@@ -1,81 +1,81 @@
-<link rel="stylesheet" href="/js/plugins/select2/select2.min.css">
+<!--<link rel="stylesheet" href="/js/plugins/select2/select2.min.css">-->
 
-<input type="hidden" id="str_id" value="{str_id}">
-<input type="hidden" id="str_level" value="{str_level}">
-<input type="hidden" id="str_id_parrent" value="{str_id_parrent}">
+<!--<input type="hidden" id="str_id" value="{str_id}">-->
+<!--<input type="hidden" id="str_level" value="{str_level}">-->
+<!--<input type="hidden" id="str_id_parrent" value="{str_id_parrent}">-->
 
-<input type="hidden" id="str_year" value="{str_year}">
-<input type="hidden" id="str_manufacture" value="{str_manufacture}">
-<input type="hidden" id="str_model" value="{str_model}">
-<input type="hidden" id="str_model_id" value="{str_model_id}">
-<input type="hidden" id="str_group" value="{str_group}">
+<!--<input type="hidden" id="str_year" value="{str_year}">-->
+<!--<input type="hidden" id="str_manufacture" value="{str_manufacture}">-->
+<!--<input type="hidden" id="str_model" value="{str_model}">-->
+<!--<input type="hidden" id="str_model_id" value="{str_model_id}">-->
+<!--<input type="hidden" id="str_group" value="{str_group}">-->
 
-<input type="hidden" id="str_str_text" value="{str_str_text}">
+<!--<input type="hidden" id="str_str_text" value="{str_str_text}">-->
 
-<input type="hidden" id="str_type" value="{str_type}">
+<!--<input type="hidden" id="str_type" value="{str_type}">-->
 
-<style>
-    .select_form_car {
-        border: 2px solid lightcoral;
-        color: white;
-        padding: 2em;
-        border-top: none;
-    }
-    button {
-        font-weight: bold;
-        text-transform: uppercase;
-        background: #606975;
-        color: white;
-        border:none;
-        cursor:pointer;
-        width: 100%;
-        height: 100%;
-        padding: 10px;
-    }
-    .btn-active {
-        background: lightcoral;
-        color: white;
-    }
-    .manufacture_list .auto-list, .manufacture_list .model-list {
-        color: gray;
-    }
-    h2, h3, h4, .filters h2, .filters h3, .filters h4 {
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 1.5;
-    }
-    h2, .filters h2 {
-        margin: 0;
-    }
-</style>
+<!--<style>-->
+    <!--.select_form_car {-->
+        <!--border: 2px solid lightcoral;-->
+        <!--color: white;-->
+        <!--padding: 2em;-->
+        <!--border-top: none;-->
+    <!--}-->
+    <!--button {-->
+        <!--font-weight: bold;-->
+        <!--text-transform: uppercase;-->
+        <!--background: #606975;-->
+        <!--color: white;-->
+        <!--border:none;-->
+        <!--cursor:pointer;-->
+        <!--width: 100%;-->
+        <!--height: 100%;-->
+        <!--padding: 10px;-->
+    <!--}-->
+    <!--.btn-active {-->
+        <!--background: lightcoral;-->
+        <!--color: white;-->
+    <!--}-->
+    <!--.manufacture_list .auto-list, .manufacture_list .model-list {-->
+        <!--color: gray;-->
+    <!--}-->
+    <!--h2, h3, h4, .filters h2, .filters h3, .filters h4 {-->
+        <!--font-size: 16px;-->
+        <!--font-weight: 400;-->
+        <!--line-height: 1.5;-->
+    <!--}-->
+    <!--h2, .filters h2 {-->
+        <!--margin: 0;-->
+    <!--}-->
+<!--</style>-->
 
-<hr>
+<!--<hr>-->
 
-<div class="auto_selects">
-    <div class="row" style="padding: 0 15px;">
-        <div class="col-lg-2 col-12 pad0"><button id="select_year" class="btn-select btn-active" onclick="triggerDetailCar(0)">{year_cap}</button></div>
-        <div class="col-lg-2 col-12 pad0"><button id="select_manufacture" disabled class="btn-select" onclick="triggerDetailCar(1)">{auto_cap}</button></div>
-        <div class="col-lg-2 col-12 pad0"><button id="select_model" disabled class="btn-select" onclick="triggerDetailCar(2)">{model_cap}</button></div>
-        <div class="col-lg-3 col-12 pad0"><button id="select_model_id" disabled class="btn-select" onclick="triggerDetailCar(3)">{model_number}</button></div>
-        <div class="col-lg-3 col-12 pad0"><button id="select_group" disabled class="btn-select" onclick="triggerDetailCar(4)">{detail_group}</button></div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div id="select_form_car" class="select_form_car">
-                {select_auto}
-            </div>
-        </div>
-    </div>
-</div>
+<!--<div class="auto_selects">-->
+    <!--<div class="row" style="padding: 0 15px;">-->
+        <!--<div class="col-lg-2 col-12 pad0"><button id="select_year" class="btn-select btn-active" onclick="triggerDetailCar(0)">{year_cap}</button></div>-->
+        <!--<div class="col-lg-2 col-12 pad0"><button id="select_manufacture" disabled class="btn-select" onclick="triggerDetailCar(1)">{auto_cap}</button></div>-->
+        <!--<div class="col-lg-2 col-12 pad0"><button id="select_model" disabled class="btn-select" onclick="triggerDetailCar(2)">{model_cap}</button></div>-->
+        <!--<div class="col-lg-3 col-12 pad0"><button id="select_model_id" disabled class="btn-select" onclick="triggerDetailCar(3)">{model_number}</button></div>-->
+        <!--<div class="col-lg-3 col-12 pad0"><button id="select_group" disabled class="btn-select" onclick="triggerDetailCar(4)">{detail_group}</button></div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+        <!--<div class="col-12">-->
+            <!--<div id="select_form_car" class="select_form_car">-->
+                <!--{select_auto}-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
 
-<script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>
-<script type="text/javascript" src="/js/plugins/select2/select2_ru.min.js"></script>
+<!--<script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>-->
+<!--<script type="text/javascript" src="/js/plugins/select2/select2_ru.min.js"></script>-->
 
-<script>
-    $( document ).ready(function() {
-        let str_type=$("#str_type").val();
-        if (str_type!=="") {
-            triggerDetailCar(parseInt(str_type));
-        }
-    });
-</script>
+<!--<script>-->
+    <!--$( document ).ready(function() {-->
+        <!--let str_type=$("#str_type").val();-->
+        <!--if (str_type!=="") {-->
+            <!--triggerDetailCar(parseInt(str_type));-->
+        <!--}-->
+    <!--});-->
+<!--</script>-->

@@ -142,67 +142,67 @@ function rotateIcon(a) {
     $(a).find("i").toggleClass("rotate__icon");
 }
 
-function triggerTabAuto(year) {
-    $(".year-list").each(function () {$(this).removeClass("span-red");});
-    $("#year-"+year).addClass("span-red");
-    JsHttpRequest.query(folder,{ 'w': 'tab_auto', 'year':year },
-        function (result, errors){ if (errors) {} if (result){
-            let link = $("#link_auto"); link.removeClass("disabled"); link.trigger("click");
-            $("#link_model").addClass("disabled");
-            $("#link_modelid").addClass("disabled");
-            $("#link_group").addClass("disabled");
-            $("#tab_auto").html(result.content);
-            $([document.documentElement, document.body]).animate({
-                scrollTop: $("#navigation").offset().top
-            }, 500);
-        }}, true);
-    return true;
-}
-
-function triggerTabModel(auto, year) {
-    $(".auto-list").each(function () {$(this).removeClass("span-red");});
-    $("#auto-"+auto).addClass("span-red");
-    JsHttpRequest.query(folder,{ 'w': 'tab_model', 'auto':auto, 'year':year },
-        function (result, errors){ if (errors) {} if (result){
-            let link = $("#link_model"); link.removeClass("disabled"); link.trigger("click");
-            $("#link_modelid").addClass("disabled");
-            $("#link_group").addClass("disabled");
-            $("#tab_model").html(result.content);
-            $([document.documentElement, document.body]).animate({
-                scrollTop: $("#navigation").offset().top
-            }, 500);
-        }}, true);
-    return true;
-}
-
-function triggerTabModelId(model, auto, year) {
-    $(".model-list").each(function () {$(this).removeClass("span-red");});
-    $("#model-"+model).addClass("span-red");
-    JsHttpRequest.query(folder,{ 'w': 'tab_modelid', 'model':model, 'auto':auto, 'year':year },
-        function (result, errors){ if (errors) {} if (result){
-            let link = $("#link_modelid"); link.removeClass("disabled"); link.trigger("click");
-            $("#link_group").addClass("disabled");
-            $("#tab_modelid").html(result.content);
-            $([document.documentElement, document.body]).animate({
-                scrollTop: $("#navigation").offset().top
-            }, 500);
-        }}, true);
-    return true;
-}
-
-function triggerTabGroup(modelid ,model, auto, year) {
-    $(".modelid-list").each(function () {$(this).removeClass("span-red");});
-    $("#modelid-"+modelid).addClass("span-red");
-    JsHttpRequest.query(folder,{ 'w': 'tab_group', 'modelid':modelid, 'model':model, 'auto':auto, 'year':year },
-        function (result, errors){ if (errors) {} if (result){
-            let link = $("#link_group"); link.removeClass("disabled"); link.trigger("click");
-            $("#tab_group").html(result.content);
-            $([document.documentElement, document.body]).animate({
-                scrollTop: $("#navigation").offset().top
-            }, 500);
-        }}, true);
-    return true;
-}
+// function triggerTabAuto(year) {
+//     $(".year-list").each(function () {$(this).removeClass("span-red");});
+//     $("#year-"+year).addClass("span-red");
+//     JsHttpRequest.query(folder,{ 'w': 'tab_auto', 'year':year },
+//         function (result, errors){ if (errors) {} if (result){
+//             let link = $("#link_auto"); link.removeClass("disabled"); link.trigger("click");
+//             $("#link_model").addClass("disabled");
+//             $("#link_modelid").addClass("disabled");
+//             $("#link_group").addClass("disabled");
+//             $("#tab_auto").html(result.content);
+//             $([document.documentElement, document.body]).animate({
+//                 scrollTop: $("#navigation").offset().top
+//             }, 500);
+//         }}, true);
+//     return true;
+// }
+//
+// function triggerTabModel(auto, year) {
+//     $(".auto-list").each(function () {$(this).removeClass("span-red");});
+//     $("#auto-"+auto).addClass("span-red");
+//     JsHttpRequest.query(folder,{ 'w': 'tab_model', 'auto':auto, 'year':year },
+//         function (result, errors){ if (errors) {} if (result){
+//             let link = $("#link_model"); link.removeClass("disabled"); link.trigger("click");
+//             $("#link_modelid").addClass("disabled");
+//             $("#link_group").addClass("disabled");
+//             $("#tab_model").html(result.content);
+//             $([document.documentElement, document.body]).animate({
+//                 scrollTop: $("#navigation").offset().top
+//             }, 500);
+//         }}, true);
+//     return true;
+// }
+//
+// function triggerTabModelId(model, auto, year) {
+//     $(".model-list").each(function () {$(this).removeClass("span-red");});
+//     $("#model-"+model).addClass("span-red");
+//     JsHttpRequest.query(folder,{ 'w': 'tab_modelid', 'model':model, 'auto':auto, 'year':year },
+//         function (result, errors){ if (errors) {} if (result){
+//             let link = $("#link_modelid"); link.removeClass("disabled"); link.trigger("click");
+//             $("#link_group").addClass("disabled");
+//             $("#tab_modelid").html(result.content);
+//             $([document.documentElement, document.body]).animate({
+//                 scrollTop: $("#navigation").offset().top
+//             }, 500);
+//         }}, true);
+//     return true;
+// }
+//
+// function triggerTabGroup(modelid ,model, auto, year) {
+//     $(".modelid-list").each(function () {$(this).removeClass("span-red");});
+//     $("#modelid-"+modelid).addClass("span-red");
+//     JsHttpRequest.query(folder,{ 'w': 'tab_group', 'modelid':modelid, 'model':model, 'auto':auto, 'year':year },
+//         function (result, errors){ if (errors) {} if (result){
+//             let link = $("#link_group"); link.removeClass("disabled"); link.trigger("click");
+//             $("#tab_group").html(result.content);
+//             $([document.documentElement, document.body]).animate({
+//                 scrollTop: $("#navigation").offset().top
+//             }, 500);
+//         }}, true);
+//     return true;
+// }
 
 /*==== Load Catalogue page ====*/
 // function triggerTabModel2(auto,model,modelid) {

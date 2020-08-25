@@ -30,7 +30,7 @@ class AutoClass {
     }
 
     function getCatNewLinkStr($head_id, $cat_link) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `TEX_LINK`='$cat_link' AND `HEAD_ID`='$head_id' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `TEX_LINK`='$cat_link' AND `HEAD_ID`='$head_id' LIMIT 1;");
         $cat_id = $db->result($r, 0, "CAT_ID");
         return $cat_id;
     }
@@ -116,7 +116,7 @@ class AutoClass {
     }
 
     function getAutoDescrLink($mf, $ml) { $db = DbSingleton::getTokoDb();
-        $mfa_brand=$model="";
+        $mfa_brand = $model = "";
         if ($mf!="") {$r = $db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mf' LIMIT 1;"); $mfa_brand = $db->result($r, 0, "MFA_BRAND");}
         if ($ml!="") {$r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link`='$ml' LIMIT 1;"); $model = $db->result($r, 0, "Model");}
         return array($mfa_brand, $model);
@@ -139,15 +139,15 @@ class AutoClass {
     }
 
     function getAutoIdsLink($mf, $ml) { $db = DbSingleton::getTokoDb();
-        $mfa_id=$model="";
+        $mfa_id = $model = "";
         if ($mf!="") {$r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mf' LIMIT 1;"); $mfa_id = $db->result($r,0,"MFA_ID");}
         if ($ml!="") {$r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link`='$ml' LIMIT 1;"); $model = $db->result($r,0,"Model");}
         return array ($mfa_id, $model);
     }
 
     function getAutoIMG($mf, $ml, $mi) { $db = DbSingleton::getTokoDb();
-        $manufacture=$model=$modelid="";
-        $ml=$this->getUrlString($ml);
+        $manufacture = $model = $modelid = "";
+        $ml = $this->getUrlString($ml);
         if ($mf>0 && is_numeric($mf)) {$r = $db->query("SELECT `LOGO` FROM `T_manufacturers` WHERE `MFA_ID`='$mf' LIMIT 1;"); $manufacture = $db->result($r,0,"LOGO");}
         if ($ml!="") {$r = $db->query("SELECT `Car_pict` FROM `T_models` WHERE `Model`='$ml' LIMIT 1;"); $model = $db->result($r,0,"Car_pict");}
         if ($mi>0 && is_numeric($mf)) {$r = $db->query("SELECT `Car_pict` FROM `T_models` WHERE `MOD_ID`='$mi' LIMIT 1;"); $modelid = $db->result($r,0,"Car_pict");}
@@ -199,10 +199,10 @@ class AutoClass {
     }
 
     function getStrParams($str_id) { $db = DbSingleton::getTokoDb();
-        $str_id=$this->getUrlNumber($str_id);
-        $r=$db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`=$str_id LIMIT 1;");
-        $str_level=$db->result($r,0,"STR_LEVEL");
-        $str_id_parrent=$db->result($r,0,"STR_ID_PARENT");
+        $str_id = $this->getUrlNumber($str_id);
+        $r = $db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`=$str_id LIMIT 1;");
+        $str_level = $db->result($r, 0, "STR_LEVEL");
+        $str_id_parrent = $db->result($r, 0, "STR_ID_PARENT");
         return array($str_level, $str_id_parrent);
     }
 
@@ -229,334 +229,338 @@ class AutoClass {
 //        return true;
 //    }
 
-    function showTabCatalogueAuto() { $db = DbSingleton::getTokoDb();
-        $first=$second="";
-        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n = $db->num_rows($r);
-        if ($n>0) {
-            $list = "<ul class=\"manufacture_list\">";
-            for ($i=1; $i<=$n; $i++) {
-                $mfa_brand=$db->result($r,$i-1,"MFA_BRAND");
-                $mfa_id=$db->result($r,$i-1,"MFA_ID");
-                if ($first!=substr($mfa_brand,0,1) && $second!=substr($mfa_brand,0,1)) {
-                    $first = substr($mfa_brand,0,1);
-                    $second = substr($mfa_brand,0,1);
-                    $main_class = "class=\"search__cat-auto\"";
-                } else {
-                    $first=""; $main_class="";
-                    $second = substr($mfa_brand, 0, 1);
-                }
-                $list.="
-                <a class=\"pointer\" onclick=\"triggerTabModel($mfa_id);\">
-                    <span class=\"searchtab_model\">$first</span>
-                    <li $main_class>
-                        <span id=\"auto-$mfa_id\" class=\"auto-list\">$mfa_brand</span>
-                    </li>
-                </a>";
-            }
-            $list.="</ul>";
-        } else $list="<span>$this->err1</span>";
+//    function showTabCatalogueAuto() { $db = DbSingleton::getTokoDb();
+//        $first=$second="";
+//        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n = $db->num_rows($r);
+//        if ($n>0) {
+//            $list = "<ul class=\"manufacture_list\">";
+//            for ($i=1; $i<=$n; $i++) {
+//                $mfa_brand=$db->result($r,$i-1,"MFA_BRAND");
+//                $mfa_id=$db->result($r,$i-1,"MFA_ID");
+//                if ($first!=substr($mfa_brand,0,1) && $second!=substr($mfa_brand,0,1)) {
+//                    $first = substr($mfa_brand,0,1);
+//                    $second = substr($mfa_brand,0,1);
+//                    $main_class = "class=\"search__cat-auto\"";
+//                } else {
+//                    $first=""; $main_class="";
+//                    $second = substr($mfa_brand, 0, 1);
+//                }
+//                $list.="
+//                <a class=\"pointer\" onclick=\"triggerTabModel($mfa_id);\">
+//                    <span class=\"searchtab_model\">$first</span>
+//                    <li $main_class>
+//                        <span id=\"auto-$mfa_id\" class=\"auto-list\">$mfa_brand</span>
+//                    </li>
+//                </a>";
+//            }
+//            $list.="</ul>";
+//        } else $list="<span>$this->err1</span>";
+//
+//        $form = $this->getHtmlForm("cat_tab_search");
+//        $form = str_replace("{catalogue_auto_list}", $list, $form);
+//        $form = str_replace("{catalogue_auto_title}", "", $form);
+//        $form = $this->replaceLang($form);
+//        return $form;
+//    }
 
-        $form = $this->getHtmlForm("cat_tab_search");
-        $form = str_replace("{catalogue_auto_list}", $list, $form);
-        $form = str_replace("{catalogue_auto_title}", "", $form);
-        $form = $this->replaceLang($form);
-        return $form;
-    }
+//    function showTabCatalogueYear($onclick="", $manufacture=0, $model="") { $db = DbSingleton::getTokoDb();
+//        $first=$second=""; $min_date_start=1947; $max_date_end=2019;
+//        $date_start=$min_date_start; $date_end=$max_date_end; $col_count=0;
+//
+//        if ($manufacture!=0 && $manufacture!="undefined") {
+//            $r=$db->query("SELECT MIN(`MOD_PCON_START`) as min_year FROM `T_models` WHERE `MOD_MFA_ID`=$manufacture;");
+//            $date_start = $db->result($r,0,"min_year");
+//            $date_start = substr($date_start, 0, -2)."";
+//        }
+//
+//        if ($model!="" && $manufacture!="undefined") {
+//            $model=str_replace("%20"," ",$model);
+//            $r=$db->query("SELECT MIN(`MOD_PCON_START`) as min_year,
+//                CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
+//            FROM `T_models` WHERE `MOD_MFA_ID`=$manufacture AND `Model`='$model';");
+//            $date_start = $db->result($r,0,"min_year");
+//            $date_start = substr($date_start, 0, -2)."";
+//            $date_end = $db->result($r,0,"max_year");
+//            if ($date_end!=0) $date_end = substr($date_end, 0, -2)."";
+//            if ($date_end==0) $date_end=$max_date_end;
+//        }
+//
+//        if ($date_start=="" || $date_start==0) $date_start=$min_date_start;
+//
+//        for ($i=$date_end;$i>=$date_start;$i--) { if (($i+1)%10==0 || $i==$date_end) $col_count++; }
+//
+//        $list="<div class=\"year_list\">";
+//        for ($i=$date_end;$i>=$date_start;$i--) {
+//            if ($onclick=="") $trigger="triggerTabAuto($i);"; else $trigger="triggerDetailCar(1,'$i')";
+//
+//            if (($i+1)%10==0 || $i==$date_end) {
+//                $mod = substr($i, 0, -1)."0 - e";
+//                $list.="<ul class='list-inline'><li class=\"year-title\">".$mod."</li>";
+//            }
+//            $list.="<a class=\"pointer\" onclick=\"$trigger\">
+//                <span class=\"searchtab_model\">$first</span>
+//                <li><h2 id=\"year-$i\" class=\"year-list\">$i</h2></li>
+//            </a>";
+//            if (($i+1)%10==1) {
+//                $list.="</ul>";
+//            }
+//        }
+//        $list.="</div>";
+//
+//        if ($onclick=="") {
+//            $form = $this->getHtmlForm("cat_tab_year");
+//            $form = str_replace("{catalogue_year_list}", $list, $form);
+//            $form = $this->replaceLang($form);
+//        } else {
+//            $form = $list;
+//        }
+//        return $form;
+//    }
 
-    function showTabCatalogueYear($onclick="", $manufacture=0, $model="") { $db = DbSingleton::getTokoDb();
-        $first=$second=""; $min_date_start=1947; $max_date_end=2019;
-        $date_start=$min_date_start; $date_end=$max_date_end; $col_count=0;
+//    function showTabCatalogueManufacture($year, $onclick="") { $db = DbSingleton::getTokoDb();
+//        if ($year!="" && $year!="undefined" && $year!="all" && $year!="NaN") {
+//            $where_year = "
+//            WHERE (
+//                (md.`MOD_PCON_END`>=".$year."00 AND md.`MOD_PCON_END`<=".$year."12)
+//                OR (md.`MOD_PCON_START`<=".$year."12 AND md.`MOD_PCON_END`>=".$year."00)
+//                OR (md.`MOD_PCON_START`<=".$year."12 AND md.`MOD_PCON_END`=0)
+//            )";
+//        } else $where_year = "";
+//
+//        $r = $db->query("
+//        SELECT
+//            mf.MFA_ID,
+//            mf.MFA_BRAND,
+//            MIN(md.`MOD_PCON_START`) as min_year,
+//            CASE WHEN MIN(md.`MOD_PCON_END`)=0 THEN 0 ELSE MAX(md.`MOD_PCON_END`) END as max_year
+//        FROM `T_models` md
+//            JOIN `T_manufacturers` mf on mf.MFA_ID=md.MOD_MFA_ID
+//        $where_year
+//        GROUP BY md.MOD_MFA_ID
+//        ORDER BY mf.MFA_BRAND"); $n = $db->num_rows($r);
+//
+//        $first=$second="";
+//        if ($n>0) {
+//            $list = "<ul class=\"manufacture_list\">";
+//            for ($i=1; $i<=$n; $i++) {
+//                $mfa_brand=$db->result($r,$i-1,"MFA_BRAND");
+//                $mfa_id=$db->result($r,$i-1,"MFA_ID");
+//                if ($first!=substr($mfa_brand,0,1) && $second!=substr($mfa_brand,0,1)) {
+//                    $first = substr($mfa_brand,0,1);
+//                    $second = substr($mfa_brand,0,1);
+//                    $main_class="class=\"search__cat-auto\"";
+//                } else {
+//                    $first="";
+//                    $second=substr($mfa_brand,0,1);
+//                    $main_class="";
+//                }
+//                if ($onclick=="") $trigger = "triggerTabModel($mfa_id,$year);"; else $trigger = "triggerDetailCar(2,'$mfa_id')";
+//                $list.="
+//                <a class=\"pointer\" onclick=\"$trigger\">
+//                    <span class=\"searchtab_model\">$first</span>
+//                    <li $main_class>
+//                        <h2 id=\"auto-$mfa_id\" class=\"auto-list\">$mfa_brand</h2>
+//                    </li>
+//                </a>";
+//            }
+//            $list.="</ul>";
+//        } else $list = "<h2>$this->err1<h2>";
+//        return $list;
+//    }
 
-        if ($manufacture!=0 && $manufacture!="undefined") {
-            $r=$db->query("SELECT MIN(`MOD_PCON_START`) as min_year FROM `T_models` WHERE `MOD_MFA_ID`=$manufacture;");
-            $date_start = $db->result($r,0,"min_year");
-            $date_start = substr($date_start, 0, -2)."";
-        }
+//    function showTabCatalogueModel($auto, $year, $onclick="") { $db = DbSingleton::getTokoDb();
+//        $list=$first=$second="";
+//
+//        if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >"; else $year_cap="";
+//        if ($year!="" && $year!="undefined" && $year!="all" && $year!="NaN") {
+//            $where_year="
+//            AND (
+//                (`MOD_PCON_END`>=".$year."00 AND `MOD_PCON_END`<=".$year."12)
+//                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`>=".$year."00)
+//                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`=0)
+//            )";
+//        } else $where_year="";
+//
+//        $db->query("UPDATE `T_manufacturers` SET `POSITION`=`POSITION`+1 WHERE `MFA_ID`='$auto' LIMIT 1;");
+//
+//        $list.="<span class=\"title_auto\"><i class=\"fa fa-car\"></i> $year_cap ".$this->getAutoDescr($auto)[0]."</span><ul class=\"manufacture_list\">";
+//
+//        $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID`='$auto' $where_year GROUP BY `Model` ORDER BY `Model`"); $n = $db->num_rows($r);
+//        for ($i=1; $i<=$n; $i++) {
+//            $model = $db->result($r, $i-1, "Model");
+//            if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second=substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
+//            else {$first=""; $second=substr($model,0,1); $main_class="";}
+//            if ($onclick=="") $trigger="triggerTabModelId(\"$model\",$auto,$year);"; else $trigger="triggerDetailCar(3,\"$model\")";
+//            $list.="
+//            <a class=\"pointer\" onclick='$trigger'>
+//                <span class=\"searchtab_model\">$first</span>
+//                <li $main_class>
+//                    <h3 id=\"model-$model\" class=\"model-list\">$model</h3>
+//                </li>
+//            </a>";
+//        }
+//        $list.="</ul>";
+//
+//        if ($n==0) $list = "<div class=\"row\"><div class=\"col-12 text-center\">$this->err1</div></div>";
+//
+//        $list = $this->replaceLang($list);
+//        return $list;
+//    }
 
-        if ($model!="" && $manufacture!="undefined") {
-            $model=str_replace("%20"," ",$model);
-            $r=$db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
-                CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
-            FROM `T_models` WHERE `MOD_MFA_ID`=$manufacture AND `Model`='$model';");
-            $date_start = $db->result($r,0,"min_year");
-            $date_start = substr($date_start, 0, -2)."";
-            $date_end = $db->result($r,0,"max_year");
-            if ($date_end!=0) $date_end = substr($date_end, 0, -2)."";
-            if ($date_end==0) $date_end=$max_date_end;
-        }
+//    function skipShowTabCatalogueModelId($model, $auto, $year) { $db = DbSingleton::getTokoDb();
+//        if ($year!="" && $year!="undefined" && $year!="all")
+//            $where_year = "AND (
+//                (`MOD_PCON_END`>=$year"."00 AND `MOD_PCON_END`<=$year"."12)
+//                OR (`MOD_PCON_START`<=$year"."12 AND `MOD_PCON_END`>=$year"."00)
+//                OR (`MOD_PCON_START`<=$year"."12 AND `MOD_PCON_END`=0)
+//            )";
+//        else $where_year = "";
+//        $r = $db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$auto' $where_year GROUP BY `TEX_TEXT` ORDER BY `TEX_TEXT`;"); $n = $db->num_rows($r);
+//        if ($n==1) $result = $db->result($r, 0, "MOD_ID"); else $result = false;
+//        return $result;
+//    }
 
-        if ($date_start=="" || $date_start==0) $date_start=$min_date_start;
+//    function showTabCatalogueModelId($model, $auto, $year, $onclick="") { $db = DbSingleton::getTokoDb();
+//        if ($year!="" && $year!="undefined" && $year!="all")
+//            $where_year="AND (
+//                (`MOD_PCON_END`>=$year"."00 AND `MOD_PCON_END`<=$year"."12)
+//                OR (`MOD_PCON_START`<=$year"."12 AND `MOD_PCON_END`>=$year"."00)
+//                OR (`MOD_PCON_START`<=$year"."12 AND `MOD_PCON_END`=0)
+//            )";
+//        else $where_year="";
+//
+//        $r=$db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$auto' $where_year GROUP BY `MOD_ID` ORDER BY `TEX_TEXT`;"); $n=$db->num_rows($r);
+//        if ($n>0) {
+//            $list="<ul>";
+//            for ($i=1;$i<=$n;$i++){
+//                $model_id=$db->result($r,$i-1,"TEX_TEXT");
+//                $mod_id=$db->result($r,$i-1,"MOD_ID");
+//                $d_start=$db->result($r,$i-1,"MOD_PCON_START");
+//                $d_end=$db->result($r,$i-1,"MOD_PCON_END");
+//                $mas[$i] = ["model_id"=>$model_id, "mod_id"=>$mod_id, "d_start"=>$d_start, "d_end"=>$d_end];
+//            }
+//            usort($mas, "myCmp");
+//            for ($i=0;$i<$n;$i++){
+//                $model_id = $mas[$i]["model_id"];
+//                $mod_id = $mas[$i]["mod_id"];
+//                $d_start = $mas[$i]["d_start"];
+//                $d_end = $mas[$i]["d_end"];
+//                if ($d_start==0){$d_start="-";}
+//                if (strlen($d_start)==6) {$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
+//                if ($d_end==0){$d_end="";}
+//                if (strlen($d_end)==6) {$d_end=substr($d_end,0,4).".".substr($d_end,4,2);}
+//                if ($d_end==""){$d_end="{cur_time}";}
+//                if ($onclick=="") $trigger="triggerTabGroup(\"$mod_id\",\"$model\",\"$auto\",$year);"; else $trigger="triggerDetailCar(4,\"$mod_id\")";
+//                $list.="
+//                <a class=\"row searchtab__appl-link pointer\" name=\"$mod_id\" onclick='$trigger'>
+//                    <div class=\"col-8\"><h4 id=\"modelid-$mod_id\" class=\"modelid-list\">$model_id</h4></div>
+//                    <div class=\"col-4\"><h4 id=\"modelid-$mod_id\" class=\"modelid-list\">$d_start - $d_end</h4></div>
+//                </a>";
+//            }
+//            $list.="</ul>";
+//        } else $list="<div class=\"row\"><div class=\"col-12 text-center\">$this->err1</div></div>";
+//
+//        $form=$this->getHtmlForm("cat_tab_modelid");
+//        $form=str_replace("{cat_modelid}", $list, $form);
+//        $auto_name=$this->getAutoDescr($auto)[0]; if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >"; else $year_cap="";
+//        $model!="" ? $form=str_replace("{tab_modelid_cap}", "$year_cap $auto_name > $model", $form) : $form=str_replace("{tab_modelid_cap}", "", $form);
+//        $form=$this->replaceLang($form);
+//        return $form;
+//    }
 
-        for ($i=$date_end;$i>=$date_start;$i--) { if (($i+1)%10==0 || $i==$date_end) $col_count++; }
+//    function showTabCatalogueGroup($modelid, $model, $auto, $year) { $db = DbSingleton::getTokoDb();
+//        $prefix=$this->getLangPrefix();
+//        $list=$list_phone=$year_cap=""; $mas=[];
+//        if ($year!="" && $year!="undefined" && $year!="all")
+//            $where_year="AND (
+//                (`TYP_PCON_END`>=$year"."00 AND `TYP_PCON_END`<=$year"."12)
+//                OR (`TYP_PCON_START`<=$year"."12 AND `TYP_PCON_END`>=$year"."00)
+//                OR (`TYP_PCON_START`<=$year"."12 AND `TYP_PCON_END`=0)
+//            )";
+//        else $where_year="";
+//
+//        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$modelid' AND `ACTIVE`=1 $where_year ORDER BY `TYP_TEXT`;"); $n=$db->num_rows($r);
+//        if ($n>0) {
+//            for ($i=1;$i<=$n;$i++){
+//                $typ_id=$db->result($r,$i-1,"TYP_ID");
+//                $text=$db->result($r,$i-1,"TYP_TEXT");
+//                $kw_from=$db->result($r,$i-1,"TYP_KW_FROM");
+//                $hp_from=$db->result($r,$i-1,"TYP_HP_FROM");
+//                $ccm=$db->result($r,$i-1,"TYP_CCM");
+//                $d_start=$db->result($r,$i-1,"TYP_PCON_START");
+//                $d_end=$db->result($r,$i-1,"TYP_PCON_END");
+//                $fuel=$db->result($r,$i-1,"FUEL_ID"); $fuel=$this->getFuelName($fuel);
+//                $eng_cod=$db->result($r,$i-1,"ENG_Cod");
+//                $full_name=$db->result($r,$i-1,"TYP_MMT_TEXT");
+//                $mas[$i] = ["id"=>$typ_id, "typ_id"=>$typ_id, "fuel"=>$fuel, "text"=>$text, "d_start"=>$d_start, "d_end"=>$d_end, "hp_from"=>$hp_from, "kw_from"=>$kw_from, "ccm"=>$ccm, "eng_cod"=>$eng_cod, "full_name"=>$full_name];
+//            }
+//
+//            $mas = $this->multiSort($mas, "fuel", "text");
+//            for ($i=0;$i<$n;$i++){
+//                $typ_id = $mas[$i]["typ_id"];
+//                $fuel = $mas[$i]["fuel"];
+//                $text = $mas[$i]["text"];
+//                $d_start = $mas[$i]["d_start"];
+//                $d_end = $mas[$i]["d_end"];
+//                $hp_from = $mas[$i]["hp_from"];
+//                $kw_from = $mas[$i]["kw_from"];
+//                $ccm = $mas[$i]["ccm"];
+//                $eng_cod = $mas[$i]["eng_cod"];
+//                $full_name = $mas[$i]["full_name"];
+//                $full_name_out_brackets = preg_replace('/[\[{\(].*[\]}\)]/U' , '', $full_name);
+//                preg_match('#\((.*?)\)#', $full_name, $match);
+//                $full_name_brackets = $match[1];
+//
+//                if ($d_start==0) {$d_start="";} if (strlen($d_start)==6){$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
+//                if ($d_end==0) {$d_end="";} if (strlen($d_end)==6){$d_end=substr($d_end,0,4).".".substr($d_end,4,2);} $d_end_true=$d_end;
+//                if ($d_end=="") {$d_end="{cur_time}";}
+//
+//                $href="https://toko.ua$prefix/catalog/";
+//
+//                $list.="
+//                <a class=\"row searchtab__appl-link\" onclick=\"setCookie('auto_typ_id', $typ_id); location.href='$href';\">
+//                    <div class=\"col-2\">$fuel</div>
+//                    <div class=\"col-2\">$text</div>
+//                    <div class=\"col-2\">$d_start - $d_end</div>
+//                    <div class=\"col-2\">$hp_from - $kw_from</div>
+//                    <div class=\"col-2\">$ccm</div>
+//                    <div class=\"col-2\">$eng_cod</div>
+//                </a>";
+//
+//                $list_phone.="
+//                <a onclick=\"setCookie('auto_typ_id', $typ_id); location.href='$href';\">
+//                    <div class=\"container\">
+//                        <div class=\"row searchtab__appl-head\">
+//                            <div class=\"col-6 pad0\">
+//                                <h3>$full_name_out_brackets</h3>
+//                                <h4 class=\"text-left\">$full_name_brackets</h4>
+//                            </div>
+//                            <div class=\"col-6 pad0\">
+//                                <h4>$d_start - $d_end_true</h4>
+//                            </div>
+//                        </div>
+//                        <div class=\"row searchtab__appl-link\" onclick=\"setCookie('auto_typ_id', $typ_id); location.href='$href';\">$fuel, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}, $ccm cm3, $eng_cod</div>
+//                    </div>
+//                </a>";
+//            }
+//        } else $list.="<div class=\"row\"><div class=\"col-12 text-center\">$this->err1</div></div>";
+//
+//        $form=$this->getHtmlForm("cat_tab_group");
+//        $form=str_replace("{cat_tab}",$list,$form);
+//        list($manuf_cap,,$model_id_cap,)=$this->getAutoDescr($auto,$model,$modelid);
+//        if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >";
+//        $model!="" ? $form=str_replace("{tab_group_cap}","$year_cap $manuf_cap > $model_id_cap",$form) : $form=str_replace("{tab_group_cap}", "", $form);
+//        $form=str_replace("{cat_tab_phone}",$list_phone,$form);
+//        $form=$this->replaceLang($form);
+//        return $form;
+//    }
 
-        $list="<div class=\"year_list\">";
-        for ($i=$date_end;$i>=$date_start;$i--) {
-            if ($onclick=="") $trigger="triggerTabAuto($i);"; else $trigger="triggerDetailCar(1,'$i')";
-
-            if (($i+1)%10==0 || $i==$date_end) {
-                $mod = substr($i, 0, -1)."0 - e";
-                $list.="<ul class='list-inline'><li class=\"year-title\">".$mod."</li>";
-            }
-            $list.="<a class=\"pointer\" onclick=\"$trigger\">
-                <span class=\"searchtab_model\">$first</span>
-                <li><h2 id=\"year-$i\" class=\"year-list\">$i</h2></li>
-            </a>";
-            if (($i+1)%10==1) {
-                $list.="</ul>";
-            }
-        }
-        $list.="</div>";
-
-        if ($onclick=="") {
-            $form = $this->getHtmlForm("cat_tab_year");
-            $form = str_replace("{catalogue_year_list}", $list, $form);
-            $form = $this->replaceLang($form);
-        } else {
-            $form = $list;
-        }
-        return $form;
-    }
-
-    function showTabCatalogueManufacture($year, $onclick="") { $db = DbSingleton::getTokoDb();
-        if ($year!="" && $year!="undefined" && $year!="all" && $year!="NaN") {
-            $where_year = "
-            WHERE (
-                (md.`MOD_PCON_END`>=".$year."00 AND md.`MOD_PCON_END`<=".$year."12)
-                OR (md.`MOD_PCON_START`<=".$year."12 AND md.`MOD_PCON_END`>=".$year."00)
-                OR (md.`MOD_PCON_START`<=".$year."12 AND md.`MOD_PCON_END`=0)
-            )";
-        } else $where_year = "";
-
-        $r = $db->query("
-        SELECT
-            mf.MFA_ID,
-            mf.MFA_BRAND,
-            MIN(md.`MOD_PCON_START`) as min_year,
-            CASE WHEN MIN(md.`MOD_PCON_END`)=0 THEN 0 ELSE MAX(md.`MOD_PCON_END`) END as max_year
-        FROM `T_models` md
-            JOIN `T_manufacturers` mf on mf.MFA_ID=md.MOD_MFA_ID
-        $where_year
-        GROUP BY md.MOD_MFA_ID
-        ORDER BY mf.MFA_BRAND"); $n = $db->num_rows($r);
-
-        $first=$second="";
-        if ($n>0) {
-            $list = "<ul class=\"manufacture_list\">";
-            for ($i=1; $i<=$n; $i++) {
-                $mfa_brand=$db->result($r,$i-1,"MFA_BRAND");
-                $mfa_id=$db->result($r,$i-1,"MFA_ID");
-                if ($first!=substr($mfa_brand,0,1) && $second!=substr($mfa_brand,0,1)) {
-                    $first = substr($mfa_brand,0,1);
-                    $second = substr($mfa_brand,0,1);
-                    $main_class="class=\"search__cat-auto\"";
-                } else {
-                    $first="";
-                    $second=substr($mfa_brand,0,1);
-                    $main_class="";
-                }
-                if ($onclick=="") $trigger = "triggerTabModel($mfa_id,$year);"; else $trigger = "triggerDetailCar(2,'$mfa_id')";
-                $list.="
-                <a class=\"pointer\" onclick=\"$trigger\">
-                    <span class=\"searchtab_model\">$first</span>
-                    <li $main_class>
-                        <h2 id=\"auto-$mfa_id\" class=\"auto-list\">$mfa_brand</h2>
-                    </li>
-                </a>";
-            }
-            $list.="</ul>";
-        } else $list = "<h2>$this->err1<h2>";
-        return $list;
-    }
-
-    function showTabCatalogueModel($auto, $year, $onclick="") { $db = DbSingleton::getTokoDb();
-        $list=$first=$second="";
-
-        if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >"; else $year_cap="";
-        if ($year!="" && $year!="undefined" && $year!="all" && $year!="NaN") {
-            $where_year="
-            AND (
-                (`MOD_PCON_END`>=".$year."00 AND `MOD_PCON_END`<=".$year."12)
-                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`>=".$year."00)
-                OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`=0)
-            )";
-        } else $where_year="";
-
-        $db->query("UPDATE `T_manufacturers` SET `POSITION`=`POSITION`+1 WHERE `MFA_ID`='$auto' LIMIT 1;");
-
-        $list.="<span class=\"title_auto\"><i class=\"fa fa-car\"></i> $year_cap ".$this->getAutoDescr($auto)[0]."</span><ul class=\"manufacture_list\">";
-
-        $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID`='$auto' $where_year GROUP BY `Model` ORDER BY `Model`"); $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $model = $db->result($r, $i-1, "Model");
-            if ($first!=substr($model,0,1) && $second!=substr($model,0,1)) {$first=substr($model,0,1); $second=substr($model,0,1); $main_class="class=\"search__cat-auto\"";}
-            else {$first=""; $second=substr($model,0,1); $main_class="";}
-            if ($onclick=="") $trigger="triggerTabModelId(\"$model\",$auto,$year);"; else $trigger="triggerDetailCar(3,\"$model\")";
-            $list.="
-            <a class=\"pointer\" onclick='$trigger'>
-                <span class=\"searchtab_model\">$first</span>
-                <li $main_class>
-                    <h3 id=\"model-$model\" class=\"model-list\">$model</h3>
-                </li>
-            </a>";
-        }
-        $list.="</ul>";
-
-        if ($n==0) $list = "<div class=\"row\"><div class=\"col-12 text-center\">$this->err1</div></div>";
-
-        $list = $this->replaceLang($list);
-        return $list;
-    }
-
-    function skipShowTabCatalogueModelId($model, $auto, $year) { $db = DbSingleton::getTokoDb();
-        if ($year!="" && $year!="undefined" && $year!="all")
-            $where_year = "AND (
-                (`MOD_PCON_END`>=$year"."00 AND `MOD_PCON_END`<=$year"."12) 
-                OR (`MOD_PCON_START`<=$year"."12 AND `MOD_PCON_END`>=$year"."00)
-                OR (`MOD_PCON_START`<=$year"."12 AND `MOD_PCON_END`=0) 
-            )";
-        else $where_year = "";
-        $r = $db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$auto' $where_year GROUP BY `TEX_TEXT` ORDER BY `TEX_TEXT`;"); $n = $db->num_rows($r);
-        if ($n==1) $result = $db->result($r, 0, "MOD_ID"); else $result = false;
-        return $result;
-    }
-
-    function showTabCatalogueModelId($model, $auto, $year, $onclick="") { $db = DbSingleton::getTokoDb();
-        if ($year!="" && $year!="undefined" && $year!="all")
-            $where_year="AND (
-                (`MOD_PCON_END`>=$year"."00 AND `MOD_PCON_END`<=$year"."12) 
-                OR (`MOD_PCON_START`<=$year"."12 AND `MOD_PCON_END`>=$year"."00)
-                OR (`MOD_PCON_START`<=$year"."12 AND `MOD_PCON_END`=0) 
-            )";
-        else $where_year="";
-
-        $r=$db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$auto' $where_year GROUP BY `MOD_ID` ORDER BY `TEX_TEXT`;"); $n=$db->num_rows($r);
-        if ($n>0) {
-            $list="<ul>";
-            for ($i=1;$i<=$n;$i++){
-                $model_id=$db->result($r,$i-1,"TEX_TEXT");
-                $mod_id=$db->result($r,$i-1,"MOD_ID");
-                $d_start=$db->result($r,$i-1,"MOD_PCON_START");
-                $d_end=$db->result($r,$i-1,"MOD_PCON_END");
-                $mas[$i] = ["model_id"=>$model_id, "mod_id"=>$mod_id, "d_start"=>$d_start, "d_end"=>$d_end];
-            }
-            usort($mas, "myCmp");
-            for ($i=0;$i<$n;$i++){
-                $model_id = $mas[$i]["model_id"];
-                $mod_id = $mas[$i]["mod_id"];
-                $d_start = $mas[$i]["d_start"];
-                $d_end = $mas[$i]["d_end"];
-                if ($d_start==0){$d_start="-";}
-                if (strlen($d_start)==6) {$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
-                if ($d_end==0){$d_end="";}
-                if (strlen($d_end)==6) {$d_end=substr($d_end,0,4).".".substr($d_end,4,2);}
-                if ($d_end==""){$d_end="{cur_time}";}
-                if ($onclick=="") $trigger="triggerTabGroup(\"$mod_id\",\"$model\",\"$auto\",$year);"; else $trigger="triggerDetailCar(4,\"$mod_id\")";
-                $list.="
-                <a class=\"row searchtab__appl-link pointer\" name=\"$mod_id\" onclick='$trigger'>
-                    <div class=\"col-8\"><h4 id=\"modelid-$mod_id\" class=\"modelid-list\">$model_id</h4></div> 
-                    <div class=\"col-4\"><h4 id=\"modelid-$mod_id\" class=\"modelid-list\">$d_start - $d_end</h4></div> 
-                </a>";
-            }
-            $list.="</ul>";
-        } else $list="<div class=\"row\"><div class=\"col-12 text-center\">$this->err1</div></div>";
-
-        $form=$this->getHtmlForm("cat_tab_modelid");
-        $form=str_replace("{cat_modelid}", $list, $form);
-        $auto_name=$this->getAutoDescr($auto)[0]; if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >"; else $year_cap="";
-        $model!="" ? $form=str_replace("{tab_modelid_cap}", "$year_cap $auto_name > $model", $form) : $form=str_replace("{tab_modelid_cap}", "", $form);
-        $form=$this->replaceLang($form);
-        return $form;
-    }
-
-    function showTabCatalogueGroup($modelid, $model, $auto, $year) { $db = DbSingleton::getTokoDb();
-        $prefix=$this->getLangPrefix();
-        $list=$list_phone=$year_cap=""; $mas=[];
-        if ($year!="" && $year!="undefined" && $year!="all")
-            $where_year="AND (
-                (`TYP_PCON_END`>=$year"."00 AND `TYP_PCON_END`<=$year"."12) 
-                OR (`TYP_PCON_START`<=$year"."12 AND `TYP_PCON_END`>=$year"."00) 
-                OR (`TYP_PCON_START`<=$year"."12 AND `TYP_PCON_END`=0) 
-            )";
-        else $where_year="";
-
-        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$modelid' AND `ACTIVE`=1 $where_year ORDER BY `TYP_TEXT`;"); $n=$db->num_rows($r);
-        if ($n>0) {
-            for ($i=1;$i<=$n;$i++){
-                $typ_id=$db->result($r,$i-1,"TYP_ID");
-                $text=$db->result($r,$i-1,"TYP_TEXT");
-                $kw_from=$db->result($r,$i-1,"TYP_KW_FROM");
-                $hp_from=$db->result($r,$i-1,"TYP_HP_FROM");
-                $ccm=$db->result($r,$i-1,"TYP_CCM");
-                $d_start=$db->result($r,$i-1,"TYP_PCON_START");
-                $d_end=$db->result($r,$i-1,"TYP_PCON_END");
-                $fuel=$db->result($r,$i-1,"FUEL_ID"); $fuel=$this->getFuelName($fuel);
-                $eng_cod=$db->result($r,$i-1,"ENG_Cod");
-                $full_name=$db->result($r,$i-1,"TYP_MMT_TEXT");
-                $mas[$i] = ["id"=>$typ_id, "typ_id"=>$typ_id, "fuel"=>$fuel, "text"=>$text, "d_start"=>$d_start, "d_end"=>$d_end, "hp_from"=>$hp_from, "kw_from"=>$kw_from, "ccm"=>$ccm, "eng_cod"=>$eng_cod, "full_name"=>$full_name];
-            }
-
-            $mas = $this->multiSort($mas, "fuel", "text");
-            for ($i=0;$i<$n;$i++){
-                $typ_id = $mas[$i]["typ_id"];
-                $fuel = $mas[$i]["fuel"];
-                $text = $mas[$i]["text"];
-                $d_start = $mas[$i]["d_start"];
-                $d_end = $mas[$i]["d_end"];
-                $hp_from = $mas[$i]["hp_from"];
-                $kw_from = $mas[$i]["kw_from"];
-                $ccm = $mas[$i]["ccm"];
-                $eng_cod = $mas[$i]["eng_cod"];
-                $full_name = $mas[$i]["full_name"];
-                $full_name_out_brackets = preg_replace('/[\[{\(].*[\]}\)]/U' , '', $full_name);
-                preg_match('#\((.*?)\)#', $full_name, $match);
-                $full_name_brackets = $match[1];
-
-                if ($d_start==0) {$d_start="";} if (strlen($d_start)==6){$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
-                if ($d_end==0) {$d_end="";} if (strlen($d_end)==6){$d_end=substr($d_end,0,4).".".substr($d_end,4,2);} $d_end_true=$d_end;
-                if ($d_end=="") {$d_end="{cur_time}";}
-
-                $href="https://toko.ua$prefix/catalog/";
-
-                $list.="
-                <a class=\"row searchtab__appl-link\" onclick=\"setCookie('auto_typ_id', $typ_id); location.href='$href';\">
-                    <div class=\"col-2\">$fuel</div> 
-                    <div class=\"col-2\">$text</div> 
-                    <div class=\"col-2\">$d_start - $d_end</div> 
-                    <div class=\"col-2\">$hp_from - $kw_from</div> 
-                    <div class=\"col-2\">$ccm</div> 
-                    <div class=\"col-2\">$eng_cod</div> 
-                </a>";
-
-                $list_phone.="
-                <a onclick=\"setCookie('auto_typ_id', $typ_id); location.href='$href';\">
-                    <div class=\"container\">
-                        <div class=\"row searchtab__appl-head\">
-                            <div class=\"col-6 pad0\">
-                                <h3>$full_name_out_brackets</h3>
-                                <h4 class=\"text-left\">$full_name_brackets</h4>
-                            </div> 
-                            <div class=\"col-6 pad0\">
-                                <h4>$d_start - $d_end_true</h4>
-                            </div> 
-                        </div>
-                        <div class=\"row searchtab__appl-link\" onclick=\"setCookie('auto_typ_id', $typ_id); location.href='$href';\">$fuel, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}, $ccm cm3, $eng_cod</div>
-                    </div>
-                </a>";
-            }
-        } else $list.="<div class=\"row\"><div class=\"col-12 text-center\">$this->err1</div></div>";
-
-        $form=$this->getHtmlForm("cat_tab_group");
-        $form=str_replace("{cat_tab}",$list,$form);
-        list($manuf_cap,,$model_id_cap,)=$this->getAutoDescr($auto,$model,$modelid);
-        if ($year!="" && $year!="undefined" && $year!="all") $year_cap=$year." >";
-        $model!="" ? $form=str_replace("{tab_group_cap}","$year_cap $manuf_cap > $model_id_cap",$form) : $form=str_replace("{tab_group_cap}", "", $form);
-        $form=str_replace("{cat_tab_phone}",$list_phone,$form);
-        $form=$this->replaceLang($form);
-        return $form;
-    }
-
-    function getGroupInfo($typ_id) { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' AND `ACTIVE`=1;"); $n=$db->num_rows($r); $list="";
+    /*
+     * Get GROUP text info
+     * */
+    function getGroupInfo($typ_id) { $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' AND `ACTIVE`=1;"); $n = $db->num_rows($r);
         if ($n>0) {
             $kw_from=$db->result($r,0,"TYP_KW_FROM");
             $hp_from=$db->result($r,0,"TYP_HP_FROM");
@@ -621,17 +625,17 @@ class AutoClass {
 
     function deleteAutoGarage($auto_id) { $db = DbSingleton::getTokoDb();
         $db->query("DELETE FROM `AUTO_GARAGE` WHERE `id`=$auto_id;");
-        $client_id=$this->getClient(); $user_id=$this->getUser(); $cookie=$_COOKIE["session_id"];
-        if ($user_id==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user_id'";
-        $r=$db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where ORDER BY `timestamp` DESC LIMIT 1;"); $n=$db->num_rows($r);
+        $client_id = $this->getClient(); $user_id = $this->getUser(); $cookie = $_COOKIE["session_id"];
+        if ($user_id==0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user_id'";
+        $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where ORDER BY `timestamp` DESC LIMIT 1;"); $n=$db->num_rows($r);
         if ($n==0) {
             setcookie("auto_typ_id", "", time()-3600, "/");
             return false;
         } else {
-            $auto_id=$db->result($r,0,"id");
-            $typ_id=$db->result($r,0,"typ_id");
-            $db->query("UPDATE `AUTO_GARAGE` SET `status`=1 WHERE `id`='$auto_id' LIMIT 1;");
-            setcookie("auto_typ_id", $typ_id ,time() + (86400 * 30), "/");
+            $id = $db->result($r,0,"id");
+            $typ_id = $db->result($r,0,"typ_id");
+            $db->query("UPDATE `AUTO_GARAGE` SET `status`=1 WHERE `id`='$id' LIMIT 1;");
+            setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
             return true;
         }
     }
@@ -646,7 +650,7 @@ class AutoClass {
             for ($i=1; $i<=$n; $i++) {
                 $id=$db->result($r, $i-1, "id");
                 $typ_id=$db->result($r, $i-1, "typ_id");
-                list($manufacture, $model, $model_id)=$this->getCarInfo($typ_id);
+                list($manufacture, $model, $model_id) = $this->getCarInfo($typ_id);
                 if ($typ_id!=$this->getCookieAuto()) {
                     $status_cap="{select_cap}";
                     $status_disable="";
@@ -656,7 +660,7 @@ class AutoClass {
                     $status_disable="disabled";
                     $status_btn="";
                 }
-                list($manufacture_cap,, $model_id_cap, $typ_text)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
+                list($manufacture_cap,, $model_id_cap, $typ_text) = $this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                 $list.="
                 <li class=\"row garage-row\">
                     <div class=\"col-lg-6 col-12 garage-row__text\">
@@ -721,7 +725,6 @@ class AutoClass {
     }
 
     /*==== HISTORY ====*/
-
     function insertAutoHistory($typ_id) { $db = DbSingleton::getTokoDb();
         $cookie=$_COOKIE["session_id"]; $date=date("Y-m-d H:i:s");
         $client_id=$this->getClient(); $user_id=$this->getUser(); $max_history_count=10;
@@ -785,7 +788,6 @@ class AutoClass {
     }
 
     /*==== CARS VARIABLES ===*/
-
     function getMfaLink($mfa_link) { $db = DbSingleton::getTokoDb();
         $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
         $mfa_id=$db->result($r,0,"MFA_ID");

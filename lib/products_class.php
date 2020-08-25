@@ -338,13 +338,16 @@ class ProductsClass extends CatalogueClass {
         return $form;
     }
 
+    /*
+     * Get selected Car text Translit
+     * */
     function getCarManufTranslit($mfa_id, $model="") { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
-        $mfa_translit = $db->result($r,0,"MFA_BRAND_TRANSLIT"); $text = "";
+        $mfa_translit = $db->result($r, 0, "MFA_BRAND_TRANSLIT"); $text = "";
         if ($mfa_translit!="") $text = "($mfa_translit)";
         if ($model!="") {
             $r = $db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `Model_TRANSLIT`!='' LIMIT 1;");
-            $model_translit = $db->result($r,0,"Model_TRANSLIT");
+            $model_translit = $db->result($r, 0, "Model_TRANSLIT");
             if ($model_translit!="") $text = "($mfa_translit $model_translit)";
         }
         return $text;
@@ -536,14 +539,14 @@ class ProductsClass extends CatalogueClass {
     }
 
     function getModIdText($mod_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
-        $tex_text=$db->result($r, 0, "TEX_TEXT");
+        $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
+        $tex_text = $db->result($r, 0, "TEX_TEXT");
         return $tex_text;
     }
 
     function getTypIdText($typ_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
-        $tex_text=$db->result($r, 0, "TYP_TEXT");
+        $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
+        $tex_text = $db->result($r, 0, "TYP_TEXT");
         return $tex_text;
     }
 
@@ -568,6 +571,9 @@ class ProductsClass extends CatalogueClass {
         return array($classes, $text);
     }
 
+    /*
+     * Get User Garage selected car
+     * */
     function getCarsGarage() {
         $automan = new AutoClass;
         $auto_typ_id = $this->getCookieAuto();
