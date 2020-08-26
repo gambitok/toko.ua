@@ -10,7 +10,7 @@ class AutoClass {
         if ($n==0) {
             $r = $db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
         }
-        $str_text = $db->result($r,0,"TEX_LINK");
+        $str_text = $db->result($r, 0, "TEX_LINK");
         return $str_text;
     }
 
@@ -19,7 +19,7 @@ class AutoClass {
         if ($n==0) {
             $r = $db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `TEX_LINK`='$str_link' LIMIT 1;");
         }
-        $str_id = $db->result($r,0,"STR_ID");
+        $str_id = $db->result($r, 0, "STR_ID");
         return $str_id;
     }
 
@@ -76,7 +76,7 @@ class AutoClass {
         $mfa_id = $db->result($r, 0, "MOD_MFA_ID");
         $mod_cap = $db->result($r, 0, "TEX_TEXT");
         $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
-        $mfa_cap = $db->result($r,0,"MFA_BRAND");
+        $mfa_cap = $db->result($r, 0, "MFA_BRAND");
         $car_cap = "$mfa_cap $mod_cap $typ_cap";
         if ($typ_id=="") $car_cap = $this->replaceLang("{choose_spare}");
         return $car_cap;
@@ -92,21 +92,18 @@ class AutoClass {
     }
 
     function getCookieCarInfo($typ_id) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
-        $mod_id=$db->result($r,0,"TYP_MOD_ID");
-
-        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
-        $mfa_id=$db->result($r,0,"MOD_MFA_ID");
-        $model_link=$db->result($r,0,"Model_Link");
-
-        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
-        $mfa_link=$db->result($r,0,"MFA_BRAND_LINK");
-
+        $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
+        $mod_id = $db->result($r,0,"TYP_MOD_ID");
+        $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
+        $mfa_id = $db->result($r,0,"MOD_MFA_ID");
+        $model_link = $db->result($r,0,"Model_Link");
+        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
+        $mfa_link = $db->result($r,0,"MFA_BRAND_LINK");
         return array("mfa_link"=>$mfa_link, "model_link"=>$model_link);
     }
 
     function getAutoDescr($mf, $ml="", $mi="", $gr="") { $db = DbSingleton::getTokoDb();
-        $manufacture=$model=$modelid=$group="";
+        $manufacture = $model = $modelid = $group = "";
         $ml = $this->getUrlString($ml);
         if ($mf>0 && is_numeric($mf)) {$r = $db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_ID`='$mf' LIMIT 1;"); $manufacture = $db->result($r, 0, "MFA_BRAND");}
         if ($ml!="") {$r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model`='$ml' LIMIT 1;"); $model = $db->result($r, 0, "Model");}
@@ -124,12 +121,12 @@ class AutoClass {
 
     function getMfaBrand($mfa_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
-        $mfa_brand = $db->result($r,0,"MFA_BRAND");
+        $mfa_brand = $db->result($r, 0, "MFA_BRAND");
         return $mfa_brand;
     }
 
     function getAutoModelIdLink($model_id_link) { $db = DbSingleton::getTokoDb();
-        $text=$model_id="";
+        $text = $model_id = "";
         if ($model_id_link!="") {
             $r = $db->query("SELECT * FROM `T_models` WHERE `TEX_TEXT_link`='$model_id_link' LIMIT 1;");
             $model_id = $db->result($r, 0, "MOD_ID");
@@ -156,7 +153,7 @@ class AutoClass {
 
     function getStrDescr($str_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `DISP_TEXT` FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' AND `STR_ID`!=0 LIMIT 1;"); $n = $db->num_rows($r); $text = "";
-        if ($n>0) $text = $db->result($r,0,"DISP_TEXT");
+        if ($n>0) $text = $db->result($r, 0, "DISP_TEXT");
         return $text;
     }
 
@@ -562,46 +559,46 @@ class AutoClass {
         $list = "";
         $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' AND `ACTIVE`=1;"); $n = $db->num_rows($r);
         if ($n>0) {
-            $kw_from=$db->result($r,0,"TYP_KW_FROM");
-            $hp_from=$db->result($r,0,"TYP_HP_FROM");
-            $ccm=$db->result($r,0,"TYP_CCM");
-            $d_start=$db->result($r,0,"TYP_PCON_START");
-            $d_end=$db->result($r,0,"TYP_PCON_END");
-            $fuel=$db->result($r,0,"FUEL_ID"); $fuel=$this->getFuelName($fuel);
-            $eng_cod=$db->result($r,0,"ENG_Cod");
-            $full_name=$db->result($r,0,"TYP_MMT_TEXT");
-            if ($d_start==0) $d_start="";
-            if (strlen($d_start)==6) $d_start=substr($d_start,0,4).".".substr($d_start,4,2);
-            if ($d_end==0) $d_end="";
-            if (strlen($d_end)==6) $d_end=substr($d_end,0,4).".".substr($d_end,4,2);
-            $d_end_true=$d_end;
-            $list="$full_name ($d_start - $d_end_true)<br>$fuel, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}, $ccm cm3, $eng_cod";
+            $kw_from = $db->result($r,0,"TYP_KW_FROM");
+            $hp_from = $db->result($r,0,"TYP_HP_FROM");
+            $ccm = $db->result($r,0,"TYP_CCM");
+            $d_start = $db->result($r,0,"TYP_PCON_START");
+            $d_end = $db->result($r,0,"TYP_PCON_END");
+            $fuel = $db->result($r,0,"FUEL_ID"); $fuel = $this->getFuelName($fuel);
+            $eng_cod = $db->result($r,0,"ENG_Cod");
+            $full_name = $db->result($r,0,"TYP_MMT_TEXT");
+            if ($d_start==0) $d_start = "";
+            if (strlen($d_start)==6) $d_start = substr($d_start,0,4).".".substr($d_start,4,2);
+            if ($d_end==0) $d_end = "";
+            if (strlen($d_end)==6) $d_end = substr($d_end,0,4).".".substr($d_end,4,2);
+            $d_end_true = $d_end;
+            $list = "$full_name ($d_start - $d_end_true)<br>$fuel, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}, $ccm cm3, $eng_cod";
         }
         return $list;
     }
 
     /*==== GARAGE ====*/
-    function getChosenAutoGarage($client_id, $user_id) { $db=DbSingleton::getTokoDb();
-        $prefix=$this->getLangPrefix();
-        $cookie=$_COOKIE["session_id"];
-        if ($user_id==0) $where="`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `user_id`='$user_id'";
-        $r=$db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `status`=1 LIMIT 1;"); $n=$db->num_rows($r);
+    function getChosenAutoGarage($client_id, $user_id) { $db = DbSingleton::getTokoDb();
+        $prefix = $this->getLangPrefix();
+        $cookie = $_COOKIE["session_id"];
+        if ($user_id==0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user_id'";
+        $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `status`=1 LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) {
-            $typ_id=$db->result($r,0,"typ_id");
-            $typ_text=$this->getGroupInfo($typ_id);
+            $typ_id = $db->result($r,0,"typ_id");
+            $typ_text = $this->getGroupInfo($typ_id);
             list($manufacture,$model,$model_id)=$this->getCarInfo($typ_id);
             list($manufacture_cap,,$model_id_cap,)=$this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
-            $models_img=$this->getAutoIMG($manufacture,$model,$model_id)["model_id_image"];
-            $auto_form=$this->getHtmlForm("garage/garage_selected");
-            $auto_form=str_replace("{manufacture_cap}", $manufacture_cap, $auto_form);
-            $auto_form=str_replace("{model_id_cap}", $model_id_cap, $auto_form);
-            $auto_form=str_replace("{models_img}", $models_img, $auto_form);
-            $auto_form=str_replace("{typ_text}", $typ_text, $auto_form);
-            $auto_form=str_replace("{prefix}", $prefix, $auto_form);
+            $models_img = $this->getAutoIMG($manufacture,$model,$model_id)["model_id_image"];
+            $auto_form = $this->getHtmlForm("garage/garage_selected");
+            $auto_form = str_replace("{manufacture_cap}", $manufacture_cap, $auto_form);
+            $auto_form = str_replace("{model_id_cap}", $model_id_cap, $auto_form);
+            $auto_form = str_replace("{models_img}", $models_img, $auto_form);
+            $auto_form = str_replace("{typ_text}", $typ_text, $auto_form);
+            $auto_form = str_replace("{prefix}", $prefix, $auto_form);
         } else {
-            $auto_form="{choose_auto_first}";
+            $auto_form = "{choose_auto_first}";
         }
-        $auto_form=$this->replaceLang($auto_form);
+        $auto_form = $this->replaceLang($auto_form);
         return $auto_form;
     }
 
