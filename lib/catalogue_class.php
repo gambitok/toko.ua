@@ -768,7 +768,7 @@ class CatalogueClass {
                     $stock = $db->result($r, 0, "stock");
                     $price = $db->result($r, 0, "price");
                     if ($stock==0 && $price==0) {
-                        $list = $this->getHtmlForm("nothing_found");
+                        $list = $this->getHtmlForm("enothing_found");
                         $list = str_replace("{error_nothing_found}", $this->err1, $list);
                         return array($list, "", "", 0);
                     }
@@ -805,7 +805,7 @@ class CatalogueClass {
 
                 if (empty($mas)) {
                     // $list = $this->getHtmlForm("error/search_unknown");
-                    $list = $this->getHtmlForm("nothing_found");
+                    $list = $this->getHtmlForm("error/nothing_found");
                     $list = str_replace("{error_nothing_found}", $this->err1, $list);
                     return array($list, "", "", 0);
                 }
@@ -911,7 +911,7 @@ class CatalogueClass {
                     $stock = $db->result($r, 0, "stock");
                     $price = $db->result($r, 0, "price");
                     if ($stock==0 && $price==0) {
-                        $list = $this->getHtmlForm("nothing_found");
+                        $list = $this->getHtmlForm("error/nothing_found");
                         $list = str_replace("{error_nothing_found}", $this->err1, $list);
                         return array($list, "", "", 0);
                     }
@@ -944,7 +944,7 @@ class CatalogueClass {
                 $mas=$this->deleteRepeatPosition($mas);
 
                 if (empty($mas)) {
-                    $list = $this->getHtmlForm("nothing_found");
+                    $list = $this->getHtmlForm("error/nothing_found");
                     $list = str_replace("{error_nothing_found}", $this->err1, $list);
                     return array($list, "", "", 0);
                 }
@@ -1109,7 +1109,7 @@ class CatalogueClass {
                 $mas = $this->deleteRepeatPosition($mas);
 
                 if (empty($mas)) {
-                    $list = $this->getHtmlForm("nothing_found");
+                    $list = $this->getHtmlForm("error/nothing_found");
                     $list = str_replace("{error_nothing_found}", $this->err1, $list);
                     return array($list, "", "", 0);
                 }

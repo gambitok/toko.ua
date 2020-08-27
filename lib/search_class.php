@@ -470,7 +470,7 @@ class SearchClass extends CatalogueClass {
         return array_unique($brands);
     }
 
-    function getBrandsList($brandy) { $db=DbSingleton::getTokoDb();
+    function getBrandsList($brandy) { $db = DbSingleton::getTokoDb();
         $brandy = explode(",", $brandy); $brands = "";
         foreach ($brandy as $brand) {
             $r = $db->query("SELECT * FROM `T2_BRANDS` WHERE `BRAND_LINK`='$brand' LIMIT 1;");

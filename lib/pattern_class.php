@@ -5,14 +5,13 @@ class PatternClass extends CatalogueClass {
     use Helper;
     use Variables;
 
-    public $products_on_page=25;
+    public $products_on_page = 25;
 
     function initTemplateTable($template_id) { $db = DbSingleton::getTokoDb();
-
-        $products=[];
-        $r=$db->query("SELECT `ART_ID`, `PARAM_ID`, `VALUE_ID` FROM `T2_CATALOGUES_ARTS` 
-        WHERE `TEMPLATE_ID`='$template_id';"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+        $products = [];
+        $r = $db->query("SELECT `ART_ID`, `PARAM_ID`, `VALUE_ID` FROM `T2_CATALOGUES_ARTS` 
+        WHERE `TEMPLATE_ID`='$template_id';"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
             $art_id=$db->result($r,$i-1,"ART_ID");
             $param_id=$db->result($r,$i-1,"PARAM_ID");
             $value_id=$db->result($r,$i-1,"VALUE_ID");
@@ -21,9 +20,9 @@ class PatternClass extends CatalogueClass {
             array_push($products[$art_id][$param_id],$value_id);
         }
 
-        $params="";
-        $r=$db->query("SELECT * FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id';"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+        $params = "";
+        $r = $db->query("SELECT * FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id';"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
             $param_id = $db->result($r,$i-1,"PARAM_ID");
             $params.="`param_$param_id` VARCHAR(50),";
         }
@@ -37,9 +36,9 @@ class PatternClass extends CatalogueClass {
             PRIMARY KEY (`id`)
         ) ENGINE = MYISAM;");
 
-        $count_add=0; $count_upd=0;
+        $count_add = 0; $count_upd = 0;
         foreach ($products as $art_id=>$params) {
-            $r=$db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT
+            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT
             FROM `T2_ARTICLES` t2a
                 LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
             WHERE t2a.ART_ID IN ($art_id) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0) 
@@ -49,7 +48,7 @@ class PatternClass extends CatalogueClass {
             FROM `T2_ARTICLES` t2a
                 LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
             WHERE t2a.ART_ID IN ($art_id) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
-            GROUP BY t2a.ART_ID, t2si.client_storage_id;"); $stock=$db->num_rows($r);
+            GROUP BY t2a.ART_ID, t2si.client_storage_id;"); $stock = $db->num_rows($r);
 
             $brand_id = $db->result($r,0,"BRAND_ID");
 
@@ -68,7 +67,7 @@ class PatternClass extends CatalogueClass {
             $set_column=rtrim($set_column,",");
 
             if ($stock>0) {
-                $r=$db->query("SELECT * FROM `XX_TABLE_TEMPLATE_$template_id` WHERE `art_id`='$art_id' LIMIT 1;"); $n=$db->num_rows($r);
+                $r = $db->query("SELECT * FROM `XX_TABLE_TEMPLATE_$template_id` WHERE `art_id`='$art_id' LIMIT 1;"); $n = $db->num_rows($r);
                 if ($n==0) {
                     $db->query("INSERT INTO `XX_TABLE_TEMPLATE_$template_id` (`art_id`, `brand_id`, $params_column) VALUES ('$art_id', '$brand_id', $params_values);");
                     $count_add++;
@@ -104,7 +103,7 @@ class PatternClass extends CatalogueClass {
         $count_arts = 0;
         $r = $db->query("SHOW TABLES LIKE 'XX_TABLE_TEMPLATE_$template_id';"); $n = $db->num_rows($r);
         if ($n>0) {
-            $form = $this->getHtmlForm("patterns");
+            $form = $this->getHtmlForm("template/templates_list");
             $active_filters = $this->getTemplateLinkParams($template_id, $link);
             $products = $this->getCurrentProducts($template_id, $page, $active_filters);
             $products_form = $this->getProductsForm($products);

@@ -89,7 +89,7 @@ class PartsClass extends CatalogueClass {
     }
 
     function showPartsForm() {
-        $form=$this->getHtmlForm("parts");
+        $form=$this->getHtmlForm("parts/parts");
         $list=$this->getPartsList();
         $form=str_replace("{parts_name}","{spare_parts_catalog_cap}",$form);
         $form=str_replace("{parts_list}",$list,$form);
@@ -181,7 +181,7 @@ class PartsClass extends CatalogueClass {
         $where_arts=implode(",",array_unique($arts));
         list($list,,$filters,,$brands) = $this->searchList($where_arts, 1, 1);
 
-        $form=$this->getHtmlForm("parts_list");
+        $form=$this->getHtmlForm("parts/parts_list");
         $form=str_replace("{parts_name}",$str_text,$form);
         $form=str_replace("{parts_list}",$list,$form);
 

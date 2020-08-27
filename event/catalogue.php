@@ -1,7 +1,7 @@
 <?php
 
-$linka=findLinks();
-$w=$linka[1];
+$linka = findLinks();
+$w = $linka[1];
 
 if ($w=="" || $w=="finddetail" || $w=="findtec" || $w=="findmodel" || $w=="auto") {
     header("Location: /catalog/", TRUE, 301);
@@ -18,8 +18,8 @@ if ($w=="article") {
 }
 
 if ($w=="filter") {
-    $template_id=$linka[2];
-    $template_link=$pattern->getTemplateLink($template_id);
+    $template_id = $linka[2];
+    $template_link = $pattern->getTemplateLink($template_id);
     header("Location: /products/$template_link", TRUE, 301);
 }
 

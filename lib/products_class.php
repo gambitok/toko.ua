@@ -21,21 +21,18 @@ class ProductsClass extends CatalogueClass {
             $list = $this->techModelsList($typ_id, $str_id)[0];
         }
 
-        $form=$this->getHtmlForm("cat_new_search");
-        $form=str_replace("{type_search}", 2, $form);
-        $form=str_replace("{cur_value}", $cur, $form);
-
+        $form = $this->getHtmlForm("cat_new_search");
+        $form = str_replace("{type_search}", 2, $form);
+        $form = str_replace("{cur_value}", $cur, $form);
         $search_main = $this->getSearchMainTree($this->getHtmlForm("cat_search_main"), $list, $str_text, $typ_id, $str_id);
-        $form=str_replace("{cat_search_main}", $search_main, $form);
-        $form=str_replace("{cat_search_new_tree}", "", $form);
-        $form=str_replace("{cat_search_tree}", "", $form);
-        $form=str_replace("{cat_search_filters}", "", $form);
-        $form=str_replace("{cat_search_brands}", "", $form);
-
-        $form=str_replace("{search_typ_id}", $typ_id, $form);
-        $form=str_replace("{search_str_id}", $str_id, $form);
-
-        $form=$this->replaceLang($form);
+        $form = str_replace("{cat_search_main}", $search_main, $form);
+        $form = str_replace("{cat_search_new_tree}", "", $form);
+        $form = str_replace("{cat_search_tree}", "", $form);
+        $form = str_replace("{cat_search_filters}", "", $form);
+        $form = str_replace("{cat_search_brands}", "", $form);
+        $form = str_replace("{search_typ_id}", $typ_id, $form);
+        $form = str_replace("{search_str_id}", $str_id, $form);
+        $form = $this->replaceLang($form);
 
         return $form;
     }
@@ -54,43 +51,42 @@ class ProductsClass extends CatalogueClass {
 
         $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$typ_id' GROUP BY `ART_ID`;"); $n = $db->num_rows($r); $art_id_str="0";
         for ($i=1; $i<=$n; $i++) {
-            $art_id=$db->result($r,$i-1,"ART_ID"); if ($art_id!=""){$art_id_str.=",$art_id";}
+            $art_id = $db->result($r,$i-1,"ART_ID"); if ($art_id!=""){$art_id_str.=",$art_id";}
             $db->query("INSERT INTO `TEMP_ARTICLES_$key` (`art_id`, `amount`, `status`) VALUES ($art_id, 0, 0);");
         }
 
         $r = $db->query("SELECT `ART_ID`, `AMOUNT` FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID` IN ($art_id_str);"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
-            $art_id=$db->result($r,$i-1,"ART_ID");
-            $amount=$db->result($r,$i-1,"AMOUNT");
+            $art_id = $db->result($r,$i-1,"ART_ID");
+            $amount = $db->result($r,$i-1,"AMOUNT");
             if ($amount>0) $db->query("UPDATE `TEMP_ARTICLES_$key` SET `amount`=1 WHERE `art_id`='$art_id';");
         }
 
         $r = $db->query("SELECT ta.art_id, t2si.suppl_id, t2si.client_storage_id FROM `TEMP_ARTICLES_$key` ta
         INNER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=ta.art_id AND t2si.status=1);"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
-            $art_id=$db->result($r,$i-1,"art_id");
-            $suppl_id=$db->result($r,$i-1,"suppl_id");
-            $suppl_storage_id=$db->result($r,$i-1,"client_storage_id");
-            $price=$this->getArticlePrice($art_id);
-            if($suppl_id>0) $price=$this->getArticleSupplPrice($art_id, $suppl_id, $suppl_storage_id);
+            $art_id = $db->result($r,$i-1,"art_id");
+            $suppl_id = $db->result($r,$i-1,"suppl_id");
+            $suppl_storage_id = $db->result($r,$i-1,"client_storage_id");
+            $price = $this->getArticlePrice($art_id);
+            if($suppl_id>0) $price = $this->getArticleSupplPrice($art_id, $suppl_id, $suppl_storage_id);
             if($price>0) $db->query("UPDATE `TEMP_ARTICLES_$key` SET `status`=1 WHERE `art_id`='$art_id';");
         }
 
         $r = $db->query("SELECT `art_id` FROM `TEMP_ARTICLES_$key` WHERE ((`amount`=1) OR (`status`=1));"); $n = $db->num_rows($r);
         $art_id_str = "0";
         for ($i=1; $i<=$n; $i++) {
-            $art_id=$db->result($r,$i-1,"art_id");
+            $art_id = $db->result($r,$i-1,"art_id");
             $art_id_str.=",$art_id";
         }
 
 //        $str_level = $automan->getAutoStrData()[1];
 //        $str_id_parrent = $automan->getAutoStrData()[2];
         $status_str = "";
-
         if ($true_str_level==NULL && $true_str_id_parrent==NULL) {
-            $list_filters="<div id=\"cat_search_filters\"></div>";
-            $list_brand="<div id=\"cat_search_brands\"></div>";
-            $status_str="dnone";
+            $list_filters = "<div id=\"cat_search_filters\"></div>";
+            $list_brand = "<div id=\"cat_search_brands\"></div>";
+            $status_str = "dnone";
         } else {
             list(, $list_brand, $list_filters) = $this->techModelsList($typ_id, $str_id);
         }
@@ -98,8 +94,8 @@ class ProductsClass extends CatalogueClass {
         $r = $db->query("SELECT `STR_ID`, `ART_ID` FROM `T2_TREE` WHERE `ART_ID` IN ($art_id_str);"); $n = $db->num_rows($r);
         $str_id_str = "0"; $str_id_a = array();
         for ($i=1; $i<=$n; $i++) {
-            $str_id=$db->result($r,$i-1,"STR_ID"); $str_id_str.=",$str_id";
-            $art_id=$db->result($r,$i-1,"ART_ID"); $str_id_a[$str_id][$art_id]=$art_id;
+            $str_id = $db->result($r,$i-1,"STR_ID"); $str_id_str.=",$str_id";
+            $art_id = $db->result($r,$i-1,"ART_ID"); $str_id_a[$str_id][$art_id]=$art_id;
         }
         $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$key`;");
 
@@ -108,7 +104,7 @@ class ProductsClass extends CatalogueClass {
         $td_array = [];
         for ($i=1; $i<=$n; $i++) {
             $group_str_id = $db->result($r,$i-1,"STR_ID");
-            $group_str_id_parrent = $db->result($r,$i-1,"STR_ID_PARENT"); if ($group_str_id_parrent==""){$group_str_id_parrent=0;}
+            $group_str_id_parrent = $db->result($r,$i-1,"STR_ID_PARENT"); if ($group_str_id_parrent==""){ $group_str_id_parrent = 0; }
             $group_str_level = $db->result($r,$i-1,"STR_LEVEL");
             $tex_text = $db->result($r,$i-1,"DISP_TEXT");
             $position = $db->result($r,$i-1,"POSITION");
@@ -161,10 +157,10 @@ class ProductsClass extends CatalogueClass {
         $r = $db->query("SELECT ta.art_id, t2si.suppl_id, t2si.client_storage_id FROM `TEMP_ARTICLES_$key` ta
         INNER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=ta.art_id AND t2si.status=1);"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
-            $art_id=$db->result($r,$i-1,"art_id");
-            $suppl_id=$db->result($r,$i-1,"suppl_id");
-            $suppl_storage_id=$db->result($r,$i-1,"client_storage_id");
-            $price=$this->getArticlePrice($art_id);
+            $art_id = $db->result($r,$i-1,"art_id");
+            $suppl_id = $db->result($r,$i-1,"suppl_id");
+            $suppl_storage_id = $db->result($r,$i-1,"client_storage_id");
+            $price = $this->getArticlePrice($art_id);
             if ($suppl_id>0) $price=$this->getArticleSupplPrice($art_id,$suppl_id,$suppl_storage_id);
             if ($price>0) $db->query("UPDATE `TEMP_ARTICLES_$key` SET `status`=1 WHERE `art_id`='$art_id';");
         }
@@ -179,8 +175,8 @@ class ProductsClass extends CatalogueClass {
         $r = $db->query("SELECT * FROM `T2_TREE` WHERE `ART_ID` IN ($art_id_str);"); $n = $db->num_rows($r);
         $str_id_str = "0"; $str_id_a = array();
         for ($i=1; $i<=$n; $i++) {
-            $str_id=$db->result($r,$i-1,"STR_ID"); $str_id_str.=",$str_id";
-            $art_id=$db->result($r,$i-1,"ART_ID"); $str_id_a[$str_id][$art_id]=$art_id;
+            $str_id = $db->result($r,$i-1,"STR_ID"); $str_id_str.=",$str_id";
+            $art_id = $db->result($r,$i-1,"ART_ID"); $str_id_a[$str_id][$art_id]=$art_id;
         }
         $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$key`;");
 
@@ -192,15 +188,15 @@ class ProductsClass extends CatalogueClass {
         $language = new LangClass;
         $lang_id = $language->getLanguage(); $lang_cap = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD`;"); $n = $db->num_rows($r);
-        $list = "<ul class='head-list'>";
+        $list = "<ul class=\"head-list\">";
         for ($i=1; $i<=$n; $i++) {
-            $head_id=$db->result($r,$i-1,"HEAD_ID");
-            $tex_text=$db->result($r,$i-1,"TEX_$lang_cap");
-            $images=$db->result($r,$i-1,"IMAGES");
-            $status=$db->result($r,$i-1,"STATUS");
-            $check_amount=$this->getGroupTreeAmount($head_id, $str_id_str);
-            $header_list="";
-            if ($images=="") $photo=$this->noPhoto; else $photo="/uploads/images/group_tree_head/$images";
+            $head_id = $db->result($r,$i-1,"HEAD_ID");
+            $tex_text = $db->result($r,$i-1,"TEX_$lang_cap");
+            $images = $db->result($r,$i-1,"IMAGES");
+            $status = $db->result($r,$i-1,"STATUS");
+            $check_amount = $this->getGroupTreeAmount($head_id, $str_id_str);
+            $header_list = "";
+            if ($images=="") $photo = $this->noPhoto; else $photo = "/uploads/images/group_tree_head/$images";
             if ($status && $check_amount) {
                 $list.="<li id=\"head_id_$head_id\" onclick=\"showCarDetailsStr($head_id);\">
                     <div id=\"tree_head-$head_id\" class=\"row align-items-center tree-head pointer-el\">
@@ -227,14 +223,14 @@ class ProductsClass extends CatalogueClass {
         $language = new LangClass;
         $lang_id = $language->getLanguage(); $lang_cap = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD`;"); $n = $db->num_rows($r);
-        $list = "<ul class='head-list bordered'>";
+        $list = "<ul class=\"head-list bordered\">";
         for ($i=1; $i<=$n; $i++) {
-            $head_id=$db->result($r,$i-1,"HEAD_ID");
-            $tex_text=$db->result($r,$i-1,"TEX_$lang_cap");
-            $images=$db->result($r,$i-1,"IMAGES");
-            $status=$db->result($r,$i-1,"STATUS");
-            $header_list=$this->showCarDetailsStr($head_id);
-            if ($images=="") $photo=$this->noPhoto; else $photo="/uploads/images/group_tree_head/$images";
+            $head_id = $db->result($r,$i-1,"HEAD_ID");
+            $tex_text = $db->result($r,$i-1,"TEX_$lang_cap");
+            $images = $db->result($r,$i-1,"IMAGES");
+            $status = $db->result($r,$i-1,"STATUS");
+            $header_list = $this->showCarDetailsStr($head_id);
+            if ($images=="") $photo = $this->noPhoto; else $photo = "/uploads/images/group_tree_head/$images";
             if ($status) {
                 $list.="
                 <li id=\"head_id_$head_id\" class=\"head-list__item\">
@@ -273,12 +269,12 @@ class ProductsClass extends CatalogueClass {
 		WHERE cs.HEAD_ID='$head_id' $where_str ORDER BY cat.POSITION ASC, cs.POSITION ASC;"); $n = $db->num_rows($r);
         if ($n>0) {
             for ($i=1; $i<=$n; $i++) {
-                $CAT_ID=$db->result($r,$i-1,"CAT_ID");
-                $DISP_TEXT=$db->result($r,$i-1,"TEX_$lang_cap");
-                $TEX_LINK=$db->result($r,$i-1,"TEX_LINK");
-                $IMAGES=$db->result($r,$i-1,"IMAGES");
-                $STR_ID=$db->result($r,$i-1,"STR_ID");
-                $arr[$CAT_ID][$i]=["text"=>$DISP_TEXT, "link"=>$TEX_LINK, "image"=>$IMAGES, "str_id"=>$STR_ID];
+                $CAT_ID = $db->result($r,$i-1,"CAT_ID");
+                $DISP_TEXT = $db->result($r,$i-1,"TEX_$lang_cap");
+                $TEX_LINK = $db->result($r,$i-1,"TEX_LINK");
+                $IMAGES = $db->result($r,$i-1,"IMAGES");
+                $STR_ID = $db->result($r,$i-1,"STR_ID");
+                $arr[$CAT_ID][$i] = ["text"=>$DISP_TEXT, "link"=>$TEX_LINK, "image"=>$IMAGES, "str_id"=>$STR_ID];
             }
             foreach ($arr as $key=>$value) {
                 list($cat_name, $cat_link) = $automan->getCatNewDescr($key);
@@ -286,8 +282,8 @@ class ProductsClass extends CatalogueClass {
                 $list.="<div class=\"tree-item-title\"><span><a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$cat_link/\">$cat_name</a></span></div>";
                 $list.="<div class=\"tree-item-list\">";
                 foreach ($value as $v) {
-                    $text=$v["text"];
-                    $link=$v["link"];
+                    $text = $v["text"];
+                    $link = $v["link"];
                     $list.="<div class=\"tree-item-list__element\">
                         <a href=\"https://toko.ua$prefix/$this->catalog_link/$link/\">
                             <span>$text</span>
@@ -392,7 +388,7 @@ class ProductsClass extends CatalogueClass {
 
     function getCarsSearchContent($type="", $value="", $str_id="") { $db = DbSingleton::getTokoDb();
         $automan = new AutoClass;
-        $list = ""; $title=""; $n=0; $nav = ""; $tab = "";
+        $list = ""; $title=""; $n = 0; $nav = ""; $tab = "";
         $str_link = $automan->getStrNewLink($str_id);
 
         // MANUFACTURE
@@ -423,7 +419,7 @@ class ProductsClass extends CatalogueClass {
         // YEAR
         if ($type=="model") {
             list($mfa_id, $model) = explode("_", $value);
-            $min_date_start=1947; $max_date_end=2019; $n=1;
+            $min_date_start = 1947; $max_date_end = 2019; $n = 1;
             $r = $db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
                 CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
             FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id';");
@@ -485,7 +481,7 @@ class ProductsClass extends CatalogueClass {
             $mod_id = $value;
             $r=$db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` FROM `T_types` 
             WHERE `TYP_MOD_ID`='$mod_id' GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;"); $n=$db->num_rows($r);
-            for ($i=1;$i<=$n;$i++) {
+            for ($i=1; $i<=$n; $i++) {
                 $typ_id = $db->result($r, $i-1, "TYP_ID");
                 $count_types = $db->result($r, $i-1, "count_types");
                 $volume_cm = $db->result($r, $i-1, "VOLUME_CM");
@@ -502,7 +498,7 @@ class ProductsClass extends CatalogueClass {
         if ($type=="engin") {
             list($mod_id, $volume_cm, $fuel_id) = explode("_", $value);
             $r=$db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' AND `VOLUME_CM`='$volume_cm' AND `FUEL_ID`='$fuel_id' AND `ACTIVE`=1 ORDER BY `TYP_HP_FROM`;"); $n=$db->num_rows($r);
-            for ($i=1;$i<=$n;$i++) {
+            for ($i=1; $i<=$n; $i++) {
                 $typ_id = $db->result($r, $i-1, "TYP_ID");
                 $typ_text = $db->result($r, $i-1, "TYP_TEXT");
                 $kw_from = $db->result($r,$i-1,"TYP_KW_FROM");
@@ -579,19 +575,17 @@ class ProductsClass extends CatalogueClass {
         $auto_typ_id = $this->getCookieAuto();
         list($manufacture, $model, $model_id) = $automan->getCarInfo($auto_typ_id);
         list($manufacture_cap,, $model_id_cap,) = $automan->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
-        $models_img = $automan->getAutoIMG($manufacture,$model,$model_id)["model_id_image"];
+        $models_img = $automan->getAutoIMG($manufacture, $model, $model_id)["model_id_image"];
 
-        $form=$this->getHtmlForm("garage/garage_typ_block");
-        $form=str_replace("{typ_id}", $auto_typ_id, $form);
-        $form=str_replace("{manufacture_cap}",$manufacture_cap,$form);
-        $form=str_replace("{model_id_cap}",$model_id_cap,$form);
-        $form=str_replace("{typ_text}",$automan->getGroupInfo($auto_typ_id),$form);
-        $form=str_replace("{models_img}",$models_img,$form);
-
-        $auto_typ_id!="" ? ($automan->checkUserGarage($auto_typ_id) ? $button="btn-img-disabled" : $button = "") : $button = "";
-        $form=str_replace("{garage_button}",$button,$form);
-        $form=str_replace("{typ_id}",$auto_typ_id,$form);
-        $form=$this->replaceLang($form);
+        $form = $this->getHtmlForm("garage/garage_typ_block");
+        $form = str_replace("{typ_id}", $auto_typ_id, $form);
+        $form = str_replace("{manufacture_cap}", $manufacture_cap, $form);
+        $form = str_replace("{model_id_cap}", $model_id_cap, $form);
+        $form = str_replace("{typ_text}", $automan->getGroupInfo($auto_typ_id), $form);
+        $form = str_replace("{models_img}", $models_img, $form);
+        $form = str_replace("{garage_button}", ($auto_typ_id!="" ? ($automan->checkUserGarage($auto_typ_id) ? "btn-img-disabled" : "") : ""), $form);
+        $form = str_replace("{typ_id}", $auto_typ_id, $form);
+        $form = $this->replaceLang($form);
         return $form;
     }
 

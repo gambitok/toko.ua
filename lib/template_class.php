@@ -8,7 +8,6 @@ class TemplateClass extends CatalogueClass {
     public $products_on_page = 12;
     public $table_group = "AA_TABLE_GROUP_";
 
-
     /*
      * Create GROUP Tables (on CRON)
      * */
@@ -67,17 +66,16 @@ class TemplateClass extends CatalogueClass {
                         $params_column.="`param_$param_id`,";
                     }
                 }
-                $params_values = rtrim($params_values, ",");
-                $params_column = rtrim($params_column, ",");
+            $params_values = rtrim($params_values, ",");
+            $params_column = rtrim($params_column, ",");
 
-                $r2 = $dbc->query("SELECT * FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;"); $n = $dbc->num_rows($r2);
-                if ($n==0) {
-                    if ($params_column!="") $params_column = ", $params_column";
-                    if ($params_values!="") $params_values = ", $params_values";
-                    $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status` $params_column) VALUES ('$art_id', '$brand_id', $status $params_values);");
-                    $count_add++;
-                }
-
+            $r2 = $dbc->query("SELECT * FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;"); $n = $dbc->num_rows($r2);
+            if ($n==0) {
+                if ($params_column!="") $params_column = ", $params_column";
+                if ($params_values!="") $params_values = ", $params_values";
+                $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status` $params_column) VALUES ('$art_id', '$brand_id', $status $params_values);");
+                $count_add++;
+            }
         }
 
         return "TABLE: $table, ADDED: $count_add";
@@ -285,7 +283,7 @@ class TemplateClass extends CatalogueClass {
         $form = str_replace("{group_id}", $group_id, $form);
         $form = str_replace("{catalog_list}", $data["list"], $form);
         $form = str_replace("{catalog_params}", $params, $form);
-        $form = str_replace("{catalog_title}", $this->getGroupName($group_id), $form);
+        $form = str_replace("{catalog_title}", $this->getCatalogGroupTitle($group_id, $checked_filters), $form);
         $form = str_replace("{catalog_amount}", $count_arts, $form);
         $form = str_replace("{catalog_amount_arts}", $this->products_on_page, $form);
         $form = str_replace("{catalog_page}", $page, $form);
@@ -296,6 +294,24 @@ class TemplateClass extends CatalogueClass {
         $form = str_replace("{catalog_auto}", "{choosen_auto}: ".($auto_typ_id!="" ? $automan->getCarDescription($auto_typ_id) : "-"), $form);
 
         return $form;
+    }
+
+    function getCatalogGroupTitle($group_id, $filters) {
+        $name = $this->getGroupName($group_id);
+        if (empty($filters)) {
+            $title = $name;
+        } else {
+            $text = "";
+            foreach ($filters as $param_id=>$values) {
+                foreach ($values as $value) {
+                    if ($param_id==0) $value_name = $this->getBrandName($value); else $value_name = $this->getValueName($value);
+                    $text.="$value_name, ";
+                }
+            }
+            $text = rtrim($text, ", ");
+            $title = "$name: $text";
+        }
+        return $title;
     }
 
     /*
@@ -377,7 +393,6 @@ class TemplateClass extends CatalogueClass {
             array_multisort($far_status, SORT_DESC, $far_name, SORT_ASC, $values);
 
             foreach ($values as $value_id=>$var) {
-                // $id = $var["id"];
                 $name = $var["name"];
                 $link = $var["link"];
                 $status = $var["status"];
@@ -525,7 +540,7 @@ class TemplateClass extends CatalogueClass {
         if ($pages_count>5) {
             if ($page<$min_count) {
                 for ($i=1; $i<=$min_count; $i++) {
-                    $i==$page ? $active="active" : $active="";
+                    $i==$page ? $active = "active" : $active = "";
                     $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
                 }
                 $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
@@ -535,7 +550,7 @@ class TemplateClass extends CatalogueClass {
                 $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
                 $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
                 for ($i=$max_count; $i<=$pages_count; $i++) {
-                    $i==$page ? $active="active" : $active="";
+                    $i==$page ? $active = "active" : $active = "";
                     $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
                 }
             }
@@ -552,7 +567,7 @@ class TemplateClass extends CatalogueClass {
             }
         } else {
             for ($i=1; $i<=$pages_count; $i++) {
-                $i==$page ? $active="active" : $active="";
+                $i==$page ? $active = "active" : $active = "";
                 $pagination.="<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
             }
         }
@@ -613,7 +628,6 @@ class TemplateClass extends CatalogueClass {
     }
 
     /*==== FILTER PARAMS ====*/
-
     function getAllFilters($group_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
         $params = [];
         $params[0] = [];
@@ -644,9 +658,6 @@ class TemplateClass extends CatalogueClass {
 
     function getActiveFilters($group_id, $active_filters) {
         $new_filters = [];
-//        $current_filters = $this->getCurrentFilters($group_id);
-//        $current_products = $this->getCurrentProducts($group_id);
-
         list($current_filters, $current_products) = $this->getCurrentArticles($group_id);
 
         foreach ($current_filters as $param_id=>$values) {
@@ -690,46 +701,6 @@ class TemplateClass extends CatalogueClass {
         }
         return array($current_filters, $current_products);
     }
-
-//    function getCurrentFilters($group_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
-//        $table = $this->table_group.$group_id;
-//        $current_filters = [];  $current_filters[0] = [];
-//
-//        $r = $db->query("SELECT COUNT(`PARAM_ID`) as count_params FROM `T2_TREE_PARAMS` WHERE 1;");
-//        $max_param = $db->result($r, 0, "count_params");
-//
-//        $r = $dbc->query("SELECT * FROM `$table` WHERE 1;"); $n = $dbc->num_rows($r);
-//        for ($i=1; $i<=$n; $i++) {
-//            $brand_id = $dbc->result($r, $i-1, "brand_id");
-//            array_push($current_filters[0], $brand_id);
-//            for ($param_id=1; $param_id<=$max_param; $param_id++) {
-//                $value_ids = $dbc->result($r, $i-1, "param_$param_id");
-//                if ($value_ids!="") $current_filters[$param_id] = explode(",", $value_ids);
-//            }
-//        }
-//        return $current_filters;
-//    }
-//
-//    function getCurrentProducts($group_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
-//        $table = $this->table_group.$group_id;
-//        $products = [];
-//
-//        $r = $db->query("SELECT COUNT(`PARAM_ID`) as count_params FROM `T2_TREE_PARAMS` WHERE 1;");
-//        $max_param = $db->result($r, 0, "count_params");
-//
-//        $r = $dbc->query("SELECT * FROM `$table` WHERE 1;"); $n = $dbc->num_rows($r);
-//        for ($i=1; $i<=$n; $i++) {
-//            $art_id = $dbc->result($r, $i-1, "art_id");
-//            $brand_id = $dbc->result($r, $i-1, "brand_id");
-//            if (empty($products[$art_id][0])) $products[$art_id][0] = [];
-//            array_push($products[$art_id][0], $brand_id);
-//            for ($param_id=1; $param_id<=$max_param; $param_id++) {
-//                $value_ids = $dbc->result($r, $i-1, "param_$param_id");
-//                if ($value_ids!="") $products[$art_id][$param_id] = explode(",", $value_ids);
-//            }
-//        }
-//        return $products;
-//    }
 
     function getFiltersRequest($active_filters) {
         $where = "";

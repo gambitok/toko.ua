@@ -1,3 +1,3 @@
 <?php
 
-$content=str_replace("{main_window}", $menu->showContacts(), $content);
+$content = str_replace("{main_window}", $menu->showContacts(), $content);
