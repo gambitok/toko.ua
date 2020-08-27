@@ -1,6 +1,10 @@
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
 
+    .desktop-only {
+        display: none;
+    }
+
     #cat_search_auto,
     .header-main,
     .header-nav,
@@ -410,6 +414,9 @@
 
 /*==== PAD PRO ====*/
 @media (min-width: 992px) and (max-width: 1275px) {
+    .desktop-only {
+        display: none;
+    }
     .home-banner {
         width: 100%;
         margin: 0;

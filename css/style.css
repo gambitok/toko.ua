@@ -1447,7 +1447,8 @@ table thead td { border: 1px solid #000; }
 .rotate__icon { transform: rotate(180deg); }
 
 /* ==== PHONE ==== */
-@media (max-width: 768px) { #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
+@media (max-width: 768px) { .desktop-only { display: none; }
+  #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
   .cart-table { margin: 0; }
   .orders-col-wide { padding: 0; }
   .header-order { display: block; padding: 15px 0; }
@@ -1548,7 +1549,8 @@ table thead td { border: 1px solid #000; }
 
 /* ==== /PHONE ==== */
 /*==== PAD PRO ====*/
-@media (min-width: 992px) and (max-width: 1275px) { .home-banner { width: 100%; margin: 0; left: 0; }
+@media (min-width: 992px) and (max-width: 1275px) { .desktop-only { display: none; }
+  .home-banner { width: 100%; margin: 0; left: 0; }
   .header-main .phones { padding: 0; }
   .header-main .phones ul li img { display: none; }
   .header-main .phones ul li input { font-size: 11px; } }
@@ -2506,7 +2508,8 @@ table thead td { border: 1px solid #000; }
 
 /*==== Adaptive ====*/
 /* ==== PHONE ==== */
-@media (max-width: 768px) { #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
+@media (max-width: 768px) { .desktop-only { display: none; }
+  #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
   .cart-table { margin: 0; }
   .orders-col-wide { padding: 0; }
   .header-order { display: block; padding: 15px 0; }
@@ -2607,7 +2610,8 @@ table thead td { border: 1px solid #000; }
 
 /* ==== /PHONE ==== */
 /*==== PAD PRO ====*/
-@media (min-width: 992px) and (max-width: 1275px) { .home-banner { width: 100%; margin: 0; left: 0; }
+@media (min-width: 992px) and (max-width: 1275px) { .desktop-only { display: none; }
+  .home-banner { width: 100%; margin: 0; left: 0; }
   .header-main .phones { padding: 0; }
   .header-main .phones ul li img { display: none; }
   .header-main .phones ul li input { font-size: 11px; } }

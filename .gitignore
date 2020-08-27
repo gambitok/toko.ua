@@ -1,6 +1,5 @@
 .idea/
 node_modules/
-api/
 data/
 docker/
 cron/
@@ -28,5 +27,4 @@ fd3b74fa680d.html
 11.rar
 12.rar
 14.rar
-cron_api.php
 cron_sms.php
