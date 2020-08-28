@@ -1,6 +1,5 @@
-
 function showRegionForm() {
-    let form="region";
+    let form = "region";
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modals").append(result.content);
@@ -10,15 +9,13 @@ function showRegionForm() {
 }
 
 function showActionForm() {
-    let form="action";
+    let form = "action";
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modals").append(result.content);
             $("#ActionForm").modal("show");
         }}, true);
 }
-
-function catalogueFilterClear() { "use strict"; location.reload(true); }
 
 function showArtSearch() { "use strict";
     $("#PhoneArticle").modal("show");
@@ -47,10 +44,10 @@ function searchBrandInput() {
 }
 
 function showSearchParameters() {
-    let str_id=$("#details_str_id").val();
-    let page=$("#details_page").val();
-    let active_filters=$("#details_active_filters").val();
-    let type=$("#details_str_type").val();
+    let str_id = $("#details_str_id").val();
+    let page = $("#details_page").val();
+    let active_filters = $("#details_active_filters").val();
+    let type = $("#details_str_type").val();
     $("#details_pagination").html("<div class=\"spinner-border\"></div>");
     JsHttpRequest.query(folder,{'w':'showSearchParameters', 'str_id':str_id, 'page':page, 'active_filters':active_filters, 'type':type},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -65,7 +62,7 @@ function navigateTo(id) {
     }, 500);
 }
 
-function toggleListParams(a, param_id) { "use strict";
+function toggleListParams(a, param_id) {
     $("#param-"+param_id).toggleClass("list-hide");
     $(a).find("span").each(function() {
         if ($(this).attr("class")==="show") {
@@ -81,7 +78,8 @@ function toggleListParams(a, param_id) { "use strict";
     });
 }
 
-function showStorage(art_id) { "use strict";
+// SHOW OTHER STORAGES
+function showStorage(art_id) {
     $("."+art_id+"-hide").toggleClass("none");
     $("#fa-"+art_id).toggleClass("none");
     $("#fas-"+art_id).toggleClass("none");
@@ -294,7 +292,7 @@ function tecModelsFilter(order) {
     $("input[type=checkbox]").each(function () { if (this.checked) {brands.push($(this).attr("name"));} });
     let bb = JSON.stringify(brands);
 
-    let cur = parseInt($(".radio-group input[name=cur]:checked").attr("value")); if (isNaN(cur)) cur=1;
+    let cur = parseInt($(".radio-group input[name=cur]:checked").attr("value")); if (isNaN(cur)) cur = 1;
     let cur_old = parseInt($("#cur_value").val());
     let price = $("#ex1").val();
     let deliv = $("#ex3").val();
@@ -331,8 +329,8 @@ function tecModelsFilter(order) {
             $("#price_val").html(max_min);
 
             if (cur!==cur_old) {
-                value[1]=max_price;
-                value[0]=0;
+                value[1] = max_price;
+                value[0] = 0;
                 ex1.slider("refresh");
                 $("#filter-max-price").html(max_price);
                 ex1.attr("data-slider-max",max_price);
@@ -398,7 +396,7 @@ function loadApplicModels2(art_id_tcd, manufacture, a) { "use strict";
 }
 
 function loadApplicModelsInfo2(art_id, typ_id){ "use strict";
-    let er=0;
+    let er = 0;
     if (document.getElementById("AMI"+typ_id).innerHTML===""){
         JsHttpRequest.query(folder,{ 'w': 'loadApplicModelsInfo2', 'art_id':art_id, 'typ_id':typ_id},
             function (result, errors){ if (errors) {} if (result){
@@ -448,7 +446,7 @@ function copyToClipboard(element, art_name) { "use strict";
 
 // ADD NEW CAR TO GARAGE
 function addToGarage(typ_id=0) {
-    if (typ_id===0) typ_id=$("#typ_id").val();
+    if (typ_id===0) typ_id = $("#typ_id").val();
     if (typ_id!==undefined && typ_id!==0 && typ_id!=="") {
         JsHttpRequest.query(folder,{'w':'addToGarage', 'typ_id':typ_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -517,7 +515,7 @@ function showGarageStatus() {
 }
 
 // SHOW GARAGE MODAL
-function showAutoGarage() { "use strict";
+function showAutoGarage() {
     $("#garage_form_dropdown").html("<div class=\"loader\"></div>");
     JsHttpRequest.query(folder,{'w':'showAutoGarage'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -550,14 +548,14 @@ function dropAutoHistory(history_id) {
 /*==== /GARAGE =====*/
 
 function changeBasketCount(status, id) {
-    let input_id=$("#"+id);
-    let count=parseInt(input_id.val());
+    let input_id = $("#"+id);
+    let count = parseInt(input_id.val());
     if (status>0) {
-        count=count+1;
+        count = count + 1;
         input_id.val(count);
     } else {
         if (count>1) {
-            count=count-1;
+            count = count - 1;
             input_id.val(count);
         }
     }
@@ -569,10 +567,10 @@ function changeActionCount(i, action_price, action_amount) {
     let true_kours = $("#true_kours_"+i).val();
     let price = $("#price_"+i);
     if (parseInt(true_amount)>=parseInt(action_amount)) {
-        price.text(action_price+" "+true_kours);
+        price.text(action_price + " " + true_kours);
         price.prepend("<span id='price_out_"+i+"' class='span-outline'>"+true_price+" "+true_kours+"</span><br>");
     } else {
-        price.text(true_price+" "+true_kours);
+        price.text(true_price + " " + true_kours);
         $("#price_out_"+i).remove();
     }
 }
@@ -583,14 +581,14 @@ function showManufactureDetails(head_id, str_id_str) {
     if (class_name==="tree-list dnone") {
         JsHttpRequest.query(folder,{ 'w': 'showManufactureDetails', 'head_id':head_id, 'request_link':request_link, 'str_id_str':str_id_str},
             function (result, errors){ if (errors) {} if (result){
-                $("#tree_head-"+head_id).toggleClass("check-head");
+                $("#tree_head-" + head_id).toggleClass("check-head");
                 let manuf_head = $("#manufacture_head"+head_id);
                 manuf_head.removeClass("dnone");
                 manuf_head.addClass("dblock");
                 manuf_head.html(result.content);
             }}, true);
     } else {
-        $("#tree_head-"+head_id).toggleClass("check-head");
+        $("#tree_head-" + head_id).toggleClass("check-head");
         let manuf_head = $("#manufacture_head"+head_id);
         manuf_head.removeClass("dblock");
         manuf_head.addClass("dnone");
@@ -600,19 +598,19 @@ function showManufactureDetails(head_id, str_id_str) {
 
 /*==== NEW STR CAR DETAILS ====*/
 function showCarDetailsStr(head_id) {
-    let str_id_str=$("#tree_str_ids").val();
-    let class_name=$("#manufacture_head"+head_id).attr("class");
+    let str_id_str = $("#tree_str_ids").val();
+    let class_name = $("#manufacture_head"+head_id).attr("class");
     if (class_name==="tree-list dnone") {
         JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str},
             function (result, errors){ if (errors) {} if (result){
-                $("#tree_head-"+head_id).toggleClass("check-head");
-                let manuf_head = $("#manufacture_head"+head_id);
+                $("#tree_head-" + head_id).toggleClass("check-head");
+                let manuf_head = $("#manufacture_head" + head_id);
                 manuf_head.removeClass("dnone");
                 manuf_head.addClass("dblock");
                 manuf_head.html(result.content);
             }}, true);
     } else {
-        $("#tree_head-"+head_id).toggleClass("check-head");
+        $("#tree_head-" + head_id).toggleClass("check-head");
         let manuf_head = $("#manufacture_head"+head_id);
         manuf_head.removeClass("dblock");
         manuf_head.addClass("dnone");
@@ -621,14 +619,14 @@ function showCarDetailsStr(head_id) {
 }
 
 function showCarDetailsStrMin(head_id) {
-    let typ_id=$("#typ_id").val();
-    let str_id_str=$("#tree_str_ids").val();
-    let class_name=$("#manufacture_head"+head_id).attr("class");
+    let typ_id = $("#typ_id").val();
+    let str_id_str = $("#tree_str_ids").val();
+    let class_name = $("#manufacture_head" + head_id).attr("class");
     if (class_name==="tree-list_min dnone") {
         JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str, 'typ_id':typ_id},
             function (result, errors){ if (errors) {} if (result){
-                $("#tree_head-"+head_id).toggleClass("check-head");
-                let manuf_head = $("#manufacture_head"+head_id);
+                $("#tree_head-" + head_id).toggleClass("check-head");
+                let manuf_head = $("#manufacture_head" + head_id);
                 manuf_head.removeClass("dnone");
                 manuf_head.addClass("dblock");
                 manuf_head.html(result.content);
@@ -783,11 +781,6 @@ function showCarDetailsStrMin(head_id) {
 //         }}, true);
 // }
 
-function showCarsSelectLink() {
-    let str_text = $("#str_text_select").val();
-    location.href = "https://toko.ua/details/"+str_text+"/";
-}
-
 function showCarsSelectMin(param_id, value_id=0, fuel_id=0) {
     let mfa=$("#mfa_select").val();
     let model=$("#model_select").val();
@@ -825,45 +818,44 @@ function showCarsSelectMin(param_id, value_id=0, fuel_id=0) {
         }}, true);
 }
 
-function showCarsSelected(param_id, value_id=0) {
-    let mfa=$("#mfa_select").val();
-    let model=$("#model_select").val();
-    let year=$("#year_select").val();
-    let modelid=$("#modelid_select").val();
-    let typ_id=$("#typ_id_select").val();
-
-    if (param_id==1) {mfa=""; model=""; year=""; modelid=""; typ_id="";}
-
-    if (param_id==2 && value_id>0)   {mfa=value_id; model="";}
-    if (param_id==2 && value_id!="") {mfa=value_id; model="";}
-    if (param_id==2 && value_id==0)  {model="";}
-
-    if (param_id==3 && value_id>0)   {model=value_id; year="";}
-    if (param_id==3 && value_id!="") {model=value_id; year="";}
-    if (param_id==3 && value_id==0)  {year="";}
-
-    if (param_id==4 && value_id>0)   {year=value_id; modelid="";}
-    if (param_id==4 && value_id!="") {year=value_id; modelid="";}
-    if (param_id==4 && value_id==0)  {modelid="";}
-
-    if (param_id==5 && value_id>0)   {modelid=value_id;typ_id="";}
-    if (param_id==5 && value_id==0)  {typ_id="";$(".car_form-select_card").toggle();}
-
-    if (param_id==6 && value_id>0)   {typ_id=value_id;}
-
-    JsHttpRequest.query(folder,{ 'w': 'showCarsSelected', 'mfa':mfa, 'model':model, 'year':year, 'modelid':modelid, 'typ_id':typ_id},
-        function (result, errors){ if (errors) {} if (result){
-            $("#car_content").html(result.content);
-        }}, true);
-}
+// function showCarsSelected(param_id, value_id=0) {
+//     let mfa=$("#mfa_select").val();
+//     let model=$("#model_select").val();
+//     let year=$("#year_select").val();
+//     let modelid=$("#modelid_select").val();
+//     let typ_id=$("#typ_id_select").val();
+//
+//     if (param_id==1) {mfa=""; model=""; year=""; modelid=""; typ_id="";}
+//
+//     if (param_id==2 && value_id>0)   {mfa=value_id; model="";}
+//     if (param_id==2 && value_id!="") {mfa=value_id; model="";}
+//     if (param_id==2 && value_id==0)  {model="";}
+//
+//     if (param_id==3 && value_id>0)   {model=value_id; year="";}
+//     if (param_id==3 && value_id!="") {model=value_id; year="";}
+//     if (param_id==3 && value_id==0)  {year="";}
+//
+//     if (param_id==4 && value_id>0)   {year=value_id; modelid="";}
+//     if (param_id==4 && value_id!="") {year=value_id; modelid="";}
+//     if (param_id==4 && value_id==0)  {modelid="";}
+//
+//     if (param_id==5 && value_id>0)   {modelid=value_id;typ_id="";}
+//     if (param_id==5 && value_id==0)  {typ_id="";$(".car_form-select_card").toggle();}
+//
+//     if (param_id==6 && value_id>0)   {typ_id=value_id;}
+//
+//     JsHttpRequest.query(folder,{ 'w': 'showCarsSelected', 'mfa':mfa, 'model':model, 'year':year, 'modelid':modelid, 'typ_id':typ_id},
+//         function (result, errors){ if (errors) {} if (result){
+//             $("#car_content").html(result.content);
+//         }}, true);
+// }
 
 function techCarModelsFilter() {
-    let typ_id=$("#search_typ_id").val();
-    let str_id=$("#search_str_id").val();
+    let typ_id = $("#search_typ_id").val();
+    let str_id = $("#search_str_id").val();
 
     JsHttpRequest.query(folder,{ 'w': 'techCarModelsFilter', 'typ_id':typ_id, 'str_id':str_id},
         function (result, errors){ if (errors) {} if (result){
-
             $("#search_new_tree").html(result.content[0]); $("#search_new_tree").fadeIn(3000);
             $("#search_tree").html(result.content[1]); $("#search_tree").fadeIn(3000);
             $("#search_filters").html(result.content[2]); $("#search_filters").fadeIn(3000);
@@ -871,7 +863,7 @@ function techCarModelsFilter() {
 
             new treefilter($("#my-tree"), { searcher : $("input#my-search") });
 
-            var ex1=$("#ex1"), ex3=$("#ex3");
+            var ex1 = $("#ex1"), ex3 = $("#ex3");
             if (ex1.length) {
                 ex1.slider();
                 ex1.on("slide", function(slideEvt) {
@@ -884,12 +876,10 @@ function techCarModelsFilter() {
                     $("#dd_val").text(slideEvt.value);
                 });
             }
-
         }}, true);
 }
 
 function techCarModels(typ_id, str_id) {
-
     showCarsSelectMin(6, typ_id);
     $(".car_form-select_card").toggle();
 
@@ -900,7 +890,7 @@ function techCarModels(typ_id, str_id) {
 
             new treefilter($("#my-tree"), { searcher : $("input#my-search") });
 
-            var ex1=$("#ex1"), ex3=$("#ex3");
+            var ex1 = $("#ex1"), ex3 = $("#ex3");
             if (ex1.length) {
                 ex1.slider();
                 ex1.on("slide", function(slideEvt) {
@@ -924,7 +914,7 @@ function techCarModels(typ_id, str_id) {
 function toggleProductView(ds) {
     JsHttpRequest.query(folder,{ 'w': 'toggleProductView', 'ds':ds},
         function (result, errors){ if (errors) {} if (result){
-            let type_search=$("#type_search").val();
+            let type_search = $("#type_search").val();
             if (type_search==="1") catalogueFilter();
             if (type_search==="2") tecModelsFilter();
         }}, true);
@@ -932,10 +922,8 @@ function toggleProductView(ds) {
 
 function showFiltersForm() {
     $("#template_filters").html("<div class=\"spinner-border\"></div>");
-
     let template_id = $("#template_id").val();
     let active_filters = JSON.parse($("#template_active_filters").val());
-
     JsHttpRequest.query(folder,{'w':'showFiltersForm', 'template_id':template_id, 'active_filters':active_filters},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#template_filters").html(result.content[0]);
@@ -946,10 +934,8 @@ function showFilterOptionsForm(page) {
     $("#template_pagination").html("<div class=\"spinner-border\"></div>");
     $("#template_count").html();
     $("#template_checked").html();
-
     let template_id = $("#template_id").val();
     let active_filters = JSON.parse($("#template_active_filters").val());
-
     JsHttpRequest.query(folder,{'w':'showFilterOptionsForm', 'template_id':template_id, 'page':page, 'active_filters':active_filters},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#template_count").html(result.content[0]);

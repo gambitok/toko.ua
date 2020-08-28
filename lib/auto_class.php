@@ -215,16 +215,16 @@ class AutoClass {
         return array($str_id, $str_level, $str_id_parrent);
     }
 
-//    function setAutoData($manufacture, $model, $modelid, $group, $str_id, $str_level, $str_id_parrent) {
-//        $_SESSION["manufacture"] = $manufacture;
-//        $_SESSION["model"] = $model;
-//        $_SESSION["modelid"] = $modelid;
-//        $_SESSION["group"] = $group;
-//        $_SESSION["str_id"] = $str_id;
-//        $_SESSION["str_level"] = $str_level;
-//        $_SESSION["str_id_parrent"] = $str_id_parrent;
-//        return true;
-//    }
+    function setAutoData($manufacture, $model, $modelid, $group, $str_id, $str_level = 0, $str_id_parrent = 0) {
+        $_SESSION["manufacture"] = $manufacture;
+        $_SESSION["model"] = $model;
+        $_SESSION["modelid"] = $modelid;
+        $_SESSION["group"] = $group;
+        $_SESSION["str_id"] = $str_id;
+        $_SESSION["str_level"] = $str_level;
+        $_SESSION["str_id_parrent"] = $str_id_parrent;
+        return true;
+    }
 
 //    function showTabCatalogueAuto() { $db = DbSingleton::getTokoDb();
 //        $first=$second="";
