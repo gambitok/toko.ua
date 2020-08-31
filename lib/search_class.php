@@ -1,6 +1,7 @@
 <?php
 
-class SearchClass extends CatalogueClass {
+class SearchClass extends CatalogueClass
+{
 
     public $products_on_page = 12;
 
@@ -27,7 +28,6 @@ class SearchClass extends CatalogueClass {
         $form = str_replace("{details_title}", $h1, $form);
 
         if ($parts->checkTable($str_id)>0) {
-            // TEMP TABLE
             $partsData = $parts->showPartsCatalogue($str_id, $page, $active_filters);
             $details_content = $partsData["form"];
             $filters = $partsData["filters"];
@@ -36,29 +36,28 @@ class SearchClass extends CatalogueClass {
             $count_arts = $parts->getPartsCount($str_id, $active_filters);
             $count = $parts->products_on_page;
             $pages_count = ceil($count_arts / $count);
-            if ($count_arts<$count) $pages_count = 1;
+            if ($count_arts < $count) $pages_count = 1;
 
             $where_arts = $parts->initPartsArts($str_id);
             $filters_form = $this->printBrandsList(array_unique($this->getBrandIds($where_arts)), array_unique($active_filters), $this->getActualLink());
 
             $form = str_replace("{details_listing}", $this->getSeoLinking($str_id, $h1, $filters, $brands), $form);
 
-            if (!empty($active_filters)) {
-                $brand_id = $active_filters[0];
-                $form = str_replace("{details_listing_2}", "<div class='content-min'>".$this->getSeoBrandLinking($str_id, $h1, $brand_id)."</div>", $form);
-            } else {
+//            if (!empty($active_filters)) {
+//                $brand_id = $active_filters[0];
+//                $form = str_replace("{details_listing_2}", "<div class='content-min'>".$this->getSeoBrandLinking($str_id, $h1, $brand_id)."</div>", $form);
+//            } else {
                 $form = str_replace("{details_listing_2}", "", $form);
-            }
+//            }
 
-            if ($mfa_link!="" && $mod_link!="") {
-                $form = str_replace("{details_listing_3}", "<div class='content-min'>".$this->getSeoMfaLinking($str_id, $h1, $mfa_link, $mod_link)."</div>", $form);
-            } else {
+//            if ($mfa_link!="" && $mod_link!="") {
+//                $form = str_replace("{details_listing_3}", "<div class='content-min'>".$this->getSeoMfaLinking($str_id, $h1, $mfa_link, $mod_link)."</div>", $form);
+//            } else {
                 $form = str_replace("{details_listing_3}", "", $form);
-            }
+//            }
 
             $form = str_replace("{details_brands}", $filters_form, $form);
         } else {
-            // T2_TREE
             $str_type = 0;
             $pages_count = 0;
             $details_content = "";
@@ -95,7 +94,7 @@ class SearchClass extends CatalogueClass {
         return $h1.$filters.$pager;
     }
 
-    function getFiltersTitle($active_filters, $type=0) {
+    function getFiltersTitle($active_filters, $type = 0) {
         $filters = "";
         foreach ($active_filters as $brand_id) {
             $brand_name = $this->getBrandName($brand_id);
@@ -103,9 +102,9 @@ class SearchClass extends CatalogueClass {
         }
         $filters = rtrim($filters, ",");
         if (!$type) {
-            if (count($active_filters)>1) $filters = "";
+            if (count($active_filters) > 1) $filters = "";
         }
-        if ($filters!="") $filters=": ".$filters;
+        if ($filters!="") $filters = ": ".$filters;
         return $filters;
     }
 
@@ -127,8 +126,8 @@ class SearchClass extends CatalogueClass {
                 $storage_id = $storage_array[$j];
                 $stock = $stock_array[$j];
                 if ($suppl_id==0) $price = $this->getArticlePrice($art_id); else $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-                if ($price>0 && $stock>0) {
-                    if ($price>$max_price_art) $max_price_art = $price;
+                if ($price > 0 && $stock > 0) {
+                    if ($price > $max_price_art) $max_price_art = $price;
                     $validate_art_count++;
                 }
             }
@@ -140,7 +139,7 @@ class SearchClass extends CatalogueClass {
     }
 
     function getExistedSearchParams($art_id) { $db = DbSingleton::getTokoDb();
-        $suppl_array=$storage_array=$stock_array=[];
+        $suppl_array = $storage_array = $stock_array = [];
         $r = $db->query("SELECT t2asc.STORAGE_ID as storage_id, 0 as suppl_id, t2asc.AMOUNT
         FROM `T2_ARTICLES` t2a
             LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc on t2asc.ART_ID=t2a.ART_ID
@@ -166,9 +165,9 @@ class SearchClass extends CatalogueClass {
 
         $details_form = $this->getHtmlForm("details_offers");
 
-        $form=""; $form_car=""; $pages_count=0; $str_id="";
+        $form = ""; $form_car = ""; $pages_count = 0; $str_id = "";
 
-        $str_link=""; $mfa_link=""; $mod_link=""; $mod_id_link=""; $filters="";
+        $str_link = ""; $mfa_link = ""; $mod_link = ""; $mod_id_link = ""; $filters = "";
 
         $cookie_typ_id = $this->getCookieAuto();
 
@@ -187,7 +186,7 @@ class SearchClass extends CatalogueClass {
             $mod_link2 = $cookieData["model_link"];
 
             if ($mfa_link2!=$mfa_link || ($mod_link!="" && $mod_link2!=$mod_link)) {
-                $cookie_typ_id="";
+                $cookie_typ_id = "";
                 setcookie("auto_typ_id", "", time() + (86400 * 30), "/");
             }
         }
@@ -363,15 +362,15 @@ class SearchClass extends CatalogueClass {
         $active_products = [];
 
         if (!empty($active_filters)) {
-            foreach ($current_products as $art_id=>$params) { $count_params=0;
-                foreach ($params as $param_id=>$values) { $count_values=0;
+            foreach ($current_products as $art_id=>$params) { $count_params = 0;
+                foreach ($params as $param_id=>$values) { $count_values = 0;
                     foreach ($values as $value_id) {
                         if (in_array($value_id, $active_filters[$param_id])) $count_values++;
                     }
                     if ($count_values>0) $count_params++;
                 }
                 if ($count_params==count($active_filters)) {
-                    if (empty($active_products[$art_id])) $active_products[$art_id]=[];
+                    if (empty($active_products[$art_id])) $active_products[$art_id] = [];
                     $active_products[$art_id] = $current_products[$art_id];
                 }
             }
@@ -462,7 +461,8 @@ class SearchClass extends CatalogueClass {
                 LEFT JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID=t2a.BRAND_ID)
             WHERE t2a.ART_ID IN ($art_ids) AND t2asc.AMOUNT>0 
         ) as AA GROUP BY AA.BRAND_ID 
-        "); $n = $db->num_rows($r); $brands = [];
+        "); $n = $db->num_rows($r);
+        $brands = [];
         for ($i=1; $i<=$n; $i++) {
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
             array_push($brands, $brand_id);
@@ -620,9 +620,9 @@ class SearchClass extends CatalogueClass {
 
     function getStrLinking($str_id) { $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();
-        $list = "<div class=\"details-offers__linking\">";
-        $list.="<div><span>{popular_cap}</span> <i class='fa fa-angle-down'></i></div>";
-        $list.="<div><ul>";
+        $list = "<div class=\"details-offers__linking\">
+            <div><span>{popular_cap}</span> <i class='fa fa-angle-down'></i></div>
+        <div><ul>";
 
         $r = $db->query("SELECT * FROM `T_LINKING_PAGE` WHERE `STR_ID`='$str_id';"); $n = $db->num_rows($r);
         if ($n==0) {
@@ -639,8 +639,8 @@ class SearchClass extends CatalogueClass {
         }
 
         $list.="</ul></div></div>";
-
         $list = $this->replaceLang($list);
+
         return $list;
     }
 

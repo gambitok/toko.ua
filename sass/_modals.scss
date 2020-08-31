@@ -70,8 +70,8 @@
             &-auto {
                 background: #f7f7f7;
                 border-right: 1px solid #606975;
-                overflow-wrap: break-word;
                 font-weight: bold;
+                overflow-wrap: break-word;
             }
             &-article {
                 word-wrap: break-word;
@@ -79,9 +79,9 @@
         }
     }
     &__table {
-        font-size: 0.7em;
         border-collapse: separate;
         border-spacing: 0 1em;
+        font-size: 0.7em;
         width: 100%;
         td {
             width: 175px;
@@ -120,10 +120,10 @@
 }
 
 .modal-header {
-    border-radius: 0;
     background: #606975;
-    color: #fff;
     border-bottom: unset;
+    border-radius: 0;
+    color: #fff;
     span {
         margin: 0;
     }
@@ -132,11 +132,11 @@
         margin-left: 10px;
     }
     &.close {
+        float: right;
+        margin: 0;
         outline: 0;
         padding: 0;
         width: auto;
-        float: right;
-        margin: 0;
     }
 }
 
@@ -150,15 +150,15 @@
         margin: 0;
     }
     .modal-header {
-        display: block;
         background: none;
         border: none;
+        display: block;
         padding-top: 25px;
         button {
-            padding: 0;
-            width: auto;
             float: right;
             margin: 0;
+            padding: 0;
+            width: auto;
         }
     }
     .modal-content {
@@ -183,8 +183,8 @@
 
 .modal-phone {
     button {
-        width: auto;
         margin: 0;
+        width: auto;
     }
     input {
         border-radius: .25rem;

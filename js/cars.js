@@ -1,9 +1,28 @@
 $(document).ready(function() {
     // hide if manuf checked
-    if ($("div[data-type='manuf']").attr("data-id")!=="0") toggleCarsNavigation();
+    if ($("div[data-type='manuf']").attr("data-id")!=="0") {
+        toggleCarsNavigation();
+    }
+
+    if ($("#cars_form-selected").length!==0 && $("#car_form-select").length!==0) {
+        $("#catalogue-auto").addClass("sticky");
+        $("body").scroll(function() {
+            let header = $("#catalogue-auto");
+            let sticky = header.offset().top;
+            if (window.pageYOffset >= sticky) {
+                $("#myHeader").addClass("sticky-header-active");
+            } else {
+                $("#myHeader").removeClass("sticky-header-active");
+            }
+        });
+    }
+
+
     // hide on mobile
     if (detectmob()) {
-        if ($("div[data-type='manuf']").attr("data-id")==="0") toggleCarsNavigation($("div[data-type='manuf']"));
+        if ($("div[data-type='manuf']").attr("data-id")==="0") {
+            toggleCarsNavigation($("div[data-type='manuf']"));
+        }
     }
 });
 
@@ -128,7 +147,6 @@ function scrollTo(index) {
 }
 
 function setActiveCar() {
-
     let type = $("#active_nav").val();
 
     if (type!=="" && type!==undefined) {

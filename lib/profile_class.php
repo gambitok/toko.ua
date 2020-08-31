@@ -5,9 +5,9 @@ class ProfileClass {
     use Helper;
     use Variables;
 
-    var $page_signin="/signin";
-    var $page_profile="/profile/orders/";
-    var $page_registration="/registration";
+    var $page_signin = "/signin";
+    var $page_profile = "/profile/orders/";
+    var $page_registration = "/registration";
 
     function getClientInfo() {
         $client = new ClientClass;
@@ -97,7 +97,7 @@ class ProfileClass {
         $form = $this->getHtmlForm("profile/profile");
         $name = $client->getClientInfo($client_id, $user_id)["name"];
         $form = str_replace("{client_name}", $name, $form);
-        $form = str_replace("{client_id}", $user_id, $form);
+        $form = str_replace("{client_id}", $client_id, $form);
         $form = $this->replaceLang($form);
         return $form;
     }

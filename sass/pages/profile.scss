@@ -4,8 +4,8 @@
     &__main {
         padding: 0;
         &-form {
-            min-height: 500px;
             height: 100%;
+            min-height: 500px;
         }
     }
     &__side {
@@ -15,24 +15,24 @@
 
 .profile-account {
     .row {
+        border-top: 1px dashed #ddd;
         margin: 0;
         padding: 15px;
-        border-top: 1px dashed #ddd;
     }
     input, select {
         display: inline;
     }
     input[type=submit] {
-        width: 25%;
         float: right;
+        width: 25%;
     }
 }
 
 .signin-form {
-    width: 45%;
     color: #000;
     display: block;
     margin: 0 auto;
+    width: 45%;
 }
 
 /*==== /PROFILE ====*/
@@ -43,12 +43,12 @@
         display: inline;
     }
     input[type=submit] {
-        width: 25%;
         float: right;
+        width: 25%;
     }
     .row {
-        padding: 15px;
         border-bottom: 1px dashed #ddd;
+        padding: 15px;
     }
 }
 
@@ -80,8 +80,8 @@
         }
     }
     .profile-side {
-        padding: 0;
         margin-bottom: 15px;
+        padding: 0;
     }
 }
 

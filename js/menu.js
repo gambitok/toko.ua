@@ -64,7 +64,7 @@ function showValidateModal(phone, callback, callback2) {
 
 function validatePhone(callback) {
     let phone = $("#reg_phone").val();
-    if (phone===undefined) phone=$("#input_phone2").val();
+    if (phone===undefined) phone = $("#input_phone2").val();
     let password = $("#validate_code").val();
     JsHttpRequest.query(folder,{ 'w': 'endValidation', 'phone':phone, 'password':password},
         function (result, errors){ if (errors) {} if (result){
@@ -106,7 +106,7 @@ function showGarageForm() {
 }
 
 function dropHistoryShow() {
-    let myDropDown=$("#myDropdown");
+    let myDropDown = $("#myDropdown");
     myDropDown.show();
     if (myDropDown.html()==="") {
         JsHttpRequest.query(folder,{ 'w': 'showHistoryList'},
@@ -265,7 +265,7 @@ function saveSellForm() {
     if (city_id===undefined) $(".select2").addClass("required_input"); else $(".select2").removeClass("required_input");
     if (file_id==="" || file_id===undefined) $("#upload_btn").addClass("required_input"); else $("#upload_btn").removeClass("required_input");
 
-    if ((company!=="")&&(phone!=="")&&(name!=="")&&(city_id!==undefined)) {
+    if ((company!=="") && (phone!=="") && (name!=="") && (city_id!==undefined)) {
         if (file_id==="" || file_id===undefined) { showAlertModal("{upload_file_first}!","{error_cap}",0); } else {
             JsHttpRequest.query(folder,{'w':'saveSellerForm', 'company':company, 'name':name, 'phone':phone, 'email':email, 'city_id':city_id, 'comment':comment},
                 function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -305,8 +305,8 @@ function closeHideNavigation() {
 }
 
 function getSpecialOffersList() {
-    let template_id=$("#special_offers_filter option:selected").val();
-    let update_actions=$("#special_offers_update").val();
+    let template_id = $("#special_offers_filter option:selected").val();
+    let update_actions = $("#special_offers_update").val();
     JsHttpRequest.query(folder,{'w':'getSpecialOffersList', 'template_id':template_id, 'update_actions':update_actions},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#special_offers_range").html(result.content);

@@ -22,6 +22,28 @@ a, a:not([href]):not([tabindex]) {
     }
 }
 
+.sticky {
+    position: sticky;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.sticky-header {
+    background: #fff;
+    border-bottom: 3px solid #228b94;
+    display: none;
+    height: 67px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    &-active {
+        display: block;
+    }
+}
+
 .backdrop {
     position: fixed;
     left: -100%;
@@ -120,20 +142,20 @@ a, a:not([href]):not([tabindex]) {
     margin: 5em 0;
     h2 {
         color: $site_dark_primary;
-        text-transform: uppercase;
         font-size: 22px;
         font-weight: bold;
+        text-transform: uppercase;
     }
     h3 {
         color: #000;
-        text-transform: uppercase;
         font-size: 18px;
         font-weight: bold;
+        text-transform: uppercase;
     }
     img {
-        width: 150px;
-        margin: 0 auto;
         display: block;
+        margin: 0 auto;
+        width: 150px;
     }
 }
 
@@ -141,9 +163,9 @@ a, a:not([href]):not([tabindex]) {
 
 /*==== SEO BLOCK ====*/
 .seo-text {
+    color: $site_dark_primary;
     font-size: 14px;
     line-height: 21px;
-    color: $site_dark_primary;
     max-height: 120px;
     overflow: hidden;
     &.full {
@@ -153,10 +175,10 @@ a, a:not([href]):not([tabindex]) {
         }
     }
     h2 {
+        color: $site_dark_primary;
         font-size: 1.5em;
         font-weight: 400;
         margin: 20px 0 10px;
-        color: $site_dark_primary;
         line-height: 21px;
     }
     ul {
@@ -167,25 +189,25 @@ a, a:not([href]):not([tabindex]) {
 .seo-block {
     position: relative;
     .seo-text:after {
+        background: linear-gradient(180deg, hsla(0,0%,95.3%,0) 0, #fff 100%);
         content: "";
         position: absolute;
         left: 0;
         bottom: 0;
         width: 100%;
         height: 70px;
-        background: linear-gradient(180deg, hsla(0,0%,95.3%,0) 0, #fff 100%);
     }
     button {
+        background: transparent;
+        color: $site_dark_primary;
+        cursor: pointer;
         margin-top: 1em;
-        text-transform: uppercase;
         float: right;
         font-size: 14px;
-        color: $site_dark_primary;
         text-align: right;
-        background: transparent;
+        text-transform: uppercase;
         border: none;
         text-decoration: underline;
-        cursor: pointer;
     }
 }
 
@@ -193,8 +215,8 @@ a, a:not([href]):not([tabindex]) {
 
 /*==== SPANs ====*/
 .medium-text {
-    font-size: 0.9em;
     color: #8c8c8c;
+    font-size: 0.9em;
 }
 
 .span-grey {
@@ -203,10 +225,10 @@ a, a:not([href]):not([tabindex]) {
 }
 
 .span-dark {
-    font-weight: 700;
     color: $site_dark_primary;
-    font-size: 12px;
     float: left;
+    font-size: 12px;
+    font-weight: 700;
     &-red {
         color: $site_main_primary;
         font-weight: bold;
@@ -237,17 +259,17 @@ a, a:not([href]):not([tabindex]) {
 }
 
 .btn-main {
-    float: right;
-    width: auto!important;
-    color: gray!important;
-    text-transform: uppercase;
     background: $white;
-    padding: 4px 30px;
-    box-shadow: 0 0 2px 0 rgba(51, 51, 51, .05), 0 1px 4px 0 rgba(51, 51, 51, .15);
     border: 1px solid #ccc;
+    box-shadow: 0 0 2px 0 rgba(51, 51, 51, .05), 0 1px 4px 0 rgba(51, 51, 51, .15);
+    color: gray!important;
+    float: right;
+    padding: 4px 30px;
+    text-transform: uppercase;
+    width: auto!important;
     &:hover {
-        color: white!important;
         background-color:$site_dark_primary;
+        color: white!important;
     }
 }
 
@@ -266,8 +288,8 @@ a, a:not([href]):not([tabindex]) {
     top: -2.5px;
     &:hover {
         background: $white;
-        color: $site_info_secondary;
         border-color: $site_info_secondary;
+        color: $site_info_secondary;
     }
 }
 
@@ -552,11 +574,11 @@ header {
 }
 
 .header-main {
+    background: 75% no-repeat $white;
+    background-size: 32%;
     margin-bottom: 0;
     padding: 1% 0;
     position: relative;
-    background: 75% no-repeat $white;
-    background-size: 32%;
     .logotype-main {
         height: auto;
         position: relative;
@@ -571,8 +593,8 @@ header {
             margin: 0;
             li {
                 img {
-                    width: 15px;
                     height: 15px;
+                    width: 15px;
                 }
                 a {
                     border: none;
@@ -585,10 +607,10 @@ header {
     }
     .search {
         input {
-            border-right: none;
-            margin-right: -41px;
             border-radius: .25rem!important;
+            border-right: none;
             box-shadow: none;
+            margin-right: -41px;
         }
         button {
             border: 1px solid #ced4da;
@@ -599,9 +621,9 @@ header {
             &__item {
                 background: $white;
                 a, a:not([href]):not([tabindex]) {
-                    display: block;
                     color: #000;
                     cursor: pointer;
+                    display: block;
                     position: relative;
                     overflow: hidden;
                     white-space: nowrap;
@@ -624,12 +646,12 @@ header {
             flex-wrap: wrap;
             justify-content: space-between;
             &-item {
-                display: block;
-                width: 30%;
-                padding-left: 45px;
                 cursor: pointer;
+                display: block;
+                padding-left: 45px;
                 text-decoration: none;
                 transition: all .3s linear;
+                width: 30%;
                 &:hover {
                     & .icons-nav-item__title {
                         color: #228B94;
@@ -729,8 +751,8 @@ header {
                     }
                 }
                 img {
-                    width: 30px;
                     height: 30px;
+                    width: 30px;
                 }
             }
         }
@@ -738,12 +760,12 @@ header {
 }
 
 .garage-drop {
-    z-index: 1000!important;
-    width: 400%!important;
-    left: -250%;
-    top: 300%!important;
-    background: $white;
-    overflow: unset!important;
+    //background: $white;
+    //left: -250%;
+    //top: 300%!important;
+    //overflow: unset!important;
+    //width: 400%!important;
+    //z-index: 1000!important;
     &-block {
         background: $white;
         &__list {
@@ -842,8 +864,8 @@ header {
         }
     }
     &-search {
-        padding: 10px 15px;
         border-bottom: 1px solid #ccc;
+        padding: 10px 15px;
         button {
             border-radius: .25em;
             text-align: left;
@@ -855,8 +877,8 @@ header {
     }
     &-drop {
         background: #f1f1f1;
-        padding: 10px 15px;
         border-bottom: 1px solid #ccc;
+        padding: 10px 15px;
         .dropdown {
             display: block;
             margin: 0 auto;
@@ -875,11 +897,11 @@ header {
             }
         }
         img {
-            width: 20px;
             height: 20px;
+            width: 20px;
+            margin-right: 5px;
             position: relative;
             top: -4px;
-            margin-right: 5px;
         }
         input {
             border: none;
@@ -908,9 +930,9 @@ header {
 /*==== SPECIAL OFFERS ===*/
 .special-offers {
     &-header {
-        padding: 15px;
-        min-height: 0;
         margin-bottom: 1em;
+        min-height: 0;
+        padding: 15px;
         h2 {
             text-transform: uppercase;
             font-weight: 700;
@@ -1107,27 +1129,27 @@ header {
     }
     &-block {
         background: $white;
-        padding: 30px;
-        margin: 30px 0;
         box-shadow: 0 0 40px 0 rgba(0,0,0,.11);
         list-style: none;
+        margin: 30px 0;
+        padding: 30px;
         h2, h3 {
             display: inline;
             font-size: 15px;
         }
         li {
             font-size: 15px;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
             text-align: justify;
             text-indent: 30px;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
         }
         h2, u {
             font-weight: 700;
         }
         a {
+            color: #3399CC;
             font-weight: 700;
-            color: #39c;
             &:hover {
                 text-decoration: underline;
             }
@@ -1221,8 +1243,6 @@ header {
     height: auto;
     padding: 0;
     box-shadow: 0 3px 3px $black;
-    //&-hide {
-    //}
     &__content {
         margin-top: 15px;
     }
@@ -1464,43 +1484,40 @@ header {
 }
 
 .searchtab_model {
-    position: relative;
-    left: -20px;
     color: $site_main_primary;
     float: left;
+    left: -20px;
     min-width: 20px;
+    position: relative;
 }
 
 .searchtab__appl {
-    padding: 0 15px;
     font-size: 13px;
-}
-
-.searchtab__appl-phone {
-    display: none;
-}
-
-.searchtab__appl-head {
-    color: $white;
-    padding: 10px;
-    border-top: none;
-    background: $site_dark_primary;
-}
-
-.searchtab__appl-link {
-    padding: 10px;
-    background: $white;
-    color: $black;
-    &:focus, &:hover {
-        background: #ddd;
+    padding: 0 15px;
+    &-phone {
+        display: none;
+    }
+    &-head {
+        background: $site_dark_primary;
+        border-top: none;
+        color: $white;
+        padding: 10px;
+    }
+    &-link {
+        background: $white;
+        color: $black;
+        padding: 10px;
+        &:focus, &:hover {
+            background: #ddd;
+        }
     }
 }
 
 .manufacture_list {
-    padding: 0 20px;
-    list-style: none;
     column-count: 4;
     column-gap: 20px;
+    list-style: none;
+    padding: 0 20px;
     .auto-list, .model-list {
         color: gray;
         &:hover {
@@ -1581,8 +1598,8 @@ header {
 }
 
 .check-head {
-    color: #000;
     background: #f1f1f1!important;
+    color: #000;
 }
 
 .tree-head {
@@ -1633,8 +1650,8 @@ header {
         flex-flow: column-reverse;
         margin-top: -15px;
         &__text {
-            height: 100px;
             background: rgba(34,138,148,.7);
+            height: 100px;
             padding: 30px;
             h1 {
                 color: $white;
@@ -1646,9 +1663,9 @@ header {
         margin: 0 30px 30px 0;
         &-title {
             a {
+                color: #228b94;
                 font-size: 16px;
                 font-weight: bold;
-                color: #228b94;
                 line-height: 3;
             }
         }
@@ -1656,8 +1673,8 @@ header {
             margin-bottom: 15px;
             &__element {
                 a {
-                    font-size: 14px;
                     color: #000;
+                    font-size: 14px;
                     line-height: 2;
                 }
             }
@@ -1672,8 +1689,8 @@ header {
             width: 100%;
             span {
                 font-size: 14px;
-                text-align: left;
                 font-weight: 400;
+                text-align: left;
             }
         }
     }
@@ -1766,11 +1783,11 @@ header {
             }
         }
         img {
-            width: 30px;
-            padding: 5px;
-            border-radius: 5px;
             background: rgba(54, 25, 25, .5);
+            border-radius: 5px;
             margin-right: 1%;
+            padding: 5px;
+            width: 30px;
             &:hover {
                 background: #292929;
             }
@@ -1779,33 +1796,33 @@ header {
     &__contacts {
         background: #292929;
         color: $white;
-        padding: 2%;
-        font-size: 10pt;
+        font-size: 13px;
+        padding: 30px;
         ul {
             li {
                 color: $site_dark_secondary;
-                font-size: 10pt;
+                font-size: 13px;
                 margin-bottom: 10px;
                 a {
                     color: $site_dark_secondary;
-                    font-size: 10pt;
+                    font-size: 13px;
                     &:hover {
                         color: $white;
                         text-decoration: underline;
                     }
                 }
-                i {
-                    padding-right: 2%;
-                }
+                //i {
+                //    padding-right: 2%;
+                //}
             }
         }
         &-head {
             ul {
                 list-style: none;
                 li {
-                    margin-bottom: 1%;
-                    font-size: 14px;
                     color: $white;
+                    font-size: 14px;
+                    margin-bottom: 10px;
                     a {
                         &:hover {
                             color: #ccc;
@@ -1865,8 +1882,8 @@ header {
             padding: 14px;
         }
         a {
-            text-align: center;
             color: $black;
+            text-align: center;
             &:hover {
                 color: $site_main_primary;
             }
@@ -1886,16 +1903,16 @@ header {
 /*==== MANUFACTURE ====*/
 
 .title_auto {
+    color: $site_main_primary;
     display: block;
-    padding-bottom: 10px;
     font-weight: 700;
     font-size: 16px;
-    color: $site_main_primary;
+    padding-bottom: 10px;
     i {
         background: $site_dark_primary;
+        border-radius: .25em;
         color: $white;
         padding: 5px;
-        border-radius: .25em;
     }
 }
 
@@ -1904,20 +1921,21 @@ header {
 .details-offers {
     &-side {
         border-right: 1px solid #f1f1f1;
+        color: $black-light;
         padding: 3% 2%;
     }
     &__header {
         h1 {
-            color: #292929;
+            color: $black-light;
             font-size: 32px;
             font-weight: bold;
             text-transform: uppercase;
         }
         span {
+            color: #606975;
             display: inline;
             font-size: 22px;
             font-weight: bold;
-            color: #606975;
             text-transform: uppercase;
         }
     }
@@ -1927,7 +1945,8 @@ header {
             margin: 2em auto 0 auto;
         }
     }
-    &__brands {
+    &__brands, &__linking {
+        color: $black-light;
         input {
             width: 100%;
         }
@@ -1935,17 +1954,7 @@ header {
             list-style: none;
             li {
                 a {
-                    color: $black;
-                }
-            }
-        }
-    }
-    &__linking {
-        ul {
-            list-style: none;
-            li {
-                a {
-                    color: $black;
+                    color: $black-light;
                 }
             }
         }
@@ -1957,30 +1966,30 @@ header {
     &-title {
         background: $site_info_secondary;
         color: $white;
-        padding: 15px;
         margin: 0;
+        padding: 15px;
         h1 {
             font-size: 1.5em;
-            text-transform: uppercase;
             font-weight: bold;
             margin: 0;
+            text-transform: uppercase;
         }
     }
 }
 
 .show_more_title {
-    padding-right: 15px;
     cursor: pointer;
     display: none;
     font-size: 1em;
+    padding-right: 15px;
 }
 
 .cars_range-title {
-    position: relative;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
+    position: relative;
     a {
         color: $site_info_secondary;
         &:hover {
@@ -1988,17 +1997,17 @@ header {
         }
     }
     &-h {
+        background: $site_info_primary;
+        border-radius: .25em;
+        color: $white;
+        cursor: pointer;
         display: block;
+        font-size: 1em;
         margin: 0;
+        overflow: hidden;
         padding: 10px;
         text-align: center;
-        cursor: pointer;
-        background: $site_info_primary;
-        color: $white;
-        overflow: hidden;
         white-space: nowrap;
-        font-size: 1em;
-        border-radius: .25em;
     }
 }
 
@@ -2011,28 +2020,24 @@ header {
         }
     }
     &_min {
-        z-index: 999;
-        position: absolute;
-        width: 100%;
         margin: 0;
         padding: 0 5px;
+        position: absolute;
+        width: 100%;
+        z-index: 999;
     }
 }
 
-.car_form {
-    margin-bottom: 1em;
-}
-
 .car_form-select {
-    min-height: unset!important;
     background: $site_info_secondary;
     color: $white;
+    min-height: unset!important;
     padding: 1em 0;
     h1, h2 {
         font-size: 1.5em;
         font-weight: bold;
-        text-transform: uppercase;
         padding-left: 15px;
+        text-transform: uppercase;
     }
     &-h {
         display: block;
@@ -2045,40 +2050,40 @@ header {
 
 .car_form-selected {
     background: $white!important;
-    opacity: 1!important;
+    color: $black!important;
     border-bottom-left-radius: 0!important;
     border-bottom-right-radius: 0!important;
+    opacity: 1!important;
     padding-bottom: 20px!important;
-    color: $black!important;
 }
 
 .car_form-disabled {
     background: #ddd!important;
-    opacity: 0.5!important;
     color: $black!important;
+    opacity: 0.5!important;
 }
 
 .car_form-select_card {
     background: $white;
-    padding: 1.2em;
     box-shadow: 0 4px 4px rgba(0, 0, 0, .25);
+    padding: 1.2em;
 }
 
 .t_mfa {
-    padding: 0 20px;
-    list-style: none;
     column-count: 4;
     column-gap: 20px;
+    list-style: none;
+    padding: 0 20px;
     a {
         color: $black;
     }
 }
 
 .t_model {
-    padding: 0 20px;
-    list-style: none;
     column-count: 4;
     column-gap: 20px;
+    list-style: none;
+    padding: 0 20px;
 }
 
 .t_year {
@@ -2092,10 +2097,10 @@ header {
         display: block!important;
     }
     .year-title {
-        color: $black;
         background: #ddd;
-        text-align: center;
+        color: $black;
         margin: 10px;
+        text-align: center;
     }
 }
 
@@ -2113,17 +2118,17 @@ header {
         float: right;
     }
     .t_model_id img {
+        height: 70px;
         max-width: 100%;
         width: auto;
-        height: 70px;
     }
     .row {
         padding: 10px;
         .body-car {
             padding-right: 0;
             img {
-                width: 50px;
                 height: auto;
+                width: 50px;
             }
         }
         .image-car {
@@ -2136,15 +2141,15 @@ header {
 }
 
 .t_modification {
+    align-items: stretch;
     display: flex;
     flex-wrap: wrap;
-    align-items: stretch;
     div {
+        border: 1px solid #ddd;
         margin-right: 15px;
         margin-bottom: 15px;
-        width: calc(25% - 15px);
-        border: 1px solid #ddd;
         padding: 15px;
+        width: calc(25% - 15px);
     }
 }
 
@@ -2163,24 +2168,24 @@ header {
 }
 
 .car_form-garage {
-    min-height: unset!important;
-    color: $white!important;
-    padding: 1em;
     background: $site_info_secondary;
+    color: $white!important;
+    min-height: unset!important;
+    padding: 1em;
 }
 
 .garage_form {
     a {
+        color: $white;
         font-size: 15px;
         padding: 0!important;
         text-transform: uppercase;
-        color: $white;
     }
     span {
+        float: none;
         font-size: 11px;
         padding: 0;
         text-align: left;
-        float: none;
         &.title {
             font-size: 16px;
             font-weight: bold;
@@ -2188,15 +2193,15 @@ header {
     }
     img {
         filter: none;
-        width: auto;
         float: none;
+        width: auto;
     }
     &-buttons button {
-        margin-top: 10px;
-        margin-right: 10px;
-        width: 150px;
         font-size: 14px;
         float: left;
+        margin-right: 10px;
+        margin-top: 10px;
+        width: 150px;
     }
     .garage-row__buttons {
         text-align: right;
@@ -2207,22 +2212,22 @@ header {
 }
 
 .btn-close {
-    padding: 0;
+    background: url(/images/icons/close-white.svg) center no-repeat;
+    border-radius: 15px;
     height: 29px;
     width: 29px;
-    border-radius: 15px;
-    background: url(/images/icons/close-white.svg) center no-repeat;
+    padding: 0;
     &:hover, &:active {
         background: url(/images/icons/close-black.svg) center no-repeat;
     }
 }
 
 .btn-arrow {
-    padding: 0;
+    background: url(/images/icons/dropdown-white.svg) center no-repeat;
+    border-radius: 15px;
     height: 29px;
     width: 29px;
-    border-radius: 15px;
-    background: url(/images/icons/dropdown-white.svg) center no-repeat;
+    padding: 0;
     &:hover {
         background: url(/images/icons/dropdown-red.svg) center no-repeat;
     }
@@ -2258,12 +2263,12 @@ header {
 
 .garage-user {
     background: #fff;
-    box-shadow: 0 1px 4px #ccc;
     border-bottom: 3px solid #0c5460;
+    box-shadow: 0 1px 4px #ccc;
     height: auto;
     .btn-arrow {
-        float: right;
         display: none;
+        float: right;
     }
     .btn-close {
         float: right;
@@ -2278,22 +2283,22 @@ header {
         margin-right: 30px;
         height: 100%;
         &:after {
-            content: "";
             background: url(/images/icons/back-arrow.png) left no-repeat;
+            background-size: contain;
+            content: "";
             position: absolute;
             left: calc(100% - 30px);
             bottom: 0;
             width: 30px;
             height: 100%;
-            background-size: contain;
         }
         span {
+            display: inline-block;
             font-size: 11px;
             position: relative;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-            display: inline-block;
             width: calc(100% - 29px);
             &.title {
                 font-size: 16px;
@@ -2316,9 +2321,9 @@ header {
     &__image {
         padding: 15px;
         img {
-            width: auto;
-            max-height: 85px;
             float: right;
+            max-height: 85px;
+            width: auto;
         }
     }
 }
@@ -2326,37 +2331,37 @@ header {
 .garage_typ_form {
     background: $site_info_secondary;
     a {
+        color: $white;
         font-size: 15px;
         padding: 0!important;
         text-transform: uppercase;
-        color: $white;
     }
     span {
         color: $white;
+        float: none;
         font-size: 11px;
         padding: 0;
         text-align: left;
-        float: none;
         &.title {
             font-size: 16px;
             font-weight: bold;
         }
     }
     img {
-        float: right;
         border: 2px solid $white;
         border-radius: .25rem;
+        float: right;
         max-height: 85px;
     }
     &.garage_form-buttons {
         text-align: right;
         button {
+            background: $site_info_secondary;
+            border: 2px solid $white;
+            color: $white;
+            font-size: 14px;
             margin-bottom: .5em;
             width: 150px!important;
-            font-size: 14px;
-            border: 2px solid $white;
-            background: $site_info_secondary;
-            color: $white;
             &:hover {
                 background: $white;
                 color: $site_info_secondary;
@@ -2450,14 +2455,14 @@ header {
         color: $black;
     }
     ul {
-        list-style: none;
         column-count: 1;
+        list-style: none;
+        &.list-inline {
+            column-count: 4;
+            list-style: none;
+        }
         li.title {
             padding: 15px 0;
-        }
-        &.list-inline {
-            list-style: none;
-            column-count: 4;
         }
     }
     &.title {
