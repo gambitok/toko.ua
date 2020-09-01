@@ -456,7 +456,7 @@ function addToGarage(typ_id=0) {
                     } else {
                         showNotify("{done_cap}:",result.content,"success");
                         showGarageStatus();
-                        updateGarageForm();
+                        //updateGarageForm();
                     }
                 } else {
                     showNotify("{error_cap}:","{garage_is_full}","danger");

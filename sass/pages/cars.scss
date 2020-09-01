@@ -30,7 +30,11 @@ $cars-hover: #f5f5f5;
             position: relative;
             overflow: hidden;
             white-space: nowrap;
+            transition: .3s;
             text-overflow: ellipsis;
+            &:hover {
+                filter: brightness(90%);
+            }
             &:not(:first-child) {
                 &:before {
                     content: '';
@@ -43,14 +47,14 @@ $cars-hover: #f5f5f5;
                 }
             }
             &-checked {
-                background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat $cars-primary;
+                background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #a9bcc6;
                 color: $white;
                 &:before {
                     content: none!important;
                 }
             }
             &-active {
-                background: url("/images/icons/dropdown-white.svg") calc(100% - 20px) center no-repeat $cars-primary;
+                background: url("/images/icons/dropdown-black.svg") calc(100% - 20px) center no-repeat #238795;
                 color: $white;
                 &:before {
                     content: none!important;
@@ -65,12 +69,15 @@ $cars-hover: #f5f5f5;
             &-disabled {
                 color: $cars-disabled;
                 cursor: default;
+                &:hover {
+                    filter: unset;
+                }
             }
         }
     }
     &-tab {
         &__block {
-            border-top: 3px solid $cars-primary;
+            border-top: 3px solid #333;
             display: none;
             flex-wrap: wrap;
             &-active {
@@ -85,7 +92,8 @@ $cars-hover: #f5f5f5;
                 transition: .3s;
                 width: calc(12.5%);
                 &:hover {
-                    border-color: $cars-primary;
+                    //border-color: #333;
+                    filter: brightness(90%);
                 }
                 &-body {
                     padding: 10px;

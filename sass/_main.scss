@@ -30,9 +30,29 @@ a, a:not([href]):not([tabindex]) {
     z-index: 100;
 }
 
+.sticky-backdrop {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.7);
+    opacity: 0;
+    transition: opacity .3s ease;
+    z-index: 100;
+    &-active {
+        left: 0;
+        opacity: 1;
+    }
+    &-hidden {
+        left: -100%;
+        opacity: 0;
+    }
+}
+
 .sticky-header {
     background: #fff;
-    border-bottom: 3px solid #228b94;
+    border-bottom: 3px solid #333;
     display: none;
     height: 67px;
     width: 100%;

@@ -1,8 +1,8 @@
 $(document).ready(function() {
     // hide if manuf checked
-    if ($("div[data-type='manuf']").attr("data-id")!=="0") {
-        toggleCarsNavigation();
-    }
+    // if ($("div[data-type='manuf']").attr("data-id")!=="0") {
+    //     toggleCarsNavigation();
+    // }
 
     if ($("#cars_form-selected").length!==0 && $("#car_form-select").length!==0) {
         $("#catalogue-auto").addClass("sticky");
@@ -11,12 +11,13 @@ $(document).ready(function() {
             let sticky = header.offset().top;
             if (window.pageYOffset >= sticky) {
                 $("#myHeader").addClass("sticky-header-active");
+                $("#myBackdrop").addClass("sticky-backdrop-active");
             } else {
                 $("#myHeader").removeClass("sticky-header-active");
+                $("#myBackdrop").removeClass("sticky-backdrop-active");
             }
         });
     }
-
 
     // hide on mobile
     if (detectmob()) {
@@ -89,15 +90,16 @@ function toggleCarsNavigation(index, type, attr) {
         // Uncheck Non-Active Nav
         // Close Non-Active Tab
         if ($(index).hasClass("cars-nav__item-active")) {
+            $("#myBackdrop").addClass("sticky-backdrop-hidden");
             $(index).removeClass("cars-nav__item-active");
             $("#" + $(index).attr("data-tab")).removeClass("cars-tab__block-active");
         } else {
+            $("#myBackdrop").removeClass("sticky-backdrop-hidden");
             // Show Active Nav
             $(".cars-nav__item").each(function () {
                 $(this).removeClass("cars-nav__item-active");
             });
             $(index).addClass("cars-nav__item-active");
-
             // Show Active Tab
             $(".cars-tab__block").each(function () {
                 $(this).removeClass("cars-tab__block-active");
