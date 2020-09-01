@@ -1,14 +1,46 @@
+<style>
+    .gpopover {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+    .gpopover .gpopover-arrow {
+        border-bottom-color: #f8d7da;
+    }
+    .gpopover .gpopover-arrow-shadow {
+        border-bottom-color: #f5c6cb;
+    }
+</style>
+
+<style>
+    .pop {
+        color: #721c24;
+        background: #f8d7da;
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        border: 1px solid #f5c6cb;
+        height: 100px;
+        width: 300px;
+    }
+</style>
+
 <div class="cars" id="cars_form-selected">
 
     <input type="hidden" value="{active_nav}" id="active_nav">
 
     <div class="cars-nav">
-        <div onclick="toggleCarsNavigation(this);" data-type="manuf" data-next="model" data-pred="empty" data-tab="cars-tab1" data-id="{selected_manuf}" class="cars-nav__item cars-nav__item-active cars-nav__item-checked">{cars_manufacturer}</div>
-        <div onclick="toggleCarsNavigation(this);" data-type="model" data-next="years" data-pred="manuf" data-tab="cars-tab2" data-id="{selected_model}" class="cars-nav__item cars-nav__item-disabled">{cars_model}</div>
-        <div onclick="toggleCarsNavigation(this);" data-type="years" data-next="bodyc" data-pred="model" data-tab="cars-tab3" data-id="0" class="cars-nav__item cars-nav__item-disabled">{cars_year}</div>
-        <div onclick="toggleCarsNavigation(this);" data-type="bodyc" data-next="engin" data-pred="years" data-tab="cars-tab4" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_body}</div>
-        <div onclick="toggleCarsNavigation(this);" data-type="engin" data-next="modif" data-pred="bodyc" data-tab="cars-tab5" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_engine}</div>
-        <div onclick="toggleCarsNavigation(this);" data-type="modif" data-next="empty" data-pred="engin" data-tab="cars-tab6" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_modification}</div>
+        <div id="tool1" data-container="body" data-toggle="popover" data-placement="bottom" data-content="{manuf_tooltip}" onclick="toggleCarsNavigation(this);" data-type="manuf" data-next="model" data-pred="empty" data-tab="cars-tab1" data-id="{selected_manuf}" class="cars-nav__item cars-nav__item-active cars-nav__item-checked">{cars_manufacturer}</div>
+        <div id="tool2" data-container="body" data-toggle="popover" data-placement="bottom" data-content="{manuf_tooltip}" onclick="toggleCarsNavigation(this);" data-type="model" data-next="years" data-pred="manuf" data-tab="cars-tab2" data-id="{selected_model}" class="cars-nav__item cars-nav__item-disabled">{cars_model}</div>
+        <div id="tool3" data-container="body" data-toggle="popover" data-placement="bottom" data-content="{manuf_tooltip}" onclick="toggleCarsNavigation(this);" data-type="years" data-next="bodyc" data-pred="model" data-tab="cars-tab3" data-id="0" class="cars-nav__item cars-nav__item-disabled">{cars_year}</div>
+        <div id="tool4" data-container="body" data-toggle="popover" data-placement="bottom" data-content="{manuf_tooltip}" onclick="toggleCarsNavigation(this);" data-type="bodyc" data-next="engin" data-pred="years" data-tab="cars-tab4" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_body}</div>
+        <div id="tool5" data-container="body" data-toggle="popover" data-placement="bottom" data-content="{manuf_tooltip}" onclick="toggleCarsNavigation(this);" data-type="engin" data-next="modif" data-pred="bodyc" data-tab="cars-tab5" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_engine}</div>
+        <div id="tool6" data-container="body" data-toggle="popover" data-placement="bottom" data-content="{manuf_tooltip}" onclick="toggleCarsNavigation(this);" data-type="modif" data-next="empty" data-pred="engin" data-tab="cars-tab6" data-id="0" class="cars-nav__item cars-nav__item-disabled cars-nav__item-hidden">{cars_modification}</div>
+    </div>
+
+    <div id="pop" class="pop">
+        popover text...
     </div>
 
     <div id="cars_tab" class="cars-tab">
@@ -37,3 +69,4 @@
         setActiveCar();
     });
 </script>
+
