@@ -207,12 +207,12 @@
                     display: block;
                     color: #000;
                     cursor: pointer;
-                    position: relative;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    padding: 10px 0;
                     font-size: 12px;
+                    overflow: hidden;
+                    padding: 10px 0;
+                    position: relative;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                     &:hover {
                         color: #ccc;
                     }

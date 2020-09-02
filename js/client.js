@@ -8,7 +8,7 @@ function setSiteLang(id) {
         }}, true);
 }
 
-function showProfilePageOrders() { location.href="/profile/orders/"; }
+// function showProfilePageOrders() { location.href="/profile/orders/"; }
 
 function focusPhone() { $("#userlogin").focus(); }
 
@@ -23,7 +23,6 @@ function showLoginForm() {
             $("#LoginModal").modal("show");
             $("#userpassword").val("");
             $("#userlogin").val(phone);
-            // document.getElementById("userpassword").select();
         }}, true);
 }
 
@@ -36,10 +35,10 @@ function setPriceList() {
 }
 
 function saveProfileForm() {
-    let phone_input=$("#reg_phone"), phone=phone_input.val();
-    let pass_input=$("#reg_password"), pass=pass_input.val();
-    let name_input=$("#reg_name"), name=name_input.val();
-    let email_input=$("#reg_email"), email=email_input.val();
+    let phone_input = $("#reg_phone"), phone = phone_input.val();
+    let pass_input = $("#reg_password"), pass = pass_input.val();
+    let name_input = $("#reg_name"), name = name_input.val();
+    let email_input = $("#reg_email"), email = email_input.val();
 
     if (phone==="") phone_input.addClass("required_input"); else phone_input.removeClass("required_input");
     if (pass==="") pass_input.addClass("required_input"); else pass_input.removeClass("required_input");
@@ -64,7 +63,6 @@ function saveRegistrationForm() {
     let pass_input = $("#reg_password"), pass=pass_input.val();
     let pass2_input = $("#reg_repassword"), pass2=pass2_input.val();
     let name_input = $("#reg_name"), name=name_input.val();
-    // let email_input=$("#reg_email"), email=email_input.val();
     let city_id = $("#user_city option:selected").val();
 
     if (phone==="") phone_input.addClass("required_input"); else phone_input.removeClass("required_input");
@@ -118,17 +116,17 @@ function loginForm() {
     }
 }
 
-function loginFormOrder() {
-    let login = $("#userlogin2").val();
-    let password = $("#userpassword2").val();
-    if (login==="" || password==="") showAlertModal("{input_all_data}!","{error_cap}",0);
-    else {
-        JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
-            function (result, errors){ if (errors) {alert(errors);} if (result){
-                if (result.content===false) showAlertModal("{user_not_logged}!", "{error_cap}", 0); else location.reload();
-            }}, true);
-    }
-}
+// function loginFormOrder() {
+//     let login = $("#userlogin2").val();
+//     let password = $("#userpassword2").val();
+//     if (login==="" || password==="") showAlertModal("{input_all_data}!","{error_cap}",0);
+//     else {
+//         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
+//             function (result, errors){ if (errors) {alert(errors);} if (result){
+//                 if (result.content===false) showAlertModal("{user_not_logged}!", "{error_cap}", 0); else location.reload();
+//             }}, true);
+//     }
+// }
 
 function signInForm() {
     let login = $("#userlogin2").val();

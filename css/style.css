@@ -17,6 +17,10 @@ a, a:not([href]):not([tabindex]) { color: #000; }
 
 a:hover, a:not([href]):not([tabindex]):hover { color: #000; }
 
+.pop { color: #721c24; background: #f8d7da; display: none; position: fixed; left: 0; top: 0; border: 1px solid #f5c6cb; width: 300px; padding: 10px; z-index: 99; }
+
+.pop:before { content: ""; top: -8px; left: 10px; border: 8px solid transparent; border-bottom-color: #f8d7da; border-top-width: 0; height: 0; position: absolute; width: 0; z-index: 99; }
+
 .sticky { position: sticky; left: 0; top: 0; width: 100%; z-index: 100; }
 
 .sticky-backdrop { position: fixed; left: -100%; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); opacity: 0; transition: opacity .3s ease; z-index: 100; }
@@ -1451,7 +1455,8 @@ table thead td { border: 1px solid #000; }
 .rotate__icon { transform: rotate(180deg); }
 
 /* ==== PHONE ==== */
-@media (max-width: 768px) { .sticky-header-active { display: none; }
+@media (max-width: 768px) { .pop { display: none !important; }
+  .sticky-header-active { display: none; }
   .desktop-only { display: none; }
   #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
   .cart-table { margin: 0; }
@@ -1554,7 +1559,8 @@ table thead td { border: 1px solid #000; }
 
 /* ==== /PHONE ==== */
 /*==== PAD PRO ====*/
-@media (min-width: 992px) and (max-width: 1275px) { .sticky-header-active { display: none; }
+@media (min-width: 992px) and (max-width: 1275px) { .pop { display: none !important; }
+  .sticky-header-active { display: none; }
   .desktop-only { display: none; }
   .home-banner { width: 100%; margin: 0; left: 0; }
   .header-main .phones { padding: 0; }
@@ -1563,12 +1569,14 @@ table thead td { border: 1px solid #000; }
 
 /*==== /PAD PRO ====*/
 /*==== PAD PRO2 ====*/
-@media (min-width: 576px) and (max-width: 768px) { .sticky-header-active { display: none; }
+@media (min-width: 576px) and (max-width: 768px) { .pop { display: none !important; }
+  .sticky-header-active { display: none; }
   .container { max-width: unset; } }
 
 /*==== /PAD PRO2 ====*/
 /*==== PAD ====*/
-@media (min-width: 768px) and (max-width: 992px) { .sticky-header-active { display: none; }
+@media (min-width: 768px) and (max-width: 992px) { .pop { display: none !important; }
+  .sticky-header-active { display: none; }
   .header-main .icons { text-align: center; flex: 0 0 25%; }
   .header-main .icons-nav-item { width: 30px; height: 30px; }
   .header-main .icons-nav-item-row { display: none; }
@@ -1936,7 +1944,7 @@ table thead td { border: 1px solid #000; }
 
 .cart-table-foot { padding: 15px 0; border-top: 1px solid #ddd; margin-top: 15px; }
 
-.proposed { border-top: 3px solid #17a2b8; filter: grayscale(100%); margin-top: 15px; }
+.proposed { border-top: 3px solid #17a2b8; filter: grayscale(100%); margin-top: 15px; max-height: 300px; overflow: hidden; }
 
 .proposed:hover { filter: grayscale(0); }
 
@@ -1997,23 +2005,31 @@ table thead td { border: 1px solid #000; }
 
 /*==== /PAD ====*/
 /*==== ARTICLE CARD ====*/
-.article-card { margin: 10px; position: relative; bottom: 0; left: 0; right: 0; top: 0; }
+.article-card { border: 1px solid #a9bcc6; margin: 10px; position: relative; bottom: 0; left: 0; right: 0; top: 0; }
 
 .article-card:hover { cursor: pointer; }
 
-.article-card:hover > .article-card__hidden { border-bottom: 1px solid #cccccc; box-shadow: 0 8px 8px grey; display: block; }
+.article-card:hover > .article-card-hidden { border-bottom: 1px solid #a9bcc6; box-shadow: 0 8px 8px grey; display: block; }
 
-.article-card:hover > .article-card__main { border-bottom: none; border-color: #cccccc; box-shadow: 0 8px 8px grey; }
+.article-card:hover > .article-card-main { border-bottom: none; border-color: #cccccc; box-shadow: 0 8px 8px grey; }
 
 .article-card .row { margin-bottom: 15px; }
 
-.article-card__main { color: #333; padding: 10px; }
+.article-card-main { color: #333; padding: 10px; }
 
-.article-card__main-offers a { font-size: 12px; }
+.article-card-hidden { display: none; position: absolute; background: white; z-index: 99; width: calc(100% + 2px); border-top: unset; top: 100%; border: 1px solid #a9bcc6; border-top: none; margin: 0 -1px; }
 
-.article-card__main-offers a:hover { transition: .5s ease-in-out; color: #228b94 !important; text-decoration: none; }
+.article-card__name { height: 90px; overflow: hidden; }
 
-.article-card__hidden { display: none; position: absolute; background: white; z-index: 99; width: 100%; border-top: unset; top: 100%; }
+.article-card__price { text-align: right; }
+
+.article-card__buy button { display: block; text-align: center; width: 100%; }
+
+.article-card__info { font-size: 12px; }
+
+.article-card__offers a { font-size: 12px; }
+
+.article-card__offers a:hover { transition: .5s ease-in-out; color: #228b94 !important; text-decoration: none; }
 
 .article-header { margin-bottom: 15px; }
 
@@ -2081,7 +2097,7 @@ table thead td { border: 1px solid #000; }
 
 .search__photo img { display: block; margin: 0 auto; max-height: 100%; max-width: 100%; }
 
-.search__link span { font-size: 1em; }
+.search__link span { display: block; font-size: 1em; }
 
 .search__img { display: block; margin: 0 auto; width: 100%; }
 
@@ -2522,7 +2538,8 @@ table thead td { border: 1px solid #000; }
 
 /*==== Adaptive ====*/
 /* ==== PHONE ==== */
-@media (max-width: 768px) { .sticky-header-active { display: none; }
+@media (max-width: 768px) { .pop { display: none !important; }
+  .sticky-header-active { display: none; }
   .desktop-only { display: none; }
   #cat_search_auto, .header-main, .header-nav, .fixed-main, .ancor, .mob-span, .searchtab__appl, .logotype-main { display: none; }
   .cart-table { margin: 0; }
@@ -2625,7 +2642,8 @@ table thead td { border: 1px solid #000; }
 
 /* ==== /PHONE ==== */
 /*==== PAD PRO ====*/
-@media (min-width: 992px) and (max-width: 1275px) { .sticky-header-active { display: none; }
+@media (min-width: 992px) and (max-width: 1275px) { .pop { display: none !important; }
+  .sticky-header-active { display: none; }
   .desktop-only { display: none; }
   .home-banner { width: 100%; margin: 0; left: 0; }
   .header-main .phones { padding: 0; }
@@ -2634,12 +2652,14 @@ table thead td { border: 1px solid #000; }
 
 /*==== /PAD PRO ====*/
 /*==== PAD PRO2 ====*/
-@media (min-width: 576px) and (max-width: 768px) { .sticky-header-active { display: none; }
+@media (min-width: 576px) and (max-width: 768px) { .pop { display: none !important; }
+  .sticky-header-active { display: none; }
   .container { max-width: unset; } }
 
 /*==== /PAD PRO2 ====*/
 /*==== PAD ====*/
-@media (min-width: 768px) and (max-width: 992px) { .sticky-header-active { display: none; }
+@media (min-width: 768px) and (max-width: 992px) { .pop { display: none !important; }
+  .sticky-header-active { display: none; }
   .header-main .icons { text-align: center; flex: 0 0 25%; }
   .header-main .icons-nav-item { width: 30px; height: 30px; }
   .header-main .icons-nav-item-row { display: none; }

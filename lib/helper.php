@@ -12,7 +12,7 @@ trait Helper {
     protected $mess1 = "-{not_chosen}-";
 
     function getHtmlForm($name) {
-        $form=""; $form_htm=RDD."/tpl/$name.htm"; if (file_exists("$form_htm")){ $form = file_get_contents($form_htm);}
+        $form = ""; $form_htm = RDD."/tpl/$name.htm"; if (file_exists("$form_htm")){ $form = file_get_contents($form_htm); }
         iconv('Windows-1251', 'UTF-8', $form);
         mb_convert_encoding($form, 'UTF-8', 'Windows-1251');
         return $form;
@@ -51,13 +51,15 @@ trait Helper {
 
     function getClient() {
         $client = new ClientClass;
-        $clientData = $client->getClient(); $client_id = $clientData[0];
+        $clientData = $client->getClient();
+        $client_id = $clientData[0];
         return $client_id;
     }
 
     function getUser() {
         $client = new ClientClass;
-        $clientData = $client->getClient(); $user = $clientData[1];
+        $clientData = $client->getClient();
+        $user = $clientData[1];
         return $user;
     }
 

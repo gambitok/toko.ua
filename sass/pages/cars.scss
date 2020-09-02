@@ -7,9 +7,9 @@ $cars-delimiter: #ececec;
 $cars-hover: #f5f5f5;
 
 .fixed-block {
+    left: 0;
     position: fixed;
     top: 0;
-    left: 0;
     width: 100%;
     z-index: 999;
 }
@@ -38,13 +38,13 @@ $cars-hover: #f5f5f5;
             }
             &:not(:first-child) {
                 &:before {
-                    content: '';
-                    position: absolute;
-                    left: 0;
-                    top: 19px;
-                    bottom: 19px;
-                    width: 1px;
                     background: $cars-delimiter;
+                    bottom: 19px;
+                    content: '';
+                    left: 0;
+                    position: absolute;
+                    top: 19px;
+                    width: 1px;
                 }
             }
             &-checked {
@@ -93,7 +93,6 @@ $cars-hover: #f5f5f5;
                 transition: .3s;
                 width: calc(12.5%);
                 &:hover {
-                    //border-color: #333;
                     filter: brightness(90%);
                 }
                 &-body {
@@ -106,28 +105,28 @@ $cars-hover: #f5f5f5;
                         }
                         &-content {
                             display: flex;
-                            width: 100%;
                             margin-top: 15px;
+                            width: 100%;
                         }
                         &__title {
-                            width: 80%;
                             color: #000;
                             font-size: 14px;
-                            position: relative;
                             overflow: hidden;
-                            white-space: normal;
-                            text-overflow: ellipsis;
                             padding-right: 15px;
+                            position: relative;
+                            text-overflow: ellipsis;
+                            white-space: normal;
+                            width: 80%;
                         }
                         &__descr {
-                            width: 60%;
                             color: #9da9b9;
                             font-size: 11px;
-                            position: relative;
                             overflow: hidden;
-                            white-space: normal;
-                            text-overflow: ellipsis;
                             padding-right: 15px;
+                            position: relative;
+                            text-overflow: ellipsis;
+                            white-space: normal;
+                            width: 60%;
                         }
                         &__type {
                             width: 20%;
@@ -181,11 +180,11 @@ $cars-hover: #f5f5f5;
         }
         &-tab {
             &__block {
+                border-bottom: 3px solid $cars-primary;
+                border-top: none;
                 max-height: 40vh;
                 overflow-x: hidden;
                 overflow-y: auto;
-                border-bottom: 3px solid $cars-primary;
-                border-top: none;
                 &-item {
                     width: 100%;
                 }
@@ -195,20 +194,20 @@ $cars-hover: #f5f5f5;
 }
 
 .cars-garage {
+    background: $white;
     box-shadow: 0 0 40px 0 rgba(0, 0, 0, .11);
     margin: 30px 0;
-    background: $white;
     &-box {
         display: block;
         &__title {
-            padding: 15px;
             color: $black;
             font-weight: bold;
+            padding: 15px;
         }
         &__add {
+            color: $cars-primary;
             padding: 15px;
             text-align: right;
-            color: $cars-primary;
         }
         &-car {
             padding: 15px;

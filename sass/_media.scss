@@ -1,6 +1,10 @@
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
 
+    .pop {
+        display: none!important;
+    }
+
     .sticky-header-active {
         display: none;
     }
@@ -17,7 +21,7 @@
     .mob-span,
     .searchtab__appl,
     .logotype-main {
-        display: none
+        display: none;
     }
 
     .cart-table {
@@ -41,9 +45,9 @@
         }
         &-logo {
             a {
-                width: 50%;
                 display: block;
                 margin: 0 auto 15px auto;
+                width: 50%;
             }
         }
         &-text {
@@ -94,8 +98,8 @@
     }
 
     .profile__side {
-        padding: 0;
         margin-bottom: 15px;
+        padding: 0;
     }
 
     .banner .nav-tabs {
@@ -111,8 +115,8 @@
     }
 
     .main_menu {
-        padding-right: 0;
         padding-left: 0;
+        padding-right: 0;
         h1, h2 {
             font-size: 14px;
         }
@@ -135,8 +139,8 @@
 
     .searchtab__appl-phone {
         .container {
-            margin: 15px 0;
             border: 1px solid #a9a9a9;
+            margin: 15px 0;
         }
     }
 
@@ -189,9 +193,9 @@
     }
 
     .tree-list li {
-        width: 50%;
         margin: 0;
         padding: 10px;
+        width: 50%;
     }
 
     .tree-head {
@@ -216,8 +220,8 @@
         &__socials {
             padding-left: 15px;
             ul {
-                padding-top: 2%;
                 margin-bottom: 2%;
+                padding-top: 2%;
             }
         }
         &__contacts {
@@ -273,8 +277,8 @@
     }
 
     .t_modification div {
-        width: 100%;
         margin-right: 0;
+        width: 100%;
     }
 
     .cars_range-title {
@@ -311,27 +315,27 @@
     }
 
     .seo_details .seo-li {
-        width: 100%;
         margin-right: 0;
+        width: 100%;
         &.seo-li-id {
             width: 100%;
         }
         img {
-            width: 100%;
             max-height: 70px;
+            width: 100%;
         }
         &-min {
             margin-right: 15px;
             img {
-                width: 40px;
                 height: 40px;
+                width: 40px;
             }
         }
     }
 
     .tree-head_min img {
-        width: 100%;
         max-width: unset;
+        width: 100%;
     }
 
     .seo_auto ul.list-inline {
@@ -393,17 +397,17 @@
     }
 
     .tree-item {
-        width: 100%;
         margin: 0;
         padding-left: 15px;
+        width: 100%;
         &-title {
             a {
                 line-height: 3;
             }
         }
         &-list {
-            margin-left: 10px;
             margin-bottom: 20px;
+            margin-left: 10px;
             &__element {
                 a {
                     line-height: 2;
@@ -418,6 +422,9 @@
 
 /*==== PAD PRO ====*/
 @media (min-width: 992px) and (max-width: 1275px) {
+    .pop {
+        display: none!important;
+    }
     .sticky-header-active {
         display: none;
     }
@@ -425,9 +432,9 @@
         display: none;
     }
     .home-banner {
-        width: 100%;
-        margin: 0;
         left: 0;
+        margin: 0;
+        width: 100%;
     }
     .header-main {
         .phones {
@@ -450,9 +457,6 @@
 
 /*==== PAD PRO2 ====*/
 @media (min-width: 576px) and (max-width: 768px) {
-    .sticky-header-active {
-        display: none;
-    }
     .container {
         max-width: unset;
     }
@@ -462,17 +466,20 @@
 
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) {
+    .pop {
+        display: none!important;
+    }
     .sticky-header-active {
         display: none;
     }
     .header-main {
         .icons {
-            text-align: center;
             flex: 0 0 25%;
+            text-align: center;
             &-nav {
                 &-item {
-                    width: 30px;
                     height: 30px;
+                    width: 30px;
                     &-row {
                         display: none;
                     }
@@ -480,9 +487,9 @@
             }
         }
         .phones {
-            text-align: center;
             flex: 0 0 25%;
             max-width: 25%;
+            text-align: center;
             ul {
                 li {
                     img {
@@ -517,8 +524,8 @@
         &__socials {
             padding-left: 15px;
             ul {
-                padding-top: 2%;
                 margin-bottom: 2%;
+                padding-top: 2%;
             }
         }
         &__contacts {
@@ -592,17 +599,17 @@
     }
 
     .tree-item {
-        width: 100%;
         margin: 0;
         padding-left: 15px;
+        width: 100%;
         &-title {
             a {
                 line-height: 3;
             }
         }
         &-list {
-            margin-left: 10px;
             margin-bottom: 20px;
+            margin-left: 10px;
             &__element {
                 a {
                     line-height: 2;

@@ -516,6 +516,8 @@
     border-top: 3px solid #17a2b8;
     filter: grayscale(100%);
     margin-top: 15px;
+    max-height: 300px;
+    overflow: hidden;
     &:hover {
         filter: grayscale(0);
         .proposed-title {

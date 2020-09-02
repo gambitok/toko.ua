@@ -46,20 +46,19 @@
             &-item {
                 height: 500px;
                 &-image {
-                    background: var(--background);
-                    background-position: center;
+                    background: var(--background) center;
                     height: 100%;
                 }
                 &-panel {
                     background: rgba(34, 138, 148, 0.7);
                     color: #fff;
                     display: flex;
-                    position: absolute;
+                    height: 12vw;
                     bottom: 0;
                     left: 0;
                     right: 0;
                     padding: 2% 5%;
-                    height: 12vw;
+                    position: absolute;
                     &__title {
                         font-size: 2vw;
                         font-weight: 700;
@@ -71,25 +70,25 @@
                         text-overflow: ellipsis;
                         white-space: normal;
                         &-center {
+                            align-items: center;
                             display: flex;
                             height: 100%;
-                            align-items: center;
                             justify-content: center;
                         }
                     }
                     &__text {
+                        border-left: 1px solid #fff;
                         font-size: 1.5vw;
+                        overflow: hidden;
                         position: relative;
                         padding-left: 3%;
                         text-align: left;
-                        overflow: hidden;
-                        white-space: normal;
                         text-overflow: ellipsis;
-                        border-left: 1px solid #fff;
+                        white-space: normal;
                         &-center {
+                            align-items: center;
                             display: flex;
                             height: 100%;
-                            align-items: center;
                             justify-content: center;
                         }
                     }
@@ -118,19 +117,19 @@
         width: 100%;
         .form-toggle {
             label {
-                cursor: pointer;
-                transition: .5s ease-in-out;
-                text-align: center;
-                display: block;
-                width: 300px;
-                margin: 0 auto;
-                color: #fff;
                 background-color: #17a2b8;
                 border: 1px solid #17a2b8;
+                color: #fff;
+                cursor: pointer;
+                display: block;
+                margin: 0 auto;
+                text-align: center;
+                transition: .5s ease-in-out;
+                width: 300px;
                 &:hover {
-                    color: #fff;
                     background-color: #138496;
                     border-color: #117a8b;
+                    color: #fff;
                 }
                 a {
                     display: block;
@@ -163,30 +162,30 @@
                 font-size: 15px;
             }
             li {
-                list-style: none;
                 font-size: 15px;
-                word-wrap: break-word;
+                list-style: none;
                 overflow-wrap: break-word;
                 text-align: justify;
                 text-indent: 30px;
+                word-wrap: break-word;
             }
             h2, u {
                 font-weight: 700;
             }
             a {
-                font-weight: 700;
                 color: #39c;
+                font-weight: 700;
                 &:hover {
                     text-decoration: underline;
                 }
             }
             &:after {
                 background: linear-gradient(180deg,rgba(243,243,243,0) 0,#fff 100%);
-                content: "";
-                position: absolute;
-                left: 0;
                 bottom: 0;
+                content: "";
                 height: 70px;
+                left: 0;
+                position: absolute;
                 width: 100%;
             }
             &.full {
@@ -213,9 +212,9 @@
 @media (max-width: 768px) {
     .home {
         &-banner {
-            width: 100%;
-            margin: 0;
             left: 0;
+            margin: 0;
+            width: 100%;
             .carousel-indicators {
                 bottom: 90%;
             }
@@ -229,27 +228,27 @@
                     }
                     &-panel {
                         display: block;
-                        padding: 10px 20px;
                         height: auto;
+                        padding: 10px 20px;
                         &__title {
                             font-size: 24px;
                             margin-bottom: 3%;
                             margin-left: 0;
-                            width: 100%;
                             max-width: 100%;
                             text-align: left;
+                            width: 100%;
                             &-center {
                                 align-items: flex-start;
                                 justify-content: left;
                             }
                         }
                         &__text {
-                            font-size: 18px;
-                            padding-left: 0;
-                            padding-top: 3%;
-                            max-height: 100px;
                             border-left: none;
                             border-top: 1px solid #fff;
+                            font-size: 18px;
+                            max-height: 100px;
+                            padding-left: 0;
+                            padding-top: 3%;
                             width: 100%;
                             &-center {
                                 align-items: flex-start;
@@ -269,9 +268,9 @@
 @media (min-width: 768px) and (max-width: 992px) {
     .home {
         &-banner {
-            width: 100%;
-            margin: 0;
             left: 0;
+            margin: 0;
+            width: 100%;
             .carousel-indicators {
                 bottom: 90%;
             }
@@ -291,21 +290,21 @@
                             font-size: 24px;
                             margin-bottom: 3%;
                             margin-right: 0;
-                            width: 100%;
                             max-width: 100%;
                             text-align: left;
+                            width: 100%;
                             &-center {
                                 align-items: flex-start;
                                 justify-content: left;
                             }
                         }
                         &__text {
-                            font-size: 18px;
-                            padding-left: 0;
-                            padding-top: 3%;
-                            max-height: 100px;
                             border-left: none;
                             border-top: 1px solid #fff;
+                            font-size: 18px;
+                            max-height: 100px;
+                            padding-left: 0;
+                            padding-top: 3%;
                             width: 100%;
                             &-center {
                                 align-items: flex-start;

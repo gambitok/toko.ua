@@ -9,21 +9,9 @@ $(document).ready(function() {
 
     // INIT CITY
     let user_city = $("#user_city");
-
     if (user_city.length!==0) {
-        user_city.select2({
-            language: {
-                searching: function() {
-                    return "Something else...";
-                }
-            },
-            matcher: function () {
-                return 23;
-            }
-        });
-        if (user_city.select2("val")>0) {
-            setCityVal();
-        }
+        user_city.select2({ language: { searching: function() { return "Something else..."; } }, matcher: function () { return 23; } });
+        if (user_city.select2("val")>0) { setCityVal(); }
     }
 
     // INIT SELECT FIELDS
@@ -52,11 +40,12 @@ $(document).ready(function() {
         });
     });
 
-    $($("input[name='user_recipient']")).each(function () {
+    // INIT USER RECIPIENT
+    let user_recipient = $($("input[name='user_recipient']"));
+    user_recipient.each(function () {
         if($(this).is(':checked')) $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
     });
-
-    $("input[name='user_recipient']").change(function() {
+    user_recipient.change(function() {
         $($("input[name='user_recipient']")).each(function () {
             $("#" + $(this).attr("data-tab-href")).removeClass("orders-block-row-display");
         });
@@ -65,7 +54,9 @@ $(document).ready(function() {
 
     // CHECK LOGIN
     if ($("#order_user_status").val()==true) {
-        validInfoFields();
+        setTimeout(function() {
+            validInfoFields();
+        }, 1000);
     }
 
 });
@@ -175,7 +166,7 @@ function getOrderPaymentBlock() {
     $(".orders-block-row-payment").each(function () {
         let block = $(this);
         let payment_id = block.attr("data-tab-payment");
-        let delivery_id = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
+        let delivery_id = $("input[name='user_delivery']:checked").attr("data-id-delivery");
         block.removeClass("orders-block-row-hidden");
         block.find("label").find("input[type='radio']").prop("checked", false);
         JsHttpRequest.query(folder,{'w':'getOrderPaymentBlock', 'payment_id':payment_id, 'delivery_id':delivery_id},

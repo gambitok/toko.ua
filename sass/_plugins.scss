@@ -57,12 +57,12 @@
 }
 
 .input:focus+.label {
-    z-index: 1
+    z-index: 1;
 }
 
 .input:checked+.label {
     background: gray;
-    color: #fff
+    color: #fff;
 }
 
 /*==== /INPUTS ====*/
@@ -175,11 +175,11 @@
     cursor: pointer;
     display: flex;
     font-weight: bold;
+    height: 45px;
     padding: 3px;
     text-transform: uppercase;
-    width: 150px;
-    height: 45px;
     transition: .3s;
+    width: 150px;
     &-hidden {
         display: none;
     }
@@ -238,7 +238,7 @@
     position: relative;
     a:hover {
         background-color: #4b4e4f;
-        color: #fff
+        color: #fff;
     }
 }
 
@@ -246,11 +246,11 @@
     background-color: #f1f1f1;
     box-shadow: 0 2px 4px 0 grey;
     display: none;
+    min-width: 260px;
+    overflow: auto;
     position: absolute;
     top: 40px;
-    min-width: 260px;
     width: 100%;
-    overflow: auto;
     z-index: 1000;
     a, span {
         color: #000;
@@ -301,7 +301,6 @@
 /*==== /SCROLLBAR ====*/
 
 /*==== TABLE ====*/
-
 table {
     thead {
         th {
@@ -414,18 +413,18 @@ table {
     display: flex;
     justify-content: flex-end;
     input[type=radio] {
-        box-sizing: border-box;
-        position: relative;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        padding: 0;
-        line-height: normal;
-        outline: 0;
-        z-index: 9999;
         -webkit-appearance: none;
         -moz-appearance: none;
+        box-sizing: border-box;
         display: none;
+        left: 0;
+        line-height: normal;
+        opacity: 0;
+        outline: 0;
+        padding: 0;
+        position: relative;
+        top: 0;
+        z-index: 9999;
     }
     label {
         background: white;
@@ -434,11 +433,11 @@ table {
         color: #606975;
         cursor: pointer;
         font-size: 16px;
-        padding: 4px;
-        margin: 0 2px;
         height: 34px;
-        width: 50px;
+        margin: 0 2px;
+        padding: 4px;
         text-align: center;
+        width: 50px;
         &:hover {
             background: #f1f1f1;
         }
@@ -452,49 +451,49 @@ table {
 
 .label {
     background: #595d5f;
-    cursor: pointer;
-    width: 100%;
-    padding: 10px 20px;
-    font-weight: 700;
-    font-size: 18px;
     color: #fff;
-    transition: background .1s, color .1s;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
     margin-bottom: 0;
+    padding: 10px 20px;
+    transition: background .1s, color .1s;
+    width: 100%;
     &:active, &:hover {
         background: #595d5f;
     }
 }
 
 .container_check {
-    margin-bottom: 12px;
-    cursor: pointer;
     color: #606975;
-    word-wrap: break-word;
+    cursor: pointer;
     display: block;
+    font-size: 12px;
+    margin-bottom: 12px;
     position: relative;
     padding-left: 20px;
-    font-size: 12px;
     user-select: none;
+    word-wrap: break-word;
     input {
-        position: absolute;
-        opacity: 0;
         cursor: pointer;
         height: 0;
+        opacity: 0;
+        position: absolute;
         width: 0;
     }
 }
 
 .checkmark {
+    background-color: #eee;
+    height: 14px;
+    left: 0;
     position: absolute;
     top: 0;
-    left: 0;
-    height: 14px;
     width: 14px;
-    background-color: #eee;
     &:after {
-        position: absolute;
-        display: none;
         content: "";
+        display: none;
+        position: absolute;
     }
 }
 
@@ -515,115 +514,115 @@ table {
 }
 
 .container_check .checkmark:after {
-    left: 5px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
     border: solid #fff;
     border-width: 0 3px 3px 0;
+    height: 10px;
+    left: 5px;
+    top: 2px;
     transform: rotate(45deg);
+    width: 5px;
 }
 
 .container_radio {
-    margin-bottom: 12px;
     cursor: pointer;
     display: block;
+    font-size: 22px;
+    margin-bottom: 12px;
     position: relative;
     padding-left: 35px;
-    font-size: 22px;
     user-select: none;
     input {
-        position: absolute;
-        opacity: 0;
         cursor: pointer;
+        opacity: 0;
+        position: absolute;
     }
 }
 
 .radiomark {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    height: 20px;
-    width: 20px;
     background-color: #eee;
     border-radius: 50%;
+    height: 20px;
+    left: 6px;
+    position: absolute;
+    top: 6px;
+    width: 20px;
     &:after {
-        position: absolute;
-        display: none;
         content: "";
+        display: none;
+        position: absolute;
     }
 }
 
 .container_radio:hover input~.radiomark {
-    background-color: #ccc
+    background-color: #ccc;
 }
 
 .container_radio input:checked~.radiomark {
-    background-color: #f44336
+    background-color: #f44336;
 }
 
 .container_radio input:checked~.radiomark:after {
-    display: block
+    display: block;
 }
 
 .container_radio .radiomark:after {
-    top: 6px;
-    left: 6px;
-    width: 8px;
-    height: 8px;
+    background: #fff;
     border-radius: 50%;
-    background: #fff
+    height: 8px;
+    left: 6px;
+    top: 6px;
+    width: 8px;
 }
 
 .container_radio-phone {
-    display: block;
-    position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
     cursor: pointer;
+    display: block;
     font-size: 16px;
+    margin-bottom: 12px;
+    padding-left: 35px;
+    position: relative;
     user-select: none;
     input {
-        position: absolute;
+        cursor: pointer;
         opacity: 0;
-        cursor: pointer
+        position: absolute;
     }
 }
 
 .radiomark-phone {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    height: 16px;
-    width: 16px;
     background-color: #eee;
     border-radius: 50%;
+    height: 16px;
+    left: 4px;
+    position: absolute;
+    top: 4px;
+    width: 16px;
     &:after {
         content: "";
+        display: none;
         position: absolute;
-        display: none
     }
 }
 
 .container_radio-phone:hover input~.radiomark-phone {
-    background-color: #ccc
+    background-color: #ccc;
 }
 
 .container_radio-phone input:checked~.radiomark-phone {
-    background-color: #f44336
+    background-color: #f44336;
 }
 
 .container_radio-phone input:checked~.radiomark-phone:after {
-    display: block
+    display: block;
 }
 
 .container_radio-phone .radiomark-phone:after {
-    top: 4px;
-    left: 4px;
-    width: 8px;
-    height: 8px;
+    background: #fff;
     border-radius: 50%;
-    background: #fff
+    height: 8px;
+    left: 4px;
+    top: 4px;
+    width: 8px;
 }
 
 .lazy {
@@ -632,8 +631,8 @@ table {
 }
 
 .form-control {
-    border-radius: 0;
     background: #f7f7f7;
+    border-radius: 0;
     box-shadow: none;
 }
 
@@ -642,12 +641,12 @@ table {
     padding-top: 60px;
     text-align: center;
     button {
-        transition: all .2s ease;
-        width: 40px;
+        border: 1px solid #228b94;
         font-size: 15px;
         height: 35px;
-        border: 1px solid #228b94;
         text-align: center;
+        transition: all .2s ease;
+        width: 40px;
         &:hover {
             background: #228b94;
             color: #fff;

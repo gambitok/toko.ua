@@ -161,18 +161,18 @@ function selectRegion(id) { "use strict";
 }
 
 function checkCookieTpoint() { "use strict";
-    let tpoint_id = getCookie("tpoint_id");
-    if (tpoint_id==="") showRegionForm();
-    let action_status = getCookie("action_status");
-    let user = getCookie("user");
-    JsHttpRequest.query(folder,{'w':'checkActionClients'},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            if (action_status==="" && user!=="" && result.content>0) {
-                setCookie("action_status","1");
-                showActionForm();
-            }
-        }}, true);
-    return true;
+    // let tpoint_id = getCookie("tpoint_id");
+    // if (tpoint_id==="") showRegionForm();
+    // let action_status = getCookie("action_status");
+    // let user = getCookie("user");
+    // JsHttpRequest.query(folder,{'w':'checkActionClients'},
+    //     function (result, errors){ if (errors) {alert(errors);} if (result){
+    //         if (action_status==="" && user!=="" && result.content>0) {
+    //             setCookie("action_status","1");
+    //             showActionForm();
+    //         }
+    //     }}, true);
+    // return true;
 }
 
 function selectRegionText(id) { "use strict";
@@ -487,7 +487,7 @@ function deleteAutoGarage(auto_id) {
                     showCarsSelectMin(1);
                 }
             } else {
-                updateGarageForm();
+                // updateGarageForm();
             }
         }}, true);
 }
