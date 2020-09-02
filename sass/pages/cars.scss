@@ -16,6 +16,7 @@ $cars-hover: #f5f5f5;
 
 .cars {
     background: $white;
+    position: relative;
     &-nav {
         background: $white;
         color: $white;

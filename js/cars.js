@@ -5,16 +5,11 @@ $(document).ready(function() {
     // }
     $('div[data-toggle="popover"]').popover();
 
-    $('body').scroll(function(){
-        console.log('SCROLL BODY');
-    });
-
     if ($("#cars_form-selected").length!==0 && $("#car_form-select").length!==0) {
         $("#catalogue-auto").addClass("sticky");
         $("body").scroll(function() {
             let header = $("#catalogue-auto");
             let sticky = header.offset().top;
-            console.log(window.pageYOffset + " + " + sticky);
             if (window.pageYOffset >= sticky) {
                 $("#myHeader").addClass("sticky-header-active");
                 $("#myBackdrop").addClass("sticky-backdrop-active");
@@ -34,18 +29,34 @@ $(document).ready(function() {
 });
 
 function showPop(e) {
-    let left = $(e).offset().left;
-    let top = $(e).offset().top;
-    console.log('left = ' + left);
-    console.log('top = ' + top);
+
+    let index = $(".cars-nav__item-checked")[0];
+
+    if (index.length===0) {
+        index = e;
+    }
+
+    let data_pred = $("div[data-type='manuf']");
+
+    let offset = 0;
+    let left = $(index).offset().left;
+    let pred_left = 0;
+
+    if (data_pred.length!==0) {
+        pred_left = $(data_pred).offset().left;
+        offset = left - pred_left;
+    } else {
+        offset = 0;
+    }
+
     let pop = $("#pop");
     pop.css('display', 'block');
     pop.css('position', 'absolute');
-    pop.css('left', 0);
-    pop.css('top', 66);
+    pop.css('left', offset);
+    pop.css('top', 72);
 }
 
-function hidePop(e) {
+function hidePop() {
     let pop = $("#pop");
     pop.css('display', 'none');
 }
@@ -111,7 +122,7 @@ function toggleCarsNavigation(index, type, attr) {
 
     $('div[data-toggle="popover"]').popover('dispose');
 
-    // hidePop(index);
+    hidePop();
 
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
@@ -119,7 +130,7 @@ function toggleCarsNavigation(index, type, attr) {
         // Close Non-Active Tab
         if ($(index).hasClass("cars-nav__item-active")) {
             // $(index).popover('show');
-            // showPop(index);
+            showPop(index);
 
             $("#myBackdrop").addClass("sticky-backdrop-hidden");
             $(index).removeClass("cars-nav__item-active");

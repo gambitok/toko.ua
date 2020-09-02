@@ -1,18 +1,4 @@
 <style>
-    .gpopover {
-        color: #721c24;
-        background-color: #f8d7da;
-        border-color: #f5c6cb;
-    }
-    .gpopover .gpopover-arrow {
-        border-bottom-color: #f8d7da;
-    }
-    .gpopover .gpopover-arrow-shadow {
-        border-bottom-color: #f5c6cb;
-    }
-</style>
-
-<style>
     .pop {
         color: #721c24;
         background: #f8d7da;
@@ -21,8 +7,21 @@
         left: 0;
         top: 0;
         border: 1px solid #f5c6cb;
-        height: 100px;
         width: 300px;
+        padding: 10px;
+        z-index: 99;
+    }
+    .pop:before {
+        content: "";
+        top: -8px;
+        left: 10px;
+        border: 8px solid transparent;
+        border-bottom-color: #f8d7da;
+        border-top-width: 0;
+        height: 0;
+        position: absolute;
+        width: 0;
+        z-index: 99;
     }
 </style>
 
@@ -40,7 +39,7 @@
     </div>
 
     <div id="pop" class="pop">
-        popover text...
+        {manuf_tooltip}
     </div>
 
     <div id="cars_tab" class="cars-tab">

@@ -1023,7 +1023,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .home-banner .gallery-item-panel__text-center { display: flex; height: 100%; align-items: center; justify-content: center; }
 
-.home-cars { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; width: 100%; }
+.home-cars { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; position: relative; width: 100%; }
 
 .home-products { box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; padding: 30px; width: 100%; }
 
@@ -2424,7 +2424,7 @@ table thead td { border: 1px solid #000; }
 /*==== /PHONE ====*/
 .fixed-block { position: fixed; top: 0; left: 0; width: 100%; z-index: 999; }
 
-.cars { background: #fff; }
+.cars { background: #fff; position: relative; }
 
 .cars-nav { background: #fff; color: #fff; display: flex; flex-wrap: nowrap; justify-content: start; }
 
