@@ -480,4 +480,14 @@ trait Variables {
         return $typ_id;
     }
 
+    function formatArticleName($text, $max_symbols = 36) {
+        $dots = "...";
+        if (strlen($text) > $max_symbols) {
+            $format_text = substr($text, 0, $max_symbols - strlen($dots)) . $dots;
+        } else {
+            $format_text = $text;
+        }
+        return $format_text;
+    }
+
 }

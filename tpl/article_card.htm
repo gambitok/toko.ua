@@ -8,6 +8,7 @@
                 <div class="col-12">
                     <a itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">
                         <div class="search__photo">
+                            <span class="flag-search-card tooltips {country_display}" data-toggle="tooltip" data-placement="bottom" title="{brand_manuf}: {country_name}"><span class="flag flag-{flag_image}"></span></span>
                             <img class="lazy" data-src="{product_image}" alt="{product_title}" title="{product_title}">
                         </div>
                     </a>
@@ -18,7 +19,7 @@
                 <div class="col-12">
                     <a class="search__link" itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">
                         <span class="search__brand">{product_brand}</span>
-                        <span class="search__name">{product_text}</span>
+                        <span class="search__name" title="{product_text}">{format_product_text}</span>
                         <span class="search__art">{product_name}</span>
                     </a>
                 </div>
@@ -40,13 +41,15 @@
             <div class="row article-card__buy">
                 <div class="col-12">
                     <input type="hidden" value="1" id="count_{product_i}">
-                    <button class="btn-group btn btn-md btn-info float-right {product_button}" onclick="moveBasket({product_i},'{art_id}','{brand_id}','{product_real_stock}','{product_storage_id}',{product_suppl_id});">{buy_cap}</button>
+                    <button class="btn-group btn btn-md btn-info btn-buy float-right {product_button}" onclick="moveBasket({product_i},'{art_id}','{brand_id}','{product_real_stock}','{product_storage_id}',{product_suppl_id});">{buy_cap}</button>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-12">
-                    <div class="tables__delivery applicable {applicable_display}">{product_auto_appl}</div>
+                    <div class="tables__delivery applicable {applicable_display}">
+                        <span>{applicable_display_text}</span>
+                    </div>
                 </div>
             </div>
 

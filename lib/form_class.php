@@ -72,7 +72,8 @@ class FormClass {
         $form = $this->getHtmlForm("cat_article");
         if ($auto_typ_id!="") {
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
-                $form = str_replace("{applicable_display}", "", $form);
+                $form = str_replace("{applicable_display}", "applicable-active", $form);
+                $form = str_replace("{applicable_display_text}", "{is_applicable}", $form);
                 list($manufacture, $model, $model_id) = $auto->getCarInfo($auto_typ_id);
                 list($manufacture_cap,, $model_id_cap,) = $auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
                 $form = str_replace("{applicable_cap}", "<a href='https://toko.ua/catalog/'>$manufacture_cap $model_id_cap</a>", $form);
@@ -125,7 +126,8 @@ class FormClass {
         $form=str_replace("{analogs_header}", "$brand_name $format_article ('$article_nr_displ, $article_nr_displ, $brand_name $article_nr_displ)", $form);
 
         $form=str_replace("{article_header}", "<h1>$article_name $brand_name $article_nr_displ</h1>", $form);
-        $form=str_replace("{applicable_display}", "none", $form);
+        $form=str_replace("{applicable_display}", "", $form);
+        $form=str_replace("{applicable_display_text}", "{is_not_applicable}", $form);
 
         $form=$this->replaceLang($form);
         return $form;
@@ -377,8 +379,8 @@ class FormClass {
     function getArticleActivePhoto($art_id) { $db = DbSingleton::getTokoDb();
         $photo_name = "";
         $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
-        for ($i=1;$i<=$n;$i++){
-            $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
+        for ($i=1; $i<=$n; $i++) {
+            $photo_name = trim($db->result($r, $i-1, "PHOTO_NAME"));
         }
         $photo_name=="" ? $photo_name = $this->noPhoto : $photo_name = "$this->uploads_link/$photo_name";
         return $photo_name;

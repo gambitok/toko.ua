@@ -601,6 +601,7 @@ class SearchClass extends CatalogueClass
         $form=str_replace("{product_brand_link}",$this->getBrandLink($brand_id),$form);
         $form=str_replace("{product_format_brand}",$format_brand,$form);
         $form=str_replace("{product_text}",$article_name,$form);
+        $form=str_replace("{format_product_text}",$this->getFormatAticle($article_name),$form);
         $form=str_replace("{product_price}",$price==0 ? "{sold_out_cap}" : $price." $kours_cap",$form);
         $form=str_replace("{product_true_price}",$price,$form);
         $form=str_replace("{product_button}",$price==0 ? "none" : "",$form);

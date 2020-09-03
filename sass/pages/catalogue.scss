@@ -1,16 +1,19 @@
 /*==== ARTICLE CARD ====*/
 .article-card {
-    border: 1px solid #a9bcc6;
+    border: 1px solid #ddd;
     margin: 10px;
     position: relative;
     bottom: 0;
     left: 0;
     right: 0;
     top: 0;
+    transition: all 0.2s linear;
     &:hover {
+        border-color: #17a2b8;
         cursor: pointer;
         & > .article-card-hidden {
-            border-bottom: 1px solid #a9bcc6;
+            border: 1px solid #17a2b8;
+            border-top: none;
             box-shadow: 0 8px 8px grey;
             display: block;
         }
@@ -21,23 +24,24 @@
         }
     }
     .row {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
     &-main {
         color: #333;
         padding: 10px;
+        transition: all 0.2s linear;
     }
     &-hidden {
-        display: none;
-        position: absolute;
         background: white;
-        z-index: 99;
-        width: calc(100% + 2px);
-        border-top: unset;
-        top: 100%;
         border: 1px solid #a9bcc6;
         border-top: none;
+        display: none;
         margin: 0 -1px;
+        position: absolute;
+        top: 100%;
+        transition: all 0.2s linear;
+        width: calc(100% + 2px);
+        z-index: 99;
     }
     &__name {
         height: 90px;
@@ -175,15 +179,15 @@
 
 /*==== SEARCH VARIABLES ====*/
 .search__art {
+    color: #333;
     display: inline;
-    color: #228b94;
     font-size: 14px;
     font-weight: 700;
 }
 
 .search__brand {
+    color: #228b94;
     display: inline;
-    color: #333;
     font-size: 14px;
     font-weight: 700;
     padding-right: 5px;
@@ -229,6 +233,7 @@
 .search__name {
     color: #606975;
     font-size: 13px;
+    letter-spacing: normal;
 }
 
 .search__soldout {
@@ -251,6 +256,9 @@
 }
 
 .search__link {
+    &:hover {
+        text-decoration: unset;
+    }
     span {
         display: block;
         font-size: 1em;
@@ -356,6 +364,15 @@
 .flag-search {
     position: relative;
     top: -2px;
+    &-card {
+        display: block;
+        position: absolute;
+        right: 15px;
+        text-align: right;
+        span {
+            box-shadow: 1px 2px 4px grey;
+        }
+    }
 }
 
 /*==== /SEARCH VARIABLES ====*/
@@ -713,16 +730,34 @@
     padding: 0;
     text-align: center;
     &.applicable {
-        background: #7cc576;
-        color: #fff;
+        background: #fff;
+        border: 1px solid #a9bcc6;
+        color: #a9bcc6;
         padding: 4px;
         border-radius: .25rem;
         font-size: 11px;
+        span:before {
+            content: url(/images/icons/car-grey.png);
+            position: relative;
+            right: 3px;
+            top: 3px;
+        }
         .article-list__title {
             color: white!important;
         }
         a {
             color: white;
+        }
+        &-active {
+            background: #7cc576;
+            border: 1px solid #7cc576;
+            color: #fff;
+            span:before {
+                content: url(/images/icons/car-white.png);
+                position: relative;
+                right: 3px;
+                top: 3px;
+            }
         }
     }
 }

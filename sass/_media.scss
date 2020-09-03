@@ -1,6 +1,10 @@
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
 
+    .article-card:hover>.article-card-hidden {
+        display: none;
+    }
+
     .pop {
         display: none!important;
     }

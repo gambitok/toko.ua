@@ -1446,6 +1446,7 @@ class CatalogueClass
         $form=str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
         $form=str_replace("{product_format_brand}", $format_brand, $form);
         $form=str_replace("{product_text}", ($text=="") ? "{details_name_cap}" : $text, $form);
+        $form=str_replace("{format_product_text}", ($text=="") ? "{details_name_cap}" : $this->formatArticleName($text), $form);
         $form=str_replace("{product_stock}", ($suppl_id==0) ? ($stock>10 ? ">10" : $stock) : $stock, $form);
         $form=str_replace("{product_real_stock}", $stock, $form);
         $form=str_replace("{product_storage_id}", $storage_id, $form);
@@ -1526,10 +1527,12 @@ class CatalogueClass
         $auto_typ_id = $this->getCookieAuto();
         if ($auto_typ_id!="") {
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
-                $form = str_replace("{applicable_display}", "", $form);
+                $form = str_replace("{applicable_display}", "applicable-active", $form);
+                $form = str_replace("{applicable_display_text}", "{is_applicable}", $form);
             }
         }
-        $form = str_replace("{applicable_display}", "none", $form);
+        $form = str_replace("{applicable_display}", "", $form);
+        $form = str_replace("{applicable_display_text}", "{is_not_applicable}", $form);
 
         $list = "$form";
         if (!$view) $list.="$ll";
@@ -1846,7 +1849,7 @@ class CatalogueClass
                     $format_val = str_replace(str_split('.,+-\/:*?"<>| '), "", $val);
                     $list.="<a target=\"_blank\" href=\"https://toko.ua$prefix/$this->search_link/$format_val/\">$val</a>";
                     $i++;
-                    if ($i<=count($arr_val)) $list.=", ";
+                    if ($i <= count($arr_val)) $list.=", ";
                 }
                 $list.="</div></div>";
                 $i = 1;
@@ -1988,6 +1991,12 @@ class CatalogueClass
         return $cash_id;
     }
 
+    /**
+     * @param $price
+     * @param $cash_id_from
+     * @param $cash_id_to
+     * @return float|int
+     */
     function getPriceRatingKours($price, $cash_id_from, $cash_id_to) {
         $kours = new ExRateClass;
         $usd_to_uah = $kours->getKours("dollar");

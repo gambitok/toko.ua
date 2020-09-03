@@ -652,6 +652,7 @@ class AutoClass {
                     $status_cap="{select_cap}";
                     $status_disable="";
                     $status_btn="onclick='updateChosenAutoGarage($id);'";
+                    //$status_btn="onclick='updateChosenAutoGarage($id);'";
                 } else {
                     $status_cap="{unselect_cap}";
                     $status_disable="disabled";

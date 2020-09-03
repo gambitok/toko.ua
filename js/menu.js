@@ -89,6 +89,7 @@ function togglePass(a) {
 
 function showGarageForm() {
     $("#GarageForm").modal("show");
+    $("#garage_block").html("");
     JsHttpRequest.query(folder,{ 'w': 'showGarageForm'},
         function (result, errors){ if (errors) {} if (result){
             $("#garage_block").html(result.content);
@@ -102,7 +103,6 @@ function showGarageForm() {
                 }
             }}, true);
     }
-
 }
 
 function dropHistoryShow() {
@@ -288,10 +288,10 @@ function showHideNavigation(head_id) {
         $("#content-nav__content").html(result.content);
         // $("#content-nav__header").html(result.header);
         $("#content-nav__footer").html(result.footer);
-        $(".header-nav__li").each(function () {
+        $(".header-nav__li").each(function() {
             $(this).removeClass("header-nav__li-active");
         });
-        $("li[data-nav-id='"+head_id+"']").addClass("header-nav__li-active");
+        $("li[data-nav-id='" + head_id + "']").addClass("header-nav__li-active");
         $(".backdrop").addClass("backdrop-show");
     }}, true);
 }

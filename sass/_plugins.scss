@@ -3,6 +3,14 @@
     max-height: 230px;
 }
 
+.btn-buy {
+    background-color: #0ca9ee;
+    transition: background-color 0.2s;
+    &:hover {
+        background: #138496;
+    }
+}
+
 .img-fluid {
     margin: 0 auto;
     width: auto;
