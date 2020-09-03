@@ -16,7 +16,6 @@
 
             <div class="row article-card__name">
                 <div class="col-12">
-                    <div class="tables__delivery applicable">{product_auto_appl}</div>
                     <a class="search__link" itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">
                         <span class="search__brand">{product_brand}</span>
                         <span class="search__name">{product_text}</span>
@@ -42,6 +41,12 @@
                 <div class="col-12">
                     <input type="hidden" value="1" id="count_{product_i}">
                     <button class="btn-group btn btn-md btn-info float-right {product_button}" onclick="moveBasket({product_i},'{art_id}','{brand_id}','{product_real_stock}','{product_storage_id}',{product_suppl_id});">{buy_cap}</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="tables__delivery applicable {applicable_display}">{product_auto_appl}</div>
                 </div>
             </div>
 

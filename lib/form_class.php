@@ -693,7 +693,7 @@ class FormClass {
             }
             $info.="</table>";
             $n<=5 ?: $info.="<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
-                <a href='https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/'>
+                <a class='search__more' href='https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/'>
                     {more_read}
                 </a>    
             </p>";

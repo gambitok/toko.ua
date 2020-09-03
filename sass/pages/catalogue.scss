@@ -189,6 +189,11 @@
     padding-right: 5px;
 }
 
+.search__more {
+    color: #17a2b8;
+    font-size: 12px;
+}
+
 .search__appl-tcd {
     background: #fff;
     border: 1px solid #ccc;
@@ -709,7 +714,10 @@
     text-align: center;
     &.applicable {
         background: #7cc576;
-        color: white;
+        color: #fff;
+        padding: 4px;
+        border-radius: .25rem;
+        font-size: 11px;
         .article-list__title {
             color: white!important;
         }
@@ -721,6 +729,13 @@
 
 .delivery-red i {
     color: #f44336!important;
+    font-style: normal;
+    font-weight: 700!important;
+    text-transform: uppercase;
+}
+
+.delivery-green i {
+    color: #009933!important;
     font-style: normal;
     font-weight: 700!important;
     text-transform: uppercase;

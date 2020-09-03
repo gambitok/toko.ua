@@ -2,6 +2,8 @@
 
     <input type="hidden" value="{active_nav}" id="active_nav">
 
+    <input type="hidden" value="0" id="toggle_active_nav">
+
     <div class="cars-nav">
         <div id="tool1" data-container="body" data-toggle="popover" data-placement="bottom" data-content="{manuf_tooltip}" onclick="toggleCarsNavigation(this);" data-type="manuf" data-next="model" data-pred="empty" data-tab="cars-tab1" data-id="{selected_manuf}" class="cars-nav__item cars-nav__item-active cars-nav__item-checked">{cars_manufacturer}</div>
         <div id="tool2" data-container="body" data-toggle="popover" data-placement="bottom" data-content="{manuf_tooltip}" onclick="toggleCarsNavigation(this);" data-type="model" data-next="years" data-pred="manuf" data-tab="cars-tab2" data-id="{selected_model}" class="cars-nav__item cars-nav__item-disabled">{cars_model}</div>

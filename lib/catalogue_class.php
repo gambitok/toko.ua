@@ -1461,7 +1461,7 @@ class CatalogueClass
 
         $form=str_replace("{product_del}", $delivery_info, $form);
         $form=str_replace("{product_dd}", $delivery_days, $form);
-        $form=str_replace("{product_delivery_class}", ($delivery_days==0) ? "delivery-red" : ($delivery_days==1 ? "delivery-blue" : ($delivery_days>1 ? "delivery-dark" : "")), $form);
+        $form=str_replace("{product_delivery_class}", ($delivery_days==0) ? "delivery-green" : ($delivery_days==1 ? "delivery-blue" : ($delivery_days>1 ? "delivery-dark" : "")), $form);
         $form=str_replace("{product_delivery_short_info}", str_replace("<br>", " ", $delivery_short_info), $form);
 
         $form=str_replace("{product_price}", $price." $kours_cap", $form);
@@ -1522,6 +1522,14 @@ class CatalogueClass
             $form = str_replace("{price_row_status}", "none", $form);
             $form = str_replace("{soldout_row_status}", "", $form);
         }
+
+        $auto_typ_id = $this->getCookieAuto();
+        if ($auto_typ_id!="") {
+            if ($this->checkT2Link($auto_typ_id, $art_id)) {
+                $form = str_replace("{applicable_display}", "", $form);
+            }
+        }
+        $form = str_replace("{applicable_display}", "none", $form);
 
         $list = "$form";
         if (!$view) $list.="$ll";
