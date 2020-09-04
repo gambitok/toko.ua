@@ -1,6 +1,24 @@
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
 
+    .sticky {
+        position: relative;
+    }
+
+    .sticky-backdrop {
+        &-active {
+            left: -100%;
+            opacity: 0;
+        }
+    }
+
+    .backdrop {
+        &-show {
+            left: -100%;
+            opacity: 0;
+        }
+    }
+
     .article-card:hover>.article-card-hidden {
         display: none;
     }

@@ -1459,7 +1459,10 @@ table thead td { border: 1px solid #000; }
 .rotate__icon { transform: rotate(180deg); }
 
 /* ==== PHONE ==== */
-@media (max-width: 768px) { .article-card:hover > .article-card-hidden { display: none; }
+@media (max-width: 768px) { .sticky { position: relative; }
+  .sticky-backdrop-active { left: -100%; opacity: 0; }
+  .backdrop-show { left: -100%; opacity: 0; }
+  .article-card:hover > .article-card-hidden { display: none; }
   .pop { display: none !important; }
   .sticky-header-active { display: none; }
   .desktop-only { display: none; }
@@ -2557,7 +2560,10 @@ table thead td { border: 1px solid #000; }
 
 /*==== Adaptive ====*/
 /* ==== PHONE ==== */
-@media (max-width: 768px) { .article-card:hover > .article-card-hidden { display: none; }
+@media (max-width: 768px) { .sticky { position: relative; }
+  .sticky-backdrop-active { left: -100%; opacity: 0; }
+  .backdrop-show { left: -100%; opacity: 0; }
+  .article-card:hover > .article-card-hidden { display: none; }
   .pop { display: none !important; }
   .sticky-header-active { display: none; }
   .desktop-only { display: none; }

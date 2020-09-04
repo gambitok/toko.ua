@@ -27,7 +27,11 @@ $(document).ready(function() {
                     showCarsNavigation(checked_index);
                 }
             } else {
-                $("#toggle_active_nav").val(0);
+                if (window.pageYOffset >= sticky) {
+                    //
+                } else {
+                    $("#toggle_active_nav").val(0);
+                }
             }
 
         });
@@ -75,6 +79,8 @@ function hidePop() {
 }
 
 function toggleCarsTab(index) {
+    $("#toggle_active_nav").val(1);
+
     let data = $(index).attr("data-url").split("/");
     let type = data[0];
     let attr = data[1];
