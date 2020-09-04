@@ -31,6 +31,7 @@ require_once (RDD."/lib/pattern_class.php");
 require_once (RDD."/lib/parts_class.php");
 
 require_once (RDD."/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
+require_once (RDD."/lib/ukr-poshta-api/UkrPoshtaApi.php");
 
 $db=DbSingleton::getTokoDb();
 $dbm=DbSingleton::getDbm();

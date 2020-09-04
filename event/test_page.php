@@ -1,13 +1,19 @@
 <?php
 
-$start = microtime(true);
+//$start = microtime(true);
 $content = str_replace("{main_window}", $shop->getHtmlForm("test"), $content);
 
-$seo_text = $search->getSeoArticleLinking(2904918);
+$up = new UkrPoshtaApi('7e769f5c-4ac8-32a8-bdf6-0f5bede5a204');
 
-print_r($seo_text);
-$time = microtime(true) - $start;
-print "Run time: $time";
+$list = $up->getPostOffices(10765);
+
+
+//
+//$seo_text = $search->getSeoArticleLinking(2904918);
+//
+//print_r($seo_text);
+//$time = microtime(true) - $start;
+//print "Run time: $time";
 
 //$arr = [1263];
 //foreach ($arr as $client_id) {

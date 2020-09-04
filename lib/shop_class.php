@@ -1343,7 +1343,7 @@ class ShopClass {
 //    }
 
     function setCityDepartments($city_ref) {
-        $list_up = "<option value='0'>{not_chosen}</option>";
+        $list_up = $this->getUkrPoshtaWarehousesSelect($city_ref);
         $list_np = $this->getNovaPoshtaWarehousesSelect($city_ref);
         return array($list_np, $list_up);
     }
@@ -1358,6 +1358,11 @@ class ShopClass {
             $war_ref = $val["Ref"];
             $list.="<option value='$war_ref'>$name</option>";
         }
+        return $list;
+    }
+
+    function getUkrPoshtaWarehousesSelect($city_ref) {
+        $list = "<option value='0'>{not_chosen}</option>";
         return $list;
     }
 
