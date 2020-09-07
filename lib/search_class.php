@@ -781,19 +781,18 @@ class SearchClass extends CatalogueClass
         $r = $db->query("SELECT `TEXT` FROM `SEO_STR_CARS` WHERE `MFA_ID`='$mfa_id' $where LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
 
-            $car_text = "$mfa_text $model_text";
-
-            $page_h1 = "{details_on_cap} $car_text"; $translit = $prod->getCarManufTranslit($mfa_id, $model); if ($translit!="") $page_h1.=" $translit";
+            $page_h1 = "{details_on_cap} $mfa_text $model_text"; $translit = $prod->getCarManufTranslit($mfa_id, $model); if ($translit!="") $page_h1.=" $translit";
+            $page_h1_lower = "{details_on_cap_min} $mfa_text $model_text"; $translit = $prod->getCarManufTranslit($mfa_id, $model); if ($translit!="") $page_h1_lower.=" $translit";
 
             list($brand1, $brand2, $brand3) = $this->getRandomBrands(3);
 
-            list($group_name) = $this->getRandomGroups(1);
+            list($group_name) = $this->getRandomGroups(1); $group_name = mb_strtolower($group_name, 'windows-1251');
 
             $geo_nominative = $this->getSeoLinkingParam("CITY", 1);
 
-            $list = "$page_h1 {_on_shop} {_toko} {_repair_yourself} {_first_need} $car_text {_toko_market} {_leading_brands} $brand1, $brand2, $brand3 {_wide_range} $mfa_text {_go_shopping} $group_name {_buy_in_home} {_how_to_buy} $page_h1 {_not_experienced_motorists} $group_name {_whole_department} {_professionals_advise} $car_text {_min_information} 
+            $list = "$page_h1 {_on_shop} {_toko} {_repair_yourself} {_first_need} $mfa_text $model_text. {_toko_market} {_leading_brands} $brand1, $brand2, $brand3. {_wide_range} $mfa_text, {_go_shopping} $group_name {_buy_in_home} {_how_to_buy} $page_h1_lower? {_not_experienced_motorists} $group_name. {_whole_department} {_professionals_advise} $mfa_text $model_text. {_min_information} 
             <ul>
-                <li> {_mfa_text} $mfa_text </li>
+                <li> {_mfa_text} ($mfa_text $model_text); </li>
                 <li> {_year_of_issue} </li>
                 <li> {_personal_preferences} </li>
                 <li> {_vin_code} </li>
@@ -809,8 +808,9 @@ class SearchClass extends CatalogueClass
                 $value = $this->getSeoListingValue($value);
                 $seo_text.="$value ";
             }
+            $seo_text.=".";
 
-            // $db->query("INSERT INTO `SEO_STR_CARS` (`MFA_ID`, `MODEL`, `TEXT`) VALUES ('$mfa_id', '$model', '$seo_text');");
+            $db->query("INSERT INTO `SEO_STR_CARS` (`MFA_ID`, `MODEL`, `TEXT`) VALUES ('$mfa_id', '$model', '$seo_text');");
 
         } else {
             $seo_text = $db->result($r, 0, "TEXT");
@@ -824,7 +824,6 @@ class SearchClass extends CatalogueClass
      * https://toko.ua/catalog/tormoznye-kolodki/acura/mdx/
      * */
     function getSeoMfaLinking($str_id, $h1, $arts, $brands, $mfa_link, $mod_link) { $db = DbSingleton::getTokoDb();
-
         $automan = new AutoClass;
         list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
         list($mfa_text, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
@@ -832,22 +831,24 @@ class SearchClass extends CatalogueClass
         $r = $db->query("SELECT `TEXT` FROM `SEO_STR_MFA` WHERE `STR_ID`='$str_id' AND `MFA_ID`='$mfa_id' AND `MODEL`='$model' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
 
+           // $h1_lower = mb_strtolower($h1, 'windows-1251');
+
             list($brand1, $brand2, $brand3) = $this->getRandomActiveBrands($brands, 3);
 
             list($art_id) = $this->getRandomAcitveArts($arts, 1);
             $article_name = $this->getArticleText($art_id);
 
-            $str_text = $automan->getStrNewDescr($str_id);
+            $str_text = $automan->getStrNewDescr($str_id);  $str_text = mb_strtolower($str_text, 'windows-1251');
 
             $geo_nominative = $this->getSeoLinkingParam("CITY", 1);
 
-            $list = "$h1 {_on_shop} {_toko} {_verified_store} $mfa_text {_buyers_choose} {_to_buy_goods} $mfa_text $model_text {_famous_brands} $brand1, $brand2, $brand3 {_proving_quality} {on_cap} {_toko} {_order_needed} $geo_nominative {_any_city} {_how_to_buy} $h1 {_quite_often} $mfa_text {_for_such_cases} {_for_such_cases_help} $article_name {_for_any_brand} {_mfa_list} {_buying_on_toko} 
+            $list = "$h1 {_on_shop} {_toko} {_verified_store} $mfa_text. {_buyers_choose} {_to_buy_goods} $mfa_text $model_text {_famous_brands} $brand1, $brand2, $brand3 {_proving_quality} {in_cap} {_toko2} {_order_needed} $geo_nominative {_any_city} {_how_to_buy} $h1? {_quite_often} $mfa_text. {_for_such_cases} {_for_such_cases_help} $article_name. {_for_any_brand} {_mfa_list} {_buying_on_toko} 
             <ul>
-                <li> {_durable_parts} $article_name </li> 
+                <li> {_durable_parts} $article_name; </li> 
                 <li> {_pleasant_service} </li> 
                 <li> {_free_delivery} </li> 
             </ul>
-            {_order_now} $str_text !";
+            {_order_now} $str_text!";
 
             $list = $this->replaceLang($list);
             $list = str_replace(str_split("{}"), "", $list);
@@ -968,7 +969,7 @@ class SearchClass extends CatalogueClass
         $r = $db->query("SELECT * FROM `SEO_LISTING_$param` ORDER BY RAND() LIMIT $count;"); $n = $db->num_rows($r);
         $params = [];
         for ($i=1; $i<=$n; $i++) {
-            $param_name = $db->result($r, $i-1, $param."_NAME");
+            $param_name = $db->result($r, $i - 1, $param."_NAME");
             array_push($params, $param_name);
         }
         $params = implode(", ", $params);
