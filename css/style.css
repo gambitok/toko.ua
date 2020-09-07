@@ -2031,7 +2031,7 @@ table thead td { border: 1px solid #000; }
 
 .article-card__buy button { display: block; text-align: center; width: 100%; }
 
-.article-card__info { font-size: 12px; }
+.article-card__info { color: #606975; font-size: 12px; min-height: 56px; }
 
 .article-card__offers a { font-size: 12px; }
 

@@ -39,22 +39,23 @@ class SearchClass extends CatalogueClass
             if ($count_arts < $count) $pages_count = 1;
 
             $where_arts = $parts->initPartsArts($str_id);
+            $active_brands = array_unique($this->getBrandIds($where_arts));
             $filters_form = $this->printBrandsList(array_unique($this->getBrandIds($where_arts)), array_unique($active_filters), $this->getActualLink());
 
             $form = str_replace("{details_listing}", $this->getSeoLinking($str_id, $h1, $filters, $brands), $form);
 
-//            if (!empty($active_filters)) {
-//                $brand_id = $active_filters[0];
-//                $form = str_replace("{details_listing_2}", "<div class='content-min'>".$this->getSeoBrandLinking($str_id, $h1, $brand_id)."</div>", $form);
-//            } else {
+            if (!empty($active_filters)) {
+                $brand_id = $active_filters[0];
+                $form = str_replace("{details_listing_2}", "<div class='content-min'>".$this->getSeoBrandLinking($str_id, $h1, $where_arts, $brand_id)."</div>", $form);
+            } else {
                 $form = str_replace("{details_listing_2}", "", $form);
-//            }
+            }
 
-//            if ($mfa_link!="" && $mod_link!="") {
-//                $form = str_replace("{details_listing_3}", "<div class='content-min'>".$this->getSeoMfaLinking($str_id, $h1, $mfa_link, $mod_link)."</div>", $form);
-//            } else {
+            if ($mfa_link!="" && $mod_link!="") {
+                $form = str_replace("{details_listing_3}", "<div class='content-min'>".$this->getSeoMfaLinking($str_id, $h1, $where_arts, $active_brands, $mfa_link, $mod_link)."</div>", $form);
+            } else {
                 $form = str_replace("{details_listing_3}", "", $form);
-//            }
+            }
 
             $form = str_replace("{details_brands}", $filters_form, $form);
         } else {
@@ -661,7 +662,7 @@ class SearchClass extends CatalogueClass
         return true;
     }
 
-    function getSeoLinkingArticle($limit = 1) { $db = DbSingleton::getTokoDb();
+    function getRandomArticles($limit = 1) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` ORDER BY RAND() LIMIT $limit;"); $n = $db->num_rows($r);
         $arts = [];
         for ($i=1; $i<=$n; $i++) {
@@ -671,57 +672,56 @@ class SearchClass extends CatalogueClass
         return $arts;
     }
 
-    function getSeoLinkingBrand($limit = 1) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` ORDER BY RAND() LIMIT $limit;"); $n = $db->num_rows($r);
+    function getRandomBrands($limit = 1, $brand_id = 0) { $db = DbSingleton::getTokoDb();
+        if ($brand_id!=0) $where = "AND t2a.BRAND_ID != $brand_id"; else $where = "";
+        $r = $db->query("SELECT t2b.`BRAND_NAME` FROM `T2_ARTICLES` t2a 
+            LEFT JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID = t2a.BRAND_ID
+        WHERE t2b.TOP = 1 $where
+        ORDER BY RAND() LIMIT $limit;"); $n = $db->num_rows($r);
         $brands = [];
         for ($i=1; $i<=$n; $i++) {
-            $brand_id = $db->result($r, $i - 1, "BRAND_ID"); $brand_name = $this->getBrandName($brand_id);
+            $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
             array_push($brands, $brand_name);
         }
         return $brands;
     }
 
-    /*
-     * SEO BLOCK - CARS
-     * */
-    function getSeoCarsLinking($mfa_link, $mod_link = "") { $db = DbSingleton::getTokoDb();
-        $automan = new AutoClass; $prod = new ProductsClass;
-        list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-        list($mfa_text, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-        if ($model!="") $where = "AND `MODEL`='$model'"; else $where = "";
-
-        $r = $db->query("SELECT `TEXT` FROM `SEO_STR_CARS` WHERE `MFA_ID`='$mfa_id' $where LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n==0) {
-
-            $car_text = "$mfa_text $model_text";
-            $page_h1 = "{details_on_cap} $car_text";
-
-            $translit = $prod->getCarManufTranslit($mfa_id, $model);
-            if ($translit!="") $page_h1.=" $translit";
-
-            list($brand1, $brand2, $brand3) = $this->getSeoLinkingBrand(3);
-            list($article_name) = $this->getSeoLinkingArticle(1);
-            $geo_nominative = $this->getSeoLinkingParam("CITY", 1);
-
-            $list = "$page_h1 {_on_shop} {_toko} {_repair_yourself} {_first_need} $car_text {_toko_market} {_leading_brands} $brand1, $brand2, $brand3 {_wide_range} $mfa_text {_go_shopping} $article_name {_buy_in_home} {_how_to_buy} $page_h1 {_not_experienced_motorists} $article_name {_whole_department} {_professionals_advise} $car_text {_min_information} {_mfa_text} $mfa_text {_year_of_issue} {_personal_preferences} {_manager_help} $geo_nominative";
-
-            $list = $this->replaceLang($list);
-            $list = str_replace(str_split("{}"), "", $list);
-            $list = explode(" ", $list);
-            $seo_text = "";
-
-            foreach ($list as $value) {
-                $value = $this->getSeoListingValue($value);
-                $seo_text.="$value ";
+    function getRandomActiveBrands($active_brands, $limit = 1) { $db = DbSingleton::getTokoDb();
+        $brands = [];
+        if (!empty($active_brands)) {
+            $active_brands_str = implode(",", $active_brands);
+            $r = $db->query("SELECT `BRAND_NAME` FROM `T2_BRANDS` WHERE `TOP` = 1 AND `BRAND_ID` IN ($active_brands_str) ORDER BY RAND() LIMIT $limit;"); $n = $db->num_rows($r);
+            for ($i=1; $i<=$n; $i++) {
+                $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
+                array_push($brands, $brand_name);
             }
-
-            // $db->query("INSERT INTO `SEO_ART_STR` (`MFA_ID`, `MODEL`, `TEXT`) VALUES ('$mfa_id', '$model', '$seo_text');");
-
-        } else {
-            $seo_text = $db->result($r, 0, "TEXT");
         }
+        return $brands;
+    }
 
-        return $seo_text;
+    function getRandomAcitveArts($where_arts, $limit = 1) { $db = DbSingleton::getTokoDb();
+        $arts = [];
+        if ($where_arts!="") {
+            $r = $db->query("SELECT t2a.`ART_ID` FROM `T2_ARTICLES` t2a 
+                LEFT JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID = t2a.BRAND_ID
+            WHERE t2b.`TOP` = 1 AND t2a.`ART_ID` IN ($where_arts) 
+            ORDER BY RAND() LIMIT $limit;"); $n = $db->num_rows($r);
+            for ($i=1; $i<=$n; $i++) {
+                $art_id = $db->result($r, $i - 1, "ART_ID");
+                array_push($arts, $art_id);
+            }
+        }
+        return $arts;
+    }
+
+    function getRandomGroups($limit = 1) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_RU` FROM `T2_TREE_GROUP` ORDER BY RAND() LIMIT $limit;"); $n = $db->num_rows($r);
+        $groups = [];
+        for ($i=1; $i<=$n; $i++) {
+            $group_name = $db->result($r, $i - 1, "TEX_RU");
+            array_push($groups, $group_name);
+        }
+        return $groups;
     }
 
     function getSeoArticleLinking($art_id) { $db = DbSingleton::getTokoDb();
@@ -736,12 +736,12 @@ class SearchClass extends CatalogueClass
 
             $page_h1 = "$text $brand_name $article_nr_displ - {seo_title_article}";
 
-            $dataProduct = $this->getSeoLinkingArticle();
+            $dataProduct = $this->getRandomArticles();
             $product1 = $dataProduct[0];
             $product2 = $dataProduct[1];
             $product3 = $dataProduct[2];
 
-            $dataBrand = $this->getSeoLinkingBrand(2);
+            $dataBrand = $this->getRandomBrands(2);
             $tags_brand_1 = $dataBrand[0];
             $tags_brand_2 = $dataBrand[1];
 
@@ -768,20 +768,86 @@ class SearchClass extends CatalogueClass
         return $seo_text;
     }
 
-    function getSeoMfaLinking($str_id, $h1, $mfa_link, $mod_link) { $db = DbSingleton::getTokoDb();
+    /*
+     * SEO BLOCK: MFA + MODEL
+     * https://toko.ua/cars/acura/mdx
+     * */
+    function getSeoCarsLinking($mfa_link, $mod_link = "") { $db = DbSingleton::getTokoDb();
+        $automan = new AutoClass; $prod = new ProductsClass;
+        list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
+        list($mfa_text, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
+        if ($model!="") $where = "AND `MODEL`='$model'"; else $where = "";
+
+        $r = $db->query("SELECT `TEXT` FROM `SEO_STR_CARS` WHERE `MFA_ID`='$mfa_id' $where LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n==0) {
+
+            $car_text = "$mfa_text $model_text";
+
+            $page_h1 = "{details_on_cap} $car_text"; $translit = $prod->getCarManufTranslit($mfa_id, $model); if ($translit!="") $page_h1.=" $translit";
+
+            list($brand1, $brand2, $brand3) = $this->getRandomBrands(3);
+
+            list($group_name) = $this->getRandomGroups(1);
+
+            $geo_nominative = $this->getSeoLinkingParam("CITY", 1);
+
+            $list = "$page_h1 {_on_shop} {_toko} {_repair_yourself} {_first_need} $car_text {_toko_market} {_leading_brands} $brand1, $brand2, $brand3 {_wide_range} $mfa_text {_go_shopping} $group_name {_buy_in_home} {_how_to_buy} $page_h1 {_not_experienced_motorists} $group_name {_whole_department} {_professionals_advise} $car_text {_min_information} 
+            <ul>
+                <li> {_mfa_text} $mfa_text </li>
+                <li> {_year_of_issue} </li>
+                <li> {_personal_preferences} </li>
+                <li> {_vin_code} </li>
+            </ul>
+            {_manager_help} $geo_nominative";
+
+            $list = $this->replaceLang($list);
+            $list = str_replace(str_split("{}"), "", $list);
+            $list = explode(" ", $list);
+            $seo_text = "";
+
+            foreach ($list as $value) {
+                $value = $this->getSeoListingValue($value);
+                $seo_text.="$value ";
+            }
+
+            // $db->query("INSERT INTO `SEO_STR_CARS` (`MFA_ID`, `MODEL`, `TEXT`) VALUES ('$mfa_id', '$model', '$seo_text');");
+
+        } else {
+            $seo_text = $db->result($r, 0, "TEXT");
+        }
+
+        return $seo_text;
+    }
+
+    /*
+     * SEO BLOCK: STR + MFA + MODEL
+     * https://toko.ua/catalog/tormoznye-kolodki/acura/mdx/
+     * */
+    function getSeoMfaLinking($str_id, $h1, $arts, $brands, $mfa_link, $mod_link) { $db = DbSingleton::getTokoDb();
+
         $automan = new AutoClass;
         list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
+        list($mfa_text, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
 
         $r = $db->query("SELECT `TEXT` FROM `SEO_STR_MFA` WHERE `STR_ID`='$str_id' AND `MFA_ID`='$mfa_id' AND `MODEL`='$model' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
 
-            list($brand1, $brand2, $brand3) = $this->getSeoLinkingBrand(3);
-            list($article_name) = $this->getSeoLinkingArticle(1);
+            list($brand1, $brand2, $brand3) = $this->getRandomActiveBrands($brands, 3);
+
+            list($art_id) = $this->getRandomAcitveArts($arts, 1);
+            $article_name = $this->getArticleText($art_id);
+
+            $str_text = $automan->getStrNewDescr($str_id);
+
             $geo_nominative = $this->getSeoLinkingParam("CITY", 1);
 
-            list($mfa_text, $model_text) = $this->getSeoLinkingMfaModel();
-
-            $list = "$h1 {_on_shop} {_toko} {_verified_store} $mfa_text {_buyers_choose} {_to_buy_goods} $mfa_text $model_text {_famous_brands} $brand1, $brand2, $brand3 {_proving_quality} {in_cap} {_toko} {_order_needed} $geo_nominative {_any_city} . {_how_to_buy} $h1 {_quite_often} $mfa_text {_for_such_cases} {_for_such_cases_help} $article_name {_for_any_brand} {_mfa_list} . {_buying_on_toko} {_durable_parts} $article_name {_pleasant_service} {_free_delivery} . {_order_now} $article_name !";
+            $list = "$h1 {_on_shop} {_toko} {_verified_store} $mfa_text {_buyers_choose} {_to_buy_goods} $mfa_text $model_text {_famous_brands} $brand1, $brand2, $brand3 {_proving_quality} {on_cap} {_toko} {_order_needed} $geo_nominative {_any_city} {_how_to_buy} $h1 {_quite_often} $mfa_text {_for_such_cases} {_for_such_cases_help} $article_name {_for_any_brand} {_mfa_list} {_buying_on_toko} 
+            <ul>
+                <li> {_durable_parts} $article_name </li> 
+                <li> {_pleasant_service} </li> 
+                <li> {_free_delivery} </li> 
+            </ul>
+            {_order_now} $str_text !";
 
             $list = $this->replaceLang($list);
             $list = str_replace(str_split("{}"), "", $list);
@@ -802,17 +868,31 @@ class SearchClass extends CatalogueClass
         return $seo_text;
     }
 
-    function getSeoBrandLinking($str_id, $h1, $brand_id) { $db = DbSingleton::getTokoDb();
+    /*
+     * SEO BLOCK: STR + BRAND_ID
+     * https://toko.ua/catalog/tormoznye-kolodki/brandy=abs/
+     * */
+    function getSeoBrandLinking($str_id, $h1, $arts, $brand_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT` FROM `SEO_STR_BRANDS` WHERE `STR_ID`='$str_id' AND `BRAND_ID`='$brand_id' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
 
-            list($brand1, $brand2, $brand3) = $this->getSeoLinkingBrand(3);
-            list($article_name) = $this->getSeoLinkingArticle(1);
+            list($brand1, $brand2, $brand3, $brand4) = $this->getRandomBrands(4, $brand_id);
+
+            list($art_id1, $art_id2) = $this->getRandomAcitveArts($arts, 2);
+            $article_name1 = $this->getArticleText($art_id1);
+            $article_name2 = $this->getArticleText($art_id2);
+
+            list($mfa1, $mfa2, $mfa3, $mfa4) = $this->getRandomManuf(4);
+
             $geo_nominative = $this->getSeoLinkingParam("CITY", 1);
 
-            list($mfa_text, $model_text) = $this->getSeoLinkingMfaModel();
-
-            $list = "$h1 {_on_shop} {_toko} {_low_cost} $article_name {_electronic_catalog} {_any_mfa} {_any_year} {_any_modif} . {_top_mfa} $brand1, $brand2, $brand3 {_full_confidence} $mfa_text $model_text {_always_find} {_lot_assortment} $brand1, $brand2, $brand3 . {_how_to_buy} $h1 {_necessary_detail} $article_name {_convenient_navigation} {_professional_consultants} {_professional_consultants_help} $mfa_text . {_goods_guarantee} {_city_delivery} $geo_nominative {_any_city}";
+            $list = "$h1 {_on_shop} {_toko} {_low_cost} $article_name1 {_electronic_catalog} 
+            <ul>
+                <li> {_any_mfa} $mfa1, $mfa2, $mfa3</li>
+                <li> {_any_year} </li> 
+                <li> {_any_modif} </li> 
+            </ul>
+            {_top_mfa} $brand1, $brand2, $brand3 {_full_confidence} $mfa4 {_always_find} {_lot_assortment} $brand4 {_how_to_buy} $h1 ? {_necessary_detail} $article_name2 {_convenient_navigation} {_professional_consultants} {_professional_consultants_help} $mfa4 . {_goods_guarantee} {_city_delivery} $geo_nominative {_any_city}";
 
             $list = $this->replaceLang($list);
             $list = str_replace(str_split("{}"), "", $list);
@@ -902,6 +982,16 @@ class SearchClass extends CatalogueClass
         $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' ORDER BY RAND() LIMIT 1;");
         $mod_text = $db->result($r, 0, "Model");
         return array($mfa_text, $mod_text);
+    }
+
+    function getRandomManuf($limit = 1) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND` FROM `T_manufacturers` ORDER BY RAND() LIMIT $limit;"); $n = $db->num_rows($r);
+        $mfas = [];
+        for ($i=1; $i<=$n; $i++) {
+            $mfa_text = $db->result($r, $i - 1, "MFA_BRAND");
+            array_push($mfas, $mfa_text);
+        }
+        return $mfas;
     }
 
 }

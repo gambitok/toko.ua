@@ -852,7 +852,7 @@ class CatalogueClass
                 $mas = $this->sortByMinStock($mas);
 
                 // show other storages
-                $other_storages = $this->showOtherStorages($mas, $cur);
+                $other_storages = $this->showOtherStorages($mas, $cur, $view);
 
                 // show search list
                 $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view);
@@ -1005,7 +1005,7 @@ class CatalogueClass
                 $mas = $this->sortByMinStock($mas);
 
                 // show other storages
-                $other_storages = $this->showOtherStorages($mas,$cur);
+                $other_storages = $this->showOtherStorages($mas, $cur, $view);
 
                 $cc = 0;
                 if (!empty($mas)) {
@@ -1198,7 +1198,7 @@ class CatalogueClass
                 $mas = $this->sortByMinStock($mas);
 
                 // show other storages
-                $other_storages = $this->showOtherStorages($mas, $cur);
+                $other_storages = $this->showOtherStorages($mas, $cur, $view);
 
                 // show search list
                 FormClass::cacheArticlesPhotos($where_art_id_str);
@@ -1479,16 +1479,19 @@ class CatalogueClass
         $form=str_replace("{style_class}", $class, $form);
         $form=str_replace("{style_none}", $none, $form);
         $form=str_replace("{style_hide}", $hide, $form);
+
         if ($view) {
-//            $link = $ll;
-            $link = "";
+            $link = $ll;
             $search_number = $this->getArticleSearch($art_id);
             $brand_link = $this->getBrandLink($brand_id);
             $link = str_replace("{content_prefix}", $prefix, $link);
             $link = str_replace("{content_search_number}", $search_number, $link);
             $link = str_replace("{content_brand_link}", $brand_link, $link);
             $form = str_replace("{product_test_offers}", $link, $form);
+        } else {
+            $form = str_replace("{product_test_offers}", "", $form);
         }
+
         $flagData = $showform->getCountryFlag($brand_id);
         $form=str_replace("{country_display}", ($flagData==false) ? "none" : "", $form);
         $form=str_replace("{flag_image}", $flagData["flag"], $form);
@@ -2104,13 +2107,12 @@ class CatalogueClass
         return $mas;
     }
 
-    function showOtherStorages($mas, $cur) {
-        $kours = new ExRateClass; $client = new ClientClass;
+    function showOtherStorages($mas, $cur, $view) {
+        $kours = new ExRateClass;
         $currency_cap = $kours->getKoursSymbol($cur);
         $ll = $class = $hide = $border = $none = $checkarray = [];
         $i = $j = 0; $min_price = 9999999;
         $double = $preprice = 0;
-        $view = $client->getProductView();
 
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
@@ -2120,11 +2122,12 @@ class CatalogueClass
                         if ($double > 0) {
                             if (isset($ll[$i-1])) $ll[$i-1] = "";
                             if ($min_price > $val["price"]) $min_price = $val["price"];
-                            $ll[$i] = "<div class=\"row tables__row show_hidden\">
-                                <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage($art_id);\">{more_cap} <span class='span-grey'>$j ".$this->getOfferCap($j)."</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
-                                <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage($art_id);\"><span class='span-grey'>{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
-                            </div>";
-                            if ($view) {
+                            if (!$view) {
+                                $ll[$i] = "<div class=\"row tables__row show_hidden\">
+                                    <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage($art_id);\">{more_cap} <span class='span-grey'>$j ".$this->getOfferCap($j)."</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
+                                    <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage($art_id);\"><span class='span-grey'>{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
+                                </div>";
+                            } else {
                                 $ll[$i] = "<a href='https://toko.ua{content_prefix}/$this->search_link/{content_search_number}/{content_brand_link}/'>{more_cap} <span class='span-grey'>$j ".$this->getOfferCap($j)."</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class='fa fa-chevron-right'></i></a>";
                             }
                             $hide[$i] = "none";
@@ -2133,11 +2136,12 @@ class CatalogueClass
                     } else {
                         if (isset($ll[$i-1])) $ll[$i-1] = "";
                         if ($min_price > $val["price"]) $min_price = $val["price"];
-                        $ll[$i] = "<div class=\"row tables__row show_hidden\">
-                            <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage($art_id);\">{more_cap} <span class='span-grey'>$j ".$this->getOfferCap($j)."</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
-                            <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage($art_id);\"><span class='span-grey'>{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
-                        </div>";
-                        if ($view) {
+                        if (!$view) {
+                            $ll[$i] = "<div class=\"row tables__row show_hidden\">
+                                <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage($art_id);\">{more_cap} <span class='span-grey'>$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
+                                <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage($art_id);\"><span class='span-grey'>{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
+                            </div>";
+                        } else {
                             $ll[$i] = "<a href='https://toko.ua{content_prefix}/$this->search_link/{content_search_number}/{content_brand_link}/'>{more_cap} <span class='span-grey'>$j ".$this->getOfferCap($j)."</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class='fa fa-chevron-right'></i></a>";
                         }
                         $hide[$i] = "none";
@@ -2367,7 +2371,7 @@ class CatalogueClass
                 $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$temp_key`;");
 
                 // show other storages
-                $other_storages = $this->showOtherStorages($mas, $cur);
+                $other_storages = $this->showOtherStorages($mas, $cur, $view);
 
                 // show search list
                 $list = $this->outSearchList($list, $error, $mas, "", "", $other_storages, $view, 1);
