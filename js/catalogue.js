@@ -17,11 +17,20 @@ function showActionForm() {
         }}, true);
 }
 
-function showArtSearch() { "use strict";
+function showArtSearch() {
     $("#PhoneArticle").modal("show");
     JsHttpRequest.query(folder,{'w':'showHistoryList'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modal-phone__history").html(result.content);
+        }}, true);
+}
+
+function showPhoneForm() {
+    let form = "help";
+    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modals").append(result.content);
+            $("#HelpForm").modal("show");
         }}, true);
 }
 

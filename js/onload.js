@@ -203,7 +203,13 @@ $(document).ready(function() { "use strict";
     });
 
     // mobile slider
-    $(".bar").bigSlide();
+    $(".bar").bigSlide({
+        menu: ('#menu')
+    });
+
+    $(".bar-catalog").bigSlide({
+        menu: ('#menu-catalog')
+    });
 
 });
 

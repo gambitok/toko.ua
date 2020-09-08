@@ -184,7 +184,7 @@ a, a:not([href]):not([tabindex]) {
 }
 
 .nfound {
-    margin: 5em 0;
+    margin: 30px 0;
     h2 {
         color: $site_dark_primary;
         font-size: 22px;
@@ -813,16 +813,14 @@ header {
 }
 
 .garage-drop {
-    //background: $white;
-    //left: -250%;
-    //top: 300%!important;
-    //overflow: unset!important;
-    //width: 400%!important;
-    //z-index: 1000!important;
     &-block {
         background: $white;
+        h2 {
+            font-size: 22px;
+            margin-bottom: 30px;
+        }
         &__list {
-            padding: 30px;
+            padding: 15px;
             .garage-row {
                 padding-bottom: 15px;
                 &__text {
@@ -854,9 +852,9 @@ header {
                 width: 50px;
             }
         }
-        &__select {
+        &__select   {
             border-left: 1px solid #f1f1f1;
-            padding: 30px;
+            padding: 15px;
             &-title {
                 color: #000;
                 display: block;
@@ -1403,6 +1401,33 @@ header {
     }
     &.hidden {
         display: none;
+    }
+}
+
+.fixed-nav {
+    background: #2d8bfa;
+    color: #fff;
+    height: 80px;
+    left: 0;
+    position: fixed;
+    top: calc(100% - 80px);
+    width: 100%;
+    display: none;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 15px;
+    z-index: 100;
+    img {
+        display: block;
+        margin: 0 auto;
+        height: 30px;
+        width: 30px;
+    }
+    span {
+        display: block;
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
     }
 }
 

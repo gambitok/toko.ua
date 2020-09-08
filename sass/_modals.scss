@@ -1,3 +1,109 @@
+
+.modal-full {
+    background: #fff!important;
+    .modal-header {
+        button {
+            color: #000!important;
+        }
+    }
+}
+
+.modal-help {
+    background: #fff;
+    padding: 30px;
+    width: 100%;
+    ul {
+        list-style: none;
+    }
+    &-title {
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    &-row {
+        margin-top: 30px;
+        &__circle {
+            font-size: 12px;
+            background: #0c6;
+            color: #fff;
+            border-radius: 25px;
+            height: 20px;
+            width: 20px;
+            line-height: 20px;
+            display: inline-block;
+            text-align: center;
+            margin-left: -25px;
+            margin-bottom: 15px;
+        }
+        &__text {
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+        &-call {
+            button {
+                width: 100%;
+                background: #f1f1f1;
+                border: none;
+                border-radius: .25em;
+                color: #228b94;
+                padding: 10px;
+                margin: 15px 0;
+            }
+        }
+        &-socials {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            &__item {
+                display: block;
+                &-image {
+                    border-radius: 25px;
+                    height: 50px;
+                    width: 50px;
+                    &__telegram {
+                        background: #29a8ea;
+                    }
+                    &__viber {
+                        background: #6359a7;
+                    }
+                    &__facebook {
+                        background: #4064ad;
+                    }
+                    img {
+                        height: 100%;
+                        width: 100%;
+                        padding: 10px;
+                    }
+                }
+                span {
+                    font-size: 14px;
+                    text-align: center;
+                    display: block;
+                }
+            }
+        }
+        &-phones {
+            list-style: none;
+            margin: 0;
+            text-align: center;
+            li {
+                margin-bottom: 15px;
+            }
+            a {
+                border: none;
+                background: 0 0;
+                color: #606975;
+                font-size: 14px;
+            }
+            img {
+                height: 15px;
+                width: 15px;
+            }
+        }
+    }
+}
+
 #AlertForm {
     z-index: 99999;
 }
@@ -21,7 +127,7 @@
     }
 }
 
-#BasketForm, #GarageForm {
+#BasketForm {
     .modal-dialog {
         max-width: 1080px;
         padding-bottom: 30px;
@@ -29,6 +135,22 @@
             top: 0;
             .modal-header {
                 display: none;
+            }
+        }
+    }
+}
+
+#GarageForm {
+    .modal-dialog {
+        max-width: 1080px;
+        padding-bottom: 30px;
+        .modal-content {
+            top: 0;
+            .modal-header {
+                background: #fff!important;
+                button {
+                    color: #000!important;
+                }
             }
         }
     }
