@@ -11,6 +11,8 @@
 /* ==== Main Page ====*/
 body, html { width: 100%; height: 100%; overflow-x: hidden; }
 
+@media (max-width: 992px) { body, html { height: auto; } }
+
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; letter-spacing: 0.5px; }
 
 a, a:not([href]):not([tabindex]) { color: #000; }
@@ -453,11 +455,13 @@ header { width: 100%; color: #a9a9a9; }
 
 /*==== /CONTACTS ===*/
 /*==== MAIN HEAD ===*/
-.basket_phone { background: #f44336; color: #fff; width: 25px; height: 25px; border-radius: 30px; position: relative; top: -12px; left: 34px; border: 2px solid; font-size: 14px; z-index: 99; text-align: center; }
+.tool-status { background: #f44336; border: 1px solid; border-radius: 30px; color: #fff; display: block; height: 20px; position: relative; top: -8px; left: 35px; font-size: 12px; line-height: 20px; text-align: center; width: 20px; z-index: 99; }
 
-.basket_count { float: left; background: #f44336; border: 2px solid #fff; font-size: 14px; border-radius: 30px; color: #fff; width: 25px; height: 25px; text-align: center; }
+.tool-status-hidden { display: none; }
 
-.basket_count_media { position: relative; top: -40px; left: 30px; }
+.tool-status-contain { display: block; height: 0; }
+
+.basket_phone { background: #f44336; border: 1px solid; border-radius: 30px; color: #fff; height: 20px; position: relative; top: -8px; left: 35px; font-size: 12px; line-height: 20px; text-align: center; width: 20px; z-index: 99; }
 
 /*==== /MAIN HEAD ===*/
 /*==== RECOMENDATION BANNER ====*/
@@ -561,11 +565,13 @@ header { width: 100%; color: #a9a9a9; }
 
 .fixed.hidden { display: none; }
 
-.fixed-nav { background: #2d8bfa; color: #fff; height: 80px; left: 0; position: fixed; top: calc(100% - 80px); width: 100%; display: none; flex-wrap: nowrap; justify-content: space-between; padding: 15px; z-index: 100; }
+.fixed-nav { transition: all 0.3s linear; background: #2d8bfa; color: #fff; height: 80px; left: 0; position: fixed; top: calc(100% - 80px); width: 100%; display: none; flex-wrap: nowrap; justify-content: space-between; padding: 15px; z-index: 100; }
 
-.fixed-nav img { display: block; margin: 0 auto; height: 30px; width: 30px; }
+.fixed-nav-item { width: 50px; }
 
-.fixed-nav span { display: block; width: 100%; text-align: center; font-size: 12px; }
+.fixed-nav-item__image { display: block; height: 30px; margin: 0 auto; width: 30px; }
+
+.fixed-nav-item__text { display: block; font-size: 12px; text-align: center; width: 100%; }
 
 .fixed-phone { display: none; width: 100%; }
 
@@ -1415,7 +1421,9 @@ table thead td { border: 1px solid #000; }
 
 /*==== /SELECT 2 ====*/
 /*==== Mobile Navigation ====*/
-.panel { background: #fff; list-style: none; padding-top: 30px; overflow: auto; z-index: 99999999; }
+.panel { background: #fff; list-style: none; padding-top: 30px; overflow: auto; z-index: 999999; }
+
+.panel-filters { background: #fff; list-style: none; padding-top: 30px; overflow: auto; z-index: 999999; }
 
 .panel ul { list-style: none; }
 
@@ -1518,17 +1526,13 @@ table thead td { border: 1px solid #000; }
   .tree-list li { margin: 0; padding: 10px; width: 50%; }
   .tree-head { min-height: 200px; }
   .tree-head span { float: left; }
-  /*=== GOODS ====*/
   .goods { justify-content: center; }
   .goods__item { margin: 15px; }
-  /*=== /GOODS ====*/
-  /*==== FOOTER ====*/
   .footer__socials { padding-left: 15px; }
   .footer__socials ul { margin-bottom: 2%; padding-top: 2%; }
   .footer__contacts { padding-top: 5%; }
   .footer__contacts-head ul { padding-right: 1%; }
   .footer__contacts-column { border: none !important; padding-left: 15px !important; }
-  /*==== /FOOTER ====*/
   .cars_range-title-h { display: none; }
   .car_form-selected { display: block !important; padding: 10px !important; }
   .tabs-auto li a { padding-left: 5px; }
@@ -1554,11 +1558,8 @@ table thead td { border: 1px solid #000; }
   .seo_details .seo-li-min img { height: 40px; width: 40px; }
   .tree-head_min img { max-width: unset; width: 100%; }
   .seo_auto ul.list-inline { column-count: 2; }
-  /*==== BASKET ====*/
   .basket__table { display: none; }
   .basket__phone { display: block; }
-  /*==== /BASKET ====*/
-  /*==== GARAGE ====*/
   .garage-user { height: auto; }
   .garage-user .btn-arrow { display: block; }
   .garage-user #toggle_btn { display: none; }
@@ -1569,7 +1570,6 @@ table thead td { border: 1px solid #000; }
   .garage-user__nav .btn-img { margin-bottom: 15px; }
   .garage-user__nav button { margin-bottom: 10px; margin-left: 10px; }
   .garage-user__image { display: none; }
-  /*==== /GARAGE ====*/
   .tree-block-title { height: 200px; }
   .tree-item { margin: 0; padding-left: 15px; width: 100%; }
   .tree-item-title a { line-height: 3; }
@@ -1588,10 +1588,6 @@ table thead td { border: 1px solid #000; }
   .header-main .phones ul li input { font-size: 11px; } }
 
 /*==== /PAD PRO ====*/
-/*==== PAD PRO2 ====*/
-@media (min-width: 576px) and (max-width: 768px) { .container { max-width: unset; } }
-
-/*==== /PAD PRO2 ====*/
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) { .fixed-nav { display: flex; }
   .pop { display: none !important; }
@@ -1606,16 +1602,13 @@ table thead td { border: 1px solid #000; }
   .main_menu .table-responsive { display: block; }
   .label { width: auto; }
   .header-top .authorization { padding: 0; }
-  /*==== FOOTER ====*/
   .footer__socials { padding-left: 15px; }
   .footer__socials ul { margin-bottom: 2%; padding-top: 2%; }
   .footer__contacts { padding-top: 5%; }
   .footer__contacts-head ul { padding-right: 1%; }
   .footer__contacts-column { border: none !important; padding-left: 15px !important; }
-  /*==== /FOOTER ====*/
   .basket_count { left: 120px; }
   .table-responsive { display: block; }
-  /*==== GARAGE ====*/
   .garage-drop-block__select { border: none; }
   .garage-drop-block__list .garage-row__buttons { text-align: left; }
   .garage-user { height: auto; }
@@ -1628,7 +1621,6 @@ table thead td { border: 1px solid #000; }
   .garage-user__nav .btn-img { margin-bottom: 15px; }
   .garage-user__nav button { margin-bottom: 10px; margin-left: 10px; }
   .garage-user__image { display: none; }
-  /*==== /GARAGE ====*/
   .tree-block-title { height: 200px; }
   .tree-item { margin: 0; padding-left: 15px; width: 100%; }
   .tree-item-title a { line-height: 3; }
@@ -1636,11 +1628,19 @@ table thead td { border: 1px solid #000; }
   .tree-item-list__element a { line-height: 2; } }
 
 /*==== PAD ====*/
+/*==== PAD PRO2 ====*/
+@media (min-width: 576px) and (max-width: 768px) { .container { max-width: unset; } }
+
+/*==== /PAD PRO2 ====*/
+#PhoneArticle { background-color: #fff; }
+
+#PhoneArticle .modal-header button { color: #000; }
+
 .modal-full { background: #fff !important; }
 
 .modal-full .modal-header button { color: #000 !important; }
 
-.modal-help { background: #fff; padding: 30px; width: 100%; }
+.modal-help { background: #fff; color: #000; padding: 0 30px; width: 100%; }
 
 .modal-help ul { list-style: none; }
 
@@ -1789,6 +1789,10 @@ table thead td { border: 1px solid #000; }
 .modal-phone .search-nav__item:hover { background: #f7f7f7; }
 
 .close { color: #fff; }
+
+@media (max-width: 992px) { #BasketForm, #GarageForm { background: #fff !important; }
+  #BasketForm .modal-content, #GarageForm .modal-content { border: none; }
+  #BasketForm .modal-header button, #GarageForm .modal-header button { color: #000 !important; } }
 
 /*==== BASKET ====*/
 .basket-header { padding-bottom: 15px; }
@@ -2672,17 +2676,13 @@ table thead td { border: 1px solid #000; }
   .tree-list li { margin: 0; padding: 10px; width: 50%; }
   .tree-head { min-height: 200px; }
   .tree-head span { float: left; }
-  /*=== GOODS ====*/
   .goods { justify-content: center; }
   .goods__item { margin: 15px; }
-  /*=== /GOODS ====*/
-  /*==== FOOTER ====*/
   .footer__socials { padding-left: 15px; }
   .footer__socials ul { margin-bottom: 2%; padding-top: 2%; }
   .footer__contacts { padding-top: 5%; }
   .footer__contacts-head ul { padding-right: 1%; }
   .footer__contacts-column { border: none !important; padding-left: 15px !important; }
-  /*==== /FOOTER ====*/
   .cars_range-title-h { display: none; }
   .car_form-selected { display: block !important; padding: 10px !important; }
   .tabs-auto li a { padding-left: 5px; }
@@ -2708,11 +2708,8 @@ table thead td { border: 1px solid #000; }
   .seo_details .seo-li-min img { height: 40px; width: 40px; }
   .tree-head_min img { max-width: unset; width: 100%; }
   .seo_auto ul.list-inline { column-count: 2; }
-  /*==== BASKET ====*/
   .basket__table { display: none; }
   .basket__phone { display: block; }
-  /*==== /BASKET ====*/
-  /*==== GARAGE ====*/
   .garage-user { height: auto; }
   .garage-user .btn-arrow { display: block; }
   .garage-user #toggle_btn { display: none; }
@@ -2723,7 +2720,6 @@ table thead td { border: 1px solid #000; }
   .garage-user__nav .btn-img { margin-bottom: 15px; }
   .garage-user__nav button { margin-bottom: 10px; margin-left: 10px; }
   .garage-user__image { display: none; }
-  /*==== /GARAGE ====*/
   .tree-block-title { height: 200px; }
   .tree-item { margin: 0; padding-left: 15px; width: 100%; }
   .tree-item-title a { line-height: 3; }
@@ -2742,10 +2738,6 @@ table thead td { border: 1px solid #000; }
   .header-main .phones ul li input { font-size: 11px; } }
 
 /*==== /PAD PRO ====*/
-/*==== PAD PRO2 ====*/
-@media (min-width: 576px) and (max-width: 768px) { .container { max-width: unset; } }
-
-/*==== /PAD PRO2 ====*/
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) { .fixed-nav { display: flex; }
   .pop { display: none !important; }
@@ -2760,16 +2752,13 @@ table thead td { border: 1px solid #000; }
   .main_menu .table-responsive { display: block; }
   .label { width: auto; }
   .header-top .authorization { padding: 0; }
-  /*==== FOOTER ====*/
   .footer__socials { padding-left: 15px; }
   .footer__socials ul { margin-bottom: 2%; padding-top: 2%; }
   .footer__contacts { padding-top: 5%; }
   .footer__contacts-head ul { padding-right: 1%; }
   .footer__contacts-column { border: none !important; padding-left: 15px !important; }
-  /*==== /FOOTER ====*/
   .basket_count { left: 120px; }
   .table-responsive { display: block; }
-  /*==== GARAGE ====*/
   .garage-drop-block__select { border: none; }
   .garage-drop-block__list .garage-row__buttons { text-align: left; }
   .garage-user { height: auto; }
@@ -2782,7 +2771,6 @@ table thead td { border: 1px solid #000; }
   .garage-user__nav .btn-img { margin-bottom: 15px; }
   .garage-user__nav button { margin-bottom: 10px; margin-left: 10px; }
   .garage-user__image { display: none; }
-  /*==== /GARAGE ====*/
   .tree-block-title { height: 200px; }
   .tree-item { margin: 0; padding-left: 15px; width: 100%; }
   .tree-item-title a { line-height: 3; }
@@ -2790,5 +2778,9 @@ table thead td { border: 1px solid #000; }
   .tree-item-list__element a { line-height: 2; } }
 
 /*==== PAD ====*/
+/*==== PAD PRO2 ====*/
+@media (min-width: 576px) and (max-width: 768px) { .container { max-width: unset; } }
+
+/*==== /PAD PRO2 ====*/
 
 /*# sourceMappingURL=style.css.map */

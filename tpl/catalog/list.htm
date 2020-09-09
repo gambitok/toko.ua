@@ -3,9 +3,11 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-3 col-12 order-lg-0 order-1 template_filters" style="padding: 0">
-                <a class="btn btn-warning" href="/test_catalog/{group_id}">{clear_cap}</a>
-                {catalog_params_auto}
-                {catalog_params}
+                <div id="catalog-filters">
+                    <a class="btn btn-warning" href="/test_catalog/{group_id}">{clear_cap}</a>
+                    {catalog_params_auto}
+                    {catalog_params}
+                </div>
             </div>
             <div class="col-lg-9 col-12 order-lg-1 order-0">
                 <h1>{catalog_title}</h1>
@@ -33,34 +35,36 @@
 
 </div>
 
-<style>
-
-</style>
-
 <div id="fixed-nav-catalog" class="fixed-nav">
     <div class="fixed-nav-item" onclick="showGarageForm();">
-        <img src="/images/icons/help/car.png" alt="img">
-        <span>{garage_cap_upper}</span>
+        <div class="tool-status-contain">
+            <span id="tool-garage" class="tool-status {garage_style}">!</span>
+        </div>
+        <img class="fixed-nav-item__image" src="/images/icons/help/car.png" alt="img">
+        <span class="fixed-nav-item__text">{garage_cap_upper}</span>
     </div>
 
     <div class="fixed-nav-item" onclick="showPhoneForm();">
-        <img src="/images/icons/help/help.png" alt="img">
-        <span>{call_cap}</span>
+        <img class="fixed-nav-item__image" src="/images/icons/help/help.png" alt="img">
+        <span class="fixed-nav-item__text">{call_cap}</span>
     </div>
 
-    <div class="fixed-nav-item" onclick="showArtSearch();">
-        <img src="/images/icons/help/search.png" alt="img">
-        <span>{search_cap}</span>
+    <div class="fixed-nav-item" onclick="showArtSearch(); ">
+        <img class="fixed-nav-item__image" src="/images/icons/help/search.png" alt="img">
+        <span class="fixed-nav-item__text">{search_cap}</span>
     </div>
 
-    <div class="fixed-nav-item bar-catalog">
-        <img src="/images/icons/help/filter.png" alt="img">
-        <span>{filter_cap}</span>
+    <div class="fixed-nav-item bar-catalog" onclick="setCatalogFilters();">
+        <img class="fixed-nav-item__image" src="/images/icons/help/filter.png" alt="img">
+        <span class="fixed-nav-item__text">{filter_cap}</span>
     </div>
 
     <div class="fixed-nav-item" onclick="showBasketMinForm();">
-        <img src="/images/icons/help/basket.png" alt="img">
-        <span>{basket_cap}</span>
+        <div class="tool-status-contain">
+            <span id="tool-basket" class="tool-status {basket_style}">{basket_count}</span>
+        </div>
+        <img class="fixed-nav-item__image" src="/images/icons/help/basket.png" alt="img">
+        <span class="fixed-nav-item__text">{basket_cap}</span>
     </div>
 </div>
 

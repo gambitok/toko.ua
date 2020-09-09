@@ -1,3 +1,21 @@
+
+function navigateTo(id) {
+    $([document.documentElement, document.body]).animate({
+        scrollTop: $("#"+id).offset().top
+    }, 500);
+}
+
+// Main Search
+function showArtSearch() {
+    $("#PhoneArticle").modal("show");
+    JsHttpRequest.query(folder,{'w':'showHistoryList'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modal-phone__history").html(result.content);
+        }}, true);
+    setTimeout(function() { $('#search_art3').focus(); }, 2000);
+}
+
+// Modal `Region`
 function showRegionForm() {
     let form = "region";
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
@@ -8,6 +26,7 @@ function showRegionForm() {
         }}, true);
 }
 
+// Modal `Action` in Catalogs
 function showActionForm() {
     let form = "action";
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
@@ -17,14 +36,7 @@ function showActionForm() {
         }}, true);
 }
 
-function showArtSearch() {
-    $("#PhoneArticle").modal("show");
-    JsHttpRequest.query(folder,{'w':'showHistoryList'},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#modal-phone__history").html(result.content);
-        }}, true);
-}
-
+// Modal `Help` in Catalogs
 function showPhoneForm() {
     let form = "help";
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
@@ -52,6 +64,7 @@ function searchBrandInput() {
     }
 }
 
+// Catalog Cards Params (brands, count, pagination)
 function showSearchParameters() {
     let str_id = $("#details_str_id").val();
     let page = $("#details_page").val();
@@ -65,14 +78,8 @@ function showSearchParameters() {
         }}, true);
 }
 
-function navigateTo(id) {
-    $([document.documentElement, document.body]).animate({
-        scrollTop: $("#"+id).offset().top
-    }, 500);
-}
-
 function toggleListParams(a, param_id) {
-    $("#param-"+param_id).toggleClass("list-hide");
+    $("#param-" + param_id).toggleClass("list-hide");
     $(a).find("span").each(function() {
         if ($(this).attr("class")==="show") {
             $(this).addClass("none");
@@ -95,7 +102,7 @@ function showStorage(art_id) {
 }
 
 // SEARCH (by ARTICLE_DISPLAY / ARTICLE_SEARCH)
-function artSearch(input_name) { "use strict";
+function artSearch(input_name) {
     let art = $("#"+input_name).val();
     art=art.replace(/\s+/g,'');
     art=art.replace(/\.+/g,'');
@@ -169,6 +176,13 @@ function selectRegion(id) {
         }}, true);
 }
 
+function selectRegionText(id) {
+    JsHttpRequest.query(folder,{'w':'getRegionSelect', 'id':id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#region_select_tpoint").html(result.content);
+        }}, true);
+}
+
 function checkCookieTpoint() {
     // let tpoint_id = getCookie("tpoint_id");
     // if (tpoint_id==="") showRegionForm();
@@ -184,14 +198,8 @@ function checkCookieTpoint() {
     // return true;
 }
 
-function selectRegionText(id) { "use strict";
-    JsHttpRequest.query(folder,{'w':'getRegionSelect', 'id':id},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#region_select_tpoint").html(result.content);
-        }}, true);
-}
-
-function showBrandForm(brand) { "use strict";
+// Modal `Brands`
+function showBrandForm(brand) {
     JsHttpRequest.query(folder,{'w':'showBrandForm', 'brand':brand},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#info_brand").html(result.content);
@@ -199,7 +207,8 @@ function showBrandForm(brand) { "use strict";
     $("#BrandForm").modal("show");
 }
 
-function showInfoForm(art_id) { "use strict";
+// Modal `Information`
+function showInfoForm(art_id) {
     JsHttpRequest.query(folder,{'w':'showInfoForm', 'art_id':art_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#info_content").html(result.content[0]);
@@ -209,7 +218,8 @@ function showInfoForm(art_id) { "use strict";
         }}, true);
 }
 
-function showPhotoGallery(ref) { "use strict";
+// Modal `Photo Gallery`
+function showPhotoGallery(ref) {
     JsHttpRequest.query(folder,{'w':'showPhotoForm', 'ref':ref},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#photo_gallery").html(result.content);
@@ -260,20 +270,20 @@ function catalogueFilter(order) { "use strict";
             ex1.slider("setAttribute", "max", max_price);
             ex1.slider("refresh");
 
-            if (value[1]>max_price) value[1]=max_price;
-            var max_min=value[0]+","+value[1];
-            ex1.attr("data-slider-value",max_min);
+            if (value[1]>max_price) value[1] = max_price;
+            var max_min = value[0] + "," + value[1];
+            ex1.attr("data-slider-value", max_min);
             $("#price_val").html(max_min);
 
             if (cur!==cur_old) {
-                value[1]=max_price;
-                value[0]=0;
+                value[1] = max_price;
+                value[0] = 0;
                 ex1.slider("refresh");
                 $("#filter-max-price").html(max_price);
-                ex1.attr("data-slider-max",max_price);
+                ex1.attr("data-slider-max", max_price);
                 ex1.slider("setAttribute", "max", max_price);
                 max_min=value[0]+","+value[1];
-                ex1.attr("data-slider-value",max_min);
+                ex1.attr("data-slider-value", max_min);
                 $("#price_val").html(max_min);
                 $("#cur_value").val(cur);
                 ex1.slider("setValue", value);
@@ -328,12 +338,12 @@ function tecModelsFilter(order) {
             var value = ex1.data("slider").getValue();
 
             $("#filter-max-price").html(max_price);
-            ex1.attr("data-slider-max",max_price);
+            ex1.attr("data-slider-max", max_price);
             ex1.slider("setAttribute", "max", max_price);
             ex1.slider("refresh");
 
-            if (value[1]>max_price) value[1]=max_price;
-            var max_min=value[0]+","+value[1];
+            if (value[1]>max_price) value[1] = max_price;
+            var max_min = value[0] + "," + value[1];
             ex1.attr("data-slider-value",max_min);
             $("#price_val").html(max_min);
 
@@ -342,10 +352,10 @@ function tecModelsFilter(order) {
                 value[0] = 0;
                 ex1.slider("refresh");
                 $("#filter-max-price").html(max_price);
-                ex1.attr("data-slider-max",max_price);
+                ex1.attr("data-slider-max", max_price);
                 ex1.slider("setAttribute", "max", max_price);
-                max_min=value[0]+","+value[1];
-                ex1.attr("data-slider-value",max_min);
+                max_min=value[0] + "," + value[1];
+                ex1.attr("data-slider-value", max_min);
                 $("#price_val").html(max_min);
                 $("#cur_value").val(cur);
                 ex1.slider("setValue", value);
@@ -406,13 +416,13 @@ function loadApplicModels2(art_id_tcd, manufacture, a) {
 
 function loadApplicModelsInfo2(art_id, typ_id) {
     let er = 0;
-    if (document.getElementById("AMI"+typ_id).innerHTML===""){
+    if (document.getElementById("AMI"+typ_id).innerHTML==="") {
         JsHttpRequest.query(folder,{ 'w': 'loadApplicModelsInfo2', 'art_id':art_id, 'typ_id':typ_id},
             function (result, errors){ if (errors) {} if (result){
-                document.getElementById("AMI"+typ_id).innerHTML=result.content;
-            }}, true);er=1;
+                document.getElementById("AMI" + typ_id).innerHTML = result.content;
+            }}, true); er = 1;
     }
-    if (document.getElementById("AMI"+typ_id).innerHTML!=="" && er===0){ $("#AMI" + typ_id).html(""); }
+    if (document.getElementById("AMI" + typ_id).innerHTML!=="" && er===0){ $("#AMI" + typ_id).html(""); }
 }
 
 // function checkTypeAnalog(n) { "use strict";
@@ -468,11 +478,11 @@ function addToGarage(typ_id=0) {
                         //updateGarageForm();
                     }
                 } else {
-                    showNotify("{error_cap}:","{garage_is_full}","danger");
+                    showNotify("{error_cap}:", "{garage_is_full}", "danger");
                 }
             }}, true);
     } else {
-        showNotify("{error_cap}:","{select_all_fields}!","danger");
+        showNotify("{error_cap}:", "{select_all_fields}!", "danger");
     }
 }
 
@@ -968,4 +978,14 @@ function setParamsAuto(group_id, type) {
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             location.href = "https://toko.ua/test_catalog/"+group_id+"/";
         }}, true);
+}
+
+function setCatalogFilters() {
+    $(".bar-catalog").bigSlide({
+        menu: ('#menu-catalog')
+    });
+    $(".bar-catalog").addClass("active");
+    let filters = $("#catalog-filters").html();
+    $("#menu-catalog-content").html(filters);
+    $("#catalog-filters").html("");
 }

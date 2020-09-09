@@ -20,27 +20,27 @@ function getContent($content) {
     $menu=new MenuClass; $shop=new ShopClass; $profile=new ProfileClass; $automan=new AutoClass;
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     if (strpos($actual_link,"?")!==false) $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
-
-    $content=str_replace("{info_row}", "", $content);
-    $content=str_replace("{canonical_link}", $actual_link, $content);
-    $content=str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
-    $content=str_replace("{basket_count}", $shop->countBasket()[0], $content);
-    $content=str_replace("{basket_style}", $shop->countBasket()[1], $content);
-    $content=str_replace("{garage_status}", $automan->getGarageAutoCount()[0], $content);
-    $content=str_replace("{garage_style}", $automan->getGarageAutoCount()[1], $content);
-    $content=str_replace("{basket_summ}", $shop->countSummBasket(), $content);
-    $content=str_replace("{profile_mobile}", $profile->getProfileInfoMobile(), $content);
-    $content=str_replace("{list_social}", getPhpContent("/tpl/menu/social_icons.php"), $content);
-    $content=str_replace("{info}", "", $content);
-    $content=str_replace("{info_title}", "", $content);
-    $content=str_replace("{info2}", "", $content);
-    $content=str_replace("{info3}", "", $content);
-    $content=str_replace("{info2_more}", "", $content);
-    $content=str_replace("{brand_info}", "", $content);
-    $content=str_replace("{art_info}", "", $content);
-    $content=str_replace("{lang_list}", "", $content);
-    $h1_title=getTitle(getPath());
-    $content=str_replace("<h1></h1>", "<h1>$h1_title</h1>", $content);
+    $content = str_replace("{info_row}", "", $content);
+    $content = str_replace("{canonical_link}", $actual_link, $content);
+    $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
+    $content = str_replace("{basket_count}", $shop->countBasket()[0], $content);
+    $content = str_replace("{basket_style}", $shop->countBasket()[1], $content);
+    $content = str_replace("{garage_style}", $shop->countGarage(), $content);
+    $content = str_replace("{garage_status}", $automan->getGarageAutoCount()[0], $content);
+    $content = str_replace("{garage_style}", $automan->getGarageAutoCount()[1], $content);
+    $content = str_replace("{basket_summ}", $shop->countSummBasket(), $content);
+    $content = str_replace("{profile_mobile}", $profile->getProfileInfoMobile(), $content);
+    $content = str_replace("{list_social}", getPhpContent("/tpl/menu/social_icons.php"), $content);
+    $content = str_replace("{info}", "", $content);
+    $content = str_replace("{info_title}", "", $content);
+    $content = str_replace("{info2}", "", $content);
+    $content = str_replace("{info3}", "", $content);
+    $content = str_replace("{info2_more}", "", $content);
+    $content = str_replace("{brand_info}", "", $content);
+    $content = str_replace("{art_info}", "", $content);
+    $content = str_replace("{lang_list}", "", $content);
+    $h1_title = getTitle(getPath());
+    $content = str_replace("<h1></h1>", "<h1>$h1_title</h1>", $content);
     return $content;
 }
 
@@ -589,26 +589,26 @@ function getPhpContent($file) {
         $contents = ob_get_contents();
         ob_end_clean();
     }
-    else $contents="File not exist!";
+    else $contents = "File not exist!";
     return $contents;
 }
 
 function translateContent($content) { $db = DbSingleton::getTokoDb();
-    $language=new LangClass;
-    $r=$db->query("SELECT `variable` FROM `new_lang_wd`;"); $n=$db->num_rows($r);
-    for ($i=1;$i<=$n;$i++) {
-        $code=$db->result($r,$i-1,"variable");
-        $word=$language->getLanguageName($code);
+    $language = new LangClass;
+    $r = $db->query("SELECT `variable` FROM `new_lang_wd`;"); $n=$db->num_rows($r);
+    for ($i=1; $i<=$n; $i++) {
+        $code = $db->result($r, $i-1, "variable");
+        $word = $language->getLanguageName($code);
         //$word = iconv("windows-1251", "UTF-8", $word);
-        $content=str_replace("{".$code."}",$word,$content);
+        $content = str_replace("{".$code."}", $word, $content);
     }
     return $content;
 }
 
 function getPath() {
-    $url=findUrl();
-    $path=findPath();
-    if ($path=="") $path=$url;
+    $url = findUrl();
+    $path = findPath();
+    if ($path=="") $path = $url;
     return $path;
 }
 

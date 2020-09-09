@@ -7,6 +7,13 @@ html {
     overflow-x: hidden;
 }
 
+@media (max-width: 992px) {
+    body,
+    html {
+        height: auto;
+    }
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -1107,37 +1114,64 @@ header {
 /*==== /CONTACTS ===*/
 
 /*==== MAIN HEAD ===*/
-.basket_phone {
-    background: $site_main_primary;
-    color: $white;
-    width: 25px;
-    height: 25px;
-    border-radius: 30px;
-    position: relative;
-    top: -12px;
-    left: 34px;
-    border: 2px solid;
-    font-size: 14px;
-    z-index: 99;
-    text-align: center;
-}
 
-.basket_count {
-    float: left;
-    background: $site_main_primary;
-    border: 2px solid $white;
-    font-size: 14px;
+.tool-status {
+    background: #f44336;
+    border: 1px solid;
     border-radius: 30px;
-    color: $white;
-    width: 25px;
-    height: 25px;
+    color: #fff;
+    display: block;
+    height: 20px;
+    position: relative;
+    top: -8px;
+    left: 35px;
+    font-size: 12px;
+    line-height: 20px;
     text-align: center;
-    &_media {
-        position: relative;
-        top: -40px;
-        left: 30px;
+    width: 20px;
+    z-index: 99;
+    &-hidden {
+        display: none;
+    }
+    &-contain {
+        display: block;
+        height: 0;
     }
 }
+
+.basket_phone {
+    background: #f44336;
+    border: 1px solid;
+    border-radius: 30px;
+    color: #fff;
+    height: 20px;
+    position: relative;
+    top: -8px;
+    left: 35px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    width: 20px;
+    z-index: 99;
+}
+
+// Fixed Menu Basket
+//.basket_count {
+//    float: left;
+//    background: $site_main_primary;
+//    border: 2px solid $white;
+//    font-size: 14px;
+//    border-radius: 30px;
+//    color: $white;
+//    width: 25px;
+//    height: 25px;
+//    text-align: center;
+//    &_media {
+//        position: relative;
+//        top: -40px;
+//        left: 30px;
+//    }
+//}
 
 /*==== /MAIN HEAD ===*/
 
@@ -1405,6 +1439,7 @@ header {
 }
 
 .fixed-nav {
+    transition: all 0.3s linear;
     background: #2d8bfa;
     color: #fff;
     height: 80px;
@@ -1417,17 +1452,20 @@ header {
     justify-content: space-between;
     padding: 15px;
     z-index: 100;
-    img {
-        display: block;
-        margin: 0 auto;
-        height: 30px;
-        width: 30px;
-    }
-    span {
-        display: block;
-        width: 100%;
-        text-align: center;
-        font-size: 12px;
+    &-item {
+        width: 50px;
+        &__image {
+            display: block;
+            height: 30px;
+            margin: 0 auto;
+            width: 30px;
+        }
+        &__text {
+            display: block;
+            font-size: 12px;
+            text-align: center;
+            width: 100%;
+        }
     }
 }
 

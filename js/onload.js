@@ -1,5 +1,6 @@
 var folder='/content.php';
 
+// MAIN NAVIGATION
 $(".header-main").mouseover(function() {
     closeHideNavigation();
 });
@@ -102,14 +103,15 @@ function loadInputNumber() { "use strict";
     });
 }
 
-$(document).ready(function() { "use strict";
-    // tooltips
+$(document).ready(function() {
+
+    // Tooltips
     $(".tooltips").tooltip();
 
-    // lazy load
-    var myLazyLoad = new LazyLoad({ elements_selector: ".lazy" });
+    // Lazy Load for images
+    new LazyLoad({ elements_selector: ".lazy" });
 
-    // input only numbers
+    // Only numbers for buying
     $(".show_count").keydown(function (e) {
         if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
             (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
@@ -123,11 +125,12 @@ $(document).ready(function() { "use strict";
         }
     });
 
+    // Main Banner
     $(".carousel").carousel({
         interval: 122000
     });
 
-    // ancor
+    // Ancor link (for scrolling top)
     $(".ancor__link a").click(function() {
         var elementClick = $(this).attr("href");
         var destination = $(elementClick).offset().top;
@@ -137,8 +140,8 @@ $(document).ready(function() { "use strict";
         return false;
     });
 
-    // slider filter range
-    var ex1=$("#ex1"), ex3=$("#ex3");
+    // Catalog Filters
+    var ex1 = $("#ex1"), ex3 = $("#ex3");
     if (ex1.length) {
         ex1.slider();
         ex1.on("slide", function(slideEvt) {
@@ -159,7 +162,7 @@ $(document).ready(function() { "use strict";
         });
     });
 
-    // art search input
+    // Searching on `Enter` key
     $("#search_art").keyup(function(event) {
         if (event.keyCode === 13) {
             artSearch("search_art");
@@ -202,14 +205,13 @@ $(document).ready(function() { "use strict";
         if (topd < limit2) { tglup(true); } else { tglup(false); }
     });
 
-    // mobile slider
+    // Adaptive navigation
     $(".bar").bigSlide({
         menu: ('#menu')
     });
 
-    $(".bar-catalog").bigSlide({
-        menu: ('#menu-catalog')
-    });
+    // Adaptive Catalog navigation
+
 
 });
 

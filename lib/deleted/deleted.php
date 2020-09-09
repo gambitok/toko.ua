@@ -1043,12 +1043,12 @@ function showArticleInfoForm($art_id,$article_nr_displ,$brand_name) { $db=DbSing
         return $arts;
     }
 
-    function getCatalogueSearchFilterParams($template_id,$values_filter=[],$param_values='') { $db=DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id';"); $n=$db->num_rows($r); $list="";
-        for ($i=1;$i<=$n;$i++) {
-            $param_id=$db->result($r,$i-1,"PARAM_ID");
-            $param_name=$db->result($r,$i-1,"PARAM_NAME");
-            list($param_list,$kol,)=$this->getCatalogueSearchFilterParamsValues($template_id,$param_id,$values_filter,$param_values);
+    function getCatalogueSearchFilterParams($template_id, $values_filter=[], $param_values='') { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id';"); $n = $db->num_rows($r); $list = "";
+        for ($i=1; $i<=$n; $i++) {
+            $param_id = $db->result($r,$i-1,"PARAM_ID");
+            $param_name = $db->result($r,$i-1,"PARAM_NAME");
+            list($param_list, $kol,) = $this->getCatalogueSearchFilterParamsValues($template_id, $param_id, $values_filter, $param_values);
             if ($kol>4) {
                 $style = "";
                 $toggle = "<a class=\"pointer underline\" onclick=\"toggleListParams(this,$param_id);\"><span class=\"show\">{more_cap} $kol</span> <span class=\"none\">{hide_cap}</span></a>";
@@ -1063,12 +1063,12 @@ function showArticleInfoForm($art_id,$article_nr_displ,$brand_name) { $db=DbSing
             </ul>
             $toggle ";
         }
-        $list=$this->replaceLang($list);
+        $list = $this->replaceLang($list);
         return $list;
     }
 
     function getCatalogueSearchFilterParamsValues($template_id,$param_id,$values_filter,$param_values) { $db=DbSingleton::getTokoDb();
-        $list="";$arr=[];
+        $list=""; $arr=[];
         if ($param_values!="") $where_params=" AND `VALUE_ID` IN ($param_values)"; else $where_params="";
         $r=$db->query("SELECT * FROM `T2_CATALOGUES_VALUES` WHERE `TEMPLATE_ID`='$template_id' AND `PARAM_ID`='$param_id' $where_params;"); $n=$db->num_rows($r);
 

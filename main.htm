@@ -471,7 +471,7 @@
                                 </a>
                             </li>
                             <div class="basket_status">
-                            	<div id="basket_status3" class="basket_phone {basket_style}">{basket_count}</div>
+                            	<div id="basket_status3" class="tool-status {basket_style}">{basket_count}</div>
                             </div>
                             <li>
                                 <a onclick="showBasketMinForm();">
@@ -745,13 +745,16 @@
 	<nav id="menu" class="panel" role="navigation">
         {site_mobile_panel}
 	</nav>
-	<nav id="menu-catalog" class="panel" role="navigation">
+	<nav id="menu-catalog" class="panel-filters" role="navigation">
 		<div class="container">
 			<div class="text-right">
 				<a class="bar-catalog"><span class="fa fa-times"></span></a>
 			</div>
-			<div id="menu-catalog-content">
-				MENU CATALOG
+			<div class="template_filters">
+				<h2>{filters_cap}</h2>
+				<div id="menu-catalog-content">
+					MENU CATALOG
+				</div>
 			</div>
 		</div>
 	</nav>

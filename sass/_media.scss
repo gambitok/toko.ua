@@ -231,7 +231,6 @@
         }
     }
 
-    /*=== GOODS ====*/
     .goods {
         justify-content: center;
         &__item {
@@ -239,9 +238,6 @@
         }
     }
 
-    /*=== /GOODS ====*/
-
-    /*==== FOOTER ====*/
     .footer {
         &__socials {
             padding-left: 15px;
@@ -261,8 +257,6 @@
             }
         }
     }
-
-    /*==== /FOOTER ====*/
 
     .cars_range-title-h {
         display: none;
@@ -368,7 +362,6 @@
         column-count: 2;
     }
 
-    /*==== BASKET ====*/
     .basket {
         &__table {
             display: none;
@@ -378,9 +371,6 @@
         }
     }
 
-    /*==== /BASKET ====*/
-
-    /*==== GARAGE ====*/
     .garage-user {
         height: auto;
         .btn-arrow {
@@ -414,14 +404,11 @@
         }
     }
 
-    /*==== /GARAGE ====*/
-
     .tree-block {
         &-title {
             height: 200px;
         }
     }
-
     .tree-item {
         margin: 0;
         padding-left: 15px;
@@ -485,15 +472,6 @@
 
 /*==== /PAD PRO ====*/
 
-/*==== PAD PRO2 ====*/
-@media (min-width: 576px) and (max-width: 768px) {
-    .container {
-        max-width: unset;
-    }
-}
-
-/*==== /PAD PRO2 ====*/
-
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) {
     .fixed-nav {
@@ -552,7 +530,6 @@
         padding: 0;
     }
 
-    /*==== FOOTER ====*/
     .footer {
         &__socials {
             padding-left: 15px;
@@ -573,8 +550,6 @@
         }
     }
 
-    /*==== /FOOTER ====*/
-
     .basket_count {
         left: 120px;
     }
@@ -583,7 +558,6 @@
         display: block;
     }
 
-    /*==== GARAGE ====*/
     .garage-drop-block__select {
         border: none;
     }
@@ -623,8 +597,6 @@
         }
     }
 
-    /*==== /GARAGE ====*/
-
     .tree-block {
         &-title {
             height: 200px;
@@ -654,3 +626,12 @@
 }
 
 /*==== PAD ====*/
+
+/*==== PAD PRO2 ====*/
+@media (min-width: 576px) and (max-width: 768px) {
+    .container {
+        max-width: unset;
+    }
+}
+
+/*==== /PAD PRO2 ====*/

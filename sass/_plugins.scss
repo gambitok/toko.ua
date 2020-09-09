@@ -917,7 +917,14 @@ table {
     list-style: none;
     padding-top: 30px;
     overflow: auto;
-    z-index: 99999999;
+    z-index: 999999;
+    &-filters {
+        background: #fff;
+        list-style: none;
+        padding-top: 30px;
+        overflow: auto;
+        z-index: 999999;
+    }
     ul {
         list-style: none;
         li {

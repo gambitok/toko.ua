@@ -41,9 +41,9 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) { "use st
                 secret=999999;
             }
         }
-        if (secret==="") secret=0;
+        if (secret==="") secret = 0;
         count_id.val(secret);
-        count=secret;
+        count = secret;
 
         if (secret!==0 && secret!=="") {
             JsHttpRequest.query(folder,{'w':'moveToBasket', 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
@@ -190,21 +190,26 @@ function showBasketForm() {
 // UPDATE BASKET STATUS, WHEN ARTICLE ADD TO BASKET
 function showBasketStatus() {
     let status1 = $("#basket_status");
-    let status2 = $("#basket_status2");
+    // let status2 = $("#basket_status2");
     let status3 = $("#basket_status3");
-    let status4 = $("#basket_status4");
+    // let status4 = $("#basket_status4");
+    let status5 = $("#tool-basket");
     JsHttpRequest.query(folder,{'w':'updateBasketStatus'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content[0]!=="") {
                 status1.addClass("show"); status1.removeClass("none"); status1.html(result.content[0]);
-                status2.addClass("show"); status2.removeClass("none"); status2.html(result.content[0]);
+                // status2.addClass("show"); status2.removeClass("none"); status2.html(result.content[0]);
                 status3.addClass("show"); status3.removeClass("none"); status3.html(result.content[0]);
-                status4.addClass("show"); status4.removeClass("none"); status4.html(result.content[0]);
+                // status4.addClass("show"); status4.removeClass("none"); status4.html(result.content[0]);
+
+                status5.removeClass("tool-status-hidden"); status5.text(result.content[0]);
             } else {
                 status1.addClass("none"); status1.removeClass("show");
-                status2.addClass("none"); status2.removeClass("show");
+                // status2.addClass("none"); status2.removeClass("show");
                 status3.addClass("none"); status3.removeClass("show");
-                status4.addClass("none"); status4.removeClass("show");
+                // status4.addClass("none"); status4.removeClass("show");
+
+                status5.addClass("tool-status-hidden");
             }
         }}, true);
 }

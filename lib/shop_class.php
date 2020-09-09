@@ -410,9 +410,19 @@ class ShopClass {
         $client = new ClientClass;
         $where = $client->getClientWhere();
         $r = $db->query("SELECT * FROM `basket` WHERE $where;"); $n = $db->num_rows($r);
-        $n>0 ? $list=$n : $list="";
-        $list=="" ? $style="none" : $style="";
+        $n > 0 ? $list = $n : $list = "";
+        $list=="" ? $style = "tool-status-hidden" : $style = "";
         return array($list, $style);
+    }
+
+    function countGarage() {
+        $auto_typ_id = $this->getCookieAuto();
+        if ($auto_typ_id!="") {
+            $style = "tool-status-hidden";
+        } else {
+            $style = "";
+        }
+        return $style;
     }
 
     function countSummBasket() { $db = DbSingleton::getTokoDb();

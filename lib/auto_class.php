@@ -696,13 +696,13 @@ class AutoClass {
                         $id = $db->result($rs, $i-1, "id");
                         $db->query("UPDATE `AUTO_GARAGE` SET `status`=0 WHERE `id`=$id;");
                     }
-                    $db->query("INSERT INTO `AUTO_GARAGE` (`client_id`,`user_id`,`cookie_id`,`typ_id`,`status`) VALUES ($client_id,$user_id,'$cookie',$typ_id,1);");
-                    list($manufacture_cap,,$model_id_cap,$typ_text) = $this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
+                    $db->query("INSERT INTO `AUTO_GARAGE` (`client_id`,`user_id`,`cookie_id`,`typ_id`,`status`) VALUES ($client_id, $user_id, '$cookie', $typ_id, 1);");
+                    list($manufacture_cap,, $model_id_cap, $typ_text) = $this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                     setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
                     $result = $this->replaceLang("{auto_cap} $manufacture_cap $model_id_cap $typ_text {garage_added}");
-                } else { $result=true; }
-            } else { $result=false; }
-        } else { $result=false; }
+                } else { $result = true; }
+            } else { $result = false; }
+        } else { $result = false; }
         return $result;
     }
 
@@ -710,7 +710,7 @@ class AutoClass {
         $client_id = $this->getClient(); $user_id = $this->getUser(); $cookie = $_COOKIE["session_id"];
         if ($user_id==0) $where = "`client_id`='$client_id' AND `cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where;"); $n = $db->num_rows($r);
-        $n>0 ? $list = $n : $list = "";
+        $n>0 ? $list = $n : $list = "!";
         $list=="" ? $style = "none" : $style = "";
         return array($list, $style);
     }
@@ -724,21 +724,21 @@ class AutoClass {
 
     /*==== HISTORY ====*/
     function insertAutoHistory($typ_id) { $db = DbSingleton::getTokoDb();
-        $cookie=$_COOKIE["session_id"]; $date=date("Y-m-d H:i:s");
-        $client_id=$this->getClient(); $user_id=$this->getUser(); $max_history_count=10;
-        if ($user_id==0) $where="`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user_id'";
-        $r=$db->query("SELECT COUNT(`id`) as kilk FROM `AUTO_HISTORY` WHERE $where;"); $k=$db->result($r,0,"kilk");
+        $cookie = $_COOKIE["session_id"]; $date = date("Y-m-d H:i:s");
+        $client_id = $this->getClient(); $user_id = $this->getUser(); $max_history_count = 10;
+        if ($user_id==0) $where = "`cookie_id`='$cookie'"; else $where="`client_id`='$client_id' AND `client_user_id`='$user_id'";
+        $r = $db->query("SELECT COUNT(`id`) as kilk FROM `AUTO_HISTORY` WHERE $where;"); $k = $db->result($r, 0, "kilk");
         if ($k>$max_history_count) {
-            $r=$db->query("SELECT `id` FROM `AUTO_HISTORY` WHERE $where ORDER BY `timestamp` ASC LIMIT 1;");
-            $id=$db->result($r,0,"id");
+            $r = $db->query("SELECT `id` FROM `AUTO_HISTORY` WHERE $where ORDER BY `timestamp` ASC LIMIT 1;");
+            $id = $db->result($r,0,"id");
             $db->query("UPDATE `AUTO_HISTORY` SET `typ_id`='$typ_id' WHERE `id`='$id';");
         } else {
-            $r=$db->query("SELECT `id` FROM `AUTO_HISTORY` WHERE $where AND `typ_id`='$typ_id';"); $n=$db->num_rows($r);
+            $r = $db->query("SELECT `id` FROM `AUTO_HISTORY` WHERE $where AND `typ_id`='$typ_id';"); $n=$db->num_rows($r);
             if ($n>0)
                 $db->query("UPDATE `AUTO_HISTORY` SET `timestamp`='$date' WHERE $where AND `typ_id`='$typ_id';");
             else
-                $db->query("INSERT INTO `AUTO_HISTORY` (`client_id`,`client_user_id`,`cookie_id`,`typ_id`)
-                VALUES ('$client_id','$user_id','$cookie','$typ_id');");
+                $db->query("INSERT INTO `AUTO_HISTORY` (`client_id`, `client_user_id`, `cookie_id`, `typ_id`)
+                VALUES ('$client_id', '$user_id', '$cookie', '$typ_id');");
         }
         return true;
     }
