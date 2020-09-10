@@ -84,13 +84,13 @@ trait Helper {
         return $pre;
     }
 
-    function getManualName($key) { $db=DbSingleton::getDbm();
+    function getManualName($key) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `id`='$key';");
         $caption = $db->result($r, 0, "mcaption");
         return $caption;
     }
 
-    function getManualNameCaption($key, $mid) { $db=DbSingleton::getDbm();
+    function getManualNameCaption($key, $mid) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `key`='$key' AND `mid`='$mid' LIMIT 1;");
         $caption = $db->result($r, 0, "mcaption");
         return $caption;

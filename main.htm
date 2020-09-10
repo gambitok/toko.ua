@@ -246,8 +246,8 @@
 		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Viber" data-placement="left">
 			<a href="viber://pa?chatURI=tokogroup" target="_blank" class="anchor-contacts__item anchor-contacts__item-viber"><img src="/images/icons/socials/viber.svg" alt="Viber"></a>
 		</div>
-		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Facebook" data-placement="left">
-			<a href="http://m.me/tokogroup" target="_blank" class="anchor-contacts__item anchor-contacts__item-facebook"><img src="/images/icons/socials/facebook.svg" alt="Facebook"></a>
+		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Facebook Messenger" data-placement="left">
+			<a href="http://m.me/tokogroup" target="_blank" class="anchor-contacts__item anchor-contacts__item-facebook"><img src="/images/icons/socials/facebook.svg" alt="Facebook Messenger"></a>
 		</div>
 		<div class="anchor-contacts-li anchor-contacts-li-main tooltips" title="{make_question}" data-placement="left">
 			<a onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-contacts"><img src="/images/icons/socials/chats.svg" alt="Socials"></a>
@@ -451,14 +451,14 @@
                     </div>
                 </div>
                 <div class="row align-items-center header-phone-nav">
-                    <div class="col-3 pad0">
+                    <div class="col-4 pad0">
                         <div class="header-phone-nav__logo">
                             <a href="{site_lang_prefix}/" class="btn">
-                                <img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}">
+                                <img itemprop="logo" src="{image_logotype_phone}" alt="{site_title_short}" title="{site_title_short}">
                             </a>
                         </div>
                     </div>
-                    <div class="col-9 pad0">
+                    <div class="col-8 pad0">
                         <ul class="header-phone-nav__list">
                             <li>
                                 <a href="{site_lang_prefix}/catalogue/">
@@ -688,7 +688,7 @@
 				<div class="modal-body text-left">
 					<div class="container">
 						<div class="input-group">
-							<input id="search_art3" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
+							<input id="search_art3" autofocus type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
 							<div class="input-group-append">
 								<button onClick="artSearch('search_art3');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
 							</div>
@@ -711,7 +711,7 @@
 				<div class="modal-body text-left">
 					<div class="container">
 						<div class="row">
-							<div id="basket_block" class="container">
+							<div id="basket_block" class="container" style="min-height: 375px;">
 								{basket_content}
 							</div>
 						</div>

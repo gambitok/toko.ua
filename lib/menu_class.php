@@ -8,6 +8,7 @@ class MenuClass {
     function getImages($content) {
         $dist = "/images/";
         $content = str_replace("{image_logotype}", $dist."logo.png", $content);
+        $content = str_replace("{image_logotype_phone}", $dist."logo-phone.png", $content);
         return $content;
     }
 

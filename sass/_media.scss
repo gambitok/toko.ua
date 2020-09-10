@@ -433,12 +433,15 @@
 
 /* ==== /PHONE ==== */
 
-/*==== PAD PRO ====*/
-@media (min-width: 992px) and (max-width: 1275px) {
-
+@media (max-width: 992px) {
     .fixed-nav {
         display: flex;
     }
+}
+
+/*==== PAD PRO ====*/
+@media (min-width: 992px) and (max-width: 1275px) {
+
     .pop {
         display: none!important;
     }

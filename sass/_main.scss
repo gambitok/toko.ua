@@ -1439,18 +1439,18 @@ header {
 }
 
 .fixed-nav {
-    transition: all 0.3s linear;
+    //transition: all 0.3s linear;
     background: #2d8bfa;
+    bottom: 0;
     color: #fff;
-    height: 80px;
-    left: 0;
-    position: fixed;
-    top: calc(100% - 80px);
-    width: 100%;
     display: none;
     flex-wrap: nowrap;
     justify-content: space-between;
+    height: 80px;
+    left: 0;
     padding: 15px;
+    position: fixed;
+    width: 100%;
     z-index: 100;
     &-item {
         width: 50px;
@@ -1473,9 +1473,9 @@ header {
     display: none;
     width: 100%;
     ul {
+        list-style: none;
         margin: 0;
         padding-left: 0;
-        list-style: none;
         li {
             display: inline-block;
             width: 40px;
@@ -1493,9 +1493,9 @@ header {
             }
             a, a:not([href]):not([tabindex]), button {
                 background: $white;
+                border: 1px solid white;
                 color: #292929;
                 width: 40px;
-                border: 1px solid white;
             }
         }
         .basket_status {
@@ -2635,7 +2635,7 @@ header {
             background: #6359a7;
         }
         &-facebook {
-            background: #4064ad;
+            background: #0099FF;
         }
     }
 }

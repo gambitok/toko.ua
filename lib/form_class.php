@@ -12,13 +12,13 @@ class FormClass {
     public $uploads_link = "https://toko.ua/uploads/images/catalogue";
 
     function showModalForm($name) {
-        $menu=new MenuClass;
-        $form=$this->getHtmlForm("modals/$name");
-        $form=$this->replaceLang($form);
+        $menu = new MenuClass;
+        $form = $this->getHtmlForm("modals/$name");
+        $form = $this->replaceLang($form);
         // REGION MODAL
-        $form=str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
-        $form=str_replace("{region_list}", $menu->getRegionList(), $form);
-        $form=str_replace("{region_list_phone}", $menu->getRegionListPhone(), $form);
+        $form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
+        $form = str_replace("{region_list}", $menu->getRegionList(), $form);
+        $form = str_replace("{region_list_phone}", $menu->getRegionListPhone(), $form);
         return $form;
     }
 
@@ -29,9 +29,9 @@ class FormClass {
                 LEFT JOIN `T2_COUNTRIES` t2c on (t2c.COUNTRY_ID=t2b.COUNTRY_ID)");
             self::$flags = array_column(mysqli_fetch_all($r, MYSQLI_ASSOC), null, 'BRAND_ID');
         }
-        $flag=self::$flags[$brand_id]["ALFA2"];
-        $name_country=self::$flags[$brand_id]["COUNTRY_NAME"];
-        $flag=mb_strtolower($flag);
+        $flag = self::$flags[$brand_id]["ALFA2"];
+        $name_country = self::$flags[$brand_id]["COUNTRY_NAME"];
+        $flag = mb_strtolower($flag);
         if ($name_country=="") return false; else return array("flag"=>$flag, "country"=>$name_country);
     }
 
@@ -55,7 +55,7 @@ class FormClass {
             $str_text = "";
             for ($i=1;$i<=$n;$i++) {
                 $str_id = $db->result($r, $i-1, "STR_ID");
-                $r1 = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1=$db->query($r1);
+                $r1 = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1 = $db->query($r1);
                 if ($n1>0) $str_text = $db->result($r1, 0, "TEX_LINK");
                 if ($str_text!="") break;
             }
@@ -87,7 +87,6 @@ class FormClass {
         $article_name = $article["text"];
 
         $brand_link = $this->getArtBrandLink($art_id, $brand_id);
-
         $flagData = $this->getCountryFlag($brand_id);
         if ($flagData!==false) {
             $flag = $flagData["flag"];
@@ -104,40 +103,41 @@ class FormClass {
             </a>";
         }
 
-        $form=str_replace("{art_id}", $art_id, $form);
-        $form=str_replace("{art_name}", $article_nr_displ, $form);
-        $form=str_replace("{art_brand_id}", $brand_id, $form);
-        $form=str_replace("{art_brand_name}", $brand_name, $form);
-        $form=str_replace("{art_brand_form}", $brand_form, $form);
-        $form=str_replace("{art_text}", $article_name, $form);
-        $form=str_replace("{art_del}", str_replace("<br>", ", ", $article["delivery"]), $form);
-        $form=str_replace("{del_class}", ($article["delivery_days"]==0) ? "delivery-red" : ($article["delivery_days"]==1 ? "delivery-blue" : ($article["delivery_days"]>1 ? "delivery-dark" : "")), $form);
-        $form=str_replace("{art_stock}", $article["stock"], $form);
-        $form=str_replace("{art_price}", $article["price"], $form);
-        $form=str_replace("{art_cur}", $article["currency"], $form);
-        $form=str_replace("{art_basket}", $article["basket"], $form);
-        $form=str_replace("{art_images}", $this->showArticlePhotoGallery($art_id), $form);
-        $form=str_replace("{analogs_capa}", "$article_nr_displ $brand_name", $form);
-        $form=str_replace("{analogs_link}", "https://toko.ua".$this->getLangPrefix()."/search/$format_article/$brand_id/$brand_name/", $form);
+        $form = str_replace("{art_id}", $art_id, $form);
+        $form = str_replace("{art_name}", $article_nr_displ, $form);
+        $form = str_replace("{art_brand_id}", $brand_id, $form);
+        $form = str_replace("{art_brand_name}", $brand_name, $form);
+        $form = str_replace("{art_brand_form}", $brand_form, $form);
+        $form = str_replace("{art_text}", $article_name, $form);
+        $form = str_replace("{art_del}", str_replace("<br>", ", ", $article["delivery"]), $form);
+        $form = str_replace("{del_class}", ($article["delivery_days"]==0) ? "delivery-red" : ($article["delivery_days"]==1 ? "delivery-blue" : ($article["delivery_days"]>1 ? "delivery-dark" : "")), $form);
+        $form = str_replace("{art_stock}", $article["stock"], $form);
+        $form = str_replace("{art_price}", $article["price"], $form);
+        $form = str_replace("{art_cur}", $article["currency"], $form);
+        $form = str_replace("{art_basket}", $article["basket"], $form);
+        $form = str_replace("{art_images}", $this->showArticlePhotoGallery($art_id), $form);
+        $form = str_replace("{analogs_capa}", "$article_nr_displ $brand_name", $form);
+        $form = str_replace("{analogs_link}", "https://toko.ua".$this->getLangPrefix()."/search/$format_article/$brand_id/$brand_name/", $form);
 
         $analogs = $cat->shortSearchList($art_id);
-        $form=str_replace("{analogs_list}", $analogs, $form);
-        $form=str_replace("{analogs_display}", $analogs=="" ? "dnone" : "", $form);
-        $form=str_replace("{analogs_header}", "$brand_name $format_article ('$article_nr_displ, $article_nr_displ, $brand_name $article_nr_displ)", $form);
+        $form = str_replace("{analogs_list}", $analogs, $form);
+        $form = str_replace("{analogs_display}", $analogs=="" ? "dnone" : "", $form);
+        $form = str_replace("{analogs_header}", "$brand_name $format_article ('$article_nr_displ, $article_nr_displ, $brand_name $article_nr_displ)", $form);
 
-        $form=str_replace("{article_header}", "<h1>$article_name $brand_name $article_nr_displ</h1>", $form);
-        $form=str_replace("{applicable_display}", "", $form);
-        $form=str_replace("{applicable_display_text}", "{is_not_applicable}", $form);
+        $form = str_replace("{article_header}", "<h1>$article_name $brand_name $article_nr_displ</h1>", $form);
+        $form = str_replace("{applicable_display}", "none", $form);
+        $form = str_replace("{applicable_cap}", "", $form);
+        $form = str_replace("{applicable_display_text}", "{is_not_applicable}", $form);
 
-        $form=$this->replaceLang($form);
+        $form = $this->replaceLang($form);
         return $form;
     }
 
     function getArticleInfo($art_id) { $db = DbSingleton::getTokoDb();
-        $cat=new CatalogueClass; $client=new ClientClass; $kours=new ExRateClass;
+        $cat = new CatalogueClass; $client = new ClientClass; $kours = new ExRateClass;
         $tpoint = $client->getTpoint(); $cur = $kours->getCurrentKours(); $cur_cap = $kours->getKoursCaption($cur);
 
-        $r=$db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
+        $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
         FROM `T2_ARTICLES` t2a
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
@@ -536,7 +536,7 @@ class FormClass {
             </div>";
         }
 
-        $info = $this->getArticleInfoForm($art_id, 1);
+        $info = $this->getArticleInfoForm($art_id, 1, 1);
         if ($info!="") $info = "<div style='border:1px solid #e9e9e9; border-radius:.25em; padding:10px;'>$info</div>";
         $applicability = $this->getApplManufTCD($art_id);
         $originals = $cat->getOriginalNumbers($art_id);
@@ -562,6 +562,9 @@ class FormClass {
         return $form;
     }
 
+    /*
+     * Show Modal Info Form
+     * */
     function showInfoForm($art_id) {
         $catalogue = new CatalogueClass;
         $article_nr_displ = $catalogue->getArticleDispl($art_id);
@@ -604,35 +607,35 @@ class FormClass {
     }
 
     function getApplModelTCD($art_id, $mfa) { $db = DbSingleton::getTokoDb();
-        $list="<div class=\"search__appl-tcd\">"; $typ_id_str="";
-        $r=$db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID`='$art_id';"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $typ_id=$db->result($r,$i-1,"TYP_ID");
+        $list = "<div class=\"search__appl-tcd\">"; $typ_id_str = "";
+        $r = $db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $typ_id = $db->result($r, $i-1, "TYP_ID");
             $typ_id_str.="$typ_id";
-            if ($i<$n){$typ_id_str.=",";}
+            if ($i<$n) {$typ_id_str.=",";}
         }
-        $r=$db->query("SELECT tt.*, tm.TEX_TEXT, tm.MOD_ID, tm.MOD_PCON_START, tm.MOD_PCON_END 
+        $r = $db->query("SELECT tt.*, tm.TEX_TEXT, tm.MOD_ID, tm.MOD_PCON_START, tm.MOD_PCON_END 
         FROM `T_types` tt 
             INNER JOIN `T_models` tm ON tm.MOD_ID=tt.TYP_MOD_ID 
             INNER JOIN `T_manufacturers` man ON man.MFA_ID=tm.MOD_MFA_ID
         WHERE tt.TYP_ID IN ($typ_id_str) AND tm.MOD_MFA_ID='$mfa' AND tt.ACTIVE=1 
-        GROUP BY tt.TYP_ID ORDER BY tm.Model ASC;");$n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $typ_id=$db->result($r,$i-1,"TYP_ID");
-            $model=$db->result($r,$i-1,"TYP_MMT_TEXT");
-            $d_start=$db->result($r,$i-1,"TYP_PCON_START");
-            if ($d_start==0){$d_start="-";} if (strlen($d_start)==6){$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
-            $d_end=$db->result($r,$i-1,"TYP_PCON_END");if ($d_end==0){$d_end="-";}
-            if (strlen($d_end)==6){$d_end=substr($d_end,0,4).".".substr($d_end,4,2);}
-            if ($d_end=="" || $d_end=="-") $d_end="{cur_time}";
+        GROUP BY tt.TYP_ID ORDER BY tm.Model ASC;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $typ_id = $db->result($r,$i-1,"TYP_ID");
+            $model = $db->result($r,$i-1,"TYP_MMT_TEXT");
+            $d_start = $db->result($r,$i-1,"TYP_PCON_START");
+            if ($d_start==0) {$d_start = "-";} if (strlen($d_start)==6) {$d_start = substr($d_start,0,4).".".substr($d_start,4,2);}
+            $d_end = $db->result($r,$i-1,"TYP_PCON_END"); if ($d_end==0){$d_end = "-";}
+            if (strlen($d_end)==6) {$d_end = substr($d_end,0,4).".".substr($d_end,4,2);}
+            if ($d_end=="" || $d_end=="-") $d_end = "{cur_time}";
             $list.="<li class=\"list-inline\">
                 <a onclick=\"loadApplicModelsInfo2('$art_id','$typ_id')\" id=\"mm_car$typ_id\">$model ($d_start-$d_end)</a> 
                 <div id=\"AMI$typ_id\"></div>
             </li>";
         }
-        if ($n>20){$list="<div>$list</div>";}
+        if ($n>20) { $list = "<div>$list</div>"; }
         $list.="</div>";
-        $list=$this->replaceLang($list);
+        $list = $this->replaceLang($list);
         return $list;
     }
 
@@ -665,14 +668,21 @@ class FormClass {
                 <td>$ENG_Cod</td>
             </tr>";
         }
-        $form=$this->getHtmlForm("cat_modif_group_form");
-        $form=str_replace("{list}",$list,$form);
-        $form="<div>".$form."</div>";
-        $form=$this->replaceLang($form);
+        $form = $this->getHtmlForm("cat_modif_group_form");
+        $form = str_replace("{list}",$list,$form);
+        $form = "<div>".$form."</div>";
+        $form = $this->replaceLang($form);
         return $form;
     }
 
-    function getArticleInfoForm($art_id, $display=0) { $db = DbSingleton::getTokoDb();
+    /**
+     * @param $art_id
+     * @param int $display - view type: table || card
+     * @param int $type - info display type: 5 and more || All
+     * @return string
+     *
+     */
+    function getArticleInfoForm($art_id, $display = 0, $type = 0) { $db = DbSingleton::getTokoDb();
         $cat = new CatalogueClass;
         $info = "";
         $prefix = $this->getLangPrefix();
@@ -684,7 +694,8 @@ class FormClass {
         if ($n>0) {
             !$display ? $class = "info__table" : $class = "info__table_min";
             $info.="<table class='$class'>";
-            $n<=5 ? $max = $n : $max = 5;
+            $max = $n;
+            $type ?: $n<=5 ?: $max = 5;
             for ($i=1; $i<=$max; $i++) {
                 $text = $db->result($r, $i-1, "TEXT");
                 $value = $db->result($r, $i-1, "VALUE");
@@ -694,7 +705,7 @@ class FormClass {
                 </tr>";
             }
             $info.="</table>";
-            $n<=5 ?: $info.="<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
+            $type ?: $n<=5 ?: $info.="<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
                 <a class='search__more' href='https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/'>
                     {more_read}
                 </a>    
@@ -735,6 +746,10 @@ class FormClass {
         return $form;
     }
 
+    /**
+     * Show cars form on Home Page
+     * @return string
+     */
     function showHomeCars() { $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();
         $list = "<div class='seo_details'><div class='seo-ul'>";

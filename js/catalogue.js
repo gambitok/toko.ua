@@ -12,7 +12,9 @@ function showArtSearch() {
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modal-phone__history").html(result.content);
         }}, true);
-    setTimeout(function() { $('#search_art3').focus(); }, 2000);
+    setTimeout(function() {
+        $('#search_art3').focus();
+    }, 2000);
 }
 
 // Modal `Region`
@@ -981,10 +983,6 @@ function setParamsAuto(group_id, type) {
 }
 
 function setCatalogFilters() {
-    $(".bar-catalog").bigSlide({
-        menu: ('#menu-catalog')
-    });
-    $(".bar-catalog").addClass("active");
     let filters = $("#catalog-filters").html();
     $("#menu-catalog-content").html(filters);
     $("#catalog-filters").html("");

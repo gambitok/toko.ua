@@ -787,26 +787,26 @@ class AutoClass {
 
     /*==== CARS VARIABLES ===*/
     function getMfaLink($mfa_link) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
-        $mfa_id=$db->result($r,0,"MFA_ID");
+        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
+        $mfa_id = $db->result($r,0,"MFA_ID");
         return $mfa_id;
     }
 
     function getModLink($mod_link) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_models` WHERE `Model_Link`='$mod_link' LIMIT 1;");
-        $model=$db->result($r,0,"Model");
+        $r = $db->query("SELECT * FROM `T_models` WHERE `Model_Link`='$mod_link' LIMIT 1;");
+        $model = $db->result($r,0,"Model");
         return $model;
     }
 
     function getModIdLink($mod_id_link) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id_link' LIMIT 1;");
-        $text=$db->result($r,0,"TEX_TEXT");
+        $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id_link' LIMIT 1;");
+        $text = $db->result($r,0,"TEX_TEXT");
         return $text;
     }
 
     function getSeoContent($title, $mfa_link, $mod_link="") {
         $form = $this->getHtmlForm("seo_content");
-        $mfa_id = $this->getMfaLink($mfa_link); if ($mfa_link=="") $mfa_id="";
+        $mfa_id = $this->getMfaLink($mfa_link); if ($mfa_link=="") $mfa_id = "";
         $model = $this->getModLink($mod_link);
         if ($model=="") {
             $form = str_replace("{seo_list}", $this->getAutoModList($mfa_id).$this->getDetailsList("", "", $mfa_link, $mod_link), $form);
@@ -818,73 +818,72 @@ class AutoClass {
     }
 
     function getAutoMfaModelList($str_id="", $active_filters="", $mfa="") { $db = DbSingleton::getTokoDb();
-        $search=new SearchClass; $cat=new CatalogueClass;
-        $details_cap="{details_on_cap}"; $title=""; $link="cars";
-        if ($mfa!="") $where=" AND `MFA_ID`='$mfa'"; else $where="";
+        $search = new SearchClass; $cat = new CatalogueClass;
+        $details_cap = "{details_on_cap}"; $title = ""; $link = "cars";
+        if ($mfa!="") $where = " AND `MFA_ID`='$mfa'"; else $where = "";
         if ($str_id!="") {
             $details_cap = $this->getStrNewDescr($str_id);
             $str_link = $this->getStrNewLink($str_id);
             $h1_text = $cat->getStaticH1("/catalog/$str_link/");
-            if ($h1_text!="") $details_cap=$h1_text;
-            $link="catalog/$str_link";
+            if ($h1_text!="") $details_cap = $h1_text;
+            $link = "catalog/$str_link";
             if ($active_filters!="") {
-                $filters=$search->getFiltersTitle($active_filters);
+                $filters = $search->getFiltersTitle($active_filters);
                 $details_cap.=" $filters";
             }
             if ($mfa!="") {
-                $mfa_brand=$this->getMfaBrand($mfa);
+                $mfa_brand = $this->getMfaBrand($mfa);
                 $title="<div><span class='title-b'>$details_cap {on_cap} {other_models} $mfa_brand</span></div>";
             }
-            else $title="<div><span class='title-b'>$details_cap</span></div>";
+            else $title = "<div><span class='title-b'>$details_cap</span></div>";
             $details_cap.=" {on_cap}";
         }
-        $list="<div class='seo_auto'>$title";
-        $mas=[];
-        $r=$db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 $where ORDER BY `MFA_BRAND` ASC;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
-            $mfa_id=$db->result($r,$i-1,"MFA_ID");
-            $mfa_brand=$db->result($r,$i-1,"MFA_BRAND");
-            $mfa_link=$db->result($r,$i-1,"MFA_BRAND_LINK");
-            $image=$db->result($r,$i-1,"LOGO");
-            $mas[$mfa_brand]=["mfa_id"=>$mfa_id, "link"=>$mfa_link, "logo"=>$image];
+        $list = "<div class='seo_auto'>$title";
+        $mas = [];
+        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 $where ORDER BY `MFA_BRAND` ASC;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
+            $mfa_id = $db->result($r,$i-1,"MFA_ID");
+            $mfa_brand = $db->result($r,$i-1,"MFA_BRAND");
+            $mfa_link = $db->result($r,$i-1,"MFA_BRAND_LINK");
+            $image = $db->result($r,$i-1,"LOGO");
+            $mas[$mfa_brand] = ["mfa_id"=>$mfa_id, "link"=>$mfa_link, "logo"=>$image];
         }
         foreach ($mas as $mfa_brand => $values) {
             $mfa_id = $values["mfa_id"];
             $mfa_link = $values["link"];
             if ($mfa=="") $list.="<div class='title'><a href='https://toko.ua/$link/$mfa_link/'>$details_cap $mfa_brand</a></div>";
             $list.="<ul class='list-inline'>";
-            $r=$db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
-            for ($i=1;$i<=$n;$i++) {
-                $model=$db->result($r, $i-1, "Model");
-                $model_link=$db->result($r, $i-1, "Model_Link");
+            $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
+            for ($i=1; $i<=$n; $i++) {
+                $model = $db->result($r, $i-1, "Model");
+                $model_link = $db->result($r, $i-1, "Model_Link");
                 $list.="<li><a href='https://toko.ua/$link/$mfa_link/$model_link/'>$mfa_brand $model</a></li>";
             }
             $list.="</ul>";
         }
         $list.="</div>";
-
         return $list;
     }
 
     function getAutoModList($mfa="", $str_id="", $active_filters="") { $db = DbSingleton::getTokoDb();
-        $search=new SearchClass; $cat=new CatalogueClass;
-        $prefix=$this->getLangPrefix();
+        $search = new SearchClass; $cat = new CatalogueClass;
+        $prefix = $this->getLangPrefix();
 
         if ($str_id!="") {
             $details_cap = $this->getStrNewDescr($str_id);
             $str_link = $this->getStrNewLink($str_id);
             $h1_text = $cat->getStaticH1("/catalog/$str_link/");
-            if ($h1_text!="") $details_cap=$h1_text;
+            if ($h1_text!="") $details_cap = $h1_text;
 
-            $link="catalog/$str_link";
+            $link = "catalog/$str_link";
             if ($active_filters!="") {
-                $filters=$search->getFiltersTitle($active_filters);
+                $filters = $search->getFiltersTitle($active_filters);
                 $details_cap.=" $filters";
             }
             $details_cap.=" {on_cap}";
         } else {
-            $details_cap="{details_on_cap}";
-            $link="cars";
+            $details_cap = "{details_on_cap}";
+            $link = "cars";
         }
 
         if ($mfa!="") $where = "AND `MFA_ID`='$mfa'"; else $where = "";
@@ -931,7 +930,7 @@ class AutoClass {
             $h1_text = $cat->getStaticH1("/catalog/$str_link/");
             if ($h1_text!="") $details_cap=$h1_text;
             if ($active_filters!="") {
-                $filters=$search->getFiltersTitle($active_filters);
+                $filters = $search->getFiltersTitle($active_filters);
                 $details_cap.=" $filters";
             }
             $details_cap.=" {on_cap}";
@@ -939,17 +938,18 @@ class AutoClass {
 
         $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id';"); $n = $db->num_rows($r);
         $list = "<span class='title-b'>$details_cap $title</span>";
-        $list.="<div class=\"t_types\">"; $mas=[];
+        $list.="<div class=\"t_types\">";
+        $mas = [];
         for ($i=1; $i<=$n; $i++) {
             $fuel_id = $db->result($r, $i - 1, "FUEL_ID");
-            $typ_text=$db->result($r,$i-1,"TYP_TEXT");
-            $kw_from=$db->result($r,$i-1,"TYP_KW_FROM");
-            $hp_from=$db->result($r,$i-1,"TYP_HP_FROM");
+            $typ_text = $db->result($r,$i-1,"TYP_TEXT");
+            $kw_from = $db->result($r,$i-1,"TYP_KW_FROM");
+            $hp_from = $db->result($r,$i-1,"TYP_HP_FROM");
 
             $link = "<span><b>$typ_text</b> ($hp_from {horse_power_cap}, $kw_from {kilo_wat_cap})</span>";
             $link = $this->replaceLang($link);
-            if (empty($mas[$fuel_id])) $mas[$fuel_id]=[];
-            $mas[$fuel_id][$i]=$link;
+            if (empty($mas[$fuel_id])) $mas[$fuel_id] = [];
+            $mas[$fuel_id][$i] = $link;
         }
         foreach ($mas as $fuel_id=>$types) {
             $fuel_name = $this->getFuelName($fuel_id);
@@ -986,23 +986,23 @@ class AutoClass {
             LEFT JOIN `T_models` md ON md.MOD_MFA_ID=mf.MFA_ID
         WHERE mf.`MFA_ID`='$mfa' AND md.`Model`='$mod' GROUP BY md.`Model`;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
-            $mfa_id=$db->result($r,$i-1,"MFA_ID");
-            $mfa_link=$db->result($r,$i-1,"MFA_BRAND_LINK");
-            $mfa_brand=$db->result($r,$i-1,"MFA_BRAND");
-            $model_text=$db->result($r,$i-1,"Model");
-            $mod_link=$db->result($r,$i-1,"Model_Link");
+            $mfa_id = $db->result($r,$i-1,"MFA_ID");
+            $mfa_link = $db->result($r,$i-1,"MFA_BRAND_LINK");
+            $mfa_brand = $db->result($r,$i-1,"MFA_BRAND");
+            $model_text = $db->result($r,$i-1,"Model");
+            $mod_link = $db->result($r,$i-1,"Model_Link");
 
             $list.="<span class='title-b'>$details_cap $mfa_brand $model_text</span>";
             $list.="<div class='seo_details'><div class='seo-ul'>";
 
             $r2 = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' AND `Model`='$mod' ORDER BY `MOD_PCON_START`;"); $n2 = $db->num_rows($r2);
             for ($i2=1; $i2<=$n2; $i2++) {
-                $mod_id_link=$db->result($r2,$i2-1,"TEX_TEXT_link");
-                $text=$db->result($r2,$i2-1,"TEX_TEXT");
-                $image=$db->result($r2,$i2-1,"Car_pict");
-                $path="https://toko.ua/uploads/images/models/$image";
-                $d_start=$db->result($r2,$i2-1,"MOD_PCON_START"); $d_start=substr($d_start,0,4);
-                $d_end=$db->result($r2,$i2-1,"MOD_PCON_END"); $d_end=substr($d_end,0,4); if ($d_end==0) $d_end="{cur_time}";
+                $mod_id_link = $db->result($r2,$i2-1,"TEX_TEXT_link");
+                $text = $db->result($r2,$i2-1,"TEX_TEXT");
+                $image = $db->result($r2,$i2-1,"Car_pict");
+                $path = "https://toko.ua/uploads/images/models/$image";
+                $d_start = $db->result($r2,$i2-1,"MOD_PCON_START"); $d_start=substr($d_start,0,4);
+                $d_end = $db->result($r2,$i2-1,"MOD_PCON_END"); $d_end=substr($d_end,0,4); if ($d_end==0) $d_end="{cur_time}";
                 $list.="<a class='seo-li seo-li-id' href=\"https://toko.ua$prefix/$link/$mfa_link/$mod_link/$mod_id_link/\">
                     <div class='row mar0'>
                         <div class='col-4 pad0'><img src='$path' alt='$text' title='$text'></div>
@@ -1012,7 +1012,6 @@ class AutoClass {
             }
             $list.="</div></div>";
         }
-
         $list.=$this->getAutoMfaModelList($str_id, $active_filters, $mfa);
 
         return $list;
@@ -1030,9 +1029,9 @@ class AutoClass {
     // CATALOG / TO I FILTRI
     function getDetailsList($head, $category="", $mfa_link="", $mod_link="") { $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();
-        $where=""; $where_category="";
-        if ($head!="") $where="AND `HEAD_ID`='$head'";
-        if ($category!="") $where_category="AND `CAT_ID`='$category'";
+        $where = ""; $where_category = "";
+        if ($head!="") $where = "AND `HEAD_ID`='$head'";
+        if ($category!="") $where_category = "AND `CAT_ID`='$category'";
 
         $list = "<div class='tree-block'>";
 
@@ -1042,7 +1041,7 @@ class AutoClass {
             $head_tex_text = $db->result($r3, $i3-1, "TEX_RU");
             $head_tex_link = $db->result($r3, $i3-1, "TEX_LINK");
             $head!="" ? $title = "<div class='tree-block-title__text'><h1>$head_tex_text</h1></div>" : $title = "<span><a href='https://toko.ua$prefix/catalog/$head_tex_link/'>$head_tex_text</a></span>";
-            $category=="" ?: $title="";
+            $category=="" ?: $title = "";
 
             $list.="<div class='tree-item'>";
 

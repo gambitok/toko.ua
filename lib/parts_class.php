@@ -177,7 +177,7 @@ class PartsClass extends CatalogueClass {
         }
 
         $where_arts = implode(",", array_unique($arts));
-        list($list,,$filters,,$brands) = $this->searchList($where_arts, 1, 1);
+        list($list,, $filters,, $brands) = $this->searchList($where_arts, 1, 1);
 
         $form = $this->getHtmlForm("parts/parts_list");
         $form = str_replace("{parts_name}",$str_text,$form);
@@ -186,22 +186,22 @@ class PartsClass extends CatalogueClass {
         return array("form"=>$form, "filters"=>$filters, "brands"=>$brands);
     }
 
-    function getPartsBrandForm($str_id) { $dbc = DbSingleton::getTokoCacheDb();
-        $list = "<ul class=\"list-inline\">";
-        $r = $dbc->query("SELECT `brand_id` FROM `XX_TABLE_TREE_$str_id` GROUP BY `brand_id`;"); $n = $dbc->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $brand_id = $dbc->result($r,$i-1,"brand_id");
-            $brand_name = $this->getBrandName($brand_id);
-            $brand_link = $this->getBrandLink($brand_id);
-            $label = "<i class=\"far fa-square\"></i>";
-            if (!empty($brands_ch)) {
-                if (in_array($brand_id, $brands_ch)) $label = "<i class=\"fa fa-check-square\"></i>";
-            }
-            $list.="<li><a class=\"pointer\" href=\"?brandy=$brand_link\">$label $brand_name</a></li>";
-        }
-        $list.="</ul>";
-        return $list;
-    }
+//    function getPartsBrandForm($str_id) { $dbc = DbSingleton::getTokoCacheDb();
+//        $list = "<ul class=\"list-inline\">";
+//        $r = $dbc->query("SELECT `brand_id` FROM `XX_TABLE_TREE_$str_id` GROUP BY `brand_id`;"); $n = $dbc->num_rows($r);
+//        for ($i=1; $i<=$n; $i++) {
+//            $brand_id = $dbc->result($r,$i-1,"brand_id");
+//            $brand_name = $this->getBrandName($brand_id);
+//            $brand_link = $this->getBrandLink($brand_id);
+//            $label = "<i class=\"far fa-square\"></i>";
+//            if (!empty($brands_ch)) {
+//                if (in_array($brand_id, $brands_ch)) $label = "<i class=\"fa fa-check-square\"></i>";
+//            }
+//            $list.="<li><a class=\"pointer\" href=\"?brandy=$brand_link\">$label $brand_name</a></li>";
+//        }
+//        $list.="</ul>";
+//        return $list;
+//    }
 
     function initPartsArts($str_id) { $dbc=DbSingleton::getTokoCacheDb();
         $art_ids = [];
