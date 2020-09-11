@@ -229,5 +229,20 @@ $(document).ready(function() {
         this.scrollTop = 999999;
     }).focus();
 
+    // setTimeout(function () {
+    //     void(Tawk_API.toggle());
+    // }, 3000);
+
+    let cookie_user_id = getCookie('user');
+
+    if (!detectmob()) {
+        if (cookie_user_id==="") {
+            setTimeout(function () {
+                void(Tawk_API.toggle());
+            }, 60000);
+        }
+    }
+
+
 });
 

@@ -2589,11 +2589,11 @@ header {
 /*==== /SEO CARS =====*/
 
 .anchor-contacts {
-    position: absolute;
-    float: right;
-    text-align: right;
-    left: calc(100% - 100px);
     bottom: 30px;
+    float: right;
+    left: calc(100% - 100px);
+    position: fixed;
+    text-align: right;
     z-index: 999;
     &-li {
         margin-top: 5px;

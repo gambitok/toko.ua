@@ -44,7 +44,7 @@ class SearchClass extends CatalogueClass
 
             $form = str_replace("{details_listing}", $this->getSeoLinking($str_id, $h1, $filters, $brands), $form);
 
-            if (!empty($active_filters)) {
+            if (!empty($active_filters) && count($active_filters)==1) {
                 $brand_id = $active_filters[0];
                 $form = str_replace("{details_listing_2}", "<div class='content-min'>".$this->getSeoBrandLinking($str_id, $h1, $where_arts, $active_brands, $brand_id)."</div>", $form);
             } else {
@@ -702,11 +702,11 @@ class SearchClass extends CatalogueClass
 
     function getRandomAcitveArts($where_arts, $limit = 1, $brand_id = 0) { $db = DbSingleton::getTokoDb();
         $arts = [];
-        if ($brand_id!=0) $where = "AND t2a.`BRAND_ID` = $brand_id"; else $where = "";
+        if ($brand_id!=0) $where = "AND (t2b.`TOP` = 1 OR t2a.`BRAND_ID` = $brand_id)"; else $where = "t2b.`TOP` = 1";
         if ($where_arts!="") {
             $r = $db->query("SELECT t2a.`ART_ID` FROM `T2_ARTICLES` t2a 
                 LEFT JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID = t2a.BRAND_ID
-            WHERE t2b.`TOP` = 1 AND t2a.`ART_ID` IN ($where_arts) $where  
+            WHERE t2a.`ART_ID` IN ($where_arts) $where  
             ORDER BY RAND() LIMIT $limit;"); $n = $db->num_rows($r);
             for ($i=1; $i<=$n; $i++) {
                 $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -878,11 +878,10 @@ class SearchClass extends CatalogueClass
         $r = $db->query("SELECT `TEXT` FROM `SEO_STR_BRANDS` WHERE `STR_ID`='$str_id' AND `BRAND_ID`='$brand_id' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
 
-            //$h1_lower = mb_strtolower($h1, 'windows-1251');
-
             list($brand1, $brand2, $brand3, $brand4) = $this->getRandomActiveBrands($brands, 4, $brand_id);
 
-            list($art_id1) = $this->getRandomAcitveArts($arts, 2, $brand_id);
+            list($art_id1) = $this->getRandomAcitveArts($arts, 1, $brand_id);
+
             $article_name1 = $this->getArticleText($art_id1);
 
             list($mfa1, $mfa2, $mfa3, $mfa4) = $this->getRandomManuf(4);
