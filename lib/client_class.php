@@ -772,4 +772,14 @@ class ClientClass {
         return array($user_name, $user_phone, $user_email, $user_city);
     }
 
+    /*
+     * CLIENT Requests
+     * T2_QUESTIONS
+     * */
+    function setClientRequest($phone, $vin = "", $text = "") { $db = DbSingleton::getTokoDb();
+        $data_create = date("Y-m-d H:i:s");
+        $db->query("INSERT INTO `T2_QUESTIONS` (`PHONE`, `VIN`, `TEXT` , `DATA_CREATE`) VALUES ('$phone', '$vin', '$text', '$data_create');");
+        return true;
+    }
+
 }
