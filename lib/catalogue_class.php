@@ -584,7 +584,7 @@ class CatalogueClass
 
     function getSearchList($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands, $where_text) { $db = DbSingleton::getTokoDb();
         if ($article_nr_search!="") {
-            $r = $db->query("SELECT * FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' AND `BRAND_ID`='$brand_nr_search' LIMIT 1;"); $n = $db->num_rows($r);
+            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' AND `BRAND_ID`='$brand_nr_search' LIMIT 1;"); $n = $db->num_rows($r);
             if ($n > 0) {
                 $art_id = $db->result($r,0,"ART_ID");
                 $where_oe_art_id = $this->getOriginalEquipment($art_id);
@@ -614,7 +614,7 @@ class CatalogueClass
 
     function getOriginalEquipment($art_id) { $db = DbSingleton::getTokoDb();
         $search_str=""; $brand_str=""; $art_id_str=""; $arts=[];
-        $r = $db->query("SELECT * FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND` IN (3,4) AND `RELATION`=1) OR (`KIND` IN (3,4) AND `RELATION`=2)) 
+        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND` IN (3,4) AND `RELATION`=1) OR (`KIND` IN (3,4) AND `RELATION`=2)) 
         GROUP BY `SEARCH_NUMBER`;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $article_search = $db->result($r, $i-1, "SEARCH_NUMBER");
@@ -624,7 +624,7 @@ class CatalogueClass
             $arts[$i] = ["search_number"=>$article_search, "brand_id"=>$brand_id];
         }
         if ($search_str!="") {
-            $r = $db->query("SELECT * FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` IN ($search_str) AND `BRAND_ID` IN ($brand_str);"); $n = $db->num_rows($r);
+            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` IN ($search_str) AND `BRAND_ID` IN ($brand_str);"); $n = $db->num_rows($r);
             for ($i=1; $i<=$n; $i++) {
                 $cross_art_id = $db->result($r, $i - 1, "ART_ID");
                 $art_id_str.="'$cross_art_id'"; if ($i<$n) $art_id_str.=",";
@@ -633,7 +633,7 @@ class CatalogueClass
         foreach ($arts as $val) {
             $article_search = $val["search_number"];
             $brand_id = $val["brand_id"];
-            $r = $db->query("SELECT * FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`='$brand_id' AND `KIND`=3 AND `RELATION`=0;"); $n = $db->num_rows($r);
+            $r = $db->query("SELECT `ART_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`='$brand_id' AND `KIND`=3 AND `RELATION`=0;"); $n = $db->num_rows($r);
             $art_id_str = rtrim($art_id_str, ",");
             if ($art_id_str!="") $art_id_str.=",";
             for ($i=1; $i<=$n; $i++) {
@@ -1338,7 +1338,8 @@ class CatalogueClass
     }
 
     function checkOriginalEquipment($art_id, $search_number) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND `KIND` LIKE '3' AND `RELATION`=0;"); $n=$db->num_rows($r); $nom=0;
+        $r = $db->query("SELECT `SEARCH_NUMBER` FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND `KIND` LIKE '3' AND `RELATION`=0;"); $n = $db->num_rows($r);
+        $nom = 0;
         for ($i=1; $i<=$n; $i++) {
             $number = $db->result($r, $i-1, "SEARCH_NUMBER");
             if ($search_number==$number) $nom++;
@@ -1347,14 +1348,14 @@ class CatalogueClass
     }
 
     function checkAnalogTypes($art_id, $article_nr_search, $relation_id) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND `SEARCH_NUMBER` LIKE '$article_nr_search' AND `KIND` IN (3,4) AND `RELATION`=$relation_id;");
-        $n = $db->num_rows($r);
+        $r = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND `SEARCH_NUMBER` LIKE '$article_nr_search' AND `KIND` IN (3,4) AND `RELATION`=$relation_id;");
+        $n = $db->result($r, 0, `count_arts`);
         if ($n>0) return true; else return false;
     }
 
     function getBrandType($brand_id) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
-        $kind = $db->result($r,0,"KIND");
+        $r = $db->query("SELECT `KIND` FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
+        $kind = $db->result($r, 0, "KIND");
         if ($kind==3) return true; else return false;
     }
 
@@ -1398,7 +1399,7 @@ class CatalogueClass
 
     function getSuppLStorageVisible($suppl_id, $storage_id) { $db = DbSingleton::getDbm();
         if ($suppl_id>0) {
-            $r = $db->query("SELECT * FROM `A_CLIENTS_STORAGE` WHERE `client_id`='$suppl_id' AND `id`='$storage_id' LIMIT 1;"); $n = $db->num_rows($r);
+            $r = $db->query("SELECT `visible` FROM `A_CLIENTS_STORAGE` WHERE `client_id`='$suppl_id' AND `id`='$storage_id' LIMIT 1;"); $n = $db->num_rows($r);
             if ($n>0) {
                 $visible = $db->result($r, 0, "visible");
                 if ($visible==0) return false;
@@ -1548,14 +1549,15 @@ class CatalogueClass
     function checkActionPrice($art_id) { $db = DbSingleton::getDbm();
         $client_id = $this->getClient();
         $categories = []; $actions = [];
-        $r = $db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n = $db->num_rows($r);
+
+        $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $category_id = $db->result($r, $i-1, "client_category");
             array_push($categories, $category_id);
         }
         $categories = implode(",", $categories);
 
-        $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `art_id`='$art_id' AND `status`=1;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `id` FROM `ACTION_CLIENTS` WHERE `art_id`='$art_id' AND `status`=1;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $action_id = $db->result($r, $i-1, "id");
             $r2 = $db->query("SELECT * FROM `ACTION_CLIENTS_LIST` WHERE `action_id`='$action_id' AND `client_id`='$client_id';"); $n2 = $db->num_rows($r2);
@@ -1581,12 +1583,12 @@ class CatalogueClass
 
     function checkActionAmount($art_id, $max_amount, $data) { $db = DbSingleton::getDbm(); $dbt = DbSingleton::getTokoDb();
         $data_today = date("Y-m-d"); $all_amount = 0;
-        $r = $dbt->query("SELECT * FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
+        $r = $dbt->query("SELECT `AMOUNT` FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $amount = $db->result($r, $i-1, "AMOUNT");
             $all_amount+=$amount;
         }
-        $r = $db->query("SELECT * FROM `J_DP_STR` WHERE `art_id`='$art_id' AND `status_dps`='93';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `amount` FROM `J_DP_STR` WHERE `art_id`='$art_id' AND `status_dps`='93';"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $amount = $db->result($r, $i-1, "amount");
             $all_amount+=$amount;
@@ -1965,7 +1967,7 @@ class CatalogueClass
             $price = $this->getArticlePriceClient($art_id, $client_id, $cur);
             $price = str_replace(".", ",", "$price");
 
-            $rs = $db->query("SELECT * FROM `T2_ARTICLES_NOT_EXPORT` WHERE `ART_ID`='$art_id' LIMIT 1;"); $ns = $db->num_rows($rs);
+            $rs = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES_NOT_EXPORT` WHERE `ART_ID`='$art_id' LIMIT 1;"); $ns = $db->result($rs, 0, "count_arts");
             if ($ns==0) {
                 $list[$i] = [$i, "$article_nr_displ", "$brand", "$name", "$price", "$cur_cap", "$info", "$barcode"];
                 foreach ($storages as $storage) {

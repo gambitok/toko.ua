@@ -147,8 +147,8 @@ trait Variables {
      * */
     function getArtID($article_nr_search) { $db = DbSingleton::getTokoDb();
         $art_id = 0;
-        $r = $db->query("SELECT * FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n>0) $art_id = $db->result($r,0,"ART_ID");
+        $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n>0) $art_id = $db->result($r, 0, "ART_ID");
         return $art_id;
     }
 
@@ -164,7 +164,7 @@ trait Variables {
                 $brand_id = $db->result($r, 0, "BRAND_ID");
                 $brand_id = $this->getUrlNumber($brand_id);
                 $r = $db->query("SELECT `BRAND_NAME` FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;"); $n = $db->num_rows($r);
-                $n==1 ? $brand_name = $db->result($r, 0, "BRAND_NAME") : $brand_name="";
+                $n==1 ? $brand_name = $db->result($r, 0, "BRAND_NAME") : $brand_name = "";
             }
         }
         return $brand_name;
@@ -271,11 +271,11 @@ trait Variables {
 
     function getCatalogueBrandLink2($article_nr_search) { $db = DbSingleton::getTokoDb();
         $brand_link = "";
-        $r = $db->query("SELECT * FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search';"); $n = $db->num_rows($r);
         if ($n==1) {
-            $brand_id = $db->result($r,0,"BRAND_ID");
-            $r = $db->query("SELECT * FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
-            $brand_link = $db->result($r,0,"BRAND_LINK");
+            $brand_id = $db->result($r, 0, "BRAND_ID");
+            $r = $db->query("SELECT `BRAND_LINK` FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
+            $brand_link = $db->result($r, 0, "BRAND_LINK");
         }
         return $brand_link;
     }

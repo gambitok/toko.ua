@@ -53,23 +53,23 @@ class ExRateClass {
     }
 
     function getKoursCaption($cur) { $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `CASH` WHERE `id`='$cur' LIMIT 1;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `abr` FROM `CASH` WHERE `id`='$cur' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) $result = $db->result($r, 0, "abr"); else $result = "{uah_cap}";
         return $result;
     }
 
     function getKoursCaptionLang($cur) { $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `CASH` WHERE `id`='$cur' LIMIT 1;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `abr2` FROM `CASH` WHERE `id`='$cur' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n>0) $result = $db->result($r, 0, "abr2"); else $result = "{uah_cap}";
         return $result;
     }
 
     function getKoursSymbol($cur) {
         switch ($cur) {
-            case 1:  {$result = "{uah_cap}"; break;}
-            case 2:  {$result = "$"; break;}
-            case 3:  {$result = "€"; break;}
-            default: {$result = "{uah_cap}"; break;}
+            case 1:  { $result = "{uah_cap}"; break; }
+            case 2:  { $result = "$"; break; }
+            case 3:  { $result = "€"; break; }
+            default: { $result = "{uah_cap}"; break; }
         }
         return $result;
     }

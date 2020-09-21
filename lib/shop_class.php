@@ -178,7 +178,7 @@ class ShopClass {
     function getBasketArts() { $db = DbSingleton::getTokoDb();
         $client = new ClientClass;
         $where = $client->getClientWhere();
-        $r = $db->query("SELECT * FROM `basket` WHERE $where ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `art_id` FROM `basket` WHERE $where ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
             $arts = [];
             for ($i = 1; $i <= $n; $i++) {
@@ -198,7 +198,7 @@ class ShopClass {
         if ($arts!="") {
             $where_arts = " AND `ART_ID` NOT IN ($arts)";
         }
-        $r = $db->query("SELECT * FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS`=1 $where_arts;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS`=1 $where_arts;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $list.=$this->getProposedArtsCard($art_id);
@@ -348,7 +348,7 @@ class ShopClass {
         $delivery_short_info = $this->replaceLang($delivery_short_info);
 
         if ($n>0) {
-            $r2 = $db->query("SELECT * FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
+            $r2 = $db->query("SELECT `amount` FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
             $cur_stock = $db->result($r2, 0, "amount");
             if ($stock < ($cur_stock + $amount)) {
                 $amount = $stock;
@@ -368,7 +368,7 @@ class ShopClass {
     function getBasketArticleAmount($art_id, $storage_id) { $db=DbSingleton::getTokoDb();
         $client = new ClientClass;
         $where = $client->getClientWhere();
-        $r = $db->query("SELECT * FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
+        $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
         $amount = $db->result($r, 0, "amount");
         return $amount;
     }
@@ -384,7 +384,7 @@ class ShopClass {
         $client = new ClientClass;
         $where = $client->getClientWhere();
         $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n = $db->num_rows($r);
-        $n>0 ? $result = true : $result = false;
+        $n > 0 ? $result = true : $result = false;
         return $result;
     }
 
@@ -824,7 +824,7 @@ class ShopClass {
         $result = 0;
         $del_types_1 = [1, 2, 3];
         $del_types_2 = [4, 5, 6];
-        $r = $db->query("SELECT * FROM `orders_valid_payment` WHERE `PAYMENT_ID`='$payment_id' LIMIT 1;");
+        $r = $db->query("SELECT `VALID_TYPE` FROM `orders_valid_payment` WHERE `PAYMENT_ID`='$payment_id' LIMIT 1;");
         $valid = $db->result($r, 0, "VALID_TYPE");
         if ($valid==0) {
             $result = 1;
@@ -859,7 +859,7 @@ class ShopClass {
     /*==== GET Delivery Express ====*/
     function getDeliveryExpressList() { $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` ORDER BY `ID` ASC;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `ID`, `TEXT` FROM `T2_DELIVERY_EXPRESS` ORDER BY `ID` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $id = $db->result($r, $i-1, "ID");
             $text = $db->result($r, $i-1, "TEXT");
@@ -1057,14 +1057,14 @@ class ShopClass {
     }
 
     function getDeliveryCaption($delivery_id) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_DELIVERY` WHERE `ID`='$delivery_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEXT` FROM `T2_DELIVERY` WHERE `ID`='$delivery_id' LIMIT 1;");
         $text = $db->result($r, 0, "TEXT");
         $text = $this->replaceLang($text);
         return $text;
     }
 
     function getPaymentCaption($payment_id) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_PAYMENT` WHERE `ID`='$payment_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEXT` FROM `T2_PAYMENT` WHERE `ID`='$payment_id' LIMIT 1;");
         $text = $db->result($r, 0, "TEXT");
         $text = $this->replaceLang($text);
         return $text;
@@ -1283,7 +1283,7 @@ class ShopClass {
     }
 
     function setDeliveryExpressDepartment($delivery_express) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_express' LIMIT 1;");
+        $r = $db->query("SELECT `TEXT_TYPE` FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_express' LIMIT 1;");
         $text_type = $db->result($r, 0, "TEXT_TYPE");
         $text_type = $this->replaceLang($text_type);
         return $text_type.":";

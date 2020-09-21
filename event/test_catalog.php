@@ -14,7 +14,6 @@ if ($group_id==null) {
 } else {
 
     $car_form = $prod->getHtmlForm("car_form_div");
-
     if ($cookie_typ_id=="") {
         $car_range = $prod->getCarsSearch();
     } else {

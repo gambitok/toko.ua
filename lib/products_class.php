@@ -172,7 +172,7 @@ class ProductsClass extends CatalogueClass {
             $art_id_str.=",$art_id";
         }
 
-        $r = $db->query("SELECT * FROM `T2_TREE` WHERE `ART_ID` IN ($art_id_str);"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `STR_ID`, `ART_ID` FROM `T2_TREE` WHERE `ART_ID` IN ($art_id_str);"); $n = $db->num_rows($r);
         $str_id_str = "0"; $str_id_a = array();
         for ($i=1; $i<=$n; $i++) {
             $str_id = $db->result($r,$i-1,"STR_ID"); $str_id_str.=",$str_id";
@@ -338,11 +338,11 @@ class ProductsClass extends CatalogueClass {
      * Get selected Car text Translit
      * */
     function getCarManufTranslit($mfa_id, $model="") { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
+        $r = $db->query("SELECT `MFA_BRAND_TRANSLIT` FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
         $mfa_translit = $db->result($r, 0, "MFA_BRAND_TRANSLIT"); $text = "";
         if ($mfa_translit!="") $text = "($mfa_translit)";
         if ($model!="") {
-            $r = $db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `Model_TRANSLIT`!='' LIMIT 1;");
+            $r = $db->query("SELECT `Model_TRANSLIT` FROM `T_models` WHERE `Model`='$model' AND `Model_TRANSLIT`!='' LIMIT 1;");
             $model_translit = $db->result($r, 0, "Model_TRANSLIT");
             if ($model_translit!="") $text = "($mfa_translit $model_translit)";
         }
@@ -350,9 +350,9 @@ class ProductsClass extends CatalogueClass {
     }
 
     function getBodyCarImage($mod_id) { $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' LIMIT 1;");
+        $r = $db->query("SELECT `BODY_ID` FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' LIMIT 1;");
         $body_id = $db->result($r, 0, "BODY_ID");
-        $r = $db->query("SELECT * FROM `T_types_body_car` WHERE `BODY_ID`='$body_id' AND `LANG_ID`=16 LIMIT 1;");
+        $r = $db->query("SELECT `LOGO`, `TYPE_BODY` FROM `T_types_body_car` WHERE `BODY_ID`='$body_id' AND `LANG_ID`=16 LIMIT 1;");
         $image = $db->result($r, 0, "LOGO");
         $name = $db->result($r, 0, "TYPE_BODY");
         $path = "https://toko.ua/uploads/images/body-types/$image";
@@ -392,7 +392,7 @@ class ProductsClass extends CatalogueClass {
 
         // MANUFACTURE
         if ($type=="") {
-            $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n = $db->num_rows($r);
+            $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND` FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;"); $n = $db->num_rows($r);
             for ($i=1; $i<=$n; $i++) {
                 $mfa_id = $db->result($r, $i - 1, "MFA_ID");
                 $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
@@ -405,7 +405,7 @@ class ProductsClass extends CatalogueClass {
         // MODEL
         if ($type=="manuf") {
             $mfa_id = $value;
-            $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
+            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
             for ($i=1; $i<=$n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
                 $model_cap = $mfa_id."_".$model;

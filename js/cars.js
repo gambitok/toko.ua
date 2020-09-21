@@ -1,12 +1,9 @@
 $(document).ready(function() {
-    // hide if manuf checked
-    // if ($("div[data-type='manuf']").attr("data-id")!=="0") {
-    //     toggleCarsNavigation();
-    // }
-    $('div[data-toggle="popover"]').popover();
 
     if ($("#cars_form-selected").length!==0 && $("#car_form-select").length!==0) {
+
         $("#catalogue-auto").addClass("sticky");
+
         $("body").scroll(function() {
             let checked_index = $(".cars-nav__item-checked")[0];
             let header = $("#catalogue-auto");
@@ -112,7 +109,6 @@ function toggleCarsTab(index) {
 }
 
 function hideCarsNavigation(index) {
-    $('div[data-toggle="popover"]').popover('dispose');
     hidePop();
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
@@ -130,11 +126,9 @@ function showCarsNavigation(index, type, attr) {
     if (type===undefined) { type = $(data_pred).attr("data-type"); }
     if (attr===undefined) { attr = $(data_pred).attr("data-id"); }
     if (type===undefined && attr===undefined) { type=""; attr=0; }
-    $('div[data-toggle="popover"]').popover('dispose');
     hidePop();
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
-        $(index).popover('dispose');
         $("#myBackdrop").removeClass("sticky-backdrop-hidden");
         // Show Active Nav
         $(".cars-nav__item").each(function () {
@@ -159,8 +153,6 @@ function toggleCarsNavigation(index, type, attr) {
     if (attr===undefined) { attr = $(data_pred).attr("data-id"); }
     if (type===undefined && attr===undefined) { type=""; attr=0; }
 
-    $('div[data-toggle="popover"]').popover('dispose');
-
     hidePop();
 
     // Tab Non-Disabled
@@ -173,7 +165,6 @@ function toggleCarsNavigation(index, type, attr) {
             $(index).removeClass("cars-nav__item-active");
             $("#" + $(index).attr("data-tab")).removeClass("cars-tab__block-active");
         } else {
-            $(index).popover('dispose');
             $("#myBackdrop").removeClass("sticky-backdrop-hidden");
             // Show Active Nav
             $(".cars-nav__item").each(function () {
@@ -231,12 +222,6 @@ function clearCarsBlock(data_tab) {
             }
         }
     }
-}
-
-function scrollTo(index) {
-    $([document.documentElement, document.body]).animate({
-        scrollTop: index.offset().top
-    }, 500);
 }
 
 function setActiveCar() {

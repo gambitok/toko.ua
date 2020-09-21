@@ -27,7 +27,7 @@ class SearchClass extends CatalogueClass
         $form = str_replace("{details_link}", $this->getActualLink(), $form);
         $form = str_replace("{details_title}", $h1, $form);
 
-        if ($parts->checkTable($str_id)>0) {
+        if ($parts->checkTable($str_id) > 0) {
             $partsData = $parts->showPartsCatalogue($str_id, $page, $active_filters);
             $details_content = $partsData["form"];
             $filters = $partsData["filters"];
@@ -474,8 +474,8 @@ class SearchClass extends CatalogueClass
     function getBrandsList($brandy) { $db = DbSingleton::getTokoDb();
         $brandy = explode(",", $brandy); $brands = "";
         foreach ($brandy as $brand) {
-            $r = $db->query("SELECT * FROM `T2_BRANDS` WHERE `BRAND_LINK`='$brand' LIMIT 1;");
-            $brand_id = $db->result($r,0,"BRAND_ID");
+            $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE `BRAND_LINK`='$brand' LIMIT 1;");
+            $brand_id = $db->result($r, 0, "BRAND_ID");
             $brands.="$brand_id,";
         }
         $brands = rtrim($brands, ",");
@@ -626,10 +626,10 @@ class SearchClass extends CatalogueClass
             <div><span>{popular_cap}</span> <i class='fa fa-angle-down'></i></div>
         <div><ul>";
 
-        $r = $db->query("SELECT * FROM `T_LINKING_PAGE` WHERE `STR_ID`='$str_id';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `PAGE_ID`, `SORT_ID` FROM `T_LINKING_PAGE` WHERE `STR_ID`='$str_id';"); $n = $db->num_rows($r);
         if ($n==0) {
             $this->initStrLinking($str_id);
-            $r = $db->query("SELECT * FROM `T_LINKING_PAGE` WHERE `STR_ID`='$str_id';"); $n = $db->num_rows($r);
+            $r = $db->query("SELECT `PAGE_ID`, `SORT_ID` FROM `T_LINKING_PAGE` WHERE `STR_ID`='$str_id';"); $n = $db->num_rows($r);
         }
 
         for ($i=1; $i<=$n; $i++) {
@@ -905,6 +905,7 @@ class SearchClass extends CatalogueClass
                 $value = $this->getSeoListingValue($value);
                 $seo_text.="$value ";
             }
+
 //            $db->query("INSERT INTO `SEO_STR_BRANDS` (`STR_ID`, `BRAND_ID`, `TEXT`) VALUES ('$str_id', '$brand_id', '$seo_text');");
 
         } else {

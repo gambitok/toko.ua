@@ -98,10 +98,10 @@ trait Helper {
 
     function getManualOptions($key) { $db = DbSingleton::getDbm();
         $lang_id = $this->getLanguage(); $options = "";
-        $r = $db->query("SELECT * FROM `manual` WHERE `key`='$key' ORDER BY mid ASC;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `id` FROM `manual` WHERE `key`='$key' ORDER BY mid ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $id = $db->result($r, $i - 1, "id");
-            $rs = $db->query("SELECT * FROM `A_CUSTOMERS_CATEGORIES` WHERE `manual_id`='$id' AND `lang_id`='$lang_id' LIMIT 1;");
+            $rs = $db->query("SELECT `caption` FROM `A_CUSTOMERS_CATEGORIES` WHERE `manual_id`='$id' AND `lang_id`='$lang_id' LIMIT 1;");
             $caption = $db->result($rs, 0, "caption");
             if ($caption=="") $caption = $db->result($r, $i-1, "mcaption");
             $options.="<option value=\"$id\">$caption</option>";

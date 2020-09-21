@@ -50,12 +50,12 @@ class FormClass {
 
     function getArtBrandLink($art_id, $brand_id) { $db = DbSingleton::getTokoDb();
         $link = "";
-        $r = $db->query("SELECT * FROM `T2_TREE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `STR_ID` FROM `T2_TREE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
         if ($n>0) {
             $str_text = "";
-            for ($i=1;$i<=$n;$i++) {
+            for ($i=1; $i<=$n; $i++) {
                 $str_id = $db->result($r, $i-1, "STR_ID");
-                $r1 = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1 = $db->query($r1);
+                $r1 = $db->query("SELECT `TEX_LINK` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1 = $db->query($r1);
                 if ($n1>0) $str_text = $db->result($r1, 0, "TEX_LINK");
                 if ($str_text!="") break;
             }
@@ -285,7 +285,7 @@ class FormClass {
             $r = $db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;"); $k = $db->result($r, 0, "kilk");
             if ($k>$max_history_count) {
                 $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
-                $id = $db->result($r,0,"id");
+                $id = $db->result($r, 0, "id");
                 $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date', `article_nr_displ`='$article_nr_displ', `brand_id`='$brand_id', `art_id`='$art_id' WHERE `id`='$id';");
             } else {
                 $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ`='$article_nr_displ' AND `brand_id`='$brand_id';"); $n = $db->num_rows($r);
@@ -368,7 +368,7 @@ class FormClass {
     /*==== PHOTO GALLERY ====*/
     function getArticleMainPhoto($art_id) { $db = DbSingleton::getTokoDb();
         $photo_name = "";
-        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
         for ($i=1;$i<=$n;$i++){
             $photo_name = trim($db->result($r, $i-1, "PHOTO_NAME"));
         }
@@ -378,7 +378,7 @@ class FormClass {
 
     function getArticleActivePhoto($art_id) { $db = DbSingleton::getTokoDb();
         $photo_name = "";
-        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $photo_name = trim($db->result($r, $i-1, "PHOTO_NAME"));
         }
@@ -393,9 +393,9 @@ class FormClass {
 
     function getShortArticlePhoto($art_id) { $db = DbSingleton::getTokoDb();
         $photo_name = "";
-        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
-            $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
+            $photo_name = trim($db->result($r, $i-1, "PHOTO_NAME"));
         }
         $photo_name=="" ? $photo_name = $this->noPhoto : $photo_name = "$this->uploads_link/".$photo_name;
         $photo = "<img itemprop=\"image\" src=\"$photo_name\" alt=\"Article\">";
@@ -432,9 +432,9 @@ class FormClass {
         $format_name = $cat->getFormatAticle($article_name);
         $format_brand = $cat->getFormatBrand($brand_name);
 
-        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
-            $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
+            $photo_name = trim($db->result($r, $i-1, "PHOTO_NAME"));
             $i==1 ? $active = "active" : $active = "";
             if ($display==1) {
                 $list.="<div class=\"carousel-item $active\">
@@ -492,7 +492,7 @@ class FormClass {
         $nophoto = $this->noPhoto;
         $list = "";
 
-        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
             $i==1 ? $active = "active" : $active = "";
