@@ -240,8 +240,9 @@
 
 .search__soldout {
     border: 3px double #ccc;
+    border-radius: .25rem;
     color: darkgray;
-    font-size: 20px;
+    font-size: 1rem;
     padding: 5px;
     text-align: center;
     width: 100%;
@@ -357,12 +358,6 @@
     text-align: right;
 }
 
-.list-hide {
-    max-height: 120px;
-    transition: max-height .15s ease-out;
-    overflow: hidden;
-}
-
 .flag-search {
     position: relative;
     top: -2px;
@@ -402,19 +397,68 @@
     margin-bottom: 1em;
 }
 
+.list-hide {
+    max-height: 140px;
+    overflow: hidden;
+    transition: max-height .15s ease-out;
+    &-link {
+        color: #9da9b9!important;
+        cursor: pointer;
+        &:hover {
+            color: gray!important;
+        }
+    }
+}
+
+.btn-labeled {
+    background-color: #0ca9ee;
+    border-color: #0ca9ee;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 4px 8px;
+    &:hover {
+        background-color: #fff;
+        color: #0ca9ee;
+    }
+}
+
 .template_filters {
     border-right: 1px solid #f1f1f1;
     padding: 0 2%;
     .template-list {
-        a {
-            color: #000;
-            font-size: 16px;
+        li {
+            margin-bottom: 5px;
+            a {
+                color: #000;
+                font-size: 20px;
+                line-height: 20px;
+                i {
+                    &.blue {
+                        color: #0ca9ee;
+                    }
+                }
+                span {
+                    font-size: 16px;
+                    margin-left: 5px;
+                }
+                &:hover {
+                    text-decoration: none;
+                    & > i {
+                        color: #0ca9ee;
+                    }
+                }
+            }
         }
     }
     .param-title {
-        font-size: 1em;
-        font-weight: 700;
+        font-size: 18px;
+        font-weight: bold;
         padding-top: 30px;
+        padding-bottom: 15px;
     }
 }
 

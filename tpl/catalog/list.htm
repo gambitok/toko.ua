@@ -4,17 +4,16 @@
         <div class="row">
             <div class="col-lg-3 col-12 order-lg-0 order-1 template_filters" style="padding: 0">
                 <div id="catalog-filters">
-                    <a class="btn btn-warning" href="/test_catalog/{group_id}">{clear_cap}</a>
+                    <a class="btn btn-warning" href="/test_catalog/{group_link}">{clear_cap}</a>
                     {catalog_params_auto}
                     {catalog_params}
                 </div>
             </div>
             <div class="col-lg-9 col-12 order-lg-1 order-0">
-                <h1>{catalog_title}</h1>
-                <h2>{catalog_auto}</h2>
-                <h2>{results_cap}: {catalog_amount}</h2>
-                <h2>{page_quantity}: {catalog_amount_arts}</h2>
-                <h2>{page_cap}: {catalog_page} {of_cap} {catalog_pages}</h2>
+                <div class="details-offers__header">
+                    <h1>{catalog_title}</h1>
+                    <span>{catalog_amount} {offer_tenths_cap}</span>
+                </div>
                 <div class="template_checked">
                     {catalog_checked_filters}
                 </div>

@@ -170,7 +170,8 @@ class TemplateClass extends CatalogueClass {
                 $list.="<li><div><a>$cat_name</a></div><ul>";
                 foreach ($groups as $group_id) {
                     $group_name = $this->getGroupName($group_id);
-                    $list.="<li><div><a href='https://toko.ua/test_catalog/$group_id'>$group_name</a></div></li>";
+                    $group_link = $this->getGroupLink($group_id);
+                    $list.="<li><div><a href='https://toko.ua/test_catalog/$group_link'>$group_name</a></div></li>";
                 }
                 $list.="</ul></li>";
             }
@@ -240,7 +241,7 @@ class TemplateClass extends CatalogueClass {
      * Show Active Filters Form
      * */
     function showCheckedFilters($group_id, $active_filters) {
-        $form = "<div style=\"padding: 15px 0;\">";
+        $form = "<div style=\"padding-top: 15px;\">";
         foreach ($active_filters as $param=>$values) {
             foreach ($values as $value) {
                 if ($param==0) {
@@ -249,7 +250,11 @@ class TemplateClass extends CatalogueClass {
                     $value_name = $this->getValueName($value);
                 }
                 $link = $this->getParamsListLink($active_filters, $param, $value);
-                $form.="<a class=\"btn btn-labeled btn-danger btn-xs\" style='margin-right: 15px; margin-bottom: 15px;' href=\"/test_catalog/$group_id/$link\"><i class=\"fa fa-times\"></i> $value_name</a>";
+                $group_link = $this->getGroupLink($group_id);
+                $form.="<a class=\"btn btn-labeled\" href=\"/test_catalog/$group_link/$link\">
+                    <span>$value_name</span>
+                    <i class=\"fa fa-times\"></i>
+                </a>";
             }
         }
         $form.="</div>";
@@ -258,11 +263,19 @@ class TemplateClass extends CatalogueClass {
     }
 
     /*
+     * Get GROUP CATALOG content
+     * */
+    function getCatalogForm($group_id, $page, $filters) {
+        $form = $this->getHtmlForm("catalog/content");
+        $form = str_replace("{catalog_form}", $this->getCatalogParamGroupForm($group_id, $page, $filters), $form);
+        $form = str_replace("{catalog_seo}", "", $form);
+        return $form;
+    }
+
+    /*
      * Get GROUP CATALOG form
      * */
     function getCatalogParamGroupForm($group_id, $page = 1, $filters = []) {
-        $automan = new AutoClass;
-
         $auto_typ_id = $this->getCookieAuto();
 
         $checked_filters = $this->getCheckedFilters($this->getCatalogFilters($filters), $group_id);
@@ -281,17 +294,14 @@ class TemplateClass extends CatalogueClass {
 
         $form = $this->getHtmlForm("catalog/list");
         $form = str_replace("{group_id}", $group_id, $form);
+        $form = str_replace("{group_link}", $this->getGroupLink($group_id), $form);
         $form = str_replace("{catalog_list}", $data["list"], $form);
         $form = str_replace("{catalog_params}", $params, $form);
         $form = str_replace("{catalog_title}", $this->getCatalogGroupTitle($group_id, $checked_filters), $form);
         $form = str_replace("{catalog_amount}", $count_arts, $form);
-        $form = str_replace("{catalog_amount_arts}", $this->products_on_page, $form);
-        $form = str_replace("{catalog_page}", $page, $form);
-        $form = str_replace("{catalog_pages}", $this->getPagesCount($count_arts), $form);
         $form = str_replace("{catalog_pagination}", $this->getPagination($count_arts, $page), $form);
         $form = str_replace("{catalog_checked_filters}", $this->showCheckedFilters($group_id, $checked_filters), $form);
         $form = str_replace("{catalog_params_auto}", $this->getParamsAuto($group_id, $auto_typ_id), $form);
-        $form = str_replace("{catalog_auto}", "{choosen_auto}: ".($auto_typ_id!="" ? $automan->getCarDescription($auto_typ_id) : "-"), $form);
 
         return $form;
     }
@@ -396,18 +406,22 @@ class TemplateClass extends CatalogueClass {
                 $name = $var["name"];
                 $link = $var["link"];
                 $status = $var["status"];
-                $status ? $checked = "<i class='fa fa-check-square'></i>" : $checked = "<i class='far fa-square'></i>";
-                $params_li.="<li><a href=\"/test_catalog/$group_id/$link\">$checked $name</a></li>";
+                $status ? $checked = "<i class='fa fa-check-square blue'></i>" : $checked = "<i class='far fa-square'></i>";
+                $group_link = $this->getGroupLink($group_id);
+                $params_li.="<li><a href=\"/test_catalog/$group_link/$link\">$checked <span>$name</span></a></li>";
             }
-            $params.="<div class=\"param-title\">$param_name:</div>
+            $params.="<div class=\"param-title\">$param_name</div>
             <ul id=\"param-$param_id\" class=\"list-inline template-list list-hide\">
                 $params_li
             </ul>";
-            if (count($values)>5) {
+            $max_count = 5;
+            $count_values = count($values);
+            if ($count_values > $max_count) {
+                $dec = $count_values - $max_count;
                 $params.="
-                    <a class=\"pointer underline\" onclick=\"toggleListParams(this, $param_id);\">
-                        <span class=\"show\">{more_cap}</span>
-                        <span class=\"none\">{hide_cap}</span>
+                    <a class=\"list-hide-link\" onclick=\"toggleListParams(this, $param_id);\">
+                        <span class=\"show\">{more_cap} $dec <i class='fa fa-chevron-down'></i></span>
+                        <span class=\"none\">{hide_cap} <i class='fa fa-chevron-up'></i></span>
                     </a>
                 ";
             }
@@ -598,10 +612,10 @@ class TemplateClass extends CatalogueClass {
             $list = "";
         } else {
             if ($type==2) {
-                $type2 = "<i class='fa fa-check-circle'></i>";
+                $type2 = "<i class='fa fa-check-circle blue'></i>";
                 $type1 = "<i class='far fa-circle'></i>";
             } else {
-                $type1 = "<i class='fa fa-check-circle'></i>";
+                $type1 = "<i class='fa fa-check-circle blue'></i>";
                 $type2 = "<i class='far fa-circle'></i>";
             }
             $list = "

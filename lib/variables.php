@@ -440,6 +440,18 @@ trait Variables {
         return $group_name;
     }
 
+    function getGroupLink($group_id) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_GROUP` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        $group_link = $db->result($r, 0, "TEX_LINK");
+        return $group_link;
+    }
+
+    function getGroupLinkID($group_link) { $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP` WHERE `TEX_LINK`='$group_link' LIMIT 1;");
+        $group_id = $db->result($r, 0, "GROUP_ID");
+        return $group_id;
+    }
+
     /* GROUP VALUES */
     function getValueID($value_link, $param_id, $group_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE` WHERE `VALUE_LINK`='$value_link' AND `PARAM_ID`='$param_id' AND `GROUP_ID`='$group_id' LIMIT 1;");

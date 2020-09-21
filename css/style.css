@@ -2167,7 +2167,7 @@ table thead td { border: 1px solid #000; }
 
 .search__name { color: #606975; font-size: 13px; letter-spacing: normal; }
 
-.search__soldout { border: 3px double #ccc; color: darkgray; font-size: 20px; padding: 5px; text-align: center; width: 100%; }
+.search__soldout { border: 3px double #ccc; border-radius: .25rem; color: darkgray; font-size: 1rem; padding: 5px; text-align: center; width: 100%; }
 
 .search__photo { height: 200px; }
 
@@ -2209,8 +2209,6 @@ table thead td { border: 1px solid #000; }
 
 .show_hidden { border-top: none !important; display: block; height: auto !important; margin-bottom: 1em !important; padding: 0 !important; text-align: right; }
 
-.list-hide { max-height: 120px; transition: max-height .15s ease-out; overflow: hidden; }
-
 .flag-search { position: relative; top: -2px; }
 
 .flag-search-card { display: block; position: absolute; right: 15px; text-align: right; }
@@ -2227,11 +2225,31 @@ table thead td { border: 1px solid #000; }
 
 .template_content-count { color: darkgray; font-size: 1em; margin-bottom: 1em; }
 
+.list-hide { max-height: 140px; overflow: hidden; transition: max-height .15s ease-out; }
+
+.list-hide-link { color: #9da9b9 !important; cursor: pointer; }
+
+.list-hide-link:hover { color: gray !important; }
+
+.btn-labeled { background-color: #0ca9ee; border-color: #0ca9ee; border-radius: 4px; color: #fff; font-size: 12px; line-height: 1.5; margin-right: 10px; margin-bottom: 10px; padding: 4px 8px; }
+
+.btn-labeled:hover { background-color: #fff; color: #0ca9ee; }
+
 .template_filters { border-right: 1px solid #f1f1f1; padding: 0 2%; }
 
-.template_filters .template-list a { color: #000; font-size: 16px; }
+.template_filters .template-list li { margin-bottom: 5px; }
 
-.template_filters .param-title { font-size: 1em; font-weight: 700; padding-top: 30px; }
+.template_filters .template-list li a { color: #000; font-size: 20px; line-height: 20px; }
+
+.template_filters .template-list li a i.blue { color: #0ca9ee; }
+
+.template_filters .template-list li a span { font-size: 16px; margin-left: 5px; }
+
+.template_filters .template-list li a:hover { text-decoration: none; }
+
+.template_filters .template-list li a:hover > i { color: #0ca9ee; }
+
+.template_filters .param-title { font-size: 18px; font-weight: bold; padding-top: 30px; padding-bottom: 15px; }
 
 /*==== /TEMPLATES ====*/
 /*==== SEARCH ====*/

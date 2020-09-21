@@ -210,6 +210,9 @@ function getCarsSearchContent(type, attr) {
         }}, true);
 }
 
+/*
+* Clear tab styles
+* */
 function clearCarsBlock(data_tab) {
     let cur_tab = parseInt(data_tab.match(/\d+/));
     if (cur_tab!==undefined) {
