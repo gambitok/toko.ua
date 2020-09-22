@@ -1424,7 +1424,7 @@ class CatalogueClass
         if (!($this->checkActionPrice($art_id))) {
             $action_form = ""; $action_count = "";
         } else {
-            list(,$action_amount, $action_price, $action_max_amount, $action_data)=$this->checkActionPrice($art_id);
+            list(,$action_amount, $action_price, $action_max_amount, $action_data) = $this->checkActionPrice($art_id);
             $action_price = $kours->getKoursFromUSA($action_price,$cur);
             if ($cur==1) $action_price = $client->getClientPriceRounding($client_id, $action_price);
             $action_form = $this->getHtmlForm("action_box");
@@ -1437,49 +1437,49 @@ class CatalogueClass
         }
 
         !$view ? $form = $this->getHtmlForm("product_card") : $form = $this->getHtmlForm("article_card");
-        $form=str_replace("{product_i}", $id, $form);
-        $form=str_replace("{art_id}", $art_id, $form);
-        $form=str_replace("{brand_id}", $brand_id, $form);
-        $form=str_replace("{product_name}", $article_name, $form);
-        $form=str_replace("{product_brand}", $brand_name, $form);
-        $form=str_replace("{product_format_name}", $format_name, $form);
-        $form=str_replace("{product_lang_prefix}", $prefix, $form);
-        $form=str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
-        $form=str_replace("{product_format_brand}", $format_brand, $form);
-        $form=str_replace("{product_text}", ($text=="") ? "{details_name_cap}" : $text, $form);
-        $form=str_replace("{format_product_text}", ($text=="") ? "{details_name_cap}" : $this->formatArticleName($text), $form);
-        $form=str_replace("{product_stock}", ($suppl_id==0) ? ($stock>10 ? ">10" : $stock) : $stock, $form);
-        $form=str_replace("{product_real_stock}", $stock, $form);
-        $form=str_replace("{product_storage_id}", $storage_id, $form);
-        $form=str_replace("{product_suppl_id}", $suppl_id, $form);
+        $form = str_replace("{product_i}", $id, $form);
+        $form = str_replace("{art_id}", $art_id, $form);
+        $form = str_replace("{brand_id}", $brand_id, $form);
+        $form = str_replace("{product_name}", $article_name, $form);
+        $form = str_replace("{product_brand}", $brand_name, $form);
+        $form = str_replace("{product_format_name}", $format_name, $form);
+        $form = str_replace("{product_lang_prefix}", $prefix, $form);
+        $form = str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
+        $form = str_replace("{product_format_brand}", $format_brand, $form);
+        $form = str_replace("{product_text}", ($text=="") ? "{details_name_cap}" : $text, $form);
+        $form = str_replace("{format_product_text}", ($text=="") ? "{details_name_cap}" : $this->formatArticleName($text), $form);
+        $form = str_replace("{product_stock}", ($suppl_id==0) ? ($stock>10 ? ">10" : $stock) : $stock, $form);
+        $form = str_replace("{product_real_stock}", $stock, $form);
+        $form = str_replace("{product_storage_id}", $storage_id, $form);
+        $form = str_replace("{product_suppl_id}", $suppl_id, $form);
 
-        $form=str_replace("{return_days_img}", $return_days_img, $form);
-        $form=str_replace("{return_days_alt}", $return_days_alt, $form);
-        $form=str_replace("{return_display}", ($return_days==14 || $return_days_img=="") ? "none" : "", $form);
+        $form = str_replace("{return_days_img}", $return_days_img, $form);
+        $form = str_replace("{return_days_alt}", $return_days_alt, $form);
+        $form = str_replace("{return_display}", ($return_days==14 || $return_days_img=="") ? "none" : "", $form);
 
-        $form=str_replace("{photo_src}", $this->getArticlePhoto($art_id), $form);
-        $form=str_replace("{photo_display}", $this->checkPhoto($art_id) ? "" : "none", $form);
-        $form=str_replace("{product_main_photo}", $showform->getArticleMainPhoto($art_id), $form);
+        $form = str_replace("{photo_src}", $this->getArticlePhoto($art_id), $form);
+        $form = str_replace("{photo_display}", $this->checkPhoto($art_id) ? "" : "none", $form);
+        $form = str_replace("{product_main_photo}", $showform->getArticleMainPhoto($art_id), $form);
 
-        $form=str_replace("{product_del}", $delivery_info, $form);
-        $form=str_replace("{product_dd}", $delivery_days, $form);
-        $form=str_replace("{product_delivery_class}", ($delivery_days==0) ? "delivery-green" : ($delivery_days==1 ? "delivery-blue" : ($delivery_days>1 ? "delivery-dark" : "")), $form);
-        $form=str_replace("{product_delivery_short_info}", str_replace("<br>", " ", $delivery_short_info), $form);
+        $form = str_replace("{product_del}", $delivery_info, $form);
+        $form = str_replace("{product_dd}", $delivery_days, $form);
+        $form = str_replace("{product_delivery_class}", ($delivery_days==0) ? "delivery-green" : ($delivery_days==1 ? "delivery-blue" : ($delivery_days>1 ? "delivery-dark" : "")), $form);
+        $form = str_replace("{product_delivery_short_info}", str_replace("<br>", " ", $delivery_short_info), $form);
 
-        $form=str_replace("{product_price}", $price." $kours_cap", $form);
-        $form=str_replace("{product_true_price}", $price, $form);
-        $form=str_replace("{product_kours_cap}", $kours_cap, $form);
+        $form = str_replace("{product_price}", $price." $kours_cap", $form);
+        $form = str_replace("{product_true_price}", $price, $form);
+        $form = str_replace("{product_kours_cap}", $kours_cap, $form);
 
-        $form=str_replace("{product_action}", $action_form, $form);
-        $form=str_replace("{product_action_count}", $action_count, $form);
-        $form=str_replace("{product_title_del}", str_replace("<br>"," ",$delivery_info), $form);
-        $form=str_replace("{analog_display}", (($article_name==$article_nr_search || $format_name==$article_nr_search) && ($brand_id==$brand_nr_search)) ? "none" : "", $form);
-        $form=str_replace("{product_barcode}", $this->getBarcode($art_id), $form);
+        $form = str_replace("{product_action}", $action_form, $form);
+        $form = str_replace("{product_action_count}", $action_count, $form);
+        $form = str_replace("{product_title_del}", str_replace("<br>"," ",$delivery_info), $form);
+        $form = str_replace("{analog_display}", (($article_name==$article_nr_search || $format_name==$article_nr_search) && ($brand_id==$brand_nr_search)) ? "none" : "", $form);
+        $form = str_replace("{product_barcode}", $this->getBarcode($art_id), $form);
 
-        $form=str_replace("{style_border}", $border, $form);
-        $form=str_replace("{style_class}", $class, $form);
-        $form=str_replace("{style_none}", $none, $form);
-        $form=str_replace("{style_hide}", $hide, $form);
+        $form = str_replace("{style_border}", $border, $form);
+        $form = str_replace("{style_class}", $class, $form);
+        $form = str_replace("{style_none}", $none, $form);
+        $form = str_replace("{style_hide}", $hide, $form);
 
         if ($view) {
             $link = $ll;
@@ -1494,20 +1494,20 @@ class CatalogueClass
         }
 
         $flagData = $showform->getCountryFlag($brand_id);
-        $form=str_replace("{country_display}", ($flagData==false) ? "none" : "", $form);
-        $form=str_replace("{flag_image}", $flagData["flag"], $form);
-        $form=str_replace("{country_name}", $flagData["country"], $form);
-        $form=str_replace("{instock}", ($suppl_id==0) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "", $form);
-        $form=str_replace("{index_type}", $this->getIndexTypeImage($art_id, $article_nr_search, $article_name, $format_name, $brand_id, $brand_nr_search), $form);
-        $form=str_replace("{count_users}", $client->getUsersCount(), $form);
-        $form=str_replace("{data_today}", date("Y-m-d"), $form);
-        $form=str_replace("{prefix_url}", $prefix, $form);
-        $form=str_replace("{tpoint_full_name}", ($suppl_id==0) ? $client->getArticleStorageTPoint($storage_id) : "", $form);
+        $form = str_replace("{country_display}", ($flagData==false) ? "none" : "", $form);
+        $form = str_replace("{flag_image}", $flagData["flag"], $form);
+        $form = str_replace("{country_name}", $flagData["country"], $form);
+        $form = str_replace("{instock}", ($suppl_id==0) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "", $form);
+        $form = str_replace("{index_type}", $this->getIndexTypeImage($art_id, $article_nr_search, $article_name, $format_name, $brand_id, $brand_nr_search), $form);
+        $form = str_replace("{count_users}", $client->getUsersCount(), $form);
+        $form = str_replace("{data_today}", date("Y-m-d"), $form);
+        $form = str_replace("{prefix_url}", $prefix, $form);
+        $form = str_replace("{tpoint_full_name}", ($suppl_id==0) ? $client->getArticleStorageTPoint($storage_id) : "", $form);
 
-        $form=str_replace("{product_info}", $showform->getArticleInfoForm($art_id, 1), $form);
-        $form=str_replace("{product_button}", $price==0 ? "none" : "", $form);
-        $form=str_replace("{product_image}", $showform->getArticleActivePhoto($art_id), $form);
-        $form=str_replace("{product_title}", "$text $brand_name $article_name", $form);
+        $form = str_replace("{product_info}", $showform->getArticleInfoForm($art_id, 1), $form);
+        $form = str_replace("{product_button}", $price==0 ? "none" : "", $form);
+        $form = str_replace("{product_image}", $showform->getArticleActivePhoto($art_id), $form);
+        $form = str_replace("{product_title}", "$text $brand_name $article_name", $form);
 
         $basket_amount = $shop->getBasketArticleAmount($art_id, $storage_id);
         $form = str_replace("{basket_amount}", ($basket_amount>0) ? "{site_basket}: $basket_amount {amount_abbr}." : "", $form);
@@ -1715,21 +1715,21 @@ class CatalogueClass
             $price_suppl = $suppl_price_usd;
             list($suppl_margin_fm, $suppl_delivery_fm, $suppl_margin2_fm) = $this->getTpointSupplFm($tpoint, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl);
             if ($suppl_margin_fm>0) {
-                $price = ($price_suppl+$price_suppl*$suppl_margin_fm/100)-$price_suppl;
-                if ($price>$suppl_delivery_fm){
-                    $price = ($price_suppl+$price_suppl*$suppl_margin_fm/100);
+                $price = ($price_suppl + $price_suppl * $suppl_margin_fm / 100) - $price_suppl;
+                if ($price>$suppl_delivery_fm) {
+                    $price = ($price_suppl + $price_suppl * $suppl_margin_fm / 100);
                 }
-                if ($price<=$suppl_delivery_fm){
-                    $price = $price_suppl+$price_suppl*$suppl_margin2_fm/100+$suppl_delivery_fm;
+                if ($price<=$suppl_delivery_fm) {
+                    $price = $price_suppl + $price_suppl * $suppl_margin2_fm / 100 + $suppl_delivery_fm;
                 }
-                if ($margin_price_suppl_lvl>0 && $margin_price_suppl_lvl!=""){
-                    $price = $price+$price*$margin_price_suppl_lvl/100;
+                if ($margin_price_suppl_lvl>0 && $margin_price_suppl_lvl!="") {
+                    $price = $price + $price * $margin_price_suppl_lvl / 100;
                 }
-                if ($client_vat==1){
-                    if ($price_in_vat==0 && $show_in_vat==1 && $price_add_vat==1){
+                if ($client_vat==1) {
+                    if ($price_in_vat==0 && $show_in_vat==1 && $price_add_vat==1) {
                         $price = $price + $price * 20 / 100;
                     }
-                    if ($price_in_vat==0 && $show_in_vat==0){
+                    if ($price_in_vat==0 && $show_in_vat==0) {
                         $price = 0;
                     }
                 }

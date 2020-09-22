@@ -14,8 +14,8 @@ if ($path=="seoshield-client") {
     }
     elseif ($path=="/uk/" || $path=="/en/"){
         session_start();
-        if ($path=="uk") $_SESSION["lang"]=2;
-        if ($path=="en") $_SESSION["lang"]=3;
+        if ($path=="uk") $_SESSION["lang"] = 2;
+        if ($path=="en") $_SESSION["lang"] = 3;
         include_once RDD . "/event/main.php";
     }
     elseif (file_exists(RDD . "/event/$path.php")) {
@@ -62,10 +62,15 @@ $content = str_replace("{main_site_breadcrumbs}", printBreadcrumbs($path)[0], $c
 $content = str_replace("{main_window}", "", $content);
 $content = str_replace("{main_metro}", "", $content);
 
+$linka = findLinks();
+$mfa_link = $linka[1];
+$mod_link = $linka[2];
+list($mfa_text, ) = $automan->getAutoDescrLink($mfa_link, $mod_link);
+if ($mfa_text!="") $content = str_replace("{main_seo_text_cars}", $search->getSeoCarsLinking($mfa_link, $mod_link), $content);
+$content = str_replace("{main_seo_text_cars}", "", $content);
+
 $content = getContent($content);
 $content = translateContent($content);
 $content = $menu->getImages($content);
 
 print $content;
-
-

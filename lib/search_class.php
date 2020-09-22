@@ -354,14 +354,12 @@ class SearchClass extends CatalogueClass
             if (empty($products[$art_id][0])) $products[$art_id][0] = [];
             $products[$art_id][0] = [$brand_id];
         }
-
         $current_products = $this->getExistedProducts($products);
         return $current_products;
     }
 
     function getActiveDetails($current_products, $active_filters) {
         $active_products = [];
-
         if (!empty($active_filters)) {
             foreach ($current_products as $art_id=>$params) { $count_params = 0;
                 foreach ($params as $param_id=>$values) { $count_values = 0;
@@ -378,9 +376,7 @@ class SearchClass extends CatalogueClass
         } else {
             $active_products = $current_products;
         }
-
         $active_products = array_keys($this->getExistedProducts($active_products));
-
         return $active_products;
     }
 
@@ -397,7 +393,6 @@ class SearchClass extends CatalogueClass
             $brand_list = $this->getBrandsList($brandy);
             if ($brand_list!="") $where_brands = "AND t2a.BRAND_ID IN ($brand_list)";
         }
-
         $art_ids = [];
         $r = $db->query("SELECT t2t.`ART_ID` FROM `T2_TREE` t2t
             LEFT JOIN `T2_ARTICLES` t2a ON t2a.ART_ID=t2t.ART_ID
@@ -407,26 +402,21 @@ class SearchClass extends CatalogueClass
             $art_id = $db->result($r, $i-1, "ART_ID");
             array_push($art_ids, $art_id);
         }
-
         $art_ids = $this->getExistProducts($art_ids, $where_brands);
         $where_arts = implode(",", $art_ids);
-
         return $where_arts;
     }
 
     function initTrueSearchArts($str_id) { $db = DbSingleton::getTokoDb();
         $art_ids = []; $where_brands = "";
-
         $r = $db->query("SELECT t2t.`ART_ID` FROM `T2_TREE` t2t
         WHERE t2t.`STR_ID`=$str_id GROUP BY t2t.ART_ID;"); $n=$db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $art_id = $db->result($r,$i-1,"ART_ID");
             array_push($art_ids, $art_id);
         }
-
         $cur_products_arr = $this->getExistProducts($art_ids, $where_brands);
         $where_arts = implode(",", $cur_products_arr);
-
         return $where_arts;
     }
 
@@ -485,15 +475,12 @@ class SearchClass extends CatalogueClass
     function showSearchParameters($str_id, $page, $brandy_str, $type=0) {
         $parts = new PartsClass;
         $number = ""; $pagination_form = "";
-
         if ($type==1) {
             $active_filters = explode(",", $brandy_str);
             $number = $parts->getPartsCount($str_id, $active_filters);
             $pagination_form = $this->replaceLang($parts->getPartsPaginationForm($number, $page));
         }
-
         $number_form = $this->replaceLang("($number {offer_tenths_cap})");
-
         return array($number_form, $pagination_form);
     }
 
@@ -502,7 +489,6 @@ class SearchClass extends CatalogueClass
             <input class=\"text-filter\" type=\"text\" id=\"brandSearchInput\" onkeyup=\"searchBrandInput();\" placeholder=\"{search_by_brand}\" title=\"{search_by_brand}\">
             <ul id=\"brandSearchList\">
         ";
-
         $brands = array_unique($brands);
         $sort_brands = [];
         foreach ($brands as $brand_id) {
@@ -510,7 +496,6 @@ class SearchClass extends CatalogueClass
             $sort_brands[$brand_id] = $brand_name;
         }
         asort($sort_brands);
-
         foreach ($sort_brands as $brand_id=>$brand_name) {
             $label = "<i class=\"far fa-square\"></i>";
             if (!empty($brands_ch)) {
@@ -519,9 +504,7 @@ class SearchClass extends CatalogueClass
             $brand_link = $this->getSearchLink($brand_id, $brands_ch, $link);
             $list.="<li><a href=\"$brand_link/\">$label $brand_name</a></li>";
         }
-
         $list.="</ul></div>";
-
         return $this->replaceLang($list);
     }
 
@@ -702,7 +685,7 @@ class SearchClass extends CatalogueClass
 
     function getRandomAcitveArts($where_arts, $limit = 1, $brand_id = 0) { $db = DbSingleton::getTokoDb();
         $arts = [];
-        if ($brand_id!=0) $where = "AND (t2b.`TOP` = 1 OR t2a.`BRAND_ID` = $brand_id)"; else $where = "t2b.`TOP` = 1";
+        if ($brand_id!=0) $where = "AND (t2b.`TOP` = 1 OR t2a.`BRAND_ID` = $brand_id)"; else $where = "AND t2b.`TOP` = 1";
         if ($where_arts!="") {
             $r = $db->query("SELECT t2a.`ART_ID` FROM `T2_ARTICLES` t2a 
                 LEFT JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID = t2a.BRAND_ID
@@ -803,8 +786,8 @@ class SearchClass extends CatalogueClass
             $list = $this->replaceLang($list);
             $list = str_replace(str_split("{}"), "", $list);
             $list = explode(" ", $list);
-            $seo_text = "";
 
+            $seo_text = "";
             foreach ($list as $value) {
                 $value = $this->getSeoListingValue($value);
                 $seo_text.="$value ";
@@ -832,8 +815,6 @@ class SearchClass extends CatalogueClass
         $r = $db->query("SELECT `TEXT` FROM `SEO_STR_MFA` WHERE `STR_ID`='$str_id' AND `MFA_ID`='$mfa_id' AND `MODEL`='$model' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==0) {
 
-           // $h1_lower = mb_strtolower($h1, 'windows-1251');
-
             list($brand1, $brand2, $brand3) = $this->getRandomActiveBrands($brands, 3);
 
             list($art_id) = $this->getRandomAcitveArts($arts, 1);
@@ -854,8 +835,8 @@ class SearchClass extends CatalogueClass
             $list = $this->replaceLang($list);
             $list = str_replace(str_split("{}"), "", $list);
             $list = explode(" ", $list);
-            $seo_text = "";
 
+            $seo_text = "";
             foreach ($list as $value) {
                 $value = $this->getSeoListingValue($value);
                 $seo_text.="$value ";
@@ -899,8 +880,8 @@ class SearchClass extends CatalogueClass
             $list = $this->replaceLang($list);
             $list = str_replace(str_split("{}"), "", $list);
             $list = explode(" ", $list);
-            $seo_text = "";
 
+            $seo_text = "";
             foreach ($list as $value) {
                 $value = $this->getSeoListingValue($value);
                 $seo_text.="$value ";
@@ -940,8 +921,8 @@ class SearchClass extends CatalogueClass
             $list = $this->replaceLang($list);
             $list = str_replace(str_split("{}"), "", $list);
             $list = explode(" ", $list);
-            $seo_text = "";
 
+            $seo_text = "";
             foreach ($list as $value) {
                 $value = $this->getSeoListingValue($value);
                 $seo_text.="$value ";

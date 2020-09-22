@@ -61,7 +61,7 @@ function getTitle($path) {
 function getMoreTitle($path) {
     $automan=new AutoClass; $cat=new CatalogueClass; $menu=new MenuClass; $search=new SearchClass; $prod=new ProductsClass; $pattern=new PatternClass;
 
-    $linka=findLinks(); $pretitle="";
+    $linka = findLinks(); $pretitle = "";
 
     if ($path=="search") {
         $article_nr_search = $linka[1];
@@ -235,15 +235,15 @@ function getMoreTitle($path) {
 function printBreadcrumbs($path) {
     $cat=new CatalogueClass; $menu=new MenuClass; $pattern=new PatternClass; $automan=new AutoClass; $search=new SearchClass;
 
-    $language=new LangClass; $prefix=$language->getLangPrefix();
+    $language = new LangClass; $prefix = $language->getLangPrefix();
     $bread = findLinks();
     $section = $path;
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     if (strpos($actual_link,"?")!==false) $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
 
-    $a_home="<a href=\"https://toko.ua$prefix/\" title=\"{seo_site_toko}\">{seo_shop_toko}</a>";
-    $a_section="<a href=\"https://toko.ua$prefix/$section/\">{site_$section}</a>";
-    $h_section="{site_$section}";
+    $a_home = "<a href=\"https://toko.ua$prefix/\" title=\"{seo_site_toko}\">{seo_shop_toko}</a>";
+    $a_section = "<a href=\"https://toko.ua$prefix/$section/\">{site_$section}</a>";
+    $h_section = "{site_$section}";
 
     $list = "";
     $b_arr = [];
@@ -456,8 +456,7 @@ function printBreadcrumbs($path) {
     $list = rtrim($list, ",");
 
     $script = "";
-
-    if (count($b_arr)>1) $script = "
+    if (count($b_arr) > 1) $script = "
     <script type=\"application/ld+json\">
     {
         \"@context\": \"http://schema.org\",
@@ -563,27 +562,27 @@ function getDescription($path) {
 }
 
 function getKeywords($path) {
-    $language=new LangClass;
-    $path=str_replace("/","",$path);
-    $prefix=getMoreTitle($path);
-    if ($path!="") $keywords="$prefix"; else $keywords="{site_keywords}";
-    $keywords=$language->replaceLang($keywords);
-    $_GET["page"]==0 ?: $keywords="";
+    $language = new LangClass;
+    $path = str_replace("/", "", $path);
+    $prefix = getMoreTitle($path);
+    if ($path!="") $keywords = "$prefix"; else $keywords = "{site_keywords}";
+    $keywords = $language->replaceLang($keywords);
+    $_GET["page"]==0 ?: $keywords = "";
     return $keywords;
 }
 
 function getSiteLang() {
-    $language=new LangClass();
-    $lang_id=$language->getLanguage();
-    $lang_html="ru";
-    if ($lang_id==1) $lang_html="ru";
-    if ($lang_id==2) $lang_html="uk";
-    if ($lang_id==3) $lang_html="en";
+    $language = new LangClass;
+    $lang_id = $language->getLanguage();
+    $lang_html = "ru";
+    if ($lang_id==1) $lang_html = "ru";
+    if ($lang_id==2) $lang_html = "uk";
+    if ($lang_id==3) $lang_html = "en";
     return $lang_html;
 }
 
 function getPhpContent($file) {
-    ob_start(); $file=RDD.$file;
+    ob_start(); $file = RDD.$file;
     if(file_exists($file)) {
         include ($file);
         $contents = ob_get_contents();
@@ -595,7 +594,7 @@ function getPhpContent($file) {
 
 function translateContent($content) { $db = DbSingleton::getTokoDb();
     $language = new LangClass;
-    $r = $db->query("SELECT `variable` FROM `new_lang_wd`;"); $n=$db->num_rows($r);
+    $r = $db->query("SELECT `variable` FROM `new_lang_wd`;"); $n = $db->num_rows($r);
     for ($i=1; $i<=$n; $i++) {
         $code = $db->result($r, $i-1, "variable");
         $word = $language->getLanguageName($code);
@@ -639,9 +638,9 @@ function findPath() {
 }
 
 function findUrl() {
-	$link="https://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
-	$link=parse_url($link);
-	$url=$link["path"];
+	$link = "https://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
+	$link = parse_url($link);
+	$url = $link["path"];
 	return $url;
 }
 
@@ -672,13 +671,13 @@ function findLinks() {
 }
 
 function str_replace_first($from, $to, $content) {
-    $from="/".preg_quote($from, "/")."/";
+    $from = "/".preg_quote($from, "/")."/";
     return preg_replace($from, $to, $content, 1);
 }
 
 function getSeoText($seo_text) {
-    $form=getHtmlForm("menu/seo_text");
-    $form=str_replace("{seo_text}", $seo_text, $form);
+    $form = getHtmlForm("menu/seo_text");
+    $form = str_replace("{seo_text}", $seo_text, $form);
     return $form;
 }
 
