@@ -642,27 +642,29 @@ class TemplateClass extends CatalogueClass {
     }
 
     /*==== FILTER PARAMS ====*/
-    function getAllFilters($group_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
+    function getAllFilters($group_id) { $dbc = DbSingleton::getTokoCacheDb();
         $params = [];
         $params[0] = [];
+        $table = $this->table_group.$group_id;
 
-        $r = $db->query("SELECT COUNT(`PARAM_ID`) as count_params FROM `T2_TREE_PARAMS` WHERE 1;");
-        $max_param = $db->result($r, 0, "count_params");
+        $max_param = $this->getMaxParam($table);
 
-        $r = $dbc->query("SELECT * FROM `AA_TABLE_GROUP_$group_id` GROUP BY `brand_id`;"); $n = $dbc->num_rows($r);
+        $r = $dbc->query("SELECT * FROM `$table` GROUP BY `brand_id`;"); $n = $dbc->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $brand_id = $dbc->result($r, $i - 1, "brand_id");
             array_push($params[0], $brand_id);
 
-            for ($k=1; $k<=$max_param; $k++) {
-                $values = $dbc->result($r, $i - 1, "param_$k");
-                if ($values>0) {
-                    $param_id = $k;
-                    if (empty($params[$param_id])) $params[$param_id] = [];
-                    foreach (explode(",", $values) as $value_id) {
-                        array_push($params[$param_id], $value_id);
+            if ($max_param > 0) {
+                for ($k=1; $k<=$max_param; $k++) {
+                    $values = $dbc->result($r, $i - 1, "param_$k");
+                    if ($values>0) {
+                        $param_id = $k;
+                        if (empty($params[$param_id])) $params[$param_id] = [];
+                        foreach (explode(",", $values) as $value_id) {
+                            array_push($params[$param_id], $value_id);
+                        }
+                        $params[$param_id] = array_unique($params[$param_id]);
                     }
-                    $params[$param_id] = array_unique($params[$param_id]);
                 }
             }
 
@@ -686,13 +688,22 @@ class TemplateClass extends CatalogueClass {
         return $new_filters;
     }
 
-    function getCurrentArticles($group_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
+    function getMaxParam($table) { $dbc = DbSingleton::getTokoCacheDb();
+        $default_count = 4; $max_param = 0;
+        $r = $dbc->query("SHOW COLUMNS FROM `$table`"); $n = $dbc->num_rows($r);
+        if ($n > $default_count) {
+            $string = $dbc->result($r, $n - 1, "Field");
+            $max_param = preg_replace('/[^0-9]/', '', $string);
+        }
+        return $max_param;
+    }
+
+    function getCurrentArticles($group_id) { $dbc = DbSingleton::getTokoCacheDb();
         $table = $this->table_group.$group_id;
         $current_filters = [];
         $current_products = [];
 
-        $r = $db->query("SELECT COUNT(`PARAM_ID`) as count_params FROM `T2_TREE_PARAMS` WHERE 1;");
-        $max_param = $db->result($r, 0, "count_params");
+        $max_param = $this->getMaxParam($table);
 
         $r = $dbc->query("SELECT * FROM `$table` WHERE 1;"); $n = $dbc->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
@@ -700,16 +711,18 @@ class TemplateClass extends CatalogueClass {
             $brand_id = $dbc->result($r, $i-1, "brand_id");
 
             if (empty($current_products[$art_id][0])) { $current_products[$art_id][0] = []; }
-            if (empty($current_filters[$art_id][0])) { $current_filters[0] = [];  }
+            if (empty($current_filters[$art_id][0])) { $current_filters[0] = []; }
 
             array_push($current_products[$art_id][0], $brand_id);
             array_push($current_filters[0], $brand_id);
 
-            for ($param_id=1; $param_id<=$max_param; $param_id++) {
-                $value_ids = $dbc->result($r, $i-1, "param_$param_id");
-                if ($value_ids!="") {
-                    $current_products[$art_id][$param_id] = explode(",", $value_ids);
-                    $current_filters[$param_id] = explode(",", $value_ids);
+            if ($max_param > 0) {
+                for ($param_id=1; $param_id<=$max_param; $param_id++) {
+                    $value_ids = $dbc->result($r, $i-1, "param_$param_id");
+                    if ($value_ids!="") {
+                        $current_products[$art_id][$param_id] = explode(",", $value_ids);
+                        $current_filters[$param_id] = explode(",", $value_ids);
+                    }
                 }
             }
         }

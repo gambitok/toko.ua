@@ -1,5 +1,7 @@
 <?php
 
+ini_set('memory_limit', '2048M');
+
 $group_link = findLinks()[1];
 
 $group_id = $automan->getGroupLinkID($group_link);

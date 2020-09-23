@@ -2,7 +2,7 @@
 /*
  * INIT / UPDATE CATALOG LIST
  * */
-ini_set('memory_limit', '1024M');
+ini_set('memory_limit', '2048M');
 
 $linka = findLinks();
 $str_text = $linka[1];
