@@ -1,6 +1,7 @@
 <?php
 
-class sms {
+class sms
+{
 
     function auth_sms(){
         $this->url = 'https://sms-sender.km.ua/api/xml.api2.php';

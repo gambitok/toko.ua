@@ -250,6 +250,14 @@
     padding-top: 40%;
 }
 
+.modal-header .close {
+    display: block;
+    margin: 0;
+    padding: 0;
+    text-align: right;
+    width: auto;
+}
+
 .modal-header {
     background: #606975;
     border-bottom: unset;

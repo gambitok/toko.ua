@@ -1,5 +1,7 @@
 <?php
-class slave {
+
+class slave
+{
 
 	var $month_id;
 

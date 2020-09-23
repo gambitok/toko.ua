@@ -219,7 +219,7 @@ class CatalogueClass
         return $form;
     }
 
-    function getDetailsList() { $db = DbSingleton::getTokoDb();
+    function getDetailsListing() { $db = DbSingleton::getTokoDb();
         $language = new LangClass; $automan = new AutoClass;
         $prefix = $language->getLangPrefix(); $lang_id = $language->getLanguage(); $lang_cap = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1;"); $n = $db->num_rows($r); $list = "";

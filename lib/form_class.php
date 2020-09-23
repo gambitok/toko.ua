@@ -1,6 +1,7 @@
 <?php
 
-class FormClass {
+class FormClass extends CatalogueClass
+{
 
     use Helper;
     use Variables;
@@ -48,25 +49,26 @@ class FormClass {
         return $info;
     }
 
-    function getArtBrandLink($art_id, $brand_id) { $db = DbSingleton::getTokoDb();
-        $link = "";
-        $r = $db->query("SELECT `STR_ID` FROM `T2_TREE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
-        if ($n>0) {
-            $str_text = "";
-            for ($i=1; $i<=$n; $i++) {
-                $str_id = $db->result($r, $i-1, "STR_ID");
-                $r1 = $db->query("SELECT `TEX_LINK` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1 = $db->query($r1);
-                if ($n1>0) $str_text = $db->result($r1, 0, "TEX_LINK");
-                if ($str_text!="") break;
-            }
-            $brand_link = $this->getBrandLink($brand_id);
-            if ($str_text!="") $link = "https://toko.ua/catalog/$str_text/brandy=$brand_link/";
-        }
-        return $link;
-    }
+// SEO
+//    function getArtBrandLink($art_id, $brand_id) { $db = DbSingleton::getTokoDb();
+//        $link = "";
+//        $r = $db->query("SELECT `STR_ID` FROM `T2_TREE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
+//        if ($n>0) {
+//            $str_text = "";
+//            for ($i=1; $i<=$n; $i++) {
+//                $str_id = $db->result($r, $i-1, "STR_ID");
+//                $r1 = $db->query("SELECT `TEX_LINK` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1 = $db->query($r1);
+//                if ($n1>0) $str_text = $db->result($r1, 0, "TEX_LINK");
+//                if ($str_text!="") break;
+//            }
+//            $brand_link = $this->getBrandLink($brand_id);
+//            if ($str_text!="") $link = "https://toko.ua/catalog/$str_text/brandy=$brand_link/";
+//        }
+//        return $link;
+//    }
 
     function showArticle($art_id) {
-        $cat = new CatalogueClass; $auto = new AutoClass;
+        $auto = new AutoClass;
         $auto_typ_id = $this->getCookieAuto();
 
         $form = $this->getHtmlForm("cat_article");
@@ -86,7 +88,8 @@ class FormClass {
         $brand_name = $article["brand_name"];
         $article_name = $article["text"];
 
-        $brand_link = $this->getArtBrandLink($art_id, $brand_id);
+        // $brand_link = $this->getArtBrandLink($art_id, $brand_id);
+        $brand_link = "";
         $flagData = $this->getCountryFlag($brand_id);
         if ($flagData!==false) {
             $flag = $flagData["flag"];
@@ -119,7 +122,7 @@ class FormClass {
         $form = str_replace("{analogs_capa}", "$article_nr_displ $brand_name", $form);
         $form = str_replace("{analogs_link}", "https://toko.ua".$this->getLangPrefix()."/search/$format_article/$brand_id/$brand_name/", $form);
 
-        $analogs = $cat->shortSearchList($art_id);
+        $analogs = $this->shortSearchList($art_id);
         $form = str_replace("{analogs_list}", $analogs, $form);
         $form = str_replace("{analogs_display}", $analogs=="" ? "dnone" : "", $form);
         $form = str_replace("{analogs_header}", "$brand_name $format_article ('$article_nr_displ, $article_nr_displ, $brand_name $article_nr_displ)", $form);
@@ -134,7 +137,7 @@ class FormClass {
     }
 
     function getArticleInfo($art_id) { $db = DbSingleton::getTokoDb();
-        $cat = new CatalogueClass; $client = new ClientClass; $kours = new ExRateClass;
+        $client = new ClientClass; $kours = new ExRateClass;
         $tpoint = $client->getTpoint(); $cur = $kours->getCurrentKours(); $cur_cap = $kours->getKoursCaption($cur);
 
         $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
@@ -161,17 +164,17 @@ class FormClass {
         $stock = intval($db->result($r,0,"AMOUNT"));
         $storage_id = $db->result($r,0,"storage_id");
 
-        $price = $cat->getArticlePrice($art_id);
-        if ($suppl_id!=0) $price = $cat->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+        $price = $this->getArticlePrice($art_id);
+        if ($suppl_id!=0) $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
         $price = $kours->getKoursPrice($price, $cur);
         if ($cur==1) $price = $client->getClientPriceRounding($this->getClient(), $price);
 
-        $deliveryData = $cat->getTpointDeliveryInfo($tpoint, $storage_id);
+        $deliveryData = $this->getTpointDeliveryInfo($tpoint, $storage_id);
         $delivery_days = $deliveryData["days"];
         $delivery_short_info = $deliveryData["short"];
 
         if ($suppl_id!=0) {
-            $deliveryData = $cat->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
+            $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
             $delivery_days = $deliveryData["days"];
             $delivery_short_info = $deliveryData["short"];
         }
@@ -300,7 +303,7 @@ class FormClass {
     }
 
     function showHistoryForm() {
-        $cat = new CatalogueClass; $client = new ClientClass;
+        $client = new ClientClass;
         $prefix = $this->getLangPrefix();
         $list = $client->getClientHistory();
         $result = "";
@@ -308,7 +311,7 @@ class FormClass {
             $article_nr_displ = $list[$i]["article_nr_displ"];
             $brand = $list[$i]["brand"];
             $brand_link = $list[$i]["brand_link"];
-            $result.="<li>$col. <a href=\"https://toko.ua$prefix/$cat->search_link/$article_nr_displ/$brand_link/\">$article_nr_displ ($brand)</a></li>";
+            $result.="<li>$col. <a href=\"https://toko.ua$prefix/$this->search_link/$article_nr_displ/$brand_link/\">$article_nr_displ ($brand)</a></li>";
         }
         !empty($list) ?: $result.="<p>{empty_history}</p>";
         $form = $this->getHtmlForm("menu/history_block");
@@ -318,7 +321,7 @@ class FormClass {
 
     // PHONE HISTORY
     function showHistoryList() {
-        $cat = new CatalogueClass; $client = new ClientClass;
+        $client = new ClientClass;
         $prefix = $this->getLangPrefix();
         $list = $client->getClientHistory(); $max_count = 9;
         $list_history = "";
@@ -331,7 +334,7 @@ class FormClass {
                 <div class='container'>
                     <div class='row'>
                         <div class='col-10'>
-                            <a href=\"https://toko.ua$prefix/$cat->search_link/$article_nr_displ/$brand_link/\">
+                            <a href=\"https://toko.ua$prefix/$this->search_link/$article_nr_displ/$brand_link/\">
                                 <i class='fa fa-history'></i>
                                 $brand $article_nr_displ
                             </a>
@@ -423,14 +426,13 @@ class FormClass {
 
     /*==== INFO FORM ====*/
     function showPhotoGallery($art_id, $display=0) { $db = DbSingleton::getTokoDb();
-        $cat = new CatalogueClass;
         $prefix = $this->getLangPrefix();
         $nophoto = $this->noPhoto;
         $list = "";
-        $article_name = $cat->getArticleSearch($art_id);
-        $brand_name = $cat->getBrandName($cat->getArticleBrand($art_id));
-        $format_name = $cat->getFormatAticle($article_name);
-        $format_brand = $cat->getFormatBrand($brand_name);
+        $article_name = $this->getArticleSearch($art_id);
+        $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
+        $format_name = $this->getFormatAticle($article_name);
+        $format_brand = $this->getFormatBrand($brand_name);
 
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
@@ -483,11 +485,9 @@ class FormClass {
     }
 
     function showArticlePhotoGallery($art_id) { $db = DbSingleton::getTokoDb();
-        $cat = new CatalogueClass;
-
-        $article_nr_dspl = $cat->getArticleDispl($art_id);
-        $brand_name = $cat->getBrandName($cat->getArticleBrand($art_id));
-        $article_name = $cat->getArticleName($art_id);
+        $article_nr_dspl = $this->getArticleDispl($art_id);
+        $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
+        $article_name = $this->getArticleName($art_id);
         $article_info = "$article_name $brand_name $article_nr_dspl - {photo_card_cap}";
         $nophoto = $this->noPhoto;
         $list = "";
@@ -539,7 +539,7 @@ class FormClass {
         $info = $this->getArticleInfoForm($art_id, 1, 1);
         if ($info!="") $info = "<div style='border:1px solid #e9e9e9; border-radius:.25em; padding:10px;'>$info</div>";
         $applicability = $this->getApplManufTCD($art_id);
-        $originals = $cat->getOriginalNumbers($art_id);
+        $originals = $this->getOriginalNumbers($art_id);
 
         $form = "
         <nav id=\"nav-Content\">
@@ -566,15 +566,14 @@ class FormClass {
      * Show Modal Info Form
      * */
     function showInfoForm($art_id) {
-        $catalogue = new CatalogueClass;
-        $article_nr_displ = $catalogue->getArticleDispl($art_id);
-        $brand_name = $catalogue->getBrandName($catalogue->getArticleBrand($art_id));
+        $article_nr_displ = $this->getArticleDispl($art_id);
+        $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
         $title = "<span class=\"text-dark bold\">$brand_name</span> $article_nr_displ";
         $form = $this->getHtmlForm("modals/form_info");
-        $form = str_replace("{info-main__photo}",$this->showPhotoGallery($art_id),$form);
-        $form = str_replace("{info-main__parameters}",$this->getArticleInfoForm($art_id),$form);
-        $form = str_replace("{info-applicability}",$this->getApplManufTCD($art_id),$form);
-        $form = str_replace("{info-original}",$catalogue->getOriginalNumbers($art_id),$form);
+        $form = str_replace("{info-main__photo}", $this->showPhotoGallery($art_id), $form);
+        $form = str_replace("{info-main__parameters}", $this->getArticleInfoForm($art_id), $form);
+        $form = str_replace("{info-applicability}", $this->getApplManufTCD($art_id), $form);
+        $form = str_replace("{info-original}", $this->getOriginalNumbers($art_id), $form);
         $form = $this->replaceLang($form);
         return array($form, $title);
     }
@@ -595,7 +594,7 @@ class FormClass {
             WHERE tt.TYP_ID IN ($typ_id_str) AND tt.ACTIVE=1 
             GROUP BY man.MFA_ID ORDER BY man.MFA_BRAND ASC;"); $n = $db->num_rows($r);
             if ($n>0) {
-                for ($i=1;$i<=$n;$i++){
+                for ($i=1;$i<=$n;$i++) {
                     $brand_id = $db->result($r,$i-1,"MFA_ID");
                     $brand = $db->result($r,$i-1,"MFA_BRAND");
                     $list.="<a class=\"padr15 load_app pointer\" onclick='loadApplicModels2(\"$art_id\",\"$brand_id\",this)'><i class=\"fas fa-car\"></i>$brand</a>";
@@ -640,7 +639,6 @@ class FormClass {
     }
 
     function getApplModelInfoTCD($art_id, $typ_id) { $db = DbSingleton::getTokoDb();
-        //DELETE????????
         $automan= new AutoClass;
         $list="";
         $r=$db->query("SELECT tt.*, man.MFA_ID, tm.Model, tm.MOD_ID
@@ -683,13 +681,12 @@ class FormClass {
      *
      */
     function getArticleInfoForm($art_id, $display = 0, $type = 0) { $db = DbSingleton::getTokoDb();
-        $cat = new CatalogueClass;
         $info = "";
         $prefix = $this->getLangPrefix();
-        $article_name = $cat->getArticleSearch($art_id);
-        $brand_name = $cat->getBrandName($cat->getArticleBrand($art_id));
-        $format_name = $cat->getFormatAticle($article_name);
-        $format_brand = $cat->getFormatBrand($brand_name);
+        $article_name = $this->getArticleSearch($art_id);
+        $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
+        $format_name = $this->getFormatAticle($article_name);
+        $format_brand = $this->getFormatBrand($brand_name);
         $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;"); $n = $db->num_rows($r);
         if ($n>0) {
             !$display ? $class = "info__table" : $class = "info__table_min";
@@ -748,7 +745,6 @@ class FormClass {
 
     /**
      * Show cars form on Home Page
-     * @return string
      */
     function showHomeCars() { $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();

@@ -1,6 +1,7 @@
 <?php
 
-class ClientClass {
+class ClientClass
+{
 
     var $status_user = 1;
     var $status_user_retail = 145;
@@ -379,8 +380,8 @@ class ClientClass {
     }
 
     /*
-        checking user authorization in the system
-        Table: myparts_dba.`A_CLIENTS_USERS`, myparts_dba.`A_CLIENTS_USERS_RETAIL`
+     * checking user authorization in the system
+     * Table: myparts_dba.`A_CLIENTS_USERS`, myparts_dba.`A_CLIENTS_USERS_RETAIL`
     */
     function checkRegClient($phone, $type = 0) { $db = DbSingleton::getDbm();
         $phone = $this->formatValidPhone($phone);
@@ -404,8 +405,8 @@ class ClientClass {
     }
 
     /*
-        validation of phone numbers by Ukrainian operators
-        Table: toko_dba.`mobile_operators`
+     * validation of phone numbers by Ukrainian operators
+     * Table: toko_dba.`mobile_operators`
     */
     function validateOperator($phone) { $db = DbSingleton::getTokoDb();
         $result = false;
@@ -437,8 +438,8 @@ class ClientClass {
     }
 
     /*
-        select all tpoints except the specified one
-        Table: toko_dba.`T_POINT`
+     * select all tpoints except the specified one
+     * Table: toko_dba.`T_POINT`
     */
     function getOtherTpoints($tpoint_id) { $db = DbSingleton::getTokoDb();
         $tpoint_array = [];
@@ -451,8 +452,8 @@ class ClientClass {
     }
 
     /*
-        getting tpoint address
-        Table: toko_dba.`T_POINT`
+     * getting tpoint address
+     * Table: toko_dba.`T_POINT`
     */
     function getTPointAddress($tpoint_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `address` FROM `T_POINT` WHERE `id`='$tpoint_id' AND `status`=1 LIMIT 1;");
@@ -461,8 +462,8 @@ class ClientClass {
     }
 
     /*
-        getting city name by tpoint
-        Table: toko_dba.`T_POINT`
+     * getting city name by tpoint
+     * Table: toko_dba.`T_POINT`
     */
     function getTPointCity($tpoint_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `city` FROM `T_POINT` WHERE `id`='$tpoint_id' AND `status`=1 LIMIT 1;");
@@ -472,8 +473,8 @@ class ClientClass {
     }
 
     /*
-        getting storage address
-        Table: toko_dba.`STORAGE`
+     * getting storage address
+     * Table: toko_dba.`STORAGE`
     */
     function getStorageAddress($storage_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `address` FROM `STORAGE` WHERE `id`='$storage_id' AND `status`=1 LIMIT 1;");
@@ -482,8 +483,8 @@ class ClientClass {
     }
 
     /*
-        getting city name by storage
-        Table: toko_dba.`STORAGE`
+     * getting city name by storage
+     * Table: toko_dba.`STORAGE`
     */
     function getStorageCity($storage_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `city` FROM `STORAGE` WHERE `id`='$storage_id' AND `status`=1 LIMIT 1;");
@@ -493,9 +494,9 @@ class ClientClass {
     }
 
     /*
-        get location variables by city
-        Table: myparts_dba.`T2_CITY`, myparts_dba.`T2_REGION`, myparts_dba.`T2_STATE`, myparts_dba.`T2_COUNTRIES`
-    */
+     * get location variables by city
+     * Table: myparts_dba.`T2_CITY`, myparts_dba.`T2_REGION`, myparts_dba.`T2_STATE`, myparts_dba.`T2_COUNTRIES`
+     * */
     function getLocationCity($city_id) { $db = DbSingleton::getDbm();
         $region_id = 0; $state_id = 0; $country_id = 0;
         if ($city_id>0) {
@@ -692,8 +693,8 @@ class ClientClass {
             $user_id = $db->result($r, 0, "id");
             $client_id = $db->result($r, 0, "client_id");
         }
-        if ($client_id>0) { // ÍÀÉØËÎ ÊË²ªÍÒÀ ÏÎ ÍÎÌÅÐÓ
-            if (!$this->checkRetailClientCategory($client_id)) { // ÍÀÉØËÎ ÊË²ªÍÒÀ-ÌÀÃÀÇ²ÍÀ
+        if ($client_id>0) { // found client-phone
+            if (!$this->checkRetailClientCategory($client_id)) { // found client-shop
                 $status = true;
             }
         }
@@ -752,7 +753,9 @@ class ClientClass {
         return $markup_min;
     }
 
-    /*==== Get User Data + User Order Info ====*/
+    /*
+     * Get User Data + User Order Info
+     * */
     function getClientUserData($user_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
         $user_name = $db->result($r, 0, "name");

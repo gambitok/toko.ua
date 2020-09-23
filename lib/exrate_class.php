@@ -1,6 +1,7 @@
 <?php
 
-class ExRateClass {
+class ExRateClass
+{
 
     private $usdRate;
     private $euroRate;

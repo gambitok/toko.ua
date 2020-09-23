@@ -12,8 +12,8 @@ require_once (RDD."/lib/DbSingleton.php");                  //database
 require_once (RDD."/lib/access.php");                       //get access site
 require_once (RDD."/lib/helper.php");                       //helper
 require_once (RDD."/lib/variables.php");                    //variables
-require_once (RDD."/lib/form_class.php");                   //show forms
 require_once (RDD."/lib/catalogue_class.php");              //catalogue search
+require_once (RDD."/lib/form_class.php");                   //show forms
 require_once (RDD."/lib/products_class.php");               //products search
 require_once (RDD."/lib/auto_class.php");                   //auto search
 require_once (RDD."/lib/menu_class.php");                   //site`s menu

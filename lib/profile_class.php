@@ -1,6 +1,7 @@
 <?php
 
-class ProfileClass {
+class ProfileClass extends ClientClass
+{
 
     use Helper;
     use Variables;
@@ -9,10 +10,9 @@ class ProfileClass {
     var $page_profile = "/profile/orders/";
     var $page_registration = "/registration";
 
-    function getClientInfo() {
-        $client = new ClientClass;
-        list($client_id, $user_id) = $client->getClient();
-        $name = $client->getClientInfo($client_id, $user_id)["name"];
+    function getProfileClientInfo() {
+        list($client_id, $user_id) = $this->getClient();
+        $name = $this->getClientInfo($client_id, $user_id)["name"];
         $user_id==0
             ? $info = false
             : $info = "{hello_cap}, <a href=\"$this->page_profile\">".$name."</a>";
@@ -92,10 +92,9 @@ class ProfileClass {
     }
 
     function showProfileForm() {
-        $client = new ClientClass;
-        list($client_id, $user_id) = $client->getClient();
+        list($client_id, $user_id) = $this->getClient();
         $form = $this->getHtmlForm("profile/profile");
-        $name = $client->getClientInfo($client_id, $user_id)["name"];
+        $name = $this->getClientInfo($client_id, $user_id)["name"];
         $form = str_replace("{client_name}", $name, $form);
         $form = str_replace("{client_id}", $client_id, $form);
         $form = $this->replaceLang($form);
@@ -103,10 +102,10 @@ class ProfileClass {
     }
 
     function showProfileAccount() {
-        $menu = new MenuClass; $client = new ClientClass;
-        list($client_id, $user_id) = $client->getClient();
+        $menu = new MenuClass;
+        list($client_id, $user_id) = $this->getClient();
         $form = $this->getHtmlForm("profile/profile_account");
-        $clientData = $client->getClientInfo($client_id, $user_id);
+        $clientData = $this->getClientInfo($client_id, $user_id);
         $form = str_replace("{client_id}", $user_id, $form);
         $form = str_replace("{client_phone}", $clientData["phone"], $form);
         $form = str_replace("{client_password}", $clientData["password"], $form);
@@ -249,7 +248,7 @@ class ProfileClass {
     }
 
     function showProfileOrders() { $db = DbSingleton::getDbm();
-        $kours = new ExRateClass; $client = new ClientClass;
+        $kours = new ExRateClass;
         $form = $this->getHtmlForm("profile/profile_orders");
         $user_id = $this->getUser();
         $where = "`client_user_id`='$user_id'";
@@ -273,8 +272,8 @@ class ProfileClass {
                     $dp_user_id=$db->result($r, 0, "user_id");
                     $client_id=$db->result($r, 0, "client_id");
                     $date.=$db->result($r, 0, "time_stamp")."\n";
-                    $name.=$client->getClientName($dp_user_id, $client_id)."\n";
-                    $city = $client->getClientInfo($client_id, $dp_user_id)["city"];
+                    $name.=$this->getClientName($dp_user_id, $client_id)."\n";
+                    $city = $this->getClientInfo($client_id, $dp_user_id)["city"];
                     $delivery = $db->result($r, 0, "delivery_type_id");
                     $payment=0;
                     $status = $db->result($r, 0, "status_dp");
@@ -476,7 +475,7 @@ class ProfileClass {
     }
 
     function showProfileCheck($data_from="", $data_to="") { $db = DbSingleton::getDbm();
-        $kours = new ExRateClass; $client = new ClientClass;
+        $kours = new ExRateClass;
         if ($data_from==0 || $data_from=="") $data_from=date("Y-m-01");
         if ($data_to==0 || $data_to=="") $data_to=date("Y-m-d");
 
@@ -544,7 +543,7 @@ class ProfileClass {
         $form=$this->getHtmlForm("profile/profile_check");
         $saldo_start_cap = $saldo_end_cap = "";
 
-        $client_cash_id = $client->getClientCurrency($client_id);
+        $client_cash_id = $this->getClientCurrency($client_id);
         list($saldo_start, $saldo_cash_id,) = $this->getClientBalansPeriodStart($client_id,$client_cash_id,$data_from,0);
 
         $saldo_data_start=date("Y-m-01");
@@ -680,7 +679,6 @@ class ProfileClass {
 		return $text;
 	}
 
-	/*==== REGISTRATION ====*/
     function showRegistrationForm() {
         $menu = new MenuClass; $shop = new ShopClass;
         $form = $this->getHtmlForm("profile/registration");

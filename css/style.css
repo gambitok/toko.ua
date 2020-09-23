@@ -1743,6 +1743,8 @@ table thead td { border: 1px solid #000; }
 
 .modal-loader { background: transparent; border: none; padding-top: 40%; }
 
+.modal-header .close { margin: 0; padding: 0; text-align: right; display: block; width: auto; }
+
 .modal-header { background: #606975; border-bottom: unset; border-radius: 0; color: #fff; }
 
 .modal-header span { margin: 0; }

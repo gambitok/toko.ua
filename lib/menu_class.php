@@ -1,6 +1,7 @@
 <?php
 
-class MenuClass {
+class MenuClass extends CatalogueClass
+{
 
     use Helper;
     use Variables;
@@ -31,7 +32,6 @@ class MenuClass {
     }
 
     function showNews() { $db = DbSingleton::getTokoDb();
-        $cat = new CatalogueClass;
         $lang = $this->getLanguage(); if ($lang==2) $lang = 5;
         $prefix = $this->getLangPrefix();
         $list = ""; $err1 = $this->err1; $date_cur = date("Y-m-d");
@@ -39,7 +39,7 @@ class MenuClass {
         if ($n>0) {
             for ($i=1; $i<=$n; $i++) {
                 $state_id = $db->result($r,$i-1,"id");
-                $title = $db->result($r,$i-1,"caption"); if ($title=="") $title = $this->replaceLang("{news_one_cap}"."-$state_id"); $format_title = $cat->formatUrlText($title);
+                $title = $db->result($r,$i-1,"caption"); if ($title=="") $title = $this->replaceLang("{news_one_cap}"."-$state_id"); $format_title = $this->formatUrlText($title);
                 $short_desc = $db->result($r,$i-1,"short_desc");
                 $date = $db->result($r,$i-1,"data");
                 $img_file = $this->getNewsImage($state_id);
@@ -93,7 +93,7 @@ class MenuClass {
     }
 
     function getSpecialOffersList($template_id, $update_actions) { $db = DbSingleton::getDbm();
-        $catalogue = new CatalogueClass; $kours = new ExRateClass; $showform = new FormClass;
+        $kours = new ExRateClass; $showform = new FormClass;
         $prefix = $this->getLangPrefix();
         $err1 = $this->err1; $client_id = $this->getClient(); $categories = []; $group_arts = [];
         $where_arts = ""; $status_new = 0; $cur_data = date("Y-m-d");
@@ -125,7 +125,7 @@ class MenuClass {
                 $data = $db->result($r,$i-1,"data");
                 $status = $db->result($r,$i-1,"status");
                 $price = $db->result($r,$i-1,"price");
-                $real_price = $catalogue->getArticlePrice($art_id);
+                $real_price = $this->getArticlePrice($art_id);
                 $real_price = $kours->getKoursFromUAH($real_price,2);
                 $discount = round((($real_price-$price)*100)/$real_price);
                 if ($update_actions!="") if ($status && $timestamp>"$update_actions 00:00:00") $status_new = 1;
@@ -150,7 +150,7 @@ class MenuClass {
                 $status_new = $arr[$i]["status_new"];
                 $discount = $arr[$i]["discount"];
                 array_push($group_arts, $art_id);
-                $name = $catalogue->getArticleName($art_id);
+                $name = $this->getArticleName($art_id);
                 $article_nr_search = $this->getArticleSearch($art_id);
 
                 $brand_id = $this->getArticleBrand($art_id);
@@ -526,10 +526,10 @@ class MenuClass {
     }
 
     function showHeadTemplate($head_id) {
-        $catalogue = new CatalogueClass; $automan = new AutoClass;
+        $automan = new AutoClass;
         list($tex_text, $text_link) = $automan->getHeadNewDescr($head_id);
         $header = "<a href=\"https://toko.ua/catalog/$text_link/\">$tex_text</a>";
-        $list = $catalogue->getGroupTreeStr($head_id, "");
+        $list = $this->getGroupTreeStr($head_id, "");
         $footer = "<a href=\"https://toko.ua/catalog/$text_link\">{show_all_cap} <i class=\"fa fa-chevron-right\"></i></a>";
         $footer = $this->replaceLang($footer);
         return array($list, $header, $footer);
@@ -548,7 +548,7 @@ class MenuClass {
         $form = $this->getHtmlForm("media/nav_panel");
         $form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
         $form = str_replace("{lang_select}", $this->getLanguageList(), $form);
-        if (!$profile->getClientInfo()) {
+        if (!$profile->getProfileClientInfo()) {
             $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
             $form = str_replace("{region_select_phone}", "<li>".$this->getRegionSelect()."</li>", $form);
         } else {
@@ -562,7 +562,6 @@ class MenuClass {
      * Reviews Form
      * */
     function showReviews() { $db = DbSingleton::getTokoDb();
-        $cat = new CatalogueClass;
         $prefix = $this->getLangPrefix();
         $list = "";
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `STATUS`=1 ORDER BY `data` DESC;"); $n = $db->num_rows($r);
@@ -572,7 +571,7 @@ class MenuClass {
                 $title = $db->result($r, $i-1, "TITLE");
                 $date = $db->result($r, $i-1, "DATA");
                 $img = $db->result($r, $i-1, "IMG");
-                $transcript = $cat->formatUrlText($title);
+                $transcript = $this->formatUrlText($title);
                 $list.="<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"reviews-block-item\">
                     <div class=\"reviews-block-item__date\">$date</div>
                     <div class=\"reviews-block-item__title\" itemprop=\"name\">$title</div>
