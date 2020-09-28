@@ -806,6 +806,9 @@
                 top: 3px;
             }
         }
+        &-hidden {
+            display: none;
+        }
     }
 }
 
@@ -890,6 +893,10 @@
 
 /*==== PHONE ====*/
 @media (max-width:992px) {
+    .template_filters {
+        border: none;
+    }
+
     .cat_result_table {
         padding: 0;
     }

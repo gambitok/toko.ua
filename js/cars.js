@@ -125,7 +125,7 @@ function showCarsNavigation(index, type, attr) {
     let data_pred = $("div[data-type='" + $(index).attr("data-pred") + "']");
     if (type===undefined) { type = $(data_pred).attr("data-type"); }
     if (attr===undefined) { attr = $(data_pred).attr("data-id"); }
-    if (type===undefined && attr===undefined) { type=""; attr=0; }
+    if (type===undefined && attr===undefined) { type = ""; attr = 0; }
     // hidePop();
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
@@ -146,6 +146,7 @@ function showCarsNavigation(index, type, attr) {
 }
 
 function toggleNavMob() {
+    document.getElementById("scrollManuf").scrollIntoView();
     let checked_index = $(".cars-nav__item-checked")[0];
     toggleCarsNavigation(checked_index);
 }
@@ -156,7 +157,7 @@ function toggleCarsNavigation(index, type, attr) {
     let data_pred = $("div[data-type='" + $(index).attr("data-pred") + "']");
     if (type===undefined) { type = $(data_pred).attr("data-type"); }
     if (attr===undefined) { attr = $(data_pred).attr("data-id"); }
-    if (type===undefined && attr===undefined) { type=""; attr=0; }
+    if (type===undefined && attr===undefined) { type = ""; attr = 0; }
 
     // hidePop();
 

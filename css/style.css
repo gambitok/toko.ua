@@ -2383,6 +2383,8 @@ table thead td { border: 1px solid #000; }
 
 .tables__delivery.applicable-active span:before { content: url(/images/icons/car-white.png); position: relative; right: 3px; top: 3px; }
 
+.tables__delivery.applicable-hidden { display: none; }
+
 .delivery-red i { color: #f44336 !important; font-style: normal; font-weight: 700 !important; text-transform: uppercase; }
 
 .delivery-green i { color: #009933 !important; font-style: normal; font-weight: 700 !important; text-transform: uppercase; }
@@ -2414,7 +2416,8 @@ table thead td { border: 1px solid #000; }
 
 /*==== /UNKNOWN ====*/
 /*==== PHONE ====*/
-@media (max-width: 992px) { .cat_result_table { padding: 0; }
+@media (max-width: 992px) { .template_filters { border: none; }
+  .cat_result_table { padding: 0; }
   .cat_search { margin-left: 10px; }
   .tables__count, .tables__price, .tables__stock { padding: 0; }
   .tables__info { padding-left: 15px; padding-right: 15px; text-align: right; }

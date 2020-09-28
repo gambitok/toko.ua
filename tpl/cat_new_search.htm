@@ -3,20 +3,61 @@
 <link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
 <link rel="stylesheet" href="/js/plugins/jquery.treefilter/jquery.treefilter.css">
 
+<style>
+    .anchor-contacts {
+        display: none;
+    }
+</style>
+
 <input type="hidden" id="search_typ_id" value="{search_typ_id}">
 <input type="hidden" id="search_str_id" value="{search_str_id}">
 
 <div id="search_target" class="row wdt100 mar0 flex-column-reverse flex-md-row">
     <div class="col-lg-3 col-12 content catalogue-side">
-        <div id="search_new_tree" style="display: none">{cat_search_new_tree}</div>
-        <div id="search_tree" style="display: none">{cat_search_tree}</div>
-        <div id="search_filters" style="display: none">{cat_search_filters}</div>
-        <div id="search_brands" style="display: none">{cat_search_brands}</div>
+        <div id="catalog-filters">
+            <div id="search_new_tree" style="display: none">{cat_search_new_tree}</div>
+            <div id="search_tree" style="display: none">{cat_search_tree}</div>
+            <div id="search_filters" style="display: none">{cat_search_filters}</div>
+            <div id="search_brands" style="display: none">{cat_search_brands}</div>
+        </div>
     </div>
     <div id="result_target" class="col-lg-9 col-12 cat_result_table">
         <input id="type_search" type="hidden" value="{type_search}">
         <input id="cur_value" type="hidden" value="{cur_value}">
         {cat_search_main}
+    </div>
+</div>
+
+<div id="fixed-nav-catalog" class="fixed-nav">
+    <div class="fixed-nav-item" onclick="showGarageForm();">
+        <div class="tool-status-contain">
+            <span id="tool-garage" class="tool-status {garage_style}">!</span>
+        </div>
+        <img class="fixed-nav-item__image" src="/images/icons/help/car.png" alt="img">
+        <span class="fixed-nav-item__text">{garage_cap_upper}</span>
+    </div>
+
+    <div class="fixed-nav-item" onclick="showPhoneForm();">
+        <img class="fixed-nav-item__image" src="/images/icons/help/help.png" alt="img">
+        <span class="fixed-nav-item__text">{call_cap}</span>
+    </div>
+
+    <div class="fixed-nav-item" onclick="showArtSearch();">
+        <img class="fixed-nav-item__image" src="/images/icons/help/search.png" alt="img">
+        <span class="fixed-nav-item__text">{search_cap}</span>
+    </div>
+
+    <div class="fixed-nav-item bar-catalog" onclick="setCatalogFilters();">
+        <img class="fixed-nav-item__image" src="/images/icons/help/filter.png" alt="img">
+        <span class="fixed-nav-item__text">{filter_cap}</span>
+    </div>
+
+    <div class="fixed-nav-item" onclick="showBasketMinForm();">
+        <div class="tool-status-contain">
+            <span id="tool-basket" class="tool-status {basket_style}">{basket_count}</span>
+        </div>
+        <img class="fixed-nav-item__image" src="/images/icons/help/basket.png" alt="img">
+        <span class="fixed-nav-item__text">{basket_cap}</span>
     </div>
 </div>
 

@@ -294,7 +294,7 @@ class MenuClass extends CatalogueClass
         $address = $db->result($r, 0, "address");
         if ($n>0) {
             $list = "<span><span class=\"fas fa-map-marker-alt\"></span> {choose_office}:</span>
-            <a class=\"pointer\" onClick=\"showRegionForm();\">
+            <a class=\"pointer\" onClick='showRegionForm();'>
                 <span id=\"region_select\">
                     <span>$region ($address)</span>
                 </span>
@@ -306,7 +306,7 @@ class MenuClass extends CatalogueClass
 
     function showContacts() { $db = DbSingleton::getTokoDb();
         $lang_id = $this->getLanguage();
-        $r = $db->query("SELECT * FROM `contacts_new` WHERE `lang_id`='$lang_id' AND `status`=1;"); $n=$db->num_rows($r);
+        $r = $db->query("SELECT * FROM `contacts_new` WHERE `lang_id`='$lang_id' AND `status`=1;"); $n = $db->num_rows($r);
         $list = "";
         if ($n>0) {
             for ($i=1; $i<=$n; $i++) {
@@ -331,8 +331,8 @@ class MenuClass extends CatalogueClass
         $form = "";
         $r = $db->query("SELECT `STATE_ID`, `STATE_NAME` FROM `T2_STATE` ORDER BY `STATE_NAME` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
-            $id = $db->result($r,$i-1,"STATE_ID");
-            $caption = $db->result($r,$i-1,"STATE_NAME");
+            $id = $db->result($r, $i-1, "STATE_ID");
+            $caption = $db->result($r, $i-1, "STATE_NAME");
             $id==$region ? $checked = "selected=\"selected\"" : $checked = "";
             $form.="<option value=\"$id\" $checked>$caption</option>";
         }
@@ -343,8 +343,8 @@ class MenuClass extends CatalogueClass
         $form = ""; if ($org_type=="" || $org_type==0) $org_type = 1;
         $r = $db->query("SELECT * FROM `A_ORG_TYPE` ORDER BY `id` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
-            $id = $db->result($r,$i-1,"id");
-            $caption = $db->result($r,$i-1,"full_name");
+            $id = $db->result($r, $i-1, "id");
+            $caption = $db->result($r, $i-1, "full_name");
             $id==$org_type ? $checked = "selected=\"selected\"" : $checked = "";
             $form.="<option value=\"$id\" $checked>$caption</option>";
         }

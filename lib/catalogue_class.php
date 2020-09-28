@@ -70,7 +70,7 @@ class CatalogueClass
         $form = str_replace("{cur_value}", $cur, $form);
 
         //search main
-        $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $this->getBrandName($brand_nr_search), $list, 1, $cur, $status_brand);
+        $search_main = $this->getSearchMain($search_main, $article_nr_search, $this->getBrandName($brand_nr_search), $list, 1, $cur, $status_brand);
         $form = str_replace("{cat_search_main}", $search_main, $form);
 
         //search filters
@@ -119,7 +119,7 @@ class CatalogueClass
         $search_main = $this->getHtmlForm("cat_search_main");
         $search_filters = $this->getHtmlForm("cat_search_filters");
         $search_brands = $this->getHtmlForm("cat_search_brands");
-        $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $brand_name, $list, 1, $cur);
+        $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_name, $list, 1, $cur);
         $search_main = $this->replaceLang($search_main);
         $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value, 1, 0);
         $search_filters = $this->replaceLang($search_filters);
@@ -291,10 +291,9 @@ class CatalogueClass
      * catalog/maslyanyj-filtr/ + TYP_ID
      * */
     function techModelsList($typ_id, $str_id) { $db = DbSingleton::getTokoDb();
-        $kours = new ExRateClass; $client = new ClientClass;
+        $kours = new ExRateClass; $client = new ClientClass; $automan = new AutoClass;
         $cur = $kours->getCurrentKours();
         $str_id = $this->getUrlNumber($str_id);
-        $automan = new AutoClass;
         list($manufacture, $model, $model_id) = $automan->getCarInfo($typ_id);
         $automan->setAutoData($manufacture, $model, $model_id, $typ_id, $str_id);
         $client->toggleProductView(1);
@@ -382,9 +381,8 @@ class CatalogueClass
         return $kol;
     }
 
-    function getSearchMain($search_main, $article_nr_search, $brand_id, $brand_name, $list, $type_filter, $cur, $status_brand=0) {
+    function getSearchMain($search_main, $article_nr_search, $brand_name, $list, $type_filter, $cur, $status_brand=0) {
         $client = new ClientClass; $showform = new FormClass;
-        session_start(); $_SESSION["brand_id"] = $brand_id;
         if ($status_brand==1) $brand_name = $this->getBrandIdArt($article_nr_search);
         $article_nr_displ = $this->getArtDispl($article_nr_search);
         $result = "<span class=\"span-dark\">{offers_request} <h1 class=\"span-red\">$brand_name $article_nr_displ</h1> {and_analogs}</span>";
@@ -520,7 +518,7 @@ class CatalogueClass
         return $search_tree;
     }
 
-    function countBrandItems($article_nr_search, $brand_id) { $db=DbSingleton::getTokoDb();
+    function countBrandItems($article_nr_search, $brand_id) { $db = DbSingleton::getTokoDb();
         $art_id_str = "";
         $brand_id = $this->getUrlNumber($brand_id);
         $r = $db->query("SELECT t2c.ART_ID FROM `T2_CROSS` t2c
@@ -1232,7 +1230,7 @@ class CatalogueClass
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + ".$delivery_days." days"));
             if ($delivery_days==0)
-                $today = "<i>{today_cap}</i>"; else if ($delivery_days==1) $today="<i>{tomorrow_cap}</i>";
+                $today = "<i>{today_cap}</i>"; else if ($delivery_days==1) $today = "<i>{tomorrow_cap}</i>";
             else
                 $today = "<i>$date_del ($week_day_short)</i>";
             $info = "$today<br>$time_from_del - $time_to_del";
@@ -1534,6 +1532,10 @@ class CatalogueClass
                 $form = str_replace("{applicable_display}", "applicable-active", $form);
                 $form = str_replace("{applicable_display_text}", "{is_applicable}", $form);
                 $form = str_replace("{applicable_onclick}", "", $form);
+            } else {
+                $form = str_replace("{applicable_display}", "", $form);
+                $form = str_replace("{applicable_display_text}", "{is_didnt_applicable}", $form);
+                $form = str_replace("{applicable_onclick}", "", $form);
             }
         }
         $form = str_replace("{applicable_display}", "", $form);
@@ -1712,7 +1714,7 @@ class CatalogueClass
         WHERE t2a.ART_ID='$art_id' AND t2sai.suppl_id='$suppl_id' LIMIT 1;";
         $r = $dbt->query($query); $n = $dbt->num_rows($r);
         if ($n==1) {
-            $suppl_price_usd = floatval($dbt->result($r,0,"price_usd"));
+            $suppl_price_usd = floatval($dbt->result($r, 0, "price_usd"));
             list($price_in_vat, $show_in_vat, $price_add_vat) = $this->getSupplVatConditions($suppl_id);
             $price_suppl = $suppl_price_usd;
             list($suppl_margin_fm, $suppl_delivery_fm, $suppl_margin2_fm) = $this->getTpointSupplFm($tpoint, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl);
@@ -1748,11 +1750,11 @@ class CatalogueClass
         $price_lvl = $margin_price_lvl = $price_suppl_lvl = $margin_price_suppl_lvl = $client_vat = 0;
         $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==1) {
-            $price_lvl = $db->result($r,0,"price_lvl"); $price_lvl++;
-            $margin_price_lvl = $db->result($r,0,"margin_price_lvl");
-            $price_suppl_lvl = $db->result($r,0,"price_suppl_lvl"); $price_suppl_lvl++;
-            $margin_price_suppl_lvl = $db->result($r,0,"margin_price_suppl_lvl");
-            $client_vat = $db->result($r,0,"client_vat");
+            $price_lvl = $db->result($r, 0, "price_lvl"); $price_lvl++;
+            $margin_price_lvl = $db->result($r, 0, "margin_price_lvl");
+            $price_suppl_lvl = $db->result($r, 0, "price_suppl_lvl"); $price_suppl_lvl++;
+            $margin_price_suppl_lvl = $db->result($r, 0, "margin_price_suppl_lvl");
+            $client_vat = $db->result($r, 0, "client_vat");
         }
         return array($price_lvl, $margin_price_lvl, $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat);
     }
@@ -1814,8 +1816,8 @@ class CatalogueClass
         AND `time_from`<='$cur_time' AND `time_to`>='$cur_time' LIMIT 1;"); $n = $db->num_rows($r);
         if ($n==1) {
             $delivery_days = $db->result($r,0,"delivery_days");
-            $time_from_del = substr($db->result($r,0,"time_from_del"),0,-3);
-            $time_to_del = substr($db->result($r,0,"time_to_del"),0,-3);
+            $time_from_del = substr($db->result($r,0,"time_from_del"), 0, -3);
+            $time_to_del = substr($db->result($r,0,"time_to_del"), 0, -3);
             $week = date("N", strtotime(" + ".$delivery_days." days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + ".$delivery_days." days"));
@@ -1990,7 +1992,7 @@ class CatalogueClass
     function getArticlePriceRatingCash($art_id) { $db = DbSingleton::getTokoDb();
         $cash_id = 2;
         $r = $db->query("SELECT * FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id`='$art_id' AND `in_use`=1 LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n>0) $cash_id = $db->result($r, 0, "cash_id");
+        if ($n > 0) $cash_id = $db->result($r, 0, "cash_id");
         if ($cash_id==0 || $cash_id=="0") {
             $db->query("UPDATE `T2_ARTICLES_PRICE_RATING` SET `cash_id`=2 WHERE `art_id`='$art_id' AND `in_use`=1 LIMIT 1;");
             $cash_id = 2;
@@ -2008,13 +2010,13 @@ class CatalogueClass
         $kours = new ExRateClass;
         $usd_to_uah = $kours->getKours("dollar");
         $eur_to_uah = $kours->getKours("euro");
-        if ($cash_id_from==$cash_id_to) {$price = $price * 1;}
-        if ($cash_id_from==1 && $cash_id_to==2) {$price = $price / $usd_to_uah;}
-        if ($cash_id_from==1 && $cash_id_to==3) {$price = $price / $eur_to_uah;}
-        if ($cash_id_from==2 && $cash_id_to==1) {$price = $price * $usd_to_uah;}
-        if ($cash_id_from==3 && $cash_id_to==1) {$price = $price * $eur_to_uah;}
-        if ($cash_id_from==2 && $cash_id_to==3) {$price = $price * $usd_to_uah / $eur_to_uah;}
-        if ($cash_id_from==3 && $cash_id_to==2) {$price = $price * $eur_to_uah / $usd_to_uah;}
+        if ($cash_id_from==$cash_id_to) { $price = $price * 1; }
+        if ($cash_id_from==1 && $cash_id_to==2) { $price = $price / $usd_to_uah; }
+        if ($cash_id_from==1 && $cash_id_to==3) { $price = $price / $eur_to_uah; }
+        if ($cash_id_from==2 && $cash_id_to==1) { $price = $price * $usd_to_uah; }
+        if ($cash_id_from==3 && $cash_id_to==1) { $price = $price * $eur_to_uah; }
+        if ($cash_id_from==2 && $cash_id_to==3) { $price = $price * $usd_to_uah / $eur_to_uah; }
+        if ($cash_id_from==3 && $cash_id_to==2) { $price = $price * $eur_to_uah / $usd_to_uah; }
         $price = round($price, 2);
         return $price;
     }
@@ -2043,7 +2045,7 @@ class CatalogueClass
      * delete position, where suppl_id=0 AND suppl_id>0 with the same ART_ID
      * */
     function deleteSupplPosition($mas) {
-        $array_toko = array();
+        $array_toko = [];
         foreach ($mas as $mas_key=>$mas_val) {
             foreach ($mas_val as $key=>$val) {
                 if ($val["suppl_id"]==0) array_push($array_toko, $mas_key);
@@ -2180,7 +2182,7 @@ class CatalogueClass
         $border = $other_storages["border"];
         $none = $other_storages["none"];
 
-        !$view ?: $list.="<div class='row'>";;
+        !$view ?: $list.="<div class='row'>";
 
         $cc = 0;
         if ($view) {
@@ -2214,7 +2216,7 @@ class CatalogueClass
                 }
             }
             $list.="</div>";
-        } else $list="$error";
+        } else $list = "$error";
 
         !$view ?: $list.="</div>";
 

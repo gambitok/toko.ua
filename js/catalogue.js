@@ -1,7 +1,7 @@
 
 function navigateTo(id) {
     $([document.documentElement, document.body]).animate({
-        scrollTop: $("#"+id).offset().top
+        scrollTop: $("#" + id).offset().top
     }, 500);
 }
 
@@ -24,7 +24,7 @@ function showRegionForm() {
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modals").append(result.content);
             $("#RegionForm").modal("show");
-            $("#menu").css('left','-100%');
+            $("#menu").css('left', '-100%');
         }}, true);
 }
 
@@ -98,18 +98,18 @@ function toggleListParams(a, param_id) {
 
 // SHOW OTHER STORAGES
 function showStorage(art_id) {
-    $("."+art_id+"-hide").toggleClass("none");
-    $("#fa-"+art_id).toggleClass("none");
-    $("#fas-"+art_id).toggleClass("none");
+    $("." + art_id + "-hide").toggleClass("none");
+    $("#fa-" + art_id).toggleClass("none");
+    $("#fas-" + art_id).toggleClass("none");
 }
 
 // SEARCH (by ARTICLE_DISPLAY / ARTICLE_SEARCH)
 function artSearch(input_name) {
-    let art = $("#"+input_name).val();
-    art=art.replace(/\s+/g,'');
-    art=art.replace(/\.+/g,'');
-    art=art.replace(/\-+/g,'');
-    art=art.replace(/\//g,'');
+    let art = $("#" + input_name).val();
+    art = art.replace(/\s+/g,'');
+    art = art.replace(/\.+/g,'');
+    art = art.replace(/\-+/g,'');
+    art = art.replace(/\//g,'');
     if (art==="" || art===undefined) {
         showNotify("{error_cap}:","{input_art_first}!","danger");
         $("#search_art").focus();
@@ -241,7 +241,7 @@ function catalogueFilter(order) { "use strict";
     $("input[type=checkbox]").each(function () { if (this.checked) {brands.push($(this).attr("name"));} });
     let bb = JSON.stringify(brands);
 
-    let cur = parseInt($(".radio-group input[name=cur]:checked").attr("value")); if (isNaN(cur)) cur=1;
+    let cur = parseInt($(".radio-group input[name=cur]:checked").attr("value")); if (isNaN(cur)) cur = 1;
     let cur_old = parseInt($("#cur_value").val());
     let price = $("#ex1").val();
     let deliv = $("#ex3").val();
@@ -256,7 +256,7 @@ function catalogueFilter(order) { "use strict";
 
             loadInputNumber();
 
-            var ex1=$("#ex1"), ex3=$("#ex3");
+            var ex1 = $("#ex1"), ex3 = $("#ex3");
             ex1.slider();
             ex1.on("slide", function(slideEvt) { $("#price_val").text(slideEvt.value); });
             ex3.slider();
@@ -328,7 +328,7 @@ function tecModelsFilter(order) {
 
             loadInputNumber();
 
-            var ex1=$("#ex1"), ex3=$("#ex3");
+            var ex1 = $("#ex1"), ex3 = $("#ex3");
             ex1.slider();
             ex1.on("slide", function(slideEvt) { $("#price_val").text(slideEvt.value); });
             ex3.slider();
@@ -570,7 +570,7 @@ function dropAutoHistory(history_id) {
 /*==== /GARAGE =====*/
 
 function changeBasketCount(status, id) {
-    let input_id = $("#"+id);
+    let input_id = $("#" + id);
     let count = parseInt(input_id.val());
     if (status>0) {
         count = count + 1;
@@ -654,8 +654,8 @@ function showCarDetailsStrMin(head_id) {
                 manuf_head.html(result.content);
             }}, true);
     } else {
-        $("#tree_head-"+head_id).toggleClass("check-head");
-        let manuf_head = $("#manufacture_head"+head_id);
+        $("#tree_head-" + head_id).toggleClass("check-head");
+        let manuf_head = $("#manufacture_head" + head_id);
         manuf_head.removeClass("dblock");
         manuf_head.addClass("dnone");
         manuf_head.html("");
