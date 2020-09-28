@@ -548,7 +548,7 @@ class MenuClass extends CatalogueClass
         $form = $this->getHtmlForm("media/nav_panel");
         $form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
         $form = str_replace("{lang_select}", $this->getLanguageList(), $form);
-        if (!$profile->getProfileClientInfo()) {
+        if (!$profile->getClientInfo()) {
             $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
             $form = str_replace("{region_select_phone}", "<li>".$this->getRegionSelect()."</li>", $form);
         } else {

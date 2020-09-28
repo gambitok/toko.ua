@@ -270,7 +270,7 @@ class FormClass extends CatalogueClass
     }
 
     public static function cacheInfoTemplates($where_art_id_str) { $db = DbSingleton::getTokoDb();
-        $r=$db->query("SELECT `TEXT`, `VALUE`, `ART_ID` FROM `T2_INFO` WHERE `ART_ID` IN ($where_art_id_str) AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
+        $r = $db->query("SELECT `TEXT`, `VALUE`, `ART_ID` FROM `T2_INFO` WHERE `ART_ID` IN ($where_art_id_str) AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
         $infoTemplates = mysqli_fetch_all($r, MYSQLI_ASSOC);
         foreach ($infoTemplates as $infoTemplate) {
             self::$infoTemplates[$infoTemplate['ART_ID']][] = $infoTemplate;
@@ -594,7 +594,7 @@ class FormClass extends CatalogueClass
             WHERE tt.TYP_ID IN ($typ_id_str) AND tt.ACTIVE=1 
             GROUP BY man.MFA_ID ORDER BY man.MFA_BRAND ASC;"); $n = $db->num_rows($r);
             if ($n>0) {
-                for ($i=1;$i<=$n;$i++) {
+                for ($i=1; $i<=$n; $i++) {
                     $brand_id = $db->result($r,$i-1,"MFA_ID");
                     $brand = $db->result($r,$i-1,"MFA_BRAND");
                     $list.="<a class=\"padr15 load_app pointer\" onclick='loadApplicModels2(\"$art_id\",\"$brand_id\",this)'><i class=\"fas fa-car\"></i>$brand</a>";
@@ -639,16 +639,16 @@ class FormClass extends CatalogueClass
     }
 
     function getApplModelInfoTCD($art_id, $typ_id) { $db = DbSingleton::getTokoDb();
-        $automan= new AutoClass;
-        $list="";
-        $r=$db->query("SELECT tt.*, man.MFA_ID, tm.Model, tm.MOD_ID
+        $automan = new AutoClass;
+        $list = "";
+        $r = $db->query("SELECT tt.*, man.MFA_ID, tm.Model, tm.MOD_ID
         FROM `T2_LINKS` tl 
             INNER JOIN `T_types` tt ON tt.TYP_ID=tl.TYP_ID 
             INNER JOIN `T_models` tm ON tm.MOD_ID=tt.TYP_MOD_ID 
             INNER JOIN `T_manufacturers` man ON man.MFA_ID=tm.MOD_MFA_ID
         WHERE tl.ART_ID='$art_id' AND tt.TYP_ID='$typ_id' AND tt.ACTIVE=1 
-        GROUP BY tm.MOD_ID ORDER BY tt.TYP_TEXT ASC;"); $n=$db->num_rows($r);
-        for ($i=1;$i<=$n;$i++) {
+        GROUP BY tm.MOD_ID ORDER BY tt.TYP_TEXT ASC;"); $n = $db->num_rows($r);
+        for ($i=1; $i<=$n; $i++) {
             $TYP_TEXT=$db->result($r,$i-1,"TYP_TEXT");
             $fuel=$db->result($r,$i-1,"FUEL_ID"); $fuel_name=$automan->getFuelName($fuel);
             $start=$db->result($r,$i-1,"TYP_PCON_START"); if ($start==0){$start="";}if (strlen($start)==6){$start=substr($start,0,4).".".substr($start,4,2);}
@@ -688,7 +688,7 @@ class FormClass extends CatalogueClass
         $format_name = $this->getFormatAticle($article_name);
         $format_brand = $this->getFormatBrand($brand_name);
         $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;"); $n = $db->num_rows($r);
-        if ($n>0) {
+        if ($n > 0) {
             !$display ? $class = "info__table" : $class = "info__table_min";
             $info.="<table class='$class'>";
             $max = $n;

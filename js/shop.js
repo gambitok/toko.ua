@@ -7,7 +7,7 @@ function stayInOrder() { showNotify("{error_cap}!","{basket_empty}!","danger"); 
 function showNotify(title,text,type_text) {
     JsHttpRequest.query(folder,{ 'w': 'changeLangAlert', 'message':text, 'title':title },
         function (result, errors){ if (errors) {} if (result){
-            let title_notify = "<b>"+result.content[1]+"</b>";
+            let title_notify = "<b>" + result.content[1] + "</b>";
             let text_notify = result.content[0];
             $.notify({
                 icon: "glyphicon glyphicon-star",
@@ -24,9 +24,9 @@ function showNotify(title,text,type_text) {
         }}, true);
 }
 
-function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) { "use strict";
-    let count_id = $("#count_"+id);
-    let basket_count_id = $("#basket_count_"+id);
+function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
+    let count_id = $("#count_" + id);
+    let basket_count_id = $("#basket_count_" + id);
     let count = count_id.val();
     if (id=='one') count = 1; // for single product
 
@@ -91,7 +91,7 @@ function showBasketMinForm() {
 function updateCountBasket(status, art_id, storage_id, stock, phone) {
     let prefix = "";
     if (phone>0) prefix = "_phone";
-    let count_id = $("#count_"+art_id+"_"+storage_id+prefix);
+    let count_id = $("#count_" + art_id + "_" + storage_id + prefix);
     let count = parseInt(count_id.val());
     if (status>0) {
         count = count + 1;
@@ -383,8 +383,8 @@ function validateForm(name, type) {
 }
 
 function validationInput(name) {
-    let id = $("#"+name).attr("id");
-    let valid = $("#validate_"+id);
+    let id = $("#" + name).attr("id");
+    let valid = $("#validate_" + id);
     let max_count = 16;
     let count = $("#"+id).val().replace(/[_-]/g, '').length;
     if (max_count===count) {

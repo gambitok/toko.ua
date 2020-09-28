@@ -3,7 +3,7 @@
 $social_array=[
 //    ["name"=>"twitter",     "link"=>"#",    "img"=>"tw.png"],
     ["name"=>"facebook", "link"=>"https://www.facebook.com/TOKOGROUP/", "img"=>"fb.png"],
-    ["name"=>"instagram",   "link"=>"https://www.instagram.com/tokogroup/", "img"=>"in.png"],
+//    ["name"=>"instagram",   "link"=>"#",    "img"=>"in.png"],
 //    ["name"=>"group",       "link"=>"#",    "img"=>"gr.png"],
 //    ["name"=>"google+",     "link"=>"#",    "img"=>"g+.png"]
 ];

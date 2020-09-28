@@ -1533,10 +1533,12 @@ class CatalogueClass
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
                 $form = str_replace("{applicable_display}", "applicable-active", $form);
                 $form = str_replace("{applicable_display_text}", "{is_applicable}", $form);
+                $form = str_replace("{applicable_onclick}", "", $form);
             }
         }
         $form = str_replace("{applicable_display}", "", $form);
         $form = str_replace("{applicable_display_text}", "{is_not_applicable}", $form);
+        $form = str_replace("{applicable_onclick}", "toggleNavMob();", $form);
 
         $list = "$form";
         if (!$view) $list.="$ll";

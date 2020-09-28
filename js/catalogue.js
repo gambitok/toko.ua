@@ -29,14 +29,14 @@ function showRegionForm() {
 }
 
 // Modal `Action` in Catalogs
-function showActionForm() {
-    let form = "action";
-    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#modals").append(result.content);
-            $("#ActionForm").modal("show");
-        }}, true);
-}
+// function showActionForm() {
+//     let form = "action";
+//     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//             $("#modals").append(result.content);
+//             $("#ActionForm").modal("show");
+//         }}, true);
+// }
 
 // Modal `Help` in Catalogs
 function showPhoneForm() {
@@ -44,7 +44,7 @@ function showPhoneForm() {
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modals").append(result.content);
-            $("#HelpForm").modal("show");
+            $("#HelpForm2").modal("show");
         }}, true);
 }
 
@@ -966,15 +966,6 @@ function showFilterOptionsForm(page) {
         }}, true);
 }
 
-// function toggleAutoBlock(block, slide) {
-//     $("#" + slide).slideToggle("slow");
-//     $("." + block).find("i").toggleClass("icon-rotate");
-//     if ($("#year_select").val()==="") { $("#select_year").addClass("car_form-selected");}
-//     else if ($("#modelid_select").val()==="") { $("#select_modelid").addClass("car_form-selected");}
-//     else if ($("#typ_id_select").val()==="") { $("#select_typid").addClass("car_form-selected");}
-//     else if (($("#typ_id_select").val()!=="" && $("#fuel_id_select").val()==="")) { $("#select_modification").addClass("car_form-selected");}
-// }
-
 function setParamsAuto(group_id, type) {
     JsHttpRequest.query(folder,{'w':'setParamsAuto', 'type':type},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
@@ -986,4 +977,12 @@ function setCatalogFilters() {
     let filters = $("#catalog-filters").html();
     $("#menu-catalog-content").html(filters);
     $("#catalog-filters").html("");
+}
+
+function setClientRequest() {
+    let phone = $('#help-phone').val();
+    JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            showNotify("{done_cap}:", result.content, "success");
+        }}, true);
 }

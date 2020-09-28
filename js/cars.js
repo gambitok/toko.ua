@@ -109,12 +109,12 @@ function toggleCarsTab(index) {
 }
 
 function hideCarsNavigation(index) {
-    hidePop();
+    // hidePop();
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
         // Uncheck Non-Active Nav
         // Close Non-Active Tab
-        showPop(index);
+        // showPop(index);
         $("#myBackdrop").addClass("sticky-backdrop-hidden");
         $(index).removeClass("cars-nav__item-active");
         $("#" + $(index).attr("data-tab")).removeClass("cars-tab__block-active");
@@ -126,7 +126,7 @@ function showCarsNavigation(index, type, attr) {
     if (type===undefined) { type = $(data_pred).attr("data-type"); }
     if (attr===undefined) { attr = $(data_pred).attr("data-id"); }
     if (type===undefined && attr===undefined) { type=""; attr=0; }
-    hidePop();
+    // hidePop();
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
         $("#myBackdrop").removeClass("sticky-backdrop-hidden");
@@ -145,6 +145,11 @@ function showCarsNavigation(index, type, attr) {
     }
 }
 
+function toggleNavMob() {
+    let checked_index = $(".cars-nav__item-checked")[0];
+    toggleCarsNavigation(checked_index);
+}
+
 function toggleCarsNavigation(index, type, attr) {
     $("#toggle_active_nav").val(1);
 
@@ -153,14 +158,14 @@ function toggleCarsNavigation(index, type, attr) {
     if (attr===undefined) { attr = $(data_pred).attr("data-id"); }
     if (type===undefined && attr===undefined) { type=""; attr=0; }
 
-    hidePop();
+    // hidePop();
 
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
         // Uncheck Non-Active Nav
         // Close Non-Active Tab
         if ($(index).hasClass("cars-nav__item-active")) {
-            showPop(index);
+            // showPop(index);
             $("#myBackdrop").addClass("sticky-backdrop-hidden");
             $(index).removeClass("cars-nav__item-active");
             $("#" + $(index).attr("data-tab")).removeClass("cars-tab__block-active");

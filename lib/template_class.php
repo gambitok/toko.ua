@@ -14,7 +14,7 @@ class TemplateClass extends CatalogueClass
      * */
     function initGroupTable($group_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
         $table = $this->table_group.$group_id;
-        $dbc->query("DROP TABLE `$table`;");
+        $dbc->query("DROP TABLE IF EXISTS `$table`;");
 
         $products = [];
         $r = $db->query("SELECT `ART_ID` FROM `T2_TREE_ARTS` WHERE `GROUP_ID`='$group_id' GROUP BY `ART_ID`;"); $n = $db->num_rows($r);
@@ -190,14 +190,18 @@ class TemplateClass extends CatalogueClass
      * */
     function getCheckedFilters($filters, $group_id) {
         $active_filters = [];
+
         foreach ($filters as $param=>$values) {
+            // BRANDS
             if ($param=="brandy") {
                 $active_filters[0] = [];
                 foreach ($values as $brand) {
                     $brand_id = $this->getCatalogueBrandID($brand);
                     array_push($active_filters[0], $brand_id);
                 }
-            } else {
+            }
+            // PARAMS
+            else {
                 $param_id = $this->getParamID($param, $group_id);
                 $active_filters[$param_id] = [];
                 foreach ($values as $value) {
@@ -303,9 +307,6 @@ class TemplateClass extends CatalogueClass
         return $form;
     }
 
-    /*
-     * Get GROUP CATALOG Title
-     * */
     function getCatalogGroupTitle($group_id, $filters) {
         $name = $this->getGroupName($group_id);
         if (empty($filters)) {
@@ -332,7 +333,7 @@ class TemplateClass extends CatalogueClass
         $count = 0;
         $where = $this->getFiltersWhere($active_filters);
         $r = $dbc->query("SHOW TABLES LIKE '$table';"); $n = $dbc->num_rows($r);
-        if ($n > 0) {
+        if ($n>0) {
             $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1 $where;");
             $n = $dbc->result($r, 0, "col_arts");
             $count = $n;
@@ -612,8 +613,8 @@ class TemplateClass extends CatalogueClass
             $list = "";
         } else {
             if ($type==2) {
-                $type1 = "<i class='far fa-circle'></i>";
                 $type2 = "<i class='fa fa-check-circle blue'></i>";
+                $type1 = "<i class='far fa-circle'></i>";
             } else {
                 $type1 = "<i class='fa fa-check-circle blue'></i>";
                 $type2 = "<i class='far fa-circle'></i>";
@@ -641,9 +642,7 @@ class TemplateClass extends CatalogueClass
         return true;
     }
 
-    /*
-     * Filter params
-     * */
+    /*==== FILTER PARAMS ====*/
     function getAllFilters($group_id) { $dbc = DbSingleton::getTokoCacheDb();
         $params = [];
         $params[0] = [];
@@ -677,6 +676,7 @@ class TemplateClass extends CatalogueClass
     function getActiveFilters($group_id, $active_filters) {
         $new_filters = [];
         list($current_filters, $current_products) = $this->getCurrentArticles($group_id);
+
         foreach ($current_filters as $param_id=>$values) {
             if (empty($new_filters[$param_id])) $new_filters[$param_id] = [];
             if (!empty($active_filters[$param_id])) {
@@ -689,9 +689,6 @@ class TemplateClass extends CatalogueClass
         return $new_filters;
     }
 
-    /*
-     * Get max param from table
-     * */
     function getMaxParam($table) { $dbc = DbSingleton::getTokoCacheDb();
         $default_count = 4; $max_param = 0;
         $r = $dbc->query("SHOW COLUMNS FROM `$table`"); $n = $dbc->num_rows($r);

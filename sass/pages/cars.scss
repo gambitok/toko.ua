@@ -5,6 +5,8 @@ $cars-disabled: #989898;
 $cars-default: #ebebeb;
 $cars-delimiter: #ececec;
 $cars-hover: #f5f5f5;
+$cars-item-checked: lightcoral;
+$cars-item-active: #238795;
 
 .fixed-block {
     left: 0;
@@ -48,14 +50,14 @@ $cars-hover: #f5f5f5;
                 }
             }
             &-checked {
-                background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #a9bcc6;
+                background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat $cars-item-checked;
                 color: $white;
                 &:before {
                     content: none!important;
                 }
             }
             &-active {
-                background: url("/images/icons/dropdown-black.svg") calc(100% - 20px) center no-repeat #238795;
+                background: url("/images/icons/dropdown-black.svg") calc(100% - 20px) center no-repeat $cars-item-active;
                 color: $white;
                 &:before {
                     content: none!important;

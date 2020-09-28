@@ -1743,7 +1743,7 @@ table thead td { border: 1px solid #000; }
 
 .modal-loader { background: transparent; border: none; padding-top: 40%; }
 
-.modal-header .close { margin: 0; padding: 0; text-align: right; display: block; width: auto; }
+.modal-header .close { display: block; margin: 0; padding: 0; text-align: right; width: auto; }
 
 .modal-header { background: #606975; border-bottom: unset; border-radius: 0; color: #fff; }
 
@@ -2371,7 +2371,7 @@ table thead td { border: 1px solid #000; }
 
 .tables__delivery { display: block; font-size: 12px; overflow-wrap: break-word; padding: 0; text-align: center; }
 
-.tables__delivery.applicable { background: #fff; border: 1px solid #a9bcc6; color: #a9bcc6; padding: 4px; border-radius: .25rem; font-size: 11px; }
+.tables__delivery.applicable { background: #fff; border: 1px solid lightcoral; border-radius: .25rem; color: lightcoral; display: block !important; font-size: 11px; padding: 4px; }
 
 .tables__delivery.applicable span:before { content: url(/images/icons/car-grey.png); position: relative; right: 3px; top: 3px; }
 
@@ -2560,7 +2560,7 @@ table thead td { border: 1px solid #000; }
 
 .cars-nav__item:not(:first-child):before { background: #ececec; bottom: 19px; content: ''; left: 0; position: absolute; top: 19px; width: 1px; }
 
-.cars-nav__item-checked { background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #a9bcc6; color: #fff; }
+.cars-nav__item-checked { background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat lightcoral; color: #fff; }
 
 .cars-nav__item-checked:before { content: none !important; }
 

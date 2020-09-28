@@ -777,11 +777,12 @@
     text-align: center;
     &.applicable {
         background: #fff;
-        border: 1px solid #a9bcc6;
-        color: #a9bcc6;
-        padding: 4px;
+        border: 1px solid lightcoral;
         border-radius: .25rem;
+        color: lightcoral;
+        display: block!important;
         font-size: 11px;
+        padding: 4px;
         span:before {
             content: url(/images/icons/car-grey.png);
             position: relative;
