@@ -197,7 +197,7 @@ class SearchClass extends CatalogueClass
             if ($cookie_typ_id=="") {
                 $str_ids = "";
                 $typ_id = "";
-                $car_form = $prod->getCarsSearch($mfa_link, $mod_link);
+                $car_form = $prod->getCarsSearch($mfa_link, $mod_link, $str_id);
             } else {
                 $str_ids = $prod->getStrIds($cookie_typ_id);
                 $typ_id = $cookie_typ_id;
@@ -227,7 +227,7 @@ class SearchClass extends CatalogueClass
                 // 3: /catalog/shrus/brandy=bosch
                 $str_id = $automan->getStrNewLinkStr($str_link);
                 list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link);
-                $car_form = $prod->getCarsSearch($mfa_link, $mod_link);
+                $car_form = $prod->getCarsSearch($mfa_link, $mod_link, $str_id);
                 $form = $details_form;
             }
 
@@ -243,13 +243,13 @@ class SearchClass extends CatalogueClass
                     if ($mfa_link!="" && $mod_link!="") {
                         if ($mod_id_link!="") {
                             // 7: /catalog/shrus/kia/sportage/sl-8751/
-                            $car_form = $prod->getCarsSearch($mfa_link, $mod_link);
+                            $car_form = $prod->getCarsSearch($mfa_link, $mod_link, $str_id);
                         } else {
                             // 7: /catalog/shrus/kia/sportage/
-                            $car_form = $prod->getCarsSearch($mfa_link, $mod_link);
+                            $car_form = $prod->getCarsSearch($mfa_link, $mod_link, $str_id);
                         }
                     } else {
-                        $car_form = $prod->getCarsSearch($mfa_link, $mod_link);
+                        $car_form = $prod->getCarsSearch($mfa_link, $mod_link, $str_id);
                     }
                     $form = $details_form;
                 }

@@ -335,13 +335,13 @@ class AutoClass extends CatalogueClass
                 list($manufacture_cap,, $model_id_cap, $typ_text) = $this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                 $list.="
                 <li class=\"row garage-row\">
-                    <div class=\"col-lg-6 col-12 garage-row__text\">
+                    <div class=\"col-6 garage-row__text\">
                         $manufacture_cap $model_id_cap <br>
                         <span>$typ_text</span>
                     </div>
-                    <div class=\"col-lg-6 col-12 garage-row__buttons\"> 
-                        <button $status_btn class=\"btn btn-primary\" $status_disable>$status_cap</button>
-                        <button onclick=\"deleteAutoGarage($id);\" class=\"btn btn-primary\"><i class=\"fa fa-trash-alt\"></i></button>
+                    <div class=\"col-6 garage-row__buttons\"> 
+                        <button class=\"btn btn-primary btn-sm\" $status_btn $status_disable>$status_cap</button>
+                        <button class=\"btn btn-primary btn-sm\" onclick=\"deleteAutoGarage($id);\"><i class=\"fa fa-trash-alt\"></i></button>
                     </div>
                 </li>";
             }
