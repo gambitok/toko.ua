@@ -605,4 +605,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    function showScanForm() {
+        $form = $this->getHtmlForm("bonus/scan");
+        return $form;
+    }
+
 }
