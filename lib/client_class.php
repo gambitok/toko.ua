@@ -540,6 +540,7 @@ class ClientClass
     }
 
     function endValidation($phone, $password) { $db = DbSingleton::getDbm();
+        $phone = $this->formatValidPhone($phone);
         $r = $db->query("SELECT * FROM `phone_validation` WHERE `phone`='$phone' AND `password`='$password' AND `status`=0;"); $n = $db->num_rows($r);
         if ($n > 0) { $db->query("UPDATE `phone_validation` SET `status`=1 WHERE `phone`='$phone' AND `password`='$password' AND `status`=0;"); }
         $n > 0 ? $result = true : $result = false;
@@ -583,16 +584,16 @@ class ClientClass
             $cash_id = $db->result($r, 0, "cash_id");
             $country_cash_id = $db->result($r, 0, "country_cash_id");
             $credit_cash_id = $db->result($r, 0, "credit_cash_id");
-            $payment_delay = $db->result($r,0,"payment_delay");
-            $credit_limit = $db->result($r,0,"credit_limit");
-            $credit_return = $db->result($r,0,"credit_return");
-            $price_lvl = $db->result($r,0,"price_lvl");
-            $margin_price_lvl = $db->result($r,0,"margin_price_lvl");
-            $price_suppl_lvl = $db->result($r,0,"price_suppl_lvl");
-            $margin_price_suppl_lvl = $db->result($r,0,"margin_price_suppl_lvl");
-            $tpoint_id = $db->result($r,0,"tpoint_id");
-            $client_vat = $db->result($r,0,"client_vat");
-            $doc_type_id = $db->result($r,0,"doc_type_id");
+            $payment_delay = $db->result($r, 0, "payment_delay");
+            $credit_limit = $db->result($r, 0, "credit_limit");
+            $credit_return = $db->result($r, 0, "credit_return");
+            $price_lvl = $db->result($r, 0, "price_lvl");
+            $margin_price_lvl = $db->result($r, 0, "margin_price_lvl");
+            $price_suppl_lvl = $db->result($r, 0, "price_suppl_lvl");
+            $margin_price_suppl_lvl = $db->result($r, 0, "margin_price_suppl_lvl");
+            $tpoint_id = $db->result($r, 0, "tpoint_id");
+            $client_vat = $db->result($r, 0, "client_vat");
+            $doc_type_id = $db->result($r, 0, "doc_type_id");
             $db->query("INSERT INTO `A_CLIENTS_CONDITIONS` (`client_id`, `cash_id`, `country_cash_id`, `credit_cash_id`, `payment_delay`, `credit_limit`, `credit_return`, `price_lvl`, `margin_price_lvl`, `price_suppl_lvl`, `margin_price_suppl_lvl`, `tpoint_id`, `client_vat`, `doc_type_id`) 
             VALUES ('$client_id', '$cash_id', '$country_cash_id', '$credit_cash_id', '$payment_delay', '$credit_limit', '$credit_return', '$price_lvl', '$margin_price_lvl', '$price_suppl_lvl', '$margin_price_suppl_lvl', '$tpoint_id', '$client_vat', '$doc_type_id');");
         }
@@ -653,7 +654,8 @@ class ClientClass
      * Cookie: 'action_status'
      * */
     function checkActionClients() { $db = DbSingleton::getDbm();
-        $user_id = $this->getUser(); $categories = [];
+        $user_id = $this->getUser();
+        $categories = [];
         $r = $db->query("SELECT `category_id` FROM `ACTION_CLIENTS_CATEGORY`;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $category_id = $db->result($r, $i-1, "category_id");

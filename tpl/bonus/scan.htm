@@ -1,4 +1,34 @@
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    function recaptchaCallback() {
+        $("input[type='submit']").prop('disabled', false);
+    }
+</script>
+
+<script>
+    $(document).ready(function(){
+        $(".masked-phone").mask("+38(099) 999-99-99", {
+            placeholder:"+38(0__) ___-__-__",
+            autoclear: false,
+            alias: "numeric"
+        });
+    })
+</script>
+
+<!---->
+
 <div class="content">
     <h1>Scan form</h1>
-
+    <h2>Some text...</h2>
+    <div class="row">
+        <div class="col-6">
+            <form action="" method="POST">
+                <input id="phone" title="{phone_cap}" class="form-control masked-phone" name="phone" type="tel" placeholder="+38(0__) ___-__-__">
+                <br/>
+                <div class="g-recaptcha" data-sitekey="6Lfl4ZYUAAAAADHfyeRU4-_byLTXBh4GBhw8Lcin" data-callback="recaptchaCallback"></div>
+                <br/>
+                <input class="btn btn-primary-outline" type="submit" value="Submit" disabled>
+            </form>
+        </div>
+    </div>
 </div>

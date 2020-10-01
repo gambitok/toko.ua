@@ -537,16 +537,16 @@ class CatalogueClass
         $sort1=$sort2=$sort3=$sort4="fa-sort";
         $storage_info = "{storage_full_info}";
         switch ($order) {
-            case "name":  $sort1 = "fa-sort-alpha-down"; break;
             case "dd":    $sort2 = "fa-sort-alpha-down"; break;
             case "stock": $sort3 = "fa-sort-alpha-down"; break;
             case "price": $sort4 = "fa-sort-alpha-down"; break;
+            case "name" :
             default:      $sort1 = "fa-sort-alpha-down"; break;
         }
         switch ($type_filter) {
-            case 1:  $jsFilter = "catalogueFilter";break;
             case 2:  $jsFilter = "tecModelsFilter";break;
             case 3:  $jsFilter = "catGroupFilter";break;
+            case 1:
             default: $jsFilter = "catalogueFilter";break;
         }
         $form = $this->getHtmlForm("cat_search_header");

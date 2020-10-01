@@ -44,7 +44,7 @@ class MenuClass extends CatalogueClass
                 $date = $db->result($r,$i-1,"data");
                 $img_file = $this->getNewsImage($state_id);
                 $img_file!=""
-                    ? $img = "<img itemprop=\"image\" src=\"/thumb.php?image=news/$lang/$state_id/$img_file&size=280\">"
+                    ? $img = "<img itemprop=\"image\" src=\"/thumb.php?image=news/$lang/$state_id/$img_file&size=280\" alt=\"image\">"
                     : $img = "";
                 $list.="<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"row news-block__item\">
                     <div class=\"col-8\">
@@ -70,7 +70,7 @@ class MenuClass extends CatalogueClass
         $text = $db->result($r, 0, "desc");
         $date = $db->result($r, 0, "data");
         $img_file = $this->getNewsImage($state_id);
-        $img_file!="" ? $img = "<p><img itemprop=\"image\" src=\"/uploads/images/news/$lang/$state_id/$img_file\"></p>" : $img = "";
+        $img_file!="" ? $img = "<p><img itemprop=\"image\" src=\"/uploads/images/news/$lang/$state_id/$img_file\" alt=\"state\"></p>" : $img = "";
         $list = "<div class=\"news-state\">
             <h1>$title</h1>
             <h2>$date</h2>
@@ -381,7 +381,7 @@ class MenuClass extends CatalogueClass
         return $file;
     }
 
-    function showContactsBottom() { $db=DbSingleton::getTokoDb();
+    function showContactsBottom() { $db = DbSingleton::getTokoDb();
         $list_phone = ""; $list_email = ""; $list_address = "";
         // PHONE
         $r = $db->query("SELECT * FROM `contacts_bottom_new` WHERE `status`=1 AND `type_contact`=1;"); $n = $db->num_rows($r);
@@ -434,62 +434,6 @@ class MenuClass extends CatalogueClass
         $form = $this->replaceLang($form);
         return $form;
     }
-
-//    function showBannerBottom() { $db = DbSingleton::getTokoDb();
-//        $where = $list = ""; $max_symbols = 50;
-//        $r = $db->query("SELECT `REF` FROM `T_ref_action` GROUP BY `REF` ORDER BY RAND() LIMIT 0,18;"); $n = $db->num_rows($r);
-//        for ($i=1; $i<=$n; $i++) {
-//            $ref = $db->result($r, $i-1, "REF");
-//            $where.="t2a.ARTICLE_NR_DISPL='$ref'"; if ($i<$n) $where.=" OR ";
-//        }
-//        $where = "AND ($where)";
-//        $r = $db->query("SELECT t2a.*, t2b.BRAND_ID, t2b.BRAND_NAME, t2n.NAME, t2n.INFO
-//        FROM `T2_ARTICLES` t2a
-//            LEFT JOIN `T2_NAMES` t2n on t2n.ART_ID=t2a.ART_ID
-//            LEFT JOIN `T2_BRANDS` t2b on t2b.BRAND_ID=t2a.BRAND_ID
-//        WHERE t2n.LANG_ID=16 $where LIMIT 0,18;"); $n = $db->num_rows($r);
-//        for ($i=1; $i<=$n; $i++) {
-//            $art_id = $db->result($r,$i-1,"ART_ID");
-//            $article_nr_displ = $db->result($r,$i-1,"ARTICLE_NR_DISPL");
-//            $article_nr_search = $db->result($r,$i-1,"ARTICLE_NR_SEARCH");
-//            $name = $db->result($r,$i-1,"NAME");
-//            $brand = $db->result($r,$i-1,"BRAND_NAME");
-//            $info = $db->result($r,$i-1,"INFO");
-//            $image = $this->getCatPhoto($art_id);
-//            strlen($info)>$max_symbols ? $dots = "..." : $dots = "";
-//            $info = substr($info, 0, $max_symbols).$dots;
-//            $list.="<div class=\"container\">
-//                <a href='/search/$article_nr_search/'>
-//                    <div class=\"row owl-row\">
-//                        <div class=\"col-5 owl-row__img\">$image</div>
-//                        <div class=\"col-7 owl-row__text\">
-//                             <p>$name</p>
-//                             <p>$info</p>
-//                             <span>$article_nr_displ ($brand)</span>
-//                        </div>
-//                    </div>
-//                </a>
-//            </div>";
-//        }
-//        $form = $this->getHtmlForm("menu/banner");
-//        $form = str_replace("{banner_block}", $list, $form);
-//        return $form;
-//    }
-
-//    function getCatPhoto($art_id) { $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `MAIN` DESC LIMIT 1;"); $n = $db->num_rows($r);
-//        $article_nr_search = $this->getArticleDispl($art_id);
-//        $brand_id = $this->getArticleBrand($art_id);
-//        $art_name = $this->getArticleName($art_id);
-//        $brand_name = $this->getBrandName($brand_id);
-//        $art_text = "$art_name $brand_name $article_nr_search";
-//        if ($n==1) {
-//            $photo_name = trim($db->result($r, 0, "PHOTO_NAME"));
-//            $link = "/thumb.php?image=catalogue/$photo_name&size=200";
-//            $image = "<img class=\"d-block lazy\" data-src=\"$link\" alt=\"$art_text\" title=\"$art_text\">";
-//        } else $image = "<img class=\"d-block lazy\" data-src=\"$this->noPhoto\" alt=\"$art_text\" title=\"$art_text\">";
-//        return $image;
-//    }
 
     function showSellBlock() {
         $form = $this->getHtmlForm("sell/sell_form");
@@ -607,6 +551,12 @@ class MenuClass extends CatalogueClass
 
     function showScanForm() {
         $form = $this->getHtmlForm("bonus/scan");
+        return $form;
+    }
+
+    function showScanPhoneForm($phone) {
+        $form = $this->getHtmlForm("bonus/phone_valid");
+        $form = str_replace("{text_phone}", $phone, $form);
         return $form;
     }
 

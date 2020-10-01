@@ -87,6 +87,21 @@ function togglePass(a) {
     }
 }
 
+// BONUS
+
+function validateBonusPhone() {
+    let phone = $("#phone").val();
+    let password = $("#sms_code").val();
+    JsHttpRequest.query(folder,{ 'w': 'endValidation', 'phone':phone, 'password':password},
+        function (result, errors){ if (errors) {} if (result){
+            if (result.content===true) {
+                alert('all ok');
+            } else {
+                showNotify("{error_cap}:", "{wrong_code}", "danger");
+            }
+        }}, true);
+}
+
 function showGarageForm() {
     $("#GarageForm").modal("show");
     $("#garage_block").html("<div class=\"spinner-border\"></div>");
