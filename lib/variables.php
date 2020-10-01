@@ -1,14 +1,19 @@
 <?php
 
-trait Variables {
+trait Variables
+{
 
-    /*==== FORMAT VAR ================================================================================================*/
-
+    /*
+     * Format Article
+     * */
     function getFormatAticle($name) {
         $format_name = str_replace(str_split('.,+-\/:*?"<>| '), "", $name);
         return $format_name;
     }
 
+    /*
+     * Format Brand
+     * */
     function getFormatBrand($brand) {
         $format_brand = str_replace("/", "-", $brand);
         $format_brand = str_replace(" ", "%20", $format_brand);

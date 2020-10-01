@@ -1,15 +1,14 @@
 <?php
 
-trait Helper {
+trait Helper
+{
 
     var $images = "/images";
-    var $uplImages = "/uploads/images";
     var $uploads = "/uploads";
     var $noPhoto = "/images/no_photo.png";
     protected $err1 = "{nothing_found}";
     protected $err2 = "{not_specified}";
     protected $err3 = "{no_info}";
-    protected $mess1 = "-{not_chosen}-";
 
     function getHtmlForm($name) {
         $form = ""; $form_htm = RDD."/tpl/$name.htm"; if (file_exists("$form_htm")){ $form = file_get_contents($form_htm); }
