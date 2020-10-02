@@ -327,7 +327,7 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    function getRegionForm($region=null) { $db = DbSingleton::getTokoDb();
+    function getRegionForm($region = null) { $db = DbSingleton::getTokoDb();
         $form = "";
         $r = $db->query("SELECT `STATE_ID`, `STATE_NAME` FROM `T2_STATE` ORDER BY `STATE_NAME` ASC;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
@@ -549,6 +549,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * Scan Form (Bonus)
+     * */
     function showScanForm() {
         $form = $this->getHtmlForm("bonus/scan");
         return $form;

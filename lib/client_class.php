@@ -396,12 +396,22 @@ class ClientClass
 
         // only for this user
         $user_id = $this->getUser();
-        if ($user_id>0) {
+        if ($user_id > 0) {
             $user_phone = $this->getClientPhone();
             if ($phone===$user_phone) $res = false;
         }
 
         return $res;
+    }
+
+    /*
+     * check reg phone
+     * */
+    function checkRegistration($phone) { $db = DbSingleton::getDbm();
+        $phone = $this->formatValidPhone($phone);
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n>0) return true; else return false;
     }
 
     /*
@@ -572,7 +582,7 @@ class ClientClass
 
         $this->moveClientsConditionsRetail($tpoint_client_id, $client_id);
 
-        return array($client_id, $user_id);
+        return array("client_id"=>$client_id, "user_id"=>$user_id);
     }
 
     /*
@@ -777,6 +787,90 @@ class ClientClass
         $data_create = date("Y-m-d H:i:s");
         $db->query("INSERT INTO `T2_QUESTIONS` (`PHONE`, `VIN`, `TEXT` , `DATA_CREATE`) VALUES ('$phone', '$vin', '$text', '$data_create');");
         return true;
+    }
+
+    /*
+     * get client_id / user_id from PHONE
+     * */
+    function getClientUserbyPhone($phone) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT `id`, `client_id` FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' LIMIT 1;");
+        $user_id = $db->result($r, 0, "id");
+        $client_id = $db->result($r, 0, "client_id");
+        return array("user_id"=>$user_id, "client_id"=>$client_id);
+    }
+
+    function checkClientBonus($client_id, $bonus = 1) { $db = DbSingleton::getDbm();
+        $status = false;
+        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus' LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n==0) $status = true;
+        return $status;
+    }
+
+    function addClientBonus($client_id, $bonus = 1) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus' LIMIT 1;"); $n = $db->num_rows($r);
+        if ($n==0) $db->query("INSERT INTO `T2_BONUS_CLIENT` (`CLIENT_ID`, `BONUS_ID`) VALUES ('$client_id', '$bonus');");
+        return true;
+    }
+
+    function setClientBonus($client_id, $bonus = 1) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT `SUMM` FROM `T2_BONUS` WHERE `ID`='$bonus' LIMIT 1;"); $n = $db->num_rows($r);
+        $sum = $db->result($r, 0, "SUMM");
+        if ($n > 0) {
+            $db->query("INSERT INTO `T2_BONUS_CLIENT` SET `CLIENT_ID`='$client_id', `BONUS_ID`='$bonus', `SUMM`='$sum';");
+        }
+        return $sum;
+    }
+
+    function getBonusCap($bonus = 1) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT * FROM `T2_BONUS` WHERE `ID`='$bonus' LIMIT 1;");
+        $text = $db->result($r, 0, "TEXT");
+        return $text;
+    }
+
+    function finishBonusPhone($phone, $bonus = 1) {
+        $client = new ClientClass;
+        $form = $this->getHtmlForm("bonus/phone_done");
+
+        // check reg CLIENT
+        if ($client->checkRegClient($phone)) {
+            $client_status = "already reg";
+            // get CLIENT
+            $clientData = $client->getClientUserbyPhone($phone);
+            $client_id = $clientData["client_id"];
+            $user_id = $clientData["user_id"];
+            // check if roznica
+            if ($client->checkRetailClientCategory($client_id)) {
+                // check if have BONUS already
+                if (!$client->checkClientBonus($client_id, $bonus)) {
+                    // add BONUS
+                    $client->addClientBonus($client_id, $bonus);
+                } else {
+                    $client_status = "already with bonus ):";
+                }
+            } else {
+                $client_status = "already ne roznica ):";
+            }
+        } else {
+            $client_status = "new client";
+            // reg CLIENT
+            $clientData = $this->addRetailClient($this->getClient(), $phone);
+            $client_id = $clientData["client_id"];
+            $user_id = $clientData["user_id"];
+            // add BONUS
+            $client->addClientBonus($client_id, $bonus);
+        }
+
+        // set BONUS
+        $bonus_cap = $this->getBonusCap($bonus);
+        $bonus_sum = $this->setClientBonus($client_id, $bonus);
+
+        $form = str_replace("{bonus_cap}", $bonus_cap, $form);
+        $form = str_replace("{bonus_summ}", $bonus_sum, $form);
+        $form = str_replace("{client_status}", $client_status, $form);
+        $form = str_replace("{user_id}", $user_id, $form);
+        $form = str_replace("{client_id}", $client_id, $form);
+
+        return $form;
     }
 
 }

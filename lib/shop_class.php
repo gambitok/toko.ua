@@ -768,7 +768,9 @@ class ShopClass extends CatalogueClass
         $user_status = 0;
         // CREATE CLIENT
         if ($user_id==0) {
-            list($client_id, $user_id) = $client->addRetailClient($this->getClient(), $phone);
+            $clientData = $client->addRetailClient($this->getClient(), $phone);
+            $client_id = $clientData["client_id"];
+            $user_id = $clientData["user_id"];
             $user_status = 1;
         }
         $tpoint_id = $client->getTpoint();
@@ -805,7 +807,9 @@ class ShopClass extends CatalogueClass
         // CREATE CLIENT
         if ($user_id==0) {
             $tpoint_client_id = $client_id;
-            list($client_id, $user_id) = $client->addRetailClient($tpoint_client_id, $phone, $name, $city_id, $email);
+            $clientData = $client->addRetailClient($tpoint_client_id, $phone, $name, $city_id, $email);
+            $client_id = $clientData["client_id"];
+            $user_id = $clientData["user_id"];
             $user_status = 1;
         }
 

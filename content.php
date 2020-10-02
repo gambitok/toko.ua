@@ -141,6 +141,7 @@ if ($_REQUEST["w"]=="saveProfile"){$GLOBALS['_RESULT'] = array("content"=>$clien
 if ($_REQUEST["w"]=="saveRegistration"){$GLOBALS['_RESULT'] = array("content"=>$client->saveRegistration($_REQUEST["phone"], $_REQUEST["pass"], $_REQUEST["email"], $_REQUEST["name"],$_REQUEST["client_category"],$_REQUEST["city_id"],$_REQUEST["tpoint_id"],$_REQUEST["mailing"]));}
 
 if ($_REQUEST["w"]=="check_reg_client"){$GLOBALS['_RESULT'] = array("content"=>$client->checkRegClient($_REQUEST["phone"], $_REQUEST["type"]));}
+
 if ($_REQUEST["w"]=="validateOperator"){$GLOBALS['_RESULT'] = array("content"=>$client->validateOperator($_REQUEST["phone"]));}
 
 if ($_REQUEST["w"]=="recoverPassword"){$GLOBALS['_RESULT'] = array("content"=>$client->recoverPassword($_REQUEST["phone"]));}
@@ -150,6 +151,8 @@ if ($_REQUEST["w"]=="validatePhone"){$GLOBALS['_RESULT'] = array("content"=>$cli
 if ($_REQUEST["w"]=="endValidation"){$GLOBALS['_RESULT'] = array("content"=>$client->endValidation($_REQUEST["phone"], $_REQUEST["password"]));}
 
 if ($_REQUEST["w"]=="toggleProductView"){$GLOBALS['_RESULT'] = array("content"=>$client->toggleProductView($_REQUEST["ds"]));}
+
+if ($_REQUEST["w"]=="finishBonusPhone"){$GLOBALS['_RESULT'] = array("content"=>$client->finishBonusPhone($_REQUEST["phone"],$_REQUEST["bonus"]));}
 
 if ($_REQUEST["w"]=="showProfileCheckForm"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileCheck($_REQUEST["data_start"], $_REQUEST["data_end"]));}
 
