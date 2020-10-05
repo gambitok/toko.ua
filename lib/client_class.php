@@ -869,6 +869,7 @@ class ClientClass
         $form = str_replace("{client_status}", $client_status, $form);
         $form = str_replace("{user_id}", $user_id, $form);
         $form = str_replace("{client_id}", $client_id, $form);
+        $form = str_replace("{bonus_phone}", $phone, $form);
 
         return $form;
     }

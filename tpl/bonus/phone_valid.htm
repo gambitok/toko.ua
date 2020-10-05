@@ -10,15 +10,32 @@
     });
 </script>
 
+<style>
+    a, a:not([href]):not([tabindex]) {
+        color: #0ca9ee;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+</style>
+
 <div id="phone_valid" class="content">
-    <h1>{phone_confirmation}</h1>
-    <h2>{code_from_SMS} {text_phone}</h2>
+    <h1>{code_from_SMS}</h1>
+    <p>{bonus_take_content}</p>
     <div class="row">
         <div class="col-6">
             <input type="hidden" id="phone" value="{text_phone}">
             <input id="sms_code" name="password" class="form-control" type="text" title="{code_sms}" placeholder="{code_sms}" maxlength="4">
             <br />
-            <input class="btn btn-primary-outline" type="submit" value="OK" onclick="validateBonusPhone()" disabled>
+            <input class="btn btn-primary-outline" type="submit" value="{bonus_take_button}" onclick="validateBonusPhone()" disabled>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-12">
+            <p>{sms_error}</p>
+            <p>* {sms_error_1} - {text_phone}</p>
+            <p>* {try_cap} <a href="https://toko.ua/skanirovat_zapreshcheno/">{sms_error_2}</a></p>
+            <p>* <a onclick="showPhoneForm();">{contact_us}</a> {sms_error_3}</p>
         </div>
     </div>
 </div>
