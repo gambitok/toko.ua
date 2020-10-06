@@ -19,10 +19,14 @@
 </style>
 
 <div id="phone_valid" class="content">
-    <h1>{code_from_SMS}</h1>
+    <div class="row">
+        <div class="col-lg-11 col-9"><h1>{code_from_SMS}</h1></div>
+        <div class="col-lg-1 col-3"><img src="/images/icons/bonus/bonus-2.png" alt="bonus" class="wdt100"></div>
+    </div>
+    <hr>
     <p>{bonus_take_content}</p>
     <div class="row">
-        <div class="col-6">
+        <div class="col-lg-6 col-12">
             <input type="hidden" id="phone" value="{text_phone}">
             <input id="sms_code" name="password" class="form-control" type="text" title="{code_sms}" placeholder="{code_sms}" maxlength="4">
             <br />

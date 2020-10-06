@@ -27,11 +27,9 @@ if ($phone=="") {
             $content = str_replace("{main_window}", $menu->getHtmlForm("bonus/phone_error"), $content);
         }
     } else {
+        $client->validatePhone($phone);
         $content = str_replace("{main_window}", $menu->showScanPhoneForm($phone), $content);
     }
 
     $_POST['bonus_phone'] = "";
 }
-
-
-

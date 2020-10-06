@@ -1,6 +1,8 @@
 <?php
 
-class dbm {
+class dbm
+{
+
     /**
      * @var mysqli
      */
@@ -81,7 +83,8 @@ class dbm {
 
 }
 
-class db {
+class db
+{
 
     /**
      * @var mysqli
@@ -163,7 +166,8 @@ class db {
 
 }
 
-class dbc {
+class dbc
+{
 
     /**
      * @var mysqli

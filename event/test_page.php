@@ -7,7 +7,6 @@ $up = new UkrPoshtaApi('7e769f5c-4ac8-32a8-bdf6-0f5bede5a204');
 
 $list = $up->getPostOffices(10765);
 
-
 //
 //$seo_text = $search->getSeoArticleLinking(2904918);
 //
@@ -15,7 +14,7 @@ $list = $up->getPostOffices(10765);
 //$time = microtime(true) - $start;
 //print "Run time: $time";
 
-//$arr = [1263];
+//$arr = [1413];
 //foreach ($arr as $client_id) {
 //    $message = $client->dropClient($client_id);
 //    print $message;
@@ -35,5 +34,3 @@ $list = $up->getPostOffices(10765);
 //echo $n;
 
 //var_dump($template->getTemplateLinkParams(1));
-
-

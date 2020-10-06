@@ -4,9 +4,6 @@
     function recaptchaCallback() {
         $("input[type='submit']").prop('disabled', false);
     }
-</script>
-
-<script>
     $(document).ready(function(){
         $(".masked-phone").mask("+38(099) 999-99-99", {
             placeholder:"+38(0__) ___-__-__",
@@ -16,11 +13,17 @@
     })
 </script>
 
-<div class="content">
-    <h1>{bonus_title}</h1>
+<div class="content" style="text-align: justify;">
+
+    <div class="row">
+        <div class="col-lg-11 col-9"><h1>{hello_qr_cap}</h1></div>
+        <div class="col-lg-1 col-3"><img src="/images/icons/bonus/bonus-1.png" alt="bonus" class="wdt100"></div>
+    </div>
+    <hr>
+    <p>{bonus_title}</p>
     <p>{bonus_content}</p>
     <div class="row">
-        <div class="col-6">
+        <div class="col-lg-6 col-12">
             <form action="" method="POST">
                 <input id="phone" title="{phone_cap}" class="form-control masked-phone" name="bonus_phone" type="tel" placeholder="+38(0__) ___-__-__">
                 <br/>

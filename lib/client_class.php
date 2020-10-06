@@ -751,13 +751,13 @@ class ClientClass
         return $history;
     }
 
-//    function dropClient($client_id) { $db = DbSingleton::getDbm();
-//        $db->query("DELETE FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
-//        $db->query("DELETE FROM `A_CLIENTS_USERS` WHERE `client_id`='$client_id' LIMIT 1;");
-//        $db->query("DELETE FROM `A_CLIENTS_CATEGORY` WHERE `client_id`='$client_id' LIMIT 1;");
-//        $db->query("DELETE FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;");
-//        return "deleted client: #$client_id";
-//    }
+    function dropClient($client_id) { $db = DbSingleton::getDbm();
+        $db->query("DELETE FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
+        $db->query("DELETE FROM `A_CLIENTS_USERS` WHERE `client_id`='$client_id' LIMIT 1;");
+        $db->query("DELETE FROM `A_CLIENTS_CATEGORY` WHERE `client_id`='$client_id' LIMIT 1;");
+        $db->query("DELETE FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;");
+        return "deleted client: #$client_id";
+    }
 
     function getClientMarkupMin($client_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `markup_min` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;");
@@ -802,13 +802,15 @@ class ClientClass
     function checkClientBonus($client_id, $bonus = 1) { $db = DbSingleton::getDbm();
         $status = false;
         $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus' LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n==0) $status = true;
+        if ($n > 0) $status = true;
         return $status;
     }
 
     function addClientBonus($client_id, $bonus = 1) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus' LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n==0) $db->query("INSERT INTO `T2_BONUS_CLIENT` (`CLIENT_ID`, `BONUS_ID`) VALUES ('$client_id', '$bonus');");
+        if ($n == 0) {
+            $db->query("INSERT INTO `T2_BONUS_CLIENT` (`CLIENT_ID`, `BONUS_ID`) VALUES ('$client_id', '$bonus');");
+        }
         return true;
     }
 
@@ -816,7 +818,7 @@ class ClientClass
         $r = $db->query("SELECT `SUMM` FROM `T2_BONUS` WHERE `ID`='$bonus' LIMIT 1;"); $n = $db->num_rows($r);
         $sum = $db->result($r, 0, "SUMM");
         if ($n > 0) {
-            $db->query("INSERT INTO `T2_BONUS_CLIENT` SET `CLIENT_ID`='$client_id', `BONUS_ID`='$bonus', `SUMM`='$sum';");
+            $db->query("UPDATE `T2_BONUS_CLIENT` SET `SUMM`='$sum' WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus';");
         }
         return $sum;
     }
@@ -870,6 +872,8 @@ class ClientClass
         $form = str_replace("{user_id}", $user_id, $form);
         $form = str_replace("{client_id}", $client_id, $form);
         $form = str_replace("{bonus_phone}", $phone, $form);
+
+        $form = $this->replaceLang($form);
 
         return $form;
     }
