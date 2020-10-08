@@ -102,6 +102,23 @@ class ProfileClass {
         return $form;
     }
 
+    function getClientBonus($client_id) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id';"); $n = $db->num_rows($r);
+        if ($n > 0) return true; else return false;
+    }
+
+    function showClientBonus($client_id) { $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT SUM(`SUMM`) as SUMMARY FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id';"); $n = $db->num_rows($r);
+        if ($n > 0) {
+            $summ = $db->result($r, 0, "SUMMARY");
+            $form = $this->getHtmlForm("profile/profile_bonus");
+            $form = str_replace("{bonus_profile}", $summ, $form);
+        } else {
+            $form = "";
+        }
+        return $form;
+    }
+
     function showProfileAccount() {
         $menu = new MenuClass; $client = new ClientClass;
         list($client_id, $user_id) = $client->getClient();
@@ -116,6 +133,7 @@ class ProfileClass {
         $form = str_replace("{client_country}", $clientData["country"], $form);
         $form = str_replace("{region_form}", $menu->getRegionForm($clientData["region"]), $form);
         $form = str_replace("{client_city}", $clientData["city"], $form);
+        $form = str_replace("{bonus_user}", $this->getClientBonus($client_id) ? $this->showClientBonus($client_id) : "", $form);
         $form = $this->replaceLang($form);
         return $form;
     }
