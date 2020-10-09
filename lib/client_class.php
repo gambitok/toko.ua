@@ -799,6 +799,9 @@ class ClientClass
         return array("user_id"=>$user_id, "client_id"=>$client_id);
     }
 
+    /*
+     * Client Bonus
+     * */
     function checkClientBonus($client_id, $bonus = 1) { $db = DbSingleton::getDbm();
         $status = false;
         $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus' LIMIT 1;"); $n = $db->num_rows($r);
@@ -818,7 +821,7 @@ class ClientClass
         $r = $db->query("SELECT `SUMM` FROM `T2_BONUS` WHERE `ID`='$bonus' LIMIT 1;"); $n = $db->num_rows($r);
         $sum = $db->result($r, 0, "SUMM");
         if ($n > 0) {
-            $db->query("UPDATE `T2_BONUS_CLIENT` SET `SUMM`='$sum' WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus';");
+            $db->query("UPDATE `A_CLIENTS` SET `bonus_balance` = `bonus_balance` + $sum WHERE `id`='$client_id' LIMIT 1;");
         }
         return $sum;
     }

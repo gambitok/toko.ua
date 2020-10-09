@@ -1027,7 +1027,7 @@ class ShopClass extends CatalogueClass
     }
 
     function getBasketOrder($delivery_id = 0) {
-        $exrate = new ExRateClass;
+        $exrate = new ExRateClass; $profile = new ProfileClass;
         $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
         list($basket_range, $basket_total) = $this->getBasketOrderRange();
 
@@ -1046,6 +1046,7 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{basket_order_delivery_price}", $delivery_total_text, $form);
         $form = str_replace("{basket_order_price}", $this->getOrderTotal($total), $form);
         $form = str_replace("{basket_button_status}", "", $form);
+        $form = str_replace("{basket_client_bonus}", $profile->showClientBonusOrder($this->getClient()), $form);
         $form = $this->replaceLang($form);
         return $form;
     }

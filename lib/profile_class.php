@@ -102,21 +102,38 @@ class ProfileClass {
         return $form;
     }
 
+    /*
+     * Bonus Client
+     * */
     function getClientBonus($client_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id';"); $n = $db->num_rows($r);
         if ($n > 0) return true; else return false;
     }
-
     function showClientBonus($client_id) { $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT SUM(`SUMM`) as SUMMARY FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n = $db->num_rows($r);
         if ($n > 0) {
-            $summ = $db->result($r, 0, "SUMMARY");
+            $summ = $db->result($r, 0, "bonus_balance");
             $form = $this->getHtmlForm("profile/profile_bonus");
             $form = str_replace("{bonus_profile}", $summ, $form);
         } else {
             $form = "";
         }
         return $form;
+    }
+    function showClientBonusOrder($client_id) { $db = DbSingleton::getDbm();
+        $list = "";
+        $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
+        $summ = $db->result($r, 0, "bonus_balance");
+        if ($summ > 0) {
+            $list = "
+                <div class='row'>
+                    <div class='col-6'>{bonus_cap}</div>
+                    <div class='col-6 text-right'><span class='span-red'>- $summ {uah_cap}</span></div>
+                </div>
+            ";
+        }
+        $list = $this->replaceLang($list);
+        return $list;
     }
 
     function showProfileAccount() {
