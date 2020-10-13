@@ -46,7 +46,7 @@ if ($_REQUEST["w"]=="showProfileOrders"){$GLOBALS['_RESULT'] = array("content"=>
 if ($_REQUEST["w"]=="showProfileOrdersArts"){$GLOBALS['_RESULT'] = array("content"=>$profile->showProfileOrdersArts($_REQUEST["dp_id"], $_REQUEST["order_id"]));}
 
 if ($_REQUEST["w"]=="showBasketMinForm"){$GLOBALS['_RESULT'] = array("content"=>$shop->showBasketForm());}
-
+//
 if ($_REQUEST["w"]=="setCityDepartments"){$GLOBALS['_RESULT'] = array("content"=>$shop->setCityDepartments($_REQUEST["city_ref"]));}
 if ($_REQUEST["w"]=="getOrderDeliveryBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderDeliveryBlock($_REQUEST["delivery_id"], $_REQUEST["city_id"]));}
 if ($_REQUEST["w"]=="getOrderPaymentBlock"){$GLOBALS['_RESULT'] = array("content"=>$shop->getOrderPaymentBlock($_REQUEST["payment_id"], $_REQUEST["delivery_id"]));}

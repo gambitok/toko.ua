@@ -136,6 +136,7 @@ class ProfileClass {
         return $list;
     }
 
+    //
     function showProfileAccount() {
         $menu = new MenuClass; $client = new ClientClass;
         list($client_id, $user_id) = $client->getClient();

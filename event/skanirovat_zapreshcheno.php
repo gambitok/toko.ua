@@ -10,7 +10,7 @@ if ($phone=="") {
         $content = str_replace("{main_window}", $menu->showScanForm(), $content);
 } else {
 
-    // check if reg
+    // check if reg//
     if ($client->checkRegistration($phone)) {
         $clientData = $client->getClientUserbyPhone($phone);
         $client_id = $clientData["client_id"];

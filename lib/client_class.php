@@ -799,7 +799,7 @@ class ClientClass
         return array("user_id"=>$user_id, "client_id"=>$client_id);
     }
 
-    /*
+    /*//
      * Client Bonus
      * */
     function checkClientBonus($client_id, $bonus = 1) { $db = DbSingleton::getDbm();

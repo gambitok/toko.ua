@@ -279,7 +279,7 @@ function setDeliveryExpressDepartment() {
             $("#delivery_express_department").html(result.content);
         }}, true);
 }
-
+//
 // GET BASKET ORDER FORM
 function getBasketOrder() {
     $("#orders-basket").html("");

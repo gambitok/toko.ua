@@ -1026,6 +1026,7 @@ class ShopClass extends CatalogueClass
         return $list;
     }
 
+    //
     function getBasketOrder($delivery_id = 0) {
         $exrate = new ExRateClass; $profile = new ProfileClass;
         $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);

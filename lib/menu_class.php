@@ -556,7 +556,7 @@ class MenuClass extends CatalogueClass
         $form = $this->getHtmlForm("bonus/scan");
         return $form;
     }
-
+//
     function showScanPhoneForm($phone) {
         $form = $this->getHtmlForm("bonus/phone_valid");
         $form = str_replace("{text_phone}", $phone, $form);
