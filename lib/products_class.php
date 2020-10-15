@@ -409,7 +409,7 @@ class ProductsClass extends CatalogueClass {
             $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;"); $n=$db->num_rows($r);
             for ($i=1; $i<=$n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
-                $model_cap = $mfa_id."_".$model;
+                $model_cap = $mfa_id . "_" . $model;
                 $list.="<div data-url=\"model/$model_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$model</div>";
             }
             $title = $automan->getMfaBrand($mfa_id);
@@ -424,13 +424,13 @@ class ProductsClass extends CatalogueClass {
                 CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
             FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id';");
             $date_start = $db->result($r,0,"min_year");
-            $date_start = substr($date_start, 0, -2)."";
+            $date_start = substr($date_start, 0, -2) . "";
             $date_end = $db->result($r,0,"max_year");
             if ($date_end!=0) $date_end = substr($date_end, 0, -2).""; else $date_end = $max_date_end;
             if ($date_start=="" || $date_start==0) $date_start = $min_date_start;
             for ($i=$date_end; $i>=$date_start; $i--) {
                 $year = $i;
-                $year_cap = $mfa_id."_".$model."_".$year;
+                $year_cap = $mfa_id . "_" . $model . "_" . $year;
                 $list.="<div data-url=\"years/$year_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$year</div>";
             }
             $title = $model;
@@ -450,8 +450,8 @@ class ProductsClass extends CatalogueClass {
                 $tex_text = $db->result($r, $i - 1, "TEX_TEXT");
                 $image = $db->result($r, $i - 1, "Car_pict"); $img_path = "https://toko.ua/uploads/images/models/$image";
                 list($body_name, $body_path) = $this->getBodyCarImage($mod_id);
-                $d_start = $db->result($r,$i-1,"MOD_PCON_START"); $d_start=substr($d_start,0,4);
-                $d_end = $db->result($r,$i-1,"MOD_PCON_END"); $d_end=substr($d_end,0,4); if ($d_end==0) $d_end="{cur_time}";
+                $d_start = $db->result($r,$i-1,"MOD_PCON_START"); $d_start = substr($d_start,0,4);
+                $d_end = $db->result($r,$i-1,"MOD_PCON_END"); $d_end = substr($d_end,0,4); if ($d_end==0) $d_end="{cur_time}";
 
                 $list.="<div data-url=\"bodyc/$mod_id\" class=\"cars-tab__block-item cars-tab__block-item-body\" onclick=\"toggleCarsTab(this)\">
                     <div class='bodyc'>
@@ -503,8 +503,8 @@ class ProductsClass extends CatalogueClass {
                 $typ_text = $db->result($r, $i-1, "TYP_TEXT");
                 $kw_from = $db->result($r,$i-1,"TYP_KW_FROM");
                 $hp_from = $db->result($r,$i-1,"TYP_HP_FROM");
-                $d_start=$db->result($r,$i-1,"TYP_PCON_START"); if ($d_start==0) {$d_start="";} if (strlen($d_start)==6) {$d_start=substr($d_start,0,4).".".substr($d_start,4,2);}
-                $d_end=$db->result($r,$i-1,"TYP_PCON_END"); if ($d_end==0) {$d_end="{cur_time_min}";} if (strlen($d_end)==6) {$d_end=substr($d_end,0,4).".".substr($d_end,4,2);}
+                $d_start = $db->result($r,$i-1,"TYP_PCON_START"); if ($d_start==0) {$d_start = "";} if (strlen($d_start)==6) {$d_start = substr($d_start,0,4).".".substr($d_start,4,2);}
+                $d_end = $db->result($r,$i-1,"TYP_PCON_END"); if ($d_end==0) {$d_end = "{cur_time_min}";} if (strlen($d_end)==6) {$d_end = substr($d_end,0,4).".".substr($d_end,4,2);}
                 $eng_cod = $db->result($r,$i-1,"ENG_Cod");
                 $onclick = "setCookie('auto_typ_id','$typ_id'); addToGarage('$typ_id'); location.href='https://toko.ua/catalog/$str_link';";
                 $list.="<div class=\"cars-tab__block-item cars-tab__block-item-modif\"><a href=\"#\" onclick=\"$onclick\">
@@ -516,7 +516,7 @@ class ProductsClass extends CatalogueClass {
                     </table>
                 </a></div>";
             }
-            $title = $volume_cm." ".$this->getFuelName($fuel_id);
+            $title = $volume_cm . " " . $this->getFuelName($fuel_id);
             $nav = "engin"; $tab = "cars-tab6";
         }
 

@@ -782,7 +782,7 @@ class ShopClass extends CatalogueClass
         $cookie = $_COOKIE["session_id"];
         $cash_id = intval($client->getClientCurrency($client_id));
         // CREATE ORDER
-        $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0);
+        $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0, 0);
         return array($order_id, $user_id, $user_status);
     }
 
@@ -1043,6 +1043,14 @@ class ShopClass extends CatalogueClass
 
         list($delivery_total, $delivery_total_text) = $this->getDeliveryPrice($delivery_id);
 
+        $basket_total_full = $basket_total;
+        $basket_total = $basket_total - $bonus_total;
+
+        $basket_total_cap = $basket_total." $cur_cap";
+        if ($bonus_total>0) {
+            $basket_total_cap = "<span class='span-red' style='text-decoration: line-through'>$basket_total_full $cur_cap</span><br>" . $basket_total_cap;
+        }
+
         $total = $basket_total + $delivery_total;
 
         $form = $this->getHtmlForm("orders/basket");
@@ -1052,7 +1060,7 @@ class ShopClass extends CatalogueClass
             $form = str_replace("{basket_button_status}", "none", $form);
         }
         $form = str_replace("{basket_content}", $basket_range, $form);
-        $form = str_replace("{basket_full_price}", $basket_total." $cur_cap", $form);
+        $form = str_replace("{basket_full_price}", $basket_total_cap, $form);
         $form = str_replace("{basket_order_delivery_price}", $delivery_total_text, $form);
         $form = str_replace("{basket_order_price}", $this->getOrderTotal($total), $form);
         $form = str_replace("{basket_button_status}", "", $form);
@@ -1106,20 +1114,44 @@ class ShopClass extends CatalogueClass
         return array($price, $list);
     }
 
-    function getBonusDiscount($bonus_summ, $price) {
-        $procent = 30;
-        $max_discount = $price * ($procent / 100);
-        if ($bonus_summ > $max_discount) $discount = $max_discount;
-        else $discount = $bonus_summ;
-        return $discount;
+    function getBonusDiscount($order_sum, $bonus_summ, $price) {
+        $procent = 10;
+
+        // max promegut
+        $max_prom = $order_sum * ($procent / 100);
+
+        // max vosmojnoe
+        if ($max_prom <= $bonus_summ) $max_discount = $max_prom; else $max_discount = $bonus_summ;
+
+        // discount procent
+        $price_procent = round($price / $order_sum * 100);
+
+        // discount price
+        $discount = floor($price_procent * $max_discount / 100);
+
+        // price with discount
+        $price_discount = ceil($price - $discount);
+
+        $real_discount = round((($price_discount / $price) - 1) * 100);
+
+        return array("max_discount"=>$max_discount, "price_procent"=>$price_procent, "discount"=>$discount, "price_discount"=>$price_discount, "real_discount"=>$real_discount);
     }
+
     function getBasketOrderRange($bonus_status, $bonus_summ) { $db = DbSingleton::getTokoDb();
         $client = new ClientClass; $exrate = new ExRateClass; $showform = new FormClass;
         $client_id = $this->getClient(); $where = $client->getClientWhere();
         $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
-        $list = ""; $sum_total = 0; $bonus_total = 0;
+        $list = ""; $sum_total = 0; $bonus_total = 0; $order_sum = 0;
         $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1 ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
+            for ($i=1; $i<=$n; $i++) {
+                $amount = $db->result($r, $i - 1, "amount");
+                $price = $db->result($r, $i - 1, "price");
+                $price = $exrate->getKoursPrice($price, $cur);
+                if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
+                $full_price = $price * $amount;
+                $order_sum+=$full_price;
+            }
             for ($i=1; $i<=$n; $i++) {
                 $art_id = $db->result($r, $i - 1, "art_id");
                 $brand_id = $db->result($r, $i - 1, "brand_id");
@@ -1132,20 +1164,21 @@ class ShopClass extends CatalogueClass
                 if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
                 $full_price = $price * $amount;
                 if ($cur==1) $full_price = $client->getClientPriceRounding($client_id, $full_price);
-                $sum_total+=$full_price;
+                $sum_total += $full_price;
                 $name = "$text $brand_name ($art_name)";
                 $img = $showform->getArticleActivePhoto($art_id);
                 $price_cap = "$full_price $cur_cap";
                 if ($bonus_status) {
-                    $discount = $this->getBonusDiscount($bonus_summ, $full_price);
-                    $old_full_price = $full_price;
-                    $full_price -= $discount;
-                    $bonus_summ -= $discount;
+                    $discountData = $this->getBonusDiscount($order_sum, $bonus_summ, $full_price);
+                    //$price_procent = $discountData["price_procent"];
+                    $real_discount = $discountData["real_discount"];
+                    $discount = $discountData["discount"];
+                    $price_discount = $discountData["price_discount"];
+                    $price_cap = "<span>$full_price $cur_cap</span>";
                     $bonus_total += $discount;
-                    $price_cap = "
-                    <span class='span-red' style='text-decoration: line-through;'>$old_full_price $cur_cap</span>
-                    <br />
-                    <span>$full_price $cur_cap</span>";
+                    if ($full_price!=$price_discount) {
+                        $price_cap = "<span class='span-red' style='text-decoration: line-through;'>$full_price $cur_cap ($real_discount%)</span><br /><span>$price_discount $cur_cap</span>";
+                    }
                 }
                 $list.="<div class=\"cart-table-row\">
                     <div class=\"cart-table-cell cart-table-cell__photo\"><img src=\"$img\" alt=\"$name\"></div>
