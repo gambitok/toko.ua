@@ -444,7 +444,7 @@ class ProductsClass extends CatalogueClass {
                 ((`MOD_PCON_END`>=".$year."00 AND `MOD_PCON_END`<=".$year."12)
                 OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`>=".$year."00)
                 OR (`MOD_PCON_START`<=".$year."12 AND `MOD_PCON_END`=0))";
-            $r = $db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id' $where;"); $n = $db->num_rows($r);
+            $r = $db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id' AND `ACTIVE`=1 $where;"); $n = $db->num_rows($r);
             for ($i=1; $i<=$n; $i++) {
                 $mod_id = $db->result($r, $i - 1, "MOD_ID");
                 $tex_text = $db->result($r, $i - 1, "TEX_TEXT");

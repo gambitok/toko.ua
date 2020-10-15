@@ -444,6 +444,11 @@ class ShopClass extends CatalogueClass
     /*==== NEW ORDER FORM ====*/
 
     /*==== BASKET to ORDER ====*/
+    function updateOrderBasket($order_id) { $db = DbSingleton::getDbm(); $dbt = DbSingleton::getTokoDb();
+        //
+
+    }
+
     function finishOrderBasket($order_id) { $db = DbSingleton::getDbm(); $dbt = DbSingleton::getTokoDb();
         $client = new ClientClass;
         $sum = 0; $where = $client->getClientWhere();
@@ -466,7 +471,7 @@ class ShopClass extends CatalogueClass
         }
         if ($order_id>0 && $n>0) {
             $delivery_sum = $this->setDeliveryIndex($order_id);
-            $sum+=$delivery_sum;
+            $sum += $delivery_sum;
         }
         return $sum;
     }
@@ -782,7 +787,7 @@ class ShopClass extends CatalogueClass
     }
 
     /*==== SAVE Order ====*/
-    function saveOrder($user_id, $name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment, $recipient_name, $recipient_phone) {
+    function saveOrder($user_id, $name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment, $recipient_name, $recipient_phone, $bonus_status = 0) {
         $client = new ClientClass;
         if ($user_id==0 || $user_id=="" || $user_id=="undefined") {
             $user_id = $this->getUser();
@@ -817,12 +822,12 @@ class ShopClass extends CatalogueClass
         $order_info_id = $this->saveClientOrderInfo($client_id, $user_id, $city_id, $delivery_id, $department_text, $payment_id, $delivery_info, $recipient_name, $recipient_phone);
 
         // CREATE ORDER
-        $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id);
+        $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id, $bonus_status);
 
         return array($order_id, $user_id, $user_status);
     }
 
-    function saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id) { $db = DbSingleton::getDbm();
+    function saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id, $bonus_status) { $db = DbSingleton::getDbm();
         $client = new ClientClass;
         $phone = $client->formatValidPhone($phone);
         // CREATE ORDER
@@ -830,6 +835,9 @@ class ShopClass extends CatalogueClass
         $db->query("INSERT INTO `orders_new` (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `comment`, `order_info_id`, `price_summ`) 
         VALUES ($order_id, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '$name', '$email', '$phone', '$city_id', '$comment', $order_info_id, 0);");
         // CREATE ORDER STR
+        if ($bonus_status) {
+            $this->updateOrderBasket($order_id);
+        }
         $order_sum = $this->finishOrderBasket($order_id);
         // SET ORDER SUM
         $db->query("UPDATE `orders_new` SET `price_summ`='$order_sum' WHERE `id`='$order_id' LIMIT 1;");
@@ -1026,11 +1034,12 @@ class ShopClass extends CatalogueClass
         return $list;
     }
 
-    //
-    function getBasketOrder($delivery_id = 0) {
+    function getBasketOrder($delivery_id = 0, $bonus_status = 0) {
         $exrate = new ExRateClass; $profile = new ProfileClass;
         $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
-        list($basket_range, $basket_total) = $this->getBasketOrderRange();
+
+        $bonus_summ = $profile->getBonusSumm($this->getClient());
+        list($basket_range, $basket_total, $bonus_total) = $this->getBasketOrderRange($bonus_status, $bonus_summ);
 
         list($delivery_total, $delivery_total_text) = $this->getDeliveryPrice($delivery_id);
 
@@ -1047,7 +1056,8 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{basket_order_delivery_price}", $delivery_total_text, $form);
         $form = str_replace("{basket_order_price}", $this->getOrderTotal($total), $form);
         $form = str_replace("{basket_button_status}", "", $form);
-        $form = str_replace("{basket_client_bonus}", $profile->showClientBonusOrder($this->getClient()), $form);
+
+        $form = str_replace("{basket_client_bonus}", $profile->showClientBonusOrder($bonus_status, $bonus_total), $form);
         $form = $this->replaceLang($form);
         return $form;
     }
@@ -1096,11 +1106,18 @@ class ShopClass extends CatalogueClass
         return array($price, $list);
     }
 
-    function getBasketOrderRange() { $db = DbSingleton::getTokoDb();
+    function getBonusDiscount($bonus_summ, $price) {
+        $procent = 30;
+        $max_discount = $price * ($procent / 100);
+        if ($bonus_summ > $max_discount) $discount = $max_discount;
+        else $discount = $bonus_summ;
+        return $discount;
+    }
+    function getBasketOrderRange($bonus_status, $bonus_summ) { $db = DbSingleton::getTokoDb();
         $client = new ClientClass; $exrate = new ExRateClass; $showform = new FormClass;
         $client_id = $this->getClient(); $where = $client->getClientWhere();
         $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
-        $list = ""; $sum_total = 0;
+        $list = ""; $sum_total = 0; $bonus_total = 0;
         $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1 ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
         if ($n>0) {
             for ($i=1; $i<=$n; $i++) {
@@ -1118,13 +1135,25 @@ class ShopClass extends CatalogueClass
                 $sum_total+=$full_price;
                 $name = "$text $brand_name ($art_name)";
                 $img = $showform->getArticleActivePhoto($art_id);
+                $price_cap = "$full_price $cur_cap";
+                if ($bonus_status) {
+                    $discount = $this->getBonusDiscount($bonus_summ, $full_price);
+                    $old_full_price = $full_price;
+                    $full_price -= $discount;
+                    $bonus_summ -= $discount;
+                    $bonus_total += $discount;
+                    $price_cap = "
+                    <span class='span-red' style='text-decoration: line-through;'>$old_full_price $cur_cap</span>
+                    <br />
+                    <span>$full_price $cur_cap</span>";
+                }
                 $list.="<div class=\"cart-table-row\">
                     <div class=\"cart-table-cell cart-table-cell__photo\"><img src=\"$img\" alt=\"$name\"></div>
                     <div class=\"cart-table-cell cart-table-cell__text\">
                         <div class=\"cart-table-cell cart-table-cell__name\">$name</div>
                         <div class=\"cart-table-cell cart-table-cell__summ\">
                             <div class=\"cart-table-cell cart-table-cell__amount\">$amount {amount_abbr}.</div>
-                            <div class=\"cart-table-cell cart-table-cell__summary\">$full_price $cur_cap</div>
+                            <div class=\"cart-table-cell cart-table-cell__summary\">$price_cap</div>
                         </div>
                     </div>
                 </div>";
@@ -1133,7 +1162,7 @@ class ShopClass extends CatalogueClass
             $list = "<div class=\"cart-table-row\">{empty_cap}</div>";
         }
         $list = $this->replaceLang($list);
-        return array($list, $sum_total);
+        return array($list, $sum_total, $bonus_total);
     }
 
     function setDeliveryExpressDepartment($delivery_express) { $db = DbSingleton::getTokoDb();

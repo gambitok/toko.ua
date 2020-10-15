@@ -120,23 +120,25 @@ class ProfileClass {
         }
         return $form;
     }
-    function showClientBonusOrder($client_id) { $db = DbSingleton::getDbm();
-        $list = "";
+    function getBonusSumm($client_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
         $summ = $db->result($r, 0, "bonus_balance");
-        if ($summ > 0) {
-            $list = "
-                <div class='row'>
-                    <div class='col-6'>{bonus_cap}</div>
-                    <div class='col-6 text-right'><span class='span-red'>- $summ {uah_cap}</span></div>
-                </div>
-            ";
-        }
+        return $summ;
+    }
+    function showClientBonusOrder($bonus_status, $bonus_total) {
+        $bonus_summ = $this->getBonusSumm($this->getClient());
+        $bonus_status ? $checked = "checked='checked'" : $checked = "";
+        $bonus_status ? $bonus_checked = "- $bonus_total {uah_cap}" : $bonus_checked = "";
+        $list = "
+            <div class='row'>
+                <div class='col-6'><input type='checkbox' id='bonus_status' $checked onclick='getBasketOrder();'><label for='bonus_status'>{bonus_cap} ($bonus_summ {uah_cap})</label></div>
+                <div class='col-6 text-right'><span class='span-red'>$bonus_checked</span></div>
+            </div>
+        ";
         $list = $this->replaceLang($list);
         return $list;
     }
 
-    //
     function showProfileAccount() {
         $menu = new MenuClass; $client = new ClientClass;
         list($client_id, $user_id) = $client->getClient();

@@ -279,12 +279,13 @@ function setDeliveryExpressDepartment() {
             $("#delivery_express_department").html(result.content);
         }}, true);
 }
-//
+
 // GET BASKET ORDER FORM
 function getBasketOrder() {
+    let bonus_status = $("#bonus_status").prop("checked");
     $("#orders-basket").html("");
     let delivery_id = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
-    JsHttpRequest.query(folder,{'w':'getBasketOrder', 'delivery_id':delivery_id},
+    JsHttpRequest.query(folder,{'w':'getBasketOrder', 'delivery_id':delivery_id, bonus_status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             $("#orders-basket").html(result.content);
         }}, true);
@@ -448,8 +449,9 @@ function saveOrder() {
     let comment = $("#user_comment").val();
     let recipient_name = $("#user_recipient_name").val();
     let recipient_phone = $("#user_recipient_phone").val();
+    let bonus_status = $("#bonus_status").prop("checked");
 
-    JsHttpRequest.query(folder,{'w':'saveOrder', 'user_id':user_id, 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment, 'recipient_name':recipient_name, 'recipient_phone':recipient_phone},
+    JsHttpRequest.query(folder,{'w':'saveOrder', 'user_id':user_id, 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment, 'recipient_name':recipient_name, 'recipient_phone':recipient_phone, 'bonus_status':bonus_status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             let order_id = result.content[0];
             let user_id = result.content[1];
