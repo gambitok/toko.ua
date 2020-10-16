@@ -444,9 +444,38 @@ class ShopClass extends CatalogueClass
     /*==== NEW ORDER FORM ====*/
 
     /*==== BASKET to ORDER ====*/
-    function updateOrderBasket($order_id) { $db = DbSingleton::getDbm(); $dbt = DbSingleton::getTokoDb();
-        //
+    function updateOrderBasket() { $db = DbSingleton::getDbm(); $dbt = DbSingleton::getTokoDb();
+        $client = new ClientClass; $exrate = new ExRateClass; $profile = new ProfileClass;
+        $client_id = $this->getClient(); $where = $client->getClientWhere(); $cur = $exrate->getCurrentKours();
+        $bonus_summ = $profile->getBonusSumm($client_id); $order_sum = 0;
 
+        $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n = $dbt->num_rows($r);
+        if ($n > 0) {
+            for ($i=1; $i<=$n; $i++) {
+                $amount = $db->result($r, $i - 1, "amount");
+                $price = $db->result($r, $i - 1, "price");
+                $price = $exrate->getKoursPrice($price, $cur);
+                if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
+                $full_price = $price * $amount;
+                $order_sum += $full_price;
+            }
+            for ($i=1; $i<=$n; $i++) {
+                $id = $dbt->result($r, $i - 1, "id");
+                $price = $dbt->result($r, $i - 1, "price");
+                $discountData = $this->getBonusDiscount($order_sum, $bonus_summ, $price);
+                $real_discount = abs($discountData["real_discount"]);
+                $price_discount = abs($discountData["price_discount"]);
+                $this->updateBonusClient($price_discount);
+                $dbt->query("UPDATE `basket` SET `discount`='$real_discount' WHERE `id`='$id';");
+            }
+        }
+        return true;
+    }
+
+    function updateBonusClient($price_discount, $bonus_type = 1) { $db = DbSingleton::getDbm();
+        $client_id = $this->getClient();
+        $db->query("UPDATE `T2_BONUS_CLIENT` SET `SUMM`=`SUMM` - $price_discount WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus_type' LIMIT 1;");
+        return true;
     }
 
     function finishOrderBasket($order_id) { $db = DbSingleton::getDbm(); $dbt = DbSingleton::getTokoDb();
@@ -459,17 +488,18 @@ class ShopClass extends CatalogueClass
             $brand_id = $dbt->result($r, $i - 1, "brand_id");
             $amount = $dbt->result($r, $i - 1, "amount");
             $price = $dbt->result($r, $i - 1, "price");
+            $discount = $dbt->result($r, $i - 1, "discount");
             $suppl_id = $dbt->result($r, $i - 1, "suppl_id");
             $storage_id = $dbt->result($r, $i - 1, "storage_id");
             $status_action = $db->result($r, $i - 1, "status_action");
             $full_price = $price * $amount;
-            $sum+=$full_price;
+            $sum += $full_price;
             $rmax = $db->query("SELECT MAX(`id`) AS max_order_str FROM `orders_str_new`;"); $max = intval($db->result($rmax,0,"max_order_str")) + 1;
-            $db->query("INSERT INTO `orders_str_new` (`id`, `order_id`, `suppl_id`, `storage_id`, `art_id`, `brand_id`, `amount`, `price`, `summ`, `status_action`) 
-            VALUES ('$max', '$order_id', '$suppl_id', '$storage_id', '$art_id', '$brand_id', '$amount', $price, '$full_price', '$status_action');");
+            $db->query("INSERT INTO `orders_str_new` (`id`, `order_id`, `suppl_id`, `storage_id`, `art_id`, `brand_id`, `amount`, `price`, `summ`, `discount`, `status_action`) 
+            VALUES ('$max', '$order_id', '$suppl_id', '$storage_id', '$art_id', '$brand_id', '$amount', $price, '$full_price', '$discount', '$status_action');");
             $dbt->query("DELETE FROM `basket` WHERE `id`='$id';");
         }
-        if ($order_id>0 && $n>0) {
+        if ($order_id > 0 && $n > 0) {
             $delivery_sum = $this->setDeliveryIndex($order_id);
             $sum += $delivery_sum;
         }
@@ -836,7 +866,7 @@ class ShopClass extends CatalogueClass
         VALUES ($order_id, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '$name', '$email', '$phone', '$city_id', '$comment', $order_info_id, 0);");
         // CREATE ORDER STR
         if ($bonus_status) {
-            $this->updateOrderBasket($order_id);
+            $this->updateOrderBasket();
         }
         $order_sum = $this->finishOrderBasket($order_id);
         // SET ORDER SUM

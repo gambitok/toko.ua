@@ -38,9 +38,9 @@ class AutoClass extends CatalogueClass
 
     function getHeadStr($str_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");  $n = $db->num_rows($r);
-        if ($n==0) {
-            $r = $db->query("SELECT `HEAD_ID` FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
-        }
+//        if ($n==0) {
+//            $r = $db->query("SELECT `HEAD_ID` FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
+//        }
         $head_id = $db->result($r, 0, "HEAD_ID");
         return $head_id;
     }
