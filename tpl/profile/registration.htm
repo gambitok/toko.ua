@@ -179,32 +179,11 @@
     }, 1500);
 </script>
 
-<!--<script type="text/javascript" src="/js/plugins/select2/select2.min.js"></script>-->
-<!--<script type="text/javascript" src="/js/plugins/select2/select2_ru.js"></script>-->
 
 <script>
-    // var $example = $('.select2-city').select2({
-    //     language: "ru"
-    // });
-    //
-    // $('.select2-delivery').select2({
-    //     minimumResultsForSearch: -1
-    // });
-    //
-    // $('.select2-payment').select2({
-    //     minimumResultsForSearch: -1
-    // });
-
     function triggerCity(a) {
         sendSelect2('',true,a);
     }
-
-    // function select2Soset() {
-    //     var city_like = $('.select2-search__field').val();
-    //     if (city_like.length>2) {
-    //         sendSelect2(city_like);
-    //     }
-    // }
 
     function sendSelect2(city_like,trig,a) {
         JsHttpRequest.query(folder,{'w':'get_city_list', 'city_like':city_like},

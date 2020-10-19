@@ -444,7 +444,7 @@ class ShopClass extends CatalogueClass
     /*==== NEW ORDER FORM ====*/
 
     /*==== BASKET to ORDER ====*/
-    function updateOrderBasket() { $db = DbSingleton::getDbm(); $dbt = DbSingleton::getTokoDb();
+    function updateOrderBasket() { $dbt = DbSingleton::getTokoDb();
         $client = new ClientClass; $exrate = new ExRateClass; $profile = new ProfileClass;
         $client_id = $this->getClient(); $where = $client->getClientWhere(); $cur = $exrate->getCurrentKours();
         $bonus_summ = $profile->getBonusSumm($client_id); $order_sum = 0;
@@ -452,8 +452,8 @@ class ShopClass extends CatalogueClass
         $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;"); $n = $dbt->num_rows($r);
         if ($n > 0) {
             for ($i=1; $i<=$n; $i++) {
-                $amount = $db->result($r, $i - 1, "amount");
-                $price = $db->result($r, $i - 1, "price");
+                $amount = $dbt->result($r, $i - 1, "amount");
+                $price = $dbt->result($r, $i - 1, "price");
                 $price = $exrate->getKoursPrice($price, $cur);
                 if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
                 $full_price = $price * $amount;
@@ -463,18 +463,19 @@ class ShopClass extends CatalogueClass
                 $id = $dbt->result($r, $i - 1, "id");
                 $price = $dbt->result($r, $i - 1, "price");
                 $discountData = $this->getBonusDiscount($order_sum, $bonus_summ, $price);
+                var_dump("order_sum = $order_sum, bonus_summ = $bonus_summ, price = $price");
+                $discount = abs($discountData["discount"]);
                 $real_discount = abs($discountData["real_discount"]);
-                $price_discount = abs($discountData["price_discount"]);
-                $this->updateBonusClient($price_discount);
+                $this->updateBonusClient($discount);
                 $dbt->query("UPDATE `basket` SET `discount`='$real_discount' WHERE `id`='$id';");
             }
         }
         return true;
     }
 
-    function updateBonusClient($price_discount, $bonus_type = 1) { $db = DbSingleton::getDbm();
+    function updateBonusClient($discount) { $db = DbSingleton::getDbm();
         $client_id = $this->getClient();
-        $db->query("UPDATE `T2_BONUS_CLIENT` SET `SUMM`=`SUMM` - $price_discount WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus_type' LIMIT 1;");
+        $db->query("UPDATE A_CLIENTS SET `bonus_balance`=`bonus_balance` - $discount WHERE `id`='$client_id' LIMIT 1;");
         return true;
     }
 
@@ -1145,26 +1146,22 @@ class ShopClass extends CatalogueClass
     }
 
     function getBonusDiscount($order_sum, $bonus_summ, $price) {
+        // 10% procent fixed
         $procent = 10;
-
         // max promegut
         $max_prom = $order_sum * ($procent / 100);
-
         // max vosmojnoe
         if ($max_prom <= $bonus_summ) $max_discount = $max_prom; else $max_discount = $bonus_summ;
-
         // discount procent
         $price_procent = round($price / $order_sum * 100);
-
         // discount price
         $discount = floor($price_procent * $max_discount / 100);
-
         // price with discount
         $price_discount = ceil($price - $discount);
-
-        $real_discount = round((($price_discount / $price) - 1) * 100);
-
-        return array("max_discount"=>$max_discount, "price_procent"=>$price_procent, "discount"=>$discount, "price_discount"=>$price_discount, "real_discount"=>$real_discount);
+        // real discount procent
+        $real_discount = round((($price_discount / $price) - 1) * 100, 2);
+        //var_dump("discount=$discount, price_dicsount=$price_discount, real_discount=$real_discount");
+        return array("discount"=>$discount, "price_discount"=>$price_discount, "real_discount"=>$real_discount);
     }
 
     function getBasketOrderRange($bonus_status, $bonus_summ) { $db = DbSingleton::getTokoDb();
@@ -1180,7 +1177,7 @@ class ShopClass extends CatalogueClass
                 $price = $exrate->getKoursPrice($price, $cur);
                 if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
                 $full_price = $price * $amount;
-                $order_sum+=$full_price;
+                $order_sum += $full_price;
             }
             for ($i=1; $i<=$n; $i++) {
                 $art_id = $db->result($r, $i - 1, "art_id");
@@ -1200,10 +1197,9 @@ class ShopClass extends CatalogueClass
                 $price_cap = "$full_price $cur_cap";
                 if ($bonus_status) {
                     $discountData = $this->getBonusDiscount($order_sum, $bonus_summ, $full_price);
-                    //$price_procent = $discountData["price_procent"];
-                    $real_discount = $discountData["real_discount"];
                     $discount = $discountData["discount"];
                     $price_discount = $discountData["price_discount"];
+                    $real_discount = $discountData["real_discount"];
                     $price_cap = "<span>$full_price $cur_cap</span>";
                     $bonus_total += $discount;
                     if ($full_price!=$price_discount) {
