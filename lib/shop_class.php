@@ -462,12 +462,13 @@ class ShopClass extends CatalogueClass
             for ($i=1; $i<=$n; $i++) {
                 $id = $dbt->result($r, $i - 1, "id");
                 $price = $dbt->result($r, $i - 1, "price");
+                $price = $exrate->getKoursPrice($price, $cur);
+                if ($cur==1) $price = $client->getClientPriceRounding($client_id, $price);
                 $discountData = $this->getBonusDiscount($order_sum, $bonus_summ, $price);
-                var_dump("order_sum = $order_sum, bonus_summ = $bonus_summ, price = $price");
                 $discount = abs($discountData["discount"]);
                 $real_discount = abs($discountData["real_discount"]);
                 $this->updateBonusClient($discount);
-                $dbt->query("UPDATE `basket` SET `discount`='$real_discount' WHERE `id`='$id';");
+                $dbt->query("UPDATE `basket` SET `price`='$price', `discount`='$real_discount' WHERE `id`='$id';");
             }
         }
         return true;
@@ -1160,7 +1161,7 @@ class ShopClass extends CatalogueClass
         $price_discount = ceil($price - $discount);
         // real discount procent
         $real_discount = round((($price_discount / $price) - 1) * 100, 2);
-        //var_dump("discount=$discount, price_dicsount=$price_discount, real_discount=$real_discount");
+
         return array("discount"=>$discount, "price_discount"=>$price_discount, "real_discount"=>$real_discount);
     }
 
