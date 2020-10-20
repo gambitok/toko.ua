@@ -60,6 +60,7 @@ if ($_REQUEST["w"]=="dropClientOrderInfo"){$GLOBALS['_RESULT'] = array("content"
 
 if ($_REQUEST["w"]=="saveOrderClient"){$GLOBALS['_RESULT'] = array("content"=>$shop->saveOrderClient($_REQUEST["user_id"],$_REQUEST["name"],$_REQUEST["email"],$_REQUEST["pass"]));}
 if ($_REQUEST["w"]=="loginOrderClient"){$GLOBALS['_RESULT'] = array("content"=>$client->loginOrderClient($_REQUEST["user_id"]));}
+if ($_REQUEST["w"]=="setClientRequest"){$GLOBALS['_RESULT'] = array("content"=>$client->setClientRequest($_REQUEST["phone"],$_REQUEST["vin"],$_REQUEST["text"]));}
 
 if ($_REQUEST["w"]=="getUserSavedData"){ list($status, $list, $info_id)=$shop->getUserSavedData($_REQUEST["user_id"],$_REQUEST["city"]); $GLOBALS['_RESULT'] = array("status"=>$status,"list"=>$list,"info_id"=>$info_id);}
 

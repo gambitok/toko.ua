@@ -214,6 +214,48 @@ a, a:not([href]):not([tabindex]) {
 /*==== /PAGE 404 ====*/
 
 /*==== SEO BLOCK ====*/
+.faq {
+    box-shadow: 0.5px 0.866px 2px 0 #cfcfcf;
+    overflow: hidden;
+    &-title {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    &-tab {
+        width: 100%;
+        input[type='checkbox'] {
+            position: absolute;
+            opacity: 0;
+            z-index: -1;
+        }
+        label {
+            transition: .5s ease-in-out;
+        }
+        input[type="checkbox"]:checked ~ .faq-content {
+            display: block;
+        }
+    }
+    &-label {
+        background: #55bae6;
+        border-top: 1px solid white;
+        cursor: pointer;
+        display: block;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0;
+        padding: 10px;
+        &:hover {
+            background: #17a2b8;
+        }
+    }
+    &-content {
+        display: none;
+        font-size: 14px;
+        padding: 10px;
+        transition: .5s ease-in-out;
+    }
+}
+
 .seo-listing {
     ul {
         list-style-type: disc;

@@ -1,11 +1,13 @@
 <?php
 
+$content = str_replace("{main_window}", $menu->getCatalogFaqForm(), $content);
+
 //$start = microtime(true);
-$content = str_replace("{main_window}", $shop->getHtmlForm("test"), $content);
-
-$up = new UkrPoshtaApi('7e769f5c-4ac8-32a8-bdf6-0f5bede5a204');
-
-$list = $up->getPostOffices(10765);
+//$content = str_replace("{main_window}", $shop->getHtmlForm("test"), $content);
+//
+//$up = new UkrPoshtaApi('7e769f5c-4ac8-32a8-bdf6-0f5bede5a204');
+//
+//$list = $up->getPostOffices(10765);
 
 //$seo_text = $search->getSeoArticleLinking(2904918);
 //

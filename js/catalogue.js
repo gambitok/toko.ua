@@ -284,7 +284,7 @@ function catalogueFilter(order) { "use strict";
                 $("#filter-max-price").html(max_price);
                 ex1.attr("data-slider-max", max_price);
                 ex1.slider("setAttribute", "max", max_price);
-                max_min=value[0]+","+value[1];
+                max_min=value[0] + "," + value[1];
                 ex1.attr("data-slider-value", max_min);
                 $("#price_val").html(max_min);
                 $("#cur_value").val(cur);
@@ -418,7 +418,7 @@ function loadApplicModels2(art_id_tcd, manufacture, a) {
 
 function loadApplicModelsInfo2(art_id, typ_id) {
     let er = 0;
-    if (document.getElementById("AMI"+typ_id).innerHTML==="") {
+    if (document.getElementById("AMI" + typ_id).innerHTML==="") {
         JsHttpRequest.query(folder,{ 'w': 'loadApplicModelsInfo2', 'art_id':art_id, 'typ_id':typ_id},
             function (result, errors){ if (errors) {} if (result){
                 document.getElementById("AMI" + typ_id).innerHTML = result.content;
@@ -599,19 +599,19 @@ function changeActionCount(i, action_price, action_amount) {
 
 function showManufactureDetails(head_id, str_id_str) {
     let request_link = window.location.href;
-    let class_name = $("#manufacture_head"+head_id).attr("class");
+    let class_name = $("#manufacture_head" + head_id).attr("class");
     if (class_name==="tree-list dnone") {
         JsHttpRequest.query(folder,{ 'w': 'showManufactureDetails', 'head_id':head_id, 'request_link':request_link, 'str_id_str':str_id_str},
             function (result, errors){ if (errors) {} if (result){
                 $("#tree_head-" + head_id).toggleClass("check-head");
-                let manuf_head = $("#manufacture_head"+head_id);
+                let manuf_head = $("#manufacture_head" + head_id);
                 manuf_head.removeClass("dnone");
                 manuf_head.addClass("dblock");
                 manuf_head.html(result.content);
             }}, true);
     } else {
         $("#tree_head-" + head_id).toggleClass("check-head");
-        let manuf_head = $("#manufacture_head"+head_id);
+        let manuf_head = $("#manufacture_head" + head_id);
         manuf_head.removeClass("dblock");
         manuf_head.addClass("dnone");
         manuf_head.html("");
@@ -633,7 +633,7 @@ function showCarDetailsStr(head_id) {
             }}, true);
     } else {
         $("#tree_head-" + head_id).toggleClass("check-head");
-        let manuf_head = $("#manufacture_head"+head_id);
+        let manuf_head = $("#manufacture_head" + head_id);
         manuf_head.removeClass("dblock");
         manuf_head.addClass("dnone");
         manuf_head.html("");
@@ -969,7 +969,7 @@ function showFilterOptionsForm(page) {
 function setParamsAuto(group_id, type) {
     JsHttpRequest.query(folder,{'w':'setParamsAuto', 'type':type},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            location.href = "https://toko.ua/test_catalog/"+group_id+"/";
+            location.href = "https://toko.ua/test_catalog/" + group_id + "/";
         }}, true);
 }
 
@@ -980,9 +980,15 @@ function setCatalogFilters() {
 }
 
 function setClientRequest() {
-    let phone = $('#help-phone').val();
-    JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone},
+    let phone = $("#help-phone").val(); if($("#help-phone").length===0) phone = "";
+    let vin = $("#help-vin").val(); if($("#help-vin").length===0) vin = "";
+    let text = $("#help-text").val(); if($("#help-text").length===0) text = "";
+    JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            showNotify("{done_cap}:", result.content, "success");
+            if (result.content===false) {
+                showNotify("{error_cap}:", "{phone_number_input}", "danger");
+            } else {
+                showNotify("{done_cap}:", "{manager_call}!", "success");
+            }
         }}, true);
 }
