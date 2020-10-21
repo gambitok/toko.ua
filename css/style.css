@@ -98,11 +98,29 @@ a:hover, a:not([href]):not([tabindex]):hover { color: #000; }
 
 .faq-tab input[type="checkbox"]:checked ~ .faq-content { display: block; }
 
-.faq-label { background: #55bae6; border-top: 1px solid white; cursor: pointer; display: block; font-size: 16px; font-weight: bold; margin: 0; padding: 10px; }
+.faq-label { background: #55bae6; border-top: 1px solid white; color: #fff; cursor: pointer; display: block; font-size: 16px; font-weight: bold; margin: 0; padding: 10px; }
 
 .faq-label:hover { background: #17a2b8; }
 
 .faq-content { display: none; font-size: 14px; padding: 10px; transition: .5s ease-in-out; }
+
+.request { border: 1px solid #ddd; padding: 10px; }
+
+.request-row { display: flex; margin-bottom: 10px; }
+
+.request-row input[type='text'], .request-row textarea { padding: 5px; width: 100%; }
+
+.request-row input[type='submit'] { background: #0ca9ee; border: 1px solid #17a2b8; border-radius: .2rem; color: #fff; cursor: pointer; padding: 5px; text-align: center; width: 100%; }
+
+.request-row input[type='submit']:hover { background: #17a2b8; }
+
+.request-row__image { width: 50px; }
+
+.request-row__image img { width: 100%; }
+
+.request-row__title { font-size: 14px; margin-left: 10px; text-align: right; width: 100%; }
+
+.request-row__text { font-size: 14px; text-align: center; }
 
 .seo-listing ul { list-style-type: disc; margin-bottom: 0; margin-left: 45px; }
 

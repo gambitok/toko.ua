@@ -565,6 +565,7 @@ class MenuClass extends CatalogueClass
 
     function getCatalogFaqForm() {
         $form = $this->getHtmlForm("faq/form");
+        $form = str_replace("{form_request}", $this->getHtmlForm("faq/request"), $form);
         $form = $this->replaceLang($form);
         $form = str_replace("{faq_h1}", "h1", $form);
         return $form;
