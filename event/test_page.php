@@ -2,6 +2,8 @@
 
 $content = str_replace("{main_window}", $menu->getCatalogFaqForm(), $content);
 
+//print_r($shop->getCitiesNP());
+
 //$start = microtime(true);
 //$content = str_replace("{main_window}", $shop->getHtmlForm("test"), $content);
 //

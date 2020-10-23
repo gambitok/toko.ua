@@ -258,12 +258,11 @@ a, a:not([href]):not([tabindex]) {
 }
 
 .request {
-    border: 1px solid #ddd;
     padding: 10px;
     &-row {
         display: flex;
         margin-bottom: 10px;
-        input[type='text'], textarea {
+        input[type='text'], input[type='tel'], textarea {
             padding: 5px;
             width: 100%;
         }
@@ -287,14 +286,23 @@ a, a:not([href]):not([tabindex]) {
             }
         }
         &__title {
+            font-weight: bold;
             font-size: 14px;
             margin-left: 10px;
             text-align: right;
             width: 100%;
         }
         &__text {
-            font-size: 14px;
+            color: #606975;
+            font-size: 13px;
             text-align: center;
+            a, a:not([href]):not([tabindex]) {
+                color: #0ca9ee;
+                cursor: pointer;
+                &:hover {
+                    color: #17a2b8;
+                }
+            }
         }
     }
 }

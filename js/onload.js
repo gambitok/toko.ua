@@ -1,15 +1,19 @@
-var folder='/content.php';
+
+var folder = '/content.php';
 
 // MAIN NAVIGATION
 $(".header-main").mouseover(function() {
     closeHideNavigation();
 });
+
 $(".main").mouseover(function() {
     closeHideNavigation();
 });
+
 $(".footer").mouseover(function() {
     closeHideNavigation();
 });
+
 $(".backdrop").mouseover(function() {
     closeHideNavigation();
 });
@@ -75,11 +79,11 @@ function setCookie(name, value, props) {
         exp = props.expires = d
     }
 
-    if(exp && exp.toUTCString) { props.expires = exp.toUTCString() }
+    if (exp && exp.toUTCString) { props.expires = exp.toUTCString() }
     value = encodeURIComponent(value);
     var updatedCookie = name + "=" + value;
 
-    for(var propName in props){
+    for (var propName in props){
         updatedCookie += "; " + propName;
         var propValue = props[propName];
         if(propValue !== true){ updatedCookie += "=" + propValue }
@@ -88,7 +92,7 @@ function setCookie(name, value, props) {
     document.cookie = updatedCookie
 }
 
-function loadInputNumber() { "use strict";
+function loadInputNumber() {
     $(".show_count").keydown(function (e) {
         if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
             (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
@@ -229,20 +233,15 @@ $(document).ready(function() {
         this.scrollTop = 999999;
     }).focus();
 
-    // setTimeout(function () {
-    //     void(Tawk_API.toggle());
-    // }, 3000);
-
     let cookie_user_id = getCookie('user');
 
     if (!detectmob()) {
-        if (cookie_user_id==="") {
+        if (cookie_user_id === "") {
             setTimeout(function () {
                 void(Tawk_API.toggle());
             }, 60000);
         }
     }
-
 
 });
 

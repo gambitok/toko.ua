@@ -209,6 +209,9 @@ if ($_REQUEST["w"]=="checkActionClients"){ $GLOBALS['_RESULT'] = array("content"
 
 if ($_REQUEST["w"]=="showManufactureDetails"){ $GLOBALS['_RESULT'] = array("content"=>$catalog->getGroupTreeStr($_REQUEST["head_id"],$_REQUEST["str_id_str"]));}
 
+if ($_REQUEST["w"]=="setClientRequestDone"){ $GLOBALS['_RESULT'] = array("content"=>$catalog->setClientRequestDone());}
+
+
 //if ($_REQUEST["w"]=="showTabCatalogueAuto"){ $GLOBALS['_RESULT'] = array("content"=>$automan->showTabCatalogueAuto());}
 
 if ($_REQUEST["w"]=="showHomeCars"){ $GLOBALS['_RESULT'] = array("content"=>$showform->showHomeCars());}

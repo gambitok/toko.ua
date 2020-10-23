@@ -14,8 +14,8 @@ function focusPhone() { $("#userlogin").focus(); }
 
 function showLoginForm() {
     let phone = $("#reg_phone").val();
-    if (phone===undefined || phone==="") phone = $("#input_phone").val();
-    if (phone===undefined || phone==="") phone = $("#input_phone2").val();
+    if (phone === undefined || phone === "") phone = $("#input_phone").val();
+    if (phone === undefined || phone === "") phone = $("#input_phone2").val();
     let form = "login";
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -40,10 +40,10 @@ function saveProfileForm() {
     let name_input = $("#reg_name"), name = name_input.val();
     let email_input = $("#reg_email"), email = email_input.val();
 
-    if (phone==="") phone_input.addClass("required_input"); else phone_input.removeClass("required_input");
-    if (pass==="") pass_input.addClass("required_input"); else pass_input.removeClass("required_input");
-    if (name==="") name_input.addClass("required_input"); else name_input.removeClass("required_input");
-    if (email==="") email_input.addClass("required_input"); else email_input.removeClass("required_input");
+    if (phone === "") phone_input.addClass("required_input"); else phone_input.removeClass("required_input");
+    if (pass === "") pass_input.addClass("required_input"); else pass_input.removeClass("required_input");
+    if (name === "") name_input.addClass("required_input"); else name_input.removeClass("required_input");
+    if (email === "") email_input.addClass("required_input"); else email_input.removeClass("required_input");
 
     if ((phone!=="") && (pass!=="") && (name!=="") && (email!=="")) {
         JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone, 'type':1},
@@ -59,19 +59,19 @@ function saveProfileForm() {
 }
 
 function saveRegistrationForm() {
-    let phone_input = $("#reg_phone"), phone=phone_input.val();
-    let pass_input = $("#reg_password"), pass=pass_input.val();
-    let pass2_input = $("#reg_repassword"), pass2=pass2_input.val();
-    let name_input = $("#reg_name"), name=name_input.val();
+    let phone_input = $("#reg_phone"), phone = phone_input.val();
+    let pass_input = $("#reg_password"), pass = pass_input.val();
+    let pass2_input = $("#reg_repassword"), pass2 = pass2_input.val();
+    let name_input = $("#reg_name"), name = name_input.val();
     let city_id = $("#user_city option:selected").val();
 
-    if (phone==="") phone_input.addClass("required_input"); else phone_input.removeClass("required_input");
-    if (pass==="") pass_input.addClass("required_input"); else pass_input.removeClass("required_input");
-    if (pass2!==pass || pass2==="") pass2_input.addClass("required_input"); else pass2_input.removeClass("required_input");
-    if (name==="") name_input.addClass("required_input"); else name_input.removeClass("required_input");
-    if (city_id===undefined) $(".select2").addClass("required_input"); else $(".select2").removeClass("required_input");
+    if (phone === "") phone_input.addClass("required_input"); else phone_input.removeClass("required_input");
+    if (pass === "") pass_input.addClass("required_input"); else pass_input.removeClass("required_input");
+    if (pass2 !== pass || pass2 === "") pass2_input.addClass("required_input"); else pass2_input.removeClass("required_input");
+    if (name === "") name_input.addClass("required_input"); else name_input.removeClass("required_input");
+    if (city_id === undefined) $(".select2").addClass("required_input"); else $(".select2").removeClass("required_input");
 
-    if ((phone!=="") && (pass!=="") && (pass===pass2) && (name!=="") && (city_id!==undefined)) {
+    if ((phone !== "") && (pass !== "") && (pass === pass2) && (name !== "") && (city_id !== undefined)) {
         JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content!==false) {
@@ -97,7 +97,7 @@ function saveRegistration() {
     let mailing = $("#reg_mailing").prop("checked");
     JsHttpRequest.query(folder,{'w':'saveRegistration', 'phone':phone, 'pass':pass, 'email':email, 'name':name, 'client_category':client_category, 'city_id':city_id, 'tpoint_id':tpoint_id, 'mailing':mailing},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            let text = "{success_registered}!<br>{phone_cap}:"+phone;
+            let text = "{success_registered}!<br>{phone_cap}:" + phone;
             showAlertModal(text, "{done_cap}", 1, loginFormParams);
         }}, true);
 }
@@ -105,13 +105,16 @@ function saveRegistration() {
 function loginForm() {
     let login = $("#userlogin").val();
     let password = $("#userpassword").val();
-    if (login==="" || password==="") {
+    if (login === "" || password === "") {
         showAlertModal("{input_all_data}!", "{error_cap}", 0, focusPhone);
-    }
-    else {
+    } else {
         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-                if (result.content===false) showAlertModal("{user_not_logged}!", "{error_cap}", 0); else location.reload();
+                if (result.content === false) {
+                    showAlertModal("{user_not_logged}!", "{error_cap}", 0);
+                } else {
+                    location.reload();
+                }
             }}, true);
     }
 }
@@ -135,7 +138,11 @@ function signInForm() {
     else {
         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-                if (result.content===false) showAlertModal("{user_not_logged}!", "{error_cap}", 0); else location.reload();
+                if (result.content === false) {
+                    showAlertModal("{user_not_logged}!", "{error_cap}", 0);
+                } else {
+                    location.reload();
+                }
             }}, true);
     }
 }

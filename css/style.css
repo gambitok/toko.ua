@@ -104,11 +104,11 @@ a:hover, a:not([href]):not([tabindex]):hover { color: #000; }
 
 .faq-content { display: none; font-size: 14px; padding: 10px; transition: .5s ease-in-out; }
 
-.request { border: 1px solid #ddd; padding: 10px; }
+.request { padding: 10px; }
 
 .request-row { display: flex; margin-bottom: 10px; }
 
-.request-row input[type='text'], .request-row textarea { padding: 5px; width: 100%; }
+.request-row input[type='text'], .request-row input[type='tel'], .request-row textarea { padding: 5px; width: 100%; }
 
 .request-row input[type='submit'] { background: #0ca9ee; border: 1px solid #17a2b8; border-radius: .2rem; color: #fff; cursor: pointer; padding: 5px; text-align: center; width: 100%; }
 
@@ -118,9 +118,13 @@ a:hover, a:not([href]):not([tabindex]):hover { color: #000; }
 
 .request-row__image img { width: 100%; }
 
-.request-row__title { font-size: 14px; margin-left: 10px; text-align: right; width: 100%; }
+.request-row__title { font-weight: bold; font-size: 14px; margin-left: 10px; text-align: right; width: 100%; }
 
-.request-row__text { font-size: 14px; text-align: center; }
+.request-row__text { color: #606975; font-size: 13px; text-align: center; }
+
+.request-row__text a, .request-row__text a:not([href]):not([tabindex]) { color: #0ca9ee; cursor: pointer; }
+
+.request-row__text a:hover, .request-row__text a:not([href]):not([tabindex]):hover { color: #17a2b8; }
 
 .seo-listing ul { list-style-type: disc; margin-bottom: 0; margin-left: 45px; }
 

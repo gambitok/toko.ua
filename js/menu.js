@@ -28,12 +28,12 @@ function showAlertModal(message, title, status, callback) {
     JsHttpRequest.query(folder,{ 'w': 'changeLangAlert', 'message':message, 'title':title },
         function (result, errors){ if (errors) {} if (result){
             $("#choose_message").html("<span>"+result.content[0]+"</span>");
-            if (result.content[1]==="" || result.content[1]===undefined) $("#choose_title").html("");
-            else $("#choose_title").html("<h4>"+result.content[1]+"</h4>");
+            if (result.content[1] === "" || result.content[1] === undefined) $("#choose_title").html("");
+            else $("#choose_title").html("<h4>" + result.content[1] + "</h4>");
             if (status===0) $("#alert-modal-header").addClass("bg-danger");
             if (status===1) $("#alert-modal-header").addClass("bg-success");
             if (status===2) $("#alert-modal-header").addClass("bg-info");
-            if (typeof callback!=="undefined") { $('#alert_btn_ok').click(function(){callback();}); }
+            if (typeof callback !== "undefined") { $('#alert_btn_ok').click(function(){callback();}); }
             $("#AlertForm").modal("toggle");
         }}, true);
 }
@@ -55,20 +55,27 @@ function validate(evt) {
 
 // REGISTRATION VALIDATE
 function showValidateModal(phone, callback, callback2) {
-    JsHttpRequest.query(folder,{ 'w': 'validatePhone', 'phone':phone},
-        function (result, errors){ if (errors) {} if (result){
-            $("#ValidateForm").modal("show");
-            $("#validate_btn_ok").click(function(){callback(callback2);});
-        }}, true);
+    console.log('show validate form');
+    if (phone !== undefined) {
+        JsHttpRequest.query(folder,{ 'w': 'validatePhone', 'phone':phone},
+            function (result, errors){ if (errors) {} if (result){
+                $("#ValidateForm").modal("show");
+                $("#validate_btn_ok").click(function(){
+                    callback(callback2);
+                });
+            }}, true);
+    }
 }
 
 function validatePhone(callback) {
     let phone = $("#reg_phone").val();
-    if (phone===undefined) phone = $("#input_phone2").val();
+    if (phone === undefined) phone = $("#input_phone2").val();
     let password = $("#validate_code").val();
+    console.log('validatePhone' + phone + ', ' + password);
+
     JsHttpRequest.query(folder,{ 'w': 'endValidation', 'phone':phone, 'password':password},
         function (result, errors){ if (errors) {} if (result){
-            if (result.content===true) {
+            if (result.content === true) {
                 callback();
                 $("#ValidateForm").modal("hide");
             } else {
@@ -94,12 +101,12 @@ function showGarageForm() {
         function (result, errors){ if (errors) {} if (result){
             $("#garage_block").html(result.content);
         }}, true);
-    if ($("#cars_form-selected").length==0) {
+    if ($("#cars_form-selected").length == 0) {
         $("#garage_404_select").html("<div class=\"spinner-border\"></div>");
         JsHttpRequest.query(folder,{'w':'showCarsForm2'},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 $("#garage_404_select").html(result.content[0]);
-                if (result.content[1]==1) {
+                if (result.content[1] == 1) {
                     toggleCarsNavigation($("div[data-type='manuf']"));
                 }
             }}, true);
@@ -115,7 +122,7 @@ function showGarageForm() {
 function hideGarageForm() {
     let form_garage = $("#garage_cars_form");
     let form_cars = $("#cars_form-selected");
-    if (form_cars.length==0) {
+    if (form_cars.length == 0) {
         //
     } else {
         form_cars.html(form_garage.html());
@@ -128,7 +135,7 @@ function hideGarageForm() {
 function dropHistoryShow() {
     let myDropDown = $("#myDropdown");
     myDropDown.show();
-    if (myDropDown.html()==="") {
+    if (myDropDown.html() === "") {
         JsHttpRequest.query(folder,{ 'w': 'showHistoryList'},
             function (result, errors){ if (errors) {} if (result){
                 myDropDown.html(result.content);
@@ -292,7 +299,7 @@ function saveSellForm() {
                     if (result.content!==true) {
                         showAlertModal("{bad_file}","{error_cap}",0);
                     } else {
-                        showAlertModal("{message_sell}","{data_saved}",1,goHome);
+                        showAlertModal("{message_sell}","{data_saved}",1, goHome);
                     }
                 }}, true);
         }
@@ -347,7 +354,7 @@ function validateBonusPhone() {
     let password = $("#sms_code").val();
     JsHttpRequest.query(folder,{ 'w': 'endValidation', 'phone':phone, 'password':password},
         function (result, errors){ if (errors) {} if (result){
-            if (result.content===true) {
+            if (result.content === true) {
                 finishBonusPhone(phone, 1);
             } else {
                 showNotify("{error_cap}:", "{wrong_code}", "danger");

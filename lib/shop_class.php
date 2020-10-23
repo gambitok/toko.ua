@@ -981,7 +981,15 @@ class ShopClass extends CatalogueClass
         $recipient_name = $db->result($r, 0, "DEL_NAME");
         $recipient_phone = $db->result($r, 0, "DEL_PHONE");
         $delivery_info = ["street"=>$street, "house"=>$house, "porch"=>$porch, "department"=>$department, "express"=>$express, "express_info"=>$express_info];
-        return array("city_id"=>$city_id, "delivery_id"=>$delivery_id, "payment_id"=>$payment_id, "delivery_info"=>$delivery_info, "recipient_name"=>$recipient_name, "recipient_phone"=>$recipient_phone);
+        return
+            array(
+                "city_id"=>$city_id,
+                "delivery_id"=>$delivery_id,
+                "payment_id"=>$payment_id,
+                "delivery_info"=>$delivery_info,
+                "recipient_name"=>$recipient_name,
+                "recipient_phone"=>$recipient_phone
+            );
     }
 
     function validDeliveryFields($delivery, $delivery_type) {
@@ -1079,7 +1087,7 @@ class ShopClass extends CatalogueClass
         $basket_total = $basket_total - $bonus_total;
 
         $basket_total_cap = $basket_total." $cur_cap";
-        if ($bonus_total>0) {
+        if ($bonus_total > 0) {
             $basket_total_cap = "<span class='span-red' style='text-decoration: line-through'>$basket_total_full $cur_cap</span><br>" . $basket_total_cap;
         }
 
@@ -1115,19 +1123,19 @@ class ShopClass extends CatalogueClass
             $price = $this->getArticlePrice(100060076); // NP KURER
         }
 
-        if ($price>0) {
+        if ($price > 0) {
             $price_cur = $exrate->getKoursFromUAH($price, $cur);
             $price_cur = $client->getClientPriceRounding($this->getClient(), $price_cur);
         }
 
-        if ($price_cur>0) {
+        if ($price_cur > 0) {
             $del_cap = "$price_cur $cur_cap";
         } else {
             $del_cap = "{free_cap}";
         }
 
         // carrier tariff
-        if (in_array($delivery_id, [6,7])) {
+        if (in_array($delivery_id, [6, 7])) {
             $price = 0;
             $del_cap = "{carrier_conditions}";
         }
@@ -1171,7 +1179,7 @@ class ShopClass extends CatalogueClass
         $cur = $exrate->getCurrentKours(); $cur_cap = $exrate->getKoursSymbol($cur);
         $list = ""; $sum_total = 0; $bonus_total = 0; $order_sum = 0;
         $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1 ORDER BY `date_create` DESC;"); $n = $db->num_rows($r);
-        if ($n>0) {
+        if ($n > 0) {
             for ($i=1; $i<=$n; $i++) {
                 $amount = $db->result($r, $i - 1, "amount");
                 $price = $db->result($r, $i - 1, "price");
@@ -1247,7 +1255,7 @@ class ShopClass extends CatalogueClass
             $city_id = $db->result($r, $i-1, "CITY_ID");
             $city_name = $db->result($r, $i-1, "CITY_NAME_CLEAR$postfix");
             if ($user_city>0 && $user_city==$city_id) $sel = "selected"; else $sel = "";
-            $list.="<option value='$city_id' $sel>$city_name</option>";
+            $list .= "<option value='$city_id' $sel>$city_name</option>";
         }
         return $list;
     }
@@ -1256,14 +1264,14 @@ class ShopClass extends CatalogueClass
         $lang_id = $this->getLanguage();
         $mas = []; $postfix = "";
         if ($lang_id==1 || $lang_id==3) $postfix = "_RU";
-        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR$postfix` LIKE '$search_text%' ORDER BY `CITY_NAME$postfix`;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR$postfix` LIKE \"$search_text%\" ORDER BY `CITY_NAME$postfix`;"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $city_id = $db->result($r, $i-1, "CITY_ID");
             $city_name = $db->result($r, $i-1, "CITY_NAME$postfix");
             $region_name = $db->result($r, $i-1, "REGION_NAME$postfix");
             $state_name = $db->result($r, $i-1, "STATE_NAME$postfix");
             $city_cap = "$city_name ($state_name обл., $region_name р-он)";
-            $mas[$i] = ["id"=>$city_id, "value"=>$city_cap];
+            $mas[$i] = ["id" => $city_id, "value" => $city_cap];
         }
         return $mas;
     }
@@ -1273,12 +1281,12 @@ class ShopClass extends CatalogueClass
         $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_ID`='$city_id' LIMIT 1;");
         $city_name = $db->result($r, 0, "CITY_NAME_CLEAR");
         $state_name = $db->result($r, 0, "NEWPOST_AREA");
-        $r = $db->query("SELECT * FROM `T2_CITY_NOVA` WHERE `CITY_NAME` LIKE '$city_name%' AND `AREA_NAME` LIKE '$state_name%';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_CITY_NOVA` WHERE `CITY_NAME` LIKE \"$city_name%\" AND `AREA_NAME` LIKE \"$state_name%\";"); $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $ref = $db->result($r, $i - 1, "CITY_REF");
             $name = $db->result($r, $i - 1, "CITY_NAME");
             $area_name = $db->result($r, $i - 1, "AREA_NAME");
-            $list.="<option value='$ref'>$name ($area_name)</option>";
+            $list .= "<option value='$ref'>$name ($area_name)</option>";
         }
         return $list;
     }
@@ -1289,6 +1297,32 @@ class ShopClass extends CatalogueClass
         return array($list_np, $list_up);
     }
 
+    function getCitiesNP() {
+        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+        $arr = $np->getCities()['data'];
+        foreach ($arr as $val) {
+            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
+            $ref = $val["Ref"];
+            $area_ref = $val["Area"];
+            $area_name = $this->getAreaName($area_ref);
+            $this->setNova2(0, $name, $ref, $area_name, $area_ref);
+        }
+        return count($arr);
+    }
+
+    function setNova2($city_id, $city_name, $city_ref, $area_name, $area_ref) { $db = DbSingleton::getTokoDb();
+        $db->query("INSERT INTO `T2_CITY_NOVA_2` (`CITY_ID`, `CITY_NAME`, `CITY_REF`, `AREA_NAME`, `AREA_REF`) 
+        VALUES ('$city_id', \"$city_name\", '$city_ref', \"$area_name\", '$area_ref');");
+        return true;
+    }
+
+    function getAreaName($ref) {
+        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+        $val = $np->getWarehouses($ref)['data'][0];
+        $name = iconv("UTF-8", "windows-1251", $val["Description"]);
+        return $name;
+    }
+
     function getNovaPoshtaWarehousesSelect($ref) {
         $list = "<option value=\"0\">{not_chosen}</option>";
         $list = $this->replaceLang($list);
@@ -1297,7 +1331,7 @@ class ShopClass extends CatalogueClass
         foreach ($arr as $val) {
             $name = iconv("UTF-8", "windows-1251", $val["Description"]);
             $war_ref = $val["Ref"];
-            $list.="<option value='$war_ref'>$name</option>";
+            $list .= "<option value='$war_ref'>$name</option>";
         }
         return $list;
     }

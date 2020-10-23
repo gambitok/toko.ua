@@ -1,10 +1,13 @@
-function goHome() { location.href = "/"; }
 
-function stayInOrder() { showNotify("{error_cap}!","{basket_empty}!","danger"); }
+function goHome() {
+    location.href = "/";
+}
 
-// function toggleBasket() { $("#basket_toggle").slideToggle(); }
+function stayInOrder() {
+    showNotify("{error_cap}!","{basket_empty}!","danger");
+}
 
-function showNotify(title,text,type_text) {
+function showNotify(title, text, type_text) {
     JsHttpRequest.query(folder,{ 'w': 'changeLangAlert', 'message':text, 'title':title },
         function (result, errors){ if (errors) {} if (result){
             let title_notify = "<b>" + result.content[1] + "</b>";
@@ -28,24 +31,26 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
     let count_id = $("#count_" + id);
     let basket_count_id = $("#basket_count_" + id);
     let count = count_id.val();
-    if (id=='one') count = 1; // for single product
+    if (id == 'one') count = 1; // for single product
 
-    if (parseInt(stock)<parseInt(count) || parseInt(count)===0) {
+    if (parseInt(stock) < parseInt(count) || parseInt(count) === 0) {
         var secret = parseInt(stock) + 1;
         while (parseInt(secret) > parseInt(stock)) {
             secret = prompt("Выбранное количество продукта превышает доступное количество!", 1);
-            if (secret === null) { count_id.val(stock); return; }
+            if (secret === null) {
+                count_id.val(stock); return;
+            }
             if (parseInt(secret) < 0) {
-                secret=999999;
+                secret = 999999;
             } else if (isNaN(parseInt(secret))) {
-                secret=999999;
+                secret = 999999;
             }
         }
-        if (secret==="") secret = 0;
+        if (secret === "") secret = 0;
         count_id.val(secret);
         count = secret;
 
-        if (secret!==0 && secret!=="") {
+        if (secret !== 0 && secret !== "") {
             JsHttpRequest.query(folder,{'w':'moveToBasket', 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
                 function (result, errors){ if (errors) {alert(errors);} if (result){
                     let old_count=parseInt(result["old_amount"]);
@@ -63,11 +68,11 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
     } else {
         JsHttpRequest.query(folder,{'w':'moveToBasket', 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-                let old_count=parseInt(result["old_amount"]);
-                let art_name=result["art_name"];
-                let all_count=old_count+parseInt(count);
-                let message=count+" {amount_abbr}. ";
-                let message_all="";
+                let old_count = parseInt(result["old_amount"]);
+                let art_name = result["art_name"];
+                let all_count = old_count + parseInt(count);
+                let message = count + " {amount_abbr}. ";
+                let message_all = "";
                 if (old_count>0) message_all = "<br><b>{total_basket_cap}:</b> " + all_count + " {amount_abbr}.";
                 showNotify("{done_cap}:", "{art_cap} '" + art_name + "' - " + message + " {added_to_basket}!" + message_all, "success");
                 showBasketStatus();
@@ -90,7 +95,7 @@ function showBasketMinForm() {
 
 function updateCountBasket(status, art_id, storage_id, stock, phone) {
     let prefix = "";
-    if (phone>0) prefix = "_phone";
+    if (phone > 0) prefix = "_phone";
     let count_id = $("#count_" + art_id + "_" + storage_id + prefix);
     let count = parseInt(count_id.val());
     if (status>0) {
@@ -151,7 +156,7 @@ function deleteFromBasket(art_id, storage_id, art_name) {
 // CHECK/UNCHECK BASKET ITEM
 function checkBasketItem(art_id, storage_id, a) {
     let status = $(a).attr("checked");
-    if (status===undefined) status = 1; else status = 0;
+    if (status === undefined) status = 1; else status = 0;
     JsHttpRequest.query(folder,{'w':'checkBasketItem', 'art_id':art_id, 'storage_id':storage_id, 'status':status},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             showBasketForm();
@@ -162,7 +167,7 @@ function checkBasketItem(art_id, storage_id, a) {
 function checkAllBasket() {
     let checked_basket = $(".check-brand");
     let btn = $("#check_all_box");
-    if (btn.prop("checked")===true) {
+    if (btn.prop("checked") === true) {
         checked_basket.each(function () {
             checkBasketItem($(this).attr("id"),$(this).attr("name"),this);
             $(this).attr("checked","checked");
@@ -190,25 +195,17 @@ function showBasketForm() {
 // UPDATE BASKET STATUS, WHEN ARTICLE ADD TO BASKET
 function showBasketStatus() {
     let status1 = $("#basket_status");
-    // let status2 = $("#basket_status2");
     let status3 = $("#basket_status3");
-    // let status4 = $("#basket_status4");
     let status5 = $("#tool-basket");
     JsHttpRequest.query(folder,{'w':'updateBasketStatus'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            if (result.content[0]!=="") {
+            if (result.content[0] !== "") {
                 status1.addClass("show"); status1.removeClass("none"); status1.html(result.content[0]);
-                // status2.addClass("show"); status2.removeClass("none"); status2.html(result.content[0]);
                 status3.addClass("show"); status3.removeClass("none"); status3.html(result.content[0]);
-                // status4.addClass("show"); status4.removeClass("none"); status4.html(result.content[0]);
-
                 status5.removeClass("tool-status-hidden"); status5.text(result.content[0]);
             } else {
                 status1.addClass("none"); status1.removeClass("show");
-                // status2.addClass("none"); status2.removeClass("show");
                 status3.addClass("none"); status3.removeClass("show");
-                // status4.addClass("none"); status4.removeClass("show");
-
                 status5.addClass("tool-status-hidden");
             }
         }}, true);
@@ -366,9 +363,12 @@ function updateOrderArt() {
 function validateForm(name, type) {
     let valid = $("#validate_input_" + name);
     let variable = "";
-    if (type==="input") variable = $("#input_" + name).val();
-    else variable = $("#select2-select_" + name + "-container").text();
-    if (variable==="") {
+    if (type === "input") {
+        variable = $("#input_" + name).val();
+    } else {
+        variable = $("#select2-select_" + name + "-container").text();
+    }
+    if (variable === "") {
         valid.removeClass("accept");
         valid.addClass("non_accept");
         valid.removeClass("fa-check-circle");
@@ -386,8 +386,8 @@ function validationInput(name) {
     let id = $("#" + name).attr("id");
     let valid = $("#validate_" + id);
     let max_count = 16;
-    let count = $("#"+id).val().replace(/[_-]/g, '').length;
-    if (max_count===count) {
+    let count = $("#" + id).val().replace(/[_-]/g, '').length;
+    if (max_count === count) {
         valid.removeClass("non_accept");
         valid.addClass("accept");
         valid.removeClass("fa-times-circle");

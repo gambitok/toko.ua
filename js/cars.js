@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    if ($("#cars_form-selected").length!==0 && $("#car_form-select").length!==0) {
+    if ($("#cars_form-selected").length !== 0 && $("#car_form-select").length !==0 ) {
 
         $("#catalogue-auto").addClass("sticky");
 
@@ -17,7 +17,7 @@ $(document).ready(function() {
                 $("#myBackdrop").removeClass("sticky-backdrop-active");
             }
 
-            if ($("#toggle_active_nav").val()==0) {
+            if ($("#toggle_active_nav").val() == 0) {
                 if (window.pageYOffset >= sticky) {
                     hideCarsNavigation(checked_index);
                 } else {
@@ -36,7 +36,7 @@ $(document).ready(function() {
 
     // hide on mobile
     if (detectmob()) {
-        if ($("div[data-type='manuf']").attr("data-id")==="0") {
+        if ($("div[data-type='manuf']").attr("data-id") === "0") {
             toggleCarsNavigation($("div[data-type='manuf']"));
         }
     }
@@ -46,7 +46,7 @@ function showPop(e) {
 
     let index = $(".cars-nav__item-checked")[0];
 
-    if (index.length===0) {
+    if (index.length === 0) {
         index = e;
     }
 
@@ -123,9 +123,16 @@ function hideCarsNavigation(index) {
 
 function showCarsNavigation(index, type, attr) {
     let data_pred = $("div[data-type='" + $(index).attr("data-pred") + "']");
-    if (type===undefined) { type = $(data_pred).attr("data-type"); }
-    if (attr===undefined) { attr = $(data_pred).attr("data-id"); }
-    if (type===undefined && attr===undefined) { type = ""; attr = 0; }
+    if (type===undefined) {
+        type = $(data_pred).attr("data-type");
+    }
+    if (attr===undefined) {
+        attr = $(data_pred).attr("data-id");
+    }
+    if (type===undefined && attr===undefined) {
+        type = "";
+        attr = 0;
+    }
     // hidePop();
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
@@ -155,9 +162,16 @@ function toggleCarsNavigation(index, type, attr) {
     $("#toggle_active_nav").val(1);
 
     let data_pred = $("div[data-type='" + $(index).attr("data-pred") + "']");
-    if (type===undefined) { type = $(data_pred).attr("data-type"); }
-    if (attr===undefined) { attr = $(data_pred).attr("data-id"); }
-    if (type===undefined && attr===undefined) { type = ""; attr = 0; }
+    if (type === undefined) {
+        type = $(data_pred).attr("data-type");
+    }
+    if (attr === undefined) {
+        attr = $(data_pred).attr("data-id");
+    }
+    if (type === undefined && attr === undefined) {
+        type = "";
+        attr = 0;
+    }
 
     // hidePop();
 
@@ -212,7 +226,7 @@ function getCarsSearchContent(type, attr) {
 * */
 function clearCarsBlock(data_tab) {
     let cur_tab = parseInt(data_tab.match(/\d+/));
-    if (cur_tab!==undefined) {
+    if (cur_tab !== undefined) {
         for (let i = 1; i <= 6; i++) {
             if (i > cur_tab) {
                 let active_tab = $("div[data-tab='cars-tab" + i + "']");
@@ -233,7 +247,7 @@ function clearCarsBlock(data_tab) {
 function setActiveCar() {
     let type = $("#active_nav").val();
 
-    if (type!=="" && type!==undefined) {
+    if (type !== "" && type !== undefined) {
         let elem = $("div[data-type='" + type + "']");
 
         // Remove HIDDEN

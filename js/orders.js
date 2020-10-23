@@ -9,9 +9,11 @@ $(document).ready(function() {
 
     // INIT CITY
     let user_city = $("#user_city");
-    if (user_city.length!==0) {
+    if (user_city.length !== 0) {
         user_city.select2({ language: { searching: function() { return "Something else..."; } }, matcher: function () { return 23; } });
-        if (user_city.select2("val")>0) { setCityVal(); }
+        if (user_city.select2("val") > 0) {
+            setCityVal();
+        }
     }
 
     // INIT SELECT FIELDS
@@ -27,7 +29,7 @@ $(document).ready(function() {
         $("#user_saved_info_list").hide();
         // SHOW PAYMENT (IF DELIVERY CHECKED)
         let amount = $("input[name='user_delivery']").filter(':checked').length;
-        if (amount>0) {
+        if (amount > 0) {
             $("#orders-payment").removeClass("none");
         }
         // HIDE RADIO CHILD BLOCK
@@ -77,7 +79,7 @@ function getPhone(str) {
 // SET NOVA POSHTA DEPARTMENTS
 function setCityVal() {
     let data = $("#user_city").select2("data");
-    if (data.length!==0) {
+    if (data.length !== 0) {
         let city_id = data[0].value;
         let city_name = data[0].text;
         $(".chosen-city").html(city_name);
@@ -92,20 +94,20 @@ function setCityVal() {
 // ADD CITY VALUES (by SEARCH)
 function getCityVal() {
     let search_text = $(".select2-search__field").val();
-    if ($("#select2-user_city-results").val()!==undefined) {
-        if (search_text!==undefined) {
+    if ($("#select2-user_city-results").val() !== undefined) {
+        if (search_text !== undefined) {
             let len = search_text.length;
-            if (len>2) {
+            if (len > 2) {
                 JsHttpRequest.query(folder,{'w':'getCityVal', 'search_text':search_text},
                     function (result, errors){ if (errors) {alert(errors);} if (result) {
                         let user_city = $("#user_city");
                         user_city.append(result.content);
-                        var mas=result.content;
-                        var len=Object.keys(mas).length;
+                        var mas = result.content;
+                        var len = Object.keys(mas).length;
                         for (var i=1; i<=len; i++) {
-                            var id_city=Object.entries(mas[i])[0][1];
-                            var value_city=Object.entries(mas[i])[1][1];
-                            addOption(id_city,value_city);
+                            var id_city = Object.entries(mas[i])[0][1];
+                            var value_city = Object.entries(mas[i])[1][1];
+                            addOption(id_city, value_city);
                         }
                     }}, true);
             }
@@ -129,7 +131,7 @@ function addOption(id_city, value_city) {
 // SET NOVA POSHTA DEPARTMENTS
 function setCityDepartments() {
     let city_ref = $("#user_city_np option:selected").val();
-    if (city_ref!=="0" && city_ref!=="undefined") {
+    if (city_ref !== "0" && city_ref !== "undefined") {
         JsHttpRequest.query(folder,{'w':'setCityDepartments', 'city_ref':city_ref},
             function (result, errors){ if (errors) {alert(errors);} if (result) {
                 let select_np = $("#select_delivery_np"); select_np.html("");
@@ -150,8 +152,8 @@ function getOrderDeliveryBlock() {
         JsHttpRequest.query(folder,{'w':'getOrderDeliveryBlock', 'delivery_id':delivery_id, 'city_id':city_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 let status = result.content;
-                if (status==0) block.addClass("orders-block-row-hidden");
-                if ($("#user_city_np option:selected").val()===undefined) {
+                if (status == 0) block.addClass("orders-block-row-hidden");
+                if ($("#user_city_np option:selected").val() === undefined) {
                     $("div[data-tab-delivery='4']").addClass("orders-block-row-hidden");
                 }
             }}, true);
@@ -172,7 +174,7 @@ function getOrderPaymentBlock() {
         JsHttpRequest.query(folder,{'w':'getOrderPaymentBlock', 'payment_id':payment_id, 'delivery_id':delivery_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 status = result.content;
-                if (status==="0") block.addClass("orders-block-row-hidden");
+                if (status === "0") block.addClass("orders-block-row-hidden");
             }}, true);
     });
     $("#valid_payment_block").removeClass("not-valid");
@@ -210,7 +212,9 @@ function editFields() {
     $("#valid_button").removeClass("none");
     $("#orders-delivery").addClass("none");
     $("#orders-payment").addClass("none");
-    $(".valid_field").each(function() { $(this).prop("disabled", false); });
+    $(".valid_field").each(function() {
+        $(this).prop("disabled", false);
+    });
     uncheckRadioDelivery();
     uncheckRadioPayment();
     showOrderInfo();
@@ -253,11 +257,11 @@ function getDeliveryTypeFields(delivery_id) {
     let department = "0";
     let department_id = "0";
     let delivery_express = "0";
-    if (data_department!==undefined) {
+    if (data_department !== undefined) {
         department = data_department[0].text;
         department_id = data_department[0].value;
     }
-    if (data_express!==undefined) {
+    if (data_express !== undefined) {
         delivery_express = data_express[0].value;
     }
     let arr = [];
@@ -302,9 +306,9 @@ function validInfoFields() {
     valid_field.each(function() {
         let data_attr = $(this).attr("data-attr");
         // INPUT TEXT FIELD
-        if (data_attr==="text") {
+        if (data_attr === "text") {
             let name = $(this).val();
-            if (name==="" || !(name.includes(" "))) {
+            if (name === "" || !(name.includes(" "))) {
                 valid++;
                 $(this).addClass("not-valid");
                 $(this).removeClass("accept-valid");
@@ -314,9 +318,9 @@ function validInfoFields() {
             }
         }
         // INPUT PHONE FIELD
-        if (data_attr==="phone") {
+        if (data_attr === "phone") {
             let phone = getPhone($(this).val());
-            if (phone.length!==12) {
+            if (phone.length !== 12) {
                 valid++;
                 $(this).addClass("not-valid");
                 $(this).removeClass("accept-valid");
@@ -329,10 +333,10 @@ function validInfoFields() {
         if (data_attr==="select") {
             let data_id = "0";
             let data = $(this).select2("data");
-            if (data.length!==0) {
+            if (data.length !== 0) {
                 data_id = data[0].value;
             }
-            if (data_id==="0") {
+            if (data_id === "0") {
                 valid++;
                 $(this).next(".select2-container").find(".select2-selection--single").addClass("not-valid");
                 $(this).next(".select2-container").find(".select2-selection--single").removeClass("accept-valid");
@@ -343,10 +347,10 @@ function validInfoFields() {
         }
     });
     // ALL OK
-    if (valid===0) {
+    if (valid === 0) {
         let order_user_id = $("#order_user_id").val();
         // CHECK IF USER LOGIN
-        if (order_user_id==0 || order_user_id==undefined) {
+        if (order_user_id == 0 || order_user_id == undefined) {
             // CHECK LOGIN USERS
             let phone = $("#user_phone").val();
             JsHttpRequest.query(folder,{'w':'getAuthorizedUser', 'phone':phone},
@@ -396,7 +400,7 @@ function validOrder() {
     div.find("div").find("select").each(function () {
         $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid");
     });
-    if (payment===undefined) {
+    if (payment === undefined) {
         $("#valid_payment_block").addClass("not-valid");
     } else {
         $("#valid_payment_block").removeClass("not-valid");
@@ -467,8 +471,7 @@ function saveOrder() {
 function dropClientOrderInfo(id) {
     JsHttpRequest.query(folder,{'w':'dropClientOrderInfo', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            let user_id = $("#order_user_id").val();
-            getUserSavedData(user_id);
+            getUserSavedData($("#order_user_id").val());
         }}, true);
 }
 
@@ -544,7 +547,7 @@ function getUserSavedData(user_id) {
     let city = $("#user_city").select2("val");
     JsHttpRequest.query(folder,{'w':'getUserSavedData', 'user_id':user_id, 'city':city},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            if (result.status==1) {
+            if (result.status == 1) {
                 setClientOrderInfo(result.info_id);
                 $("#user_saved_info").html("");
             } else {
@@ -567,7 +570,6 @@ function saveOrderClient() {
     let pass = $("#user_pass").val();
     JsHttpRequest.query(folder,{'w':'saveOrderClient', 'user_id':user_id, 'name':name, 'email':email, 'pass':pass},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            // save data users & login
             location.href = "https://toko.ua/profile/orders/";
         }}, true);
 }
@@ -576,7 +578,6 @@ function loginOrderClient() {
     let user_id = $("#order_user_id").val();
     JsHttpRequest.query(folder,{'w':'loginOrderClient', 'user_id':user_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            // login
             location.href = "https://toko.ua/profile/orders/";
         }}, true);
 }
