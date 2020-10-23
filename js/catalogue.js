@@ -1017,13 +1017,13 @@ function setClientRequestDone() {
 }
 
 function setClientRequest2() {
-    let phone = $("#req-phone").val(); if($("#req-phone").length===0) phone = "";
-    let vin = $("#req-vin").val(); if($("#req-vin").length===0) vin = "";
-    let text = $("#req-text").val(); if($("#req-text").length===0) text = "";
+    let phone = $("#req-phone").val(); if ($("#req-phone").length === 0) phone = "";
+    let vin = $("#req-vin").val(); if ($("#req-vin").length === 0) vin = "";
+    let text = $("#req-text").val(); if ($("#req-text").length === 0) text = "";
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            if (result.content===false) {
-                showNotify("{error_cap}:", "{phone_number_input}", "danger");
+            if (result.content === false) {
+                showNotify("{error_cap}:", "{input_all_data}", "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
             }

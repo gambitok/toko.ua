@@ -11,7 +11,11 @@ trait Helper
     protected $err3 = "{no_info}";
 
     function getHtmlForm($name) {
-        $form = ""; $form_htm = RDD."/tpl/$name.htm"; if (file_exists("$form_htm")){ $form = file_get_contents($form_htm); }
+        $form = "";
+        $form_htm = RDD . "/tpl/$name.htm";
+        if (file_exists("$form_htm")) {
+            $form = file_get_contents($form_htm);
+        }
         iconv('Windows-1251', 'UTF-8', $form);
         mb_convert_encoding($form, 'UTF-8', 'Windows-1251');
         return $form;
@@ -44,7 +48,9 @@ trait Helper
     }
 
     function getUrlNumber($number) {
-        if (!is_numeric($number)) $number = 0;
+        if (!is_numeric($number)) {
+            $number = 0;
+        }
         return $number;
     }
 
@@ -69,7 +75,9 @@ trait Helper
     }
 
     function getLanguage() {
-        if ($_SESSION["lang"]=="" || $_SESSION["lang"]==0) $_SESSION["lang"] = 1;
+        if ($_SESSION["lang"] == "" || $_SESSION["lang"] == 0) {
+            $_SESSION["lang"] = 1;
+        }
         $lang = $_SESSION["lang"];
         return $lang;
     }
@@ -96,14 +104,18 @@ trait Helper
     }
 
     function getManualOptions($key) { $db = DbSingleton::getDbm();
-        $lang_id = $this->getLanguage(); $options = "";
-        $r = $db->query("SELECT `id` FROM `manual` WHERE `key`='$key' ORDER BY mid ASC;"); $n = $db->num_rows($r);
+        $lang_id = $this->getLanguage();
+        $options = "";
+        $r = $db->query("SELECT `id` FROM `manual` WHERE `key`='$key' ORDER BY mid ASC;");
+        $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $id = $db->result($r, $i - 1, "id");
             $rs = $db->query("SELECT `caption` FROM `A_CUSTOMERS_CATEGORIES` WHERE `manual_id`='$id' AND `lang_id`='$lang_id' LIMIT 1;");
             $caption = $db->result($rs, 0, "caption");
-            if ($caption=="") $caption = $db->result($r, $i-1, "mcaption");
-            $options.="<option value=\"$id\">$caption</option>";
+            if ($caption == "") {
+                $caption = $db->result($r, $i-1, "mcaption");
+            }
+            $options .= "<option value=\"$id\">$caption</option>";
         }
         return $options;
     }
@@ -175,9 +187,15 @@ trait Helper
         $mas3 = [0,5,6,7,8,9];
         $mas4 = [11,12,13,14,15,16,17,18,19];
         $mod = $i%10;
-        if (in_array($mod, $mas1)) $cap = $cap1;
-        if (in_array($mod, $mas2)) $cap = $cap2;
-        if (in_array($mod,$mas3) || in_array($i, $mas4)) $cap = $cap3;
+        if (in_array($mod, $mas1)) {
+            $cap = $cap1;
+        }
+        if (in_array($mod, $mas2)) {
+            $cap = $cap2;
+        }
+        if (in_array($mod,$mas3) || in_array($i, $mas4)) {
+            $cap = $cap3;
+        }
         $cap = $this->replaceLang($cap);
         return $cap;
     }
@@ -198,8 +216,8 @@ trait Helper
     function getStaticH1($uri) {
         $static_data = include $_SERVER["DOCUMENT_ROOT"].'/seoshield-client/data/static_meta.cache.php';
         $static_h1 = "";
-        if (isset($static_data['//'.$_SERVER["HTTP_HOST"].$uri])){
-            $static_h1 = $static_data['//'.$_SERVER["HTTP_HOST"].$uri][2];
+        if (isset($static_data['//'.$_SERVER["HTTP_HOST"].$uri])) {
+            $static_h1 = $static_data['//' . $_SERVER["HTTP_HOST"] . $uri][2];
         }
         $static_h1 = iconv("UTF-8", "windows-1251", $static_h1);
         return $static_h1;
@@ -212,11 +230,15 @@ trait Helper
     function mergeArray($arr1, $arr2) {
         $data = [];
         foreach ($arr1 as $key => $value){
-            if (empty($data[$key])) $data[$key] = [];
+            if (empty($data[$key])) {
+                $data[$key] = [];
+            }
             $data[$key] = $value;
         }
         foreach ($arr2 as $key => $value){
-            if (empty($data[$key])) $data[$key] = [];
+            if (empty($data[$key])) {
+                $data[$key] = [];
+            }
             $data[$key] = array_unique(array_merge($data[$key], $value));
         }
         return $data;
@@ -228,7 +250,11 @@ trait Helper
     function checkT2Link($typ_id, $art_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `ART_ID`='$art_id' AND `TYP_ID`='$typ_id' LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n==0) return false; else return true;
+        if ($n == 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

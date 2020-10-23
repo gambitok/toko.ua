@@ -13,30 +13,36 @@ class ProfileClass {
         $client = new ClientClass;
         list($client_id, $user_id) = $client->getClient();
         $name = $client->getClientInfo($client_id, $user_id)["name"];
-        $user_id==0
+        $user_id == 0
             ? $info = false
-            : $info = "{hello_cap}, <a href=\"$this->page_profile\">".$name."</a>";
+            : $info = "{hello_cap}, <a href=\"$this->page_profile\">" . $name . "</a>";
         return $info;
     }
 
     function getProfileInfo() {
-        if ($this->getUser()==0) $info = "<li><a href=\"$this->page_registration\">
-            <span class=\"fas fa-user-plus\"></span><span> {registration}</span>
-        </a></li>
-        <li><a class=\"pointer\" onClick=\"showLoginForm();\">
-            <span class=\"fas fa-sign-in-alt\"></span><span> {login}</span>
-        </a></li>";
-        else $info = "<li><a href=\"#\" class=\"pointer\" onClick=\"logoutForm();\">
-            <span class=\"fas fa-sign-out-alt\"></span><span> {logout}</span>
-        </a></li>";
+        if ($this->getUser() == 0) {
+            $info = "<li><a href=\"$this->page_registration\">
+                <span class=\"fas fa-user-plus\"></span><span> {registration}</span>
+            </a></li>
+            <li><a class=\"pointer\" onClick=\"showLoginForm();\">
+                <span class=\"fas fa-sign-in-alt\"></span><span> {login}</span>
+            </a></li>";
+        } else {
+            $info = "<li><a href=\"#\" class=\"pointer\" onClick=\"logoutForm();\">
+                <span class=\"fas fa-sign-out-alt\"></span><span> {logout}</span>
+            </a></li>";
+        }
         return $info;
     }
 
     function getSpecialOffers() { $db = DbSingleton::getDbm();
         $prefix = $this->getLangPrefix();
-        $user_id = $this->getUser(); $client_id = $this->getClient(); $categories = [];
+        $user_id = $this->getUser();
+        $client_id = $this->getClient();
+        $categories = [];
 
-        $r = $db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';");
+        $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $category_id = $db->result($r, $i-1, "client_category");
             array_push($categories, $category_id);
@@ -45,25 +51,34 @@ class ProfileClass {
 
         $r = $db->query("SELECT acl.* FROM `ACTION_CLIENTS_LIST` acl 
             LEFT OUTER JOIN `ACTION_CLIENTS` ac ON (ac.id=acl.action_id)
-        WHERE acl.client_id='$client_id' AND ac.status=1;"); $n1 = $db->num_rows($r);
+        WHERE acl.client_id='$client_id' AND ac.status=1;");
+        $n1 = $db->num_rows($r);
 
         $r = $db->query("SELECT acc.* FROM `ACTION_CLIENTS_CATEGORY` acc 
             LEFT OUTER JOIN `ACTION_CLIENTS` ac ON (ac.id=acc.action_id)
-        WHERE acc.category_id IN ($categories) AND ac.status=1;"); $n2 = $db->num_rows($r);
+        WHERE acc.category_id IN ($categories) AND ac.status=1;");
+        $n2 = $db->num_rows($r);
 
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
         $update_actions = $db->result($r, 0, "update_actions");
 
-        $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `timestamp`>'$update_actions 00:00:00' AND `status`=1;"); $n = $db->num_rows($r);
-        if ($n>0) $counter = "<span class=\"span-red\">($n)</span>"; else $counter = "";
+        $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `timestamp`>'$update_actions 00:00:00' AND `status`=1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $counter = "<span class=\"span-red\">($n)</span>";
+        } else {
+            $counter = "";
+        }
 
-        if ($user_id>0 && ($n1>0 || $n2>0)) {
+        if ($user_id > 0 && ($n1 > 0 || $n2 > 0)) {
             $info = "<li>
                 <a href=\"$prefix/special_offers/\">
                     <span class=\"fas fa-box-open\"></span> <span>{special_offers_cap} $counter</span>
                 </a>
             </li>";
-        } else $info = "";
+        } else {
+            $info = "";
+        }
         return $info;
     }
 
@@ -72,8 +87,13 @@ class ProfileClass {
         $user_id = $this->getUser(); $lang = $this->getLanguage(); if ($lang!=1) $lang = 5;
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
         $update_news = $db->result($r,0,"update_news");
-        $r = $dbt->query("SELECT * FROM `news` WHERE `data`>'$update_news' AND `lang_id`='$lang' AND `status`=1;"); $n = $dbt->num_rows($r);
-        if ($user_id>0 && $n>0) $counter = "<span class=\"span-red\">($n)</span>"; else $counter = "";
+        $r = $dbt->query("SELECT * FROM `news` WHERE `data`>'$update_news' AND `lang_id`='$lang' AND `status`=1;");
+        $n = $dbt->num_rows($r);
+        if ($user_id > 0 && $n > 0) {
+            $counter = "<span class=\"span-red\">($n)</span>";
+        } else {
+            $counter = "";
+        }
         $info = "
         <li>
             <a href=\"$prefix/news/\" class=\"pointer\">
@@ -106,11 +126,18 @@ class ProfileClass {
      * Bonus Client
      * */
     function getClientBonus($client_id) { $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id';"); $n = $db->num_rows($r);
-        if ($n > 0) return true; else return false;
+        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id';");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
+
     function showClientBonus($client_id) { $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id`='$client_id';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id`='$client_id';");
+        $n = $db->num_rows($r);
         if ($n > 0) {
             $summ = $db->result($r, 0, "bonus_balance");
             $form = $this->getHtmlForm("profile/profile_bonus");
@@ -120,11 +147,13 @@ class ProfileClass {
         }
         return $form;
     }
+
     function getBonusSumm($client_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
         $summ = $db->result($r, 0, "bonus_balance");
         return $summ;
     }
+
     function showClientBonusOrder($bonus_status, $bonus_total) {
         $bonus_summ = $this->getBonusSumm($this->getClient());
         $bonus_status ? $checked = "checked='checked'" : $checked = "";
@@ -159,40 +188,56 @@ class ProfileClass {
     }
 
     function checkDpStrExist($dp_id) { $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id`='$dp_id';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id`='$dp_id';");
+        $n = $db->num_rows($r);
         if ($n>0) return true; else return false;
     }
 
     function checkDpBug($dp_id) { $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id`='$dp_id';"); $n = $db->num_rows($r); $k = 0;
+        $r = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id`='$dp_id';");
+        $n = $db->num_rows($r);
+        $k = 0;
         for ($i=1; $i<=$n; $i++) {
             $amount_bug = $db->result($r, $i-1, "amount_bug");
-            if ($amount_bug>0) $k++;
+            if ($amount_bug > 0) $k++;
         }
-        if ($k>0) return true; else return false;
+        if ($k > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function checkSelectDpBug($dp_id) { $db = DbSingleton::getDbm();
-        $select_arr = []; $k = 0;
-        $r = $db->query("SELECT * FROM `J_SELECT` WHERE `parrent_doc_id`='$dp_id';"); $n = $db->num_rows($r);
+        $select_arr = [];
+        $k = 0;
+        $r = $db->query("SELECT * FROM `J_SELECT` WHERE `parrent_doc_id`='$dp_id';");
+        $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $select_id = $db->result($r, $i-1, "id");
             array_push($select_arr, $select_id);
         }
         $select_str = implode(",", $select_arr);
         if (!empty($select_arr)) {
-            $r = $db->query("SELECT * FROM `J_SELECT_STR` WHERE `select_id` IN ('$select_str') AND `status`=0;"); $n = $db->num_rows($r);
+            $r = $db->query("SELECT * FROM `J_SELECT_STR` WHERE `select_id` IN ('$select_str') AND `status`=0;");
+            $n = $db->num_rows($r);
             for ($i=1; $i<=$n; $i++) {
                 $amount_bug = $db->result($r, $i-1, "amount_bug");
-                if ($amount_bug>0) $k++;
+                if ($amount_bug > 0) $k++;
             }
         }
-        if ($k>0) return true; else return false;
+        if ($k > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function checkSelectStrDpBug($dp_id, $art_id) { $db = DbSingleton::getDbm();
-        $select_arr = []; $k = 0;
-        $r = $db->query("SELECT * FROM `J_SELECT` WHERE `parrent_doc_id`='$dp_id';"); $n = $db->num_rows($r);
+        $select_arr = [];
+        $k = 0;
+        $r = $db->query("SELECT * FROM `J_SELECT` WHERE `parrent_doc_id`='$dp_id';");
+        $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $select_id = $db->result($r, $i-1, "id");
             array_push($select_arr, $select_id);
@@ -203,16 +248,22 @@ class ProfileClass {
             $r = $db->query("SELECT * FROM `J_SELECT_STR` WHERE `select_id` IN ('$select_str') AND `art_id`='$art_id';");
             for ($i=1; $i<=$n; $i++) {
                 $amount_bug = $db->result($r, $i-1, "amount_bug");
-                if ($amount_bug>0) $k++;
+                if ($amount_bug > 0) $k++;
             }
         }
 
-        if ($k>0) return true; else return false;
+        if ($k > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function closeOrderArtUpdate($dp_id, $art_id, $order_id) { $db = DbSingleton::getDbm();
-        $select_arr = []; $list = "";
-        $r = $db->query("SELECT * FROM `J_SELECT` WHERE `parrent_doc_id`='$dp_id';"); $n = $db->num_rows($r);
+        $select_arr = [];
+        $list = "";
+        $r = $db->query("SELECT * FROM `J_SELECT` WHERE `parrent_doc_id`='$dp_id';");
+        $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $select_id = $db->result($r, $i-1, "id");
             array_push($select_arr, $select_id);
@@ -225,7 +276,8 @@ class ProfileClass {
             $amount_collect = intval($db->result($r, 0, "amount_collect"));
             $storage_select_string = "";
             if ($amount_bug>0) {
-                $r = $db->query("SELECT * FROM `J_SELECT_STR_BUG` WHERE `select_id` IN ('$select_str') AND `art_id`='$art_id';"); $n = $db->num_rows($r);
+                $r = $db->query("SELECT * FROM `J_SELECT_STR_BUG` WHERE `select_id` IN ('$select_str') AND `art_id`='$art_id';");
+                $n = $db->num_rows($r);
                 for ($i=1; $i<=$n; $i++) {
                     $storage_select_bug = $db->result($r, $i-1, "storage_select_bug");
                     $storage_select_cap = $this->getManualNameCaption("storage_select_bug", $storage_select_bug);
@@ -250,7 +302,9 @@ class ProfileClass {
         $order_id = $db->result($r, 0, "order_id");
         $r = $db->query("SELECT MAX(`status_visible`) as maxim FROM `orders_str_new` WHERE `order_id`='$order_id';");
         $status = $db->result($r, 0, "maxim");
-        if ($status==0) $db->query("UPDATE `orders_new` SET `status_visible`=1 WHERE `id`='$order_id';");
+        if ($status == 0) {
+            $db->query("UPDATE `orders_new` SET `status_visible`=1 WHERE `id`='$order_id';");
+        }
         return $status;
     }
 
@@ -262,7 +316,7 @@ class ProfileClass {
 
     function getDpStatus($dp_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `status_visible` FROM `orders_new` WHERE `dp_id`='$dp_id';");
-        $status=$db->result($r, 0, "status_visible");
+        $status = $db->result($r, 0, "status_visible");
         return $status;
     }
 
@@ -273,8 +327,10 @@ class ProfileClass {
     }
 
     function getDpClient() { $db = DbSingleton::getDbm();
-        $user_id = $this->getUser(); $dp_arr = [];
-        $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE `client_user_id`='$user_id' AND `dp_id`!=0;"); $nn = $db->num_rows($rr);
+        $user_id = $this->getUser();
+        $dp_arr = [];
+        $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE `client_user_id`='$user_id' AND `dp_id`!=0;");
+        $nn = $db->num_rows($rr);
         for ($ii=1; $ii<=$nn; $ii++) {
             $dp_id = $db->result($rr, $ii-1, "dp_id");
             $dp_str = explode(",", $dp_id);
@@ -291,13 +347,15 @@ class ProfileClass {
         $form = $this->getHtmlForm("profile/profile_orders");
         $user_id = $this->getUser();
         $where = "`client_user_id`='$user_id'";
-        $k = $summ = 0; $list = "";
+        $k = $summ = 0;
+        $list = "";
 
-        $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE $where AND `dp_id`!=0;"); $nn = $db->num_rows($rr);
+        $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE $where AND `dp_id`!=0;");
+        $nn = $db->num_rows($rr);
         for ($ii=1; $ii<=$nn; $ii++) {
             $dp_id = $db->result($rr, $ii-1, "dp_id");
             $dp_arr = explode(",", $dp_id);
-            $prefix=$id=$name=$date=$city_name=$delivery_type=$payment_type=$price_summ=$cash_name=$status_type=$bg_bug="";
+            $prefix = $id = $name = $date = $city_name = $delivery_type = $payment_type = $price_summ = $cash_name = $status_type = $bg_bug = "";
 
             for ($j=0; $j<count($dp_arr); $j++) {
                 $dp_value = $dp_arr[$j];
@@ -306,38 +364,45 @@ class ProfileClass {
                 WHERE dp.id='$dp_value';");
 
                 if ($this->checkDpStrExist($dp_value)) {
-                    $id.=$db->result($r, 0, "id").",";
-                    $prefix=$db->result($r, 0, "prefix");
-                    $dp_user_id=$db->result($r, 0, "user_id");
-                    $client_id=$db->result($r, 0, "client_id");
-                    $date.=$db->result($r, 0, "time_stamp")."\n";
-                    $name.=$client->getClientName($dp_user_id, $client_id)."\n";
+                    $id .= $db->result($r, 0, "id") . ",";
+                    $prefix = $db->result($r, 0, "prefix");
+                    $dp_user_id = $db->result($r, 0, "user_id");
+                    $client_id = $db->result($r, 0, "client_id");
+                    $date .= $db->result($r, 0, "time_stamp") . "\n";
+                    $name .= $client->getClientName($dp_user_id, $client_id) . "\n";
                     $city = $client->getClientInfo($client_id, $dp_user_id)["city"];
                     $delivery = $db->result($r, 0, "delivery_type_id");
-                    $payment=0;
+                    $payment = 0;
                     $status = $db->result($r, 0, "status_dp");
                     $cash_id = $db->result($r, 0, "cash_id");
                     $summ_sale = $db->result($r, 0, "summ_sale");
                     $status_visible = $db->result($r, 0, "status_visible");
-                    $price_summ+=floatval($summ_sale);
-                    if ($price_summ==0) $price_summ+=floatval($db->result($r, 0, "summ"));
+                    $price_summ += floatval($summ_sale);
+                    if ($price_summ == 0) {
+                        $price_summ += floatval($db->result($r, 0, "summ"));
+                    }
                     $summ = $db->result($r, 0, "summ");
-                    $city_name.=$city."\n";
-                    $delivery_type.=$this->getManualName($delivery)."\n";
-                    $payment_type.=$this->getManualName($payment)."\n";
-                    $status_type.=$this->getManualName($status)."\n";
-                    $cash_name.=$kours->getKoursCaption($cash_id)."\n";
-                    if ($this->checkSelectDpBug($dp_value) && $status_visible==1) $k++;
+                    $city_name .= $city . "\n";
+                    $delivery_type .= $this->getManualName($delivery)."\n";
+                    $payment_type .= $this->getManualName($payment)."\n";
+                    $status_type .= $this->getManualName($status)."\n";
+                    $cash_name .= $kours->getKoursCaption($cash_id)."\n";
+                    if ($this->checkSelectDpBug($dp_value) && $status_visible == 1) $k++;
                 }
             }
             $id = rtrim($id, ",");
 
-            if ($k>0) { $bg_bug = "bg-warning"; } else { $bg_bug = ""; } $k = 0;
+            if ($k > 0) {
+                $bg_bug = "bg-warning";
+            } else {
+                $bg_bug = "";
+            }
+            $k = 0;
 
             $price_summ = number_format($price_summ, 2, '.', '');
 
-            if ($summ>0 && $id!="") {
-                $list.="<tr class=\"$bg_bug pointer\" onclick='showProfileOrdersArts(\"$id\",\"\")'>
+            if ($summ > 0 && $id != "") {
+                $list .= "<tr class=\"$bg_bug pointer\" onclick='showProfileOrdersArts(\"$id\",\"\")'>
                     <td>$prefix-$id</td>
                     <td>$name</td>
                     <td>$date</td>
@@ -351,7 +416,8 @@ class ProfileClass {
             }
         }
 
-        $r2 = $db->query("SELECT * FROM `orders_new` WHERE $where AND `dp_id`=0 AND `status`=1;"); $n2 = $db->num_rows($r2);
+        $r2 = $db->query("SELECT * FROM `orders_new` WHERE $where AND `dp_id`=0 AND `status`=1;");
+        $n2 = $db->num_rows($r2);
         for ($i=1; $i<=$n2; $i++) {
             $id = $db->result($r2, $i-1, "id");
             $name = $db->result($r2, $i-1, "name");
@@ -367,7 +433,7 @@ class ProfileClass {
             $payment_type = $this->getManualName($payment);
             $status_type = '{order_in_queue}';
             $cash_name = $kours->getKoursCaption($cash_id);
-            $list.="<tr class='pointer' onclick='showProfileOrdersArts(\"\",\"$id\")'>
+            $list .= "<tr class='pointer' onclick='showProfileOrdersArts(\"\",\"$id\")'>
                 <td>{order_cap} #$id</td>
                 <td>$name</td>
                 <td>$date</td>
@@ -389,20 +455,33 @@ class ProfileClass {
         $kours = new ExRateClass;
         $list = "";
         $form = $this->getHtmlForm("profile/profile_orders_arts");
-        $user_id = $this->getUser(); $client_id = $this->getClient();
+        $user_id = $this->getUser();
+        $client_id = $this->getClient();
 
-        if ($dp_check != "") $dp_arr = explode(",", $dp_check); else $dp_arr = $this->getDpClient();
+        if ($dp_check != "") {
+            $dp_arr = explode(",", $dp_check);
+        } else {
+            $dp_arr = $this->getDpClient();
+        }
 
         //Dp orders arts
-        if ($order_check=="") {
-            for ($jj=0; $jj<count($dp_arr); $jj++) { $nedp = false;
+        if ($order_check == "") {
+            for ($jj=0; $jj<count($dp_arr); $jj++) {
+                $nedp = false;
                 $dp_value = $dp_arr[$jj];
-                if ($dp_check != "") $where_dp_client = "WHERE `id`='$dp_value' AND `client_id`='$client_id'"; else $where_dp_client = "WHERE `client_id`='$client_id'";
-                $r = $db->query("SELECT * FROM `J_DP` $where_dp_client;"); $ndp = $db->num_rows($r);
+                if ($dp_check != "") {
+                    $where_dp_client = "WHERE `id`='$dp_value' AND `client_id`='$client_id'";
+                } else {
+                    $where_dp_client = "WHERE `client_id`='$client_id'";
+                }
+                $r = $db->query("SELECT * FROM `J_DP` $where_dp_client;");
+                $ndp = $db->num_rows($r);
 
-                if ($ndp>0) {
+                if ($ndp > 0) {
                     $dp_id = $db->result($r, 0, "id");
-                    if ($dp_check!="") $where_dp = "WHERE dp.dp_id='$dp_id' AND ord.dp_str_id!=0"; else {
+                    if ($dp_check != "") {
+                        $where_dp = "WHERE dp.dp_id='$dp_id' AND ord.dp_str_id!=0";
+                    } else {
                         $dp_id = $dp_arr[$jj];
                         $where_dp = "WHERE dp.dp_id='$dp_id' AND ord.dp_str_id!=0";
                     }
@@ -411,9 +490,10 @@ class ProfileClass {
                     $rstr = $db->query("SELECT dp.*, ord.order_id, ord.id as order_str_id 
                     FROM `orders_str_new` ord
                         LEFT OUTER JOIN `J_DP_STR` dp on dp.id=ord.dp_str_id
-                    $where_dp GROUP BY dp.art_id;"); $nstr = $db->num_rows($rstr);
+                    $where_dp GROUP BY dp.art_id;");
+                    $nstr = $db->num_rows($rstr);
 
-                    if ($nstr==0) {
+                    if ($nstr == 0) {
                         $rstr = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id`='$dp_id' GROUP BY `art_id`;");
                         $nstr = $db->num_rows($rstr);
                         $nedp = true;
@@ -428,7 +508,8 @@ class ProfileClass {
                         $brand_name = $this->getBrandName($brand_id);
                         $amount = intval($db->result($rstr, $j - 1, "amount"));
                         $amount_collect = intval($db->result($rstr, $j - 1, "amount_collect"));
-                        $summ = $db->result($rstr, $j - 1, "summ"); $price = round($summ / $amount,2);
+                        $summ = $db->result($rstr, $j - 1, "summ");
+                        $price = round($summ / $amount,2);
                         $status_dps = $db->result($rstr, $j - 1, "status_dps");
                         $status_dps = $this->getManualName($status_dps);
                         $status_visible = $db->result($rstr, $j - 1, "status_visible");
@@ -445,7 +526,11 @@ class ProfileClass {
                         $price = number_format($price, 2, '.', '');
                         $summ = number_format($summ, 2, '.', '');
 
-                        if ($this->checkSelectStrDpBug($dp_id, $art_id) > 0) $amount_text = "$amount_collect ($amount)"; else $amount_text = $amount;
+                        if ($this->checkSelectStrDpBug($dp_id, $art_id) > 0) {
+                            $amount_text = "$amount_collect ($amount)";
+                        } else {
+                            $amount_text = $amount;
+                        }
 
                         if ($nedp) {
                             $list.="<tr class=\"$bg_bug\">
@@ -459,8 +544,8 @@ class ProfileClass {
                             </tr>";
                         }
 
-                        if ($this->checkOrderUser($order_id, $user_id)>0) {
-                            $list.="<tr class=\"$bg_bug\">
+                        if ($this->checkOrderUser($order_id, $user_id) > 0) {
+                            $list .= "<tr class=\"$bg_bug\">
                                 <td>$prefix-$dp_id</td>
                                 <td>$article_nr_displ</td>
                                 <td>$brand_name</td>
@@ -476,14 +561,20 @@ class ProfileClass {
         }
 
         // Site orders arts
-        if ($dp_check=="") {
+        if ($dp_check == "") {
 
-            if ($order_check!="") $where_order = "AND `id`='$order_check'"; else $where_order = "";
-            $r = $db->query("SELECT * FROM `orders_new` WHERE `client_user_id`='$user_id' AND `dp_id`=0 AND `status`=1 $where_order;"); $n = $db->num_rows($r);
+            if ($order_check != "") {
+                $where_order = "AND `id`='$order_check'";
+            } else {
+                $where_order = "";
+            }
+            $r = $db->query("SELECT * FROM `orders_new` WHERE `client_user_id`='$user_id' AND `dp_id`=0 AND `status`=1 $where_order;");
+            $n = $db->num_rows($r);
             for ($i=1; $i<=$n; $i++) {
                 $order_id = $db->result($r, $i-1, "id");
                 $cash_id = $db->result($r, $i-1, "cash_id");
-                $rstr = $db->query("SELECT * FROM `orders_str_new` WHERE `order_id`='$order_id';"); $nstr = $db->num_rows($rstr);
+                $rstr = $db->query("SELECT * FROM `orders_str_new` WHERE `order_id`='$order_id';");
+                $nstr = $db->num_rows($rstr);
                 for ($j=1; $j<=$nstr; $j++) {
                     $art_id = $db->result($rstr, $j-1, "art_id");
                     $brand_id = $db->result($rstr, $j-1, "brand_id");
@@ -495,7 +586,7 @@ class ProfileClass {
                     $summ = $db->result($rstr, $j-1, "summ");
                     $summ = $kours->getKoursFromUAH($summ, $cash_id);
                     $status_dps = "{making_order_cap}";
-                    $list.="<tr>
+                    $list .= "<tr>
                         <td>Order-$order_id</td>
                         <td>$article_nr_displ</td>
                         <td>$brand_name</td>
@@ -602,25 +693,26 @@ class ProfileClass {
     }
 
     function getClientBalansPeriodStart($client_id, $cash_id, $data_from, $recursion) { $db=DbSingleton::getDbm();
-        $saldo_start=0; $saldo_data_start=$data_from;
-        $r = $db->query("SELECT * FROM `B_CLIENT_BALANS_PERIOD` WHERE `client_id`='$client_id' AND `data_start`='".date("Y-m-01",strtotime($data_from))."' LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n==1) {
-            $saldo_start=$db->result($r,0,"saldo_start");
-            $cash_id=$db->result($r,0,"cash_id");
-            $saldo_data_start=$db->result($r,0,"data_start");
+        $saldo_start = 0; $saldo_data_start = $data_from;
+        $r = $db->query("SELECT * FROM `B_CLIENT_BALANS_PERIOD` WHERE `client_id`='$client_id' AND `data_start`='".date("Y-m-01",strtotime($data_from))."' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n == 1) {
+            $saldo_start = $db->result($r,0,"saldo_start");
+            $cash_id = $db->result($r,0,"cash_id");
+            $saldo_data_start = $db->result($r,0,"data_start");
         }
-        if ($n==0) {
-            $recursion+=1;
-            if ($recursion<12) {
-                $data_from=date("Y-m-01",strtotime("$data_from -1 month"));
+        if ($n == 0) {
+            $recursion += 1;
+            if ($recursion < 12) {
+                $data_from = date("Y-m-01", strtotime("$data_from -1 month"));
                 list($saldo_start,, $saldo_data_start) = $this->getClientBalansPeriodStart($client_id, $cash_id, $data_from, $recursion);
             } else {
-                $data_main_start=date("Y-m-01",strtotime("$data_from"));
+                $data_main_start = date("Y-m-01", strtotime("$data_from"));
                 $db->query("INSERT INTO `B_CLIENT_BALANS_PERIOD` (`client_id`,`cash_id`,`saldo_start`,`data_start`,`active`) 
                 VALUES ('$client_id','$cash_id','0','$data_main_start','1');");
-                $data_plus_month=date("Y-m-d", strtotime("$data_main_start +1 month"));
-                $data_from=date("Y-m-01",strtotime("$data_plus_month"));
-                $recursion-=2;
+                $data_plus_month = date("Y-m-d", strtotime("$data_main_start +1 month"));
+                $data_from = date("Y-m-01", strtotime("$data_plus_month"));
+                $recursion -= 2;
                 list($saldo_start,, $saldo_data_start) = $this->getClientBalansPeriodStart($client_id, $cash_id, $data_from, $recursion);
             }
         }
@@ -629,12 +721,17 @@ class ProfileClass {
 
     // Cron
     function setPriceList() { $db=DbSingleton::getDbm();
-        $user_id = $this->getUser(); $date = date("Y-m-d H:i:s"); $date_format = date("Y-m-d_H-i-s");
-        $filename = "TOKO_GROUP_price-list_".$user_id."_".$date_format.".csv";
-        $r = $db->query("SELECT `status` FROM `cron_task_prices` WHERE `user_id`='$user_id' AND `status`=1;"); $n = $db->num_rows($r);
-        if ($n>0) return "forming..."; else {
+        $user_id = $this->getUser();
+        $date = date("Y-m-d H:i:s");
+        $date_format = date("Y-m-d_H-i-s");
+        $filename = "TOKO_GROUP_price-list_" . $user_id . "_" . $date_format . ".csv";
+        $r = $db->query("SELECT `status` FROM `cron_task_prices` WHERE `user_id`='$user_id' AND `status`=1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            return "forming...";
+        } else {
             $db->query("INSERT INTO `cron_task_prices` (`user_id`,`filename`,`date`,`status`) VALUES ('$user_id','$filename','$date',1);");
-            $text = "date-start: ".$date;
+            $text = "date-start: " . $date;
             return $text;
         }
     }
@@ -642,16 +739,17 @@ class ProfileClass {
     function getPriceList() {
         $catalogue = new CatalogueClass;
         $user_id = $this->getUser();
-        $date = date("Y-m-d_H-i-s"); $csv = "";
-        $filedir = $user_id."/".$user_id."_price-list_".$date.".csv";
-        $filename = $user_id."_price-list_".$date.".csv";
+        $csv = "";
+        $date = date("Y-m-d_H-i-s");
+        $filedir = $user_id . "/".$user_id . "_price-list_" . $date . ".csv";
+        $filename = $user_id . "_price-list_" . $date . ".csv";
         $list = $catalogue->getPriceList();
 
         foreach ($list as $record) {
             foreach ($record as $rec) {
-                $csv.= $rec.';';
+                $csv .= $rec.';';
             }
-            $csv.="\n";
+            $csv .= "\n";
         }
 
         if (!file_exists(RDD."/uploads/$user_id")) {
@@ -673,25 +771,36 @@ class ProfileClass {
         $user_id = $this->getUser();
 		$form = $this->getHtmlForm("profile/profile_price_list");
 		$disable = "disabled"; $visible = "style=\"display:none;\""; $history_form = "";
-		$r = $db->query("SELECT * FROM `cron_task_prices` WHERE `user_id`='$user_id' and `status`=1;"); $n = $db->num_rows($r);
-		if ($n==0) { $disable = ""; $visible = ""; }
+		$r = $db->query("SELECT * FROM `cron_task_prices` WHERE `user_id`='$user_id' and `status`=1;");
+		$n = $db->num_rows($r);
+		if ($n == 0) {
+		    $disable = "";
+		    $visible = "";
+		}
 		
         $filename = scandir(RDD."/uploads/$user_id")[2];
-        if ($filename!="") {
+        if ($filename != "") {
             $file = "$this->uploads/$user_id/".$filename;
             $list = "<a class=\"btn btn-primary\" href=\"$file\" download $visible><span class='fa fa-download'></span> Download $filename</a><br>";
+        } else {
+            $list = "";
         }
-        else $list = "";
-	    $r = $db->query("SELECT * FROM `cron_task_prices` WHERE `user_id`='$user_id' ORDER BY `date` DESC;"); $n = $db->num_rows($r);
-	    if ($n>0) {
+	    $r = $db->query("SELECT * FROM `cron_task_prices` WHERE `user_id`='$user_id' ORDER BY `date` DESC;");
+        $n = $db->num_rows($r);
+	    if ($n > 0) {
             $table = "";
 			for ($i=1; $i<=$n; $i++) {
 				$filename = $db->result($r, $i-1, "filename");
 				$date = $db->result($r, $i-1, "date");
 				$date_end = $db->result($r, $i-1, "date_end");
-				$status = $db->result($r, $i-1, "status"); $status_name = $this->getStatusProfilePrice($status);
-				if ($status==2 && $i==1) $current = "style=\"background:#f1f1f1;\""; else $current = "";
-                $table.="<tr $current>
+				$status = $db->result($r, $i-1, "status");
+				$status_name = $this->getStatusProfilePrice($status);
+				if ($status == 2 && $i == 1) {
+				    $current = "style=\"background:#f1f1f1;\"";
+                } else {
+				    $current = "";
+                }
+                $table .= "<tr $current>
 					<td>$filename</td>
 					<td>$date</td>
 					<td>$date_end</td>
@@ -709,7 +818,7 @@ class ProfileClass {
 	}
 	
 	function getStatusProfilePrice($status) {
-		switch($status) {
+		switch ($status) {
 			case 1: $text = "{status_on}"; break;
 			case 2: $text = "{status_off}"; break;
 			default: $text = ""; break;
@@ -732,12 +841,13 @@ class ProfileClass {
 
     function getRegionSelect() { $db = DbSingleton::getDbm();
         $options = "";
-        $r = $db->query("SELECT * FROM `T_POINT` WHERE `status`=1 ORDER BY `full_name` ASC;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T_POINT` WHERE `status`=1 ORDER BY `full_name` ASC;");
+        $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $id = $db->result($r, $i-1, "id");
             $region = $db->result($r, $i-1, "full_name");
             $address = $db->result($r, $i-1, "address");
-            $options.="<option value=\"$id\">$region ($address)</option>";
+            $options .= "<option value=\"$id\">$region ($address)</option>";
         }
         return $options;
     }
