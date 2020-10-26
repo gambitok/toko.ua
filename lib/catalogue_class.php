@@ -27,7 +27,7 @@ class CatalogueClass
         }
     }
 
-    function showCatalogueList($article_nr_search, $brand_nr_search, $status_brand=0) { $db = DbSingleton::getTokoDb();
+    function showCatalogueList($article_nr_search, $brand_nr_search, $status_brand = 0) { $db = DbSingleton::getTokoDb();
         $showform = new FormClass; $kours = new ExRateClass; $client = new ClientClass;
         $showform->insertHistory($article_nr_search, $brand_nr_search);
         $cur = $kours->getCurrentKours();
@@ -91,7 +91,7 @@ class CatalogueClass
         //search brands
         if (!empty($list_brand)) {
             $search_brands = str_replace("{brands}", $list_brand, $search_brands);
-            $search_brands = str_replace("{brands_display}", $list_brand == "" ? "none" : "", $search_brands);
+            $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
             $form = str_replace("{cat_search_brands}", $search_brands, $form);
         }
 
@@ -2008,7 +2008,7 @@ class CatalogueClass
                 $price = $this->getPriceRatingKours($price, $cash_id, 2);
                 $proc_price_margin = $price - ($price * abs($margin_price_lvl) / 100);
                 $proc_oper_price_min = $oper_price + ($oper_price * $markup_min / 100);
-                if ($proc_price_margin>=$proc_oper_price_min) {
+                if ($proc_price_margin >= $proc_oper_price_min) {
                     $price = $proc_price_margin;
                 } else {
                     if (($proc_price_margin < $proc_oper_price_min) && ($proc_oper_price_min > $price)) {
@@ -2607,8 +2607,8 @@ class CatalogueClass
                 foreach ($mas_val as $key => $val) {
                     if ($cc > 0) {
                         unset($mas[$mas_key][$key]);
-                        $cc++;
                     }
+                    $cc++;
                 }
                 $cc = 0;
             }
@@ -2635,7 +2635,6 @@ class CatalogueClass
                     $suppl_id = $val["suppl_id"];
                     $return_days = $val["return_days"];
                     $storage_id = $val["storage_id"];
-
                     $status = ($saleout > 0) ? $val["status"] : 1;
                     $list .= $this->printSearchList($i, $art_id, $name, $brand_id, $brand, $text, $delivery_info, $stock, $price, $article_nr_search, $ll[$i], $class[$i] ,$hide[$i], $border[$i], $none[$i], $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view);
                     $i++;

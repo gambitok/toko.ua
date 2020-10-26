@@ -123,13 +123,13 @@ function hideCarsNavigation(index) {
 
 function showCarsNavigation(index, type, attr) {
     let data_pred = $("div[data-type='" + $(index).attr("data-pred") + "']");
-    if (type===undefined) {
+    if (type === undefined) {
         type = $(data_pred).attr("data-type");
     }
-    if (attr===undefined) {
+    if (attr === undefined) {
         attr = $(data_pred).attr("data-id");
     }
-    if (type===undefined && attr===undefined) {
+    if (type === undefined && attr === undefined) {
         type = "";
         attr = 0;
     }

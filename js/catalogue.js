@@ -161,8 +161,7 @@ function artSearch(input_name) {
 function selectRegion(id) {
     JsHttpRequest.query(folder,{'w':'setTpoint', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            let res = result.content;
-            selectRegionText(res);
+            selectRegionText(result.content);
             $("#RegionForm").modal("hide");
             location.reload(true);
         }}, true);
@@ -227,11 +226,15 @@ function catalogueFilter(order) {
     let text = $("#text_filter").val();
 
     $(".check-brand").each(function () {
-        if ($(this).hasClass("main-brand")===false) $(this).attr("disabled", true);
+        if ($(this).hasClass("main-brand")===false) {
+            $(this).attr("disabled", true);
+        }
     });
     let brands = [];
     $("input[type=checkbox]").each(function () {
-        if (this.checked) {brands.push($(this).attr("name"));}
+        if (this.checked) {
+            brands.push($(this).attr("name"));
+        }
     });
     let bb = JSON.stringify(brands);
 
@@ -272,7 +275,7 @@ function catalogueFilter(order) {
             ex1.attr("data-slider-value", max_min);
             $("#price_val").html(max_min);
 
-            if (cur!==cur_old) {
+            if (cur !== cur_old) {
                 value[1] = max_price;
                 value[0] = 0;
                 ex1.slider("refresh");
@@ -291,7 +294,9 @@ function catalogueFilter(order) {
             $("#cur_value").val(cur);
 
             $(".check-brand").each(function () {
-                if ($(this).hasClass("main-brand")===false) $(this).removeAttr("disabled");
+                if ($(this).hasClass("main-brand")===false) {
+                    $(this).removeAttr("disabled");
+                }
             });
             new LazyLoad({ elements_selector: ".lazy" });
 
@@ -351,7 +356,7 @@ function tecModelsFilter(order) {
             ex1.attr("data-slider-value",max_min);
             $("#price_val").html(max_min);
 
-            if (cur!==cur_old) {
+            if (cur !== cur_old) {
                 value[1] = max_price;
                 value[0] = 0;
                 ex1.slider("refresh");
@@ -422,7 +427,9 @@ function loadApplicModelsInfo2(art_id, typ_id) {
                 document.getElementById("AMI" + typ_id).innerHTML = result.content;
             }}, true); er = 1;
     }
-    if (document.getElementById("AMI" + typ_id).innerHTML!=="" && er===0){ $("#AMI" + typ_id).html(""); }
+    if (document.getElementById("AMI" + typ_id).innerHTML!=="" && er===0) {
+        $("#AMI" + typ_id).html("");
+    }
 }
 
 // function checkTypeAnalog(n) { "use strict";
@@ -465,7 +472,9 @@ function copyToClipboard(element, art_name) {
 
 // ADD NEW CAR TO GARAGE
 function addToGarage(typ_id=0) {
-    if (typ_id === 0) typ_id = $("#typ_id").val();
+    if (typ_id === 0) {
+        typ_id = $("#typ_id").val();
+    }
     if (typ_id !== undefined && typ_id !== 0 && typ_id !== "") {
         JsHttpRequest.query(folder,{'w':'addToGarage', 'typ_id':typ_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -500,8 +509,8 @@ function deleteAutoGarage(auto_id) {
         function (result, errors){ if (errors) {alert(errors);} if (result){
             showAutoGarage();
             showGarageStatus();
-            if (result.content===false) {
-                if (getCookie("auto_typ_id")==="") {
+            if (result.content === false) {
+                if (getCookie("auto_typ_id") === "") {
                     showCarsSelectMin(1);
                 }
             }
@@ -568,11 +577,11 @@ function dropAutoHistory(history_id) {
 function changeBasketCount(status, id) {
     let input_id = $("#" + id);
     let count = parseInt(input_id.val());
-    if (status>0) {
+    if (status > 0) {
         count = count + 1;
         input_id.val(count);
     } else {
-        if (count>1) {
+        if (count > 1) {
             count = count - 1;
             input_id.val(count);
         }
@@ -640,7 +649,7 @@ function showCarDetailsStrMin(head_id) {
     let typ_id = $("#typ_id").val();
     let str_id_str = $("#tree_str_ids").val();
     let class_name = $("#manufacture_head" + head_id).attr("class");
-    if (class_name==="tree-list_min dnone") {
+    if (class_name === "tree-list_min dnone") {
         JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str, 'typ_id':typ_id},
             function (result, errors){ if (errors) {} if (result){
                 $("#tree_head-" + head_id).toggleClass("check-head");
@@ -999,7 +1008,7 @@ function setClientRequestCard() {
     let text = $("#help-text").val(); if($("#help-text").length===0) text = "";
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            if (result.content===false) {
+            if (result.content === false) {
                 showNotify("{error_cap}:", "{phone_number_input}", "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");

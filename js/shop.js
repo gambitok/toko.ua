@@ -53,13 +53,15 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
         if (secret !== 0 && secret !== "") {
             JsHttpRequest.query(folder,{'w':'moveToBasket', 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
                 function (result, errors){ if (errors) {alert(errors);} if (result){
-                    let old_count=parseInt(result["old_amount"]);
-                    let art_name=result["art_name"];
-                    let all_count=old_count+parseInt(count);
-                    let message=count+" {amount_abbr}. ";
-                    let message_all="";
-                    if (old_count>0) message_all="<br><b>{total_basket_cap}:</b> "+all_count+" {amount_abbr}.";
-                    showNotify("{done_cap}:","{art_cap} '"+art_name+"' - "+message+" {added_to_basket}!" + message_all,"success");
+                    let old_count = parseInt(result["old_amount"]);
+                    let art_name = result["art_name"];
+                    let all_count = old_count + parseInt(count);
+                    let message = count + " {amount_abbr}. ";
+                    let message_all = "";
+                    if (old_count > 0) {
+                        message_all = "<br><b>{total_basket_cap}:</b> " + all_count + " {amount_abbr}.";
+                    }
+                    showNotify("{done_cap}:","{art_cap} '" + art_name + "' - " + message + " {added_to_basket}!" + message_all,"success");
                     showBasketStatus();
                     showBasketForm();
                     basket_count_id.html(result["basket_count"]);
@@ -73,7 +75,9 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
                 let all_count = old_count + parseInt(count);
                 let message = count + " {amount_abbr}. ";
                 let message_all = "";
-                if (old_count>0) message_all = "<br><b>{total_basket_cap}:</b> " + all_count + " {amount_abbr}.";
+                if (old_count > 0) {
+                    message_all = "<br><b>{total_basket_cap}:</b> " + all_count + " {amount_abbr}.";
+                }
                 showNotify("{done_cap}:", "{art_cap} '" + art_name + "' - " + message + " {added_to_basket}!" + message_all, "success");
                 showBasketStatus();
                 showBasketForm();
@@ -98,11 +102,11 @@ function updateCountBasket(status, art_id, storage_id, stock, phone) {
     if (phone > 0) prefix = "_phone";
     let count_id = $("#count_" + art_id + "_" + storage_id + prefix);
     let count = parseInt(count_id.val());
-    if (status>0) {
+    if (status > 0) {
         count = count + 1;
         count_id.val(count);
     } else {
-        if (count>0) {
+        if (count > 0) {
             count = count - 1;
             count_id.val(count);
         }
@@ -112,25 +116,25 @@ function updateCountBasket(status, art_id, storage_id, stock, phone) {
 
 function updateBasketForm(art_id, storage_id, stock, phone) {
     let prefix = "";
-    if (phone>0) prefix = "_phone";
+    if (phone > 0) prefix = "_phone";
     var count_id = $("#count_" + art_id + "_" + storage_id + prefix);
     var count = count_id.val();
-    if (parseInt(stock)<parseInt(count) || parseInt(count)===0) {
+    if (parseInt(stock) < parseInt(count) || parseInt(count) === 0) {
         var secret = parseInt(stock) + 1;
         while (parseInt(secret) > parseInt(stock)) {
             if (secret === null) { count_id.val(1); return; }
             secret = prompt("Выбранное количество продукта превышает доступное количество!", 1);
             if (secret === null) { count_id.val(stock); return; }
             if (parseInt(secret) < 0) {
-                secret=999999;
+                secret = 999999;
             } else if (isNaN(parseInt(secret))) {
-                secret=999999;
+                secret = 999999;
             }
         }
-        if (secret==="") secret = 0;
+        if (secret === "") secret = 0;
         count_id.val(secret);
         count = secret;
-        if (secret!==0 && secret!=="") {
+        if (secret !== 0 && secret !== "") {
             JsHttpRequest.query(folder,{'w':'updateBasketForm', 'art_id':art_id, 'count':count, 'storage_id':storage_id},
                 function (result, errors){ if (errors) {alert(errors);} if (result){
                     showBasketForm();

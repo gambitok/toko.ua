@@ -28,12 +28,23 @@ function showAlertModal(message, title, status, callback) {
     JsHttpRequest.query(folder,{ 'w': 'changeLangAlert', 'message':message, 'title':title },
         function (result, errors){ if (errors) {} if (result){
             $("#choose_message").html("<span>"+result.content[0]+"</span>");
-            if (result.content[1] === "" || result.content[1] === undefined) $("#choose_title").html("");
-            else $("#choose_title").html("<h4>" + result.content[1] + "</h4>");
-            if (status===0) $("#alert-modal-header").addClass("bg-danger");
-            if (status===1) $("#alert-modal-header").addClass("bg-success");
-            if (status===2) $("#alert-modal-header").addClass("bg-info");
-            if (typeof callback !== "undefined") { $('#alert_btn_ok').click(function(){callback();}); }
+            if (result.content[1] === "" || result.content[1] === undefined) {
+                $("#choose_title").html("");
+            } else {
+                $("#choose_title").html("<h4>" + result.content[1] + "</h4>");
+            }
+            if (status === 0) {
+                $("#alert-modal-header").addClass("bg-danger");
+            }
+            if (status === 1) {
+                $("#alert-modal-header").addClass("bg-success");
+            }
+            if (status === 2) {
+                $("#alert-modal-header").addClass("bg-info");
+            }
+            if (typeof callback !== "undefined") {
+                $('#alert_btn_ok').click(function(){callback();});
+            }
             $("#AlertForm").modal("toggle");
         }}, true);
 }
@@ -69,10 +80,10 @@ function showValidateModal(phone, callback, callback2) {
 
 function validatePhone(callback) {
     let phone = $("#reg_phone").val();
-    if (phone === undefined) phone = $("#input_phone2").val();
+    if (phone === undefined) {
+        phone = $("#input_phone2").val();
+    }
     let password = $("#validate_code").val();
-    console.log('validatePhone' + phone + ', ' + password);
-
     JsHttpRequest.query(folder,{ 'w': 'endValidation', 'phone':phone, 'password':password},
         function (result, errors){ if (errors) {} if (result){
             if (result.content === true) {
@@ -278,22 +289,44 @@ function rotateIcon(a) {
 // }
 
 function saveSellForm() {
-    let company_input=$("#reg_company"), company=company_input.val();
-    let name_input=$("#reg_name"), name=name_input.val();
-    let phone_input=$("#reg_phone"), phone=phone_input.val();
-    let email_input=$("#reg_email"), email=email_input.val();
-    let upload_file=$("#upload_image"), file_id=upload_file.text();
-    let city_id=$("#user_city option:selected").val();
-    let comment_input=$("#reg_comment"), comment=comment_input.val();
+    let company_input = $("#reg_company"), company = company_input.val();
+    let name_input = $("#reg_name"), name = name_input.val();
+    let phone_input = $("#reg_phone"), phone = phone_input.val();
+    let email_input = $("#reg_email"), email = email_input.val();
+    let upload_file = $("#upload_image"), file_id = upload_file.text();
+    let city_id = $("#user_city option:selected").val();
+    let comment_input = $("#reg_comment"), comment = comment_input.val();
 
-    if (company==="") company_input.addClass("required_input"); else company_input.removeClass("required_input");
-    if (name==="") name_input.addClass("required_input"); else name_input.removeClass("required_input");
-    if (phone==="") phone_input.addClass("required_input"); else phone_input.removeClass("required_input");
-    if (city_id===undefined) $(".select2").addClass("required_input"); else $(".select2").removeClass("required_input");
-    if (file_id==="" || file_id===undefined) $("#upload_btn").addClass("required_input"); else $("#upload_btn").removeClass("required_input");
+    if (company === "") {
+        company_input.addClass("required_input");
+    } else {
+        company_input.removeClass("required_input");
+    }
+    if (name === "") {
+        name_input.addClass("required_input");
+    } else {
+        name_input.removeClass("required_input");
+    }
+    if (phone === "") {
+        phone_input.addClass("required_input");
+    } else {
+        phone_input.removeClass("required_input");
+    }
+    if (city_id === undefined) {
+        $(".select2").addClass("required_input");
+    } else {
+        $(".select2").removeClass("required_input");
+    }
+    if (file_id === "" || file_id === undefined) {
+        $("#upload_btn").addClass("required_input");
+    } else {
+        $("#upload_btn").removeClass("required_input");
+    }
 
-    if ((company!=="") && (phone!=="") && (name!=="") && (city_id!==undefined)) {
-        if (file_id==="" || file_id===undefined) { showAlertModal("{upload_file_first}!","{error_cap}",0); } else {
+    if ((company !== "") && (phone !== "") && (name !== "") && (city_id !== undefined)) {
+        if (file_id === "" || file_id === undefined) {
+            showAlertModal("{upload_file_first}!","{error_cap}",0);
+        } else {
             JsHttpRequest.query(folder,{'w':'saveSellerForm', 'company':company, 'name':name, 'phone':phone, 'email':email, 'city_id':city_id, 'comment':comment},
                 function (result, errors){ if (errors) {alert(errors);} if (result){
                     if (result.content!==true) {
@@ -313,7 +346,6 @@ function showHideNavigation(head_id) {
     JsHttpRequest.query(folder,{'w':'showHeadTemplate', 'head_id':head_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
         $("#content-nav__content").html(result.content);
-        // $("#content-nav__header").html(result.header);
         $("#content-nav__footer").html(result.footer);
         $(".header-nav__li").each(function() {
             $(this).removeClass("header-nav__li-active");

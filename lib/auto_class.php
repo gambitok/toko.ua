@@ -159,7 +159,7 @@ class AutoClass extends CatalogueClass
             $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link`='$ml' LIMIT 1;");
             $model = $db->result($r,0,"Model");
         }
-        return array ($mfa_id, $model);
+        return array($mfa_id, $model);
     }
 
     function getAutoIMG($mf, $ml, $mi) { $db = DbSingleton::getTokoDb();
@@ -177,7 +177,7 @@ class AutoClass extends CatalogueClass
             $r = $db->query("SELECT `Car_pict` FROM `T_models` WHERE `MOD_ID`='$mi' LIMIT 1;");
             $modelid = $db->result($r,0,"Car_pict");
         }
-        return array ("mfa_image" => $manufacture, "model_image" => $model, "model_id_image" => $modelid);
+        return array("mfa_image" => $manufacture, "model_image" => $model, "model_id_image" => $modelid);
     }
 
     function getStrDescr($str_id) { $db = DbSingleton::getTokoDb();
@@ -300,8 +300,9 @@ class AutoClass extends CatalogueClass
         $prefix = $this->getLangPrefix();
         $cookie = $_COOKIE["session_id"];
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
-        $r = $db->query("SELECT `typ_id` FROM `AUTO_GARAGE` WHERE $where AND `status`=1 LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n>0) {
+        $r = $db->query("SELECT `typ_id` FROM `AUTO_GARAGE` WHERE $where AND `status`=1 LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
             $typ_id = $db->result($r, 0, "typ_id");
             $typ_text = $this->getGroupInfo($typ_id);
             list($manufacture, $model, $model_id) = $this->getCarInfo($typ_id);
@@ -464,11 +465,7 @@ class AutoClass extends CatalogueClass
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `typ_id`=$typ_id;");
         $n = $db->num_rows($r);
-        if ($n == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return ($n == 0);
     }
 
     /*==== HISTORY ====*/
@@ -479,25 +476,28 @@ class AutoClass extends CatalogueClass
         $user_id = $this->getUser();
         $max_history_count = 10;
         $where = ($user_id == 0) ? "cookie_id='$cookie'" : "client_id='$client_id' AND client_user_id='$user_id'";
-        $r = $db->query("SELECT COUNT(`id`) as kilk FROM `AUTO_HISTORY` WHERE $where;"); $k = $db->result($r, 0, "kilk");
-        if ($k>$max_history_count) {
+        $r = $db->query("SELECT COUNT(`id`) as kilk FROM `AUTO_HISTORY` WHERE $where;");
+        $k = $db->result($r, 0, "kilk");
+        if ($k > $max_history_count) {
             $r = $db->query("SELECT `id` FROM `AUTO_HISTORY` WHERE $where ORDER BY `timestamp` ASC LIMIT 1;");
             $id = $db->result($r,0,"id");
             $db->query("UPDATE `AUTO_HISTORY` SET `typ_id`='$typ_id' WHERE `id`='$id';");
         } else {
             $r = $db->query("SELECT `id` FROM `AUTO_HISTORY` WHERE $where AND `typ_id`='$typ_id';"); $n=$db->num_rows($r);
-            if ($n>0)
+            if ($n > 0) {
                 $db->query("UPDATE `AUTO_HISTORY` SET `timestamp`='$date' WHERE $where AND `typ_id`='$typ_id';");
-            else
+            } else {
                 $db->query("INSERT INTO `AUTO_HISTORY` (`client_id`, `client_user_id`, `cookie_id`, `typ_id`)
                 VALUES ('$client_id', '$user_id', '$cookie', '$typ_id');");
+            }
         }
         return true;
     }
 
     function showAutoHistory() { $db = DbSingleton::getTokoDb();
         $cookie = $_COOKIE["session_id"];
-        $user_id = $this->getUser(); $client_id = $this->getClient();
+        $user_id = $this->getUser();
+        $client_id = $this->getClient();
         $where = ($user_id == 0) ? "cookie_id='$cookie'" : "client_id='$client_id' AND client_user_id='$user_id'";
         $r = $db->query("SELECT `id`, `typ_id` FROM `AUTO_HISTORY`
         WHERE $where GROUP BY `typ_id` ORDER BY `timestamp` DESC LIMIT 10;"); $n = $db->num_rows($r);
@@ -805,8 +805,7 @@ class AutoClass extends CatalogueClass
         $head_tex_text = $db->result($r, 0, "TEX_RU");
         $title = "<div class='tree-block-title__text'><div class='container pad0'><h1>$head_tex_text</h1></div></div>";
         $img = "$head_id.jpg";
-        $list = "<div class='tree-block-title' style=\"background-image: url('/images/tree_head/$img');\">$title</div>";
-        return $list;
+        return "<div class='tree-block-title' style=\"background-image: url('/images/tree_head/$img');\">$title</div>";
     }
 
     // CATALOG / TO I FILTRI

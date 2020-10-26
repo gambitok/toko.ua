@@ -38,14 +38,18 @@ $(document).ready(function() {
         });
         // SHOW RADIO CHILD BLOCK (CHECKED)
         $("input[type='radio']").each(function () {
-            if($(this).is(':checked')) $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
+            if ($(this).is(':checked')) {
+                $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
+            }
         });
     });
 
     // INIT USER RECIPIENT
     let user_recipient = $($("input[name='user_recipient']"));
     user_recipient.each(function () {
-        if($(this).is(':checked')) $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
+        if($(this).is(':checked')) {
+            $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
+        }
     });
     user_recipient.change(function() {
         $($("input[name='user_recipient']")).each(function () {
@@ -174,7 +178,9 @@ function getOrderPaymentBlock() {
         JsHttpRequest.query(folder,{'w':'getOrderPaymentBlock', 'payment_id':payment_id, 'delivery_id':delivery_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 status = result.content;
-                if (status === "0") block.addClass("orders-block-row-hidden");
+                if (status === "0") {
+                    block.addClass("orders-block-row-hidden");
+                }
             }}, true);
     });
     $("#valid_payment_block").removeClass("not-valid");
@@ -410,7 +416,7 @@ function validOrder() {
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             let valid_status = result.content[0];
             if (valid_status) {
-                if (payment!==undefined) {
+                if (payment !== undefined) {
                     validFullOrder();
                 }
             } else {
@@ -514,7 +520,9 @@ function setClientOrderInfo(id) {
                 $(this).removeClass("orders-block-row-display");
             });
             $("input[type='radio']").each(function () {
-                if($(this).is(':checked')) $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
+                if ($(this).is(':checked')) {
+                    $("#" + $(this).attr("data-tab-href")).addClass("orders-block-row-display");
+                }
             });
 
             // DELIVERY INFO FIELDS
@@ -528,7 +536,7 @@ function setClientOrderInfo(id) {
 
             // PAYMENT
             let amount = $("input[name='user_delivery']").filter(':checked').length;
-            if (amount>0) {
+            if (amount > 0) {
                 $("#orders-payment").removeClass("none");
             }
             getOrderPaymentBlock();

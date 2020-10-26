@@ -14,8 +14,12 @@ function focusPhone() { $("#userlogin").focus(); }
 
 function showLoginForm() {
     let phone = $("#reg_phone").val();
-    if (phone === undefined || phone === "") phone = $("#input_phone").val();
-    if (phone === undefined || phone === "") phone = $("#input_phone2").val();
+    if (phone === undefined || phone === "") {
+        phone = $("#input_phone").val();
+    }
+    if (phone === undefined || phone === "") {
+        phone = $("#input_phone2").val();
+    }
     let form = "login";
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -40,15 +44,31 @@ function saveProfileForm() {
     let name_input = $("#reg_name"), name = name_input.val();
     let email_input = $("#reg_email"), email = email_input.val();
 
-    if (phone === "") phone_input.addClass("required_input"); else phone_input.removeClass("required_input");
-    if (pass === "") pass_input.addClass("required_input"); else pass_input.removeClass("required_input");
-    if (name === "") name_input.addClass("required_input"); else name_input.removeClass("required_input");
-    if (email === "") email_input.addClass("required_input"); else email_input.removeClass("required_input");
+    if (phone === "") {
+        phone_input.addClass("required_input");
+    } else {
+        phone_input.removeClass("required_input");
+    }
+    if (pass === "") {
+        pass_input.addClass("required_input");
+    } else {
+        pass_input.removeClass("required_input");
+    }
+    if (name === "") {
+        name_input.addClass("required_input");
+    } else {
+        name_input.removeClass("required_input");
+    }
+    if (email === "") {
+        email_input.addClass("required_input");
+    } else {
+        email_input.removeClass("required_input");
+    }
 
-    if ((phone!=="") && (pass!=="") && (name!=="") && (email!=="")) {
+    if ((phone !== "") && (pass !== "") && (name !== "") && (email !== "")) {
         JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone, 'type':1},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-                if (result.content!==false) {
+                if (result.content !== false) {
                     let text = "{user_already_logged}!<br>{phone_cap}: " + result.content[0];
                     showAlertModal(text,"{error_cap}",0);
                 } else {
@@ -65,16 +85,36 @@ function saveRegistrationForm() {
     let name_input = $("#reg_name"), name = name_input.val();
     let city_id = $("#user_city option:selected").val();
 
-    if (phone === "") phone_input.addClass("required_input"); else phone_input.removeClass("required_input");
-    if (pass === "") pass_input.addClass("required_input"); else pass_input.removeClass("required_input");
-    if (pass2 !== pass || pass2 === "") pass2_input.addClass("required_input"); else pass2_input.removeClass("required_input");
-    if (name === "") name_input.addClass("required_input"); else name_input.removeClass("required_input");
-    if (city_id === undefined) $(".select2").addClass("required_input"); else $(".select2").removeClass("required_input");
+    if (phone === "") {
+        phone_input.addClass("required_input");
+    } else {
+        phone_input.removeClass("required_input");
+    }
+    if (pass === "") {
+        pass_input.addClass("required_input");
+    } else {
+        pass_input.removeClass("required_input");
+    }
+    if (pass2 !== pass || pass2 === "") {
+        pass2_input.addClass("required_input");
+    } else {
+        pass2_input.removeClass("required_input");
+    }
+    if (name === "") {
+        name_input.addClass("required_input");
+    } else {
+        name_input.removeClass("required_input");
+    }
+    if (city_id === undefined) {
+        $(".select2").addClass("required_input");
+    } else {
+        $(".select2").removeClass("required_input");
+    }
 
     if ((phone !== "") && (pass !== "") && (pass === pass2) && (name !== "") && (city_id !== undefined)) {
         JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-            if (result.content!==false) {
+            if (result.content !== false) {
                 let text = "{user_already_logged}!<br>{client_login}: " + result.content[0];
                 showAlertModal(text,"{error_cap}", 0, showLoginForm);
             } else {
@@ -134,8 +174,9 @@ function loginForm() {
 function signInForm() {
     let login = $("#userlogin2").val();
     let password = $("#userpassword2").val();
-    if (login==="" || password==="") showAlertModal("{input_all_data}!","{error_cap}",0);
-    else {
+    if (login === "" || password === "") {
+        showAlertModal("{input_all_data}!","{error_cap}",0);
+    } else {
         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content === false) {
@@ -150,8 +191,9 @@ function signInForm() {
 function loginFormParams() {
     let login = $("#reg_phone").val();
     let password = $("#reg_password").val();
-    if (login==="" || password==="") showAlertModal("{input_all_data}!","{error_cap}",0);
-    else {
+    if (login === "" || password === "") {
+        showAlertModal("{input_all_data}!","{error_cap}",0);
+    } else {
         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content===false) showAlertModal("{user_not_logged}!","{error_cap}",0); else location.href="/profile/";
@@ -230,10 +272,10 @@ function recoverPassword() {
     let phone = $("#recover_phone").val();
     JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            if (result.content!==false) {
+            if (result.content !== false) {
                 recoverPasswordNext();
             } else {
-                let text="{user_not_logged}!";
+                let text = "{user_not_logged}!";
                 showAlertModal(text,"{error_cap}",0);
             }
         }
