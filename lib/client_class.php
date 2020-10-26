@@ -66,7 +66,7 @@ class ClientClass
     function getClientWhere() {
         $user_id = $this->getUser();
         $cookie_id = $_COOKIE["session_id"];
-        $user_id == 0 ? $result = "`cookie_id`='$cookie_id' AND `client_id`='0'" : $result = "`client_id`='$user_id'";
+        $result = ($user_id == 0) ? "`cookie_id`='$cookie_id' AND `client_id`='0'" : "`client_id`='$user_id'";
         return $result;
     }
 
@@ -76,7 +76,7 @@ class ClientClass
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `client_id`='$client_id' AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         $price_status = $db->result($r, 0, "price_status");
-        $n == 0 || $price_status == 0 ? $status = false : $status = true;
+        $status = ($n == 0 || $price_status == 0) ? false : true;
         return $status;
     }
 
@@ -85,21 +85,24 @@ class ClientClass
         list($client_id, $user_id) = $this->getClient();
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `client_id`='$client_id' AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
-        $n == 0 ? $status = false : $status = true;
+        $status =  ($n == 0) ? false : true;
         return $status;
     }
 
     function checkUnRegClient() {
         $user_id = $this->getUser();
-        $user_id == 0 ? $result = true : $result = false;
+        $result = ($user_id == 0);
         return $result;
     }
 
     function getClientAutoGarage($client_id, $user_id) { $db=DbSingleton::getTokoDb();
-        $where = "`client_id`='$client_id' AND `user_id`='$user_id'"; $typ_id = "";
+        $typ_id = "";
+        $where = "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `status`=1 LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n > 0) $typ_id = $db->result($r,0,"typ_id");
+        if ($n > 0) {
+            $typ_id = $db->result($r,0,"typ_id");
+        }
         return $typ_id;
     }
 
@@ -107,7 +110,9 @@ class ClientClass
     function formatPhone($phone) {
         $phone = $this->formatValidPhone($phone);
         $number = strlen($phone) - 9;
-        if ($number > 0) $phone = substr($phone, $number);
+        if ($number > 0) {
+            $phone = substr($phone, $number);
+        }
         $phone_arr = [];
         array_push($phone_arr, $phone);
         $format_phone = "0$phone"; array_push($phone_arr, "$format_phone");
@@ -155,7 +160,7 @@ class ClientClass
             $n2 = $db->num_rows($r);
         }
 
-        $n == 0 && $n2 == 0 ? $user_id = false : $user_id = $db->result($r, 0, "id");
+        $user_id = ($n == 0 && $n2 == 0) ? false : $db->result($r, 0, "id");
         $client_id = $db->result($r, 0, "client_id");
         $cash_id = $this->getClientCurrency($client_id);
 
@@ -190,12 +195,13 @@ class ClientClass
     function moveFromBasketToClient() { $db = DbSingleton::getTokoDb();
         $user_id = $this->getUser();
         $cookie = $_COOKIE["session_id"];
-        $r = $db->query("SELECT * FROM `basket` WHERE `cookie_id`='$cookie' AND `client_id`=0;"); $n = $db->num_rows($r);
-        if ($n>0) {
+        $r = $db->query("SELECT * FROM `basket` WHERE `cookie_id`='$cookie' AND `client_id`=0;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
             $db->query("UPDATE `basket` SET `client_id`='$user_id' WHERE `cookie_id`='$cookie' AND `client_id`=0;");
             // need to add group with amount
         }
-        return;
+        return true;
     }
 
 //    function getClientCity($client_id) { $db = DbSingleton::getDbm();
@@ -227,13 +233,15 @@ class ClientClass
         $email = $db->result($r,0,"user_email");
         $name = $db->result($r,0,"user_name");
         $type = $db->result($r,0,"org_type");
-        $country = $db->result($r,0,"country"); $country = $this->getCountryName($country);
+        $country = $db->result($r,0,"country");
+        $country = $this->getCountryName($country);
         $region = $db->result($r,0,"state");
-        $city = $db->result($r,0,"city"); $city = $this->getCityName($city);
+        $city = $db->result($r,0,"city");
+        $city = $this->getCityName($city);
         if ($user_id == 0) {
             $name = "{not_chosen}";
         }
-        return array("phone"=>$phone, "password"=>$password, "email"=>$email, "name"=>$name, "type"=>$type, "country"=>$country, "region"=>$region, "city"=>$city);
+        return array("phone" => $phone, "password" => $password, "email" => $email, "name" => $name, "type" => $type, "country" => $country, "region" => $region, "city" => $city);
     }
 
 //    function getOrderInfo($client_id, $user_id) { $db = DbSingleton::getDbm();
@@ -278,9 +286,11 @@ class ClientClass
         $client_id = $this->getClientByTpoint($tpoint_id);
         $date = date("Y-m-d H:i:s");
         list($region, $state, $country) = $this->getLocationCity($city_id);
-        if ($client_category == "") $client_category = 140;
+        if ($client_category == "") {
+            $client_category = 140;
+        }
 
-        if ($client_category==140) {
+        if ($client_category == 140) {
             // REGISTRATION AS CLIENT
             $this->addRetailClient($client_id, $phone, $name, $city_id, $email, $pass, 140);
         } else {
@@ -333,12 +343,8 @@ class ClientClass
         $order_id = $this->getUrlNumber($order_id);
         $name = $this->getUrlString($name);
         $email = $this->getUrlString($email);
-        $pass != "" ?: $pass = $this->randomPassword();
-        if ($phone != "") {
-            $update_phone = ", `phone`='$phone'";
-        } else {
-            $update_phone = "";
-        }
+        ($pass != "") ?: $pass = $this->randomPassword();
+        $update_phone = ($phone != "") ? ", `phone`='$phone'" : "";
         $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `pass`='$pass', `name`='$name' $update_phone, `email`='$email' WHERE `id`=$client;");
         $r = $db->query("SELECT `phone`, `pass`, `client_id` FROM `A_CLIENTS_USERS_RETAIL` WHERE `id`='$client';");
         $login = $db->result($r, 0, "phone");
@@ -379,7 +385,9 @@ class ClientClass
     function getTpointUser($client_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id';");
         $tpoint_id = $db->result($r, 0, "tpoint_id");
-        if ($tpoint_id == "" || $tpoint_id == 0) $tpoint_id = $this->default_tpoint;
+        if ($tpoint_id == "" || $tpoint_id == 0) {
+            $tpoint_id = $this->default_tpoint;
+        }
         return $tpoint_id;
     }
 
@@ -393,7 +401,7 @@ class ClientClass
     }
 
     function setTpointRetail() {
-        $_SESSION["tpoint"] != "" ?: $_SESSION["tpoint"] = $this->default_tpoint;
+        ($_SESSION["tpoint"] != "") ?: $_SESSION["tpoint"] = $this->default_tpoint;
         return true;
     }
 
@@ -417,14 +425,18 @@ class ClientClass
         $client_phone = $db->result($r, 0, "phone");
         $client_pass = $db->result($r, 0, "pass");
 
-        $n == 0 ? $res = false : $res = array($client_phone, $client_pass);
-        if ($type == 1) $res = false;
+        $res = ($n == 0) ? false : array($client_phone, $client_pass);
+        if ($type == 1) {
+            $res = false;
+        }
 
         // only for this user
         $user_id = $this->getUser();
         if ($user_id > 0) {
             $user_phone = $this->getClientPhone();
-            if ($phone === $user_phone) $res = false;
+            if ($phone === $user_phone) {
+                $res = false;
+            }
         }
 
         return $res;
@@ -437,7 +449,11 @@ class ClientClass
         $phone = $this->formatValidPhone($phone);
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n > 0) return true; else return false;
+        if ($n > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /*
@@ -464,13 +480,13 @@ class ClientClass
     }
 
     function getStorageByTpoint($tpoint_id) { $db = DbSingleton::getTokoDb();
-        $storage_local = []; $storage_remote = [];
+        $storage_local = $storage_remote = [];
         $r = $db->query("SELECT `storage_id`, `local` FROM `T_POINT_STORAGE` WHERE `tpoint_id`='$tpoint_id' AND `status`=1;");
         $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $storage_id = $db->result($r, $i-1, "storage_id");
             $local = $db->result($r, $i-1, "local");
-            $local == "41" ? array_push($storage_local, $storage_id) : array_push($storage_remote, $storage_id);
+            ($local == "41") ? array_push($storage_local, $storage_id) : array_push($storage_remote, $storage_id);
         }
         $storage_local = implode(",", $storage_local);
         $storage_remote = implode(",", $storage_remote);
@@ -563,7 +579,7 @@ class ClientClass
         $phone = $this->formatValidPhone($phone);
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n==0) {
+        if ($n == 0) {
             $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone`='$phone' AND `status`=$this->status_user_retail LIMIT 1;");
         }
         $password = $db->result($r, 0, "pass");
@@ -588,7 +604,7 @@ class ClientClass
         if ($n > 0) {
             $db->query("UPDATE `phone_validation` SET `status`=1 WHERE `phone`='$phone' AND `password`='$password' AND `status`=0;");
         }
-        $n > 0 ? $result = true : $result = false;
+        $result = ($n > 0);
         return $result;
     }
 
@@ -598,10 +614,16 @@ class ClientClass
      * Set CATEGORY
      * Set CONDITIONS
      * */
-    function addRetailClient($tpoint_client_id, $phone, $name="", $city_id=0, $email="", $pass="", $category="") { $db = DbSingleton::getDbm();
-        if ($name=="") $name = $phone;
-        if ($pass=="") $pass = $this->randomPassword();
-        if ($category=="") $category = $this->default_client_category;
+    function addRetailClient($tpoint_client_id, $phone, $name = "", $city_id = 0, $email = "", $pass = "", $category = "") { $db = DbSingleton::getDbm();
+        if ($name == "") {
+            $name = $phone;
+        }
+        if ($pass == "") {
+            $pass = $this->randomPassword();
+        }
+        if ($category == "") {
+            $category = $this->default_client_category;
+        }
         list($region_id, $state_id, $country_id) = $this->getLocationCity($city_id);
         $phone = $this->formatValidPhone($phone);
 
@@ -619,7 +641,7 @@ class ClientClass
 
         $this->moveClientsConditionsRetail($tpoint_client_id, $client_id);
 
-        return array("client_id"=>$client_id, "user_id"=>$user_id);
+        return array("client_id" => $client_id, "user_id" => $user_id);
     }
 
     /*
@@ -654,7 +676,11 @@ class ClientClass
     function checkRetailClientCategory($client_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
         $client_category = $db->result($r, 0, "client_category");
-        if ($client_category == 140) return true; else return false;
+        if ($client_category == 140) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /*
@@ -673,7 +699,9 @@ class ClientClass
     function toggleProductView($ds) {
         session_start();
         $_SESSION["display_status"] = $ds;
-        if ($ds != 0 && $ds != 1) $_SESSION["display_status"] = 0;
+        if ($ds != 0 && $ds != 1) {
+            $_SESSION["display_status"] = 0;
+        }
         return $_SESSION["display_status"];
     }
 
@@ -700,7 +728,8 @@ class ClientClass
     function checkActionClients() { $db = DbSingleton::getDbm();
         $user_id = $this->getUser();
         $categories = [];
-        $r = $db->query("SELECT `category_id` FROM `ACTION_CLIENTS_CATEGORY`;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `category_id` FROM `ACTION_CLIENTS_CATEGORY`;");
+        $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $category_id = $db->result($r, $i-1, "category_id");
             array_push($categories, $category_id);
@@ -722,8 +751,12 @@ class ClientClass
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $rounding_price = $db->result($r, 0, "rounding_price");
-                if ($rounding_price==1) $price = round($price * 100, -1) / 100;
-                if ($rounding_price==2) $price = round($price);
+                if ($rounding_price == 1) {
+                    $price = round($price * 100, -1) / 100;
+                }
+                if ($rounding_price == 2) {
+                    $price = round($price);
+                }
             }
         }
         return $price;
@@ -772,9 +805,11 @@ class ClientClass
         $col = 0;
         $history = [];
         $cookie = $_COOKIE["session_id"];
-        if ($cookie == "" || $cookie == NULL) $cookie = 0;
+        if ($cookie == "" || $cookie == NULL) {
+            $cookie = 0;
+        }
         list($client_id, $user_id) = $this->getClient();
-        if ($user_id == 0) $where = "`cookie_id`='$cookie'"; else $where = "`client_id`='$client_id' AND `client_user_id`='$user_id'";
+        $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id`='$client_id' AND `client_user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
@@ -784,7 +819,7 @@ class ClientClass
             $brand_link = $this->getBrandLink($brand_id);
             $art_name = strtoupper($art_name);
             $brand = $this->getBrandName($brand_id);
-            if ($brand!="") {
+            if ($brand != "") {
                 $history[$col] =
                     [
                         "id"=>$id,
@@ -825,8 +860,11 @@ class ClientClass
         $user_phone = $db->result($r, 0, "phone");
         $user_email = $db->result($r, 0, "email");
         $user_city = 0;
-        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `USER_ID`='$user_id' ORDER BY `ID` DESC LIMIT 1;"); $n = $db->num_rows($r);
-        if ($n > 0) $user_city = $db->result($r, 0, "CITY_ID");
+        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `USER_ID`='$user_id' ORDER BY `ID` DESC LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $user_city = $db->result($r, 0, "CITY_ID");
+        }
         return array($user_name, $user_phone, $user_email, $user_city);
     }
 
@@ -852,7 +890,7 @@ class ClientClass
         $r = $db->query("SELECT `id`, `client_id` FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' LIMIT 1;");
         $user_id = $db->result($r, 0, "id");
         $client_id = $db->result($r, 0, "client_id");
-        return array("user_id"=>$user_id, "client_id"=>$client_id);
+        return array("user_id" => $user_id, "client_id" => $client_id);
     }
 
     /*
@@ -862,7 +900,9 @@ class ClientClass
         $status = false;
         $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus' LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n > 0) $status = true;
+        if ($n > 0) {
+            $status = true;
+        }
         return $status;
     }
 

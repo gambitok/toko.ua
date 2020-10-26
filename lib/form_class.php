@@ -33,7 +33,11 @@ class FormClass extends CatalogueClass
         $flag = self::$flags[$brand_id]["ALFA2"];
         $name_country = self::$flags[$brand_id]["COUNTRY_NAME"];
         $flag = mb_strtolower($flag);
-        if ($name_country == "") return false; else return array("flag" => $flag, "country" => $name_country);
+        if ($name_country == "") {
+            return false;
+        } else {
+            return array("flag" => $flag, "country" => $name_country);
+        }
     }
 
     function showBrandForm($brand) { $db = DbSingleton::getTokoDb();
@@ -86,7 +90,8 @@ class FormClass extends CatalogueClass
         }
 
         $article = $this->getArticleInfo($art_id);
-        $article_nr_displ = $article["article_nr_displ"]; $format_article=$this->getFormatAticle($article_nr_displ);
+        $article_nr_displ = $article["article_nr_displ"];
+        $format_article = $this->getFormatAticle($article_nr_displ);
         $brand_id = $article["brand_id"];
         $brand_name = $article["brand_name"];
         $article_name = $article["text"];
@@ -94,7 +99,7 @@ class FormClass extends CatalogueClass
         // $brand_link = $this->getArtBrandLink($art_id, $brand_id);
         $brand_link = "";
         $flagData = $this->getCountryFlag($brand_id);
-        if ($flagData!==false) {
+        if ($flagData !== false) {
             $flag = $flagData["flag"];
             $country_name = $flagData["country"];
             $brand_form = "
@@ -141,7 +146,9 @@ class FormClass extends CatalogueClass
 
     function getArticleInfo($art_id) { $db = DbSingleton::getTokoDb();
         $client = new ClientClass; $kours = new ExRateClass;
-        $tpoint = $client->getTpoint(); $cur = $kours->getCurrentKours(); $cur_cap = $kours->getKoursCaption($cur);
+        $tpoint = $client->getTpoint();
+        $cur = $kours->getCurrentKours();
+        $cur_cap = $kours->getKoursCaption($cur);
 
         $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
         FROM `T2_ARTICLES` t2a
@@ -187,7 +194,9 @@ class FormClass extends CatalogueClass
         }
 
         $real_stock = $stock;
-        if ($stock > 10) $stock = ">10";
+        if ($stock > 10) {
+            $stock = ">10";
+        }
         $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
 
         $article =
@@ -231,7 +240,8 @@ class FormClass extends CatalogueClass
             $cash_add = "<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"$jsFilter\"><label for=\"radio_eur\">€</label>";
         }
         if ($this->getUser() != 0) {
-            $cur_usd = $kours->getKours("dollar"); $cur_eur = $kours->getKours("euro");
+            $cur_usd = $kours->getKours("dollar");
+            $cur_eur = $kours->getKours("euro");
             $list = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"$jsFilter\">
                 <label for=\"radio_uah\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{currency_cap}: &#xA USD - $cur_usd &#xA EURO - $cur_eur\">{uah_cap}</label>
             $cash_add";
@@ -252,21 +262,21 @@ class FormClass extends CatalogueClass
         if ($city_like != "") {
             $where = "WHERE `CITY_NAME` LIKE '%$city_like%'";
         } else {
-            $where="WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
+            $where = "WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
         }
         $r = $db->query("SELECT * FROM `T2_CITY` t2c
             LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID=t2c.REGION_ID)
             LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID=t2r.STATE_ID)
         $where;");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
+        for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r,$i-1,"CITY_ID");
             $city = $db->result($r,$i-1,"CITY_NAME");
             $region = $db->result($r,$i-1,"REGION_NAME");
             $state = $db->result($r,$i-1,"STATE_NAME");
-            if ($region=="") $location = "$city"; else $location = "$city - $region - $state";
-            if ($id==$city_id) $selected = true; else $selected = false;
-            $mas[$i] = ["id"=>$id, "value"=>$location, "selected"=>$selected];
+            $location = ($region == "") ? "$city" : "$city - $region - $state";
+            $selected = ($id == $city_id);
+            $mas[$i] = ["id" => $id, "value" => $location, "selected" => $selected];
         }
         return $mas;
     }
@@ -334,16 +344,16 @@ class FormClass extends CatalogueClass
      * Add History
      * */
     function insertHistory($article_nr_displ, $brand_id) { $db = DbSingleton::getTokoDb();
-        session_start(); $ses = session_id(); $cookie = $_COOKIE["session_id"]; $date = date("Y-m-d H:i:s");
-        $client_id = $this->getClient(); $user_id = $this->getUser();
+        session_start();
+        $ses = session_id();
+        $cookie = $_COOKIE["session_id"];
+        $date = date("Y-m-d H:i:s");
+        $client_id = $this->getClient();
+        $user_id = $this->getUser();
         $max_history_count = 10;
         $art_id = $this->getArtID($article_nr_displ);
         if ($brand_id > 0 && is_numeric($brand_id)) {
-            if ($user_id == 0) {
-                $where = "`cookie_id`='$cookie'";
-            } else {
-                $where = "`client_id`='$client_id' AND `client_user_id`='$user_id'";
-            }
+            $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id`='$client_id' AND `client_user_id`='$user_id'";
             $r = $db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;");
             $k = $db->result($r, 0, "kilk");
             if ($k > $max_history_count) {
@@ -458,7 +468,7 @@ class FormClass extends CatalogueClass
         for ($i=1; $i<=$n; $i++) {
             $photo_name = trim($db->result($r, $i-1, "PHOTO_NAME"));
         }
-        $photo_name=="" ? $photo_name = $this->noPhoto : $photo_name = "$this->uploads_link/$photo_name";
+        ($photo_name == "") ? $photo_name = $this->noPhoto : $photo_name = "$this->uploads_link/$photo_name";
         return $photo_name;
     }
 
@@ -503,10 +513,11 @@ class FormClass extends CatalogueClass
         $format_name = $this->getFormatAticle($article_name);
         $format_brand = $this->getFormatBrand($brand_name);
 
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;"); $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r, $i-1, "PHOTO_NAME"));
-            $i==1 ? $active = "active" : $active = "";
+            $active = ($i == 1) ? "active" : "";
             if ($display == 1) {
                 $list .= "<div class=\"carousel-item $active\">
                     <a itemprop=\"url\" href=\"https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/\">
@@ -563,9 +574,9 @@ class FormClass extends CatalogueClass
 
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
+        for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r,$i-1,"PHOTO_NAME"));
-            $i == 1 ? $active = "active" : $active = "";
+            $active = ($i == 1) ? "active" : "";
             $page_cap = "<div class=\"carousel-caption\">{page_cap} $i {of_cap} $n</div>";
             $list .= "<div class=\"carousel-item $active\">
                 <div class=\"search__photo\" style='height: 400px'>
@@ -607,7 +618,9 @@ class FormClass extends CatalogueClass
         }
 
         $info = $this->getArticleInfoForm($art_id, 1, 1);
-        if ($info != "") $info = "<div style='border:1px solid #e9e9e9; border-radius:.25em; padding:10px;'>$info</div>";
+        if ($info != "") {
+            $info = "<div style='border:1px solid #e9e9e9; border-radius:.25em; padding:10px;'>$info</div>";
+        }
         $applicability = $this->getApplManufTCD($art_id);
         $originals = $this->getOriginalNumbers($art_id);
 
@@ -655,7 +668,9 @@ class FormClass extends CatalogueClass
         for ($i=1; $i<=$n; $i++) {
             $typ_id = $db->result($r,$i-1,"TYP_ID");
             $typ_id_str .= "$typ_id";
-            if ($i < $n) { $typ_id_str.=","; }
+            if ($i < $n) {
+                $typ_id_str .= ",";
+            }
         }
         if ($typ_id_str != "") {
             $r = $db->query("SELECT man.MFA_ID, man.MFA_BRAND 
@@ -735,11 +750,19 @@ class FormClass extends CatalogueClass
             $fuel = $db->result($r,$i-1,"FUEL_ID");
             $fuel_name = $automan->getFuelName($fuel);
             $start = $db->result($r,$i-1,"TYP_PCON_START");
-            if ($start == 0) { $start = ""; }
-            if (strlen($start) == 6) { $start = substr($start,0,4) . "." . substr($start,4,2);}
+            if ($start == 0) {
+                $start = "";
+            }
+            if (strlen($start) == 6) {
+                $start = substr($start,0,4) . "." . substr($start,4,2);
+            }
             $end = $db->result($r,$i-1,"TYP_PCON_END");
-            if ($end == 0) { $end = ""; }
-            if (strlen($end) == 6) { $end = substr($end,0,4) . "." . substr($end,4,2);}
+            if ($end == 0) {
+                $end = "";
+            }
+            if (strlen($end) == 6) {
+                $end = substr($end,0,4) . "." . substr($end,4,2);
+            }
             $TYP_KW_FROM = $db->result($r,$i-1,"TYP_KW_FROM");
             $TYP_HP_FROM = $db->result($r,$i-1,"TYP_HP_FROM");
             $TYP_CCM = $db->result($r,$i-1,"TYP_CCM");
@@ -777,11 +800,11 @@ class FormClass extends CatalogueClass
         $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            !$display ? $class = "info__table" : $class = "info__table_min";
+            (!$display) ? $class = "info__table" : $class = "info__table_min";
             $info .= "<table class='$class'>";
             $max = $n;
             $type ?: $n <= 5 ?: $max = 5;
-            for ($i=1; $i<=$max; $i++) {
+            for ($i = 1; $i <= $max; $i++) {
                 $text = $db->result($r, $i-1, "TEXT");
                 $value = $db->result($r, $i-1, "VALUE");
                 $info.="<tr>
@@ -790,14 +813,14 @@ class FormClass extends CatalogueClass
                 </tr>";
             }
             $info .= "</table>";
-            $type ?: $n<=5 ?: $info .= "<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
+            $type ?: $n <= 5 ?: $info .= "<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
                 <a class='search__more' href='https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/'>
                     {more_read}
                 </a>    
             </p>";
-            !$display ?: $info = "<div style='padding: 10px;'>$info</div>";
+            (!$display) ?: $info = "<div style='padding: 10px;'>$info</div>";
         } else {
-            !$display ? $info = "{info_cap}" : $info = "";
+            (!$display) ? $info = "{info_cap}" : $info = "";
         }
         $info = str_replace('"', "", $info);
         $info = $this->replaceLang($info);
@@ -813,7 +836,7 @@ class FormClass extends CatalogueClass
             $title = $db->result($r, $i - 1, "TITLE");
             $text = $db->result($r, $i - 1, "TEXT");
             $image = $db->result($r, $i - 1, "IMAGE");
-            $k == 0 ? $class = "active" : $class = "";
+            $class = ($k == 0) ? "active" : "";
             $indicators .= "<li data-target=\"#carouselBanner\" data-slide-to=\"$k\" class=\"$class\"></li>";
             $items .= "<div class=\"carousel-item $class\">".$this->getCarsBannerItem($title, $text, "/images/banners/".$image)."</div>";
             $k++;
@@ -845,7 +868,7 @@ class FormClass extends CatalogueClass
             $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
             $mfa_image = $db->result($r, $i - 1, "LOGO_SVG");
-            $arr[$i] = ["brand"=>$mfa_brand, "link"=>$mfa_link, "image"=>$mfa_image];
+            $arr[$i] = ["brand" => $mfa_brand, "link" => $mfa_link, "image" => $mfa_image];
         }
         sort($arr);
         foreach ($arr as $value) {

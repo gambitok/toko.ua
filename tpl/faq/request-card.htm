@@ -1,0 +1,57 @@
+<script>
+    $(document).ready(function(){
+        $(".masked-phone").mask("+38(099) 999-99-99", {
+            placeholder:"+38(0__) ___-__-__",
+            autoclear: false,
+            alias: "numeric"
+        });
+        $(".masked-vin").mask("*****************", {
+            placeholder:"_______________",
+            autoclear: false,
+            alias: "numeric"
+        });
+    })
+</script>
+
+<div id="request-card" class="request">
+    <div class="request-row">
+        <div class="request-row__image"><img src="/images/icons/faq/vin-icon.png" alt="Icon"></div>
+        <div class="request-row__title">
+            <span>{faq_request_title}</span><br>
+            <span style="color: #36cd76;">{faq_request_title2}</span>
+        </div>
+    </div>
+    <div class="request-row">
+        <input id="help-phone" class="masked-phone" type="tel" placeholder="{phone_cap}">
+    </div>
+    <div class="request-row">
+        <input id="help-vin" class="masked-vin" type="text" placeholder="{vin_cap}">
+    </div>
+    <div class="request-row">
+        <textarea id="help-text" placeholder="{spare_parts_list}"></textarea>
+    </div>
+    <div class="request-row">
+        <input type="submit" value="{send_seller}" onclick="setClientRequestCard();">
+    </div>
+    <div class="request-row">
+        <div class="request-row__text" style="text-align: left">
+            <span>{faq_request_about}</span>
+            <a onclick="$('#VinForm').modal('show');">{faq_request_about2} <span class="fa fa-info-circle"></span></a>
+        </div>
+    </div>
+</div>
+
+<div id="VinForm" class="modal fade modal-gallery" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <img alt="image" src="/images/icons/faq/techpassport.png" style="max-width: 100%;">
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -99,10 +99,6 @@ class ExRateClass
 
     function getKoursSymbol($cur) {
         switch ($cur) {
-            case 1:  {
-                $result = "{uah_cap}";
-                break;
-            }
             case 2:  {
                 $result = "$";
                 break;
@@ -111,6 +107,7 @@ class ExRateClass
                 $result = "€";
                 break;
             }
+            case 1:
             default: {
                 $result = "{uah_cap}";
                 break;
