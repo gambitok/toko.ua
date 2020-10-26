@@ -6,10 +6,9 @@ $phone = $_POST['bonus_phone'];
 
 $phone = $client->formatValidPhone($phone);
 
-if ($phone=="") {
+if ($phone == "") {
         $content = str_replace("{main_window}", $menu->showScanForm(), $content);
 } else {
-
     // check if reg//
     if ($client->checkRegistration($phone)) {
         $clientData = $client->getClientUserbyPhone($phone);
@@ -30,6 +29,5 @@ if ($phone=="") {
         $client->validatePhone($phone);
         $content = str_replace("{main_window}", $menu->showScanPhoneForm($phone), $content);
     }
-
     $_POST['bonus_phone'] = "";
 }

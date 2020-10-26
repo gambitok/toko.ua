@@ -49,11 +49,15 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             for ($i=1; $i<=$n; $i++) {
                 $state_id = $db->result($r,$i-1,"id");
-                $title = $db->result($r,$i-1,"caption"); if ($title=="") $title = $this->replaceLang("{news_one_cap}"."-$state_id"); $format_title = $this->formatUrlText($title);
+                $title = $db->result($r,$i-1,"caption");
+                if ($title == "") {
+                    $title = $this->replaceLang("{news_one_cap}" . "-$state_id");
+                }
+                $format_title = $this->formatUrlText($title);
                 $short_desc = $db->result($r,$i-1,"short_desc");
                 $date = $db->result($r,$i-1,"data");
                 $img_file = $this->getNewsImage($state_id);
-                $img_file != ""
+                ($img_file != "")
                     ? $img = "<img itemprop=\"image\" src=\"/thumb.php?image=news/$lang/$state_id/$img_file&size=280\" alt=\"image\">"
                     : $img = "";
                 $list .= "<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"row news-block__item\">
@@ -83,12 +87,12 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT * FROM `news` WHERE `id`='$state_id';");
         $title = $db->result($r, 0, "caption");
         if ($title == "") {
-            $title = $this->replaceLang("{news_one_cap}"."-$state_id");
+            $title = $this->replaceLang("{news_one_cap}" . "-$state_id");
         }
         $text = $db->result($r, 0, "desc");
         $date = $db->result($r, 0, "data");
         $img_file = $this->getNewsImage($state_id);
-        $img_file != "" ? $img = "<p><img itemprop=\"image\" src=\"/uploads/images/news/$lang/$state_id/$img_file\" alt=\"state\"></p>" : $img = "";
+        $img = ($img_file != "") ? "<p><img itemprop=\"image\" src=\"/uploads/images/news/$lang/$state_id/$img_file\" alt=\"state\"></p>" : "";
         $list = "<div class=\"news-state\">
             <h1>$title</h1>
             <h2>$date</h2>
@@ -97,7 +101,7 @@ class MenuClass extends CatalogueClass
         </div>";
         $form = $this->getHtmlForm("news/news_state");
         $form = str_replace("{state_id}", $state_id, $form);
-        $form = str_replace("{state_info}", $state_id>0 ? $list : "<h1>$this->err1</h1>", $form);
+        $form = str_replace("{state_info}", ($state_id > 0) ? $list : "<h1>$this->err1</h1>", $form);
         return $form;
     }
 
@@ -112,9 +116,13 @@ class MenuClass extends CatalogueClass
 
     function getSpecialOffersList($template_id, $update_actions) { $db = DbSingleton::getDbm();
         $kours = new ExRateClass; $showform = new FormClass;
-        $prefix = $this->getLangPrefix(); $client_id = $this->getClient();
-        $err1 = $this->err1; $categories = []; $group_arts = [];
-        $where_arts = ""; $status_new = 0; $cur_data = date("Y-m-d");
+        $prefix = $this->getLangPrefix();
+        $client_id = $this->getClient();
+        $err1 = $this->err1;
+        $categories = $group_arts = [];
+        $where_arts = "";
+        $status_new = 0;
+        $cur_data = date("Y-m-d");
 
         if ($template_id != "" && $template_id != "0") {
             $arts = $this->getGoodsGroupArts($template_id);
@@ -151,7 +159,11 @@ class MenuClass extends CatalogueClass
                 $real_price = $this->getArticlePrice($art_id);
                 $real_price = $kours->getKoursFromUAH($real_price,2);
                 $discount = round((($real_price-$price)*100)/$real_price);
-                if ($update_actions != "") if ($status && $timestamp>"$update_actions 00:00:00") $status_new = 1;
+                if ($update_actions != "") {
+                    if ($status && $timestamp>"$update_actions 00:00:00") {
+                        $status_new = 1;
+                    }
+                }
                 $arr[$i] = ["status_new"=>$status_new, "art_id"=>$art_id, "article_nr_displ"=>$article_nr_displ, "amount"=>$amount, "max_amount"=>$max_amount, "timestamp"=>$timestamp, "data"=>$data, "status"=>$status, "discount"=>$discount];
             }
 
@@ -180,14 +192,10 @@ class MenuClass extends CatalogueClass
                 $brand_name = $this->getBrandName($brand_id);
                 $brand_link = $this->getBrandLink($brand_id);
 
-                $data > 0 ? $data = date("d.m.Y", strtotime($data)) : $data = "{indefinitely_cap}";
-                $max_amount > 0 ? $max_amount = "{yes_cap}" : $max_amount = "{no_cap}";
+                $data = ($data > 0) ? date("d.m.Y", strtotime($data)) : "{indefinitely_cap}";
+                $max_amount = ($max_amount > 0) ? "{yes_cap}" : "{no_cap}";
                 $link = "https://toko.ua$prefix/search/$article_nr_search/$brand_link/";
-                if ($status_new) {
-                    $status_new = "<span class=\"special-offers-item__bell\" title=\"{new_cap} {offer_cap}\"><span class=\"fa fa-bell\"></span></span>";
-                } else {
-                    $status_new = "";
-                }
+                $status_new = ($status_new) ? "<span class=\"special-offers-item__bell\" title=\"{new_cap} {offer_cap}\"><span class=\"fa fa-bell\"></span></span>" : "";
 
                 $article_info = $showform->getArticleInfoForm($art_id);
                 $info = "<span class=\"fas fa-info-circle tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-html=\"true\" title=\"$article_info\"></span>";
@@ -217,7 +225,7 @@ class MenuClass extends CatalogueClass
                                     <a class=\"special-offers-item__link\" href=\"$link\" target=\"_blank\"><span class=\"fa fa-link\"></span> {go_to_offer}</a>
                                 </div>
                                 <div class=\"col-4 text-right\">
-                                   <a class=\"special-offers-item__info\" onclick=\"showInfoForm($art_id, '$article_nr_displ', '$brand_name');\">$info</a>
+                                   <a class=\"special-offers-item__info\" onclick=\"showInfoForm($art_id,'$article_nr_displ','$brand_name');\">$info</a>
                                    $status_new
                                 </div>
                             </div>
@@ -483,7 +491,9 @@ class MenuClass extends CatalogueClass
                 </a>
             </li>";
         }
-        if ($n > 0) $list_address .= "</div>";
+        if ($n > 0) {
+            $list_address .= "</div>";
+        }
 
         $form = $this->getHtmlForm("menu/contacts_bottom");
         $form = str_replace("{list_phone}", $list_phone, $form);
@@ -524,8 +534,7 @@ class MenuClass extends CatalogueClass
     function getSellerImage() { $db = DbSingleton::getDbm();
         $cookie_id = $_COOKIE["session_id"];
         $r = $db->query("SELECT `real_file_name` FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id`='$cookie_id' ORDER BY `data` DESC LIMIT 1;");
-        $real_file_name = $db->result($r, 0, "real_file_name");
-        return $real_file_name;
+        return $db->result($r, 0, "real_file_name");
     }
 
     function showHeadTemplate($head_id) {
@@ -613,8 +622,7 @@ class MenuClass extends CatalogueClass
      * Scan Form (Bonus)
      * */
     function showScanForm() {
-        $form = $this->getHtmlForm("bonus/scan");
-        return $form;
+        return $this->getHtmlForm("bonus/scan");
     }
 
     function showScanPhoneForm($phone) {

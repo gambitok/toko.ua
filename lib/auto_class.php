@@ -12,8 +12,7 @@ class AutoClass extends CatalogueClass
         if ($n == 0) {
             $r = $db->query("SELECT `TEX_LINK` FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
         }
-        $str_text = $db->result($r, 0, "TEX_LINK");
-        return $str_text;
+        return $db->result($r, 0, "TEX_LINK");
     }
 
     function getStrNewLinkStr($str_link) { $db = DbSingleton::getTokoDb();
@@ -22,30 +21,22 @@ class AutoClass extends CatalogueClass
         if ($n == 0) {
             $r = $db->query("SELECT `STR_ID` FROM `T2_GROUP_TREE` WHERE `TEX_LINK`='$str_link' LIMIT 1;");
         }
-        $str_id = $db->result($r, 0, "STR_ID");
-        return $str_id;
+        return $db->result($r, 0, "STR_ID");
     }
 
     function getHeadNewLinkStr($head_link) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_GROUP_TREE_HEAD` WHERE `TEX_LINK`='$head_link' LIMIT 1;");
-        $head_id = $db->result($r, 0, "HEAD_ID");
-        return $head_id;
+        return $db->result($r, 0, "HEAD_ID");
     }
 
     function getCatNewLinkStr($head_id, $cat_link) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `CAT_ID` FROM `T2_GROUP_TREE_CATEGORY` WHERE `TEX_LINK`='$cat_link' AND `HEAD_ID`='$head_id' LIMIT 1;");
-        $cat_id = $db->result($r, 0, "CAT_ID");
-        return $cat_id;
+        return $db->result($r, 0, "CAT_ID");
     }
 
     function getHeadStr($str_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");
-//        $n = $db->num_rows($r);
-//        if ($n==0) {
-//            $r = $db->query("SELECT `HEAD_ID` FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' LIMIT 1;");
-//        }
-        $head_id = $db->result($r, 0, "HEAD_ID");
-        return $head_id;
+        return $db->result($r, 0, "HEAD_ID");
     }
 
     function getCarLink($typ_id, $str_id) {
@@ -145,8 +136,7 @@ class AutoClass extends CatalogueClass
 
     function getMfaBrand($mfa_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
-        $mfa_brand = $db->result($r, 0, "MFA_BRAND");
-        return $mfa_brand;
+        return $db->result($r, 0, "MFA_BRAND");
     }
 
     function getAutoModelIdLink($model_id_link) { $db = DbSingleton::getTokoDb();
@@ -193,8 +183,7 @@ class AutoClass extends CatalogueClass
     function getStrDescr($str_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `DISP_TEXT` FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' AND `STR_ID`!=0 LIMIT 1;");
         $n = $db->num_rows($r);
-        $text = ($n > 0) ? $db->result($r, 0, "DISP_TEXT") : "";
-        return $text;
+        return ($n > 0) ? $db->result($r, 0, "DISP_TEXT") : "";
     }
 
     function getHeadNewDescr($head_id) { $db = DbSingleton::getTokoDb();
@@ -555,20 +544,17 @@ class AutoClass extends CatalogueClass
     /*==== CARS VARIABLES ===*/
     function getMfaLink($mfa_link) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
-        $mfa_id = $db->result($r, 0, "MFA_ID");
-        return $mfa_id;
+        return $db->result($r, 0, "MFA_ID");
     }
 
     function getModLink($mod_link) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link`='$mod_link' LIMIT 1;");
-        $model = $db->result($r, 0, "Model");
-        return $model;
+        return $db->result($r, 0, "Model");
     }
 
     function getModIdLink($mod_id_link) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID`='$mod_id_link' LIMIT 1;");
-        $text = $db->result($r, 0, "TEX_TEXT");
-        return $text;
+        return $db->result($r, 0, "TEX_TEXT");
     }
 
     function getSeoContent($title, $mfa_link, $mod_link = "") {

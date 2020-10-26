@@ -9,29 +9,30 @@ class PartsClass extends CatalogueClass {
 
     function getHeadFromStr($str_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");
-        $head_id = $db->result($r, 0, "HEAD_ID");
-        return $head_id;
+        return $db->result($r, 0, "HEAD_ID");
     }
 
     function getInitForm($str_id) {
         $result = $this->initPartsTable($str_id);
-        $form = "<div class='content'>
+        return "<div class='content'>
             $result
         </div>";
-        return $form;
     }
 
     function initPartsTable($str_id) { $db = DbSingleton::getTokoDb(); $dbc = DbSingleton::getTokoCacheDb();
-        if ($this->checkTable($str_id)>0) $dbc->query("UPDATE `XX_TABLE_TREE_$str_id` SET `status`=0 WHERE 1;");
+        if ($this->checkTable($str_id) > 0) {
+            $dbc->query("UPDATE `XX_TABLE_TREE_$str_id` SET `status`=0 WHERE 1;");
+        }
 
         $arts = [];
-        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE` WHERE `STR_ID`='$str_id' GROUP BY `ART_ID`;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE` WHERE `STR_ID`='$str_id' GROUP BY `ART_ID`;");
+        $n = $db->num_rows($r);
         for ($i=1;$i<=$n;$i++) {
             $art_id = $db->result($r,$i-1,"ART_ID");
             $arts[$i]["art_id"] = $art_id;
         }
 
-        foreach ($arts as $key=>$values) {
+        foreach ($arts as $key => $values) {
             $art_id = $values["art_id"];
 
             $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT
@@ -51,7 +52,7 @@ class PartsClass extends CatalogueClass {
 
             $arts[$key]["brand_id"] = $brand_id;
 
-            if ($stock==0) {
+            if ($stock == 0) {
                 unset($arts[$key]);
             }
         }
@@ -66,11 +67,12 @@ class PartsClass extends CatalogueClass {
         ) ENGINE = MYISAM;");
 
         $count_add = 0; $count_upd = 0;
-        foreach ($arts as $key=>$values) {
+        foreach ($arts as $key => $values) {
             $art_id = $values["art_id"];
             $brand_id = $values["brand_id"];
-            $r = $dbc->query("SELECT COUNT(`ART_ID`) as count_art FROM `XX_TABLE_TREE_$str_id` WHERE `ART_ID`='$art_id';"); $n = $dbc->result($r, 0, "count_art") + 0;
-            if ($n==0) {
+            $r = $dbc->query("SELECT COUNT(`ART_ID`) as count_art FROM `XX_TABLE_TREE_$str_id` WHERE `ART_ID`='$art_id';");
+            $n = $dbc->result($r, 0, "count_art") + 0;
+            if ($n == 0) {
                 $dbc->query("INSERT INTO `XX_TABLE_TREE_$str_id` (`art_id`, `brand_id`, `status`) VALUES ('$art_id', '$brand_id', 1);");
                 $count_add++;
             } else {
@@ -79,7 +81,8 @@ class PartsClass extends CatalogueClass {
             }
         }
 
-        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `XX_TABLE_TREE_$str_id` WHERE `status`=0"); $count_del = $dbc->result($r, 0, "count_nulls") + 0;
+        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `XX_TABLE_TREE_$str_id` WHERE `status`=0");
+        $count_del = $dbc->result($r, 0, "count_nulls") + 0;
         $dbc->query("DELETE FROM `XX_TABLE_TREE_$str_id` WHERE `status`=0;");
 
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
@@ -95,49 +98,52 @@ class PartsClass extends CatalogueClass {
 
     function getPartsList() { $db = DbSingleton::getTokoDb();
         $list = "<ul>";
-        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1;"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1;");
+        $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $head_id = $db->result($r,$i-1,"HEAD_ID");
             $name = $db->result($r,$i-1,"TEX_RU");
             $head_list = $this->getPartsStrList($head_id);
-            $list.="<li>
+            $list .= "<li>
                 <b>$name</b>
                 $head_list
             </li>";
         }
-        $list.="</ul>";
+        $list .= "</ul>";
         return $list;
     }
 
     function getPartsStrList($head_id) { $db = DbSingleton::getTokoDb();
         $list = "<ul>";
-        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `HEAD_ID`='$head_id';"); $n = $db->num_rows($r);
+        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `HEAD_ID`='$head_id';");
+        $n = $db->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $str_id = $db->result($r,$i-1,"STR_ID");
             $name = $db->result($r,$i-1,"TEX_RU");
             $link = $db->result($r,$i-1,"TEX_LINK");
             $check = $this->checkTable($str_id);
-            if ($check>0) {
+            if ($check > 0) {
                 $check_form = "<span class='span-red'><i class='fa fa-edit'></i> UPDATE</span>";
                 $col = "($check)";
             } else {
                 $check_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
                 $col = "";
             }
-            $list.="<li>
+            $list .= "<li>
                 <a href='/parts/init/$str_id/'>
                     $check_form
                 </a>
                 <a href='/parts/$link/'>$name $col</a>
             </li>";
         }
-        $list.="</ul>";
+        $list .= "</ul>";
         return $list;
     }
 
     function checkTable($str_id) { $dbc = DbSingleton::getTokoCacheDb();
-        $r = $dbc->query("SHOW TABLES LIKE 'XX_TABLE_TREE_$str_id';"); $n = $dbc->num_rows($r);
-        if ($n>0) {
+        $r = $dbc->query("SHOW TABLES LIKE 'XX_TABLE_TREE_$str_id';");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
             $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `XX_TABLE_TREE_$str_id` WHERE 1;");
             $n = $dbc->result($r, 0, "col_arts");
         }
@@ -148,10 +154,13 @@ class PartsClass extends CatalogueClass {
         $where_brands = "";
         if (!empty($brandy)) {
             $brand_list = implode(",", $brandy);
-            if ($brand_list!="") $where_brands = "WHERE `brand_id` IN ($brand_list)";
+            if ($brand_list != "") {
+                $where_brands = "WHERE `brand_id` IN ($brand_list)";
+            }
         }
-        $r = $dbc->query("SHOW TABLES LIKE 'XX_TABLE_TREE_$str_id';"); $n = $dbc->num_rows($r);
-        if ($n>0) {
+        $r = $dbc->query("SHOW TABLES LIKE 'XX_TABLE_TREE_$str_id';");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
             $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `XX_TABLE_TREE_$str_id` $where_brands;");
             $n = $dbc->result($r, 0, "col_arts");
         }
@@ -161,16 +170,22 @@ class PartsClass extends CatalogueClass {
     function showPartsCatalogue($str_id, $page=1, $brandy=[]) { $dbc = DbSingleton::getTokoCacheDb();
         $automan = new AutoClass;
         $limit = $this->getSearchLimit($page);
-        $str_text = $automan->getStrNewDescr($str_id); if ($str_text=="") $str_text = $automan->getStrDescr($str_id);
+        $str_text = $automan->getStrNewDescr($str_id);
+        if ($str_text == "") {
+            $str_text = $automan->getStrDescr($str_id);
+        }
 
         $where_brands = "";
         if (!empty($brandy)) {
             $brand_list = implode(",", $brandy);
-            if ($brand_list!="") $where_brands = "WHERE `brand_id` IN ($brand_list)";
+            if ($brand_list != "") {
+                $where_brands = "WHERE `brand_id` IN ($brand_list)";
+            }
         }
 
         $arts = [];
-        $r = $dbc->query("SELECT * FROM `XX_TABLE_TREE_$str_id` $where_brands $limit;"); $n = $dbc->num_rows($r);
+        $r = $dbc->query("SELECT * FROM `XX_TABLE_TREE_$str_id` $where_brands $limit;");
+        $n = $dbc->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $art_id = $dbc->result($r, $i-1, "art_id");
             array_push($arts, $art_id);
@@ -180,10 +195,10 @@ class PartsClass extends CatalogueClass {
         list($list,, $filters,, $brands) = $this->searchList($where_arts, 1, 1);
 
         $form = $this->getHtmlForm("parts/parts_list");
-        $form = str_replace("{parts_name}",$str_text,$form);
-        $form = str_replace("{parts_list}",$list,$form);
+        $form = str_replace("{parts_name}", $str_text, $form);
+        $form = str_replace("{parts_list}", $list, $form);
 
-        return array("form"=>$form, "filters"=>$filters, "brands"=>$brands);
+        return array("form" => $form, "filters" => $filters, "brands" => $brands);
     }
 
 //    function getPartsBrandForm($str_id) { $dbc = DbSingleton::getTokoCacheDb();
@@ -205,13 +220,13 @@ class PartsClass extends CatalogueClass {
 
     function initPartsArts($str_id) { $dbc=DbSingleton::getTokoCacheDb();
         $art_ids = [];
-        $r = $dbc->query("SELECT `art_id` FROM `XX_TABLE_TREE_$str_id` WHERE 1;"); $n = $dbc->num_rows($r);
+        $r = $dbc->query("SELECT `art_id` FROM `XX_TABLE_TREE_$str_id` WHERE 1;");
+        $n = $dbc->num_rows($r);
         for ($i=1; $i<=$n; $i++) {
             $art_id = $dbc->result($r, $i-1, "art_id");
             array_push($art_ids, $art_id);
         }
-        $where_arts = implode(",", $art_ids);
-        return $where_arts;
+        return implode(",", $art_ids);
     }
 
     function getSearchLimit($page) {

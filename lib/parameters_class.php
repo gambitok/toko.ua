@@ -5,8 +5,8 @@ class ParametersClass {
     use Helper;
     use Variables;
 
-    public $products_on_page=12;
-    public $page_link="template";
+    public $products_on_page = 12;
+    public $page_link = "template";
     // $current_products = ALL products (NON Existed): ART_ID + PARAM_ID + VALUE_ID
     // $current_products_arts = ALL products (NON Existed): ART_ID
     // $active_products = FILTERED products (Existed): ART_ID

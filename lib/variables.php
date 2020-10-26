@@ -7,8 +7,7 @@ trait Variables
      * Format Article
      * */
     function getFormatAticle($name) {
-        $format_name = str_replace(str_split('.,+-\/:*?"<>| '), "", $name);
-        return $format_name;
+        return str_replace(str_split('.,+-\/:*?"<>| '), "", $name);
     }
 
     /*
@@ -58,8 +57,7 @@ trait Variables
      * */
     function getArticleSearch($art_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ARTICLE_NR_SEARCH` FROM `T2_ARTICLES` WHERE `ART_ID`='$art_id' LIMIT 1;");
-        $article_nr_search = $db->result($r, 0, "ARTICLE_NR_SEARCH");
-        return $article_nr_search;
+        return $db->result($r, 0, "ARTICLE_NR_SEARCH");
     }
 
     /*
@@ -67,8 +65,7 @@ trait Variables
      * */
     function getArticleDispl($art_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE `ART_ID`='$art_id' LIMIT 1;");
-        $article_nr_displ = $db->result($r, 0, "ARTICLE_NR_DISPL");
-        return $article_nr_displ;
+        return $db->result($r, 0, "ARTICLE_NR_DISPL");
     }
 
     /*
@@ -219,8 +216,7 @@ trait Variables
     function getArticlePhoto($art_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `MAIN` DESC, `PHOTO_NAME` ASC LIMIT 1;");
         $photo_name = $db->result($r,0,"PHOTO_NAME");
-        $photo_src = "https://toko.ua/uploads/images/catalogue/$photo_name";
-        return $photo_src;
+        return "https://toko.ua/uploads/images/catalogue/$photo_name";
     }
 
     function getBasketArticlePhoto($art_id) { $db = DbSingleton::getTokoDb();
@@ -239,15 +235,13 @@ trait Variables
     function getCityName($city_id) { $db = DbSingleton::getDbm();
         $city_id = $this->getUrlNumber($city_id);
         $r = $db->query("SELECT `CITY_NAME` FROM `T2_CITY` WHERE `CITY_ID`=$city_id LIMIT 1;");
-        $name = $db->result($r,0,"CITY_NAME");
-        return $name;
+        return $db->result($r,0,"CITY_NAME");
     }
 
     function getCountryName($country_id) { $db = DbSingleton::getDbm();
         $country_id = $this->getUrlNumber($country_id);
         $r = $db->query("SELECT `COUNTRY_NAME` FROM `T2_COUNTRIES` WHERE `COUNTRY_ID`='$country_id' LIMIT 1;");
-        $country_name = $db->result($r,0,"COUNTRY_NAME");
-        return $country_name;
+        return $db->result($r,0,"COUNTRY_NAME");
     }
 
     function getSaleInvoiceName($invoice_id) { $db = DbSingleton::getDbm();
@@ -283,8 +277,7 @@ trait Variables
         if ($lang_id == 2) $lang_id = 41;
         if ($lang_id == 3) $lang_id = 4;
         $r = $db->query("SELECT `FUEL` FROM `T_types_fuel` WHERE `FUEL_ID`='$fuel_id' AND `LANG_ID`='$lang_id' LIMIT 1;");
-        $fuel = $db->result($r, 0, "FUEL");
-        return $fuel;
+        return $db->result($r, 0, "FUEL");
     }
 
     function getBackClientsName($back_id) { $db = DbSingleton::getDbm();
@@ -303,8 +296,7 @@ trait Variables
         $prefix = $this->getLangPrefix();
         $article_nr_search = $this->getUrlString($article_nr_search);
         $brand_link = $this->getCatalogueBrandLink2($article_nr_search);
-        $link = "https://toko.ua$prefix/search/$article_nr_search/$brand_link";
-        return $link;
+        return "https://toko.ua$prefix/search/$article_nr_search/$brand_link";
     }
 
     function getCatalogueBrandLink2($article_nr_search) { $db = DbSingleton::getTokoDb();

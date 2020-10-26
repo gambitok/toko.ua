@@ -57,15 +57,13 @@ trait Helper
     function getClient() {
         $client = new ClientClass;
         $clientData = $client->getClient();
-        $client_id = $clientData[0];
-        return $client_id;
+        return $clientData[0];
     }
 
     function getUser() {
         $client = new ClientClass;
         $clientData = $client->getClient();
-        $user = $clientData[1];
-        return $user;
+        return $clientData[1];
     }
 
     function replaceLang($cont) {
@@ -78,29 +76,32 @@ trait Helper
         if ($_SESSION["lang"] == "" || $_SESSION["lang"] == 0) {
             $_SESSION["lang"] = 1;
         }
-        $lang = $_SESSION["lang"];
-        return $lang;
+        return $_SESSION["lang"];
     }
 
     function getLangPrefix() {
         $lang = $this->getLanguage();
         $pre = "";
-        if ($lang==1) $pre = "";
-        if ($lang==2) $pre = "/uk";
-        if ($lang==3) $pre = "/en";
+        if ($lang == 1) {
+            $pre = "";
+        }
+        if ($lang == 2) {
+            $pre = "/uk";
+        }
+        if ($lang == 3) {
+            $pre = "/en";
+        }
         return $pre;
     }
 
     function getManualName($key) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `id`='$key';");
-        $caption = $db->result($r, 0, "mcaption");
-        return $caption;
+        return $db->result($r, 0, "mcaption");
     }
 
     function getManualNameCaption($key, $mid) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `key`='$key' AND `mid`='$mid' LIMIT 1;");
-        $caption = $db->result($r, 0, "mcaption");
-        return $caption;
+        return $db->result($r, 0, "mcaption");
     }
 
     function getManualOptions($key) { $db = DbSingleton::getDbm();
@@ -206,8 +207,7 @@ trait Helper
     function checkPhoto($ref) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT COUNT(`ART_ID`) as col FROM `T2_PHOTOS` WHERE `ART_ID`='$ref' AND `ACTIVE`=1;");
         $n = intval($db->result($r, 0, "col"));
-        $n > 0 ? $res = true : $res = false;
-        return $res;
+        return ($n > 0);
     }
 
     /*

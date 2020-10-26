@@ -11,7 +11,10 @@ if ($client->checkUnRegClient()) {
     $content = str_replace("{profile_file_list}", $profile->showPriceList(), $content);
 
     $linksData = findLinks();
-    $panel = $linksData[1]; if ($panel=="") $panel = "account";
+    $panel = $linksData[1];
+    if ($panel == "") {
+        $panel = "account";
+    }
     $content = str_replace("{profile-$panel}", "in active", $content);
 
     if ($client->getClientPriceList())

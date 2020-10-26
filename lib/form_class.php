@@ -106,7 +106,7 @@ class FormClass extends CatalogueClass
             <a href=\"$brand_link\">
                 <span title=\"$country_name\" class=\"search__brand\" data-title=\"{brand_cap}\">$brand_name</span>
             </a>
-            <img class=\"flag flag-$flag flag-search\">";
+            <img class=\"flag flag-$flag flag-search\" alt=''>";
         } else {
             $brand_form = "
             <a href=\"$brand_link\">
@@ -199,20 +199,18 @@ class FormClass extends CatalogueClass
         }
         $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
 
-        $article =
-            [
-                "article_nr_displ"=>$article_nr_displ,
-                "brand_id"=>$brand_id,
-                "brand_name"=>$brand_name,
-                "text"=>$text,
-                "stock"=>$stock,
-                "delivery"=>$delivery_short_info,
-                "price"=>$price,
-                "currency"=>$cur_cap,
-                "delivery_days"=>$delivery_days,
-                "basket"=>$basket
-            ];
-        return $article;
+        return [
+            "article_nr_displ"=>$article_nr_displ,
+            "brand_id"=>$brand_id,
+            "brand_name"=>$brand_name,
+            "text"=>$text,
+            "stock"=>$stock,
+            "delivery"=>$delivery_short_info,
+            "price"=>$price,
+            "currency"=>$cur_cap,
+            "delivery_days"=>$delivery_days,
+            "basket"=>$basket
+        ];
     }
 
     function getCurrencyForm($type_filter, $template_id, $cur) {
@@ -479,9 +477,8 @@ class FormClass extends CatalogueClass
         for ($i=1; $i<=$n; $i++) {
             $photo_name = trim($db->result($r, $i-1, "PHOTO_NAME"));
         }
-        $photo_name == "" ? $photo_name = $this->noPhoto : $photo_name = "$this->uploads_link/".$photo_name;
-        $photo = "<img itemprop=\"image\" src=\"$photo_name\" alt=\"Article\">";
-        return $photo;
+        $photo_name = ($photo_name == "") ? $this->noPhoto : "$this->uploads_link/" . $photo_name;
+        return "<img itemprop=\"image\" src=\"$photo_name\" alt=\"Article\">";
     }
 
     function getArticlePhotos($art_id) {

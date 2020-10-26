@@ -9,8 +9,7 @@ class LangClass {
         if ($_SESSION["lang"] == "" || $_SESSION["lang"] == 0) {
             $_SESSION["lang"] = 1;
         }
-        $lang = $_SESSION["lang"];
-        return $lang;
+        return $_SESSION["lang"];
     }
 
     function getOldLanguage($lang_id) {
@@ -39,8 +38,7 @@ class LangClass {
 
     function getLangCap($lang_id) { $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `new_lang` WHERE `id`='$lang_id' LIMIT 1;");
-        $lang_name = $db->result($r,0,"abr");
-        return $lang_name;
+        return $db->result($r,0,"abr");
     }
 
     function getLanguageSelectList($sel_id) { $db = DbSingleton::getTokoDb();
@@ -79,8 +77,7 @@ class LangClass {
 
     function setSiteLang($id) {
         $_SESSION["lang"] = $id;
-        $prefix = $this->getLangPrefix();
-        return $prefix;
+        return $this->getLangPrefix();
     }
 
     function getLanguageName($code) { $db = DbSingleton::getTokoDb();

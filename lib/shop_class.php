@@ -323,7 +323,7 @@ class ShopClass extends CatalogueClass
                 if ($flagData != false) {
                     $flag = $flagData["flag"];
                     $country_name = $flagData["country"];
-                    $flag = "<img class=\"flag flag-$flag flag-search\">";
+                    $flag = "<img class=\"flag flag-$flag flag-search\" alt=''>";
                     $country_name = "{brand_manuf}: $country_name";
                 } else {
                     $flag = "";
@@ -411,8 +411,8 @@ class ShopClass extends CatalogueClass
         $client = new ClientClass;
         $where = $client->getClientWhere();
         $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
-        $amount = $db->result($r, 0, "amount");
-        return $amount;
+        $n = $db->num_rows($r);
+        return ($n > 0) ? $db->result($r, 0, "amount") : 0;
     }
 
     function deleteFromBasket($art_id, $storage_id) { $db = DbSingleton::getTokoDb();
@@ -427,8 +427,7 @@ class ShopClass extends CatalogueClass
         $where = $client->getClientWhere();
         $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;");
         $n = $db->num_rows($r);
-        $result = ($n > 0);
-        return $result;
+        return ($n > 0);
     }
 
     function checkBasketItem($art_id, $storage_id, $status) { $db = DbSingleton::getTokoDb();
@@ -463,8 +462,7 @@ class ShopClass extends CatalogueClass
 
     function countGarage() {
         $auto_typ_id = $this->getCookieAuto();
-        $style = ($auto_typ_id != "") ? "tool-status-hidden" : "";
-        return $style;
+        return ($auto_typ_id != "") ? "tool-status-hidden" : "";
     }
 
     function countSummBasket() { $db = DbSingleton::getTokoDb();
@@ -610,8 +608,7 @@ class ShopClass extends CatalogueClass
     function getOrderSumm($order_id) { $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `price_summ` FROM `orders_new` WHERE `id`='$order_id' LIMIT 1;");
         $n = $db->num_rows($r);
-        $summ = ($n > 0) ? $db->result($r, 0, "price_summ") : 0;
-        return $summ;
+        return ($n > 0) ? $db->result($r, 0, "price_summ") : 0;
     }
 
     // GET CLIENT DELIVERY DATA (by CITY, USER_ID)
@@ -1141,11 +1138,10 @@ class ShopClass extends CatalogueClass
         $exrate = new ExRateClass;
         $cur = $exrate->getCurrentKours();
         $cur_cap = $exrate->getKoursSymbol($cur);
-        $list = "<div class=\"cart-table-row cart-table-row-offset\">
+        return "<div class=\"cart-table-row cart-table-row-offset\">
             <div class=\"cart-table-cell cart-table-cell__label\">{total_cap}</div>
             <div class=\"cart-table-cell cart-table-cell__price\">$total $cur_cap</div>
         </div>";
-        return $list;
     }
 
     function hideOrderInfo($name, $phone, $city) {
@@ -1395,18 +1391,18 @@ class ShopClass extends CatalogueClass
         return array($list_np, $list_up);
     }
 
-    function getCitiesNP() {
-        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
-        $arr = $np->getCities()['data'];
-        foreach ($arr as $val) {
-            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-            $ref = $val["Ref"];
-            $area_ref = $val["Area"];
-            $area_name = $this->getAreaName($area_ref);
-            $this->setNova2(0, $name, $ref, $area_name, $area_ref);
-        }
-        return count($arr);
-    }
+//    function getCitiesNP() {
+//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+//        $arr = $np->getCities()['data'];
+//        foreach ($arr as $val) {
+//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
+//            $ref = $val["Ref"];
+//            $area_ref = $val["Area"];
+//            $area_name = $this->getAreaName($area_ref);
+//            $this->setNova2(0, $name, $ref, $area_name, $area_ref);
+//        }
+//        return count($arr);
+//    }
 
     function setNova2($city_id, $city_name, $city_ref, $area_name, $area_ref) { $db = DbSingleton::getTokoDb();
         $db->query("INSERT INTO `T2_CITY_NOVA_2` (`CITY_ID`, `CITY_NAME`, `CITY_REF`, `AREA_NAME`, `AREA_REF`) 
@@ -1417,8 +1413,7 @@ class ShopClass extends CatalogueClass
     function getAreaName($ref) {
         $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
         $val = $np->getWarehouses($ref)['data'][0];
-        $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-        return $name;
+        return iconv("UTF-8", "windows-1251", $val["Description"]);
     }
 
     function getNovaPoshtaWarehousesSelect($ref) {
@@ -1435,8 +1430,7 @@ class ShopClass extends CatalogueClass
     }
 
     function getUkrPoshtaWarehousesSelect() {
-        $list = "<option value='0'>{not_chosen}</option>";
-        return $list;
+        return "<option value='0'>{not_chosen}</option>";
     }
 
     /*==== /NOVA POSHTA API ====*/
