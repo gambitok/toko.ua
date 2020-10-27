@@ -163,7 +163,7 @@ class TemplateClass2 {
     public function getCurrentProducts($template_id)
     {
         $cat=new CatalogueClass;
-        $list=""; $where_art_id_str="";
+        $list=""; $art_id_str="";
 
         if (empty($this->_activeProducts)) { $this->initProducts($template_id); }
 
@@ -180,13 +180,13 @@ class TemplateClass2 {
 
         foreach ($this->_activeProducts as $art_id=>$product) {$col++;
             if ($col<=$max_page && $col>=$min_page) {
-                $where_art_id_str.="'$art_id'";$where_art_id_str.=",";
+                $art_id_str.="'$art_id'";$art_id_str.=",";
             }
         }
 
-        $where_art_id_str=trim($where_art_id_str,",");
+        $art_id_str = trim($art_id_str,",");
 
-        list($list_arts,,,)=$cat->searchList($where_art_id_str, 1, 1);
+        list($list_arts,,,)=$cat->searchList($art_id_str, 1, 1);
 
         $list.="$list_arts <hr>";
 

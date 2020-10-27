@@ -13,12 +13,12 @@ $content = str_replace("{language_dropdown}", $language->getLanguageSelectList($
 $content = str_replace("{garage_link}", $menu->getGarageLink(), $content);
 $content = str_replace("{site_mobile_panel}", $menu->getMediaNavPanel(), $content);
 
-if (!$profile->getClientInfo()) {
+if (!$profile->getProfileClientInfo()) {
     $content = str_replace("{region_select}", $menu->getRegionSelect(), $content);
     $content = str_replace("{login_info}", "", $content);
 } else {
     $content = str_replace("{region_select}", "", $content);
-    $content = str_replace("{login_info}", $profile->getClientInfo(), $content);
+    $content = str_replace("{login_info}", $profile->getProfileClientInfo(), $content);
 }
 
 

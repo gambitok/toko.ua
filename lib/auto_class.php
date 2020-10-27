@@ -6,7 +6,9 @@ class AutoClass extends CatalogueClass
     use Helper;
     use Variables;
 
-    function getStrNewLink($str_id) { $db = DbSingleton::getTokoDb();
+    public function getStrNewLink($str_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEX_LINK` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
@@ -15,7 +17,9 @@ class AutoClass extends CatalogueClass
         return $db->result($r, 0, "TEX_LINK");
     }
 
-    function getStrNewLinkStr($str_link) { $db = DbSingleton::getTokoDb();
+    public function getStrNewLinkStr($str_link)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `STR_ID` FROM `T2_GROUP_TREE_STR` WHERE `TEX_LINK`='$str_link' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
@@ -24,22 +28,29 @@ class AutoClass extends CatalogueClass
         return $db->result($r, 0, "STR_ID");
     }
 
-    function getHeadNewLinkStr($head_link) { $db = DbSingleton::getTokoDb();
+    public function getHeadNewLinkStr($head_link)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_GROUP_TREE_HEAD` WHERE `TEX_LINK`='$head_link' LIMIT 1;");
         return $db->result($r, 0, "HEAD_ID");
     }
 
-    function getCatNewLinkStr($head_id, $cat_link) { $db = DbSingleton::getTokoDb();
+    public function getCatNewLinkStr($head_id, $cat_link)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `CAT_ID` FROM `T2_GROUP_TREE_CATEGORY` WHERE `TEX_LINK`='$cat_link' AND `HEAD_ID`='$head_id' LIMIT 1;");
         return $db->result($r, 0, "CAT_ID");
     }
 
-    function getHeadStr($str_id) { $db = DbSingleton::getTokoDb();
+    public function getHeadStr($str_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");
         return $db->result($r, 0, "HEAD_ID");
     }
 
-    function getCarLink($typ_id, $str_id) {
+    public function getCarLink($typ_id, $str_id)
+    {
         $prefix = $this->getLangPrefix();
         if ($typ_id > 0 && $str_id > 0) {
             list($mfa, $model) = $this->getCarDescriptionAll($typ_id);
@@ -52,7 +63,9 @@ class AutoClass extends CatalogueClass
         return $link;
     }
 
-    function getCarDescriptionAll($typ_id) { $db = DbSingleton::getTokoDb();
+    public function getCarDescriptionAll($typ_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
         $mod_id = $db->result($r, 0, "TYP_MOD_ID");
         $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
@@ -63,7 +76,9 @@ class AutoClass extends CatalogueClass
         return array($mfa_link, $mod_link);
     }
 
-    function getCarDescription($typ_id) { $db = DbSingleton::getTokoDb();
+    public function getCarDescription($typ_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
         $mod_id = $db->result($r, 0, "TYP_MOD_ID");
         $typ_cap = $db->result($r, 0, "TYP_TEXT");
@@ -79,27 +94,33 @@ class AutoClass extends CatalogueClass
         return $car_cap;
     }
 
-    function getCarInfo($typ_id) { $db = DbSingleton::getTokoDb();
+    public function getCarInfo($typ_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
-        $mod_id = $db->result($r,0,"TYP_MOD_ID");
+        $mod_id = $db->result($r, 0, "TYP_MOD_ID");
         $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
-        $mfa_id = $db->result($r,0,"MOD_MFA_ID");
-        $model = $db->result($r,0,"Model");
+        $mfa_id = $db->result($r, 0, "MOD_MFA_ID");
+        $model = $db->result($r, 0, "Model");
         return array($mfa_id, $model, $mod_id);
     }
 
-    function getCookieCarInfo($typ_id) { $db = DbSingleton::getTokoDb();
+    public function getCookieCarInfo($typ_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
-        $mod_id = $db->result($r,0,"TYP_MOD_ID");
+        $mod_id = $db->result($r, 0, "TYP_MOD_ID");
         $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
-        $mfa_id = $db->result($r,0,"MOD_MFA_ID");
-        $model_link = $db->result($r,0,"Model_Link");
+        $mfa_id = $db->result($r, 0, "MOD_MFA_ID");
+        $model_link = $db->result($r, 0, "Model_Link");
         $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
-        $mfa_link = $db->result($r,0,"MFA_BRAND_LINK");
-        return array("mfa_link"=>$mfa_link, "model_link"=>$model_link);
+        $mfa_link = $db->result($r, 0, "MFA_BRAND_LINK");
+        return array("mfa_link" => $mfa_link, "model_link" => $model_link);
     }
 
-    function getAutoDescr($mf, $ml = "", $mi = "", $gr = "") { $db = DbSingleton::getTokoDb();
+    public function getAutoDescr($mf, $ml = "", $mi = "", $gr = "")
+    {
+        $db = DbSingleton::getTokoDb();
         $manufacture = $model = $modelid = $group = "";
         $ml = $this->getUrlString($ml);
         if ($mf > 0 && is_numeric($mf)) {
@@ -121,7 +142,9 @@ class AutoClass extends CatalogueClass
         return array($manufacture, $model, $modelid, $group);
     }
 
-    function getAutoDescrLink($mf, $ml) { $db = DbSingleton::getTokoDb();
+    public function getAutoDescrLink($mf, $ml)
+    {
+        $db = DbSingleton::getTokoDb();
         $mfa_brand = $model = "";
         if ($mf != "") {
             $r = $db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mf' LIMIT 1;");
@@ -134,12 +157,16 @@ class AutoClass extends CatalogueClass
         return array($mfa_brand, $model);
     }
 
-    function getMfaBrand($mfa_id) { $db = DbSingleton::getTokoDb();
+    public function getMfaBrand($mfa_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
         return $db->result($r, 0, "MFA_BRAND");
     }
 
-    function getAutoModelIdLink($model_id_link) { $db = DbSingleton::getTokoDb();
+    public function getAutoModelIdLink($model_id_link)
+    {
+        $db = DbSingleton::getTokoDb();
         $text = $model_id = "";
         if ($model_id_link != "") {
             $r = $db->query("SELECT `MOD_ID`, `TEX_TEXT` FROM `T_models` WHERE `TEX_TEXT_link`='$model_id_link' LIMIT 1;");
@@ -149,45 +176,53 @@ class AutoClass extends CatalogueClass
         return array("text" => $text, "model_id" => $model_id);
     }
 
-    function getAutoIdsLink($mf, $ml) { $db = DbSingleton::getTokoDb();
+    public function getAutoIdsLink($mf, $ml)
+    {
+        $db = DbSingleton::getTokoDb();
         $mfa_id = $model = "";
         if ($mf != "") {
             $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mf' LIMIT 1;");
-            $mfa_id = $db->result($r,0,"MFA_ID");
+            $mfa_id = $db->result($r, 0, "MFA_ID");
         }
         if ($ml != "") {
             $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link`='$ml' LIMIT 1;");
-            $model = $db->result($r,0,"Model");
+            $model = $db->result($r, 0, "Model");
         }
         return array($mfa_id, $model);
     }
 
-    function getAutoIMG($mf, $ml, $mi) { $db = DbSingleton::getTokoDb();
+    public function getAutoIMG($mf, $ml, $mi)
+    {
+        $db = DbSingleton::getTokoDb();
         $manufacture = $model = $modelid = "";
         $ml = $this->getUrlString($ml);
         if ($mf > 0 && is_numeric($mf)) {
             $r = $db->query("SELECT `LOGO` FROM `T_manufacturers` WHERE `MFA_ID`='$mf' LIMIT 1;");
-            $manufacture = $db->result($r,0,"LOGO");
+            $manufacture = $db->result($r, 0, "LOGO");
         }
         if ($ml != "") {
             $r = $db->query("SELECT `Car_pict` FROM `T_models` WHERE `Model`='$ml' LIMIT 1;");
-            $model = $db->result($r,0,"Car_pict");
+            $model = $db->result($r, 0, "Car_pict");
         }
         if ($mi > 0 && is_numeric($mf)) {
             $r = $db->query("SELECT `Car_pict` FROM `T_models` WHERE `MOD_ID`='$mi' LIMIT 1;");
-            $modelid = $db->result($r,0,"Car_pict");
+            $modelid = $db->result($r, 0, "Car_pict");
         }
         return array("mfa_image" => $manufacture, "model_image" => $model, "model_id_image" => $modelid);
     }
 
-    function getStrDescr($str_id) { $db = DbSingleton::getTokoDb();
+    public function getStrDescr($str_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `DISP_TEXT` FROM `T2_GROUP_TREE` WHERE `STR_ID`='$str_id' AND `STR_ID`!=0 LIMIT 1;");
         $n = $db->num_rows($r);
         return ($n > 0) ? $db->result($r, 0, "DISP_TEXT") : "";
     }
 
-    function getHeadNewDescr($head_id) { $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
+    public function getHeadNewDescr($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $language = new LangClass();
         $lang_id = $this->getLanguage();
         $prefix = $language->getTexCapLanguage($lang_id);
         $head_id = $this->getUrlNumber($head_id);
@@ -201,8 +236,10 @@ class AutoClass extends CatalogueClass
         return array($TEX_TEXT, $TEX_LINK);
     }
 
-    function getCatNewDescr($cat_id) { $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
+    public function getCatNewDescr($cat_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $language = new LangClass();
         $lang_id = $this->getLanguage();
         $prefix = $language->getTexCapLanguage($lang_id);
         $cat_id = $this->getUrlNumber($cat_id);
@@ -210,14 +247,16 @@ class AutoClass extends CatalogueClass
         $r = $db->query("SELECT `TEX_$prefix`, `TEX_LINK` FROM `T2_GROUP_TREE_CATEGORY` WHERE `CAT_ID`=$cat_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $TEX_TEXT = $db->result($r,0,"TEX_$prefix");
-            $TEX_LINK = $db->result($r,0,"TEX_LINK");
+            $TEX_TEXT = $db->result($r, 0, "TEX_$prefix");
+            $TEX_LINK = $db->result($r, 0, "TEX_LINK");
         }
         return array($TEX_TEXT, $TEX_LINK);
     }
 
-    function getStrNewDescr($str_id) { $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
+    public function getStrNewDescr($str_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $language = new LangClass();
         $lang_id = $this->getLanguage();
         $prefix = $language->getTexCapLanguage($lang_id);
         $str_id = $this->getUrlNumber($str_id);
@@ -225,12 +264,14 @@ class AutoClass extends CatalogueClass
         $r = $db->query("SELECT `TEX_$prefix` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`=$str_id AND `STR_ID`!=0 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $TEX_TEXT = $db->result($r,0,"TEX_$prefix");
+            $TEX_TEXT = $db->result($r, 0, "TEX_$prefix");
         }
         return $TEX_TEXT;
     }
 
-    function getStrParams($str_id) { $db = DbSingleton::getTokoDb();
+    public function getStrParams($str_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $str_id = $this->getUrlNumber($str_id);
         $r = $db->query("SELECT * FROM `T2_GROUP_TREE` WHERE `STR_ID`=$str_id LIMIT 1;");
         $str_level = $db->result($r, 0, "STR_LEVEL");
@@ -238,8 +279,9 @@ class AutoClass extends CatalogueClass
         return array($str_level, $str_id_parrent);
     }
 
-    function getAutoStrData() {
-        define('RDD', dirname (__FILE__));
+    public function getAutoStrData()
+    {
+        define('RDD', dirname(__FILE__));
         $linka = findLinks();
         $str_id = $linka[6];
         $str_level = $linka[7];
@@ -250,7 +292,8 @@ class AutoClass extends CatalogueClass
         return array($str_id, $str_level, $str_id_parrent);
     }
 
-    function setAutoData($manufacture, $model, $modelid, $group, $str_id, $str_level = 0, $str_id_parrent = 0) {
+    public function setAutoData($manufacture, $model, $modelid, $group, $str_id, $str_level = 0, $str_id_parrent = 0)
+    {
         $_SESSION["manufacture"] = $manufacture;
         $_SESSION["model"] = $model;
         $_SESSION["modelid"] = $modelid;
@@ -264,30 +307,33 @@ class AutoClass extends CatalogueClass
     /*
      * Get GROUP text info
      * */
-    function getGroupInfo($typ_id) { $db = DbSingleton::getTokoDb();
+    public function getGroupInfo($typ_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $list = "";
         $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' AND `ACTIVE`=1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $kw_from = $db->result($r,0,"TYP_KW_FROM");
-            $hp_from = $db->result($r,0,"TYP_HP_FROM");
-            $ccm = $db->result($r,0,"TYP_CCM");
-            $d_start = $db->result($r,0,"TYP_PCON_START");
-            $d_end = $db->result($r,0,"TYP_PCON_END");
-            $fuel = $db->result($r,0,"FUEL_ID"); $fuel = $this->getFuelName($fuel);
-            $eng_cod = $db->result($r,0,"ENG_Cod");
-            $full_name = $db->result($r,0,"TYP_MMT_TEXT");
+            $kw_from = $db->result($r, 0, "TYP_KW_FROM");
+            $hp_from = $db->result($r, 0, "TYP_HP_FROM");
+            $ccm = $db->result($r, 0, "TYP_CCM");
+            $d_start = $db->result($r, 0, "TYP_PCON_START");
+            $d_end = $db->result($r, 0, "TYP_PCON_END");
+            $fuel = $db->result($r, 0, "FUEL_ID");
+            $fuel = $this->getFuelName($fuel);
+            $eng_cod = $db->result($r, 0, "ENG_Cod");
+            $full_name = $db->result($r, 0, "TYP_MMT_TEXT");
             if ($d_start == 0) {
                 $d_start = "";
             }
             if (strlen($d_start) == 6) {
-                $d_start = substr($d_start,0,4) . "." . substr($d_start,4,2);
+                $d_start = substr($d_start, 0, 4) . "." . substr($d_start, 4, 2);
             }
             if ($d_end == 0) {
                 $d_end = "";
             }
             if (strlen($d_end) == 6) {
-                $d_end = substr($d_end,0,4) . "." . substr($d_end,4,2);
+                $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
             }
             $d_end_true = $d_end;
             $list = "$full_name ($d_start - $d_end_true)<br>$fuel, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}, $ccm cm3, $eng_cod";
@@ -296,7 +342,9 @@ class AutoClass extends CatalogueClass
     }
 
     /*==== GARAGE ====*/
-    function getChosenAutoGarage($client_id, $user_id) { $db = DbSingleton::getTokoDb();
+    public function getChosenAutoGarage($client_id, $user_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();
         $cookie = $_COOKIE["session_id"];
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
@@ -307,7 +355,7 @@ class AutoClass extends CatalogueClass
             $typ_text = $this->getGroupInfo($typ_id);
             list($manufacture, $model, $model_id) = $this->getCarInfo($typ_id);
             list($manufacture_cap, , $model_id_cap,) = $this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
-            $models_img = $this->getAutoIMG($manufacture,$model,$model_id)["model_id_image"];
+            $models_img = $this->getAutoIMG($manufacture, $model, $model_id)["model_id_image"];
             $auto_form = $this->getHtmlForm("garage/garage_selected");
             $auto_form = str_replace("{manufacture_cap}", $manufacture_cap, $auto_form);
             $auto_form = str_replace("{model_id_cap}", $model_id_cap, $auto_form);
@@ -321,7 +369,9 @@ class AutoClass extends CatalogueClass
         return $auto_form;
     }
 
-    function updateChosenAutoGarage($auto_id) { $db = DbSingleton::getTokoDb();
+    public function updateChosenAutoGarage($auto_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $client_id = $this->getClient();
         $user_id = $this->getUser();
         $cookie = $_COOKIE["session_id"];
@@ -329,9 +379,9 @@ class AutoClass extends CatalogueClass
         $r = $db->query("SELECT `id`, `typ_id` FROM `AUTO_GARAGE` WHERE $where;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            for ($i=1; $i<=$n; $i++) {
-                $id = $db->result($r, $i-1, "id");
-                $typ_id = $db->result($r, $i-1, "typ_id");
+            for ($i = 1; $i <= $n; $i++) {
+                $id = $db->result($r, $i - 1, "id");
+                $typ_id = $db->result($r, $i - 1, "typ_id");
                 if ($auto_id == $id) {
                     $db->query("UPDATE `AUTO_GARAGE` SET `status`=1 WHERE `id`=$id;");
                     setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
@@ -343,27 +393,31 @@ class AutoClass extends CatalogueClass
         return true;
     }
 
-    function deleteAutoGarage($auto_id) { $db = DbSingleton::getTokoDb();
+    public function deleteAutoGarage($auto_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $db->query("DELETE FROM `AUTO_GARAGE` WHERE `id`=$auto_id;");
         $client_id = $this->getClient();
         $user_id = $this->getUser();
         $cookie = $_COOKIE["session_id"];
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where ORDER BY `timestamp` DESC LIMIT 1;");
-        $n=$db->num_rows($r);
+        $n = $db->num_rows($r);
         if ($n == 0) {
-            setcookie("auto_typ_id", "", time()-3600, "/");
+            setcookie("auto_typ_id", "", time() - 3600, "/");
             return false;
         } else {
-            $id = $db->result($r,0,"id");
-            $typ_id = $db->result($r,0,"typ_id");
+            $id = $db->result($r, 0, "id");
+            $typ_id = $db->result($r, 0, "typ_id");
             $db->query("UPDATE `AUTO_GARAGE` SET `status`=1 WHERE `id`='$id' LIMIT 1;");
             setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
             return true;
         }
     }
 
-    function showGarageForm() { $db = DbSingleton::getTokoDb();
+    public function showGarageForm()
+    {
+        $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("garage/garage");
         $list = $auto_form = "";
         $client_id = $this->getClient();
@@ -373,9 +427,9 @@ class AutoClass extends CatalogueClass
         $r = $db->query("SELECT `id`, `typ_id` FROM `AUTO_GARAGE` WHERE $where;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            for ($i=1; $i<=$n; $i++) {
-                $id = $db->result($r, $i-1, "id");
-                $typ_id = $db->result($r, $i-1, "typ_id");
+            for ($i = 1; $i <= $n; $i++) {
+                $id = $db->result($r, $i - 1, "id");
+                $typ_id = $db->result($r, $i - 1, "typ_id");
                 list($manufacture, $model, $model_id) = $this->getCarInfo($typ_id);
                 if ($typ_id != $this->getCookieAuto()) {
                     $status_cap = "{select_cap}";
@@ -386,7 +440,7 @@ class AutoClass extends CatalogueClass
                     $status_disable = "disabled";
                     $status_btn = "";
                 }
-                list($manufacture_cap,, $model_id_cap, $typ_text) = $this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
+                list($manufacture_cap, , $model_id_cap, $typ_text) = $this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                 $list .= "
                 <li class=\"row garage-row\">
                     <div class=\"col-6 garage-row__text\">
@@ -411,7 +465,9 @@ class AutoClass extends CatalogueClass
         return $form;
     }
 
-    function addToGarage($typ_id) { $db = DbSingleton::getTokoDb();
+    public function addToGarage($typ_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $client_id = $this->getClient();
         $user_id = $this->getUser();
         list($manufacture, $model, $model_id) = $this->getCarInfo($typ_id);
@@ -426,12 +482,12 @@ class AutoClass extends CatalogueClass
                 if ($n == 0) {
                     $rs = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `status`=1;");
                     $ns = $db->num_rows($rs);
-                    for ($i=1; $i<=$ns; $i++) {
-                        $id = $db->result($rs, $i-1, "id");
+                    for ($i = 1; $i <= $ns; $i++) {
+                        $id = $db->result($rs, $i - 1, "id");
                         $db->query("UPDATE `AUTO_GARAGE` SET `status`=0 WHERE `id`=$id;");
                     }
                     $db->query("INSERT INTO `AUTO_GARAGE` (`client_id`, `user_id`, `cookie_id`, `typ_id`, `status`) VALUES ($client_id, $user_id, '$cookie', $typ_id, 1);");
-                    list($manufacture_cap,, $model_id_cap, $typ_text) = $this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
+                    list($manufacture_cap, , $model_id_cap, $typ_text) = $this->getAutoDescr($manufacture, $model, $model_id, $typ_id);
                     setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
                     $result = $this->replaceLang("{auto_cap} $manufacture_cap $model_id_cap $typ_text {garage_added}");
                 } else {
@@ -446,7 +502,9 @@ class AutoClass extends CatalogueClass
         return $result;
     }
 
-    function getGarageAutoCount() { $db = DbSingleton::getTokoDb();
+    public function getGarageAutoCount()
+    {
+        $db = DbSingleton::getTokoDb();
         $client_id = $this->getClient();
         $user_id = $this->getUser();
         $cookie = $_COOKIE["session_id"];
@@ -458,7 +516,9 @@ class AutoClass extends CatalogueClass
         return array($list, $style);
     }
 
-    function checkUserGarage($typ_id) { $db = DbSingleton::getTokoDb();
+    public function checkUserGarage($typ_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $client_id = $this->getClient();
         $user_id = $this->getUser();
         $cookie = $_COOKIE["session_id"];
@@ -469,7 +529,9 @@ class AutoClass extends CatalogueClass
     }
 
     /*==== HISTORY ====*/
-    function insertAutoHistory($typ_id) { $db = DbSingleton::getTokoDb();
+    public function insertAutoHistory($typ_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $cookie = $_COOKIE["session_id"];
         $date = date("Y-m-d H:i:s");
         $client_id = $this->getClient();
@@ -480,10 +542,11 @@ class AutoClass extends CatalogueClass
         $k = $db->result($r, 0, "kilk");
         if ($k > $max_history_count) {
             $r = $db->query("SELECT `id` FROM `AUTO_HISTORY` WHERE $where ORDER BY `timestamp` ASC LIMIT 1;");
-            $id = $db->result($r,0,"id");
+            $id = $db->result($r, 0, "id");
             $db->query("UPDATE `AUTO_HISTORY` SET `typ_id`='$typ_id' WHERE `id`='$id';");
         } else {
-            $r = $db->query("SELECT `id` FROM `AUTO_HISTORY` WHERE $where AND `typ_id`='$typ_id';"); $n=$db->num_rows($r);
+            $r = $db->query("SELECT `id` FROM `AUTO_HISTORY` WHERE $where AND `typ_id`='$typ_id';");
+            $n = $db->num_rows($r);
             if ($n > 0) {
                 $db->query("UPDATE `AUTO_HISTORY` SET `timestamp`='$date' WHERE $where AND `typ_id`='$typ_id';");
             } else {
@@ -494,23 +557,26 @@ class AutoClass extends CatalogueClass
         return true;
     }
 
-    function showAutoHistory() { $db = DbSingleton::getTokoDb();
+    public function showAutoHistory()
+    {
+        $db = DbSingleton::getTokoDb();
         $cookie = $_COOKIE["session_id"];
         $user_id = $this->getUser();
         $client_id = $this->getClient();
         $where = ($user_id == 0) ? "cookie_id='$cookie'" : "client_id='$client_id' AND client_user_id='$user_id'";
         $r = $db->query("SELECT `id`, `typ_id` FROM `AUTO_HISTORY`
-        WHERE $where GROUP BY `typ_id` ORDER BY `timestamp` DESC LIMIT 10;"); $n = $db->num_rows($r);
+        WHERE $where GROUP BY `typ_id` ORDER BY `timestamp` DESC LIMIT 10;");
+        $n = $db->num_rows($r);
         if ($n > 0) {
             $list = "";
-            for ($i=1; $i<=$n; $i++) {
-                $id = $db->result($r,$i-1,"id");
-                $typ_id = $db->result($r,$i-1,"typ_id");
+            for ($i = 1; $i <= $n; $i++) {
+                $id = $db->result($r, $i - 1, "id");
+                $typ_id = $db->result($r, $i - 1, "typ_id");
                 $list .= "<li class=\"garage-history-block-list__item\">
                     <div class='container'>
                         <div class='row'>
                             <div class='col-10'>
-                                <a onclick='setCookie(\"auto_typ_id\", $typ_id); location.reload();'>".$this->getCarDescription($typ_id)."</a>
+                                <a onclick='setCookie(\"auto_typ_id\", $typ_id); location.reload();'>" . $this->getCarDescription($typ_id) . "</a>
                             </div>
                             <div class='col-2 text-right'>
                                 <a onclick='dropAutoHistory($id)'><i class=\"fa fa-times\"></i></a>
@@ -528,7 +594,9 @@ class AutoClass extends CatalogueClass
         return $form;
     }
 
-    function dropAutoHistory($history_id) { $db=DbSingleton::getTokoDb();
+    public function dropAutoHistory($history_id)
+    {
+        $db = DbSingleton::getTokoDb();
         if ($history_id == "") {
             $user_id = $this->getUser();
             $client_id = $this->getClient();
@@ -542,22 +610,29 @@ class AutoClass extends CatalogueClass
     }
 
     /*==== CARS VARIABLES ===*/
-    function getMfaLink($mfa_link) { $db = DbSingleton::getTokoDb();
+    public function getMfaLink($mfa_link)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
         return $db->result($r, 0, "MFA_ID");
     }
 
-    function getModLink($mod_link) { $db = DbSingleton::getTokoDb();
+    public function getModLink($mod_link)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link`='$mod_link' LIMIT 1;");
         return $db->result($r, 0, "Model");
     }
 
-    function getModIdLink($mod_id_link) { $db = DbSingleton::getTokoDb();
+    public function getModIdLink($mod_id_link)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID`='$mod_id_link' LIMIT 1;");
         return $db->result($r, 0, "TEX_TEXT");
     }
 
-    function getSeoContent($title, $mfa_link, $mod_link = "") {
+    public function getSeoContent($title, $mfa_link, $mod_link = "")
+    {
         $form = $this->getHtmlForm("seo_content");
         $mfa_id = $this->getMfaLink($mfa_link);
         if ($mfa_link == "") {
@@ -565,7 +640,7 @@ class AutoClass extends CatalogueClass
         }
         $model = $this->getModLink($mod_link);
         if ($model == "") {
-            $form = str_replace("{seo_list}", $this->getAutoModList($mfa_id).$this->getDetailsList("", "", $mfa_link, $mod_link), $form);
+            $form = str_replace("{seo_list}", $this->getAutoModList($mfa_id) . $this->getDetailsList("", "", $mfa_link, $mod_link), $form);
         } else {
             $form = str_replace("{seo_list}", $this->getDetailsList("", "", $mfa_link, $mod_link), $form);
         }
@@ -573,8 +648,10 @@ class AutoClass extends CatalogueClass
         return $form;
     }
 
-    function getAutoMfaModelList($str_id = "", $active_filters = "", $mfa = "") { $db = DbSingleton::getTokoDb();
-        $search = new SearchClass;
+    public function getAutoMfaModelList($str_id = "", $active_filters = "", $mfa = "")
+    {
+        $db = DbSingleton::getTokoDb();
+        $search = new SearchClass();
         $details_cap = "{details_on_cap}";
         $title = "";
         $link = "cars";
@@ -603,11 +680,11 @@ class AutoClass extends CatalogueClass
         $mas = [];
         $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 $where ORDER BY `MFA_BRAND` ASC;");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $mfa_id = $db->result($r,$i-1,"MFA_ID");
-            $mfa_brand = $db->result($r,$i-1,"MFA_BRAND");
-            $mfa_link = $db->result($r,$i-1,"MFA_BRAND_LINK");
-            $image = $db->result($r,$i-1,"LOGO");
+        for ($i = 1; $i <= $n; $i++) {
+            $mfa_id = $db->result($r, $i - 1, "MFA_ID");
+            $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
+            $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
+            $image = $db->result($r, $i - 1, "LOGO");
             $mas[$mfa_brand] = ["mfa_id" => $mfa_id, "link" => $mfa_link, "logo" => $image];
         }
         foreach ($mas as $mfa_brand => $values) {
@@ -619,9 +696,9 @@ class AutoClass extends CatalogueClass
             $list .= "<ul class='list-inline'>";
             $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;");
             $n = $db->num_rows($r);
-            for ($i=1; $i<=$n; $i++) {
-                $model = $db->result($r, $i-1, "Model");
-                $model_link = $db->result($r, $i-1, "Model_Link");
+            for ($i = 1; $i <= $n; $i++) {
+                $model = $db->result($r, $i - 1, "Model");
+                $model_link = $db->result($r, $i - 1, "Model_Link");
                 $list .= "<li><a href='https://toko.ua/$link/$mfa_link/$model_link/'>$mfa_brand $model</a></li>";
             }
             $list .= "</ul>";
@@ -630,8 +707,10 @@ class AutoClass extends CatalogueClass
         return $list;
     }
 
-    function getAutoModList($mfa = "", $str_id = "", $active_filters = "") { $db = DbSingleton::getTokoDb();
-        $search = new SearchClass;
+    public function getAutoModList($mfa = "", $str_id = "", $active_filters = "")
+    {
+        $db = DbSingleton::getTokoDb();
+        $search = new SearchClass();
         $prefix = $this->getLangPrefix();
 
         if ($str_id != "") {
@@ -657,10 +736,10 @@ class AutoClass extends CatalogueClass
         $list = "<ul>";
         $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 $where ORDER BY `MFA_BRAND`;");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $mfa_id = $db->result($r,$i-1,"MFA_ID");
-            $mfa_brand = $db->result($r,$i-1,"MFA_BRAND");
-            $mfa_link = $db->result($r,$i-1,"MFA_BRAND_LINK");
+        for ($i = 1; $i <= $n; $i++) {
+            $mfa_id = $db->result($r, $i - 1, "MFA_ID");
+            $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
+            $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
 
             if ($mfa == "") {
                 $list .= "<li class='title'><span class='bold'><a href='https://toko.ua$prefix/$link/$mfa_link/'>$details_cap $mfa_brand</a></span>";
@@ -672,9 +751,9 @@ class AutoClass extends CatalogueClass
 
             $r2 = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;");
             $n2 = $db->num_rows($r2);
-            for ($i2=1; $i2<=$n2; $i2++) {
-                $mod = $db->result($r2,$i2-1,"Model");
-                $mod_link = $db->result($r2,$i2-1,"Model_Link");
+            for ($i2 = 1; $i2 <= $n2; $i2++) {
+                $mod = $db->result($r2, $i2 - 1, "Model");
+                $mod_link = $db->result($r2, $i2 - 1, "Model_Link");
                 $list .= "<a class='seo-li' href='https://toko.ua$prefix/$link/$mfa_link/$mod_link/'>
                     <span>$mfa_brand $mod</span>
                 </a>";
@@ -687,8 +766,10 @@ class AutoClass extends CatalogueClass
         return $list;
     }
 
-    function getAutoTypeList($mfa, $mod_id, $str_id = "", $active_filters = "") { $db = DbSingleton::getTokoDb();
-        $search = new SearchClass;
+    public function getAutoTypeList($mfa, $mod_id, $str_id = "", $active_filters = "")
+    {
+        $db = DbSingleton::getTokoDb();
+        $search = new SearchClass();
         $mfa_text = $this->getMfaBrand($mfa);
         $mod_id_text = $this->getModIdLink($mod_id);
         $title = "$mfa_text $mod_id_text";
@@ -713,11 +794,11 @@ class AutoClass extends CatalogueClass
         $list = "<span class='title-b'>$details_cap $title</span>";
         $list .= "<div class=\"t_types\">";
         $mas = [];
-        for ($i=1; $i<=$n; $i++) {
+        for ($i = 1; $i <= $n; $i++) {
             $fuel_id = $db->result($r, $i - 1, "FUEL_ID");
-            $typ_text = $db->result($r,$i-1,"TYP_TEXT");
-            $kw_from = $db->result($r,$i-1,"TYP_KW_FROM");
-            $hp_from = $db->result($r,$i-1,"TYP_HP_FROM");
+            $typ_text = $db->result($r, $i - 1, "TYP_TEXT");
+            $kw_from = $db->result($r, $i - 1, "TYP_KW_FROM");
+            $hp_from = $db->result($r, $i - 1, "TYP_HP_FROM");
             $link = "<span><b>$typ_text</b> ($hp_from {horse_power_cap}, $kw_from {kilo_wat_cap})</span>";
             $link = $this->replaceLang($link);
             if (empty($mas[$fuel_id])) {
@@ -725,7 +806,7 @@ class AutoClass extends CatalogueClass
             }
             $mas[$fuel_id][$i] = $link;
         }
-        foreach ($mas as $fuel_id=>$types) {
+        foreach ($mas as $fuel_id => $types) {
             $fuel_name = $this->getFuelName($fuel_id);
             $list .= "<div><span class=\"text-dark bold\">$fuel_name: </span>";
             foreach ($types as $typ) {
@@ -737,8 +818,10 @@ class AutoClass extends CatalogueClass
         return $list;
     }
 
-    function getAutoModIDList($mfa, $mod, $str_id = "", $active_filters = "") { $db = DbSingleton::getTokoDb();
-        $search = new SearchClass;
+    public function getAutoModIDList($mfa, $mod, $str_id = "", $active_filters = "")
+    {
+        $db = DbSingleton::getTokoDb();
+        $search = new SearchClass();
         $prefix = $this->getLangPrefix();
         $list = $link = "";
         $details_cap = "{all_type_models}";
@@ -762,27 +845,27 @@ class AutoClass extends CatalogueClass
             LEFT JOIN `T_models` md ON md.MOD_MFA_ID=mf.MFA_ID
         WHERE mf.`MFA_ID`='$mfa' AND md.`Model`='$mod' GROUP BY md.`Model`;");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $mfa_id = $db->result($r,$i-1,"MFA_ID");
-            $mfa_link = $db->result($r,$i-1,"MFA_BRAND_LINK");
-            $mfa_brand = $db->result($r,$i-1,"MFA_BRAND");
-            $model_text = $db->result($r,$i-1,"Model");
-            $mod_link = $db->result($r,$i-1,"Model_Link");
+        for ($i = 1; $i <= $n; $i++) {
+            $mfa_id = $db->result($r, $i - 1, "MFA_ID");
+            $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
+            $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
+            $model_text = $db->result($r, $i - 1, "Model");
+            $mod_link = $db->result($r, $i - 1, "Model_Link");
 
             $list .= "<span class='title-b'>$details_cap $mfa_brand $model_text</span>";
             $list .= "<div class='seo_details'><div class='seo-ul'>";
 
             $r2 = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' AND `Model`='$mod' ORDER BY `MOD_PCON_START`;");
             $n2 = $db->num_rows($r2);
-            for ($i2=1; $i2<=$n2; $i2++) {
-                $mod_id_link = $db->result($r2,$i2-1,"TEX_TEXT_link");
-                $text = $db->result($r2,$i2-1,"TEX_TEXT");
-                $image = $db->result($r2,$i2-1,"Car_pict");
+            for ($i2 = 1; $i2 <= $n2; $i2++) {
+                $mod_id_link = $db->result($r2, $i2 - 1, "TEX_TEXT_link");
+                $text = $db->result($r2, $i2 - 1, "TEX_TEXT");
+                $image = $db->result($r2, $i2 - 1, "Car_pict");
                 $path = "https://toko.ua/uploads/images/models/$image";
-                $d_start = $db->result($r2,$i2-1,"MOD_PCON_START");
-                $d_start = substr($d_start,0,4);
-                $d_end = $db->result($r2,$i2-1,"MOD_PCON_END");
-                $d_end = substr($d_end,0,4);
+                $d_start = $db->result($r2, $i2 - 1, "MOD_PCON_START");
+                $d_start = substr($d_start, 0, 4);
+                $d_end = $db->result($r2, $i2 - 1, "MOD_PCON_END");
+                $d_end = substr($d_end, 0, 4);
                 if ($d_end == 0) {
                     $d_end = "{cur_time}";
                 }
@@ -800,7 +883,9 @@ class AutoClass extends CatalogueClass
         return $list;
     }
 
-    function getDetailsHeadImage($head_id) { $db = DbSingleton::getTokoDb();
+    public function getDetailsHeadImage($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEX_RU` FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 AND `HEAD_ID`='$head_id' LIMIT 1;");
         $head_tex_text = $db->result($r, 0, "TEX_RU");
         $title = "<div class='tree-block-title__text'><div class='container pad0'><h1>$head_tex_text</h1></div></div>";
@@ -809,7 +894,9 @@ class AutoClass extends CatalogueClass
     }
 
     // CATALOG / TO I FILTRI
-    function getDetailsList($head, $category = "", $mfa_link = "", $mod_link = "") { $db = DbSingleton::getTokoDb();
+    public function getDetailsList($head, $category = "", $mfa_link = "", $mod_link = "")
+    {
+        $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();
         $where = $where_category = "";
         if ($head != "") {
@@ -823,27 +910,27 @@ class AutoClass extends CatalogueClass
 
         $r3 = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 $where;");
         $n3 = $db->num_rows($r3);
-        for ($i3=1; $i3<=$n3; $i3++) {
-            $head_id = $db->result($r3, $i3-1, "HEAD_ID");
-            $head_tex_link = $db->result($r3, $i3-1, "TEX_LINK");
+        for ($i3 = 1; $i3 <= $n3; $i3++) {
+            $head_id = $db->result($r3, $i3 - 1, "HEAD_ID");
+            $head_tex_link = $db->result($r3, $i3 - 1, "TEX_LINK");
 //            $head_tex_text = $db->result($r3, $i3-1, "TEX_RU");
 //            $title = ($head != "") ? "<div class='tree-block-title__text'><h1>$head_tex_text</h1></div>" : "<span><a href='https://toko.ua$prefix/catalog/$head_tex_link/'>$head_tex_text</a></span>";
 //            ($category == "") ?: $title = "";
             $list .= "<div class='tree-item'>";
             $r2 = $db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `HEAD_ID`='$head_id' $where_category;");
             $n2 = $db->num_rows($r2);
-            for ($i2=1; $i2<=$n2; $i2++) {
-                $cat_id = $db->result($r2, $i2-1, "CAT_ID");
-                $cat_tex_text = $db->result($r2, $i2-1, "TEX_RU");
-                $cat_tex_link = $db->result($r2, $i2-1, "TEX_LINK");
+            for ($i2 = 1; $i2 <= $n2; $i2++) {
+                $cat_id = $db->result($r2, $i2 - 1, "CAT_ID");
+                $cat_tex_text = $db->result($r2, $i2 - 1, "TEX_RU");
+                $cat_tex_link = $db->result($r2, $i2 - 1, "TEX_LINK");
                 $title_cat = ($category != "") ? "<h1>$cat_tex_text</h1>" : "<a href='https://toko.ua$prefix/catalog/$head_tex_link/$cat_tex_link/'>$cat_tex_text</a>";
                 $list .= "<div class='tree-item-title'>$title_cat</div>";
                 $list .= "<div class='tree-item-list'>";
                 $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `CAT_ID`='$cat_id' ORDER BY `TEX_RU` ASC;");
                 $n = $db->num_rows($r);
-                for ($i=1; $i<=$n; $i++) {
-                    $tex_text = $db->result($r,$i-1,"TEX_RU");
-                    $tex_link = $db->result($r,$i-1,"TEX_LINK");
+                for ($i = 1; $i <= $n; $i++) {
+                    $tex_text = $db->result($r, $i - 1, "TEX_RU");
+                    $tex_link = $db->result($r, $i - 1, "TEX_LINK");
                     if ($mfa_link != "") {
                         $tex_link .= "/$mfa_link";
                     }

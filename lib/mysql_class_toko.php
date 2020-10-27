@@ -1,6 +1,7 @@
 <?php
 
-class dbt {
+class dbt
+{
     /**
      * @var mysqli
      */
@@ -13,14 +14,15 @@ class dbt {
     private $username;
     private $password;
 
-    private function load_auth_param(){
+    private function load_auth_param()
+    {
         $this->host = '172.17.0.1';
         $this->dbname = 'toko_dba';
         $this->username = 'toko_usr';
         $this->password = 'Xm53R9H4znZda4YH';
     }
-	
-	public function connect()
+
+    public function connect()
     {
         $this->load_auth_param();
         $this->db = mysqli_connect($this->host, $this->username, $this->password, $this->dbname);
@@ -28,19 +30,19 @@ class dbt {
         mysqli_set_charset($this->db, 'cp1251');
         mysqli_query($this->db, "SET NAMES 'cp1251' COLLATE 'cp1251_general_ci'");
         mysqli_query($this->db, "SET CHARACTER SET 'cp1251' COLLATE 'cp1251_general_ci'");
-	}
-	
-	public function close()
+    }
+
+    public function close()
     {
         mysqli_close($this->db);
-	}
+    }
 
-	public function num_rows($result)
+    public function num_rows($result)
     {
         $this->rowsCount = mysqli_num_rows($result);
 
         return $this->rowsCount;
-	}
+    }
 
     public function query($query)
     {
@@ -53,13 +55,13 @@ class dbt {
         return $this->result;
     }
 
-    function result($result,$number,$field_name)
+    public function result($result, $number, $field_name)
     {
         $rowsCount = mysqli_num_rows($result);
-        if ($rowsCount && $number <= ($rowsCount-1) && $number >=0){
+        if ($rowsCount && $number <= ($rowsCount - 1) && $number >= 0) {
             mysqli_data_seek($result, $number);
             $resrow = is_numeric($field_name) ? mysqli_fetch_row($result) : mysqli_fetch_assoc($result);
-            if (isset($resrow[$field_name])){
+            if (isset($resrow[$field_name])) {
                 return $resrow[$field_name];
             }
         }
@@ -67,10 +69,10 @@ class dbt {
         return false;
     }
 
-    function clear_param($value)
+    public function clear_param($value)
     {
         $value = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $value);
-        return mysqli_real_escape_string($this->db,$value);
+        return mysqli_real_escape_string($this->db, $value);
     }
 
 }

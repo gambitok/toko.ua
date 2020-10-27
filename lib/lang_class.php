@@ -1,18 +1,21 @@
 <?php
 
-class LangClass {
+class LangClass
+{
 
     private static $langVariables;
     private static $langNames;
 
-    function getLanguage() {
+    public function getLanguage()
+    {
         if ($_SESSION["lang"] == "" || $_SESSION["lang"] == 0) {
             $_SESSION["lang"] = 1;
         }
         return $_SESSION["lang"];
     }
 
-    function getOldLanguage($lang_id) {
+    public function getOldLanguage($lang_id)
+    {
         if ($lang_id == 1) {
             $lang_id = 16;
         }
@@ -25,7 +28,8 @@ class LangClass {
         return $lang_id;
     }
 
-    function getTexCapLanguage($lang_id) {
+    public function getTexCapLanguage($lang_id)
+    {
         $cap = "RU";
         if ($lang_id == 2) {
             $cap = "UA";
@@ -36,25 +40,30 @@ class LangClass {
         return $cap;
     }
 
-    function getLangCap($lang_id) { $db = DbSingleton::getTokoDb();
+    public function getLangCap($lang_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `new_lang` WHERE `id`='$lang_id' LIMIT 1;");
-        return $db->result($r,0,"abr");
+        return $db->result($r, 0, "abr");
     }
 
-    function getLanguageSelectList($sel_id) { $db = DbSingleton::getTokoDb();
+    public function getLanguageSelectList($sel_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $list = "";
         $r = $db->query("SELECT * FROM `new_lang`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $lang_id = $db->result($r,$i-1,"id");
-            $lang_abr = $db->result($r,$i-1,"abr");
+            $lang_id = $db->result($r, $i - 1, "id");
+            $lang_abr = $db->result($r, $i - 1, "abr");
             $active = ($lang_id == $sel_id) ? "active" : "";
             $list .= "<a class=\"dropdown-item $active\" onclick=\"setSiteLang($lang_id);\">$lang_abr</a>";
         }
         return $list;
     }
 
-    function getLangPrefix() {
+    public function getLangPrefix()
+    {
         session_start();
         $lang = $_SESSION["lang"];
         $pre = "";
@@ -70,17 +79,20 @@ class LangClass {
         return $pre;
     }
 
-//    function setLanguage($id) {
+//    public function setLanguage($id) {
 //        $_SESSION["lang"] = $id;
 //        return $_SESSION["lang"];
 //    }
 
-    function setSiteLang($id) {
+    public function setSiteLang($id)
+    {
         $_SESSION["lang"] = $id;
         return $this->getLangPrefix();
     }
 
-    function getLanguageName($code) { $db = DbSingleton::getTokoDb();
+    public function getLanguageName($code)
+    {
+        $db = DbSingleton::getTokoDb();
         $lang = $this->getLanguage();
         if (self::$langNames === null) {
             $r = $db->query("SELECT l.caption, lw.variable 
@@ -93,26 +105,30 @@ class LangClass {
         return self::$langNames[$code];
     }
 
-    function replaceLang($cont) { $db = DbSingleton::getTokoDb();
+    public function replaceLang($cont)
+    {
+        $db = DbSingleton::getTokoDb();
         if (self::$langVariables === null) {
             $r = $db->query("SELECT `variable` FROM `new_lang_wd`;");
             self::$langVariables = array_column(mysqli_fetch_all($r), 0);
         }
         foreach (self::$langVariables as $langVariable) {
-            $cont = str_replace("{".$langVariable."}", $this->getLanguageName($langVariable), $cont);
+            $cont = str_replace("{" . $langVariable . "}", $this->getLanguageName($langVariable), $cont);
         }
         return $cont;
     }
 
-    function changeLangAlert($message, $title) {
+    public function changeLangAlert($message, $title)
+    {
         $message = $this->replaceLang($message);
         $title = $this->replaceLang($title);
         return array($message, $title);
     }
 
-    function changeLangJs($text) {
+    public function changeLangJs($text)
+    {
         $text = $this->replaceLang($text);
         return $text;
     }
-	
+
 }

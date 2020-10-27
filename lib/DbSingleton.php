@@ -12,7 +12,7 @@ class DbSingleton
     public static function getDbm()
     {
         if (self::$instanceDb === null) {
-            self::$instanceDb = new dbm;
+            self::$instanceDb = new dbm();
             self::$instanceDb->connect();
         }
 
@@ -22,7 +22,7 @@ class DbSingleton
     public static function getTokoDb()
     {
         if (self::$instanceTokoDb === null) {
-            self::$instanceTokoDb = new db;
+            self::$instanceTokoDb = new db();
             self::$instanceTokoDb->connect();
         }
 
@@ -32,7 +32,7 @@ class DbSingleton
     public static function getTokoCacheDb()
     {
         if (self::$instanceTokoCacheDb === null) {
-            self::$instanceTokoCacheDb = new dbc;
+            self::$instanceTokoCacheDb = new dbc();
             self::$instanceTokoCacheDb->connect();
         }
 

@@ -1,21 +1,24 @@
 <?php
 
-class PatternClass extends CatalogueClass {
+class PatternClass extends CatalogueClass
+{
 
     use Helper;
     use Variables;
 
     public $products_on_page = 25;
 
-    function initTemplateTable($template_id) { $db = DbSingleton::getTokoDb();
+    public function initTemplateTable($template_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $products = [];
         $r = $db->query("SELECT `ART_ID`, `PARAM_ID`, `VALUE_ID` FROM `T2_CATALOGUES_ARTS` 
         WHERE `TEMPLATE_ID`='$template_id';");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $art_id = $db->result($r, $i-1, "ART_ID");
-            $param_id = $db->result($r, $i-1, "PARAM_ID");
-            $value_id = $db->result($r, $i-1, "VALUE_ID");
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
+            $param_id = $db->result($r, $i - 1, "PARAM_ID");
+            $value_id = $db->result($r, $i - 1, "VALUE_ID");
             if (empty($products[$art_id])) {
                 $products[$art_id] = [];
             }
@@ -28,8 +31,8 @@ class PatternClass extends CatalogueClass {
         $params = "";
         $r = $db->query("SELECT * FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id';");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $param_id = $db->result($r,$i-1,"PARAM_ID");
+        for ($i = 1; $i <= $n; $i++) {
+            $param_id = $db->result($r, $i - 1, "PARAM_ID");
             $params .= "`param_$param_id` VARCHAR(50),";
         }
 
@@ -42,8 +45,9 @@ class PatternClass extends CatalogueClass {
             PRIMARY KEY (`id`)
         ) ENGINE = MYISAM;");
 
-        $count_add = 0; $count_upd = 0;
-        foreach ($products as $art_id=>$params) {
+        $count_add = 0;
+        $count_upd = 0;
+        foreach ($products as $art_id => $params) {
             $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT
             FROM `T2_ARTICLES` t2a
                 LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
@@ -54,12 +58,15 @@ class PatternClass extends CatalogueClass {
             FROM `T2_ARTICLES` t2a
                 LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
             WHERE t2a.ART_ID IN ($art_id) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
-            GROUP BY t2a.ART_ID, t2si.client_storage_id;"); $stock = $db->num_rows($r);
+            GROUP BY t2a.ART_ID, t2si.client_storage_id;");
+            $stock = $db->num_rows($r);
 
-            $brand_id = $db->result($r,0,"BRAND_ID");
+            $brand_id = $db->result($r, 0, "BRAND_ID");
 
-            $params_values = ""; $params_column = ""; $set_column = "";
-            foreach ($params as $param_id=>$values) {
+            $params_values = "";
+            $params_column = "";
+            $set_column = "";
+            foreach ($params as $param_id => $values) {
                 $params_arr = [];
                 foreach ($values as $value_id) {
                     array_push($params_arr, $value_id);
@@ -87,7 +94,8 @@ class PatternClass extends CatalogueClass {
         return array($count_add, $count_upd);
     }
 
-    function getFiltersRequest($active_filters) {
+    public function getFiltersRequest($active_filters)
+    {
         $where = "";
         foreach ($active_filters as $param_id => $values) {
             if ($param_id == 0) {
@@ -104,7 +112,9 @@ class PatternClass extends CatalogueClass {
         return $where;
     }
 
-    function showProductsForm($template_id, $page=1, $link="") { $db = DbSingleton::getTokoDb();
+    public function showProductsForm($template_id, $page = 1, $link = "")
+    {
+        $db = DbSingleton::getTokoDb();
         $count_arts = 0;
         $r = $db->query("SHOW TABLES LIKE 'XX_TABLE_TEMPLATE_$template_id';");
         $n = $db->num_rows($r);
@@ -115,15 +125,15 @@ class PatternClass extends CatalogueClass {
             $products_form = $this->getProductsForm($products);
             $count_arts = $this->getProductsCount($template_id, $active_filters);
 
-            $form=str_replace("{products_list}",$products_form,$form);
-            $form=str_replace("{products_name}",$this->getTemplateLink($template_id),$form);
-            $form=str_replace("{products_title}",$this->showTemplateTitle($template_id, $active_filters),$form);
-            $form=str_replace("{products_checked}",$this->showCheckedFilters($template_id, $active_filters),$form);
+            $form = str_replace("{products_list}", $products_form, $form);
+            $form = str_replace("{products_name}", $this->getTemplateLink($template_id), $form);
+            $form = str_replace("{products_title}", $this->showTemplateTitle($template_id, $active_filters), $form);
+            $form = str_replace("{products_checked}", $this->showCheckedFilters($template_id, $active_filters), $form);
 
-            $form=str_replace("{products_pagination}",$this->getTemplatePaginationForm($count_arts, $page),$form);
-            $form=str_replace("{products_count}",$this->getTemplateCurrentPage($count_arts, $page),$form);
-            $form=str_replace("{products_filters}",$this->showFiltersForm($template_id, $active_filters),$form);
-            $form=str_replace("{products_lang_prefix}",$this->getLangPrefix(),$form);
+            $form = str_replace("{products_pagination}", $this->getTemplatePaginationForm($count_arts, $page), $form);
+            $form = str_replace("{products_count}", $this->getTemplateCurrentPage($count_arts, $page), $form);
+            $form = str_replace("{products_filters}", $this->showFiltersForm($template_id, $active_filters), $form);
+            $form = str_replace("{products_lang_prefix}", $this->getLangPrefix(), $form);
         } else {
             $form = $this->getHtmlForm("error/404");
         }
@@ -138,7 +148,8 @@ class PatternClass extends CatalogueClass {
         return array($form, $pages_count);
     }
 
-    function showTemplateTitle($template_id, $active_filters) {
+    public function showTemplateTitle($template_id, $active_filters)
+    {
         $name = $this->getTemplateName($template_id);
         $h1 = "$name";
         foreach ($active_filters as $param_id => $values) {
@@ -154,7 +165,8 @@ class PatternClass extends CatalogueClass {
         return "$h1";
     }
 
-    function getTemplateCurrentPage($n, $page) {
+    public function getTemplateCurrentPage($n, $page)
+    {
         $max_page = $page * $this->products_on_page;
         $min_page = $max_page - $this->products_on_page + 1;
         if ($max_page > $n) $max_page = $n;
@@ -164,7 +176,8 @@ class PatternClass extends CatalogueClass {
         return $list;
     }
 
-    function showCheckedFilters($template_id, $active_filters) {
+    public function showCheckedFilters($template_id, $active_filters)
+    {
         $prefix = $this->getLangPrefix();
         $title = "<div style=\"padding: 15px 0;\">";
         $template_name = $this->getTemplateLink($template_id);
@@ -186,13 +199,15 @@ class PatternClass extends CatalogueClass {
         return $title;
     }
 
-    function getProductsForm($products) {
-        $where_arts = implode(",",array_keys($products));
-        list($list) = $this->searchList($where_arts, 1, 1);
+    public function getProductsForm($products)
+    {
+        $art_id_str = implode(",", array_keys($products));
+        list($list) = $this->searchList($art_id_str, 1, 1);
         return $list;
     }
 
-    function showFiltersForm($template_id, $active_filters = []) {
+    public function showFiltersForm($template_id, $active_filters = [])
+    {
         $prefix = $this->getLangPrefix();
         $template_name = $this->getTemplateLink($template_id);
 
@@ -226,7 +241,8 @@ class PatternClass extends CatalogueClass {
         }
 
         foreach ($mas as $param_id => $values) {
-            $vc_array_checked = []; $vc_array_name = [];
+            $vc_array_checked = [];
+            $vc_array_name = [];
             foreach ($values as $key => $row) {
                 $vc_array_checked[$key] = $row["checked"];
                 $vc_array_name[$key] = $row["value_name"];
@@ -274,7 +290,8 @@ class PatternClass extends CatalogueClass {
         return $filters_list;
     }
 
-    function getActiveFilters($template_id, $current, $active) {
+    public function getActiveFilters($template_id, $current, $active)
+    {
         $new_filters = [];
         $current_products = $this->getCurrentProducts($template_id);
         foreach ($current as $param_id => $values) {
@@ -290,14 +307,16 @@ class PatternClass extends CatalogueClass {
         return $new_filters;
     }
 
-    function getCheckParamFilters($products, $sep_filters, $param_id, $status = 0) {
+    public function getCheckParamFilters($products, $sep_filters, $param_id, $status = 0)
+    {
         if ($status) {
             unset($sep_filters[$param_id]);
         }
-        $fproducts = []; $rfilters = [];
-        foreach ($products as $art_id=>$params) {
+        $fproducts = [];
+        $rfilters = [];
+        foreach ($products as $art_id => $params) {
             $count_params = 0;
-            foreach ($params as $par_id=>$values) {
+            foreach ($params as $par_id => $values) {
                 $count_values = 0;
                 foreach ($values as $value_id) {
                     if (in_array($value_id, $sep_filters[$par_id])) {
@@ -332,7 +351,8 @@ class PatternClass extends CatalogueClass {
         return $rfilters[$param_id];
     }
 
-    function getTemplateFilterLink($active_filters, $param_id, $value_id, $status = 0) {
+    public function getTemplateFilterLink($active_filters, $param_id, $value_id, $status = 0)
+    {
         $new_link = "";
         if ($status == 1) {
             foreach ($active_filters as $param => $values) {
@@ -375,7 +395,9 @@ class PatternClass extends CatalogueClass {
         return $new_link;
     }
 
-    function getCurrentProducts($template_id, $page=0, $active_filters=[]) { $db = DbSingleton::getTokoDb();
+    public function getCurrentProducts($template_id, $page = 0, $active_filters = [])
+    {
+        $db = DbSingleton::getTokoDb();
         $limit = "";
         if ($page > 0) {
             $limit = $this->getSearchLimit($page);
@@ -388,65 +410,74 @@ class PatternClass extends CatalogueClass {
         list($min, $max) = $this->getMinMaxParams($template_id);
         $r = $db->query("SELECT * FROM `XX_TABLE_TEMPLATE_$template_id` WHERE 1 $where $limit;");
         $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n;$i++) {
-            $art_id = $db->result($r,$i-1,"art_id");
-            $brand_id = $db->result($r,$i-1,"brand_id");
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "art_id");
+            $brand_id = $db->result($r, $i - 1, "brand_id");
             if (empty($products[$art_id][0])) {
                 $products[$art_id][0] = [];
             }
             array_push($products[$art_id][0], $brand_id);
-            for($param_id = $min; $param_id <= $max; $param_id++) {
-                $value_ids = $db->result($r,$i - 1,"param_$param_id");
-                $products[$art_id][$param_id] = explode(",",$value_ids);
+            for ($param_id = $min; $param_id <= $max; $param_id++) {
+                $value_ids = $db->result($r, $i - 1, "param_$param_id");
+                $products[$art_id][$param_id] = explode(",", $value_ids);
             }
         }
         return $products;
     }
 
-    function getCurrentFilters($template_id) { $db = DbSingleton::getTokoDb();
+    public function getCurrentFilters($template_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $current_filters = [];
         $current_filters[0] = [];
-        list($min, $max)=$this->getMinMaxParams($template_id);
+        list($min, $max) = $this->getMinMaxParams($template_id);
         $r = $db->query("SELECT * FROM `XX_TABLE_TEMPLATE_$template_id` WHERE 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $brand_id = $db->result($r,$i-1,"brand_id");
+            $brand_id = $db->result($r, $i - 1, "brand_id");
             array_push($current_filters[0], $brand_id);
-            for($param_id = $min; $param_id <= $max; $param_id++) {
-                $value_ids = $db->result($r,$i - 1,"param_$param_id");
+            for ($param_id = $min; $param_id <= $max; $param_id++) {
+                $value_ids = $db->result($r, $i - 1, "param_$param_id");
                 $current_filters[$param_id] = explode(",", $value_ids);
             }
         }
         return $current_filters;
     }
 
-    function getProductsCount($template_id, $active_filters) { $db = DbSingleton::getTokoDb();
+    public function getProductsCount($template_id, $active_filters)
+    {
+        $db = DbSingleton::getTokoDb();
         $where = "";
-        if (!empty($active_filters)) $where=$this->getFiltersRequest($active_filters);
+        if (!empty($active_filters)) $where = $this->getFiltersRequest($active_filters);
         $r = $db->query("SELECT COUNT(`art_id`) as count_arts FROM `XX_TABLE_TEMPLATE_$template_id` WHERE 1 $where;");
-        return $db->result($r,0,"count_arts");
+        return $db->result($r, 0, "count_arts");
     }
 
-    function getMinMaxParams($template_id) { $db = DbSingleton::getTokoDb();
+    public function getMinMaxParams($template_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT MIN(`PARAM_ID`) as min_param, MAX(`PARAM_ID`) as max_param FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id';");
-        $min = $db->result($r,0,"min_param");
-        $max = $db->result($r,0,"max_param");
+        $min = $db->result($r, 0, "min_param");
+        $max = $db->result($r, 0, "max_param");
         return array($min, $max);
     }
 
-    function getSearchLimit($page) {
+    public function getSearchLimit($page)
+    {
         $count = $this->products_on_page;
         $off = $count * $page - $count;
         return ($off >= 0) ? " LIMIT $count OFFSET $off" : "";
     }
 
-    function getTemplateLinkParams($template_id, $link) { $db=DbSingleton::getTokoDb();
+    public function getTemplateLinkParams($template_id, $link)
+    {
+        $db = DbSingleton::getTokoDb();
         $params = ["brandy"];
 
         $r = $db->query("SELECT * FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id';");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $param_link=$db->result($r,$i-1,"PARAM_LINK");
+        for ($i = 1; $i <= $n; $i++) {
+            $param_link = $db->result($r, $i - 1, "PARAM_LINK");
             array_push($params, $param_link);
         }
 
@@ -479,15 +510,15 @@ class PatternClass extends CatalogueClass {
                 $values_ids[$par_id] = [];
                 foreach ($vval as $vv) {
                     if ($vv != "") {
-                        $val_id=$this->getCatalogueValueID($vv, $par_id, $template_id);
+                        $val_id = $this->getCatalogueValueID($vv, $par_id, $template_id);
                         array_push($values_ids[$par_id], $val_id);
                     }
                 }
             }
         }
 
-        foreach ($values_ids as $param=>$values) {
-            foreach ($values as $key=>$value) {
+        foreach ($values_ids as $param => $values) {
+            foreach ($values as $key => $value) {
                 if ($value == 0 || empty($value)) {
                     unset($values_ids[$param][$key]);
                 }
@@ -503,7 +534,8 @@ class PatternClass extends CatalogueClass {
         return $values_ids;
     }
 
-    function getTemplatePaginationForm($n, $page) {
+    public function getTemplatePaginationForm($n, $page)
+    {
         $count = $this->products_on_page;
         $pages_count = ceil($n / $count);
         if ($n < $count) {
@@ -512,11 +544,11 @@ class PatternClass extends CatalogueClass {
         $pagination = "";
 
         $min_count = 5;
-        $max_count = $pages_count-$min_count+1;
+        $max_count = $pages_count - $min_count + 1;
         $pred_page = $page - 1;
         $next_page = $page + 1;
-        if ($page == 1) $disabled_pred="disabled"; else $disabled_pred="";
-        if ($page == $pages_count) $disabled_next="disabled"; else $disabled_next="";
+        if ($page == 1) $disabled_pred = "disabled"; else $disabled_pred = "";
+        if ($page == $pages_count) $disabled_next = "disabled"; else $disabled_next = "";
 
         if ($pages_count > $min_count) {
 
@@ -530,8 +562,8 @@ class PatternClass extends CatalogueClass {
             }
 
             if ($page > $max_count) {
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
-                $pagination.="<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
                 for ($i = $max_count; $i <= $pages_count; $i++) {
                     $active = ($i == $page) ? "active" : "";
                     $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
