@@ -753,7 +753,7 @@ class SearchClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $brands = [];
-        $where = ($brand_id != 0) ? "AND t2a.`BRAND_ID` != $brand_id" : "";
+        $where = ($brand_id != 0) ? "AND `BRAND_ID` != $brand_id" : "";
         if (!empty($active_brands)) {
             $active_brands_str = implode(",", $active_brands);
             $r = $db->query("SELECT `BRAND_NAME` FROM `T2_BRANDS` WHERE `TOP` = 1 AND `BRAND_ID` IN ($active_brands_str) $where ORDER BY RAND() LIMIT $limit;");
@@ -1012,7 +1012,7 @@ class SearchClass extends CatalogueClass
         if ($n == 0) {
 
             $head_id = $automan->getHeadStr($str_id);
-            list($head_text) = $automan->getHeadNewDescr($head_id);
+            $head_text = $automan->getHeadNewDescr($head_id)["text"];
             $parrent_h1 = $head_text;
 
             $brand = $this->getBrandName(array_rand($brands));

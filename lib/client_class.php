@@ -15,7 +15,7 @@ class ClientClass
     use Helper;
     use Variables;
 
-    public function getClient()
+    public function getClientData()
     {
         if ($_COOKIE["client_id"] != "") {
             $_SESSION["client_id"] = $_COOKIE["client_id"];
@@ -79,7 +79,7 @@ class ClientClass
     public function getClientPriceList()
     {
         $db = DbSingleton::getDbm();
-        list($client_id, $user_id) = $this->getClient();
+        list($client_id, $user_id) = $this->getClientData();
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `client_id`='$client_id' AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         $price_status = $db->result($r, 0, "price_status");
@@ -90,7 +90,7 @@ class ClientClass
     public function getClientCheckList()
     {
         $db = DbSingleton::getDbm();
-        list($client_id, $user_id) = $this->getClient();
+        list($client_id, $user_id) = $this->getClientData();
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `client_id`='$client_id' AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         return ($n == 0) ? false : true;
@@ -292,7 +292,7 @@ class ClientClass
         $pass = $this->getUrlString($pass);
         $email = $this->getUrlString($email);
         $name = $this->getUrlString($name);
-        list($client_id, $user_id) = $this->getClient();
+        list($client_id, $user_id) = $this->getClientData();
         $db->query("UPDATE `A_CLIENTS_USERS` SET `phone`='$phone', `pass`='$pass', `email`='$email', `name`='$name' WHERE `id`='$user_id' AND `client_id`='$client_id';");
         $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `phone`='$phone', `pass`='$pass', `email`='$email', `name`='$name' WHERE `id`='$user_id' AND `client_id`='$client_id';");
         return true;
@@ -406,7 +406,7 @@ class ClientClass
     {
         $db = DbSingleton::getDbm();
         if ($client_id == 0) {
-            $client_id = $this->getClient()[0];
+            $client_id = $this->getClientData()[0];
         }
         $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id';");
         $tpoint_id = $db->result($r, 0, "tpoint_id");
@@ -889,7 +889,7 @@ class ClientClass
         if ($cookie == "" || $cookie == NULL) {
             $cookie = 0;
         }
-        list($client_id, $user_id) = $this->getClient();
+        list($client_id, $user_id) = $this->getClientData();
         $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id`='$client_id' AND `client_user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;");
         $n = $db->num_rows($r);
@@ -1054,7 +1054,7 @@ class ClientClass
         } else {
             $client_status = "new client";
             // reg CLIENT
-            $clientData = $this->addRetailClient($this->getClient(), $phone);
+            $clientData = $this->addRetailClient($this->getClientData(), $phone);
             $client_id = $clientData["client_id"];
             $user_id = $clientData["user_id"];
             // add BONUS

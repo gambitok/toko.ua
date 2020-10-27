@@ -1,5 +1,7 @@
 <?php
 
+use LisDev\Delivery\NovaPoshtaApi2;
+
 class ShopClass extends CatalogueClass
 {
 
@@ -153,12 +155,12 @@ class ShopClass extends CatalogueClass
 
         $table_basket = $this->getHtmlForm("basket/basket_form");
         $table_basket = str_replace("{basket_rows}", $brow, $table_basket);
-        $table_basket = str_replace("{checked_status}", $sum == $sum_total ? "checked=\"checked\"" : "", $table_basket);
+        $table_basket = str_replace("{checked_status}", ($sum == $sum_total) ? "checked=\"checked\"" : "", $table_basket);
         $table_basket = str_replace("{basket_phone_rows}", $bprow, $table_basket);
         $table_basket = str_replace("{sum}", $sum, $table_basket);
         $table_basket = str_replace("{sum_total}", $sum_total, $table_basket);
         $table_basket = str_replace("{count}", $count, $table_basket);
-        $table_basket = str_replace("{total_style}", $sum == $sum_total ? "d-none" : "", $table_basket);
+        $table_basket = str_replace("{total_style}", ($sum == $sum_total) ? "d-none" : "", $table_basket);
         $table_basket = str_replace("{location}", $location, $table_basket);
         $table_basket = str_replace("{location_fast}", $location_fast, $table_basket);
         $table_basket = str_replace("{currency}", $showform->getCurrencyForm(4, 0, $cur), $table_basket);
@@ -166,7 +168,7 @@ class ShopClass extends CatalogueClass
         $table_basket = str_replace("{disabled}", $disabled, $table_basket);
         $table_basket = str_replace("{basket_proposed}", $this->getProposedArts(), $table_basket);
         $table_basket = str_replace("{user_phone}", $client->getClientPhone(), $table_basket);
-        $table_basket = str_replace("{validate_class}", $client->getClientPhone() == "" ? "non_accept fa-times-circle" : "accept fa-check-circle", $table_basket);
+        $table_basket = str_replace("{validate_class}", ($client->getClientPhone() == "") ? "non_accept fa-times-circle" : "accept fa-check-circle", $table_basket);
 
         $table_basket = $this->replaceLang($table_basket);
 
@@ -694,8 +696,8 @@ class ShopClass extends CatalogueClass
                     $delivery_info = "($delivery_info)";
                 }
                 $list .= "<li class=\"orders-user__item\">
-                    <a onclick='setClientOrderInfo($id);'>$i. $delivery_text $delivery_info <br> $payment_text</a>
-                    <a onclick='dropClientOrderInfo($id)'><i class='fa fa-times'></i></a>
+                    <a onclick=\"setClientOrderInfo('$id');\">$i. $delivery_text $delivery_info <br> $payment_text</a>
+                    <a onclick=\"dropClientOrderInfo('$id');\"><i class='fa fa-times'></i></a>
                 </li>";
             }
             if ($n == 1) {
@@ -1530,7 +1532,8 @@ class ShopClass extends CatalogueClass
 
     public function getAreaName($ref)
     {
-        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+        //\LisDev\Delivery\
+        $np = new NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
         $val = $np->getWarehouses($ref)['data'][0];
         return iconv("UTF-8", "windows-1251", $val["Description"]);
     }
@@ -1539,7 +1542,7 @@ class ShopClass extends CatalogueClass
     {
         $list = "<option value=\"0\">{not_chosen}</option>";
         $list = $this->replaceLang($list);
-        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+        $np = new NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
         $arr = $np->getWarehouses($ref)['data'];
         foreach ($arr as $val) {
             $name = iconv("UTF-8", "windows-1251", $val["Description"]);

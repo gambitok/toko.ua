@@ -9,10 +9,10 @@ if ($article_nr_search == "") {
 } else {
     $content = str_replace("{main_window}", "{search}", $content);
     if ($brand_link == "") {
-        $content = str_replace("{search}", $catalogue->searchNumber($article_nr_search), $content);
+        $content = str_replace("{search}", $catalogue->getSearchList($article_nr_search), $content);
     } else {
         $brand_id = $catalogue->getCatalogueBrandID($brand_link);
-        $content = str_replace("{search}", $catalogue->showCatalogueList($article_nr_search, $brand_id), $content);
+        $content = str_replace("{search}", $catalogue->getCatalogList($article_nr_search, $brand_id), $content);
     }
 }
 

@@ -21,7 +21,10 @@ function getAccess() { $db=DbSingleton::getTokoDb();
 }
 
 function getContent($content) {
-    $menu = new MenuClass; $shop = new ShopClass; $profile = new ProfileClass; $automan = new AutoClass;
+    $menu = new MenuClass();
+    $shop = new ShopClass();
+    $profile = new ProfileClass();
+    $automan = new AutoClass();
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     if (strpos($actual_link,"?") !== false) {
         $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
@@ -55,16 +58,21 @@ function checkLangVariable($variable) { $db = DbSingleton::getTokoDb();
 }
 
 function getTitle($path) {
-    $language = new LangClass;
+    $language = new LangClass();
     $path = str_replace("/","",$path);
     $prefix = getMoreTitle($path);
     $title = ($path != "") ? "$prefix" : "{site_title}";
-    $title = $language->replaceLang($title);
+    $title = $language->replaceLangData($title);
     return $title;
 }
 
 function getMoreTitle($path) {
-    $automan = new AutoClass; $cat = new CatalogueClass; $menu = new MenuClass; $search = new SearchClass; $prod = new ProductsClass; $pattern = new PatternClass;
+    $automan = new AutoClass();
+    $cat = new CatalogueClass();
+    $menu = new MenuClass();
+    $search = new SearchClass();
+    $prod = new ProductsClass();
+    $pattern = new PatternClass();
 
     $linka = findLinks();
     $pretitle = "";
@@ -75,16 +83,14 @@ function getMoreTitle($path) {
         $brand_id = ($brand_link!="") ? $cat->getCatalogueBrandID($brand_link) : 0;
         if ($article_nr_search == "") {
             $pretitle = "{site_title_short}";
+        } elseif ($brand_id == 0) {
+            $pretitle = "{search_results} $article_nr_search | {site_title_short}";
         } else {
-            if ($brand_id == 0) {
-                $pretitle = "{search_results} $article_nr_search | {site_title_short}";
-            } else {
-                $art_id = $cat->getArticleId($article_nr_search, $brand_id);
-                $art_name = $cat->getArticleName($art_id);
-                $brand_name = $cat->getBrandName($brand_id);
-                $article_nr_search = strtoupper($article_nr_search);
-                $pretitle = "$brand_name $article_nr_search - $art_name | {site_title_short}";
-            }
+            $art_id = $cat->getArticleId($article_nr_search, $brand_id);
+            $art_name = $cat->getArticleName($art_id);
+            $brand_name = $cat->getBrandName($brand_id);
+            $article_nr_search = strtoupper($article_nr_search);
+            $pretitle = "$brand_name $article_nr_search - $art_name | {site_title_short}";
         }
     }
     elseif ($path == "article") {
@@ -174,7 +180,7 @@ function getMoreTitle($path) {
 
         if ($str_id == "") {
             $head_id = $automan->getHeadNewLinkStr($str_link);
-            list($head_text) = $automan->getHeadNewDescr($head_id);
+            $head_text = $automan->getHeadNewDescr($head_id)["text"];
             $cat_text = $linka[2];
             if ($cat_text == "") {
                 $pretitle = "$head_text - {seo_title_lvl1}";
@@ -185,7 +191,7 @@ function getMoreTitle($path) {
             }
         } else {
             $head_id = $automan->getHeadStr($str_id);
-            list($head_text) = $automan->getHeadNewDescr($head_id);
+            $head_text = $automan->getHeadNewDescr($head_id)["text"];
 
             $seo_title_lvl2 = $cat->replaceLang("{seo_title_lvl2}");
             $seo_title_lvl2 = str_replace("{title_lvl1}", $head_text, $seo_title_lvl2);
@@ -231,12 +237,10 @@ function getMoreTitle($path) {
             $pretitle = "$state_name - {seo_state_title}";
         }
     }
-    else {
-        if (checkLangVariable("site_$path")) {
-            $pretitle = "{site_$path} - {seo_title}";
-        } else {
-            $pretitle = "{seo_404_title}";
-        }
+    elseif (checkLangVariable("site_$path")) {
+        $pretitle = "{site_$path} - {seo_title}";
+    } else {
+        $pretitle = "{seo_404_title}";
     }
 
     if ($path == "uk" || $path == "en") {
@@ -247,7 +251,12 @@ function getMoreTitle($path) {
 }
 
 function printBreadcrumbs($path) {
-    $cat = new CatalogueClass; $menu = new MenuClass; $pattern = new PatternClass; $automan = new AutoClass; $search = new SearchClass; $language = new LangClass;
+    $cat = new CatalogueClass();
+    $menu = new MenuClass();
+    $pattern = new PatternClass();
+    $automan = new AutoClass();
+    $search = new SearchClass();
+    $language = new LangClass();
     $prefix = $language->getLangPrefix();
     $bread = findLinks();
     $section = $path;
@@ -305,7 +314,9 @@ function printBreadcrumbs($path) {
             } else {
                 $head_id = $automan->getHeadStr($str_id);
             }
-            list($head_text, $head_link) = $automan->getHeadNewDescr($head_id);
+            $headData = $automan->getHeadNewDescr($head_id);
+            $head_text = $headData["text"];
+            $head_link = $headData["link"];
 
             if ($str_text == "") {
                 $pretitle = "$a_home > $h_section";
@@ -344,32 +355,29 @@ function printBreadcrumbs($path) {
                         } else {
                             $pretitle .= " $title";
                         }
-                    } else {
-                        if ($mod_link == "") {
-                            $back = "<a href='/catalog/$head_link/'>$head_text</a>";
-                            $back_str = "<a href='/catalog/$str_link/'>$title</a>";
-                            $back_mfa_brand = "<a href='/catalog/$str_link/$mfa_link'>$mfa_brand</a>";
-                            $pretitle = "$a_home > $a_section > $back > $back_str > ";
-                            if ($filters_cap != "") {
-                                $pretitle .= " $back_mfa_brand > $filters_cap";
-                            } else {
-                                $pretitle .= " $mfa_brand";
-                            }
+                    } elseif ($mod_link == "") {
+                        $back = "<a href='/catalog/$head_link/'>$head_text</a>";
+                        $back_str = "<a href='/catalog/$str_link/'>$title</a>";
+                        $back_mfa_brand = "<a href='/catalog/$str_link/$mfa_link'>$mfa_brand</a>";
+                        $pretitle = "$a_home > $a_section > $back > $back_str > ";
+                        if ($filters_cap != "") {
+                            $pretitle .= " $back_mfa_brand > $filters_cap";
                         } else {
-                            $back = "<a href='/catalog/$head_link/'>$head_text</a>";
-                            $back_str = "<a href='/catalog/$str_link/'>$title</a>";
-                            $back_mfa = "<a href='/catalog/$str_link/$mfa_link/'>$mfa_brand</a>";
-                            $back_model_text = "<a href='/catalog/$str_link/$mfa_link/$mod_link'>$model_text</a>";
-                            $pretitle = "$a_home > $a_section > $back > $back_str > $back_mfa > ";
-                            if ($filters_cap != "") {
-                                $pretitle.=" $back_model_text > $filters_cap";
-                            } else {
-                                $pretitle.=" $model_text";
-                            }
+                            $pretitle .= " $mfa_brand";
+                        }
+                    } else {
+                        $back = "<a href='/catalog/$head_link/'>$head_text</a>";
+                        $back_str = "<a href='/catalog/$str_link/'>$title</a>";
+                        $back_mfa = "<a href='/catalog/$str_link/$mfa_link/'>$mfa_brand</a>";
+                        $back_model_text = "<a href='/catalog/$str_link/$mfa_link/$mod_link'>$model_text</a>";
+                        $pretitle = "$a_home > $a_section > $back > $back_str > $back_mfa > ";
+                        if ($filters_cap != "") {
+                            $pretitle.=" $back_model_text > $filters_cap";
+                        } else {
+                            $pretitle.=" $model_text";
                         }
                     }
                 }
-
                 $b_arr[2] = ["name" => "{site_catalog}", "item" => "https://toko.ua$prefix/catalog/"];
                 $b_arr[3] = ["name" => "$title", "item" => "$actual_link"];
             }
@@ -383,21 +391,19 @@ function printBreadcrumbs($path) {
             if ($template_link == "") {
                 $pretitle = "$a_home > $h_section";
                 $b_arr[2] = ["name" => "$h_section", "item" => "$actual_link"];
+            } elseif ($link == "") {
+                $title = $pattern->showTemplateTitle($template_id, $pattern->getTemplateLinkParams($template_id, $link));
+                $pretitle = "$a_home > $a_section > $title";
+                $b_arr[2] = ["name" => "$h_section", "item" => "https://toko.ua$prefix/products/"];
+                $b_arr[3] = ["name" => "$title", "item" => "$actual_link"];
             } else {
-                if ($link == "") {
-                    $title = $pattern->showTemplateTitle($template_id, $pattern->getTemplateLinkParams($template_id, $link));
-                    $pretitle = "$a_home > $a_section > $title";
-                    $b_arr[2] = ["name" => "$h_section", "item" => "https://toko.ua$prefix/products/"];
-                    $b_arr[3] = ["name" => "$title", "item" => "$actual_link"];
-                } else {
-                    $template_name = $pattern->getTemplateName($template_id);
-                    $back = "<a href=\"https://toko.ua/$section/$template_link/\">$template_name</a>";
-                    $title = $pattern->showTemplateTitle($template_id, $pattern->getTemplateLinkParams($template_id, $link));
-                    $pretitle = "$a_home > $a_section > $back > $title";
-                    $b_arr[2] = ["name" => "$h_section", "item" => "https://toko.ua$prefix/products/"];
-                    $b_arr[3] = ["name" => "$template_name", "item" => "https://toko.ua$prefix/$section/$template_link/"];
-                    $b_arr[4] = ["name" => "$title", "item" => "$actual_link"];
-                }
+                $template_name = $pattern->getTemplateName($template_id);
+                $back = "<a href=\"https://toko.ua/$section/$template_link/\">$template_name</a>";
+                $title = $pattern->showTemplateTitle($template_id, $pattern->getTemplateLinkParams($template_id, $link));
+                $pretitle = "$a_home > $a_section > $back > $title";
+                $b_arr[2] = ["name" => "$h_section", "item" => "https://toko.ua$prefix/products/"];
+                $b_arr[3] = ["name" => "$template_name", "item" => "https://toko.ua$prefix/$section/$template_link/"];
+                $b_arr[4] = ["name" => "$title", "item" => "$actual_link"];
             }
             break;
         }
@@ -489,7 +495,11 @@ function getHtmlForm($name) {
 }
 
 function getDescription($path) {
-    $language = new LangClass; $cat = new CatalogueClass; $search = new SearchClass; $prod = new ProductsClass; $automan = new AutoClass;
+    $language = new LangClass();
+    $cat = new CatalogueClass();
+    $search = new SearchClass();
+    $prod = new ProductsClass();
+    $automan = new AutoClass();
     $linka = findLinks();
     $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
@@ -539,7 +549,7 @@ function getDescription($path) {
         if ($str_id == "") {
 
             $head_id = $automan->getHeadNewLinkStr($str_link);
-            list($head_text) = $automan->getHeadNewDescr($head_id);
+            $head_text = $automan->getHeadNewDescr($head_id)["text"];
 
             $cat_text = $linka[2];
             if ($cat_text == "") {
@@ -578,24 +588,24 @@ function getDescription($path) {
         }
 
     }
-    $description = $language->replaceLang($description);
+    $description = $language->replaceLangData($description);
     ($_GET["page"] == 0) ?: $description = "";
     return $description;
 }
 
 function getKeywords($path) {
-    $language = new LangClass;
+    $language = new LangClass();
     $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
     $keywords = ($path != "") ? "$prefix" : "{site_keywords}";
-    $keywords = $language->replaceLang($keywords);
+    $keywords = $language->replaceLangData($keywords);
     ($_GET["page"] == 0) ?: $keywords = "";
     return $keywords;
 }
 
 function getSiteLang() {
-    $language = new LangClass;
-    $lang_id = $language->getLanguage();
+    $language = new LangClass();
+    $lang_id = $language->getLanguageData();
     $lang_html = "ru";
     if ($lang_id == 1) {
         $lang_html = "ru";
@@ -613,7 +623,7 @@ function getPhpContent($file) {
     ob_start();
     $file = RDD . $file;
     if (file_exists($file)) {
-        include ($file);
+        include($file);
         $contents = ob_get_contents();
         ob_end_clean();
     } else {
@@ -623,7 +633,7 @@ function getPhpContent($file) {
 }
 
 function translateContent($content) { $db = DbSingleton::getTokoDb();
-    $language = new LangClass;
+    $language = new LangClass();
     $r = $db->query("SELECT `variable` FROM `new_lang_wd`;");
     $n = $db->num_rows($r);
     for ($i=1; $i<=$n; $i++) {

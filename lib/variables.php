@@ -556,7 +556,7 @@ trait Variables
     {
         $db = DbSingleton::getTokoDb();
         $language = new LangClass();
-        $lang_id = $language->getLanguage();
+        $lang_id = $this->getLanguage();
         $prefix = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT `TEX_$prefix` FROM `T2_TREE_HEAD` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
         return $db->result($r, 0, "TEX_$prefix");
@@ -566,7 +566,7 @@ trait Variables
     {
         $db = DbSingleton::getTokoDb();
         $language = new LangClass();
-        $lang_id = $language->getLanguage();
+        $lang_id = $this->getLanguage();
         $prefix = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT `TEX_$prefix` FROM `T2_TREE_CAT` WHERE `CAT_ID`='$cat_id' LIMIT 1;");
         return $db->result($r, 0, "TEX_$prefix");
@@ -576,7 +576,7 @@ trait Variables
     {
         $db = DbSingleton::getTokoDb();
         $language = new LangClass();
-        $lang_id = $language->getLanguage();
+        $lang_id = $this->getLanguage();
         $prefix = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT `TEX_$prefix` FROM `T2_TREE_GROUP` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
         return $db->result($r, 0, "TEX_$prefix");

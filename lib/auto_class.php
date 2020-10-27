@@ -226,14 +226,14 @@ class AutoClass extends CatalogueClass
         $lang_id = $this->getLanguage();
         $prefix = $language->getTexCapLanguage($lang_id);
         $head_id = $this->getUrlNumber($head_id);
-        $TEX_TEXT = $TEX_LINK = "";
+        $text = $link = "";
         $r = $db->query("SELECT `TEX_$prefix`, `TEX_LINK` FROM `T2_GROUP_TREE_HEAD` WHERE `HEAD_ID`=$head_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $TEX_TEXT = $db->result($r, 0, "TEX_$prefix");
-            $TEX_LINK = $db->result($r, 0, "TEX_LINK");
+            $text = $db->result($r, 0, "TEX_$prefix");
+            $link = $db->result($r, 0, "TEX_LINK");
         }
-        return array($TEX_TEXT, $TEX_LINK);
+        return array("text" => $text, "link" => $link);
     }
 
     public function getCatNewDescr($cat_id)
@@ -449,7 +449,7 @@ class AutoClass extends CatalogueClass
                     </div>
                     <div class=\"col-6 garage-row__buttons\"> 
                         <button class=\"btn btn-primary btn-sm\" $status_btn $status_disable>$status_cap</button>
-                        <button class=\"btn btn-primary btn-sm\" onclick=\"deleteAutoGarage($id);\"><i class=\"fa fa-trash-alt\"></i></button>
+                        <button class=\"btn btn-primary btn-sm\" onclick=\"deleteAutoGarage('$id');\"><i class=\"fa fa-trash-alt\"></i></button>
                     </div>
                 </li>";
             }
@@ -528,7 +528,9 @@ class AutoClass extends CatalogueClass
         return ($n == 0);
     }
 
-    /*==== HISTORY ====*/
+    /*
+     * Add Car History
+     * */
     public function insertAutoHistory($typ_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -557,6 +559,9 @@ class AutoClass extends CatalogueClass
         return true;
     }
 
+    /*
+    * Show Car History
+    * */
     public function showAutoHistory()
     {
         $db = DbSingleton::getTokoDb();
@@ -576,10 +581,10 @@ class AutoClass extends CatalogueClass
                     <div class='container'>
                         <div class='row'>
                             <div class='col-10'>
-                                <a onclick='setCookie(\"auto_typ_id\", $typ_id); location.reload();'>" . $this->getCarDescription($typ_id) . "</a>
+                                <a onclick=\"setCookie('auto_typ_id', '$typ_id'); location.reload();\">" . $this->getCarDescription($typ_id) . "</a>
                             </div>
                             <div class='col-2 text-right'>
-                                <a onclick='dropAutoHistory($id)'><i class=\"fa fa-times\"></i></a>
+                                <a onclick=\"dropAutoHistory('$id')\"><i class=\"fa fa-times\"></i></a>
                             </div>
                         </div>
                     </div>
@@ -594,6 +599,9 @@ class AutoClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * Delete Car History
+     * */
     public function dropAutoHistory($history_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -609,7 +617,6 @@ class AutoClass extends CatalogueClass
         return true;
     }
 
-    /*==== CARS VARIABLES ===*/
     public function getMfaLink($mfa_link)
     {
         $db = DbSingleton::getTokoDb();
@@ -893,7 +900,6 @@ class AutoClass extends CatalogueClass
         return "<div class='tree-block-title' style=\"background-image: url('/images/tree_head/$img');\">$title</div>";
     }
 
-    // CATALOG / TO I FILTRI
     public function getDetailsList($head, $category = "", $mfa_link = "", $mod_link = "")
     {
         $db = DbSingleton::getTokoDb();
@@ -913,9 +919,6 @@ class AutoClass extends CatalogueClass
         for ($i3 = 1; $i3 <= $n3; $i3++) {
             $head_id = $db->result($r3, $i3 - 1, "HEAD_ID");
             $head_tex_link = $db->result($r3, $i3 - 1, "TEX_LINK");
-//            $head_tex_text = $db->result($r3, $i3-1, "TEX_RU");
-//            $title = ($head != "") ? "<div class='tree-block-title__text'><h1>$head_tex_text</h1></div>" : "<span><a href='https://toko.ua$prefix/catalog/$head_tex_link/'>$head_tex_text</a></span>";
-//            ($category == "") ?: $title = "";
             $list .= "<div class='tree-item'>";
             $r2 = $db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `HEAD_ID`='$head_id' $where_category;");
             $n2 = $db->num_rows($r2);

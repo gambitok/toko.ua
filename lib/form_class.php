@@ -10,6 +10,7 @@ class FormClass extends CatalogueClass
     private static $flags;
     private static $infoTemplates;
 
+    public $max_history_count = 10;
     public $uploads_link = "https://toko.ua/uploads/images/catalogue";
 
     public function showModalForm($name)
@@ -17,7 +18,6 @@ class FormClass extends CatalogueClass
         $menu = new MenuClass();
         $form = $this->getHtmlForm("modals/$name");
         $form = $this->replaceLang($form);
-        // REGION MODAL
         $form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
         $form = str_replace("{region_list}", $menu->getRegionList(), $form);
         $form = str_replace("{region_list_phone}", $menu->getRegionListPhone(), $form);
@@ -289,7 +289,7 @@ class FormClass extends CatalogueClass
         if ($city_like != "") {
             $where = "WHERE `CITY_NAME` LIKE '%$city_like%'";
         } else {
-            $where = "WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
+            $where = "WHERE `CITY_ID` IN ($city_id, 10108, 13549, 4074, 22739)";
         }
         $r = $db->query("SELECT * FROM `T2_CITY` t2c
             LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID=t2c.REGION_ID)
@@ -385,13 +385,12 @@ class FormClass extends CatalogueClass
         $date = date("Y-m-d H:i:s");
         $client_id = $this->getClient();
         $user_id = $this->getUser();
-        $max_history_count = 10;
         $art_id = $this->getArtID($article_nr_displ);
         if ($brand_id > 0 && is_numeric($brand_id)) {
             $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id`='$client_id' AND `client_user_id`='$user_id'";
             $r = $db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;");
             $k = $db->result($r, 0, "kilk");
-            if ($k > $max_history_count) {
+            if ($k > $this->max_history_count) {
                 $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
                 $id = $db->result($r, 0, "id");
                 $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date', `article_nr_displ`='$article_nr_displ', `brand_id`='$brand_id', `art_id`='$art_id' WHERE `id`='$id';");
@@ -409,6 +408,9 @@ class FormClass extends CatalogueClass
         return true;
     }
 
+    /*
+     * Show history
+     * */
     public function showHistoryForm()
     {
         $client = new ClientClass();
@@ -428,13 +430,14 @@ class FormClass extends CatalogueClass
         return $form;
     }
 
-    // PHONE HISTORY
+    /*
+     * Show history (`Phone`)
+     * */
     public function showHistoryList()
     {
         $client = new ClientClass();
         $prefix = $this->getLangPrefix();
         $list = $client->getClientHistory();
-        $max_count = 9;
         $list_history = "";
         for ($i = 0; $i < count($list); $i++) {
             $id = $list[$i]["id"];
@@ -447,7 +450,7 @@ class FormClass extends CatalogueClass
             $history_form = str_replace("{history_brand}", $brand, $history_form);
             $history_form = str_replace("{history_article}", $article_nr_displ, $history_form);
             $list_history .= $history_form;
-            if ($i == $max_count) break;
+            if ($i == $this->max_history_count) break;
         }
         $form = $this->getHtmlForm("menu/history_list");
         $form = str_replace("{history_range}", $list_history, $form);
@@ -458,6 +461,9 @@ class FormClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * delete history line
+     * */
     public function deleteHistoryItem($id)
     {
         $db = DbSingleton::getTokoDb();
@@ -477,9 +483,6 @@ class FormClass extends CatalogueClass
         return true;
     }
 
-    /*==== /HISTORY ====*/
-
-    /*==== PHOTO GALLERY ====*/
     public function getArticleMainPhoto($art_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -541,9 +544,6 @@ class FormClass extends CatalogueClass
         }
     }
 
-    /*==== /PHOTO GALLERY ====*/
-
-    /*==== INFO FORM ====*/
     public function showPhotoGallery($art_id, $display = 0)
     {
         $db = DbSingleton::getTokoDb();
@@ -891,6 +891,9 @@ class FormClass extends CatalogueClass
         return $info;
     }
 
+    /*
+     * show banner form (`Home page`)
+     * */
     public function getCarsBanner()
     {
         $db = DbSingleton::getTokoDb();
@@ -913,6 +916,9 @@ class FormClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * show banner item
+     * */
     public function getCarsBannerItem($title, $text, $image)
     {
         $form = $this->getHtmlForm("home/banner_item");
@@ -923,7 +929,7 @@ class FormClass extends CatalogueClass
     }
 
     /**
-     * Show cars form on Home Page
+     * Show cars form (`Home Page`)
      */
     public function showHomeCars()
     {

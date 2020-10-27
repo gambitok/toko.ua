@@ -602,26 +602,26 @@ function changeActionCount(i, action_price, action_amount) {
     }
 }
 
-function showManufactureDetails(head_id, str_id_str) {
-    let request_link = window.location.href;
-    let class_name = $("#manufacture_head" + head_id).attr("class");
-    if (class_name === "tree-list dnone") {
-        JsHttpRequest.query(folder,{ 'w': 'showManufactureDetails', 'head_id':head_id, 'request_link':request_link, 'str_id_str':str_id_str},
-            function (result, errors){ if (errors) {} if (result){
-                $("#tree_head-" + head_id).toggleClass("check-head");
-                let manuf_head = $("#manufacture_head" + head_id);
-                manuf_head.removeClass("dnone");
-                manuf_head.addClass("dblock");
-                manuf_head.html(result.content);
-            }}, true);
-    } else {
-        $("#tree_head-" + head_id).toggleClass("check-head");
-        let manuf_head = $("#manufacture_head" + head_id);
-        manuf_head.removeClass("dblock");
-        manuf_head.addClass("dnone");
-        manuf_head.html("");
-    }
-}
+// function showManufactureDetails(head_id, str_id_str) {
+//     let request_link = window.location.href;
+//     let class_name = $("#manufacture_head" + head_id).attr("class");
+//     if (class_name === "tree-list dnone") {
+//         JsHttpRequest.query(folder,{ 'w': 'showManufactureDetails', 'head_id':head_id, 'request_link':request_link, 'str_id_str':str_id_str},
+//             function (result, errors){ if (errors) {} if (result){
+//                 $("#tree_head-" + head_id).toggleClass("check-head");
+//                 let manuf_head = $("#manufacture_head" + head_id);
+//                 manuf_head.removeClass("dnone");
+//                 manuf_head.addClass("dblock");
+//                 manuf_head.html(result.content);
+//             }}, true);
+//     } else {
+//         $("#tree_head-" + head_id).toggleClass("check-head");
+//         let manuf_head = $("#manufacture_head" + head_id);
+//         manuf_head.removeClass("dblock");
+//         manuf_head.addClass("dnone");
+//         manuf_head.html("");
+//     }
+// }
 
 /*==== NEW STR CAR DETAILS ====*/
 function showCarDetailsStr(head_id) {

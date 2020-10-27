@@ -6,11 +6,13 @@ class ProductsClass extends CatalogueClass
     use Helper;
     use Variables;
 
-    /*==== CAR DETAILS (CATALOG) ====*/
+    /*
+     * CAR DETAILS (CATALOG)
+     * */
     public function techCarModels($typ_id, $str_id)
     {
-        $kours = new ExRateClass;
-        $automan = new AutoClass;
+        $kours = new ExRateClass();
+        $automan = new AutoClass();
 
         setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
 
@@ -47,9 +49,9 @@ class ProductsClass extends CatalogueClass
     public function techCarModelsFilter($typ_id, $str_id)
     {
         $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
-        $automan = new AutoClass;
-        $lang = $language->getLanguage();
+        $language = new LangClass();
+        $automan = new AutoClass();
+        $lang = $this->getLanguage();
         $lang = $language->getOldLanguage($lang);
 
         session_start();
@@ -164,6 +166,14 @@ class ProductsClass extends CatalogueClass
         return array($cat_search_new_tree, $cat_search_tree, $cat_search_filters, $cat_search_brands);
     }
 
+    public function getTecGroupTreeChilds($str_id_parent)
+    {
+        $db = DbSingleton::getTokoDb();
+        $str_id_parent = $this->getUrlNumber($str_id_parent);
+        $r = $db->query("SELECT COUNT(`STR_ID`) as kol FROM `T2_GROUP_TREE` WHERE `STR_ID_PARENT`=$str_id_parent;");
+        return intval($db->result($r, 0, "kol"));
+    }
+
     public function getStrIds($typ_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -230,12 +240,27 @@ class ProductsClass extends CatalogueClass
         return $str_id_str;
     }
 
+    /*
+     * check existing of header
+     * */
+    public function getGroupTreeAmount($head_id, $str_id_str)
+    {
+        $db = DbSingleton::getTokoDb();
+        $where_str = ($str_id_str != "") ? "AND cs.STR_ID IN ($str_id_str)" : "";
+        $r = $db->query("SELECT cs.*, cat.TEX_RU as CAT_NAME_RU, cat.TEX_UA as CAT_NAME_UA, cat.TEX_EN as CAT_NAME_EN 
+        FROM `T2_GROUP_TREE_STR` cs 
+            LEFT JOIN `T2_GROUP_TREE_CATEGORY` cat ON cat.CAT_ID=cs.CAT_ID
+		WHERE cs.HEAD_ID='$head_id' $where_str ORDER BY cat.POSITION ASC, cs.POSITION ASC;");
+        $n = $db->num_rows($r);
+        return ($n > 0);
+    }
+
     // link: /catalog
     public function getCarDetails($str_id_str, $typ_id)
     {
         $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
-        $lang_id = $language->getLanguage();
+        $language = new LangClass();
+        $lang_id = $this->getLanguage();
         $lang_cap = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD`;");
         $n = $db->num_rows($r);
@@ -249,7 +274,7 @@ class ProductsClass extends CatalogueClass
             $header_list = "";
             $photo = ($images == "") ? $this->noPhoto : "/uploads/images/group_tree_head/$images";
             if ($status && $check_amount) {
-                $list .= "<li id=\"head_id_$head_id\" onclick=\"showCarDetailsStr($head_id);\">
+                $list .= "<li id=\"head_id_$head_id\" onclick=\"showCarDetailsStr('$head_id');\">
                     <div id=\"tree_head-$head_id\" class=\"row align-items-center tree-head pointer-el\">
                         <div class=\"col-lg-4 col-12\"><img class=\"lazy\" data-src=\"$photo\" alt=\"$tex_text\" title=\"$tex_text\"></div>
                         <div class=\"col-lg-7 col-10\"><span>$tex_text</span></div>
@@ -269,12 +294,14 @@ class ProductsClass extends CatalogueClass
         return $form;
     }
 
-    // HOME KATALOG ZAPCHASTEY
+    /*
+     * catalog details from `Home page`
+     * */
     public function getCarDetailsFull()
     {
         $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
-        $lang_id = $language->getLanguage();
+        $language = new LangClass();
+        $lang_id = $this->getLanguage();
         $lang_cap = $language->getTexCapLanguage($lang_id);
         $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD`;");
         $n = $db->num_rows($r);
@@ -312,14 +339,14 @@ class ProductsClass extends CatalogueClass
     public function showCarDetailsStr($head_id, $str_id_str = "")
     {
         $db = DbSingleton::getTokoDb();
-        $automan = new AutoClass;
-        $language = new LangClass;
+        $automan = new AutoClass();
+        $language = new LangClass();
         $prefix = $language->getLangPrefix();
-        $lang_id = $language->getLanguage();
+        $lang_id = $this->getLanguage();
         $lang_cap = $language->getTexCapLanguage($lang_id);
 
         $arr = [];
-        list(, $head_link) = $automan->getHeadNewDescr($head_id);
+        $head_link = $automan->getHeadNewDescr($head_id)["link"];
         $where_str = ($str_id_str != "") ? "AND cs.STR_ID IN ($str_id_str)" : "";
 
         $list = "<div class=\"tree-block\">";
@@ -367,9 +394,9 @@ class ProductsClass extends CatalogueClass
     public function getCarDetailsMin($str_id_str, $typ_id)
     {
         $db = DbSingleton::getTokoDb();
-        $language = new LangClass;
-        $automan = new AutoClass;
-        $lang_id = $language->getLanguage();
+        $language = new LangClass();
+        $automan = new AutoClass();
+        $lang_id = $this->getLanguage();
         $lang_cap = $language->getTexCapLanguage($lang_id);
         $form = $this->getHtmlForm("cat_car_min_details");
         $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD`;");
@@ -383,7 +410,7 @@ class ProductsClass extends CatalogueClass
             $check_amount = $this->getGroupTreeAmount($head_id, $str_id_str);
             $photo = ($images == "") ? $this->noPhoto : "/uploads/images/group_tree_head/$images";
             if ($status && $check_amount) {
-                $list .= "<li id=\"head_id_$head_id\" onclick=\"showCarDetailsStrMin($head_id);\">
+                $list .= "<li id=\"head_id_$head_id\" onclick=\"showCarDetailsStrMin('$head_id');\">
                     <div id=\"tree_head-$head_id\" class=\"row align-items-center tree-head tree-head_min pointer-el\">
                         <div class=\"col-lg-4 col-8\"><img src=\"$photo\" alt=\"$images\" title=\"$tex_text\"></div>
                         <div class=\"col-lg-8 col-4\"><span>$tex_text</span></div>
@@ -424,21 +451,9 @@ class ProductsClass extends CatalogueClass
         return $text;
     }
 
-    public function getBodyCarImage($mod_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `BODY_ID` FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' LIMIT 1;");
-        $body_id = $db->result($r, 0, "BODY_ID");
-        $r = $db->query("SELECT `LOGO`, `TYPE_BODY` FROM `T_types_body_car` WHERE `BODY_ID`='$body_id' AND `LANG_ID`=16 LIMIT 1;");
-        $image = $db->result($r, 0, "LOGO");
-        $name = $db->result($r, 0, "TYPE_BODY");
-        $path = "https://toko.ua/uploads/images/body-types/$image";
-        return array($name, $path);
-    }
-
     public function getCarsSearch($mfa_link = "", $mod_link = "", $str_id = 0)
     {
-        $automan = new AutoClass;
+        $automan = new AutoClass();
         $form = $this->getHtmlForm("cars/cars");
         if ($mfa_link != "") {
             $mfa_id = $automan->getMfaLink($mfa_link);
@@ -467,7 +482,7 @@ class ProductsClass extends CatalogueClass
     public function getCarsSearchContent($type = "", $value = "", $str_id = 0)
     {
         $db = DbSingleton::getTokoDb();
-        $automan = new AutoClass;
+        $automan = new AutoClass();
         $n = 0;
         $list = $title = $nav = $tab = "";
         $str_link = $automan->getStrNewLink($str_id);
@@ -659,6 +674,18 @@ class ProductsClass extends CatalogueClass
         return array($list, $title, $nav, $tab);
     }
 
+    public function getBodyCarImage($mod_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `BODY_ID` FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' LIMIT 1;");
+        $body_id = $db->result($r, 0, "BODY_ID");
+        $r = $db->query("SELECT `LOGO`, `TYPE_BODY` FROM `T_types_body_car` WHERE `BODY_ID`='$body_id' AND `LANG_ID`=16 LIMIT 1;");
+        $image = $db->result($r, 0, "LOGO");
+        $name = $db->result($r, 0, "TYPE_BODY");
+        $path = "https://toko.ua/uploads/images/body-types/$image";
+        return array($name, $path);
+    }
+
     public function getModIdText($mod_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -731,7 +758,7 @@ class ProductsClass extends CatalogueClass
      * */
     public function getCarsGarage()
     {
-        $automan = new AutoClass;
+        $automan = new AutoClass();
         $auto_typ_id = $this->getCookieAuto();
         list($manufacture, $model, $model_id) = $automan->getCarInfo($auto_typ_id);
         list($manufacture_cap, , $model_id_cap,) = $automan->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
@@ -760,7 +787,9 @@ class ProductsClass extends CatalogueClass
         $form = $this->getCarsSearch();
         $auto_typ_id = $this->getCookieAuto();
         $status = 0;
-        if ($auto_typ_id != "") $status = 1;
+        if ($auto_typ_id != "") {
+            $status = 1;
+        }
         return array($form, $status);
     }
 

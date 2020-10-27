@@ -6,7 +6,7 @@ class LangClass
     private static $langVariables;
     private static $langNames;
 
-    public function getLanguage()
+    public function getLanguageData()
     {
         if ($_SESSION["lang"] == "" || $_SESSION["lang"] == 0) {
             $_SESSION["lang"] = 1;
@@ -57,7 +57,7 @@ class LangClass
             $lang_id = $db->result($r, $i - 1, "id");
             $lang_abr = $db->result($r, $i - 1, "abr");
             $active = ($lang_id == $sel_id) ? "active" : "";
-            $list .= "<a class=\"dropdown-item $active\" onclick=\"setSiteLang($lang_id);\">$lang_abr</a>";
+            $list .= "<a class=\"dropdown-item $active\" onclick=\"setSiteLang('$lang_id');\">$lang_abr</a>";
         }
         return $list;
     }
@@ -93,7 +93,7 @@ class LangClass
     public function getLanguageName($code)
     {
         $db = DbSingleton::getTokoDb();
-        $lang = $this->getLanguage();
+        $lang = $this->getLanguageData();
         if (self::$langNames === null) {
             $r = $db->query("SELECT l.caption, lw.variable 
             FROM `new_lang_wdv` l
@@ -105,7 +105,7 @@ class LangClass
         return self::$langNames[$code];
     }
 
-    public function replaceLang($cont)
+    public function replaceLangData($cont)
     {
         $db = DbSingleton::getTokoDb();
         if (self::$langVariables === null) {
@@ -120,14 +120,14 @@ class LangClass
 
     public function changeLangAlert($message, $title)
     {
-        $message = $this->replaceLang($message);
-        $title = $this->replaceLang($title);
+        $message = $this->replaceLangData($message);
+        $title = $this->replaceLangData($title);
         return array($message, $title);
     }
 
     public function changeLangJs($text)
     {
-        $text = $this->replaceLang($text);
+        $text = $this->replaceLangData($text);
         return $text;
     }
 

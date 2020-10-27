@@ -16,12 +16,9 @@ class ParametersClass
 
     public function showProductsForm($template_id, $page = 1, $link = "")
     {
-
         $active_products = [];
         $status_filters = 0;
-
         $active_filters = $this->getTemplateLinkParams($template_id, $link);
-
         $current_products = $this->getCurrentProducts($template_id);
 
         if (!empty($active_filters)) {
@@ -53,7 +50,7 @@ class ParametersClass
         $h1 = "<span class=\"span-red\">$name</span>";
         foreach ($active_filters as $param_id => $values) {
             foreach ($values as $value_id) {
-                if ($param_id == 0) $value_name = $this->getBrandName($value_id); else $value_name = $this->getCatalogueValueName($value_id, $template_id);
+                $value_name = ($param_id == 0) ? $this->getBrandName($value_id) : $this->getCatalogueValueName($value_id, $template_id);
                 $h1 .= " $value_name";
             }
         }
@@ -67,13 +64,15 @@ class ParametersClass
         $template_name = $this->getTemplateLink($template_id);
         foreach ($active_filters as $param_id => $values) {
             foreach ($values as $value_id) {
-                if ($param_id == 0) $value_name = $this->getBrandName($value_id); else $value_name = $this->getCatalogueValueName($value_id, $template_id);
+                $value_name = ($param_id == 0) ? $this->getBrandName($value_id) : $this->getCatalogueValueName($value_id, $template_id);
                 $new_link = $this->getTemplateFilterLink($active_filters, $param_id, $value_id, 1);
                 $title .= "<a class=\"btn btn-labeled btn-danger btn-xs\" style='margin-right: 15px;' href=\"https://toko.ua$prefix/$this->page_link/$template_name/$new_link\"><i class=\"fa fa-times\"></i> $value_name</a>";
             }
         }
         $title .= "</div>";
-        if (empty($active_filters)) $title = "";
+        if (empty($active_filters)) {
+            $title = "";
+        }
         return $title;
     }
 
@@ -84,12 +83,18 @@ class ParametersClass
         if ($status == 1) {
             foreach ($active_filters as $param => $values) {
                 foreach ($values as $k => $value) {
-                    if ($value == $value_id) unset($active_filters[$param_id][$k]);
+                    if ($value == $value_id) {
+                        unset($active_filters[$param_id][$k]);
+                    }
                 }
             }
-            if (empty($active_filters[$param_id])) unset($active_filters[$param_id]);
+            if (empty($active_filters[$param_id])) {
+                unset($active_filters[$param_id]);
+            }
         } else {
-            if (empty($active_filters[$param_id])) $active_filters[$param_id] = [];
+            if (empty($active_filters[$param_id])) {
+                $active_filters[$param_id] = [];
+            }
             array_push($active_filters[$param_id], $value_id);
         }
 
@@ -99,14 +104,18 @@ class ParametersClass
                 $new_link .= "$brand_link/";
                 foreach ($values as $value) {
                     $value_link = $this->getCatalogueBrandLink($value);
-                    if ($value_link != "") $new_link .= "$value_link/";
+                    if ($value_link != "") {
+                        $new_link .= "$value_link/";
+                    }
                 }
             } else {
                 $param_link = $this->getCatalogueParamLink($param);
                 $new_link .= "$param_link/";
                 foreach ($values as $value) {
                     $value_link = $this->getCatalogueValueLink($value);
-                    if ($value_link != "") $new_link .= "$value_link/";
+                    if ($value_link != "") {
+                        $new_link .= "$value_link/";
+                    }
                 }
             }
         }
@@ -117,7 +126,7 @@ class ParametersClass
     public function getProductsForm($template_id, $page, $current_products, $active_products, $status_filters)
     {
         $db = DbSingleton::getTokoDb();
-        $cat = new CatalogueClass;
+        $cat = new CatalogueClass();
         $limit = $this->getSearchLimit($page);
 
         if ($status_filters) {
@@ -170,7 +179,9 @@ class ParametersClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-            if (empty($products[$art_id][0])) $products[$art_id][0] = [];
+            if (empty($products[$art_id][0])) {
+                $products[$art_id][0] = [];
+            }
             $products[$art_id][0] = [$brand_id];
         }
 
@@ -180,7 +191,9 @@ class ParametersClass
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $param_id = $db->result($r, $i - 1, "PARAM_ID");
             $value_id = $db->result($r, $i - 1, "VALUE_ID");
-            if (empty($products[$art_id][$param_id])) $products[$art_id][$param_id] = [];
+            if (empty($products[$art_id][$param_id])) {
+                $products[$art_id][$param_id] = [];
+            }
             array_push($products[$art_id][$param_id], $value_id);
         }
 
@@ -197,12 +210,18 @@ class ParametersClass
                 foreach ($params as $param_id => $values) {
                     $count_values = 0;
                     foreach ($values as $value_id) {
-                        if (in_array($value_id, $active_filters[$param_id])) $count_values++;
+                        if (in_array($value_id, $active_filters[$param_id])) {
+                            $count_values++;
+                        }
                     }
-                    if ($count_values > 0) $count_params++;
+                    if ($count_values > 0) {
+                        $count_params++;
+                    }
                 }
                 if ($count_params == count($active_filters)) {
-                    if (empty($active_products[$art_id])) $active_products[$art_id] = [];
+                    if (empty($active_products[$art_id])) {
+                        $active_products[$art_id] = [];
+                    }
                     $active_products[$art_id] = $current_products[$art_id];
                 }
             }
@@ -217,7 +236,7 @@ class ParametersClass
 
     public function getExistedProducts($products)
     {
-        $cat = new CatalogueClass;
+        $cat = new CatalogueClass();
         foreach ($products as $art_id => $values) {
             $validate_art_count = 0;
             $max_price_art = 0;
@@ -226,9 +245,11 @@ class ParametersClass
                 $suppl_id = $suppl_array[$j];
                 $storage_id = $storage_array[$j];
                 $stock = $stock_array[$j];
-                if ($suppl_id == 0) $price = $cat->getArticlePrice($art_id); else $price = $cat->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+                $price = ($suppl_id == 0) ? $cat->getArticlePrice($art_id) : $cat->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
                 if ($price > 0 && $stock > 0) {
-                    if ($price > $max_price_art) $max_price_art = $price;
+                    if ($price > $max_price_art) {
+                        $max_price_art = $price;
+                    }
                     $validate_art_count++;
                 }
             }
@@ -267,7 +288,9 @@ class ParametersClass
         $current_products = $this->getExistedProducts($this->getCurrentProducts($template_id));
 
         foreach ($current as $param_id => $values) {
-            if (empty($new_filters[$param_id])) $new_filters[$param_id] = [];
+            if (empty($new_filters[$param_id])) {
+                $new_filters[$param_id] = [];
+            }
             if (!empty($active[$param_id])) {
                 $new_filters[$param_id] = $this->getCheckParamFilters($current_products, $active, $param_id, 1);
             } else {
@@ -280,7 +303,9 @@ class ParametersClass
 
     public function getCheckParamFilters($products, $sep_filters, $param_id, $status = 0)
     {
-        if ($status) unset($sep_filters[$param_id]);
+        if ($status) {
+            unset($sep_filters[$param_id]);
+        }
         $fproducts = [];
         $rfilters = [];
         foreach ($products as $art_id => $params) {
@@ -288,21 +313,31 @@ class ParametersClass
             foreach ($params as $par_id => $values) {
                 $count_values = 0;
                 foreach ($values as $value_id) {
-                    if (in_array($value_id, $sep_filters[$par_id])) $count_values++;
+                    if (in_array($value_id, $sep_filters[$par_id])) {
+                        $count_values++;
+                    }
                 }
-                if ($count_values > 0) $count_params++;
+                if ($count_values > 0) {
+                    $count_params++;
+                }
             }
             if ($count_params == count($sep_filters)) {
-                if (empty($fproducts[$art_id])) $fproducts[$art_id] = [];
+                if (empty($fproducts[$art_id])) {
+                    $fproducts[$art_id] = [];
+                }
                 $fproducts[$art_id] = $products[$art_id];
             }
         }
         foreach ($fproducts as $art_id => $params) {
             foreach ($params as $par_id => $values) {
                 if ($par_id == $param_id) {
-                    if (empty($rfilters[$par_id])) $rfilters[$par_id] = [];
+                    if (empty($rfilters[$par_id])) {
+                        $rfilters[$par_id] = [];
+                    }
                     foreach ($values as $value_id) {
-                        if (!in_array($value_id, $rfilters[$par_id])) array_push($rfilters[$par_id], $value_id);
+                        if (!in_array($value_id, $rfilters[$par_id])) {
+                            array_push($rfilters[$par_id], $value_id);
+                        }
                     }
                 }
             }
@@ -331,8 +366,12 @@ class ParametersClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-            if (empty($arr[0])) $arr[0] = [];
-            if (!in_array($brand_id, $arr[0])) array_push($arr[0], $brand_id);
+            if (empty($arr[0])) {
+                $arr[0] = [];
+            }
+            if (!in_array($brand_id, $arr[0])) {
+                array_push($arr[0], $brand_id);
+            }
         }
 
         $r = $db->query("SELECT t2c.`PARAM_ID`, t2c.`VALUE_ID` FROM `T2_CATALOGUES_ARTS` t2c
@@ -342,27 +381,33 @@ class ParametersClass
         for ($i = 1; $i <= $n; $i++) {
             $param_id = $db->result($r, $i - 1, "PARAM_ID");
             $value_id = $db->result($r, $i - 1, "VALUE_ID");
-            if (empty($arr[$param_id])) $arr[$param_id] = [];
-            if (!in_array($value_id, $arr[$param_id])) array_push($arr[$param_id], $value_id);
+            if (empty($arr[$param_id])) {
+                $arr[$param_id] = [];
+            }
+            if (!in_array($value_id, $arr[$param_id])) {
+                array_push($arr[$param_id], $value_id);
+            }
         }
 
         $mas = [];
         $amount_max = 5;
         $amount_values = 0;
         $filters_list = "";
-
         $current_filters = $arr;
-        //$active_filters = $this->getTemplateLinkParams($template_id, $link);
         $arr = $this->getActiveFilters($template_id, $current_filters, $active_filters);
 
         foreach ($arr as $param_id => $values) {
             $i = 0;
-            if (empty($mas[$param_id])) $mas[$param_id] = [];
+            if (empty($mas[$param_id])) {
+                $mas[$param_id] = [];
+            }
             foreach ($values as $value) {
                 $i++;
-                if (in_array($value, $active_filters[$param_id])) $checked = 1; else $checked = 0;
-                if (empty($mas[$param_id][$i])) $mas[$param_id][$i] = [];
-                if ($param_id == 0) $value_name = $this->getBrandName($value); else $value_name = $this->getCatalogueValueName($value, $template_id);
+                $checked = (in_array($value, $active_filters[$param_id])) ? 1 : 0;
+                if (empty($mas[$param_id][$i])) {
+                    $mas[$param_id][$i] = [];
+                }
+                $value_name = ($param_id == 0) ? $this->getBrandName($value) : $this->getCatalogueValueName($value, $template_id);
                 $mas[$param_id][$i] = ["value_id" => $value, "value_name" => $value_name, "checked" => $checked];
             }
         }
@@ -399,12 +444,14 @@ class ParametersClass
                 }
             }
 
-            if (count($values) <= $amount_max) $style_more = "height:auto;"; else $style_more = "";
-            if ($param_id == 0) $param_name = "{brands_cap}"; else $param_name = $this->getCatalogueParamName($param_id, $template_id);
-            if (count($values) > 0 && $amount_values > 0) $filters_list .= "<h2>$param_name</h2><ul id=\"param-$param_id\" class=\"list-inline template-list list-hide\" style=\"margin: 0; $style_more\">";
+            $style_more = (count($values) <= $amount_max) ? "height:auto;" : "";
+            $param_name = ($param_id == 0) ? "{brands_cap}" : $this->getCatalogueParamName($param_id, $template_id);
+            if (count($values) > 0 && $amount_values > 0) {
+                $filters_list .= "<h2>$param_name</h2><ul id=\"param-$param_id\" class=\"list-inline template-list list-hide\" style=\"margin: 0; $style_more\">";
+            }
 
             $amount_values = $amount_values - $amount_max;
-            if ($amount_values <= 0) $link_more = ""; else $link_more = "<a class=\"pointer underline\" onclick=\"toggleListParams(this, $param_id);\"><span class=\"show\">{more_cap} $amount_values</span> <span class=\"none\">{hide_cap}</span></a>";
+            $link_more = ($amount_values <= 0) ? "" : "<a class=\"pointer underline\" onclick=\"toggleListParams(this, $param_id);\"><span class=\"show\">{more_cap} $amount_values</span> <span class=\"none\">{hide_cap}</span></a>";
             $filters_list .= "$values_list</ul>$link_more";
             $amount_values = 0;
             $values_list = "";
@@ -450,16 +497,17 @@ class ParametersClass
     {
         $count = $this->products_on_page;
         $off = $count * $page - $count;
-        $off >= 0 ? $limit = " LIMIT $count OFFSET $off" : $limit = "";
-        return $limit;
+        return ($off >= 0) ? " LIMIT $count OFFSET $off" : "";
     }
 
     public function getTemplateCurrentPage($n, $page)
     {
         $max_page = $page * $this->products_on_page;
         $min_page = $max_page - $this->products_on_page + 1;
-        if ($max_page > $n) $max_page = $n;
-        if ($max_page == 0) $range_page = "0"; else $range_page = "$min_page-$max_page";
+        if ($max_page > $n) {
+            $max_page = $n;
+        }
+        $range_page = ($max_page == 0) ? "0" : "$min_page-$max_page";
         $list = "{results_cap}: $range_page {of_cap} $n ({page_cap} $page)";
         $list = $this->replaceLang($list);
         return $list;
@@ -469,21 +517,22 @@ class ParametersClass
     {
         $count = $this->products_on_page;
         $pages_count = ceil($n / $count);
-        if ($n < $count) $pages_count = 1;
+        if ($n < $count) {
+            $pages_count = 1;
+        }
         $pagination = "";
-
         $min_count = 5;
         $max_count = $pages_count - $min_count + 1;
         $pred_page = $page - 1;
         $next_page = $page + 1;
-        if ($page == 1) $disabled_pred = "disabled"; else $disabled_pred = "";
-        if ($page == $pages_count) $disabled_next = "disabled"; else $disabled_next = "";
+        $disabled_pred = ($page == 1) ? "disabled" : "";
+        $disabled_next = ($page == $pages_count) ? "disabled" : "";
 
-        if ($pages_count > 5) {
+        if ($pages_count > $min_count) {
 
             if ($page < $min_count) {
                 for ($i = 1; $i <= $min_count; $i++) {
-                    $i == $page ? $active = "active" : $active = "";
+                    $active = ($i == $page) ? "active" : "";
                     $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
                 }
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
@@ -494,7 +543,7 @@ class ParametersClass
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
                 for ($i = $max_count; $i <= $pages_count; $i++) {
-                    $i == $page ? $active = "active" : $active = "";
+                    $active = ($i == $page) ? "active" : "";
                     $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
                 }
             }
@@ -513,7 +562,7 @@ class ParametersClass
 
         } else {
             for ($i = 1; $i <= $pages_count; $i++) {
-                $i == $page ? $active = "active" : $active = "";
+                $active = ($i == $page) ? "active" : "";
                 $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
             }
         }
@@ -528,7 +577,9 @@ class ParametersClass
             </nav>
         </div>";
 
-        if ($pages_count == 1) $list = "";
+        if ($pages_count == 1) {
+            $list = "";
+        }
 
         $list = $this->replaceLang($list);
 
@@ -585,11 +636,17 @@ class ParametersClass
 
         foreach ($values_ids as $param => $values) {
             foreach ($values as $key => $value) {
-                if ($value == 0 || empty($value)) unset($values_ids[$param][$key]);
+                if ($value == 0 || empty($value)) {
+                    unset($values_ids[$param][$key]);
+                }
             }
-            if ($values == 0 || empty($values)) unset($values_ids[$param]);
+            if ($values == 0 || empty($values)) {
+                unset($values_ids[$param]);
+            }
         }
-        if ($values_ids == 0 || empty($values_ids)) $values_ids = [];
+        if ($values_ids == 0 || empty($values_ids)) {
+            $values_ids = [];
+        }
 
         return $values_ids;
     }

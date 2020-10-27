@@ -101,7 +101,7 @@ if ($_REQUEST["w"]=="dropAutoHistory"){$GLOBALS['_RESULT'] = array("content"=>$a
 
 /*==== CATALOG FILTER ====*/
 
-if ($_REQUEST["w"]=="show_catalogue_filter_all"){$GLOBALS['_RESULT'] = array("content"=>$catalog->showCatalogueListFilter($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["text"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));}
+if ($_REQUEST["w"]=="show_catalogue_filter_all"){$GLOBALS['_RESULT'] = array("content"=>$catalog->getCatalogListFilter($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["text"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));}
 
 if ($_REQUEST["w"]=="show_model_filter_all"){$GLOBALS['_RESULT'] = array("content"=>$catalog->techModelsFilters($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["text"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));}
 
@@ -201,13 +201,13 @@ if ($_REQUEST["w"]=="updateOrderArt"){ $GLOBALS['_RESULT'] = array("content"=>$p
 
 //if ($_REQUEST["w"]=="triggerDetailCar"){ list($content,$header,$format,$skip_id,$title)=$catalog->triggerDetailCar($_REQUEST["type_id"],$_REQUEST["year"],$_REQUEST["manufacture"],$_REQUEST["model"],$_REQUEST["model_id"],$_REQUEST["group"],$_REQUEST["str_id"]); $GLOBALS['_RESULT'] = array("content"=>$content, "header"=>$header, "format"=>$format, "skip_id"=>$skip_id, "title"=>$title);}
 
-if ($_REQUEST["w"]=="showHeadTemplate"){ list($content,$header,$footer)=$menu->showHeadTemplate($_REQUEST["head_id"]); $GLOBALS['_RESULT'] = array("content"=>$content,"header"=>$header,"footer"=>$footer);}
+if ($_REQUEST["w"]=="showHeadTemplate"){ list($content,$footer)=$catalog->showHeadTemplate($_REQUEST["head_id"]); $GLOBALS['_RESULT'] = array("content"=>$content,"footer"=>$footer);}
 
 if ($_REQUEST["w"]=="getSpecialOffersList"){ $GLOBALS['_RESULT'] = array("content"=>$menu->getSpecialOffersList($_REQUEST["template_id"],$_REQUEST["update_actions"])[0]);}
 
 if ($_REQUEST["w"]=="checkActionClients"){ $GLOBALS['_RESULT'] = array("content"=>$client->checkActionClients());}
 
-if ($_REQUEST["w"]=="showManufactureDetails"){ $GLOBALS['_RESULT'] = array("content"=>$catalog->getGroupTreeStr($_REQUEST["head_id"],$_REQUEST["str_id_str"]));}
+//if ($_REQUEST["w"]=="showManufactureDetails"){ $GLOBALS['_RESULT'] = array("content"=>$catalog->getGroupTreeStr($_REQUEST["head_id"],$_REQUEST["str_id_str"]));}
 
 if ($_REQUEST["w"]=="setClientRequestDone"){ $GLOBALS['_RESULT'] = array("content"=>$catalog->setClientRequestDone());}
 

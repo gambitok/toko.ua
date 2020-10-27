@@ -65,30 +65,28 @@ trait Helper
     public function getClient()
     {
         $client = new ClientClass();
-        $clientData = $client->getClient();
+        $clientData = $client->getClientData();
         return $clientData[0];
     }
 
     public function getUser()
     {
         $client = new ClientClass();
-        $clientData = $client->getClient();
+        $clientData = $client->getClientData();
         return $clientData[1];
     }
 
     public function replaceLang($cont)
     {
         $language = new LangClass();
-        $cont = $language->replaceLang($cont);
+        $cont = $language->replaceLangData($cont);
         return $cont;
     }
 
     public function getLanguage()
     {
-        if ($_SESSION["lang"] == "" || $_SESSION["lang"] == 0) {
-            $_SESSION["lang"] = 1;
-        }
-        return $_SESSION["lang"];
+        $language = new LangClass();
+        return $language->getLanguageData();
     }
 
     public function getLangPrefix()

@@ -6,25 +6,30 @@ class MenuClass extends CatalogueClass
     use Helper;
     use Variables;
 
-    function getImages($content) {
+    public function getImages($content)
+    {
         $dist = "/images/";
         $content = str_replace("{image_logotype}", $dist . "logo.png", $content);
         $content = str_replace("{image_logotype_phone}", $dist . "logo-phone.png", $content);
         return $content;
     }
 
-    function getNewsStateTitle($state_id) { $db = DbSingleton::getTokoDb();
+    public function getNewsStateTitle($state_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $state_id = $this->getUrlNumber($state_id);
         $r = $db->query("SELECT `caption` FROM `news` WHERE `id`='$state_id' LIMIT 1;");
         $title = $db->result($r, 0, "caption");
         $title = str_replace(str_split('.+\/:*?"<>|!?'), "", $title);
         if ($title == "") {
-            $title = $this->replaceLang("{news_one_cap}"."-$state_id");
+            $title = $this->replaceLang("{news_one_cap}" . "-$state_id");
         }
         return $title;
     }
 
-    function getReviewStateTitle($state_id) { $db = DbSingleton::getTokoDb();
+    public function getReviewStateTitle($state_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $state_id = $this->getUrlNumber($state_id);
         $r = $db->query("SELECT `TITLE` FROM `T2_REVIEWS` WHERE `ID`='$state_id' LIMIT 1;");
         $title = $db->result($r, 0, "TITLE");
@@ -35,7 +40,9 @@ class MenuClass extends CatalogueClass
         return $title;
     }
 
-    function showNews() { $db = DbSingleton::getTokoDb();
+    public function showNews()
+    {
+        $db = DbSingleton::getTokoDb();
         $lang = $this->getLanguage();
         if ($lang == 2) {
             $lang = 5;
@@ -47,15 +54,15 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT * FROM `news` WHERE `lang_id`='$lang' AND `data`<='$date_cur' AND `status`=1 ORDER BY `data` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            for ($i=1; $i<=$n; $i++) {
-                $state_id = $db->result($r,$i-1,"id");
-                $title = $db->result($r,$i-1,"caption");
+            for ($i = 1; $i <= $n; $i++) {
+                $state_id = $db->result($r, $i - 1, "id");
+                $title = $db->result($r, $i - 1, "caption");
                 if ($title == "") {
                     $title = $this->replaceLang("{news_one_cap}" . "-$state_id");
                 }
                 $format_title = $this->formatUrlText($title);
-                $short_desc = $db->result($r,$i-1,"short_desc");
-                $date = $db->result($r,$i-1,"data");
+                $short_desc = $db->result($r, $i - 1, "short_desc");
+                $date = $db->result($r, $i - 1, "data");
                 $img_file = $this->getNewsImage($state_id);
                 ($img_file != "")
                     ? $img = "<img itemprop=\"image\" src=\"/thumb.php?image=news/$lang/$state_id/$img_file&size=280\" alt=\"image\">"
@@ -78,7 +85,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    function getNewsState($state_id) { $db = DbSingleton::getTokoDb();
+    public function getNewsState($state_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $lang = $this->getLanguage();
         if ($lang != 1) {
             $lang = 5;
@@ -105,7 +114,8 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    function showSpecialOffers($update_actions) {
+    public function showSpecialOffers($update_actions)
+    {
         $form = $this->getHtmlForm("menu/special_offers");
         list($list, $arts) = $this->getSpecialOffersList("", $update_actions);
         $form = str_replace("{special_offers_update}", $update_actions, $form);
@@ -114,8 +124,11 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    function getSpecialOffersList($template_id, $update_actions) { $db = DbSingleton::getDbm();
-        $kours = new ExRateClass; $showform = new FormClass;
+    public function getSpecialOffersList($template_id, $update_actions)
+    {
+        $db = DbSingleton::getDbm();
+        $kours = new ExRateClass();
+        $showform = new FormClass();
         $prefix = $this->getLangPrefix();
         $client_id = $this->getClient();
         $err1 = $this->err1;
@@ -133,8 +146,8 @@ class MenuClass extends CatalogueClass
 
         $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id`='$client_id';");
         $nom = $db->num_rows($r);
-        for ($i=1; $i<=$nom; $i++) {
-            $category_id = $db->result($r, $i-1, "client_category");
+        for ($i = 1; $i <= $nom; $i++) {
+            $category_id = $db->result($r, $i - 1, "client_category");
             array_push($categories, $category_id);
         }
         $categories = implode(",", $categories);
@@ -147,24 +160,24 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             $list = "<div class=\"row\">";
             $arr = [];
-            for ($i=1; $i<=$n; $i++) {
-                $art_id = $db->result($r,$i-1,"art_id");
+            for ($i = 1; $i <= $n; $i++) {
+                $art_id = $db->result($r, $i - 1, "art_id");
                 $article_nr_displ = $this->getArticleDispl($art_id);
-                $amount = $db->result($r,$i-1,"amount");
-                $max_amount = $db->result($r,$i-1,"max_amount");
-                $timestamp = $db->result($r,$i-1,"timestamp");
-                $data = $db->result($r,$i-1,"data");
-                $status = $db->result($r,$i-1,"status");
-                $price = $db->result($r,$i-1,"price");
+                $amount = $db->result($r, $i - 1, "amount");
+                $max_amount = $db->result($r, $i - 1, "max_amount");
+                $timestamp = $db->result($r, $i - 1, "timestamp");
+                $data = $db->result($r, $i - 1, "data");
+                $status = $db->result($r, $i - 1, "status");
+                $price = $db->result($r, $i - 1, "price");
                 $real_price = $this->getArticlePrice($art_id);
-                $real_price = $kours->getKoursFromUAH($real_price,2);
-                $discount = round((($real_price-$price)*100)/$real_price);
+                $real_price = $kours->getKoursFromUAH($real_price, 2);
+                $discount = round((($real_price - $price) * 100) / $real_price);
                 if ($update_actions != "") {
-                    if ($status && $timestamp>"$update_actions 00:00:00") {
+                    if ($status && $timestamp > "$update_actions 00:00:00") {
                         $status_new = 1;
                     }
                 }
-                $arr[$i] = ["status_new"=>$status_new, "art_id"=>$art_id, "article_nr_displ"=>$article_nr_displ, "amount"=>$amount, "max_amount"=>$max_amount, "timestamp"=>$timestamp, "data"=>$data, "status"=>$status, "discount"=>$discount];
+                $arr[$i] = ["status_new" => $status_new, "art_id" => $art_id, "article_nr_displ" => $article_nr_displ, "amount" => $amount, "max_amount" => $max_amount, "timestamp" => $timestamp, "data" => $data, "status" => $status, "discount" => $discount];
             }
 
             $far_status = $far_article = [];
@@ -174,7 +187,7 @@ class MenuClass extends CatalogueClass
             }
             array_multisort($far_status, SORT_DESC, $far_article, SORT_ASC, $arr);
 
-            for ($i=0; $i<$n; $i++) {
+            for ($i = 0; $i < $n; $i++) {
                 $art_id = $arr[$i]["art_id"];
                 $article_nr_displ = $arr[$i]["article_nr_displ"];
                 $amount = $arr[$i]["amount"];
@@ -225,7 +238,7 @@ class MenuClass extends CatalogueClass
                                     <a class=\"special-offers-item__link\" href=\"$link\" target=\"_blank\"><span class=\"fa fa-link\"></span> {go_to_offer}</a>
                                 </div>
                                 <div class=\"col-4 text-right\">
-                                   <a class=\"special-offers-item__info\" onclick=\"showInfoForm($art_id,'$article_nr_displ','$brand_name');\">$info</a>
+                                   <a class=\"special-offers-item__info\" onclick=\"showInfoForm('$art_id','$article_nr_displ','$brand_name');\">$info</a>
                                    $status_new
                                 </div>
                             </div>
@@ -243,7 +256,9 @@ class MenuClass extends CatalogueClass
         return array($list, $group_arts);
     }
 
-    function getSpecialOffersFilterList($arts="") { $db = DbSingleton::getTokoDb();
+    public function getSpecialOffersFilterList($arts = "")
+    {
+        $db = DbSingleton::getTokoDb();
         $list = "";
         $arts = trim($arts, ",");
         $arts != "" ? $where_arts = "WHERE t2gg.ART_ID IN ($arts)" : $where_arts = "";
@@ -251,20 +266,22 @@ class MenuClass extends CatalogueClass
             LEFT OUTER JOIN `T2_GOODS_GROUP` t2gg ON (t2gg.GOODS_GROUP_ID=gg.ID)
         $where_arts GROUP BY t2gg.GOODS_GROUP_ID;");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $id = $db->result($r, $i-1, "ID");
-            $name = $db->result($r, $i-1, "NAME");
+        for ($i = 1; $i <= $n; $i++) {
+            $id = $db->result($r, $i - 1, "ID");
+            $name = $db->result($r, $i - 1, "NAME");
             $list .= "<option value=\"$id\">$name</option>s";
         }
         return $list;
     }
 
-    function getGoodsGroupArts($template_id) { $db = DbSingleton::getTokoDb();
+    public function getGoodsGroupArts($template_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $arts = [];
         $r = $db->query("SELECT `ART_ID` FROM `T2_GOODS_GROUP` WHERE `GOODS_GROUP_ID`='$template_id';");
         $n = $db->num_rows($r);
-        for($i=1; $i<=$n; $i++) {
-            $art_id = $db->result($r, $i-1, "ART_ID");
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
             array_push($arts, $art_id);
         }
         $arts = implode(",", $arts);
@@ -274,8 +291,10 @@ class MenuClass extends CatalogueClass
     /*
      * GET Tpoint Modal Form
      * */
-    function getRegionList() { $db = DbSingleton::getDbm();
-        $client = new ClientClass;
+    public function getRegionList()
+    {
+        $db = DbSingleton::getDbm();
+        $client = new ClientClass();
         $tpoint_id = $client->getTpoint();
         $lang = $this->getLanguage();
         $r = $db->query("SELECT t2.id, t2a.full_name, t2a.address 
@@ -285,12 +304,12 @@ class MenuClass extends CatalogueClass
         $n = $db->num_rows($r);
         $list = "<form action=\"\" autocomplete=\"off\">";
         $ch = "";
-        for ($i=1; $i<=$n; $i++) {
-            $id = $db->result($r,$i-1,"id");
-            $region = $db->result($r,$i-1,"full_name");
-            $address = $db->result($r,$i-1,"address");
-            $tpoint_id == "" ? : ($id == $tpoint_id ? $ch = "checked='checked'" : $ch = "");
-            $list .= "<label class=\"container_radio\"> $region ($address)<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion($id);\">
+        for ($i = 1; $i <= $n; $i++) {
+            $id = $db->result($r, $i - 1, "id");
+            $region = $db->result($r, $i - 1, "full_name");
+            $address = $db->result($r, $i - 1, "address");
+            $tpoint_id == "" ?: ($id == $tpoint_id ? $ch = "checked='checked'" : $ch = "");
+            $list .= "<label class=\"container_radio\"> $region ($address)<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
                 <span class=\"radiomark\"></span>
             </label>";
         }
@@ -298,8 +317,10 @@ class MenuClass extends CatalogueClass
         return $list;
     }
 
-    function getRegionListPhone() { $db = DbSingleton::getDbm();
-        $client = new ClientClass;
+    public function getRegionListPhone()
+    {
+        $db = DbSingleton::getDbm();
+        $client = new ClientClass();
         $tpoint_id = $client->getTpoint();
         $lang = $this->getLanguage();
         $r = $db->query("SELECT t2.id, t2a.full_name, t2a.address 
@@ -309,11 +330,11 @@ class MenuClass extends CatalogueClass
         $n = $db->num_rows($r);
         $list = "<form action=\"\" autocomplete=\"off\">";
         $ch = "";
-        for ($i=1; $i<=$n; $i++) {
-            $id = $db->result($r, $i-1, "id");
-            $region = $db->result($r, $i-1, "full_name");
-            $tpoint_id == "" ? : ($id == $tpoint_id ? $ch = "checked='checked'" : $ch = "");
-            $list .= "<label class=\"container_radio-phone\">$region<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion($id);\">
+        for ($i = 1; $i <= $n; $i++) {
+            $id = $db->result($r, $i - 1, "id");
+            $region = $db->result($r, $i - 1, "full_name");
+            $tpoint_id == "" ?: ($id == $tpoint_id ? $ch = "checked='checked'" : $ch = "");
+            $list .= "<label class=\"container_radio-phone\">$region<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
                 <span class=\"radiomark-phone\"></span>
             </label>";
         }
@@ -325,8 +346,10 @@ class MenuClass extends CatalogueClass
      * GET Tpoint Form
      * (choose office)
      * */
-    function getRegionSelect() { $db = DbSingleton::getDbm();
-        $client = new ClientClass;
+    public function getRegionSelect()
+    {
+        $db = DbSingleton::getDbm();
+        $client = new ClientClass();
         $lang = $this->getLanguage();
         $tpoint_id = $client->getTpoint();
         $list = "";
@@ -349,17 +372,19 @@ class MenuClass extends CatalogueClass
         return $list;
     }
 
-    function showContacts() { $db = DbSingleton::getTokoDb();
+    public function showContacts()
+    {
+        $db = DbSingleton::getTokoDb();
         $lang_id = $this->getLanguage();
         $r = $db->query("SELECT * FROM `contacts_new` WHERE `lang_id`='$lang_id' AND `status`=1;");
         $n = $db->num_rows($r);
         $list = "";
         if ($n > 0) {
-            for ($i=1; $i<=$n; $i++) {
-                $title = $db->result($r,$i-1,"title");
-                $address = $db->result($r,$i-1,"address");
-                $schedule = $db->result($r,$i-1,"schedule");
-                $phone = $db->result($r,$i-1,"phone");
+            for ($i = 1; $i <= $n; $i++) {
+                $title = $db->result($r, $i - 1, "title");
+                $address = $db->result($r, $i - 1, "address");
+                $schedule = $db->result($r, $i - 1, "schedule");
+                $phone = $db->result($r, $i - 1, "phone");
                 $list .= "<li>
                     <p itemprop=\"addressLocality\">$title</p>
                     <span class=\"fas fa-map-marker-alt\"></span> <span itemprop=\"streetAddress\">$address</span><br>
@@ -375,57 +400,68 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    function getRegionForm($region = null) { $db = DbSingleton::getTokoDb();
+    public function getRegionForm($region = null)
+    {
+        $db = DbSingleton::getTokoDb();
         $form = "";
         $r = $db->query("SELECT `STATE_ID`, `STATE_NAME` FROM `T2_STATE` ORDER BY `STATE_NAME` ASC;");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $id = $db->result($r, $i-1, "STATE_ID");
-            $caption = $db->result($r, $i-1, "STATE_NAME");
+        for ($i = 1; $i <= $n; $i++) {
+            $id = $db->result($r, $i - 1, "STATE_ID");
+            $caption = $db->result($r, $i - 1, "STATE_NAME");
             $id == $region ? $checked = "selected=\"selected\"" : $checked = "";
             $form .= "<option value=\"$id\" $checked>$caption</option>";
         }
         return $form;
     }
 
-    function showTypeForm($org_type="") { $db = DbSingleton::getDbm();
+    public function showTypeForm($org_type = "")
+    {
+        $db = DbSingleton::getDbm();
         $form = "";
         if ($org_type == "" || $org_type == 0) {
             $org_type = 1;
         }
         $r = $db->query("SELECT * FROM `A_ORG_TYPE` ORDER BY `id` ASC;");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $id = $db->result($r, $i-1, "id");
-            $caption = $db->result($r, $i-1, "full_name");
+        for ($i = 1; $i <= $n; $i++) {
+            $id = $db->result($r, $i - 1, "id");
+            $caption = $db->result($r, $i - 1, "full_name");
             $id == $org_type ? $checked = "selected=\"selected\"" : $checked = "";
             $form .= "<option value=\"$id\" $checked>$caption</option>";
         }
         return $form;
     }
 
-    function getLanguageList() { $db = DbSingleton::getTokoDb();
+    public function getLanguageList()
+    {
+        $db = DbSingleton::getTokoDb();
         $language = $this->getLanguage();
         $r = $db->query("SELECT * FROM `new_lang`;");
         $n = $db->num_rows($r);
         $list = "<form action=\"\" autocomplete=\"off\">";
-        for ($i=1; $i<=$n; $i++) {
-            $id = $db->result($r,$i-1,"id");
-            $abr = $db->result($r,$i-1,"abr");
-            $value = $db->result($r,$i-1,"value");
+        for ($i = 1; $i <= $n; $i++) {
+            $id = $db->result($r, $i - 1, "id");
+            $abr = $db->result($r, $i - 1, "abr");
+            $value = $db->result($r, $i - 1, "value");
             $ch = "";
             $style = "";
-            if ($language!="") if ($id==$language) { $ch = "checked='checked'"; $style = "style=\"text-decoration: underline;\""; }
+            if ($language != "") if ($id == $language) {
+                $ch = "checked='checked'";
+                $style = "style=\"text-decoration: underline;\"";
+            }
             $list .= "<label class=\"pointer mar0 padr15\" $style itemprop=\"availableLanguage\" itemtype=\"http://schema.org/Language\" itemscope>
-                <input style=\"display:none;\" type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onclick=\"setSiteLang($id)\"><span>$abr</span>
+                <input style=\"display:none;\" type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onclick=\"setSiteLang('$id')\"><span>$abr</span>
                 <input itemprop=\"name\" type=\"hidden\" value=\"$value\">
             </label>";
         }
         $list .= "</form>";
         return $list;
     }
-	
-    function getNewsImage($news_id) { $db = DbSingleton::getTokoDb();
+
+    public function getNewsImage($news_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $lang = $this->getLanguage();
         if ($lang != 1) {
             $lang = 5;
@@ -442,15 +478,17 @@ class MenuClass extends CatalogueClass
         return $file;
     }
 
-    function showContactsBottom() { $db = DbSingleton::getTokoDb();
+    public function showContactsBottom()
+    {
+        $db = DbSingleton::getTokoDb();
         $list_phone = $list_email = $list_address = "";
         // PHONE
         $r = $db->query("SELECT * FROM `contacts_bottom_new` WHERE `status`=1 AND `type_contact`=1;");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $text = $db->result($r, $i-1, "text");
-            $icon = $db->result($r, $i-1, "icon");
-            $link = $db->result($r, $i-1, "link");
+        for ($i = 1; $i <= $n; $i++) {
+            $text = $db->result($r, $i - 1, "text");
+            $icon = $db->result($r, $i - 1, "icon");
+            $link = $db->result($r, $i - 1, "link");
             $list_phone .= "<li>
                 <a href=\"tel:$link\">
                     <span class=\"fas $icon\"></span>
@@ -461,10 +499,10 @@ class MenuClass extends CatalogueClass
         // EMAIL
         $r = $db->query("SELECT * FROM `contacts_bottom_new` WHERE `status`=1 AND `type_contact`=2;");
         $n = $db->num_rows($r);
-        for ($i=1; $i<=$n; $i++) {
-            $text = $db->result($r, $i-1, "text");
-            $icon = $db->result($r, $i-1, "icon");
-            $link = $db->result($r, $i-1, "link");
+        for ($i = 1; $i <= $n; $i++) {
+            $text = $db->result($r, $i - 1, "text");
+            $icon = $db->result($r, $i - 1, "icon");
+            $link = $db->result($r, $i - 1, "link");
             $list_email .= "<li>
                 <a href=\"$link\">
                     <span class=\"fas $icon\"></span>
@@ -478,11 +516,11 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             $list_address .= "<div itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\">";
         }
-        for ($i=1; $i<=$n; $i++) {
-            $text = $db->result($r, $i-1, "text");
-            $text_short = $db->result($r, $i-1, "text_short");
-            $icon = $db->result($r, $i-1, "icon");
-            $link = $db->result($r, $i-1, "link");
+        for ($i = 1; $i <= $n; $i++) {
+            $text = $db->result($r, $i - 1, "text");
+            $text_short = $db->result($r, $i - 1, "text_short");
+            $icon = $db->result($r, $i - 1, "icon");
+            $link = $db->result($r, $i - 1, "link");
             $list_address .= "<li>
                 <a href=\"$link\">
                     <span class=\"fas $icon\"></span>
@@ -503,14 +541,17 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    function showSellBlock() {
+    public function showSellBlock()
+    {
         $form = $this->getHtmlForm("sell/sell_form");
         $form = str_replace("{terms_cap}", $this->getHtmlForm("sell/sell_cooperation"), $form);
         $form = str_replace("{deal_cap}", $this->getHtmlForm("sell/sell_deal"), $form);
         return $form;
     }
 
-    function saveSellerForm($company, $name, $phone, $email, $city_id, $comment) { $db = DbSingleton::getDbm();
+    public function saveSellerForm($company, $name, $phone, $email, $city_id, $comment)
+    {
+        $db = DbSingleton::getDbm();
         $cookie_id = $_COOKIE["session_id"];
         $max_bytes = 10485760;
         $format_arr = ["txt", "csv", "xls", "xlsx", "dbf"];
@@ -522,7 +563,7 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             $db->query("DELETE FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE 'cookie_id'='$cookie_id';");
         }
-        if (in_array($type, $format_arr) && $size<=$max_bytes) {
+        if (in_array($type, $format_arr) && $size <= $max_bytes) {
             $db->query("INSERT INTO `J_SUPPLIERS_COOPERATION` (`company`,`name`,`phone`,`email`,`city_id`,`commentary`,`file_id`,`status`) 
             VALUES ('$company','$name','$phone','$email','$city_id','$comment','$file_name',166);");
             return true;
@@ -531,38 +572,33 @@ class MenuClass extends CatalogueClass
         }
     }
 
-    function getSellerImage() { $db = DbSingleton::getDbm();
+    public function getSellerImage()
+    {
+        $db = DbSingleton::getDbm();
         $cookie_id = $_COOKIE["session_id"];
         $r = $db->query("SELECT `real_file_name` FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id`='$cookie_id' ORDER BY `data` DESC LIMIT 1;");
         return $db->result($r, 0, "real_file_name");
     }
 
-    function showHeadTemplate($head_id) {
-        $automan = new AutoClass;
-        list($tex_text, $text_link) = $automan->getHeadNewDescr($head_id);
-        $header = "<a href=\"https://toko.ua/catalog/$text_link/\">$tex_text</a>";
-        $list = $this->getGroupTreeStr($head_id, "");
-        $footer = "<a href=\"https://toko.ua/catalog/$text_link\">{show_all_cap} <i class=\"fa fa-chevron-right\"></i></a>";
-        $footer = $this->replaceLang($footer);
-        return array($list, $header, $footer);
-    }
 
-    function getGarageLink() {
-        $automan = new AutoClass;
+    public function getGarageLink()
+    {
+        $automan = new AutoClass();
         $prefix = $this->getLangPrefix();
         $garage_count = $automan->getGarageAutoCount()[0];
         $garage_count == "" ? $garage_link = "href=\"https://toko.ua$prefix/catalogue/auto/\"" : $garage_link = "onclick=\"showGarageForm();\"";
         return $garage_link;
     }
 
-    function getMediaNavPanel() {
-        $profile = new ProfileClass;
+    public function getMediaNavPanel()
+    {
+        $profile = new ProfileClass();
         $form = $this->getHtmlForm("media/nav_panel");
         $form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
         $form = str_replace("{lang_select}", $this->getLanguageList(), $form);
         if (!$profile->getProfileClientInfo()) {
             $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
-            $form = str_replace("{region_select_phone}", "<li>".$this->getRegionSelect()."</li>", $form);
+            $form = str_replace("{region_select_phone}", "<li>" . $this->getRegionSelect() . "</li>", $form);
         } else {
             $form = str_replace("{region_select}", "", $form);
             $form = str_replace("{region_select_phone}", "", $form);
@@ -573,19 +609,21 @@ class MenuClass extends CatalogueClass
     /*
      * Reviews Form
      * */
-    function showReviews() { $db = DbSingleton::getTokoDb();
+    public function showReviews()
+    {
+        $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();
         $list = "";
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `STATUS`=1 ORDER BY `data` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            for ($i=1; $i<=$n; $i++) {
-                $state_id = $db->result($r, $i-1, "ID");
-                $title = $db->result($r, $i-1, "TITLE");
-                $date = $db->result($r, $i-1, "DATA");
-                $img = $db->result($r, $i-1, "IMG");
+            for ($i = 1; $i <= $n; $i++) {
+                $state_id = $db->result($r, $i - 1, "ID");
+                $title = $db->result($r, $i - 1, "TITLE");
+                $date = $db->result($r, $i - 1, "DATA");
+                $img = $db->result($r, $i - 1, "IMG");
                 $transcript = $this->formatUrlText($title);
-                $list.="<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"reviews-block-item\">
+                $list .= "<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"reviews-block-item\">
                     <div class=\"reviews-block-item__date\">$date</div>
                     <div class=\"reviews-block-item__title\" itemprop=\"name\">$title</div>
                     <div class=\"reviews-block-item__image\"><img src=\"https://portal.myparts.pro/uploads/images/saved/$img\" alt=\"$title\"></div>
@@ -601,7 +639,9 @@ class MenuClass extends CatalogueClass
     /*
      * Reviews Item Form
      * */
-    function getReviewsState($state_id) { $db = DbSingleton::getTokoDb();
+    public function getReviewsState($state_id)
+    {
+        $db = DbSingleton::getTokoDb();
         $state_id = $this->getUrlNumber($state_id);
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID`='$state_id';");
         $title = $db->result($r, 0, "TITLE");
@@ -621,17 +661,20 @@ class MenuClass extends CatalogueClass
     /*
      * Scan Form (Bonus)
      * */
-    function showScanForm() {
+    public function showScanForm()
+    {
         return $this->getHtmlForm("bonus/scan");
     }
 
-    function showScanPhoneForm($phone) {
+    public function showScanPhoneForm($phone)
+    {
         $form = $this->getHtmlForm("bonus/phone_valid");
         $form = str_replace("{text_phone}", $phone, $form);
         return $form;
     }
 
-    function getCatalogFaqForm() {
+    public function getCatalogFaqForm()
+    {
         $form = $this->getHtmlForm("faq/form");
         $form = str_replace("{form_request}", $this->getHtmlForm("faq/request"), $form);
         $form = $this->replaceLang($form);

@@ -12,8 +12,8 @@ class ProfileClass extends ClientClass
 
     public function getProfileClientInfo()
     {
-        $client = new ClientClass;
-        list($client_id, $user_id) = $client->getClient();
+        $client = new ClientClass();
+        list($client_id, $user_id) = $client->getClientData();
         $name = $client->getClientInfo($client_id, $user_id)["name"];
         ($user_id == 0)
             ? $info = false
@@ -116,8 +116,8 @@ class ProfileClass extends ClientClass
 
     public function showProfileForm()
     {
-        $client = new ClientClass;
-        list($client_id, $user_id) = $client->getClient();
+        $client = new ClientClass();
+        list($client_id, $user_id) = $client->getClientData();
         $form = $this->getHtmlForm("profile/profile");
         $name = $client->getClientInfo($client_id, $user_id)["name"];
         $form = str_replace("{client_name}", $name, $form);
@@ -176,9 +176,9 @@ class ProfileClass extends ClientClass
 
     public function showProfileAccount()
     {
-        $menu = new MenuClass;
-        $client = new ClientClass;
-        list($client_id, $user_id) = $client->getClient();
+        $menu = new MenuClass();
+        $client = new ClientClass();
+        list($client_id, $user_id) = $client->getClientData();
         $form = $this->getHtmlForm("profile/profile_account");
         $clientData = $client->getClientInfo($client_id, $user_id);
         $form = str_replace("{client_id}", $user_id, $form);
@@ -360,8 +360,8 @@ class ProfileClass extends ClientClass
     public function showProfileOrders()
     {
         $db = DbSingleton::getDbm();
-        $kours = new ExRateClass;
-        $client = new ClientClass;
+        $kours = new ExRateClass();
+        $client = new ClientClass();
         $form = $this->getHtmlForm("profile/profile_orders");
         $user_id = $this->getUser();
         $where = "`client_user_id`='$user_id'";
@@ -470,7 +470,7 @@ class ProfileClass extends ClientClass
     public function showProfileOrdersArts($dp_check, $order_check)
     {
         $db = DbSingleton::getDbm();
-        $kours = new ExRateClass;
+        $kours = new ExRateClass();
         $list = "";
         $form = $this->getHtmlForm("profile/profile_orders_arts");
         $user_id = $this->getUser();
@@ -534,7 +534,7 @@ class ProfileClass extends ClientClass
 
                         if ($this->checkSelectStrDpBug($dp_id, $art_id) > 0 && $status_visible == 1) {
                             $db->query("UPDATE `orders_str_new` SET `status_visible`=1 WHERE `id`='$order_str_id';");
-                            $btn_bug = "<button class=\"btn-basket pointer\" onclick=\"closeOrderArtUpdate($dp_id, $art_id, $order_str_id);\"><span class=\"fas fa-eye\"></span></button>";
+                            $btn_bug = "<button class=\"btn-basket pointer\" onclick=\"closeOrderArtUpdate('$dp_id', '$art_id', '$order_str_id');\"><span class=\"fas fa-eye\"></span></button>";
                             $bg_bug = "bg-warning";
                         } else {
                             $btn_bug = "";
@@ -623,8 +623,8 @@ class ProfileClass extends ClientClass
     public function showProfileCheck($data_from = "", $data_to = "")
     {
         $db = DbSingleton::getDbm();
-        $kours = new ExRateClass;
-        $client = new ClientClass;
+        $kours = new ExRateClass();
+        $client = new ClientClass();
         if ($data_from == 0 || $data_from == "") {
             $data_from = date("Y-m-01");
         }
@@ -683,7 +683,7 @@ class ProfileClass extends ClientClass
                     $kredit = $summ;
                     $saldo_end += $kredit;
                 }
-                $list .= "<tr align=\"center\">
+                $list .= "<tr class='text-center'>
                     <td>$i</td>
                     <td>$data</td>
                     <td>$cash_name</td>
@@ -783,7 +783,7 @@ class ProfileClass extends ClientClass
 
     public function getPriceList()
     {
-        $catalogue = new CatalogueClass;
+        $catalogue = new CatalogueClass();
         $user_id = $this->getUser();
         $csv = "";
         $date = date("Y-m-d_H-i-s");
@@ -882,8 +882,8 @@ class ProfileClass extends ClientClass
     /*==== REGISTRATION ====*/
     public function showRegistrationForm()
     {
-        $menu = new MenuClass;
-        $shop = new ShopClass;
+        $menu = new MenuClass();
+        $shop = new ShopClass();
         $form = $this->getHtmlForm("profile/registration");
         $form = str_replace("{type_form}", $menu->showTypeForm(), $form);
         $form = str_replace("{region_form}", $menu->getRegionForm(), $form);
