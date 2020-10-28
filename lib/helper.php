@@ -76,6 +76,12 @@ trait Helper
         return $clientData[1];
     }
 
+    public function getTpointID()
+    {
+        $client = new ClientClass();
+        return $client->getTpoint();
+    }
+
     public function replaceLang($cont)
     {
         $language = new LangClass();

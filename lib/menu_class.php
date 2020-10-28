@@ -294,8 +294,7 @@ class MenuClass extends CatalogueClass
     public function getRegionList()
     {
         $db = DbSingleton::getDbm();
-        $client = new ClientClass();
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $lang = $this->getLanguage();
         $r = $db->query("SELECT t2.id, t2a.full_name, t2a.address 
         FROM `T_POINT` t2
@@ -320,8 +319,7 @@ class MenuClass extends CatalogueClass
     public function getRegionListPhone()
     {
         $db = DbSingleton::getDbm();
-        $client = new ClientClass();
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $lang = $this->getLanguage();
         $r = $db->query("SELECT t2.id, t2a.full_name, t2a.address 
         FROM `T_POINT` t2
@@ -349,9 +347,8 @@ class MenuClass extends CatalogueClass
     public function getRegionSelect()
     {
         $db = DbSingleton::getDbm();
-        $client = new ClientClass();
         $lang = $this->getLanguage();
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $list = "";
         $r = $db->query("SELECT t2.id, t2a.full_name, t2a.address 
         FROM `T_POINT` t2
@@ -446,7 +443,7 @@ class MenuClass extends CatalogueClass
             $value = $db->result($r, $i - 1, "value");
             $ch = "";
             $style = "";
-            if ($language != "") if ($id == $language) {
+            if ($language != "" && $id == $language) {
                 $ch = "checked='checked'";
                 $style = "style=\"text-decoration: underline;\"";
             }
@@ -532,7 +529,6 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             $list_address .= "</div>";
         }
-
         $form = $this->getHtmlForm("menu/contacts_bottom");
         $form = str_replace("{list_phone}", $list_phone, $form);
         $form = str_replace("{list_email}", $list_email, $form);
@@ -541,6 +537,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * show seller form
+     * */
     public function showSellBlock()
     {
         $form = $this->getHtmlForm("sell/sell_form");
@@ -549,6 +548,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * send seller form (with file)
+     * */
     public function saveSellerForm($company, $name, $phone, $email, $city_id, $comment)
     {
         $db = DbSingleton::getDbm();
@@ -579,7 +581,6 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT `real_file_name` FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id`='$cookie_id' ORDER BY `data` DESC LIMIT 1;");
         return $db->result($r, 0, "real_file_name");
     }
-
 
     public function getGarageLink()
     {
@@ -666,6 +667,9 @@ class MenuClass extends CatalogueClass
         return $this->getHtmlForm("bonus/scan");
     }
 
+    /*
+     * Scan Form (Bonus) Validate
+     * */
     public function showScanPhoneForm($phone)
     {
         $form = $this->getHtmlForm("bonus/phone_valid");
@@ -673,12 +677,16 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * show catalog FAQ form
+     * */
     public function getCatalogFaqForm($h1 = "")
     {
         $form = $this->getHtmlForm("faq/form");
         $form = str_replace("{form_request}", $this->getHtmlForm("faq/request"), $form);
         $form = $this->replaceLang($form);
         $form = str_replace("{faq_h1}", $h1, $form);
+        $form = str_replace("{help_form}", $this->getHtmlForm("faq/help"), $form);
         return $form;
     }
 

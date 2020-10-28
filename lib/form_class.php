@@ -152,7 +152,7 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $kours = new ExRateClass();
-        $tpoint = $client->getTpoint();
+        $tpoint = $this->getTpointID();
         $cur = $kours->getCurrentKours();
         $cur_cap = $kours->getKoursCaption($cur);
 

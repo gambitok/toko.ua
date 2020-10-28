@@ -893,7 +893,7 @@ class CatalogueClass
         $kours = new ExRateClass();
         $client = new ClientClass();
         $client_id = $this->getClient();
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $cur = $kours->getCurrentKours();
         if (!$view) {
             $view = $client->getProductView();
@@ -1099,7 +1099,7 @@ class CatalogueClass
         $kours = new ExRateClass();
         $client = new ClientClass();
         $client_id = $this->getClient();
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $cur = $kours->getCurrentKours();
         $view = $client->getProductView();
         session_start();
@@ -1290,7 +1290,7 @@ class CatalogueClass
         $_SESSION["currency"] = $cur;
         $view = $client->getProductView();
         $client_id = $this->getClient();
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $mas = $filters = $brands = $current_value = array();
         $filters["max_price"] = $filters["max_dd"] = $main_brand = $count = 0;
         $list_brand = "";
@@ -1619,7 +1619,7 @@ class CatalogueClass
         $db = DbSingleton::getDbm();
         $kours = new ExRateClass();
         $client = new ClientClass();
-        $tpoint = $client->getTpoint();
+        $tpoint = $this->getTpointID();
         $client_id = $this->getClient();
         $price = 0;
         list(, , $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat) = $this->getDpClientPriceLevels($client_id);
@@ -2140,7 +2140,7 @@ class CatalogueClass
         $dbt = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
         $client = new ClientClass();
-        $tpoint = $client->getTpoint();
+        $tpoint = $this->getTpointID();
         $client_id = $this->getClient();
         $price = 0;
         list(, , $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat) = $this->getDpClientPriceLevels($client_id);
@@ -2871,7 +2871,7 @@ class CatalogueClass
         $kours = new ExRateClass();
         $client = new ClientClass();
         $client_id = $this->getClient();
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $cur = $kours->getCurrentKours();
         if (!$view) {
             $view = $client->getProductView();

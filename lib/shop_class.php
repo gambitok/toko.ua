@@ -19,7 +19,7 @@ class ShopClass extends CatalogueClass
         $location = "stayInOrder();";
         $location_fast = "stayInOrder();";
         $client_id = $this->getClient();
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $where = $client->getClientWhere();
         $prefix = $this->getLangPrefix();
         if ($cur == null || $cur == "NaN") {
@@ -377,7 +377,7 @@ class ShopClass extends CatalogueClass
         $exrate = new ExRateClass();
         $user_id = $this->getUser();
         $where = $client->getClientWhere();
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $cookie = $_COOKIE["session_id"];
         $date_time = date("Y-m-d H:i:s");
         $old_amount = $status_action = 0;
@@ -967,7 +967,7 @@ class ShopClass extends CatalogueClass
             $user_id = $clientData["user_id"];
             $user_status = 1;
         }
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $cookie = $_COOKIE["session_id"];
         $cash_id = intval($client->getClientCurrency($client_id));
         // CREATE ORDER
@@ -985,7 +985,7 @@ class ShopClass extends CatalogueClass
         } else {
             $client_id = $client->getClientByUser($user_id);
         }
-        $tpoint_id = $client->getTpoint();
+        $tpoint_id = $this->getTpointID();
         $cookie = $_COOKIE["session_id"];
         $cash_id = intval($client->getClientCurrency($client_id));
         $user_status = 0;

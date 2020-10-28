@@ -26,9 +26,9 @@ class ProfileClass extends ClientClass
         $form = $this->getHtmlForm("menu/profile_nav");
         $form = str_replace("{reg_link}", $this->page_registration, $form);
         if ($this->getUser() == 0) {
-            $form = str_replace("{reg_login}", "dnone", $form);
+            $form = str_replace("{reg_login}", "none", $form);
         } else {
-            $form = str_replace("{reg_logout}", "dnone", $form);
+            $form = str_replace("{reg_logout}", "none", $form);
         }
         return $form;
     }
@@ -352,6 +352,9 @@ class ProfileClass extends ClientClass
         return $dp_arr;
     }
 
+    /*
+     * show orders (DP) in client profile
+     * */
     public function showProfileOrders()
     {
         $db = DbSingleton::getDbm();
@@ -405,11 +408,10 @@ class ProfileClass extends ClientClass
                     }
                 }
             }
-            $id = rtrim($id, ",");
 
             $bg_bug = ($k > 0) ? "bg-warning" : "";
             $k = 0;
-
+            $id = rtrim($id, ",");
             $price_summ = number_format($price_summ, 2, '.', '');
 
             if ($summ > 0 && $id != "") {
@@ -442,7 +444,7 @@ class ProfileClass extends ClientClass
             $city_name = $this->getCityName($city);
             $delivery_type = $this->getManualName($delivery);
             $payment_type = $this->getManualName($payment);
-            $status_type = '{order_in_queue}';
+            $status_type = "{order_in_queue}";
             $cash_name = $kours->getKoursCaption($cash_id);
             $list .= "<tr class='pointer' onclick='showProfileOrdersArts(\"\",\"$id\")'>
                 <td>{order_cap} #$id</td>
@@ -462,6 +464,9 @@ class ProfileClass extends ClientClass
         return $form;
     }
 
+    /*
+     * show orders (DP) items in client profile
+     * */
     public function showProfileOrdersArts($dp_check, $order_check)
     {
         $db = DbSingleton::getDbm();
@@ -539,11 +544,7 @@ class ProfileClass extends ClientClass
                         $price = number_format($price, 2, '.', '');
                         $summ = number_format($summ, 2, '.', '');
 
-                        if ($this->checkSelectStrDpBug($dp_id, $art_id) > 0) {
-                            $amount_text = "$amount_collect ($amount)";
-                        } else {
-                            $amount_text = $amount;
-                        }
+                        $amount_text = ($this->checkSelectStrDpBug($dp_id, $art_id) > 0) ? "$amount_collect ($amount)" : $amount;
 
                         if ($nedp) {
                             $list .= "<tr class=\"$bg_bug\">
@@ -575,11 +576,7 @@ class ProfileClass extends ClientClass
 
         // Site orders arts
         if ($dp_check == "") {
-            if ($order_check != "") {
-                $where_order = "AND `id`='$order_check'";
-            } else {
-                $where_order = "";
-            }
+            $where_order = ($order_check != "") ? "AND `id`='$order_check'" : "";
             $r = $db->query("SELECT * FROM `orders_new` WHERE `client_user_id`='$user_id' AND `dp_id`=0 AND `status`=1 $where_order;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
@@ -599,7 +596,7 @@ class ProfileClass extends ClientClass
                     $summ = $kours->getKoursFromUAH($summ, $cash_id);
                     $status_dps = "{making_order_cap}";
                     $list .= "<tr>
-                        <td>Order-$order_id</td>
+                        <td>{order_cap} #$order_id</td>
                         <td>$article_nr_displ</td>
                         <td>$brand_name</td>
                         <td><p class=\"text-center\">$amount</p></td>
