@@ -309,7 +309,7 @@ function printBreadcrumbs($path) {
 
             $str_id = $automan->getStrNewLinkStr($str_text);
 
-            if ($str_id=="") {
+            if ($str_id == "") {
                 $head_id = $automan->getHeadNewLinkStr($str_text);
             } else {
                 $head_id = $automan->getHeadStr($str_id);
@@ -335,7 +335,7 @@ function printBreadcrumbs($path) {
 
                 if ($str_id == "") {
                     $cat_text = $bread[2];
-                    if ($cat_text=="") {
+                    if ($cat_text == "") {
                         $pretitle = "$a_home > $a_section > $head_text";
                     } else {
                         $cat_id = $automan->getCatNewLinkStr($head_id, $cat_text);
@@ -489,7 +489,9 @@ function printBreadcrumbs($path) {
 function getHtmlForm($name) {
     $form = "";
     $form_htm = RDD."/tpl/$name.htm";
-    if (file_exists("$form_htm")) { $form = file_get_contents($form_htm); }
+    if (file_exists("$form_htm")) {
+        $form = file_get_contents($form_htm);
+    }
     // $form = iconv("UTF-8", "windows-1251", $form);
     return $form;
 }
@@ -527,7 +529,9 @@ function getDescription($path) {
         $result = explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2);
         $link = ltrim($result[1]);
         $arr = explode("/", $link);
-        $str_link = ""; $mfa_link = ""; $mod_link = "";
+        $str_link = "";
+        $mfa_link = "";
+        $mod_link = "";
         if (!empty($arr[0])) $str_link = $arr[0]; $filters = "";
         if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $filters = "";
         if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
@@ -547,10 +551,8 @@ function getDescription($path) {
         $str_text = $automan->getStrNewDescr($str_id);
 
         if ($str_id == "") {
-
             $head_id = $automan->getHeadNewLinkStr($str_link);
             $head_text = $automan->getHeadNewDescr($head_id)["text"];
-
             $cat_text = $linka[2];
             if ($cat_text == "") {
                 $h1 = "$head_text";
@@ -559,13 +561,10 @@ function getDescription($path) {
                 list($cat_text) = $automan->getCatNewDescr($cat_id);
                 $h1 = "$cat_text";
             }
-
         } else {
-
             list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
             list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
             $translit = $prod->getCarManufTranslit($mfa_id, $model);
-
             if ($mfa_link != "") {
                 $mm = "{for_cap} $mfa_brand $model_text";
                 if ($translit != "") {

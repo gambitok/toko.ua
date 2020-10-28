@@ -218,10 +218,12 @@ class CatalogueClass
                 $brand_link = $mas[$i]["brand_link"];
                 $count = $mas[$i]["count"];
                 $name = $mas[$i]["name"];
-                $photo = $showform->getShortArticlePhoto($mas[$i]["art_id"]);
+                $photo_name = $showform->getShortArticlePhoto($mas[$i]["art_id"]);
                 $link = ($count == 0) ?  "showAlertModal(\"{brand_no_offer} `$text/$brand_name`\",\"{sorry_cap}\");" : "location.href=\"https://toko.ua$prefix/$this->search_link/$search_number/$brand_link/\";";
                 $list .= "<tr class=\"pointer table-row\" onclick='$link'>
-                    <td class=\"minify\">$photo</td>
+                    <td class=\"minify\">
+                        <img itemprop=\"image\" src=\"$photo_name\" alt=\"Article\">
+                    </td>
                     <td>$text</td>
                     <td>$brand_name</td>
                     <td>$name</td>

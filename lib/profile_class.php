@@ -23,19 +23,14 @@ class ProfileClass extends ClientClass
 
     public function getProfileInfo()
     {
+        $form = $this->getHtmlForm("menu/profile_nav");
+        $form = str_replace("{reg_link}", $this->page_registration, $form);
         if ($this->getUser() == 0) {
-            $info = "<li><a href=\"$this->page_registration\">
-                <span class=\"fas fa-user-plus\"></span><span> {registration}</span>
-            </a></li>
-            <li><a class=\"pointer\" onClick=\"showLoginForm();\">
-                <span class=\"fas fa-sign-in-alt\"></span><span> {login}</span>
-            </a></li>";
+            $form = str_replace("{reg_login}", "dnone", $form);
         } else {
-            $info = "<li><a href=\"#\" class=\"pointer\" onClick=\"logoutForm();\">
-                <span class=\"fas fa-sign-out-alt\"></span><span> {logout}</span>
-            </a></li>";
+            $form = str_replace("{reg_logout}", "dnone", $form);
         }
-        return $info;
+        return $form;
     }
 
     public function getSpecialOffers()

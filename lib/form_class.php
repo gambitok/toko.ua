@@ -84,7 +84,7 @@ class FormClass extends CatalogueClass
         $auto = new AutoClass();
         $auto_typ_id = $this->getCookieAuto();
 
-        $form = $this->getHtmlForm("cat_article");
+        $form = $this->getHtmlForm("article/card");
         if ($auto_typ_id != "") {
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
                 $form = str_replace("{applicable_display}", "applicable-active", $form);
@@ -95,56 +95,53 @@ class FormClass extends CatalogueClass
             }
         }
 
-        $article = $this->getArticleInfo($art_id);
-        $article_nr_displ = $article["article_nr_displ"];
+        $articleData = $this->getArticleInfo($art_id);
+        $article_nr_displ = $articleData["article_nr_displ"];
         $format_article = $this->getFormatAticle($article_nr_displ);
-        $brand_id = $article["brand_id"];
-        $brand_name = $article["brand_name"];
-        $article_name = $article["text"];
+        $brand_id = $articleData["brand_id"];
+        $brand_name = $articleData["brand_name"];
+        $article_name = $articleData["text"];
 
-        // $brand_link = $this->getArtBrandLink($art_id, $brand_id);
+//        $brand_link = $this->getArtBrandLink($art_id, $brand_id);
         $brand_link = "";
         $flagData = $this->getCountryFlag($brand_id);
         if ($flagData !== false) {
             $flag = $flagData["flag"];
             $country_name = $flagData["country"];
-            $brand_form = "
-            <a href=\"$brand_link\">
-                <span title=\"$country_name\" class=\"search__brand\" data-title=\"{brand_cap}\">$brand_name</span>
-            </a>
-            <img class=\"flag flag-$flag flag-search\" alt=''>";
+            $form = str_replace("{country_name}", $country_name, $form);
+            $form = str_replace("{brand_link}", $brand_link, $form);
+            $form = str_replace("{flag_name}", $flag, $form);
+            $form = str_replace("{flag_visible}", "", $form);
         } else {
-            $brand_form = "
-            <a href=\"$brand_link\">
-                <span title=\"$brand_name\" class=\"search__brand\" data-title=\"{brand_cap}\">$brand_name</span>
-            </a>";
+            $form = str_replace("{country_name}", $brand_name, $form);
+            $form = str_replace("{brand_link}", $brand_link, $form);
         }
 
         $form = str_replace("{art_id}", $art_id, $form);
         $form = str_replace("{art_name}", $article_nr_displ, $form);
         $form = str_replace("{art_brand_id}", $brand_id, $form);
         $form = str_replace("{art_brand_name}", $brand_name, $form);
-        $form = str_replace("{art_brand_form}", $brand_form, $form);
         $form = str_replace("{art_text}", $article_name, $form);
-        $form = str_replace("{art_del}", str_replace("<br>", ", ", $article["delivery"]), $form);
-        $form = str_replace("{del_class}", ($article["delivery_days"] == 0) ? "delivery-red" : ($article["delivery_days"] == 1 ? "delivery-blue" : ($article["delivery_days"] > 1 ? "delivery-dark" : "")), $form);
-        $form = str_replace("{art_stock}", $article["stock"], $form);
-        $form = str_replace("{art_price}", $article["price"], $form);
-        $form = str_replace("{art_cur}", $article["currency"], $form);
-        $form = str_replace("{art_basket}", $article["basket"], $form);
+        $form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $form);
+        $form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-red" : (($articleData["delivery_days"] == 1) ? "delivery-blue" : (($articleData["delivery_days"] > 1) ? "delivery-dark" : "")), $form);
+        $form = str_replace("{art_stock}", $articleData["stock"], $form);
+        $form = str_replace("{art_price}", $articleData["price"], $form);
+        $form = str_replace("{art_cur}", $articleData["currency"], $form);
+        $form = str_replace("{art_basket}", $articleData["basket"], $form);
         $form = str_replace("{art_images}", $this->showArticlePhotoGallery($art_id), $form);
         $form = str_replace("{analogs_capa}", "$article_nr_displ $brand_name", $form);
         $form = str_replace("{analogs_link}", "https://toko.ua" . $this->getLangPrefix() . "/search/$format_article/$brand_id/$brand_name/", $form);
 
         $analogs = $this->shortSearchList($art_id);
         $form = str_replace("{analogs_list}", $analogs, $form);
-        $form = str_replace("{analogs_display}", $analogs == "" ? "dnone" : "", $form);
+        $form = str_replace("{analogs_display}", ($analogs == "") ? "dnone" : "", $form);
         $form = str_replace("{analogs_header}", "$brand_name $format_article ('$article_nr_displ, $article_nr_displ, $brand_name $article_nr_displ)", $form);
 
         $form = str_replace("{article_header}", "<h1>$article_name $brand_name $article_nr_displ</h1>", $form);
-        $form = str_replace("{applicable_display}", "none", $form);
+        $form = str_replace("{applicable_display}", "dnone", $form);
         $form = str_replace("{applicable_cap}", "", $form);
         $form = str_replace("{applicable_display_text}", "{is_not_applicable}", $form);
+        $form = str_replace("{flag_visible}", "dnone", $form);
 
         $form = $this->replaceLang($form);
         return $form;
@@ -521,7 +518,7 @@ class FormClass extends CatalogueClass
             $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
         }
         $photo_name = ($photo_name == "") ? $this->noPhoto : "$this->uploads_link/" . $photo_name;
-        return "<img itemprop=\"image\" src=\"$photo_name\" alt=\"Article\">";
+        return $photo_name;
     }
 
     public function getArticlePhotos($art_id)
@@ -864,7 +861,7 @@ class FormClass extends CatalogueClass
         $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            (!$display) ? $class = "info__table" : $class = "info__table_min";
+            $class = (!$display) ? "info__table" : "info__table_min";
             $info .= "<table class='$class'>";
             $max = $n;
             $type ?: $n <= 5 ?: $max = 5;
@@ -877,7 +874,7 @@ class FormClass extends CatalogueClass
                 </tr>";
             }
             $info .= "</table>";
-            $type ?: $n <= 5 ?: $info .= "<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
+            $type ?: ($n <= 5) ?: $info .= "<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
                 <a class='search__more' href='https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/'>
                     {more_read}
                 </a>    
@@ -935,7 +932,6 @@ class FormClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();
-        $list = "<div class='seo_details'><div class='seo-ul'>";
         $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `POSITION` DESC LIMIT 0,25;");
         $n = $db->num_rows($r);
         $arr = [];
@@ -946,17 +942,23 @@ class FormClass extends CatalogueClass
             $arr[$i] = ["brand" => $mfa_brand, "link" => $mfa_link, "image" => $mfa_image];
         }
         sort($arr);
+        $list = "";
         foreach ($arr as $value) {
             $mfa_brand = $value["brand"];
             $mfa_link = $value["link"];
             $mfa_image = $value["image"];
-            $list .= "<a class='seo-li seo-li-min' href='https://toko.ua$prefix/cars/$mfa_link/'>
-                <img src=\"https://toko.ua/uploads/images/manufacturers/svg/$mfa_image\" alt=\"$mfa_brand\">
-                <span>$mfa_brand</span>
-            </a>";
+            $form_list = $this->getHtmlForm("menu/seo_details_card");
+            $form_list = str_replace("{prefix}", $prefix, $form_list);
+            $form_list = str_replace("{mfa_brand}", $mfa_brand, $form_list);
+            $form_list = str_replace("{mfa_image}", $mfa_image, $form_list);
+            $form_list = str_replace("{mfa_link}", $mfa_link, $form_list);
+            $list .= $form_list;
         }
-        $list .= "</div></div>";
-        return $list;
+
+        $form = $this->getHtmlForm("menu/seo_details");
+        $form = str_replace("{details_range}", $list, $form);
+
+        return $form;
     }
 
 }

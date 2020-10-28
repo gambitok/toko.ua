@@ -673,12 +673,12 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    public function getCatalogFaqForm()
+    public function getCatalogFaqForm($h1 = "")
     {
         $form = $this->getHtmlForm("faq/form");
         $form = str_replace("{form_request}", $this->getHtmlForm("faq/request"), $form);
         $form = $this->replaceLang($form);
-        $form = str_replace("{faq_h1}", "h1", $form);
+        $form = str_replace("{faq_h1}", $h1, $form);
         return $form;
     }
 

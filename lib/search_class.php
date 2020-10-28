@@ -173,6 +173,29 @@ class SearchClass extends CatalogueClass
         return array($suppl_array, $storage_array, $stock_array, $n);
     }
 
+    public function getCatalogH1($str_link, $mfa_link, $mod_link)
+    {
+        $automan = new AutoClass();
+        $h1_text = "";
+
+        if ($str_link != "") {
+            $str_name = $automan->getStrNewDescr($automan->getStrNewLinkStr($str_link));
+            $h1_text .= "$str_name ";
+        }
+
+        if ($mfa_link != "") {
+            $mfa_name = $automan->getMfaBrand($automan->getMfaLink($mfa_link));
+            $h1_text .= "$mfa_name ";
+        }
+
+        if ($mod_link != "") {
+            $mod_name = $automan->getModLink($mod_link);
+            $h1_text .= "$mod_name ";
+        }
+
+        return $h1_text;
+    }
+
     /*
      * Route CATALOG Pages
      * */
@@ -180,6 +203,7 @@ class SearchClass extends CatalogueClass
     {
         $prod = new ProductsClass();
         $automan = new AutoClass();
+        $menu = new MenuClass();
 
         $details_form = $this->getHtmlForm("details_offers");
 
@@ -189,11 +213,21 @@ class SearchClass extends CatalogueClass
         $cookie_typ_id = $this->getCookieAuto();
 
         $arr = explode("/", $link);
-        if (!empty($arr[0])) $str_link = $arr[0];
-        if (!empty($arr[3])) ((strpos($arr[4], "=") !== false)) ? $filters = $arr[4] : $filters = "";
-        if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $mod_id_link = $arr[3];
-        if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
-        if (!empty($arr[1])) ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
+        if (!empty($arr[0])) {
+            $str_link = $arr[0];
+        }
+        if (!empty($arr[3])) {
+            ((strpos($arr[4], "=") !== false)) ? $filters = $arr[4] : $filters = "";
+        }
+        if (!empty($arr[3])) {
+            ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $mod_id_link = $arr[3];
+        }
+        if (!empty($arr[2])) {
+            ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
+        }
+        if (!empty($arr[1])) {
+            ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
+        }
 
         $brand_ids = $this->getActiveFilters($filters);
 
@@ -201,7 +235,6 @@ class SearchClass extends CatalogueClass
             $cookieData = $automan->getCookieCarInfo($cookie_typ_id);
             $mfa_link2 = $cookieData["mfa_link"];
             $mod_link2 = $cookieData["model_link"];
-
             if ($mfa_link2 != $mfa_link || ($mod_link != "" && $mod_link2 != $mod_link)) {
                 $cookie_typ_id = "";
                 setcookie("auto_typ_id", "", time() + (86400 * 30), "/");
@@ -298,6 +331,11 @@ class SearchClass extends CatalogueClass
             }
         } else {
             $form = str_replace("{seo_auto}", $automan->getAutoMfaModelList($str_id, $brand_ids[0]), $form);
+        }
+
+        if ($cookie_typ_id == "") {
+            $h1_text = $this->getCatalogH1($str_link, $mfa_link, $mod_link);
+            $form = str_replace("{details_faq}", $menu->getCatalogFaqForm($h1_text), $form);
         }
 
         return array($form, $car_form, $pages_count);

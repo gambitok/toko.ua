@@ -164,6 +164,27 @@ class AutoClass extends CatalogueClass
         return $db->result($r, 0, "MFA_BRAND");
     }
 
+    public function getMfaLink($mfa_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
+        return $db->result($r, 0, "MFA_ID");
+    }
+
+    public function getModLink($mod_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link`='$mod_link' LIMIT 1;");
+        return $db->result($r, 0, "Model");
+    }
+
+    public function getModIdLink($mod_id_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID`='$mod_id_link' LIMIT 1;");
+        return $db->result($r, 0, "TEX_TEXT");
+    }
+
     public function getAutoModelIdLink($model_id_link)
     {
         $db = DbSingleton::getTokoDb();
@@ -260,13 +281,9 @@ class AutoClass extends CatalogueClass
         $lang_id = $this->getLanguage();
         $prefix = $language->getTexCapLanguage($lang_id);
         $str_id = $this->getUrlNumber($str_id);
-        $TEX_TEXT = "";
         $r = $db->query("SELECT `TEX_$prefix` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`=$str_id AND `STR_ID`!=0 LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n > 0) {
-            $TEX_TEXT = $db->result($r, 0, "TEX_$prefix");
-        }
-        return $TEX_TEXT;
+        return ($n > 0) ? $db->result($r, 0, "TEX_$prefix") : "";
     }
 
     public function getStrParams($str_id)
@@ -578,12 +595,12 @@ class AutoClass extends CatalogueClass
                 $id = $db->result($r, $i - 1, "id");
                 $typ_id = $db->result($r, $i - 1, "typ_id");
                 $list .= "<li class=\"garage-history-block-list__item\">
-                    <div class='container'>
-                        <div class='row'>
-                            <div class='col-10'>
+                    <div class=\"container\">
+                        <div class=\"row\">
+                            <div class=\"col-10\">
                                 <a onclick=\"setCookie('auto_typ_id', '$typ_id'); location.reload();\">" . $this->getCarDescription($typ_id) . "</a>
                             </div>
-                            <div class='col-2 text-right'>
+                            <div class=\"col-2 text-right\">
                                 <a onclick=\"dropAutoHistory('$id')\"><i class=\"fa fa-times\"></i></a>
                             </div>
                         </div>
@@ -615,27 +632,6 @@ class AutoClass extends CatalogueClass
         }
         $db->query("DELETE FROM `AUTO_HISTORY` WHERE $where");
         return true;
-    }
-
-    public function getMfaLink($mfa_link)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mfa_link' LIMIT 1;");
-        return $db->result($r, 0, "MFA_ID");
-    }
-
-    public function getModLink($mod_link)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link`='$mod_link' LIMIT 1;");
-        return $db->result($r, 0, "Model");
-    }
-
-    public function getModIdLink($mod_id_link)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID`='$mod_id_link' LIMIT 1;");
-        return $db->result($r, 0, "TEX_TEXT");
     }
 
     public function getSeoContent($title, $mfa_link, $mod_link = "")
@@ -677,13 +673,13 @@ class AutoClass extends CatalogueClass
             }
             if ($mfa != "") {
                 $mfa_brand = $this->getMfaBrand($mfa);
-                $title = "<div><span class='title-b'>$details_cap {on_cap} {other_models} $mfa_brand</span></div>";
+                $title = "<div><span class=\"title-b\">$details_cap {on_cap} {other_models} $mfa_brand</span></div>";
             } else {
-                $title = "<div><span class='title-b'>$details_cap</span></div>";
+                $title = "<div><span class=\"title-b\">$details_cap</span></div>";
             }
             $details_cap .= " {on_cap}";
         }
-        $list = "<div class='seo_auto'>$title";
+        $list = "<div class=\"seo_auto\">$title";
         $mas = [];
         $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 $where ORDER BY `MFA_BRAND` ASC;");
         $n = $db->num_rows($r);
@@ -698,15 +694,15 @@ class AutoClass extends CatalogueClass
             $mfa_id = $values["mfa_id"];
             $mfa_link = $values["link"];
             if ($mfa == "") {
-                $list .= "<div class='title'><a href='https://toko.ua/$link/$mfa_link/'>$details_cap $mfa_brand</a></div>";
+                $list .= "<div class=\"title\"><a href='https://toko.ua/$link/$mfa_link/'>$details_cap $mfa_brand</a></div>";
             }
-            $list .= "<ul class='list-inline'>";
+            $list .= "<ul class=\"list-inline\">";
             $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
                 $model_link = $db->result($r, $i - 1, "Model_Link");
-                $list .= "<li><a href='https://toko.ua/$link/$mfa_link/$model_link/'>$mfa_brand $model</a></li>";
+                $list .= "<li><a href=\"https://toko.ua/$link/$mfa_link/$model_link/\">$mfa_brand $model</a></li>";
             }
             $list .= "</ul>";
         }
@@ -749,19 +745,19 @@ class AutoClass extends CatalogueClass
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
 
             if ($mfa == "") {
-                $list .= "<li class='title'><span class='bold'><a href='https://toko.ua$prefix/$link/$mfa_link/'>$details_cap $mfa_brand</a></span>";
+                $list .= "<li class=\"title\"><span class=\"bold\"><a href=\"https://toko.ua$prefix/$link/$mfa_link/\">$details_cap $mfa_brand</a></span>";
             } else {
                 $list = "";
-                $list .= "<span class='title-b'>$details_cap $mfa_brand</span>";
+                $list .= "<span class=\"title-b\">$details_cap $mfa_brand</span>";
             }
-            $list .= "<div class='seo_details'><div class='seo-ul'>";
+            $list .= "<div class=\"seo_details\"><div class=\"seo-ul\">";
 
             $r2 = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;");
             $n2 = $db->num_rows($r2);
             for ($i2 = 1; $i2 <= $n2; $i2++) {
                 $mod = $db->result($r2, $i2 - 1, "Model");
                 $mod_link = $db->result($r2, $i2 - 1, "Model_Link");
-                $list .= "<a class='seo-li' href='https://toko.ua$prefix/$link/$mfa_link/$mod_link/'>
+                $list .= "<a class=\"seo-li\" href=\"https://toko.ua$prefix/$link/$mfa_link/$mod_link/\">
                     <span>$mfa_brand $mod</span>
                 </a>";
             }
@@ -798,7 +794,7 @@ class AutoClass extends CatalogueClass
 
         $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id';");
         $n = $db->num_rows($r);
-        $list = "<span class='title-b'>$details_cap $title</span>";
+        $list = "<span class=\"title-b\">$details_cap $title</span>";
         $list .= "<div class=\"t_types\">";
         $mas = [];
         for ($i = 1; $i <= $n; $i++) {
@@ -859,8 +855,8 @@ class AutoClass extends CatalogueClass
             $model_text = $db->result($r, $i - 1, "Model");
             $mod_link = $db->result($r, $i - 1, "Model_Link");
 
-            $list .= "<span class='title-b'>$details_cap $mfa_brand $model_text</span>";
-            $list .= "<div class='seo_details'><div class='seo-ul'>";
+            $list .= "<span class=\"title-b\">$details_cap $mfa_brand $model_text</span>";
+            $list .= "<div class=\"seo_details\"><div class=\"seo-ul\">";
 
             $r2 = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' AND `Model`='$mod' ORDER BY `MOD_PCON_START`;");
             $n2 = $db->num_rows($r2);
@@ -876,10 +872,10 @@ class AutoClass extends CatalogueClass
                 if ($d_end == 0) {
                     $d_end = "{cur_time}";
                 }
-                $list .= "<a class='seo-li seo-li-id' href=\"https://toko.ua$prefix/$link/$mfa_link/$mod_link/$mod_id_link/\">
-                    <div class='row mar0'>
-                        <div class='col-4 pad0'><img src='$path' alt='$text' title='$text'></div>
-                        <div class='col-8 '><span>$mfa_brand $text ($d_start - $d_end)</span></div>
+                $list .= "<a class=\"seo-li seo-li-id\" href=\"https://toko.ua$prefix/$link/$mfa_link/$mod_link/$mod_id_link/\">
+                    <div class=\"row mar0\">
+                        <div class=\"col-4 pad0\"><img src=\"$path\" alt=\"$text\" title=\"$text\"></div>
+                        <div class=\"col-8\"><span>$mfa_brand $text ($d_start - $d_end)</span></div>
                     </div>
                 </a>";
             }
@@ -895,9 +891,9 @@ class AutoClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEX_RU` FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 AND `HEAD_ID`='$head_id' LIMIT 1;");
         $head_tex_text = $db->result($r, 0, "TEX_RU");
-        $title = "<div class='tree-block-title__text'><div class='container pad0'><h1>$head_tex_text</h1></div></div>";
+        $title = "<div class=\"tree-block-title__text\"><div class=\"container pad0\"><h1>$head_tex_text</h1></div></div>";
         $img = "$head_id.jpg";
-        return "<div class='tree-block-title' style=\"background-image: url('/images/tree_head/$img');\">$title</div>";
+        return "<div class=\"tree-block-title\" style=\"background-image: url('/images/tree_head/$img');\">$title</div>";
     }
 
     public function getDetailsList($head, $category = "", $mfa_link = "", $mod_link = "")
@@ -912,7 +908,7 @@ class AutoClass extends CatalogueClass
             $where_category = "AND `CAT_ID`='$category'";
         }
 
-        $list = "<div class='tree-block'>";
+        $list = "<div class=\"tree-block\">";
 
         $r3 = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 $where;");
         $n3 = $db->num_rows($r3);
@@ -926,9 +922,9 @@ class AutoClass extends CatalogueClass
                 $cat_id = $db->result($r2, $i2 - 1, "CAT_ID");
                 $cat_tex_text = $db->result($r2, $i2 - 1, "TEX_RU");
                 $cat_tex_link = $db->result($r2, $i2 - 1, "TEX_LINK");
-                $title_cat = ($category != "") ? "<h1>$cat_tex_text</h1>" : "<a href='https://toko.ua$prefix/catalog/$head_tex_link/$cat_tex_link/'>$cat_tex_text</a>";
-                $list .= "<div class='tree-item-title'>$title_cat</div>";
-                $list .= "<div class='tree-item-list'>";
+                $title_cat = ($category != "") ? "<h1>$cat_tex_text</h1>" : "<a href=\"https://toko.ua$prefix/catalog/$head_tex_link/$cat_tex_link/\">$cat_tex_text</a>";
+                $list .= "<div class=\"tree-item-title\">$title_cat</div>";
+                $list .= "<div class=\"tree-item-list\">";
                 $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `CAT_ID`='$cat_id' ORDER BY `TEX_RU` ASC;");
                 $n = $db->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
@@ -940,8 +936,8 @@ class AutoClass extends CatalogueClass
                     if ($mod_link != "") {
                         $tex_link .= "/$mod_link";
                     }
-                    $list .= "<div class='tree-item-list__element'>
-                        <a href='https://toko.ua$prefix/catalog/$tex_link/'>
+                    $list .= "<div class=\"tree-item-list__element\">
+                        <a href=\"https://toko.ua$prefix/catalog/$tex_link/\">
                             $tex_text
                         </a>
                     </div>";

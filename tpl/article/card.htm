@@ -1,0 +1,81 @@
+<link rel="stylesheet" href="/css/plugins/flags.min.css">
+<script type="text/javascript" src="/js/plugins/bootstrap-input-spinner.js"></script>
+
+<div class="content">
+    <div class="container">
+
+        <div class="row article-header">
+            <div class="col-lg-12 col-12">
+                {article_header}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-12" style="margin-bottom: 15px;">
+                {art_images}
+            </div>
+            <div class="col-lg-6 col-12">
+                <ul class="list-inline article-list">
+                    <li class="tables__delivery applicable {applicable_display}">
+                        <div class="article-list__title">{is_applicable}:</div>
+                        <div class="article-list__content">{applicable_cap}</div>
+                    </li>
+                    <li class="tables__delivery">
+                        <div class="article-list__title">{brand_cap}:</div>
+                        <div class="article-list__content">
+                            <span>
+                                <a href="{brand_link}">
+                                    <span title="{country_name}" class="search__brand" data-title="{brand_cap}">{art_brand_name}</span>
+                                </a>
+                                <img class="flag flag-{flag_name} flag-search {flag_visible}">
+                            </span>
+                        </div>
+                    </li>
+                    <li class="tables__delivery {del_class}">
+                        <div class="article-list__title">{delivery_cap}:</div>
+                        <div class="article-list__content"><span style="font-size: 14px;">{art_del}</span></div>
+                    </li>
+                    <li class="tables__stock">
+                        <div class="article-list__title">{stock_cap}:</div>
+                        <div class="article-list__content"><span>{art_stock} {amount_abbr}.</span></div>
+                    </li>
+                    <li class="tables__count">
+                        <div class="article-list__title">{count_cap}:</div>
+                        <div class="article-list__content" style="width: 150px; margin-left: auto;"><input type="text" value="1" min="1" title="amount" id="count_0"></div>
+                    </li>
+                    <li class="tables__price">
+                        <div class="article-list__title">{price_cap}:</div>
+                        <div class="article-list__content"><span style="font-size: 24px;">{art_price} {art_cur}</span></div>
+                    </li>
+                    <li class="buy-cart-group" style="float: unset!important;">
+                        <div class="btn-group btn btn-sm btn-info" onClick="{art_basket}">
+                            <img src="/images/buy-cart-white.png" alt="PNG" width="25">
+                            <span>{buy_cap}</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                {index_analog_name}: {analogs_header}
+            </div>
+        </div>
+
+        <div class="row {analogs_display}">
+            <div class="col-12">
+                <hr>
+                <p style="font-size: 1em;">{action_cap} {and_analogs}:</p><br>
+                {analogs_list}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() { "use strict";
+        $("#count_0").inputSpinner();
+    });
+</script>
