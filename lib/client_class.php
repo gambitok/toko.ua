@@ -140,6 +140,7 @@ class ClientClass
     {
         $phone = str_replace(str_split("()+- "), "", $phone);
         $phone = substr($phone, -10);
+        $phone = $this->getUrlNumber($phone);
         return $phone;
     }
 
@@ -164,6 +165,8 @@ class ClientClass
     public function loginClient($phone, $password)
     {
         $db = DbSingleton::getDbm();
+
+        // fixed SQL injections
         $phone_list = $this->formatPhone($this->getUrlString($phone));
         $password = $this->getUrlString($password);
 
@@ -523,6 +526,9 @@ class ClientClass
         return $result;
     }
 
+    /*
+     * get storage_id from Tpoint
+     * */
     public function getStorageByTpoint($tpoint_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -743,11 +749,7 @@ class ClientClass
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
         $client_category = $db->result($r, 0, "client_category");
-        if ($client_category == 140) {
-            return true;
-        } else {
-            return false;
-        }
+        return ($client_category == 140);
     }
 
     /*
@@ -777,8 +779,8 @@ class ClientClass
     /*
      * getting the type of display of goods
      * Session: 'display_status'
-     * 0:
-     * 1:
+     * 0: list view
+     * 1: card view
      * */
     public function getProductView()
     {
@@ -867,11 +869,10 @@ class ClientClass
     {
         $db = DbSingleton::getDbm();
         $user_id = $this->getUser();
+        $phone = "";
         if ($user_id > 0) {
             $r = $db->query("SELECT `phone` FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
             $phone = $db->result($r, 0, "phone");
-        } else {
-            $phone = "";
         }
         return $phone;
     }
@@ -944,9 +945,9 @@ class ClientClass
         $user_name = $db->result($r, 0, "name");
         $user_phone = $db->result($r, 0, "phone");
         $user_email = $db->result($r, 0, "email");
-        $user_city = 0;
         $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `USER_ID`='$user_id' ORDER BY `ID` DESC LIMIT 1;");
         $n = $db->num_rows($r);
+        $user_city = 0;
         if ($n > 0) {
             $user_city = $db->result($r, 0, "CITY_ID");
         }
@@ -957,12 +958,12 @@ class ClientClass
      * CLIENT Requests
      * T2_QUESTIONS
      * */
-    public function setClientRequest($phone, $vin = "", $text = "")
+    public function setClientRequest($phone, $vin = "", $text = "", $status = 0)
     {
         $db = DbSingleton::getTokoDb();
         $data_create = date("Y-m-d H:i:s");
         $phone = $this->formatValidPhone($phone);
-        if ($phone == "" || strlen($vin) != $this->vin_len) {
+        if (($phone == "") || (strlen($vin) != $this->vin_len && $status == 1) || (!$this->validateOperator($phone))) {
             return false;
         } else {
             $db->query("INSERT INTO `T2_QUESTIONS` (`PHONE`, `VIN`, `TEXT` , `DATA_CREATE`) VALUES ('$phone', '$vin', '$text', '$data_create');");

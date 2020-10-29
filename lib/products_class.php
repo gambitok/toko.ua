@@ -429,28 +429,6 @@ class ProductsClass extends CatalogueClass
         return $form;
     }
 
-    /*
-     * Get selected Car text Translit
-     * */
-    public function getCarManufTranslit($mfa_id, $model = "")
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `MFA_BRAND_TRANSLIT` FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
-        $mfa_translit = $db->result($r, 0, "MFA_BRAND_TRANSLIT");
-        $text = "";
-        if ($mfa_translit != "") {
-            $text = "($mfa_translit)";
-        }
-        if ($model != "") {
-            $r = $db->query("SELECT `Model_TRANSLIT` FROM `T_models` WHERE `Model`='$model' AND `Model_TRANSLIT`!='' LIMIT 1;");
-            $model_translit = $db->result($r, 0, "Model_TRANSLIT");
-            if ($model_translit != "") {
-                $text = "($mfa_translit $model_translit)";
-            }
-        }
-        return $text;
-    }
-
     public function getCarsSearch($mfa_link = "", $mod_link = "", $str_id = 0)
     {
         $automan = new AutoClass();

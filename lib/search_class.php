@@ -76,12 +76,10 @@ class SearchClass extends CatalogueClass
 
     public function getCatalogTitle($str_id, $active_filters, $mfa_link, $mod_link, $mod_id_link, $page)
     {
-        $cat = new CatalogueClass();
         $automan = new AutoClass();
-        $prod = new ProductsClass();
 
         list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-        $translit = $prod->getCarManufTranslit($mfa_id, $model);
+        $translit = $this->getCarManufTranslit($mfa_id, $model);
 
         list($mfa_text, $mod_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
         $mod_id_text = $automan->getAutoModelIdLink($mod_id_link)["text"];
@@ -91,7 +89,7 @@ class SearchClass extends CatalogueClass
         $str_text = $automan->getStrNewDescr($str_id);
         $str_link = $automan->getStrNewLink($str_id);
 
-        $h1_text = $cat->getStaticH1("/catalog/$str_link/");
+        $h1_text = $this->getStaticH1("/catalog/$str_link/");
         if ($h1_text != "") $str_text = $h1_text;
         $h1 = $str_text;
         if ($auto_text != "" && $auto_text != " ") $h1 .= " {for_cap} $auto_text $translit";
@@ -890,7 +888,6 @@ class SearchClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $automan = new AutoClass();
-        $prod = new ProductsClass();
         list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
         list($mfa_text, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
 
@@ -899,10 +896,10 @@ class SearchClass extends CatalogueClass
 
         if ($n == 0) {
             $page_h1 = "{details_on_cap} $mfa_text $model_text";
-            $translit = $prod->getCarManufTranslit($mfa_id, $model);
+            $translit = $this->getCarManufTranslit($mfa_id, $model);
             if ($translit != "") $page_h1 .= " $translit";
             $page_h1_lower = "{details_on_cap_min} $mfa_text $model_text";
-            $translit = $prod->getCarManufTranslit($mfa_id, $model);
+            $translit = $this->getCarManufTranslit($mfa_id, $model);
             if ($translit != "") $page_h1_lower .= " $translit";
 
             list($brand1, $brand2, $brand3) = $this->getRandomBrands(3);
@@ -939,6 +936,28 @@ class SearchClass extends CatalogueClass
         }
 
         return $seo_text;
+    }
+
+    /*
+     * Get selected Car text Translit
+     * */
+    public function getCarManufTranslit($mfa_id, $model = "")
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `MFA_BRAND_TRANSLIT` FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
+        $mfa_translit = $db->result($r, 0, "MFA_BRAND_TRANSLIT");
+        $text = "";
+        if ($mfa_translit != "") {
+            $text = "($mfa_translit)";
+        }
+        if ($model != "") {
+            $r = $db->query("SELECT `Model_TRANSLIT` FROM `T_models` WHERE `Model`='$model' AND `Model_TRANSLIT`!='' LIMIT 1;");
+            $model_translit = $db->result($r, 0, "Model_TRANSLIT");
+            if ($model_translit != "") {
+                $text = "($mfa_translit $model_translit)";
+            }
+        }
+        return $text;
     }
 
     /*

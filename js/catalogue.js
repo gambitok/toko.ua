@@ -270,7 +270,7 @@ function catalogueFilter(order) {
             ex1.slider("setAttribute", "max", max_price);
             ex1.slider("refresh");
 
-            if (value[1]>max_price) value[1] = max_price;
+            if (value[1] > max_price) value[1] = max_price;
             var max_min = value[0] + "," + value[1];
             ex1.attr("data-slider-value", max_min);
             $("#price_val").html(max_min);
@@ -410,7 +410,9 @@ function tecModelsFilter(order) {
 // }
 
 function loadApplicModels2(art_id_tcd, manufacture, a) {
-    $(".load_app").each(function () {$(this).removeClass("span-red");});
+    $(".load_app").each(function () {
+        $(this).removeClass("span-red");
+    });
     $(a).addClass("span-red");
     JsHttpRequest.query(folder,{ 'w': 'loadApplicModels2', 'art_id_tcd':art_id_tcd, 'manufacture':manufacture},
         function (result, errors){ if (errors) {} if (result){
@@ -421,13 +423,14 @@ function loadApplicModels2(art_id_tcd, manufacture, a) {
 
 function loadApplicModelsInfo2(art_id, typ_id) {
     let er = 0;
-    if (document.getElementById("AMI" + typ_id).innerHTML==="") {
+    if (document.getElementById("AMI" + typ_id).innerHTML === "") {
         JsHttpRequest.query(folder,{ 'w': 'loadApplicModelsInfo2', 'art_id':art_id, 'typ_id':typ_id},
             function (result, errors){ if (errors) {} if (result){
                 document.getElementById("AMI" + typ_id).innerHTML = result.content;
-            }}, true); er = 1;
+            }}, true);
+        er = 1;
     }
-    if (document.getElementById("AMI" + typ_id).innerHTML!=="" && er===0) {
+    if (document.getElementById("AMI" + typ_id).innerHTML !== "" && er === 0) {
         $("#AMI" + typ_id).html("");
     }
 }
@@ -471,13 +474,13 @@ function copyToClipboard(element, art_name) {
 /*==== Garage ====*/
 
 // ADD NEW CAR TO GARAGE
-function addToGarage(typ_id=0) {
+function addToGarage(typ_id = 0) {
     if (typ_id === 0) {
         typ_id = $("#typ_id").val();
     }
     if (typ_id !== undefined && typ_id !== 0 && typ_id !== "") {
         JsHttpRequest.query(folder,{'w':'addToGarage', 'typ_id':typ_id},
-            function (result, errors){ if (errors) {alert(errors);} if (result){
+            function (result, errors){ if (errors) {alert(errors);} if (result) {
                 if (result.content !== false) {
                     if (result.content === true) {
                         showNotify("{error_cap}:", "{garage_auto_exist}", "danger");
@@ -808,7 +811,7 @@ function showCarDetailsStrMin(head_id) {
 //         }}, true);
 // }
 
-function showCarsSelectMin(param_id, value_id=0, fuel_id=0) {
+function showCarsSelectMin(param_id, value_id = 0, fuel_id = 0) {
     let mfa = $("#mfa_select").val();
     let model = $("#model_select").val();
     let year = $("#year_select").val();
@@ -817,7 +820,13 @@ function showCarsSelectMin(param_id, value_id=0, fuel_id=0) {
     let fuel_id_selected = $("#fuel_id_select").val();
     let str_id = $("#str_text_select").val();
 
-    if (param_id==1) {mfa=""; model=""; year=""; modelid=""; typ_id="";}
+    if (param_id == 1) {
+        mfa = "";
+        model = "";
+        year = "";
+        modelid = "";
+        typ_id = "";
+    }
 
     if (param_id==2 && value_id>0)   {mfa=value_id; model="";}
     if (param_id==2 && value_id!="") {mfa=value_id; model="";}
@@ -989,12 +998,28 @@ function setCatalogFilters() {
 }
 
 function setClientRequest() {
-    let phone = $("#help-phone").val(); if($("#help-phone").length===0) phone = "";
-    let vin = $("#help-vin").val(); if($("#help-vin").length===0) vin = "";
-    let text = $("#help-text").val(); if($("#help-text").length===0) text = "";
-    JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
-        function (result, errors){ if (errors) {alert(errors);} if (result) {
-            if (result.content===false) {
+    let phone = $("#help-phone").val(); if ($("#help-phone").length === 0) phone = "";
+    let vin = $("#help-vin").val(); if ($("#help-vin").length === 0) vin = "";
+    let text = $("#help-text").val(); if ($("#help-text").length === 0) text = "";
+    let status = 0;
+    JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
+        function (result, errors) { if (errors) {alert(errors);} if (result) {
+            if (result.content === false) {
+                showNotify("{error_cap}:", "{phone_number_input}", "danger");
+            } else {
+                showNotify("{done_cap}:", "{manager_call}!", "success");
+            }
+        }}, true);
+}
+
+function setClientRequestFaq() {
+    let phone = $("#faq-phone").val(); if ($("#faq-phone").length === 0) phone = "";
+    let vin = $("#faq-vin").val(); if ($("#faq-vin").length === 0) vin = "";
+    let text = $("#faq-text").val(); if ($("#faq-text").length === 0) text = "";
+    let status = 0;
+    JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
+        function (result, errors) { if (errors) {alert(errors);} if (result) {
+            if (result.content === false) {
                 showNotify("{error_cap}:", "{phone_number_input}", "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
@@ -1003,10 +1028,11 @@ function setClientRequest() {
 }
 
 function setClientRequestCard() {
-    let phone = $("#help-phone").val(); if($("#help-phone").length===0) phone = "";
-    let vin = $("#help-vin").val(); if($("#help-vin").length===0) vin = "";
-    let text = $("#help-text").val(); if($("#help-text").length===0) text = "";
-    JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
+    let phone = $("#help-phone").val(); if ($("#help-phone").length === 0) phone = "";
+    let vin = $("#help-vin").val(); if ($("#help-vin").length === 0) vin = "";
+    let text = $("#help-text").val(); if ($("#help-text").length === 0) text = "";
+    let status = 1;
+    JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             if (result.content === false) {
                 showNotify("{error_cap}:", "{phone_number_input}", "danger");

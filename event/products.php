@@ -1,5 +1,7 @@
 <?php
 
+// PROFILE CATALOGS
+
 $linka = findLinks();
 $w = $linka[1];
 $template_id = $pattern->getTemplateID($w);
@@ -12,15 +14,13 @@ if ($w == "") {
     $form = $catalogue->getHtmlForm("template/templates");
     $form = str_replace("{select_group}", $catalogue->showCatalogueTemplates(), $form);
     $content = str_replace("{main_window}", $form, $content);
+} elseif ($template_id == "" || $template_id == 0) {
+    $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404"), $content);
+    $content = str_replace("{main_site_breadcrumbs}", "", $content);
+    $content = str_replace("{site_page_pagination}", "", $content);
 } else {
-    if ($template_id == "" || $template_id == 0) {
-        $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404"), $content);
-        $content = str_replace("{main_site_breadcrumbs}", "", $content);
-        $content = str_replace("{site_page_pagination}", "", $content);
-    } else {
-        list($list, $max_page) = $pattern->showProductsForm($template_id, $page, $link);
-        $content = str_replace("{main_window}", $list, $content);
-        $content = str_replace("{site_page_pagination}", $catalogue->getPagePagination($page, $max_page), $content);
-    }
+    list($list, $max_page) = $pattern->showProductsForm($template_id, $page, $link);
+    $content = str_replace("{main_window}", $list, $content);
+    $content = str_replace("{site_page_pagination}", $catalogue->getPagePagination($page, $max_page), $content);
 }
 

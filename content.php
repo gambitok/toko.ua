@@ -118,7 +118,7 @@ if ($_REQUEST["w"] == "loginOrderClient") {
 }
 
 if ($_REQUEST["w"] == "setClientRequest") {
-    $GLOBALS['_RESULT'] = array("content" => $client->setClientRequest($_REQUEST["phone"], $_REQUEST["vin"], $_REQUEST["text"]));
+    $GLOBALS['_RESULT'] = array("content" => $client->setClientRequest($_REQUEST["phone"], $_REQUEST["vin"], $_REQUEST["text"], $_REQUEST["status"]));
 }
 
 if ($_REQUEST["w"] == "getUserSavedData") {

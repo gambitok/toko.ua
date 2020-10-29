@@ -8,6 +8,10 @@ class PatternClass extends CatalogueClass
 
     public $products_on_page = 25;
 
+    /*
+     * init XX_tables
+     * art_id + brand_id
+     * */
     public function initTemplateTable($template_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -150,8 +154,7 @@ class PatternClass extends CatalogueClass
 
     public function showTemplateTitle($template_id, $active_filters)
     {
-        $name = $this->getTemplateName($template_id);
-        $h1 = "$name";
+        $h1 = $this->getTemplateName($template_id);
         foreach ($active_filters as $param_id => $values) {
             foreach ($values as $value_id) {
                 if ($param_id == 0) {
@@ -162,14 +165,16 @@ class PatternClass extends CatalogueClass
                 $h1 .= " $value_name";
             }
         }
-        return "$h1";
+        return $h1;
     }
 
     public function getTemplateCurrentPage($n, $page)
     {
         $max_page = $page * $this->products_on_page;
         $min_page = $max_page - $this->products_on_page + 1;
-        if ($max_page > $n) $max_page = $n;
+        if ($max_page > $n) {
+            $max_page = $n;
+        }
         $range_page = ($max_page == 0) ? "0" : "$min_page-$max_page";
         $list = "{results_cap}: $range_page {of_cap} $n ({page_cap} $page)";
         $list = $this->replaceLang($list);
@@ -272,14 +277,13 @@ class PatternClass extends CatalogueClass
                 }
             }
 
-            if (count($values) <= $amount_max) $style_more = "height:auto;"; else $style_more = "";
-            if ($param_id == 0) $param_name = "{brands_cap}"; else $param_name = $this->getCatalogueParamName($param_id, $template_id);
+            $style_more = (count($values) <= $amount_max) ? "height:auto;" : "";
+            $param_name = ($param_id == 0) ? "{brands_cap}" : $this->getCatalogueParamName($param_id, $template_id);
             if (count($values) > 0 && $amount_values > 0) {
                 $filters_list .= "<div class=\"param-title\">$param_name</div><ul id=\"param-$param_id\" class=\"list-inline template-list list-hide\" style=\"margin: 0; $style_more\">";
             }
-
             $amount_values = $amount_values - $amount_max;
-            if ($amount_values <= 0) $link_more = ""; else $link_more = "<a class=\"pointer underline\" onclick=\"toggleListParams(this, $param_id);\"><span class=\"show\">{more_cap} $amount_values</span> <span class=\"none\">{hide_cap}</span></a>";
+            $link_more = ($amount_values <= 0) ? "" : "<a class=\"pointer underline\" onclick=\"toggleListParams(this, '$param_id');\"><span class=\"show\">{more_cap} $amount_values</span> <span class=\"none\">{hide_cap}</span></a>";
             $filters_list .= "$values_list</ul>$link_more";
             $amount_values = 0;
             $values_list = "";
@@ -402,12 +406,9 @@ class PatternClass extends CatalogueClass
         if ($page > 0) {
             $limit = $this->getSearchLimit($page);
         }
-        $where = "";
-        if (!empty($active_filters)) {
-            $where = $this->getFiltersRequest($active_filters);
-        }
         $products = [];
         list($min, $max) = $this->getMinMaxParams($template_id);
+        $where = (!empty($active_filters)) ? $this->getFiltersRequest($active_filters) : "";
         $r = $db->query("SELECT * FROM `XX_TABLE_TEMPLATE_$template_id` WHERE 1 $where $limit;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -547,8 +548,9 @@ class PatternClass extends CatalogueClass
         $max_count = $pages_count - $min_count + 1;
         $pred_page = $page - 1;
         $next_page = $page + 1;
-        if ($page == 1) $disabled_pred = "disabled"; else $disabled_pred = "";
-        if ($page == $pages_count) $disabled_next = "disabled"; else $disabled_next = "";
+
+        $disabled_pred = ($page == 1) ? "disabled" : "";
+        $disabled_next = ($page == $pages_count) ? "disabled" : "";
 
         if ($pages_count > $min_count) {
 

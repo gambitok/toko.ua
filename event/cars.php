@@ -6,9 +6,9 @@ $mod_link = $linka[2];
 
 list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
 list($mfa_text, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-$translit = $prod->getCarManufTranslit($mfa_id, $model);
+$translit = $search->getCarManufTranslit($mfa_id, $model);
 
-$form = $prod->getHtmlForm("cars/form");
+$form = $catalogue->getHtmlForm("cars/form");
 
 $title = ($mfa_text=="") ? "{spare_parts_catalog_cap}" : $catalogue->replaceLang("{details_on_cap} $mfa_text $model_text $translit");
 

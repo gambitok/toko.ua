@@ -1,4 +1,5 @@
 <?php
+
 error_reporting(0);
 @ini_set('display_errors', false);
 //if ($_SERVER['REMOTE_ADDR']=="78.152.169.139"){error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);@ini_set('display_errors', true);}
@@ -104,6 +105,5 @@ function create_logo_thumb($thumb, $size, $max_height, $op) {
 	ImageDestroy($res);
 }
 
-if ($_GET["image"]!=""){ create_image_thumb($_GET["image"],$_GET["size"],$_GET["height"]);}
-if ($_GET["logo"]!=""){ create_logo_thumb($_GET["logo"],$_GET["size"],$_GET["max_height"],$_GET["op"]);}
-?>
+if ($_GET["image"]!="") { create_image_thumb($_GET["image"], $_GET["size"],$_GET["height"]); }
+if ($_GET["logo"]!="") { create_logo_thumb($_GET["logo"], $_GET["size"], $_GET["max_height"], $_GET["op"]); }

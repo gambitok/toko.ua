@@ -990,6 +990,14 @@ class ShopClass extends CatalogueClass
         $cash_id = intval($client->getClientCurrency($client_id));
         $user_status = 0;
 
+        // SQL injections fixed
+        $phone = $client->formatValidPhone($phone);
+        $name = $this->getUrlString($name);
+        $email = $this->getUrlString($email);
+        $comment = $this->getUrlString($comment);
+        $recipient_name = $this->getUrlString($recipient_name);
+        $recipient_phone = $client->formatValidPhone($recipient_phone);
+
         $street = $delivery_type["street"];
         $house = $delivery_type["house"];
         $porch = $delivery_type["porch"];
@@ -1020,8 +1028,6 @@ class ShopClass extends CatalogueClass
     public function saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $name, $email, $phone, $city_id, $comment, $order_info_id, $bonus_status)
     {
         $db = DbSingleton::getDbm();
-        $client = new ClientClass();
-        $phone = $client->formatValidPhone($phone);
         // CREATE ORDER
         $r = $db->query("SELECT MAX(`ID`) as maxim FROM `orders_new`;");
         $order_id = intval($db->result($r, 0, "maxim")) + 1;

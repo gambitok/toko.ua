@@ -71,7 +71,6 @@ function getMoreTitle($path) {
     $cat = new CatalogueClass();
     $menu = new MenuClass();
     $search = new SearchClass();
-    $prod = new ProductsClass();
     $pattern = new PatternClass();
 
     $linka = findLinks();
@@ -135,7 +134,7 @@ function getMoreTitle($path) {
         } else {
             list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
             list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-            $translit = $prod->getCarManufTranslit($mfa_id, $model);
+            $translit = $search->getCarManufTranslit($mfa_id, $model);
             if ($mfa_link != "") {
                 $mm = "$mfa_brand $model_text";
                 if ($translit != "") {
@@ -198,7 +197,7 @@ function getMoreTitle($path) {
 
             list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
             list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-            $translit = $prod->getCarManufTranslit($mfa_id, $model);
+            $translit = $search->getCarManufTranslit($mfa_id, $model);
 
             if ($mfa_link != "") {
                 $mm = "{for_cap} $mfa_brand $model_text";
@@ -500,7 +499,6 @@ function getDescription($path) {
     $language = new LangClass();
     $cat = new CatalogueClass();
     $search = new SearchClass();
-    $prod = new ProductsClass();
     $automan = new AutoClass();
     $linka = findLinks();
     $path = str_replace("/", "", $path);
@@ -564,7 +562,7 @@ function getDescription($path) {
         } else {
             list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
             list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-            $translit = $prod->getCarManufTranslit($mfa_id, $model);
+            $translit = $search->getCarManufTranslit($mfa_id, $model);
             if ($mfa_link != "") {
                 $mm = "{for_cap} $mfa_brand $model_text";
                 if ($translit != "") {

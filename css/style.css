@@ -98,9 +98,13 @@ a:hover, a:not([href]):not([tabindex]):hover { color: #000; }
 
 .faq-tab input[type="checkbox"]:checked ~ .faq-content { display: block; }
 
+.faq-tab input[type="checkbox"]:checked ~ .faq-label:after { content: "-"; }
+
 .faq-label { background: #55bae6; border-top: 1px solid white; color: #fff; cursor: pointer; display: block; font-size: 16px; font-weight: bold; margin: 0; padding: 10px; }
 
 .faq-label:hover { background: #17a2b8; }
+
+.faq-label:after { content: "+"; float: right; }
 
 .faq-content { display: none; font-size: 14px; padding: 10px; transition: .5s ease-in-out; }
 

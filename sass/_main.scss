@@ -234,6 +234,11 @@ a, a:not([href]):not([tabindex]) {
         input[type="checkbox"]:checked ~ .faq-content {
             display: block;
         }
+        input[type="checkbox"]:checked ~ .faq-label {
+            &:after {
+                content: "-";
+            }
+        }
     }
     &-label {
         background: #55bae6;
@@ -247,6 +252,10 @@ a, a:not([href]):not([tabindex]) {
         padding: 10px;
         &:hover {
             background: #17a2b8;
+        }
+        &:after {
+            content: "+";
+            float: right;
         }
     }
     &-content {
