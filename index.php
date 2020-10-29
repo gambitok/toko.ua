@@ -5,58 +5,59 @@ date_default_timezone_set("Europe/Kiev");
 
 header('Content-Type: text/html; charset=windows-1251');
 
-$content=null; $title="{site_title}";
+$content = null;
+$title = "{site_title}";
 define('RDD', dirname (__FILE__));
 
-require_once (RDD."/lib/DbSingleton.php");                  //database
-require_once (RDD."/lib/access.php");                       //get access site
-require_once (RDD."/lib/helper.php");                       //helper
-require_once (RDD."/lib/variables.php");                    //variables
-require_once (RDD."/lib/catalogue_class.php");              //catalogue search
-require_once (RDD."/lib/form_class.php");                   //show forms
-require_once (RDD."/lib/products_class.php");               //products search
-require_once (RDD."/lib/auto_class.php");                   //auto search
-require_once (RDD."/lib/menu_class.php");                   //site`s menu
-require_once (RDD."/lib/shop_class.php");                   //market operations
-require_once (RDD."/lib/client_class.php");                 //user configuration
-require_once (RDD."/lib/profile_class.php");                //user configuration (profile form)
-require_once (RDD."/lib/lang_class.php");                   //multilanguage
-require_once (RDD."/lib/exrate_class.php");                 //exchange rate
-require_once (RDD."/lib/template_class.php");               //templates (NEW CATALOG)
-require_once (RDD."/lib/search_class.php");                 //search (products cards)
-require_once (RDD."/js/JsHttpRequest/JsHttpRequest.php");   //ajax requests
-require_once (RDD."/lib/class.phpmailer.php");
-require_once (RDD."/lib/parameters_class.php");
-require_once (RDD."/lib/pattern_class.php");
-require_once (RDD."/lib/parts_class.php");
+require_once (RDD . "/lib/DbSingleton.php");                  //database
+require_once (RDD . "/lib/access.php");                       //get access site
+require_once (RDD . "/lib/helper.php");                       //helper
+require_once (RDD . "/lib/variables.php");                    //variables
+require_once (RDD . "/lib/catalogue_class.php");              //catalogue search
+require_once (RDD . "/lib/form_class.php");                   //show forms
+require_once (RDD . "/lib/products_class.php");               //products search
+require_once (RDD . "/lib/auto_class.php");                   //auto search
+require_once (RDD . "/lib/menu_class.php");                   //site`s menu
+require_once (RDD . "/lib/shop_class.php");                   //market operations
+require_once (RDD . "/lib/client_class.php");                 //user configuration
+require_once (RDD . "/lib/profile_class.php");                //user configuration (profile form)
+require_once (RDD . "/lib/lang_class.php");                   //multilanguage
+require_once (RDD . "/lib/exrate_class.php");                 //exchange rate
+require_once (RDD . "/lib/template_class.php");               //templates (NEW CATALOG)
+require_once (RDD . "/lib/search_class.php");                 //search (products cards)
+require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");   //ajax requests
+require_once (RDD . "/lib/class.phpmailer.php");
+require_once (RDD . "/lib/parameters_class.php");
+require_once (RDD . "/lib/pattern_class.php");
+require_once (RDD . "/lib/parts_class.php");
 
-require_once (RDD."/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
-require_once (RDD."/lib/ukr-poshta-api/UkrPoshtaApi.php");
+require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
+require_once (RDD . "/lib/ukr-poshta-api/UkrPoshtaApi.php");
 
-$db=DbSingleton::getTokoDb();
-$dbm=DbSingleton::getDbm();
-$dbc=DbSingleton::getTokoCacheDb();
+$db = DbSingleton::getTokoDb();
+$dbm = DbSingleton::getDbm();
+$dbc = DbSingleton::getTokoCacheDb();
 
-$showform=new FormClass;
-$catalogue=new CatalogueClass;
-$prod=new ProductsClass;
-$automan=new AutoClass;
-$menu=new MenuClass;
-$shop=new ShopClass;
-$client=new ClientClass;
-$profile=new ProfileClass;
-$language=new LangClass;
-$template=new TemplateClass;
-$search=new SearchClass;
-$parameters=new ParametersClass;
-$pattern=new PatternClass;
-$parts=new PartsClass;
+$showform = new FormClass();
+$catalogue = new CatalogueClass();
+$prod = new ProductsClass();
+$automan = new AutoClass();
+$menu = new MenuClass();
+$shop = new ShopClass();
+$client = new ClientClass();
+$profile = new ProfileClass();
+$language = new LangClass();
+$template = new TemplateClass();
+$search = new SearchClass();
+$parameters = new ParametersClass();
+$pattern = new PatternClass();
+$parts = new PartsClass();
 
 //set cookies for user
 setCookies();
 
 //comment this for access all ips
 //if (in_array($_SERVER['REMOTE_ADDR'], getAccess()))
-require_once (RDD."/out.php");
+require_once (RDD . "/out.php");
 
 
