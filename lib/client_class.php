@@ -516,8 +516,7 @@ class ClientClass
         }
         $user_id = $this->getUser();
         if ($user_id > 0) {
-            $user_phone = $this->getClientPhone();
-            if ($phone !== $user_phone) {
+            if ($phone !== $this->getClientPhone()) {
                 $result = false;
             }
         }
