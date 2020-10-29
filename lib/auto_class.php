@@ -388,6 +388,7 @@ class AutoClass extends CatalogueClass
 
     public function updateChosenAutoGarage($auto_id)
     {
+        $auto_id = $this->getUrlNumber($auto_id);
         $db = DbSingleton::getTokoDb();
         $client_id = $this->getClient();
         $user_id = $this->getUser();
@@ -412,6 +413,7 @@ class AutoClass extends CatalogueClass
 
     public function deleteAutoGarage($auto_id)
     {
+        $auto_id = $this->getUrlNumber($auto_id);
         $db = DbSingleton::getTokoDb();
         $db->query("DELETE FROM `AUTO_GARAGE` WHERE `id`=$auto_id;");
         $client_id = $this->getClient();
@@ -484,6 +486,7 @@ class AutoClass extends CatalogueClass
 
     public function addToGarage($typ_id)
     {
+        $typ_id = $this->getUrlNumber($typ_id);
         $db = DbSingleton::getTokoDb();
         $client_id = $this->getClient();
         $user_id = $this->getUser();
@@ -621,6 +624,7 @@ class AutoClass extends CatalogueClass
      * */
     public function dropAutoHistory($history_id)
     {
+        $history_id = $this->getUrlNumber($history_id);
         $db = DbSingleton::getTokoDb();
         if ($history_id == "") {
             $user_id = $this->getUser();

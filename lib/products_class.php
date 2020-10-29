@@ -11,6 +11,9 @@ class ProductsClass extends CatalogueClass
      * */
     public function techCarModels($typ_id, $str_id)
     {
+        $typ_id = $this->getUrlNumber($typ_id);
+        $str_id = $this->getUrlNumber($str_id);
+
         $kours = new ExRateClass();
         $automan = new AutoClass();
 
@@ -48,6 +51,9 @@ class ProductsClass extends CatalogueClass
 
     public function techCarModelsFilter($typ_id, $str_id)
     {
+        $typ_id = $this->getUrlNumber($typ_id);
+        $str_id = $this->getUrlNumber($str_id);
+
         $db = DbSingleton::getTokoDb();
         $language = new LangClass();
         $automan = new AutoClass();
@@ -338,12 +344,16 @@ class ProductsClass extends CatalogueClass
     // get HEAD TREE STR
     public function showCarDetailsStr($head_id, $str_id_str = "")
     {
+        $head_id = $this->getUrlNumber($head_id);
+        $str_id_str = $this->getNameString($str_id_str);
+
         $db = DbSingleton::getTokoDb();
         $automan = new AutoClass();
         $language = new LangClass();
         $prefix = $language->getLangPrefix();
         $lang_id = $this->getLanguage();
         $lang_cap = $language->getTexCapLanguage($lang_id);
+        $head_id = $this->getUrlNumber($head_id);
 
         $arr = [];
         $head_link = $automan->getHeadNewDescr($head_id)["link"];
@@ -459,6 +469,10 @@ class ProductsClass extends CatalogueClass
 
     public function getCarsSearchContent($type = "", $value = "", $str_id = 0)
     {
+        $type =  $this->getNameString($type);
+        $value =  $this->getNameString($value);
+        $str_id = $this->getUrlNumber($str_id);
+
         $db = DbSingleton::getTokoDb();
         $automan = new AutoClass();
         $n = 0;
@@ -680,6 +694,9 @@ class ProductsClass extends CatalogueClass
 
     public function clearCarsBlock($sel_tab, $cur_tab)
     {
+        $sel_tab = $this->getUrlNumber($sel_tab);
+        $cur_tab = $this->getUrlNumber($cur_tab);
+
         $disabled = "cars-nav__item-disabled";
         $hidden = "cars-nav__item-hidden";
 

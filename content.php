@@ -428,8 +428,8 @@ if ($_REQUEST["w"] == "showCarsSelectedForm") {
 if ($_REQUEST["w"] == "showSearchParameters") {
     $GLOBALS['_RESULT'] = array("content" => $search->showSearchParameters($_REQUEST["str_id"], $_REQUEST["page"], $_REQUEST["active_filters"], $_REQUEST["type"]));
 }
-
-if ($_REQUEST["w"] == "setParamsAuto") {
-    $GLOBALS['_RESULT'] = array("content" => $template->setParamsAuto($_REQUEST["type"]));
-}
+//
+//if ($_REQUEST["w"] == "setParamsAuto") {
+//    $GLOBALS['_RESULT'] = array("content" => $template->setParamsAuto($_REQUEST["type"]));
+//}
 

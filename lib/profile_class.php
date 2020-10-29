@@ -262,6 +262,9 @@ class ProfileClass extends ClientClass
 
     public function closeOrderArtUpdate($dp_id, $art_id, $order_id)
     {
+        $dp_id = $this->getUrlNumber($dp_id);
+        $art_id = $this->getUrlNumber($art_id);
+        $order_id = $this->getUrlNumber($order_id);
         $db = DbSingleton::getDbm();
         $select_arr = [];
         $list = "";
@@ -301,6 +304,7 @@ class ProfileClass extends ClientClass
 
     public function updateOrderArt($order_str_id)
     {
+        $order_str_id = $this->getUrlNumber($order_str_id);
         $db = DbSingleton::getDbm();
         $db->query("UPDATE `orders_str_new` SET `status_visible`=0 WHERE `id`='$order_str_id';");
         $r = $db->query("SELECT `order_id` FROM `orders_str_new` WHERE `id`='$order_str_id' LIMIT 1;");
@@ -470,6 +474,9 @@ class ProfileClass extends ClientClass
     public function showProfileOrdersArts($dp_check, $order_check)
     {
         $db = DbSingleton::getDbm();
+        $dp_check = $this->getUrlNumber($dp_check);
+        $order_check = $this->getUrlNumber($order_check);
+
         $kours = new ExRateClass();
         $list = "";
         $form = $this->getHtmlForm("profile/profile_orders_arts");
@@ -614,6 +621,8 @@ class ProfileClass extends ClientClass
 
     public function showProfileCheck($data_from = "", $data_to = "")
     {
+        $data_from = $this->getNameString($data_from);
+        $data_to = $this->getNameString($data_to);
         $db = DbSingleton::getDbm();
         $kours = new ExRateClass();
         $client = new ClientClass();

@@ -54,6 +54,17 @@ trait Helper
         return $str;
     }
 
+    public function getNameString($str)
+    {
+        $str = str_replace("'", "", $str);
+        $str = str_replace("`", "", $str);
+        $str = str_replace('"', "", $str);
+        $str = str_replace("%20", " ", $str);
+        $str = str_replace("%60", "", $str);
+        $str = str_replace("&rsquo;", "", $str);
+        return $str;
+    }
+
     public function getUrlNumber($number)
     {
         if (!is_numeric($number)) {

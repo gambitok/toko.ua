@@ -556,6 +556,10 @@ class SearchClass extends CatalogueClass
 
     public function showSearchParameters($str_id, $page, $brandy_str, $type = 0)
     {
+        $str_id = $this->getUrlNumber($str_id);
+        $page = $this->getUrlNumber($page);
+        $type = $this->getUrlNumber($type);
+        $brandy_str = $this->getNameString($brandy_str);
         $parts = new PartsClass();
         $number = $pagination_form = "";
         if ($type == 1) {

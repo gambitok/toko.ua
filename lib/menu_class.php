@@ -126,6 +126,9 @@ class MenuClass extends CatalogueClass
 
     public function getSpecialOffersList($template_id, $update_actions)
     {
+        $template_id = $this->getUrlNumber($template_id);
+        $update_actions = $this->getNameString($update_actions);
+
         $db = DbSingleton::getDbm();
         $kours = new ExRateClass();
         $showform = new FormClass();
@@ -553,6 +556,13 @@ class MenuClass extends CatalogueClass
      * */
     public function saveSellerForm($company, $name, $phone, $email, $city_id, $comment)
     {
+        $client = new ClientClass();
+        $company = $this->getNameString($company);
+        $name = $this->getNameString($name);
+        $email = $this->getNameString($email);
+        $comment = $this->getNameString($comment);
+        $phone = $client->formatValidPhone($phone);
+        $city_id = $this->getUrlNumber($city_id);
         $db = DbSingleton::getDbm();
         $cookie_id = $_COOKIE["session_id"];
         $max_bytes = 10485760;

@@ -10,6 +10,7 @@ class ShopClass extends CatalogueClass
 
     public function showBasketForm($cur = null)
     {
+        $cur = $this->getUrlNumber($cur);
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $showform = new FormClass();
@@ -372,6 +373,13 @@ class ShopClass extends CatalogueClass
 
     public function moveToBasket($art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id)
     {
+        $art_id = $this->getUrlNumber($art_id);
+        $brand_id = $this->getUrlNumber($brand_id);
+        $amount = $this->getUrlNumber($amount);
+        $stock = $this->getUrlNumber($stock);
+        $storage_id = $this->getUrlNumber($storage_id);
+        $suppl_id = $this->getUrlNumber($suppl_id);
+
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $exrate = new ExRateClass();
@@ -440,6 +448,8 @@ class ShopClass extends CatalogueClass
 
     public function deleteFromBasket($art_id, $storage_id)
     {
+        $art_id = $this->getUrlNumber($art_id);
+        $storage_id = $this->getUrlNumber($storage_id);
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
@@ -459,6 +469,9 @@ class ShopClass extends CatalogueClass
 
     public function checkBasketItem($art_id, $storage_id, $status)
     {
+        $art_id = $this->getUrlNumber($art_id);
+        $storage_id = $this->getUrlNumber($storage_id);
+        $status = $this->getUrlNumber($status);
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
@@ -468,6 +481,9 @@ class ShopClass extends CatalogueClass
 
     public function updateBasketForm($art_id, $amount, $storage_id)
     {
+        $art_id = $this->getUrlNumber($art_id);
+        $amount = $this->getUrlNumber($amount);
+        $storage_id = $this->getUrlNumber($storage_id);
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
@@ -667,6 +683,8 @@ class ShopClass extends CatalogueClass
     // GET CLIENT DELIVERY DATA (by CITY, USER_ID)
     public function getUserSavedData($user_id, $city_id)
     {
+        $user_id = $this->getUrlNumber($user_id);
+        $city_id = $this->getUrlNumber($city_id);
         $db = DbSingleton::getDbm();
         $client = new ClientClass();
         if ($user_id == 0 || $user_id == "" || $user_id == "undefined") {
@@ -820,6 +838,8 @@ class ShopClass extends CatalogueClass
     public function getOrderDeliveryBlock($delivery_id, $city_id)
     {
         $db = DbSingleton::getDbm();
+        $delivery_id = $this->getUrlNumber($delivery_id);
+        $city_id = $this->getUrlNumber($city_id);
         $result = 0;
         $r = $db->query("SELECT * FROM `orders_valid_delivery` WHERE `DELIVERY_ID`='$delivery_id' LIMIT 1;");
         $valid_main = $db->result($r, 0, "VALID_TYPE_MAIN");
@@ -834,10 +854,14 @@ class ShopClass extends CatalogueClass
         return $result;
     }
 
-    /*==== GET AJAX Order Delivery Form ====*/
+    /*
+     * GET AJAX Order Delivery Form
+     * */
     public function getOrderPaymentBlock($payment_id, $delivery_id)
     {
         $db = DbSingleton::getDbm();
+        $payment_id = $this->getUrlNumber($payment_id);
+        $delivery_id = $this->getUrlNumber($delivery_id);
         $result = 0;
         $del_types_1 = [1, 2, 3];
         $del_types_2 = [4, 5, 6];
@@ -862,6 +886,7 @@ class ShopClass extends CatalogueClass
     /*==== SET City Address ====*/
     public function setCityAddress($city_id)
     {
+        $city_id = $this->getUrlNumber($city_id);
         $client = new ClientClass();
         $cities = [24861, 10108];
         $city_address = "";
@@ -897,6 +922,15 @@ class ShopClass extends CatalogueClass
 
     public function validOrder($name, $phone, $city, $delivery, $delivery_type, $payment, $email, $comment)
     {
+        // SQL injections fixed
+        $name = $this->getNameString($name);
+        $phone = $this->getNameString($phone);
+        $email = $this->getNameString($email);
+        $comment = $this->getNameString($comment);
+        $city = $this->getUrlNumber($city);
+        $delivery = $this->getUrlNumber($delivery);
+        $payment = $this->getUrlNumber($payment);
+
         $delivery_type_text = "";
         $street = $delivery_type["street"];
         $house = $delivery_type["house"];
@@ -957,6 +991,7 @@ class ShopClass extends CatalogueClass
     public function saveFastOrder($phone)
     {
         $client = new ClientClass();
+        $phone = $client->formatValidPhone($phone);
         list(, $user_id) = $client->getAuthorizedUser($phone);
         $client_id = $client->getClientByUser($user_id);
         $user_status = 0;
@@ -979,6 +1014,15 @@ class ShopClass extends CatalogueClass
     public function saveOrder($user_id, $name, $phone, $city_id, $delivery_id, $delivery_type, $payment_id, $email, $comment, $recipient_name, $recipient_phone, $bonus_status = 0)
     {
         $client = new ClientClass();
+
+        // SQL injections fixed
+        $phone = $client->formatValidPhone($phone);
+        $name = $this->getUrlString($name);
+        $email = $this->getUrlString($email);
+        $comment = $this->getUrlString($comment);
+        $recipient_name = $this->getUrlString($recipient_name);
+        $recipient_phone = $client->formatValidPhone($recipient_phone);
+
         if ($user_id == 0 || $user_id == "" || $user_id == "undefined") {
             $user_id = $this->getUser();
             $client_id = $this->getClient();
@@ -989,14 +1033,6 @@ class ShopClass extends CatalogueClass
         $cookie = $_COOKIE["session_id"];
         $cash_id = intval($client->getClientCurrency($client_id));
         $user_status = 0;
-
-        // SQL injections fixed
-        $phone = $client->formatValidPhone($phone);
-        $name = $this->getUrlString($name);
-        $email = $this->getUrlString($email);
-        $comment = $this->getUrlString($comment);
-        $recipient_name = $this->getUrlString($recipient_name);
-        $recipient_phone = $client->formatValidPhone($recipient_phone);
 
         $street = $delivery_type["street"];
         $house = $delivery_type["house"];
@@ -1045,6 +1081,10 @@ class ShopClass extends CatalogueClass
 
     public function saveOrderClient($user_id, $name, $email, $pass)
     {
+        $user_id = $this->getUrlNumber($user_id);
+        $name = $this->getNameString($name);
+        $email = $this->getNameString($email);
+        $pass = $this->getNameString($pass);
         $db = DbSingleton::getDbm();
         $client = new ClientClass();
         $db->query("UPDATE `A_CLIENTS_USERS` SET `name`='$name', `email`='$email', `pass`='$pass' WHERE `id`='$user_id' LIMIT 1;");
@@ -1138,6 +1178,7 @@ class ShopClass extends CatalogueClass
 
     public function dropClientOrderInfo($id)
     {
+        $id = $this->getUrlNumber($id);
         $db = DbSingleton::getDbm();
         $db->query("UPDATE `ORDERS_CLIENT_INFO` SET `STATUS`=0 WHERE `ID`='$id';");
         return true;
@@ -1145,6 +1186,7 @@ class ShopClass extends CatalogueClass
 
     public function setClientOrderInfo($id)
     {
+        $id = $this->getUrlNumber($id);
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `ID`='$id' AND `STATUS`=1;");
         $city_id = $db->result($r, 0, "CITY_ID");
@@ -1172,6 +1214,7 @@ class ShopClass extends CatalogueClass
 
     public function validDeliveryFields($delivery, $delivery_type)
     {
+        $delivery = $this->getUrlNumber($delivery);
         $result = true;
         $fields = [];
         $street = $delivery_type["street"];
@@ -1258,6 +1301,9 @@ class ShopClass extends CatalogueClass
 
     public function getBasketOrder($delivery_id = 0, $bonus_status = 0)
     {
+        $delivery_id = $this->getUrlNumber($delivery_id);
+        $bonus_status = $this->getUrlNumber($bonus_status);
+
         $exrate = new ExRateClass();
         $profile = new ProfileClass();
         $cur = $exrate->getCurrentKours();
@@ -1438,6 +1484,7 @@ class ShopClass extends CatalogueClass
 
     public function setDeliveryExpressDepartment($delivery_express)
     {
+        $delivery_express = $this->getUrlNumber($delivery_express);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT_TYPE` FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_express' LIMIT 1;");
         $text_type = $db->result($r, 0, "TEXT_TYPE");
@@ -1470,6 +1517,7 @@ class ShopClass extends CatalogueClass
 
     public function getCityVal($search_text)
     {
+        $search_text = $this->getNameString($search_text);
         $db = DbSingleton::getTokoDb();
         $lang_id = $this->getLanguage();
         $mas = [];
@@ -1492,6 +1540,7 @@ class ShopClass extends CatalogueClass
 
     public function setCityNPVal($city_id)
     {
+        $city_id = $this->getUrlNumber($city_id);
         $db = DbSingleton::getTokoDb();
         $list = "";
         $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_ID`='$city_id' LIMIT 1;");
@@ -1510,6 +1559,7 @@ class ShopClass extends CatalogueClass
 
     public function setCityDepartments($city_ref)
     {
+        $city_ref = $this->getNameString($city_ref);
         $list_np = $this->getNovaPoshtaWarehousesSelect($city_ref);
         $list_up = $this->getUkrPoshtaWarehousesSelect();
         return array($list_np, $list_up);

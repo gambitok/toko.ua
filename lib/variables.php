@@ -339,9 +339,9 @@ trait Variables
 
     public function getCatalogueLink($article_nr_search)
     {
-        $prefix = $this->getLangPrefix();
         $article_nr_search = $this->getUrlString($article_nr_search);
         $brand_link = $this->getCatalogueBrandLink2($article_nr_search);
+        $prefix = $this->getLangPrefix();
         return "https://toko.ua$prefix/search/$article_nr_search/$brand_link";
     }
 

@@ -15,6 +15,7 @@ class FormClass extends CatalogueClass
 
     public function showModalForm($name)
     {
+        $name = $this->getNameString($name);
         $menu = new MenuClass();
         $form = $this->getHtmlForm("modals/$name");
         $form = $this->replaceLang($form);
@@ -27,6 +28,7 @@ class FormClass extends CatalogueClass
     public function getCountryFlag($brand_id)
     {
         $db = DbSingleton::getTokoDb();
+        $brand_id = $this->getUrlNumber($brand_id);
         if (self::$flags === null) {
             $r = $db->query("SELECT t2c.ALFA2, t2b.BRAND_ID, t2c.COUNTRY_NAME 
             FROM `T2_BRANDS` t2b
@@ -43,15 +45,16 @@ class FormClass extends CatalogueClass
         }
     }
 
-    public function showBrandForm($brand)
+    public function showBrandForm($brand_id)
     {
+        $brand_id = $this->getUrlNumber($brand_id);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_BRAND_LINK` WHERE `brand_id`='$brand' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `T2_BRAND_LINK` WHERE `brand_id`='$brand_id' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $info = $this->getHtmlForm("brand_form");
             $info = str_replace("{brand_form_name}", trim($db->result($r, 0, "name")), $info);
-            $info = str_replace("{brand_form_country}", $this->getCountryFlag($brand)["flag"], $info);
+            $info = str_replace("{brand_form_country}", $this->getCountryFlag($brand_id)["flag"], $info);
             $info = str_replace("{brand_form_descr}", trim($db->result($r, 0, "descr")), $info);
             $info = str_replace("{brand_form_link}", trim($db->result($r, 0, "link")), $info);
             $info = str_replace("{brand_form_logo_name}", trim($db->result($r, 0, "logo_name")), $info);
@@ -82,6 +85,7 @@ class FormClass extends CatalogueClass
     public function showArticle($art_id)
     {
         $auto = new AutoClass();
+        $art_id = $this->getUrlNumber($art_id);
         $auto_typ_id = $this->getCookieAuto();
 
         $form = $this->getHtmlForm("article/card");
@@ -150,6 +154,7 @@ class FormClass extends CatalogueClass
     public function getArticleInfo($art_id)
     {
         $db = DbSingleton::getTokoDb();
+        $art_id = $this->getUrlNumber($art_id);
         $client = new ClientClass();
         $kours = new ExRateClass();
         $tpoint = $this->getTpointID();
@@ -279,6 +284,7 @@ class FormClass extends CatalogueClass
     public function showCityForm($city_like, $city_id = "")
     {
         $db = DbSingleton::getDbm();
+        $city_like = $this->getNameString($city_like);
         $mas = [];
         if ($city_id == "") {
             $city_id = 0;
@@ -309,6 +315,7 @@ class FormClass extends CatalogueClass
     {
         $db = DbSingleton::getDbm();
         $list = "";
+        $city_like = $this->getNameString($city_like);
         if ($city_id == "") {
             $city_id = 0;
         }
@@ -345,6 +352,7 @@ class FormClass extends CatalogueClass
     public function showInfoTemplate($art_id)
     {
         $db = DbSingleton::getTokoDb();
+        $art_id = $this->getUrlNumber($art_id);
         $info = "";
         if (!isset(self::$infoTemplates[$art_id])) {
             $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
@@ -461,10 +469,11 @@ class FormClass extends CatalogueClass
     /*
      * delete history line
      * */
-    public function deleteHistoryItem($id)
+    public function deleteHistoryItem($history_id)
     {
+        $history_id = $this->getUrlNumber($history_id);
         $db = DbSingleton::getTokoDb();
-        if ($id == "") {
+        if ($history_id == "") {
             $cookie = $_COOKIE["session_id"];
             $client_id = $this->getClient();
             $user_id = $this->getUser();
@@ -474,7 +483,7 @@ class FormClass extends CatalogueClass
                 $where = "`client_id`='$client_id' AND `client_user_id`='$user_id'";
             }
         } else {
-            $where = "`id`='$id'";
+            $where = "`id`='$history_id'";
         }
         $db->query("DELETE FROM `CLIENT_HISTORY` WHERE $where;");
         return true;
@@ -543,6 +552,7 @@ class FormClass extends CatalogueClass
 
     public function showPhotoGallery($art_id, $display = 0)
     {
+        $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();
         $nophoto = $this->noPhoto;
@@ -691,6 +701,7 @@ class FormClass extends CatalogueClass
      * */
     public function showInfoForm($art_id)
     {
+        $art_id = $this->getUrlNumber($art_id);
         $article_nr_displ = $this->getArticleDispl($art_id);
         $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
         $title = "<span class=\"text-dark bold\">$brand_name</span> $article_nr_displ";
@@ -706,6 +717,7 @@ class FormClass extends CatalogueClass
     public function getApplManufTCD($art_id)
     {
         $db = DbSingleton::getTokoDb();
+        $art_id = $this->getUrlNumber($art_id);
         $typ_id_str = $list = "";
         $r = $db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID`='$art_id';");
         $n = $db->num_rows($r);
@@ -741,6 +753,8 @@ class FormClass extends CatalogueClass
 
     public function getApplModelTCD($art_id, $mfa)
     {
+        $art_id = $this->getUrlNumber($art_id);
+        $mfa = $this->getUrlNumber($mfa);
         $db = DbSingleton::getTokoDb();
         $list = "<div class=\"search__appl-tcd\">";
         $typ_id_str = "";
@@ -793,6 +807,8 @@ class FormClass extends CatalogueClass
 
     public function getApplModelInfoTCD($art_id, $typ_id)
     {
+        $art_id = $this->getUrlNumber($art_id);
+        $typ_id = $this->getUrlNumber($typ_id);
         $db = DbSingleton::getTokoDb();
         $automan = new AutoClass();
         $list = "";
@@ -852,6 +868,7 @@ class FormClass extends CatalogueClass
     public function getArticleInfoForm($art_id, $display = 0, $type = 0)
     {
         $db = DbSingleton::getTokoDb();
+        $art_id = $this->getUrlNumber($art_id);
         $info = "";
         $prefix = $this->getLangPrefix();
         $article_name = $this->getArticleSearch($art_id);

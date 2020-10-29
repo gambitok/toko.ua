@@ -347,6 +347,8 @@ class ParametersClass
 
     public function showFiltersForm($template_id, $active_filters = [])
     {
+        $template_id = $this->getUrlNumber($template_id);
+
         $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();
         $template_name = $this->getTemplateLink($template_id);
@@ -464,6 +466,9 @@ class ParametersClass
 
     public function showFilterOptionsForm($template_id, $page = 1, $active_filters = [])
     {
+        $template_id = $this->getUrlNumber($template_id);
+        $page = $this->getUrlNumber($page);
+
         $active_products = $this->getActiveProducts($this->getCurrentProducts($template_id), $active_filters);
         $products_count = $this->getActiveProductsCount($template_id, $active_products);
         $checked_filters = $this->showCheckedFilters($template_id, $active_filters);

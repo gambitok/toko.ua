@@ -120,6 +120,11 @@ class CatalogueClass
     * */
     public function getCatalogListFilter($article_nr_search, $brand_nr_search, $brand_filter, $text_filter, $cur, $price_f, $deliv_f, $order_value)
     {
+        $article_nr_search = $this->getNameString($article_nr_search);
+        $brand_nr_search = $this->getNameString($brand_nr_search);
+        $text_filter = $this->getNameString($text_filter);
+        $cur = $this->getUrlNumber($cur);
+        $order_value = $this->getUrlNumber($order_value);
         $db = DbSingleton::getTokoDb();
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
         $r = $db->query("SELECT t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2c.BRAND_ID, t2c.DISPLAY_NR, t2c.ART_ID, t2c.KIND, t2c.RELATION 
@@ -283,6 +288,7 @@ class CatalogueClass
      * */
     public function showHeadTemplate($head_id)
     {
+        $head_id = $this->getUrlNumber($head_id);
         $automan = new AutoClass();
         $head_link = $automan->getHeadNewDescr($head_id)["link"];
         $list = $this->getGroupTreeStr($head_id);
@@ -398,6 +404,11 @@ class CatalogueClass
      * */
     public function techModelsFilters($art, $brand, $brand_filter, $text_filter, $cur, $price_f, $deliv_f, $order_value)
     {
+        $art = $this->getNameString($art);
+        $brand = $this->getNameString($brand);
+        $text_filter = $this->getNameString($text_filter);
+        $cur = $this->getUrlNumber($cur);
+        $order_value = $this->getUrlNumber($order_value);
         $db = DbSingleton::getTokoDb();
         $automan = new AutoClass();
         setcookie("currency", $cur);
@@ -405,6 +416,7 @@ class CatalogueClass
         $_SESSION["currency"] = $cur;
         $typ_id = $_SESSION["group"];
         $str_id = $_SESSION["str_id"];
+        $text_filter = $this->getNameString($text_filter);
 
         $str_text = $automan->getStrNewDescr($str_id);
         if ($str_text == "") {
@@ -1298,6 +1310,7 @@ class CatalogueClass
         $list = "$error";
         $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
 
+        $text_filter = $this->getNameString($text_filter);
         list($where_text, $where_brands) = $this->getFilters($text_filter, $brand_filter);
 
         if ($where_art_id_str != "") {

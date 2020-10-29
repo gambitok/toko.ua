@@ -3,6 +3,8 @@
 class LangClass
 {
 
+    use Helper;
+
     private static $langVariables;
     private static $langNames;
 
@@ -86,6 +88,7 @@ class LangClass
 
     public function setSiteLang($id)
     {
+        $id = $this->getUrlNumber($id);
         $_SESSION["lang"] = $id;
         return $this->getLangPrefix();
     }
@@ -120,6 +123,8 @@ class LangClass
 
     public function changeLangAlert($message, $title)
     {
+        $message = $this->getNameString($message);
+        $title = $this->getNameString($title);
         $message = $this->replaceLangData($message);
         $title = $this->replaceLangData($title);
         return array($message, $title);
@@ -127,6 +132,7 @@ class LangClass
 
     public function changeLangJs($text)
     {
+        $text = $this->getNameString($text);
         $text = $this->replaceLangData($text);
         return $text;
     }

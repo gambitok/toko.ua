@@ -146,6 +146,7 @@ class ClientClass
 
     public function loginOrderClient($user_id)
     {
+        $user_id = $this->getUrlNumber($user_id);
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
         $client_id = $db->result($r, 0, "client_id");
@@ -432,6 +433,7 @@ class ClientClass
 
     public function setTpoint($tpoint_id)
     {
+        $tpoint_id = $this->getUrlNumber($tpoint_id);
         $client_id = $this->getClientByTpoint($tpoint_id);
         $_SESSION["tpoint"] = $tpoint_id;
         $_SESSION["client_id"] = $client_id;
@@ -463,6 +465,8 @@ class ClientClass
     {
         $db = DbSingleton::getDbm();
         $phone = $this->formatValidPhone($phone);
+        $type = $this->getUrlNumber($type);
+
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
 
@@ -508,9 +512,9 @@ class ClientClass
     */
     public function validateOperator($phone)
     {
+        $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getTokoDb();
         $result = false;
-        $phone = $this->formatValidPhone($phone);
         $code = substr($phone, 0, 3);
         $r = $db->query("SELECT * FROM `mobile_operators` WHERE `OPERATOR_CODE`='$code' LIMIT 1;");
         $n = $db->num_rows($r);
@@ -637,9 +641,9 @@ class ClientClass
      * */
     public function recoverPassword($phone)
     {
+        $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getDbm();
         $dbt = DbSingleton::getTokoDb();
-        $phone = $this->formatValidPhone($phone);
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
@@ -655,6 +659,7 @@ class ClientClass
 
     public function validatePhone($phone)
     {
+        $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getDbm();
         $dbt = DbSingleton::getTokoDb();
         $password = rand(1000, 9999);
@@ -666,6 +671,8 @@ class ClientClass
 
     public function endValidation($phone, $password)
     {
+        $phone = $this->formatValidPhone($phone);
+        $password = $this->getNameString($password);
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `phone_validation` WHERE `phone`='$phone' AND `password`='$password' AND `status`=0;");
         $n = $db->num_rows($r);
@@ -768,6 +775,7 @@ class ClientClass
      * */
     public function toggleProductView($ds)
     {
+        $ds = $this->getUrlNumber($ds);
         session_start();
         $_SESSION["display_status"] = $ds;
         if ($ds != 0 && $ds != 1) {
@@ -844,10 +852,10 @@ class ClientClass
      * */
     public function getAuthorizedUser($phone)
     {
+        $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getDbm();
         $user_id = $client_id = 0;
         $status = false;
-        $phone = $this->formatValidPhone($phone);
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
@@ -960,9 +968,12 @@ class ClientClass
      * */
     public function setClientRequest($phone, $vin = "", $text = "", $status = 0)
     {
+        // fixed SQL injections
+        $phone = $this->formatValidPhone($phone);
+        $vin = $this->getUrlNumber($vin);
+        $text = $this->getNameString($text);
         $db = DbSingleton::getTokoDb();
         $data_create = date("Y-m-d H:i:s");
-        $phone = $this->formatValidPhone($phone);
         if (($phone == "") || (strlen($vin) != $this->vin_len && $status == 1) || (!$this->validateOperator($phone))) {
             return false;
         } else {
@@ -1030,8 +1041,10 @@ class ClientClass
 
     public function finishBonusPhone($phone, $bonus = 1)
     {
-        $form = $this->getHtmlForm("bonus/phone_done");
+        $phone = $this->formatValidPhone($phone);
+        $bonus = $this->getUrlNumber($bonus);
 
+        $form = $this->getHtmlForm("bonus/phone_done");
         // check reg CLIENT
         if ($this->checkRegClient($phone)) {
             $client_status = "already reg";
