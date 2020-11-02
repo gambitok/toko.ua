@@ -1,8 +1,8 @@
 <?php
 
 $linka = findLinks();
-$article_nr_search = $linka[1];
-$brand_link = $linka[2];
+$article_nr_search = $catalogue->getUrlString($linka[1]);
+$brand_link = $catalogue->getUrlString($linka[2]);
 
 if ($article_nr_search == "") {
     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/search_unknown"), $content);

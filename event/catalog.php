@@ -1,11 +1,12 @@
 <?php
 
-$page = $_GET["page"];
+$page = $catalogue->getUrlNumber($_GET["page"]);
 ($page != NULL) ?: $page = 1;
 
 $linka = findLinks();
-$some_link = $linka[1];
-$some_link2 = $linka[2];
+$some = $catalogue->getUrlString($linka[0]);
+$some_link = $catalogue->getUrlString($linka[1]);
+$some_link2 = $catalogue->getUrlString($linka[2]);
 
 if (preg_match('~^\p{Lu}~u', $some_link)) {
     $new_link = strtolower($some_link);
@@ -17,7 +18,7 @@ if (!$catalogue->checkRedirectLink($some_link)) {
     header("Location: /catalog/$new_link", TRUE, 301);
 }
 
-$result = explode($linka[0] . "/", $_SERVER["REQUEST_URI"], 2);
+$result = explode($some . "/", $_SERVER["REQUEST_URI"], 2);
 $link = ltrim($result[1]);
 
 list($form1, $car_content, $pages_count) = $search->catalogRouter($link, $some_link, $page, $some_link2);
@@ -38,7 +39,7 @@ $car_form = str_replace("{car_content}", $car_content, $car_form);
 if ($car_content == "") {
     $car_form = "";
     $head_id = $automan->getHeadNewLinkStr($some_link);
-    if ($linka[2] == "") {
+    if ($some_link2 == "") {
         $content = str_replace("{main_metro}", "<div class='wdt100'>".$automan->getDetailsHeadImage($head_id)."</div>", $content);
     }
 }

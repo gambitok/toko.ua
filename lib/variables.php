@@ -542,7 +542,9 @@ trait Variables
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE `BRAND_LINK`='$brand_link' LIMIT 1;");
-        return $db->result($r, 0, "BRAND_ID");
+        $brand_id = $db->result($r, 0, "BRAND_ID");
+        $brand_id = $this->getUrlNumber($brand_id);
+        return $brand_id;
     }
 
     public function getCatalogueBrandLink($brand_id)
@@ -640,9 +642,12 @@ trait Variables
         return $db->result($r, 0, "PARAM_LINK");
     }
 
+    /*
+     * get Cookie Car
+     * */
     public function getCookieAuto()
     {
-        $auto_typ_id = $_COOKIE["auto_typ_id"];
+        $auto_typ_id = $this->getUrlNumber($_COOKIE["auto_typ_id"]);
         if ($auto_typ_id > 0 && $auto_typ_id != "") {
             $typ_id = $auto_typ_id;
         } else {

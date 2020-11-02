@@ -158,7 +158,7 @@ class FormClass extends CatalogueClass
         $client = new ClientClass();
         $kours = new ExRateClass();
         $tpoint = $this->getTpointID();
-        $cur = $kours->getCurrentKours();
+        $cur = $this->getCurrentExrate();
         $cur_cap = $kours->getKoursCaption($cur);
 
         $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
@@ -379,41 +379,6 @@ class FormClass extends CatalogueClass
     }
 
     /*
-     * Add History
-     * */
-    public function insertHistory($article_nr_displ, $brand_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        session_start();
-        $ses = session_id();
-        $cookie = $_COOKIE["session_id"];
-        $date = date("Y-m-d H:i:s");
-        $client_id = $this->getClient();
-        $user_id = $this->getUser();
-        $art_id = $this->getArtID($article_nr_displ);
-        if ($brand_id > 0 && is_numeric($brand_id)) {
-            $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id`='$client_id' AND `client_user_id`='$user_id'";
-            $r = $db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;");
-            $k = $db->result($r, 0, "kilk");
-            if ($k > $this->max_history_count) {
-                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
-                $id = $db->result($r, 0, "id");
-                $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date', `article_nr_displ`='$article_nr_displ', `brand_id`='$brand_id', `art_id`='$art_id' WHERE `id`='$id';");
-            } else {
-                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ`='$article_nr_displ' AND `brand_id`='$brand_id';");
-                $n = $db->num_rows($r);
-                if ($n > 0) {
-                    $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date' WHERE $where AND `article_nr_displ`='$article_nr_displ' AND `brand_id`='$brand_id';");
-                } else {
-                    $db->query("INSERT INTO `CLIENT_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `article_nr_displ`, `brand_id`, `data`, `art_id`) 
-                    VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$article_nr_displ', '$brand_id', '$date', '$art_id');");
-                }
-            }
-        }
-        return true;
-    }
-
-    /*
      * Show history
      * */
     public function showHistoryForm()
@@ -474,7 +439,7 @@ class FormClass extends CatalogueClass
         $history_id = $this->getUrlNumber($history_id);
         $db = DbSingleton::getTokoDb();
         if ($history_id == "") {
-            $cookie = $_COOKIE["session_id"];
+            $cookie = $this->getSessionID();
             $client_id = $this->getClient();
             $user_id = $this->getUser();
             if ($user_id == 0) {

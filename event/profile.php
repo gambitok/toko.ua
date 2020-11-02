@@ -11,7 +11,7 @@ if ($client->checkUnRegClient()) {
     $content = str_replace("{profile_file_list}", $profile->showPriceList(), $content);
 
     $linksData = findLinks();
-    $panel = $linksData[1];
+    $panel = $catalogue->getUrlString($linksData[1]);
     if ($panel == "") {
         $panel = "account";
     }

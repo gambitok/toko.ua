@@ -2,19 +2,21 @@
 
 function setCookies() {
     session_start();
+    $catalogue = new CatalogueClass();
     $ses = session_id();
-    if (!isset($_COOKIE["session_id"])) {
+    if (!empty($catalogue->getSessionID())) {
         setcookie("session_id", $ses, time() + (86400 * 30), "/"); // 86400 = 1 day
     }
     return true;
 }
 
-function getAccess() { $db=DbSingleton::getTokoDb();
+function getAccess() {
+    $db = DbSingleton::getTokoDb();
     $list_ip = array();
     $r = $db->query("SELECT `ip` FROM `ip_access`;");
     $n = $db->num_rows($r);
-    for ($i=1; $i<=$n; $i++){
-        $ip = $db->result($r, $i-1, "ip");
+    for ($i = 1; $i <= $n; $i++) {
+        $ip = $db->result($r, $i - 1, "ip");
         array_push($list_ip, $ip);
     }
     return $list_ip;
@@ -48,12 +50,13 @@ function getContent($content) {
     $content = str_replace("{brand_info}", "", $content);
     $content = str_replace("{art_info}", "", $content);
     $content = str_replace("{lang_list}", "", $content);
-    $content = str_replace("<h1></h1>", "<h1>".getTitle(getPath())."</h1>", $content);
+    $content = str_replace("<h1></h1>", "<h1>" . getTitle(getPath()) . "</h1>", $content);
     return $content;
 }
 
 function checkLangVariable($variable) { $db = DbSingleton::getTokoDb();
-    $r = $db->query("SELECT * FROM `new_lang_wd` WHERE `variable`='$variable' LIMIT 1;"); $n = $db->num_rows($r);
+    $r = $db->query("SELECT * FROM `new_lang_wd` WHERE `variable`='$variable' LIMIT 1;");
+    $n = $db->num_rows($r);
     return ($n > 0);
 }
 
@@ -73,12 +76,13 @@ function getMoreTitle($path) {
     $search = new SearchClass();
     $pattern = new PatternClass();
 
+    $page = $cat->getUrlNumber($_GET["page"]);
     $linka = findLinks();
     $pretitle = "";
 
     if ($path == "search") {
-        $article_nr_search = $linka[1];
-        $brand_link = $linka[2];
+        $article_nr_search = $cat->getUrlString($linka[1]);
+        $brand_link = $cat->getUrlString($linka[2]);
         $brand_id = ($brand_link!="") ? $cat->getCatalogueBrandID($brand_link) : 0;
         if ($article_nr_search == "") {
             $pretitle = "{site_title_short}";
@@ -93,7 +97,7 @@ function getMoreTitle($path) {
         }
     }
     elseif ($path == "article") {
-        $art_id = $linka[3];
+        $art_id = $cat->getUrlNumber($linka[3]);
         $article_nr_search = $cat->getArticleDispl($art_id);
         $brand_id = $cat->getArticleBrand($art_id);
         $article_nr_search = strtoupper($article_nr_search);
@@ -104,18 +108,19 @@ function getMoreTitle($path) {
         $pretitle = ltrim($pretitle," ");
     }
     elseif ($path == "products") {
-        if ($linka[1] == "") {
+        $url_link = $cat->getUrlString($linka[1]);
+        if ($url_link == "") {
             $pretitle = "{professional_catalogs_sh}";
         } else {
-            $template_id = $pattern->getTemplateID($linka[1]);
+            $template_id = $pattern->getTemplateID($url_link);
             if ($template_id == "") {
                 $pretitle = "{seo_404_title}";
             } else {
                 $pager = "";
-                if ($_GET['page'] !== NULL && $_GET['page'] > 0) {
-                    $pager = " - {pager_cap}".$_GET['page'];
+                if ($page !== NULL && $page > 0) {
+                    $pager = " - {pager_cap}".$page;
                 }
-                $result = explode($linka[1]."/", $_SERVER["REQUEST_URI"], 2);
+                $result = explode($url_link . "/", $_SERVER["REQUEST_URI"], 2);
                 $link = ltrim($result[1]);
                 if ($link != "") {
                     $template_filter_name = $pattern->showTemplateTitle($template_id, $pattern->getTemplateLinkParams($template_id, $link));
@@ -127,8 +132,8 @@ function getMoreTitle($path) {
         }
     }
     elseif ($path == "cars") {
-        $mfa_link = $linka[1];
-        $mod_link = $linka[2];
+        $mfa_link = $cat->getUrlString($linka[1]);
+        $mod_link = $cat->getUrlString($linka[2]);
         if ($mfa_link == ""){
             $pretitle = "{site_catalog} - {seo_details_title}";
         } else {
@@ -152,10 +157,10 @@ function getMoreTitle($path) {
     }
     elseif ($path == "catalog") {
         $pager = "";
-        if ($_GET['page'] !== NULL && $_GET['page'] > 0) {
-            $pager = "- {pager_cap}".$_GET['page'];
+        if ($page !== NULL && $page > 0) {
+            $pager = "- {pager_cap}".$page;
         }
-        $result = explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2);
+        $result = explode($cat->getUrlString($linka[0]) . "/", $_SERVER["REQUEST_URI"], 2);
         $link = ltrim($result[1]);
         $arr = explode("/", $link);
         $str_link = ""; $mfa_link = ""; $mod_link = "";
@@ -180,7 +185,7 @@ function getMoreTitle($path) {
         if ($str_id == "") {
             $head_id = $automan->getHeadNewLinkStr($str_link);
             $head_text = $automan->getHeadNewDescr($head_id)["text"];
-            $cat_text = $linka[2];
+            $cat_text = $cat->getUrlString($linka[2]);
             if ($cat_text == "") {
                 $pretitle = "$head_text - {seo_title_lvl1}";
             } else {
@@ -219,20 +224,22 @@ function getMoreTitle($path) {
         }
     }
     elseif ($path == "news") {
-        if ($linka[1] == "") {
+        if ($cat->getUrlString($linka[1]) == "") {
             $pretitle = "{site_$path} - {seo_state_title}";
         }
-        if ($linka[1] == "state") {
-            $state_name = $menu->getNewsStateTitle($linka[2]);
+        if ($cat->getUrlString($linka[1]) == "state") {
+            $state_link = $cat->getUrlString($linka[2]);
+            $state_name = $menu->getNewsStateTitle($state_link);
             $pretitle = "$state_name - {seo_state_title}";
         }
     }
     elseif ($path == "reviews") {
-        if ($linka[1] == "") {
+        if ($cat->getUrlString($linka[1]) == "") {
             $pretitle = "{site_$path} - {seo_state_title}";
         }
-        if ($linka[1] == "state") {
-            $state_name = $menu->getReviewStateTitle($linka[2]);
+        if ($cat->getUrlString($linka[1]) == "state") {
+            $state_link = $cat->getUrlString($linka[2]);
+            $state_name = $menu->getReviewStateTitle($state_link);
             $pretitle = "$state_name - {seo_state_title}";
         }
     }
@@ -274,13 +281,13 @@ function printBreadcrumbs($path) {
 
     switch ($section) {
         case "search" : {
-            $article_nr_search = $bread[1];
+            $article_nr_search = $cat->getUrlString($bread[1]);
             $info = $article_nr_search;
             $pretitle = "$a_home > {search_cap} > {search_results} $info";
             break;
         }
         case "article" : {
-            $art_id = $bread[3];
+            $art_id = $cat->getUrlNumber($bread[3]);
             $info = $cat->getArticleText($art_id);
             $back = "<a href=\"https://toko.ua$prefix/catalog/\">{site_catalog}</a>";
             $pretitle = "$a_home > $back > $info";
@@ -290,7 +297,7 @@ function printBreadcrumbs($path) {
         }
         case "catalog" : {
             $linka = findLinks();
-            $result = explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2);
+            $result = explode($cat->getUrlString($linka[0]) . "/", $_SERVER["REQUEST_URI"], 2);
             $link = ltrim($result[1]);
             $arr = explode("/", $link);
             $filters = [];
@@ -333,7 +340,7 @@ function printBreadcrumbs($path) {
                 }
 
                 if ($str_id == "") {
-                    $cat_text = $bread[2];
+                    $cat_text = $cat->getUrlString($bread[2]);
                     if ($cat_text == "") {
                         $pretitle = "$a_home > $a_section > $head_text";
                     } else {
@@ -383,7 +390,7 @@ function printBreadcrumbs($path) {
             break;
         }
         case "products" : {
-            $template_link = $bread[1];
+            $template_link = $cat->getUrlString($bread[1]);
             $template_id = $pattern->getTemplateID($template_link);
             $result = explode($template_link."/", $_SERVER["REQUEST_URI"], 2);
             $link = ltrim($result[1]);
@@ -408,8 +415,9 @@ function printBreadcrumbs($path) {
         }
         case "news" : {
             $b_arr[2] = ["name" => "$h_section", "item" => "https://toko.ua$prefix/news/"];
-            if ($bread[1] == "state") {
-                $state_name = $menu->getNewsStateTitle($bread[2]);
+            if ($cat->getUrlString($bread[1]) == "state") {
+                $state_link = $cat->getUrlString($bread[2]);
+                $state_name = $menu->getNewsStateTitle($state_link);
                 $info = "$a_section > ".$state_name;
                 $b_arr[3] = ["name" => $state_name, "item" => "$actual_link"];
             } else {
@@ -420,8 +428,9 @@ function printBreadcrumbs($path) {
         }
         case "reviews" : {
             $b_arr[2] = ["name" => "$h_section", "item" => "https://toko.ua$prefix/reviews/"];
-            if ($bread[1] == "state") {
-                $state_name = $menu->getReviewStateTitle($bread[2]);
+            if ($cat->getUrlString($bread[1]) == "state") {
+                $state_link = $cat->getUrlString($bread[2]);
+                $state_name = $menu->getReviewStateTitle($state_link);
                 $info = "$a_section > ".$state_name;
                 $b_arr[3] = ["name" => $state_name, "item" => "$actual_link"];
             } else {
@@ -504,6 +513,8 @@ function getDescription($path) {
     $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
 
+    $page = $cat->getUrlNumber($_GET['page']);
+
     $description = ($path != "") ? "{seo_description} $prefix {seo_description2}" : "{seo_description} {seo_description2}";
 
     if ($path == "article") {
@@ -520,8 +531,8 @@ function getDescription($path) {
 
     if ($path == "catalog") {
         $pager = "";
-        if ($_GET['page'] !== NULL && $_GET['page'] > 0) {
-            $pager = "- {pager_cap}".$_GET['page'];
+        if ($page !== NULL && $page > 0) {
+            $pager = "- {pager_cap}".$page;
         }
 
         $result = explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2);
@@ -586,17 +597,18 @@ function getDescription($path) {
 
     }
     $description = $language->replaceLangData($description);
-    ($_GET["page"] == 0) ?: $description = "";
+    ($cat->getUrlNumber($_GET['page']) == 0) ?: $description = "";
     return $description;
 }
 
 function getKeywords($path) {
     $language = new LangClass();
+    $cat = new CatalogueClass();
     $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
     $keywords = ($path != "") ? "$prefix" : "{site_keywords}";
     $keywords = $language->replaceLangData($keywords);
-    ($_GET["page"] == 0) ?: $keywords = "";
+    ($cat->getUrlNumber($_GET['page']) == 0) ?: $keywords = "";
     return $keywords;
 }
 

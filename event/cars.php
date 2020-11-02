@@ -1,8 +1,8 @@
 <?php
 
 $linka = findLinks();
-$mfa_link = $linka[1];
-$mod_link = $linka[2];
+$mfa_link = $catalogue->getUrlString($linka[1]);
+$mod_link = $catalogue->getUrlString($linka[2]);
 
 list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
 list($mfa_text, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);

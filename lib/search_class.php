@@ -43,8 +43,9 @@ class SearchClass extends CatalogueClass
             if ($count_arts < $count) $pages_count = 1;
 
             $where_arts = $parts->initPartsArts($str_id);
-            $active_brands = array_unique($this->getBrandIds($where_arts));
-            $filters_form = $this->printBrandsList(array_unique($this->getBrandIds($where_arts)), array_unique($active_filters), $this->getActualLink());
+            $brand_ids = $this->getBrandIds($where_arts);
+            $active_brands = array_unique($brand_ids);
+            $filters_form = $this->printBrandsList(array_unique($brand_ids), array_unique($active_filters), $this->getActualLink());
 
             $form = str_replace("{details_listing}", $this->getSeoLinking($str_id, $h1, $filters, $brands), $form);
 
@@ -673,12 +674,11 @@ class SearchClass extends CatalogueClass
     public function showSearchList($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $price, $stock, $delivery_info, $delivery_days, $storage_id, $suppl_id)
     {
         $showform = new FormClass();
-        $kours = new ExRateClass();
         $prefix = $this->getLangPrefix();
         $format_name = $this->getFormatAticle($article_nr_displ);
         $format_brand = $this->getFormatBrand($brand_name);
-        $cur = $kours->getCurrentKours();
-        $kours_cap = $kours->getKoursSymbol($cur);
+        $cur = $this->getCurrentExrate();
+        $kours_cap = $this->getSymbolExrate($cur);
         $form = $this->getHtmlForm("article_card");
         $form = str_replace("{product_i}", $id, $form);
         $form = str_replace("{art_id}", $art_id, $form);
@@ -1077,7 +1077,7 @@ class SearchClass extends CatalogueClass
             $parrent_h1 = $head_text;
 
             $brand = $this->getBrandName(array_rand($brands));
-            $cur = $kours->getCurrentKours();
+            $cur = $this->getCurrentExrate();
             $kours_cap = $kours->getKoursCaptionLang($cur);
 
             $min_price = $filters["min_price"] . " $kours_cap";

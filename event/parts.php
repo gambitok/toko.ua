@@ -6,7 +6,7 @@ ini_set('memory_limit', '2048M');
 
 $linka = findLinks();
 $str_text = $linka[1];
-$page = $_GET["page"];
+$page = $catalogue->getUrlNumber($_GET['page']);
 ($page != NULL) ?: $page = 1;
 
 $str_id = $automan->getStrNewLinkStr($str_text);

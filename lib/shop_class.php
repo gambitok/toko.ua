@@ -120,7 +120,7 @@ class ShopClass extends CatalogueClass
                 $brow = str_replace("{amount_field}", "count_" . $art_id . "_" . $storage_id, $brow);
                 $brow = str_replace("{action}", $action, $brow);
                 $brow = str_replace("{product_image}", $this->getBasketArticlePhoto($art_id), $brow);
-                $brow = str_replace("{cash_abr}", $exrate->getKoursSymbol($cur), $brow);
+                $brow = str_replace("{cash_abr}", $this->getSymbolExrate($cur), $brow);
 
                 $bprow .= $this->getHtmlForm("basket/basket_phone_card");
                 $bprow = str_replace("{art_id}", $art_id, $bprow);
@@ -147,7 +147,7 @@ class ShopClass extends CatalogueClass
                 $bprow = str_replace("{country_name}", $country_name, $bprow);
                 $bprow = str_replace("{amount_field}", "count_" . $art_id . "_" . $storage_id, $bprow);
                 $bprow = str_replace("{action}", $action, $bprow);
-                $bprow = str_replace("{cash_abr}", $exrate->getKoursSymbol($cur), $bprow);
+                $bprow = str_replace("{cash_abr}", $this->getSymbolExrate($cur), $bprow);
             }
         } else {
             $brow = "<div class=\"row align-items-center\"><div class=\"col-12\"><p class=\"text-center mar0\"><br>{basket_empty}</p><br></div></div>";
@@ -165,7 +165,7 @@ class ShopClass extends CatalogueClass
         $table_basket = str_replace("{location}", $location, $table_basket);
         $table_basket = str_replace("{location_fast}", $location_fast, $table_basket);
         $table_basket = str_replace("{currency}", $showform->getCurrencyForm(4, 0, $cur), $table_basket);
-        $table_basket = str_replace("{cur_cap}", $exrate->getKoursSymbol($cur), $table_basket);
+        $table_basket = str_replace("{cur_cap}", $this->getSymbolExrate($cur), $table_basket);
         $table_basket = str_replace("{disabled}", $disabled, $table_basket);
         $table_basket = str_replace("{basket_proposed}", $this->getProposedArts(), $table_basket);
         $table_basket = str_replace("{user_phone}", $client->getClientPhone(), $table_basket);
@@ -183,7 +183,7 @@ class ShopClass extends CatalogueClass
     public function getClientAction($art_id, $suppl_id, $storage_id, $amount, $cur)
     {
         $exrate = new ExRateClass();
-        $cur_cap = $exrate->getKoursSymbol($cur);
+        $cur_cap = $this->getSymbolExrate($cur);
         if (!($this->checkActionPrice($art_id))) {
             $action = "";
         } else {
@@ -386,7 +386,7 @@ class ShopClass extends CatalogueClass
         $user_id = $this->getUser();
         $where = $client->getClientWhere();
         $tpoint_id = $this->getTpointID();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $date_time = date("Y-m-d H:i:s");
         $old_amount = $status_action = 0;
         $art_name = $this->getArticleDispl($art_id);
@@ -529,7 +529,7 @@ class ShopClass extends CatalogueClass
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $price = floatval($db->result($r, $i - 1, "price"));
-                $price = $exrate->getKoursPrice($price, $exrate->getCurrentKours());
+                $price = $exrate->getKoursPrice($price, $this->getCurrentExrate());
                 $stock = intval($db->result($r, $i - 1, "amount"));
                 $sum = $price * $stock;
                 $summary += $sum;
@@ -537,7 +537,7 @@ class ShopClass extends CatalogueClass
         } else {
             $summary = 0;
         }
-        $cur_cap = $exrate->getKoursSymbol($exrate->getCurrentKours());
+        $cur_cap = $this->getSymbolExrate($this->getCurrentExrate());
         $summary .= " $cur_cap";
         return $summary;
     }
@@ -550,11 +550,10 @@ class ShopClass extends CatalogueClass
         $dbt = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $exrate = new ExRateClass();
-        $profile = new ProfileClass();
         $client_id = $this->getClient();
         $where = $client->getClientWhere();
-        $cur = $exrate->getCurrentKours();
-        $bonus_summ = $profile->getBonusSumm($client_id);
+        $cur = $this->getCurrentExrate();
+        $bonus_summ = $this->getBonusSumm($client_id);
         $order_sum = 0;
 
         $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;");
@@ -1003,7 +1002,7 @@ class ShopClass extends CatalogueClass
             $user_status = 1;
         }
         $tpoint_id = $this->getTpointID();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $cash_id = intval($client->getClientCurrency($client_id));
         // CREATE ORDER
         $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0, 0);
@@ -1030,7 +1029,7 @@ class ShopClass extends CatalogueClass
             $client_id = $client->getClientByUser($user_id);
         }
         $tpoint_id = $this->getTpointID();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $cash_id = intval($client->getClientCurrency($client_id));
         $user_status = 0;
 
@@ -1283,9 +1282,8 @@ class ShopClass extends CatalogueClass
 
     public function getOrderTotal($total)
     {
-        $exrate = new ExRateClass();
-        $cur = $exrate->getCurrentKours();
-        $cur_cap = $exrate->getKoursSymbol($cur);
+        $cur = $this->getCurrentExrate();
+        $cur_cap = $this->getSymbolExrate($cur);
         return "<div class=\"cart-table-row cart-table-row-offset\">
             <div class=\"cart-table-cell cart-table-cell__label\">{total_cap}</div>
             <div class=\"cart-table-cell cart-table-cell__price\">$total $cur_cap</div>
@@ -1304,12 +1302,10 @@ class ShopClass extends CatalogueClass
         $delivery_id = $this->getUrlNumber($delivery_id);
         $bonus_status = $this->getUrlNumber($bonus_status);
 
-        $exrate = new ExRateClass();
-        $profile = new ProfileClass();
-        $cur = $exrate->getCurrentKours();
-        $cur_cap = $exrate->getKoursSymbol($cur);
+        $cur = $this->getCurrentExrate();
+        $cur_cap = $this->getSymbolExrate($cur);
 
-        $bonus_summ = $profile->getBonusSumm($this->getClient());
+        $bonus_summ = $this->getBonusSumm($this->getClient());
         list($basket_range, $basket_total, $bonus_total) = $this->getBasketOrderRange($bonus_status, $bonus_summ);
 
         list($delivery_total, $delivery_total_text) = $this->getDeliveryPrice($delivery_id);
@@ -1336,17 +1332,39 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{basket_order_price}", $this->getOrderTotal($total), $form);
         $form = str_replace("{basket_button_status}", "", $form);
 
-        $form = str_replace("{basket_client_bonus}", $profile->showClientBonusOrder($bonus_status, $bonus_total), $form);
+        $form = str_replace("{basket_client_bonus}", $this->showClientBonusOrder($bonus_status, $bonus_total), $form);
         $form = $this->replaceLang($form);
         return $form;
+    }
+
+    public function getBonusSumm($client_id)
+    {
+        $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
+        return $db->result($r, 0, "bonus_balance");
+    }
+
+    public function showClientBonusOrder($bonus_status, $bonus_total)
+    {
+        $bonus_summ = $this->getBonusSumm($this->getClient());
+        $checked = ($bonus_status) ? "checked='checked'" : "";
+        $bonus_checked = ($bonus_status) ? "- $bonus_total {uah_cap}" : "";
+        $list = "
+            <div class='row'>
+                <div class='col-6'><input type='checkbox' id='bonus_status' $checked onclick='getBasketOrder();'><label for='bonus_status'>{bonus_cap} ($bonus_summ {uah_cap})</label></div>
+                <div class='col-6 text-right'><span class='span-red'>$bonus_checked</span></div>
+            </div>
+        ";
+        $list = $this->replaceLang($list);
+        return $list;
     }
 
     public function getDeliveryPrice($delivery_id)
     {
         $exrate = new ExRateClass();
         $client = new ClientClass();
-        $cur = $exrate->getCurrentKours();
-        $cur_cap = $exrate->getKoursSymbol($cur);
+        $cur = $this->getCurrentExrate();
+        $cur_cap = $this->getSymbolExrate($cur);
         $price = $price_cur = 0;
 
         // NOVA POSHTA
@@ -1416,8 +1434,8 @@ class ShopClass extends CatalogueClass
         $showform = new FormClass();
         $client_id = $this->getClient();
         $where = $client->getClientWhere();
-        $cur = $exrate->getCurrentKours();
-        $cur_cap = $exrate->getKoursSymbol($cur);
+        $cur = $this->getCurrentExrate();
+        $cur_cap = $this->getSymbolExrate($cur);
         $list = "";
         $sum_total = $bonus_total = $order_sum = 0;
         $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1 ORDER BY `date_create` DESC;");

@@ -45,6 +45,7 @@ $automan = new AutoClass();
 $menu = new MenuClass();
 $shop = new ShopClass();
 $client = new ClientClass();
+$kours = new ExRateClass();
 $profile = new ProfileClass();
 $language = new LangClass();
 $template = new TemplateClass();

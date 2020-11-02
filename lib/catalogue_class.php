@@ -38,12 +38,10 @@ class CatalogueClass
     public function getCatalogList($article_nr_search, $brand_nr_search, $status_brand = 0)
     {
         $db = DbSingleton::getTokoDb();
-        $showform = new FormClass();
-        $kours = new ExRateClass();
         $client = new ClientClass();
-        $showform->insertHistory($article_nr_search, $brand_nr_search);
-        $cur = $kours->getCurrentKours();
+        $client->insertHistory($article_nr_search, $brand_nr_search);
         $client->toggleProductView(0);
+        $cur = $this->getCurrentExrate();
         $article_nr_search = $this->getUrlString($article_nr_search);
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
 
@@ -54,6 +52,7 @@ class CatalogueClass
         WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
         GROUP BY t2c.`ART_ID` ORDER BY t2n.NAME ASC;");
         $n = $db->num_rows($r);
+
         $art_ids = [];
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -180,7 +179,7 @@ class CatalogueClass
         $prefix = $this->getLangPrefix();
 
         $count_zero = $exist_search_number = 0;
-        $exist_brand_link = $result = $currency = $list = "";
+        $exist_brand_link = $result = $list = "";
         $colon = "col-lg-12 col-12";
         $mas = [];
 
@@ -246,7 +245,7 @@ class CatalogueClass
         $search_form = str_replace("{search_results}", "{choose_brand_manuf}", $search_form);
         $search_form = str_replace("{search_result_index}", "<span class=\"span-brand-search\">{search_request} <b>$article_search</b> {search_result_for_end}</span>", $search_form);
         $search_form = str_replace("{art}", $result, $search_form);
-        $search_form = str_replace("{currency}", $currency, $search_form);
+        $search_form = str_replace("{currency}", "", $search_form);
         $search_form = str_replace("{products_view}", "", $search_form);
         $search_form = str_replace("{search_result}", $form_brand, $search_form);
         $search_form = str_replace("{search_form_col}", $colon, $search_form);
@@ -358,10 +357,9 @@ class CatalogueClass
     public function techModelsList($typ_id, $str_id)
     {
         $db = DbSingleton::getTokoDb();
-        $kours = new ExRateClass();
         $client = new ClientClass();
         $automan = new AutoClass();
-        $cur = $kours->getCurrentKours();
+        $cur = $this->getCurrentExrate();
         $str_id = $this->getUrlNumber($str_id);
         list($manufacture, $model, $model_id) = $automan->getCarInfo($typ_id);
         $automan->setAutoData($manufacture, $model, $model_id, $typ_id, $str_id);
@@ -530,9 +528,8 @@ class CatalogueClass
     {
         $client = new ClientClass();
         $automan = new AutoClass();
-        $kours = new ExRateClass();
         $cash_id = $client->getClientCurrency($this->getClient());
-        $cur = $kours->getCurrentKours();
+        $cur = $this->getCurrentExrate();
         $mfa_mod_typ_text = $automan->getCarDescription($typ_id);
         $ch1 = $ch2 = $ch3 = $cash_add = "";
 
@@ -749,21 +746,24 @@ class CatalogueClass
         ) ENGINE = MYISAM;");
     }
 
+    /*
+     * get Main Search Order
+     * */
     public function getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands, $where_text)
     {
         $db = DbSingleton::getTokoDb();
-        if ($article_nr_search != "") {
-            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' AND `BRAND_ID`='$brand_nr_search' LIMIT 1;");
-            $n = $db->num_rows($r);
-            if ($n > 0) {
-                $art_id = $db->result($r, 0, "ART_ID");
-                $where_oe_art_id = $this->getOriginalEquipment($art_id);
-                $where_art_id_str .= ",$where_oe_art_id";
-            }
-        }
-        if ($where_art_id_str == "") {
-            $where_art_id_str = 0;
-        }
+//        if ($article_nr_search != "") {
+//            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' AND `BRAND_ID`='$brand_nr_search' LIMIT 1;");
+//            $n = $db->num_rows($r);
+//            if ($n > 0) {
+//                $art_id = $db->result($r, 0, "ART_ID");
+//                $where_oe_art_id = $this->getOriginalEquipment($art_id);
+//                $where_art_id_str .= ",$where_oe_art_id";
+//            }
+//        }
+//        if ($where_art_id_str == "") {
+//            $where_art_id_str = 0;
+//        }
         $where_art_id_str = rtrim($where_art_id_str, ",");
         $r = $db->query("
         SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT as AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
@@ -784,6 +784,9 @@ class CatalogueClass
         return $r;
     }
 
+    /*
+     * get Original Numbers
+     * */
     public function getOriginalEquipment($art_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -834,8 +837,6 @@ class CatalogueClass
      * */
     public function getListBrand($brands, $main_brand, $cur, $jsFilterModel, $brand_filter)
     {
-        $kours = new ExRateClass();
-        $currency_cap = $kours->getKoursSymbol($cur);
         $list_brand = $checked = $main_brand_class = "";
         $unique_brands = $brand_array = array();
 
@@ -892,7 +893,7 @@ class CatalogueClass
             $list_brand = str_replace("{main_brand_class}", $main_brand_class, $list_brand);
             $list_brand = str_replace("{checked}", $checked, $list_brand);
             $list_brand = str_replace("{min_price}", $min_price, $list_brand);
-            $list_brand = str_replace("{currency_cap}", $currency_cap, $list_brand);
+            $list_brand = str_replace("{currency_cap}", $this->getSymbolExrate($cur), $list_brand);
             $list_brand = str_replace("{jsFilterModel}", $jsFilterModel, $list_brand);
         }
         $list_brand = $this->replaceLang($list_brand);
@@ -906,7 +907,7 @@ class CatalogueClass
         $client = new ClientClass();
         $client_id = $this->getClient();
         $tpoint_id = $this->getTpointID();
-        $cur = $kours->getCurrentKours();
+        $cur = $this->getCurrentExrate();
         if (!$view) {
             $view = $client->getProductView();
         }
@@ -1112,7 +1113,7 @@ class CatalogueClass
         $client = new ClientClass();
         $client_id = $this->getClient();
         $tpoint_id = $this->getTpointID();
-        $cur = $kours->getCurrentKours();
+        $cur = $this->getCurrentExrate();
         $view = $client->getProductView();
         session_start();
         $temp_key = session_id();
@@ -1786,8 +1787,8 @@ class CatalogueClass
         $client = new ClientClass();
         $shop = new ShopClass();
         $prefix = $this->getLangPrefix();
-        $cur = $kours->getCurrentKours();
-        $kours_cap = $kours->getKoursSymbol($cur);
+        $cur = $this->getCurrentExrate();
+        $kours_cap = $this->getSymbolExrate($cur);
         $format_name = $this->getFormatAticle($article_name);
 
         $return_days_alt = $return_days_img = "";
@@ -2697,8 +2698,7 @@ class CatalogueClass
      * */
     public function showOtherStorages($mas, $cur, $view)
     {
-        $kours = new ExRateClass();
-        $currency_cap = $kours->getKoursSymbol($cur);
+        $currency_cap = $this->getSymbolExrate($cur);
         $ll = $class = $hide = $border = $none = $checkarray = [];
         $i = $j = $double = $preprice = 0;
         $min_price = 9999999;
@@ -2885,7 +2885,7 @@ class CatalogueClass
         $client = new ClientClass();
         $client_id = $this->getClient();
         $tpoint_id = $this->getTpointID();
-        $cur = $kours->getCurrentKours();
+        $cur = $this->getCurrentExrate();
         if (!$view) {
             $view = $client->getProductView();
         }

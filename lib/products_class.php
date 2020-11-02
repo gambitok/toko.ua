@@ -14,12 +14,11 @@ class ProductsClass extends CatalogueClass
         $typ_id = $this->getUrlNumber($typ_id);
         $str_id = $this->getUrlNumber($str_id);
 
-        $kours = new ExRateClass();
         $automan = new AutoClass();
 
         setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
 
-        $cur = $kours->getCurrentKours();
+        $cur = $this->getCurrentExrate();
 
         list($str_level, $str_id_parrent) = $automan->getStrParams($str_id);
         $str_text = $automan->getStrNewDescr($str_id);
@@ -350,7 +349,7 @@ class ProductsClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $automan = new AutoClass();
         $language = new LangClass();
-        $prefix = $language->getLangPrefix();
+        $prefix = $this->getLangPrefix();
         $lang_id = $this->getLanguage();
         $lang_cap = $language->getTexCapLanguage($lang_id);
         $head_id = $this->getUrlNumber($head_id);

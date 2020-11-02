@@ -147,28 +147,6 @@ class ProfileClass extends ClientClass
         return $form;
     }
 
-    public function getBonusSumm($client_id)
-    {
-        $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
-        return $db->result($r, 0, "bonus_balance");
-    }
-
-    public function showClientBonusOrder($bonus_status, $bonus_total)
-    {
-        $bonus_summ = $this->getBonusSumm($this->getClient());
-        $checked = ($bonus_status) ? "checked='checked'" : "";
-        $bonus_checked = ($bonus_status) ? "- $bonus_total {uah_cap}" : "";
-        $list = "
-            <div class='row'>
-                <div class='col-6'><input type='checkbox' id='bonus_status' $checked onclick='getBasketOrder();'><label for='bonus_status'>{bonus_cap} ($bonus_summ {uah_cap})</label></div>
-                <div class='col-6 text-right'><span class='span-red'>$bonus_checked</span></div>
-            </div>
-        ";
-        $list = $this->replaceLang($list);
-        return $list;
-    }
-
     public function showProfileAccount()
     {
         $menu = new MenuClass();

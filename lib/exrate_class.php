@@ -3,15 +3,18 @@
 class ExRateClass
 {
 
+    use Helper;
+    use Variables;
+
     private $usdRate;
     private $euroRate;
 
-    public function  getCurrentKours()
+    public function getCurrentKours()
     {
         session_start();
-        $currency = $_COOKIE["currency"];
+        $currency = $this->getUrlNumber($_COOKIE["currency"]);
         if ($currency == "" || $currency == 0) {
-            $currency = $_SESSION["currency"];
+            $currency = $this->getUrlNumber($_SESSION["currency"]);
         }
         if ($currency == "" || $currency == 0) {
             $currency = 1;
@@ -19,7 +22,7 @@ class ExRateClass
         return $currency;
     }
 
-    public function  getKours($val)
+    public function getKours($val)
     {
         $db = DbSingleton::getDbm();
         if ($val == "dollar") {
@@ -39,7 +42,7 @@ class ExRateClass
         }
     }
 
-    public function  getKoursPrice($price, $cur)
+    public function getKoursPrice($price, $cur)
     {
         if ($cur == 2) {
             $price = $price / $this->getKours("dollar");
@@ -53,7 +56,7 @@ class ExRateClass
         return $price;
     }
 
-    public function  getKoursFromUSA($price, $cur)
+    public function getKoursFromUSA($price, $cur)
     {
         if ($cur == 1) {
             $price = $price * $this->getKours("dollar");
@@ -67,7 +70,7 @@ class ExRateClass
         return $price;
     }
 
-    public function  getKoursFromUAH($price, $cur)
+    public function getKoursFromUAH($price, $cur)
     {
         if ($cur == 2) {
             $price = $price / $this->getKours("dollar");
@@ -81,7 +84,7 @@ class ExRateClass
         return $price;
     }
 
-    public function  getKoursCaption($cur)
+    public function getKoursCaption($cur)
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `abr` FROM `CASH` WHERE `id`='$cur' LIMIT 1;");
@@ -94,7 +97,7 @@ class ExRateClass
         return $result;
     }
 
-    public function  getKoursCaptionLang($cur)
+    public function getKoursCaptionLang($cur)
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `abr2` FROM `CASH` WHERE `id`='$cur' LIMIT 1;");
@@ -107,7 +110,7 @@ class ExRateClass
         return $result;
     }
 
-    public function  getKoursSymbol($cur)
+    public function getKoursSymbol($cur)
     {
         switch ($cur) {
             case 2:

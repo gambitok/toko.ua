@@ -363,7 +363,7 @@ class AutoClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $prefix = $this->getLangPrefix();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT `typ_id` FROM `AUTO_GARAGE` WHERE $where AND `status`=1 LIMIT 1;");
         $n = $db->num_rows($r);
@@ -392,7 +392,7 @@ class AutoClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client_id = $this->getClient();
         $user_id = $this->getUser();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT `id`, `typ_id` FROM `AUTO_GARAGE` WHERE $where;");
         $n = $db->num_rows($r);
@@ -418,7 +418,7 @@ class AutoClass extends CatalogueClass
         $db->query("DELETE FROM `AUTO_GARAGE` WHERE `id`=$auto_id;");
         $client_id = $this->getClient();
         $user_id = $this->getUser();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where ORDER BY `timestamp` DESC LIMIT 1;");
         $n = $db->num_rows($r);
@@ -441,7 +441,7 @@ class AutoClass extends CatalogueClass
         $list = $auto_form = "";
         $client_id = $this->getClient();
         $user_id = $this->getUser();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT `id`, `typ_id` FROM `AUTO_GARAGE` WHERE $where;");
         $n = $db->num_rows($r);
@@ -491,7 +491,7 @@ class AutoClass extends CatalogueClass
         $client_id = $this->getClient();
         $user_id = $this->getUser();
         list($manufacture, $model, $model_id) = $this->getCarInfo($typ_id);
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $max_auto = 5;
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
         if ($manufacture != "" && $model != "" && $model_id != "" && $typ_id != "") {
@@ -527,7 +527,7 @@ class AutoClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client_id = $this->getClient();
         $user_id = $this->getUser();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where;");
         $n = $db->num_rows($r);
@@ -541,7 +541,7 @@ class AutoClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client_id = $this->getClient();
         $user_id = $this->getUser();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `typ_id`=$typ_id;");
         $n = $db->num_rows($r);
@@ -554,7 +554,7 @@ class AutoClass extends CatalogueClass
     public function insertAutoHistory($typ_id)
     {
         $db = DbSingleton::getTokoDb();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $date = date("Y-m-d H:i:s");
         $client_id = $this->getClient();
         $user_id = $this->getUser();
@@ -585,7 +585,7 @@ class AutoClass extends CatalogueClass
     public function showAutoHistory()
     {
         $db = DbSingleton::getTokoDb();
-        $cookie = $_COOKIE["session_id"];
+        $cookie = $this->getSessionID();
         $user_id = $this->getUser();
         $client_id = $this->getClient();
         $where = ($user_id == 0) ? "cookie_id='$cookie'" : "client_id='$client_id' AND client_user_id='$user_id'";
@@ -629,7 +629,7 @@ class AutoClass extends CatalogueClass
         if ($history_id == "") {
             $user_id = $this->getUser();
             $client_id = $this->getClient();
-            $cookie = $_COOKIE["session_id"];
+            $cookie = $this->getSessionID();
             $where = ($user_id == 0) ? "cookie_id='$cookie'" : "client_id='$client_id' AND client_user_id='$user_id'";
         } else {
             $where = "`id`='$history_id'";

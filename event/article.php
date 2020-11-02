@@ -1,9 +1,9 @@
 <?php
 
 $linka = findLinks();
-$article_search = $linka[1];
-$brand_name = $linka[2];
-$art_id = $linka[3];
+$article_search = $catalogue->getUrlString($linka[1]);
+$brand_name = $catalogue->getUrlString($linka[2]);
+$art_id = $catalogue->getUrlNumber($linka[3]);
 
 if (!is_numeric($art_id)) {
     $new_art_id = preg_replace('/[^0-9]+/', '', $art_id);

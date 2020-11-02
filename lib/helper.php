@@ -10,6 +10,10 @@ trait Helper
     protected $err2 = "{not_specified}";
     protected $err3 = "{no_info}";
 
+    public function getSessionID() {
+        return $this->getUrlString($_COOKIE["session_id"]);
+    }
+
     public function getHtmlForm($name)
     {
         $form = "";
@@ -71,6 +75,16 @@ trait Helper
             $number = 0;
         }
         return $number;
+    }
+
+    public function getCurrentExrate() {
+        $kours = new ExRateClass();
+        return $kours->getCurrentKours();
+    }
+
+    public function getSymbolExrate($cur) {
+        $kours = new ExRateClass();
+        return $kours->getKoursSymbol($cur);
     }
 
     public function getClient()

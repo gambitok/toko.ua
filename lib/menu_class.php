@@ -564,7 +564,7 @@ class MenuClass extends CatalogueClass
         $phone = $client->formatValidPhone($phone);
         $city_id = $this->getUrlNumber($city_id);
         $db = DbSingleton::getDbm();
-        $cookie_id = $_COOKIE["session_id"];
+        $cookie_id = $this->getSessionID();
         $max_bytes = 10485760;
         $format_arr = ["txt", "csv", "xls", "xlsx", "dbf"];
         $r = $db->query("SELECT * FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id`='$cookie_id' ORDER BY `data` DESC LIMIT 1;");
@@ -587,7 +587,7 @@ class MenuClass extends CatalogueClass
     public function getSellerImage()
     {
         $db = DbSingleton::getDbm();
-        $cookie_id = $_COOKIE["session_id"];
+        $cookie_id = $this->getSessionID();
         $r = $db->query("SELECT `real_file_name` FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id`='$cookie_id' ORDER BY `data` DESC LIMIT 1;");
         return $db->result($r, 0, "real_file_name");
     }
