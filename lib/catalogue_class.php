@@ -1961,6 +1961,9 @@ class CatalogueClass
         return $form;
     }
 
+    /*
+     * check action price
+     * */
     public function checkActionPrice($art_id)
     {
         $db = DbSingleton::getDbm();
@@ -2011,6 +2014,9 @@ class CatalogueClass
         }
     }
 
+    /*
+     * check action amount
+     * */
     public function checkActionAmount($art_id, $max_amount, $data)
     {
         $db = DbSingleton::getDbm();
@@ -2310,6 +2316,9 @@ class CatalogueClass
         return array("info" => $info, "days" => $delivery_days, "short" => $short_info);
     }
 
+    /*
+     * get original numbers form
+     * */
     public function getOriginalNumbers($art_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -2384,31 +2393,9 @@ class CatalogueClass
         return $list;
     }
 
-    public function showCatalogProducts()
-    {
-        $db = DbSingleton::getTokoDb();
-        $list = "";
-        $r = $db->query("SELECT `GROUP_ID`, `TEX_RU`, `TEX_LINK` FROM `T2_TREE_GROUP` ORDER BY `TEX_RU`;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $group_id = $db->result($r, $i - 1, "GROUP_ID");
-            $text = $db->result($r, $i - 1, "TEX_RU");
-            $link = $db->result($r, $i - 1, "TEX_LINK");
-            $list .= "<li>
-                <a href='/products/$link'>$group_id. $text</a>
-            </li>";
-        }
-        return $list;
-    }
-
-    public function getCatalogProductID($link)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP` WHERE `TEX_LINK`='$link' LIMIT 1;");
-        $n = $db->num_rows($r);
-        return ($n > 0) ? $db->result($r, 0, "GROUP_ID") : 0;
-    }
-
+    /*
+     * format text for URL
+     * */
     public function formatUrlText($text)
     {
         $format_text = mb_convert_encoding($text, "UTF-8", "Windows-1251");

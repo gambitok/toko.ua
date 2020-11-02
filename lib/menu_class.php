@@ -6,6 +6,9 @@ class MenuClass extends CatalogueClass
     use Helper;
     use Variables;
 
+    /*
+     * get main form images
+     * */
     public function getImages($content)
     {
         $dist = "/images/";
@@ -14,6 +17,9 @@ class MenuClass extends CatalogueClass
         return $content;
     }
 
+    /*
+     * get news state title
+     * */
     public function getNewsStateTitle($state_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -27,6 +33,9 @@ class MenuClass extends CatalogueClass
         return $title;
     }
 
+    /*
+     * get reviews state title
+     * */
     public function getReviewStateTitle($state_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -40,6 +49,9 @@ class MenuClass extends CatalogueClass
         return $title;
     }
 
+    /*
+     * show news form
+     * */
     public function showNews()
     {
         $db = DbSingleton::getTokoDb();
@@ -85,7 +97,10 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    public function getNewsState($state_id)
+    /*
+     * show news state form
+     * */
+    public function showNewsState($state_id)
     {
         $db = DbSingleton::getTokoDb();
         $lang = $this->getLanguage();
@@ -114,6 +129,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * show special offers form
+     * */
     public function showSpecialOffers($update_actions)
     {
         $form = $this->getHtmlForm("menu/special_offers");
@@ -124,6 +142,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * show special offers list
+     * */
     public function getSpecialOffersList($template_id, $update_actions)
     {
         $template_id = $this->getUrlNumber($template_id);
@@ -259,6 +280,9 @@ class MenuClass extends CatalogueClass
         return array($list, $group_arts);
     }
 
+    /*
+     * show special offers list filter
+     * */
     public function getSpecialOffersFilterList($arts = "")
     {
         $db = DbSingleton::getTokoDb();
@@ -277,6 +301,9 @@ class MenuClass extends CatalogueClass
         return $list;
     }
 
+    /*
+     * get arts from goods group
+     * */
     public function getGoodsGroupArts($template_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -319,6 +346,9 @@ class MenuClass extends CatalogueClass
         return $list;
     }
 
+    /*
+     * get modal phone regions
+     * */
     public function getRegionListPhone()
     {
         $db = DbSingleton::getDbm();
@@ -372,6 +402,9 @@ class MenuClass extends CatalogueClass
         return $list;
     }
 
+    /*
+     * show contact form
+     * */
     public function showContacts()
     {
         $db = DbSingleton::getTokoDb();
@@ -400,6 +433,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * get region select (registration)
+     * */
     public function getRegionForm($region = null)
     {
         $db = DbSingleton::getTokoDb();
@@ -415,6 +451,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * get client type select (registration)
+     * */
     public function showTypeForm($org_type = "")
     {
         $db = DbSingleton::getDbm();
@@ -433,6 +472,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * show language select
+     * */
     public function getLanguageList()
     {
         $db = DbSingleton::getTokoDb();
@@ -459,6 +501,9 @@ class MenuClass extends CatalogueClass
         return $list;
     }
 
+    /*
+     * get news image
+     * */
     public function getNewsImage($news_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -478,6 +523,9 @@ class MenuClass extends CatalogueClass
         return $file;
     }
 
+    /*
+     * show contacts bottom form
+     * */
     public function showContactsBottom()
     {
         $db = DbSingleton::getTokoDb();
@@ -584,6 +632,9 @@ class MenuClass extends CatalogueClass
         }
     }
 
+    /*
+     * get seller image
+     * */
     public function getSellerImage()
     {
         $db = DbSingleton::getDbm();
@@ -592,6 +643,9 @@ class MenuClass extends CatalogueClass
         return $db->result($r, 0, "real_file_name");
     }
 
+    /*
+     * get garage navigation link
+     * */
     public function getGarageLink()
     {
         $automan = new AutoClass();
@@ -601,6 +655,9 @@ class MenuClass extends CatalogueClass
         return $garage_link;
     }
 
+    /*
+     * show mobile navigation
+     * */
     public function getMediaNavPanel()
     {
         $profile = new ProfileClass();
@@ -618,7 +675,7 @@ class MenuClass extends CatalogueClass
     }
 
     /*
-     * Reviews Form
+     * show reviews form
      * */
     public function showReviews()
     {
@@ -648,7 +705,7 @@ class MenuClass extends CatalogueClass
     }
 
     /*
-     * Reviews Item Form
+     * show reviews state form
      * */
     public function getReviewsState($state_id)
     {
@@ -670,7 +727,7 @@ class MenuClass extends CatalogueClass
     }
 
     /*
-     * Scan Form (Bonus)
+     * show scan form (Bonus)
      * */
     public function showScanForm()
     {
@@ -678,7 +735,7 @@ class MenuClass extends CatalogueClass
     }
 
     /*
-     * Scan Form (Bonus) Validate
+     * show scan form (Bonus) Validate
      * */
     public function showScanPhoneForm($phone)
     {

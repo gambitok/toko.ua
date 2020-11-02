@@ -8,6 +8,9 @@ class LangClass
     private static $langVariables;
     private static $langNames;
 
+    /*
+     * get language ID
+     * */
     public function getLanguageData()
     {
         if ($_SESSION["lang"] == "" || $_SESSION["lang"] == 0) {
@@ -16,6 +19,9 @@ class LangClass
         return $_SESSION["lang"];
     }
 
+    /*
+     * get language old ids
+     * */
     public function getOldLanguage($lang_id)
     {
         if ($lang_id == 1) {
@@ -30,6 +36,9 @@ class LangClass
         return $lang_id;
     }
 
+    /*
+     * get language caption smaller
+     * */
     public function getTexCapLanguage($lang_id)
     {
         $cap = "RU";
@@ -42,6 +51,9 @@ class LangClass
         return $cap;
     }
 
+    /*
+     * get language caption
+     * */
     public function getLangCap($lang_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -49,6 +61,9 @@ class LangClass
         return $db->result($r, 0, "abr");
     }
 
+    /*
+     * get language select list
+     * */
     public function getLanguageSelectList($sel_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -64,6 +79,9 @@ class LangClass
         return $list;
     }
 
+    /*
+     * get language site prefix
+     * */
     public function getLangPrefix()
     {
         session_start();
@@ -81,11 +99,9 @@ class LangClass
         return $pre;
     }
 
-//    public function setLanguage($id) {
-//        $_SESSION["lang"] = $id;
-//        return $_SESSION["lang"];
-//    }
-
+    /*
+     * set site language
+     * */
     public function setSiteLang($id)
     {
         $id = $this->getUrlNumber($id);
@@ -93,6 +109,10 @@ class LangClass
         return $this->getLangPrefix();
     }
 
+    /*
+     * get language name
+     * from code value
+     * */
     public function getLanguageName($code)
     {
         $db = DbSingleton::getTokoDb();
@@ -108,6 +128,9 @@ class LangClass
         return self::$langNames[$code];
     }
 
+    /*
+     * replace language text
+     * */
     public function replaceLangData($cont)
     {
         $db = DbSingleton::getTokoDb();
@@ -121,6 +144,9 @@ class LangClass
         return $cont;
     }
 
+    /*
+     * replace language text message
+     * */
     public function changeLangAlert($message, $title)
     {
         $message = $this->getNameString($message);
@@ -130,6 +156,9 @@ class LangClass
         return array($message, $title);
     }
 
+    /*
+     * replace language in js
+     * */
     public function changeLangJs($text)
     {
         $text = $this->getNameString($text);

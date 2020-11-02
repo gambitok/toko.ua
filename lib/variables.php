@@ -106,24 +106,6 @@ trait Variables
         return $barcode;
     }
 
-//    /*
-//     * ART_ID + STORAGE => STOCK (AMOUNT)
-//     * */
-//    public function getArticleStock($art_id, $storage_id) { $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `AMOUNT` FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID`='$art_id' AND `STORAGE_ID`='$storage_id';");
-//        $stock = $db->result($r,0,"AMOUNT");
-//        return $stock;
-//    }
-//
-//    /*
-//     * ART_ID + STORAGE => SUPPL STOCK (AMOUNT)
-//     * */
-//    public function getArticleSupplStock($art_id, $suppl_id, $storage_id) { $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `stock_suppl` FROM `T2_SUPPL_IMPORT` WHERE `art_id`='$art_id' AND `suppl_id`='$suppl_id' AND `client_storage_id`='$storage_id' AND `status`='1';");
-//        $stock = $db->result($r,0,"stock_suppl");
-//        return $stock;
-//    }
-
     /*
      * ART_ID + STORAGE => STOCK (PRICE LIST)
      * */
@@ -220,6 +202,10 @@ trait Variables
 
     /*==== BRAND =====================================================================================================*/
 
+    /*
+     * get brand name
+     * from BRAND_ID
+     * */
     public function getBrandName($brand_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -230,6 +216,10 @@ trait Variables
         return $brand;
     }
 
+    /*
+     * get brand link
+     * from BRAND_ID
+     * */
     public function getBrandLink($brand_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -265,6 +255,10 @@ trait Variables
 
     /*==== VARIABLES =================================================================================================*/
 
+    /*
+     * get city name
+     * from CITY_ID
+     * */
     public function getCityName($city_id)
     {
         $db = DbSingleton::getDbm();
@@ -273,6 +267,10 @@ trait Variables
         return $db->result($r, 0, "CITY_NAME");
     }
 
+    /*
+     * get country name
+     * from COUNTRY_ID
+     * */
     public function getCountryName($country_id)
     {
         $db = DbSingleton::getDbm();
@@ -281,6 +279,10 @@ trait Variables
         return $db->result($r, 0, "COUNTRY_NAME");
     }
 
+    /*
+     * get sale invoice name
+     * from INVOICE_ID
+     * */
     public function getSaleInvoiceName($invoice_id)
     {
         $db = DbSingleton::getDbm();
@@ -294,6 +296,10 @@ trait Variables
         return $name;
     }
 
+    /*
+     * get jpay name
+     * from JPAY_ID
+     * */
     public function getJPayName($jpay_id)
     {
         $db = DbSingleton::getDbm();
@@ -311,6 +317,10 @@ trait Variables
         return array($pay_type_id, $name);
     }
 
+    /*
+     * get fuel name
+     * from FUEL_ID
+     * */
     public function getFuelName($fuel_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -323,6 +333,10 @@ trait Variables
         return $db->result($r, 0, "FUEL");
     }
 
+    /*
+     * get back clients name
+     * from BACK_ID
+     * */
     public function getBackClientsName($back_id)
     {
         $db = DbSingleton::getDbm();
@@ -337,6 +351,10 @@ trait Variables
         return $prefix . "-" . $doc_nom;
     }
 
+    /*
+     * get catalog search link
+     * from ARTICLE_NR_SEARCH
+     * */
     public function getCatalogueLink($article_nr_search)
     {
         $article_nr_search = $this->getUrlString($article_nr_search);
@@ -374,6 +392,9 @@ trait Variables
         return array($where_text, $where_brands);
     }
 
+    /*
+     * get catalog pagination
+     * */
     public function getPagePagination($page, $max_page)
     {
         $prev = $next = "";
@@ -408,6 +429,10 @@ trait Variables
         return $page_pagination;
     }
 
+    /*
+     * get delivery name
+     * from DELIVERY_ID
+     * */
     public function getDeliveryName($delivery_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -417,6 +442,10 @@ trait Variables
         return $name;
     }
 
+    /*
+     * get department express name
+     * from DELIVERY_ID
+     * */
     public function getDepartmentExpressName($delivery_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -426,6 +455,10 @@ trait Variables
         return $name;
     }
 
+    /*
+     * get payment name
+     * from PAYMENT_ID
+     * */
     public function getPaymentName($payment_id)
     {
         $db = DbSingleton::getTokoDb();

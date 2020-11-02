@@ -42,6 +42,10 @@ class AutoClass extends CatalogueClass
         return $db->result($r, 0, "CAT_ID");
     }
 
+    /*
+     * get head_id
+     * from STR_ID
+     * */
     public function getHeadStr($str_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -49,6 +53,10 @@ class AutoClass extends CatalogueClass
         return $db->result($r, 0, "HEAD_ID");
     }
 
+    /*
+     * get catalog detail link + car
+     * from ID
+     * */
     public function getCarLink($typ_id, $str_id)
     {
         $prefix = $this->getLangPrefix();
@@ -63,6 +71,10 @@ class AutoClass extends CatalogueClass
         return $link;
     }
 
+    /*
+     * get car mfa & model link
+     * from ID
+     * */
     public function getCarDescriptionAll($typ_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -76,6 +88,10 @@ class AutoClass extends CatalogueClass
         return array($mfa_link, $mod_link);
     }
 
+    /*
+     * get car full description
+     * from ID
+     * */
     public function getCarDescription($typ_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -94,6 +110,10 @@ class AutoClass extends CatalogueClass
         return $car_cap;
     }
 
+    /*
+     * get car mfa, model, model_id ids
+     * from ID
+     * */
     public function getCarInfo($typ_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -105,6 +125,10 @@ class AutoClass extends CatalogueClass
         return array($mfa_id, $model, $mod_id);
     }
 
+    /*
+     * get car mfa & model links
+     * from ID
+     * */
     public function getCookieCarInfo($typ_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -118,6 +142,10 @@ class AutoClass extends CatalogueClass
         return array("mfa_link" => $mfa_link, "model_link" => $model_link);
     }
 
+    /*
+     * get car mfa, model, model_id, typ names
+     * from ID
+     * */
     public function getAutoDescr($mf, $ml = "", $mi = "", $gr = "")
     {
         $db = DbSingleton::getTokoDb();
@@ -142,6 +170,10 @@ class AutoClass extends CatalogueClass
         return array($manufacture, $model, $modelid, $group);
     }
 
+    /*
+     * get car mfa & model names
+     * from LINK
+     * */
     public function getAutoDescrLink($mf, $ml)
     {
         $db = DbSingleton::getTokoDb();
@@ -157,6 +189,10 @@ class AutoClass extends CatalogueClass
         return array($mfa_brand, $model);
     }
 
+    /*
+     * get car mfa name
+     * from ID
+     * */
     public function getMfaBrand($mfa_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -164,6 +200,10 @@ class AutoClass extends CatalogueClass
         return $db->result($r, 0, "MFA_BRAND");
     }
 
+    /*
+     * get car mfa id
+     * from LINK
+     * */
     public function getMfaLink($mfa_link)
     {
         $db = DbSingleton::getTokoDb();
@@ -171,6 +211,10 @@ class AutoClass extends CatalogueClass
         return $db->result($r, 0, "MFA_ID");
     }
 
+    /*
+     * get car model name
+     * from LINK
+     * */
     public function getModLink($mod_link)
     {
         $db = DbSingleton::getTokoDb();
@@ -178,13 +222,21 @@ class AutoClass extends CatalogueClass
         return $db->result($r, 0, "Model");
     }
 
-    public function getModIdLink($mod_id_link)
+    /*
+     * get car model_id name
+     * from ID
+     * */
+    public function getModIdLink($mod_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID`='$mod_id_link' LIMIT 1;");
+        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
         return $db->result($r, 0, "TEX_TEXT");
     }
 
+    /*
+     * get car model_id name & id
+     * from LINK
+     * */
     public function getAutoModelIdLink($model_id_link)
     {
         $db = DbSingleton::getTokoDb();
@@ -197,6 +249,10 @@ class AutoClass extends CatalogueClass
         return array("text" => $text, "model_id" => $model_id);
     }
 
+    /*
+     * get car mfa & model ids
+     * from LINK
+     * */
     public function getAutoIdsLink($mf, $ml)
     {
         $db = DbSingleton::getTokoDb();
@@ -212,6 +268,10 @@ class AutoClass extends CatalogueClass
         return array($mfa_id, $model);
     }
 
+    /*
+     * get car mfa, model, model_id images
+     * from ID
+     * */
     public function getAutoIMG($mf, $ml, $mi)
     {
         $db = DbSingleton::getTokoDb();
@@ -232,6 +292,10 @@ class AutoClass extends CatalogueClass
         return array("mfa_image" => $manufacture, "model_image" => $model, "model_id_image" => $modelid);
     }
 
+    /*
+     * get str name
+     * from ID
+     * */
     public function getStrDescr($str_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -296,6 +360,9 @@ class AutoClass extends CatalogueClass
         return array($str_level, $str_id_parrent);
     }
 
+    /*
+     * get car session params
+     * */
     public function getAutoStrData()
     {
         define('RDD', dirname(__FILE__));
@@ -309,6 +376,9 @@ class AutoClass extends CatalogueClass
         return array($str_id, $str_level, $str_id_parrent);
     }
 
+    /*
+     * set car session params
+     * */
     public function setAutoData($manufacture, $model, $modelid, $group, $str_id, $str_level = 0, $str_id_parrent = 0)
     {
         $_SESSION["manufacture"] = $manufacture;
@@ -358,7 +428,9 @@ class AutoClass extends CatalogueClass
         return $list;
     }
 
-    /*==== GARAGE ====*/
+    /*
+     * get garage chosen form
+     * */
     public function getChosenAutoGarage($client_id, $user_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -386,6 +458,9 @@ class AutoClass extends CatalogueClass
         return $auto_form;
     }
 
+    /*
+     * update garage chosen form
+     * */
     public function updateChosenAutoGarage($auto_id)
     {
         $auto_id = $this->getUrlNumber($auto_id);
@@ -411,6 +486,9 @@ class AutoClass extends CatalogueClass
         return true;
     }
 
+    /*
+     * delete garage item
+     * */
     public function deleteAutoGarage($auto_id)
     {
         $auto_id = $this->getUrlNumber($auto_id);
@@ -434,6 +512,9 @@ class AutoClass extends CatalogueClass
         }
     }
 
+    /*
+     * show garage form
+     * */
     public function showGarageForm()
     {
         $db = DbSingleton::getTokoDb();
@@ -484,6 +565,9 @@ class AutoClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * add item to garage
+     * */
     public function addToGarage($typ_id)
     {
         $typ_id = $this->getUrlNumber($typ_id);
@@ -522,6 +606,9 @@ class AutoClass extends CatalogueClass
         return $result;
     }
 
+    /*
+     * get amount of garage items
+     * */
     public function getGarageAutoCount()
     {
         $db = DbSingleton::getTokoDb();
@@ -536,6 +623,9 @@ class AutoClass extends CatalogueClass
         return array($list, $style);
     }
 
+    /*
+     * check user auto
+     * */
     public function checkUserGarage($typ_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -638,6 +728,9 @@ class AutoClass extends CatalogueClass
         return true;
     }
 
+    /*
+     * get cars seo content
+     * */
     public function getSeoContent($title, $mfa_link, $mod_link = "")
     {
         $form = $this->getHtmlForm("seo_content");

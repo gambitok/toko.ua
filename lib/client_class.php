@@ -280,16 +280,6 @@ class ClientClass
 //    }
 
     /*
-     * get client from user_id
-     * */
-    public function getClientId($user_id)
-    {
-        $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
-        return $db->result($r, 0, "client_id");
-    }
-
-    /*
      * get client info
      * */
     public function getClientInfo($client_id, $user_id)

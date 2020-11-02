@@ -8,5 +8,5 @@ $link = $catalogue->getUrlString(findLinks()[1]);
 if ($link == "") {
     $content = str_replace("{main_window}", $menu->showNews(), $content);
 } elseif ($link == "state") {
-	$content = str_replace("{main_window}", $menu->getNewsState(findLinks()[2]), $content);
+	$content = str_replace("{main_window}", $menu->showNewsState(findLinks()[2]), $content);
 }

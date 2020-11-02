@@ -13,6 +13,9 @@ class FormClass extends CatalogueClass
     public $max_history_count = 10;
     public $uploads_link = "https://toko.ua/uploads/images/catalogue";
 
+    /*
+     * show modal form
+     * */
     public function showModalForm($name)
     {
         $name = $this->getNameString($name);
@@ -25,6 +28,10 @@ class FormClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * get brand country & flag
+     * from BRAND_ID
+     * */
     public function getCountryFlag($brand_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -45,6 +52,9 @@ class FormClass extends CatalogueClass
         }
     }
 
+    /*
+     * show brand form
+     * */
     public function showBrandForm($brand_id)
     {
         $brand_id = $this->getUrlNumber($brand_id);
@@ -82,6 +92,9 @@ class FormClass extends CatalogueClass
 //        return $link;
 //    }
 
+    /*
+     * show article form
+     * */
     public function showArticle($art_id)
     {
         $auto = new AutoClass();
@@ -151,6 +164,9 @@ class FormClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * get article info
+     * */
     public function getArticleInfo($art_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -224,6 +240,9 @@ class FormClass extends CatalogueClass
         ];
     }
 
+    /*
+     * show currency form
+     * */
     public function getCurrencyForm($type_filter, $template_id, $cur)
     {
         $kours = new ExRateClass();
@@ -279,7 +298,7 @@ class FormClass extends CatalogueClass
     }
 
     /*
-     * Get City Form
+     * get city form
      * */
     public function showCityForm($city_like, $city_id = "")
     {
@@ -379,7 +398,7 @@ class FormClass extends CatalogueClass
     }
 
     /*
-     * Show history
+     * show history form
      * */
     public function showHistoryForm()
     {
@@ -401,7 +420,7 @@ class FormClass extends CatalogueClass
     }
 
     /*
-     * Show history (`Phone`)
+     * show history form (`Phone`)
      * */
     public function showHistoryList()
     {
@@ -662,7 +681,7 @@ class FormClass extends CatalogueClass
     }
 
     /*
-     * Show Modal Info Form
+     * show info form
      * */
     public function showInfoForm($art_id)
     {
@@ -908,7 +927,7 @@ class FormClass extends CatalogueClass
     }
 
     /**
-     * Show cars form (`Home Page`)
+     * show cars form (`Home Page`)
      */
     public function showHomeCars()
     {

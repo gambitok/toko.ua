@@ -10,10 +10,16 @@ trait Helper
     protected $err2 = "{not_specified}";
     protected $err3 = "{no_info}";
 
+    /*
+     * get cookie `session_id`
+     * */
     public function getSessionID() {
         return $this->getUrlString($_COOKIE["session_id"]);
     }
 
+    /*
+     * get HTML forms
+     * */
     public function getHtmlForm($name)
     {
         $form = "";
@@ -26,6 +32,9 @@ trait Helper
         return $form;
     }
 
+    /*
+     * check redirect links
+     * */
     public function checkRedirectLink($str)
     {
         $pos = strpos($str, ".htm");
@@ -37,6 +46,9 @@ trait Helper
         return 1;
     }
 
+    /*
+     * get redirected link
+     * */
     public function getRedirectLink($str)
     {
         $str = str_replace(".htm", "", $str);
@@ -45,6 +57,9 @@ trait Helper
         return $str;
     }
 
+    /*
+     * validate string URL
+     * */
     public function getUrlString($str)
     {
         $str = str_replace("'", "", $str);
@@ -58,6 +73,9 @@ trait Helper
         return $str;
     }
 
+    /*
+     * validate string
+     * */
     public function getNameString($str)
     {
         $str = str_replace("'", "", $str);
@@ -69,6 +87,9 @@ trait Helper
         return $str;
     }
 
+    /*
+     * validate number URL
+     * */
     public function getUrlNumber($number)
     {
         if (!is_numeric($number)) {
@@ -77,12 +98,14 @@ trait Helper
         return $number;
     }
 
-    public function getCurrentExrate() {
+    public function getCurrentExrate()
+    {
         $kours = new ExRateClass();
         return $kours->getCurrentKours();
     }
 
-    public function getSymbolExrate($cur) {
+    public function getSymbolExrate($cur)
+    {
         $kours = new ExRateClass();
         return $kours->getKoursSymbol($cur);
     }
@@ -216,6 +239,10 @@ trait Helper
         return $st;
     }
 
+    /*
+     * set random password
+     * set 4 numbers
+     * */
     public function randomPassword()
     {
         // $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -231,7 +258,7 @@ trait Helper
     }
 
     /*
-     * Get text Offer variable
+     * get text offer variables
      * */
     public function getOfferCap($i)
     {
@@ -305,7 +332,7 @@ trait Helper
     }
 
     /*
-     * Check ARTID in TYPID
+     * check art_id in typ_id
      * */
     public function checkT2Link($typ_id, $art_id)
     {

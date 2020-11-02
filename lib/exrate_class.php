@@ -9,6 +9,9 @@ class ExRateClass
     private $usdRate;
     private $euroRate;
 
+    /*
+     * get current currency_id
+     * */
     public function getCurrentKours()
     {
         session_start();
@@ -22,6 +25,10 @@ class ExRateClass
         return $currency;
     }
 
+    /*
+     * get currency_id
+     * from currency text value
+     * */
     public function getKours($val)
     {
         $db = DbSingleton::getDbm();
@@ -42,6 +49,10 @@ class ExRateClass
         }
     }
 
+    /*
+     * get exrate price
+     * from price & currency_id
+     * */
     public function getKoursPrice($price, $cur)
     {
         if ($cur == 2) {
@@ -56,6 +67,10 @@ class ExRateClass
         return $price;
     }
 
+    /*
+     * get exrate price from usa
+     * from price & currency_id
+     * */
     public function getKoursFromUSA($price, $cur)
     {
         if ($cur == 1) {
@@ -70,6 +85,10 @@ class ExRateClass
         return $price;
     }
 
+    /*
+     * get exrate price from usd
+     * from price & currency_id
+     * */
     public function getKoursFromUAH($price, $cur)
     {
         if ($cur == 2) {
@@ -84,6 +103,10 @@ class ExRateClass
         return $price;
     }
 
+    /*
+     * get exrate caption
+     * from currency_id
+     * */
     public function getKoursCaption($cur)
     {
         $db = DbSingleton::getDbm();
@@ -97,6 +120,10 @@ class ExRateClass
         return $result;
     }
 
+    /*
+     * get exrate caption lang
+     * from currency_id
+     * */
     public function getKoursCaptionLang($cur)
     {
         $db = DbSingleton::getDbm();
@@ -110,6 +137,10 @@ class ExRateClass
         return $result;
     }
 
+    /*
+     * get exrate symbol
+     * from currency_id
+     * */
     public function getKoursSymbol($cur)
     {
         switch ($cur) {

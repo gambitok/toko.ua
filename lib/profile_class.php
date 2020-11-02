@@ -10,6 +10,9 @@ class ProfileClass extends ClientClass
     public $page_profile = "/profile/orders/";
     public $page_registration = "/registration";
 
+    /*
+     * get profile left navigation
+     * */
     public function getProfileClientInfo()
     {
         $client = new ClientClass();
@@ -21,6 +24,9 @@ class ProfileClass extends ClientClass
         return $info;
     }
 
+    /*
+     * get profile right navigation
+     * */
     public function getProfileInfo()
     {
         $form = $this->getHtmlForm("menu/profile_nav");
@@ -33,6 +39,9 @@ class ProfileClass extends ClientClass
         return $form;
     }
 
+    /*
+     * get special offers navigation
+     * */
     public function getSpecialOffers()
     {
         $db = DbSingleton::getDbm();
@@ -78,6 +87,9 @@ class ProfileClass extends ClientClass
         return $info;
     }
 
+    /*
+     * get news navigation
+     * */
     public function getNewsInfo()
     {
         $db = DbSingleton::getDbm();
@@ -100,6 +112,9 @@ class ProfileClass extends ClientClass
         </li>";
     }
 
+    /*
+     * get profile mobile navigation
+     * */
     public function getProfileInfoMobile()
     {
         $info = ($this->getUser() == 0)
@@ -109,6 +124,9 @@ class ProfileClass extends ClientClass
         return $info;
     }
 
+    /*
+     * show profile form
+     * */
     public function showProfileForm()
     {
         $client = new ClientClass();
@@ -122,7 +140,7 @@ class ProfileClass extends ClientClass
     }
 
     /*
-     * Bonus Client
+     * check if client have bonus
      * */
     public function getClientBonus($client_id)
     {
@@ -132,6 +150,9 @@ class ProfileClass extends ClientClass
         return ($n > 0);
     }
 
+    /*
+     * show profile bonus form
+     * */
     public function showClientBonus($client_id)
     {
         $db = DbSingleton::getDbm();
@@ -147,6 +168,9 @@ class ProfileClass extends ClientClass
         return $form;
     }
 
+    /*
+     * show profile `account` form
+     * */
     public function showProfileAccount()
     {
         $menu = new MenuClass();
@@ -280,6 +304,9 @@ class ProfileClass extends ClientClass
         return $list;
     }
 
+    /*
+     * update order str status
+     * */
     public function updateOrderArt($order_str_id)
     {
         $order_str_id = $this->getUrlNumber($order_str_id);
@@ -295,13 +322,9 @@ class ProfileClass extends ClientClass
         return $status;
     }
 
-    public function getDpByOrder($order_id)
-    {
-        $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `dp_id` FROM `orders_new` WHERE `id`='$order_id'");
-        return $db->result($r, 0, "dp_id");
-    }
-
+    /*
+     * get dp status
+     * */
     public function getDpStatus($dp_id)
     {
         $db = DbSingleton::getDbm();
@@ -309,6 +332,9 @@ class ProfileClass extends ClientClass
         return $db->result($r, 0, "status_visible");
     }
 
+    /*
+     * check user order amount
+     * */
     public function checkOrderUser($order_id, $user_id)
     {
         $db = DbSingleton::getDbm();
@@ -316,6 +342,9 @@ class ProfileClass extends ClientClass
         return $db->result($r, 0, "kilk");
     }
 
+    /*
+     * get DP array from orders
+     * */
     public function getDpClient()
     {
         $db = DbSingleton::getDbm();
@@ -742,7 +771,9 @@ class ProfileClass extends ClientClass
         return array($saldo_start, $cash_id, $saldo_data_start);
     }
 
-    // Cron
+    /*
+     * set price list cron
+     * */
     public function setPriceList()
     {
         $db = DbSingleton::getDbm();
@@ -841,6 +872,9 @@ class ProfileClass extends ClientClass
         return $form;
     }
 
+    /*
+     * get profile status
+     * */
     public function getStatusProfilePrice($status)
     {
         switch ($status) {
@@ -858,7 +892,9 @@ class ProfileClass extends ClientClass
         return $text;
     }
 
-    /*==== REGISTRATION ====*/
+    /*
+     * show registration form
+     * */
     public function showRegistrationForm()
     {
         $menu = new MenuClass();
