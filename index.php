@@ -2,13 +2,12 @@
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 @ini_set('display_errors', true);
 date_default_timezone_set("Europe/Kiev");
-
 header('Content-Type: text/html; charset=windows-1251');
 
 $content = null;
 $title = "{site_title}";
-define('RDD', dirname (__FILE__));
 
+define('RDD', dirname (__FILE__));
 require_once (RDD . "/lib/DbSingleton.php");                  //database
 require_once (RDD . "/lib/access.php");                       //get access site
 require_once (RDD . "/lib/helper.php");                       //helper
@@ -30,7 +29,6 @@ require_once (RDD . "/lib/class.phpmailer.php");
 require_once (RDD . "/lib/parameters_class.php");
 require_once (RDD . "/lib/pattern_class.php");
 require_once (RDD . "/lib/parts_class.php");
-
 require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 require_once (RDD . "/lib/ukr-poshta-api/UkrPoshtaApi.php");
 

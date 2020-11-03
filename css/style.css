@@ -108,11 +108,13 @@ a:hover, a:not([href]):not([tabindex]):hover { color: #000; }
 
 .faq-content { display: none; font-size: 14px; padding: 10px; transition: .5s ease-in-out; }
 
-.request { padding: 10px; }
+.request { min-height: 524px; padding: 10px; }
 
-.request-row { display: flex; margin-bottom: 10px; }
+.request-row { display: flex; margin-bottom: 15px; }
 
-.request-row input[type='text'], .request-row input[type='tel'], .request-row textarea { padding: 5px; width: 100%; }
+.request-row textarea { height: 100px; }
+
+.request-row input[type='text'], .request-row input[type='tel'], .request-row textarea { border: 1px solid #ccc; padding: 5px; width: 100%; }
 
 .request-row input[type='submit'] { background: #0ca9ee; border: 1px solid #17a2b8; border-radius: .2rem; color: #fff; cursor: pointer; padding: 5px; text-align: center; width: 100%; }
 

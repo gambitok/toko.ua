@@ -111,9 +111,13 @@ class SearchClass extends CatalogueClass
         }
         $filters = rtrim($filters, ",");
         if (!$type) {
-            if (count($active_filters) > 1) $filters = "";
+            if (count($active_filters) > 1) {
+                $filters = "";
+            }
         }
-        if ($filters != "") $filters = ": " . $filters;
+        if ($filters != "") {
+            $filters = ": " . $filters;
+        }
         return $filters;
     }
 
@@ -411,7 +415,9 @@ class SearchClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-            if (empty($products[$art_id][0])) $products[$art_id][0] = [];
+            if (empty($products[$art_id][0])) {
+                $products[$art_id][0] = [];
+            }
             $products[$art_id][0] = [$brand_id];
         }
         return $this->getExistedProducts($products);
@@ -470,7 +476,6 @@ class SearchClass extends CatalogueClass
             LEFT JOIN `T2_ARTICLES` t2a ON t2a.ART_ID=t2t.ART_ID
         WHERE t2t.`STR_ID`=$str_id $where_brands GROUP BY t2t.ART_ID;");
         $n = $db->num_rows($r);
-
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             array_push($art_ids, $art_id);

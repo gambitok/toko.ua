@@ -76,9 +76,9 @@ class MenuClass extends CatalogueClass
                 $short_desc = $db->result($r, $i - 1, "short_desc");
                 $date = $db->result($r, $i - 1, "data");
                 $img_file = $this->getNewsImage($state_id);
-                ($img_file != "")
-                    ? $img = "<img itemprop=\"image\" src=\"/thumb.php?image=news/$lang/$state_id/$img_file&size=280\" alt=\"image\">"
-                    : $img = "";
+                $img = ($img_file != "")
+                    ? "<img itemprop=\"image\" src=\"/thumb.php?image=news/$lang/$state_id/$img_file&size=280\" alt=\"image\">"
+                    : "";
                 $list .= "<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"row news-block__item\">
                     <div class=\"col-8\">
                         <h4>$date</h4>
@@ -92,7 +92,7 @@ class MenuClass extends CatalogueClass
         } else {
             $list = "<div class=\"content\"><h2>$err1<h2></div>";
         }
-        $form = $this->getHtmlForm("news/news");
+        $form = $this->getHtmlForm("news/form");
         $form = str_replace("{news_range}", $list, $form);
         return $form;
     }
@@ -123,7 +123,7 @@ class MenuClass extends CatalogueClass
             $img
             <div itemprop=\"description\">$text</div>
         </div>";
-        $form = $this->getHtmlForm("news/news_state");
+        $form = $this->getHtmlForm("news/card");
         $form = str_replace("{state_id}", $state_id, $form);
         $form = str_replace("{state_info}", ($state_id > 0) ? $list : "<h1>$this->err1</h1>", $form);
         return $form;
@@ -201,7 +201,18 @@ class MenuClass extends CatalogueClass
                         $status_new = 1;
                     }
                 }
-                $arr[$i] = ["status_new" => $status_new, "art_id" => $art_id, "article_nr_displ" => $article_nr_displ, "amount" => $amount, "max_amount" => $max_amount, "timestamp" => $timestamp, "data" => $data, "status" => $status, "discount" => $discount];
+                $arr[$i] =
+                    [
+                        "status_new" => $status_new,
+                        "art_id" => $art_id,
+                        "article_nr_displ" => $article_nr_displ,
+                        "amount" => $amount,
+                        "max_amount" => $max_amount,
+                        "timestamp" => $timestamp,
+                        "data" => $data,
+                        "status" => $status,
+                        "discount" => $discount
+                    ];
             }
 
             $far_status = $far_article = [];
@@ -288,7 +299,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "";
         $arts = trim($arts, ",");
-        $arts != "" ? $where_arts = "WHERE t2gg.ART_ID IN ($arts)" : $where_arts = "";
+        $where_arts = ($arts != "") ? "WHERE t2gg.ART_ID IN ($arts)" : "";
         $r = $db->query("SELECT gg.* FROM `GOODS_GROUP` gg 
             LEFT OUTER JOIN `T2_GOODS_GROUP` t2gg ON (t2gg.GOODS_GROUP_ID=gg.ID)
         $where_arts GROUP BY t2gg.GOODS_GROUP_ID;");
@@ -414,16 +425,12 @@ class MenuClass extends CatalogueClass
         $list = "";
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
-                $title = $db->result($r, $i - 1, "title");
-                $address = $db->result($r, $i - 1, "address");
-                $schedule = $db->result($r, $i - 1, "schedule");
-                $phone = $db->result($r, $i - 1, "phone");
-                $list .= "<li>
-                    <p itemprop=\"addressLocality\">$title</p>
-                    <span class=\"fas fa-map-marker-alt\"></span> <span itemprop=\"streetAddress\">$address</span><br>
-                    <span class=\"fas fa-clock\"></span> <span itemprop=\"hoursAvailable\">$schedule</span><br>
-                    <span class=\"fas fa-phone-square\"></span> <span itemprop=\"telephone\">$phone</span>
-                </li>";
+                $form_range = $this->getHtmlForm("menu/contacts_range");
+                $form_range = str_replace("{contact_title}", $db->result($r, $i - 1, "title"), $form_range);
+                $form_range = str_replace("{contact_address}", $db->result($r, $i - 1, "address"), $form_range);
+                $form_range = str_replace("{contact_schedule}", $db->result($r, $i - 1, "schedule"), $form_range);
+                $form_range = str_replace("{contact_phone}", $db->result($r, $i - 1, "phone"), $form_range);
+                $list .= $form_range;
             }
         } else {
             $list = "<h2>$this->err1</h2>";
@@ -651,8 +658,9 @@ class MenuClass extends CatalogueClass
         $automan = new AutoClass();
         $prefix = $this->getLangPrefix();
         $garage_count = $automan->getGarageAutoCount()[0];
-        $garage_count == "" ? $garage_link = "href=\"https://toko.ua$prefix/catalogue/auto/\"" : $garage_link = "onclick=\"showGarageForm();\"";
-        return $garage_link;
+        return ($garage_count == "")
+            ? "href=\"https://toko.ua$prefix/catalogue/auto/\""
+            : "onclick=\"showGarageForm();\"";
     }
 
     /*
@@ -680,23 +688,21 @@ class MenuClass extends CatalogueClass
     public function showReviews()
     {
         $db = DbSingleton::getTokoDb();
-        $prefix = $this->getLangPrefix();
         $list = "";
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `STATUS`=1 ORDER BY `data` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
-                $state_id = $db->result($r, $i - 1, "ID");
                 $title = $db->result($r, $i - 1, "TITLE");
-                $date = $db->result($r, $i - 1, "DATA");
-                $img = $db->result($r, $i - 1, "IMG");
                 $transcript = $this->formatUrlText($title);
-                $list .= "<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"reviews-block-item\">
-                    <div class=\"reviews-block-item__date\">$date</div>
-                    <div class=\"reviews-block-item__title\" itemprop=\"name\">$title</div>
-                    <div class=\"reviews-block-item__image\"><img src=\"https://portal.myparts.pro/uploads/images/saved/$img\" alt=\"$title\"></div>
-                    <div class=\"reviews-block-item__link\"><a itemprop=\"url\" href=\"$prefix/reviews/state/$state_id/$transcript\">{details_cap} <span class=\"fas fa-angle-right\"></span></a></div>
-                </div>";
+                $form_range = $this->getHtmlForm("reviews/form_range");
+                $form_range = str_replace("{review_title}", $title, $form_range);
+                $form_range = str_replace("{review_transcript}", $transcript, $form_range);
+                $form_range = str_replace("{review_date}", $db->result($r, $i - 1, "DATA"), $form_range);
+                $form_range = str_replace("{review_img}", $db->result($r, $i - 1, "IMG"), $form_range);
+                $form_range = str_replace("{review_state}", $db->result($r, $i - 1, "ID"), $form_range);
+                $form_range = str_replace("{review_prefix}", $this->getLangPrefix(), $form_range);
+                $list .= $form_range;
             }
         }
         $form = $this->getHtmlForm("reviews/form");
@@ -712,14 +718,10 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $state_id = $this->getUrlNumber($state_id);
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID`='$state_id';");
-        $title = $db->result($r, 0, "TITLE");
-        $text = $db->result($r, 0, "TEXT");
-        $date = $db->result($r, 0, "DATA");
-        $list = "<div class=\"reviews\">
-            <div class=\"reviews-block-item__date\">$date</div>
-            <div class=\"reviews-block-item__title\" itemprop=\"name\"><h1>$title</h1></div>
-            <div class=\"reviews-block-item__text\" itemprop=\"description\">$text</div>
-        </div>";
+        $list = $this->getHtmlForm("reviews/card_range");
+        $list = str_replace("{review_date}", $db->result($r, 0, "DATA"), $list);
+        $list = str_replace("{review_title}", $db->result($r, 0, "TITLE"), $list);
+        $list = str_replace("{review_text}", $db->result($r, 0, "TEXT"), $list);
         $form = $this->getHtmlForm("reviews/card");
         $form = str_replace("{state_id}", $state_id, $form);
         $form = str_replace("{state_info}", $state_id > 0 ? $list : "<h1>$this->err1</h1>", $form);

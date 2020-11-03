@@ -40,7 +40,7 @@ if ($car_content == "") {
     $car_form = "";
     $head_id = $automan->getHeadNewLinkStr($some_link);
     if ($some_link2 == "") {
-        $content = str_replace("{main_metro}", "<div class='wdt100'>".$automan->getDetailsHeadImage($head_id)."</div>", $content);
+        $content = str_replace("{main_metro}", $automan->showDetailsHeader($head_id), $content);
     }
 }
 

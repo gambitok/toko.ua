@@ -6,7 +6,6 @@ if (file_exists("$theme_htm")) {
 }
 
 $path = getPath();
-
 if ($path == "seoshield-client") {
     include RDD . "/seoshield-client/index.php";
     include RDD . "/seoshield-client/main.php";
@@ -22,14 +21,11 @@ if ($path == "seoshield-client") {
         $_SESSION["lang"] = 3;
     }
     include_once RDD . "/event/main.php";
-}
-elseif (file_exists(RDD . "/event/$path.php")) {
+} elseif (file_exists(RDD . "/event/$path.php")) {
     include_once RDD . "/event/$path.php";
 } else {
     include RDD . "/event/404.php";
 }
-
-
 include_once(RDD . "/event/menu.php");
 
 // Main HEAD HTML
@@ -48,10 +44,10 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') 
     if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest')) {
         if (file_exists(RDD."/seoshield-client/main.php")) {
             include_once(RDD."/seoshield-client/main.php");
-            if(function_exists('seo_shield_start_cms')){
+            if (function_exists('seo_shield_start_cms')){
                 seo_shield_start_cms();
             }
-            if(function_exists('seo_shield_out_buffer')){
+            if (function_exists('seo_shield_out_buffer')){
                 $content = seo_shield_out_buffer($content);
                 $seo_text = seo_shield_out_buffer($seo_text);
             }
@@ -67,8 +63,8 @@ $content = str_replace("{main_window}", "", $content);
 $content = str_replace("{main_metro}", "", $content);
 
 $linka = findLinks();
-$mfa_link = $linka[1];
-$mod_link = $linka[2];
+$mfa_link = $catalogue->getUrlString($linka[1]);
+$mod_link = $catalogue->getUrlString($linka[2]);
 list($mfa_text, ) = $automan->getAutoDescrLink($mfa_link, $mod_link);
 if ($mfa_text != "") {
     $content = str_replace("{main_seo_text_cars}", $search->getSeoCarsLinking($mfa_link, $mod_link), $content);

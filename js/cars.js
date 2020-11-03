@@ -52,7 +52,7 @@ function showPop(e) {
 
     let data_pred = $("div[data-type='manuf']");
 
-    let offset = 0;
+    let offset;
     let left = $(index).offset().left;
     let pred_left = 0;
 

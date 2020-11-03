@@ -267,11 +267,16 @@ a, a:not([href]):not([tabindex]) {
 }
 
 .request {
+    min-height: 524px;
     padding: 10px;
     &-row {
         display: flex;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        textarea {
+            height: 100px;
+        }
         input[type='text'], input[type='tel'], textarea {
+            border: 1px solid #ccc;
             padding: 5px;
             width: 100%;
         }

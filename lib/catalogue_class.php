@@ -856,8 +856,10 @@ class CatalogueClass
         //get unique brands with min price
         foreach ($brands as $key => $value) {
             //delete 0;
-            if (!empty($unique_brands)) if ($unique_brands[$value["brand_id"]]["brand_count"] > 0) {
-                unset($brands[$key]);
+            if (!empty($unique_brands)) {
+                if ($unique_brands[$value["brand_id"]]["brand_count"] > 0) {
+                    unset($brands[$key]);
+                }
             }
             if (in_array($value["brand_id"], $value)) {
                 $unique_brands[$value["brand_id"]]["brand_count"] = $unique_brands[$value["brand_id"]]["brand_count"] + 1;
@@ -2786,11 +2788,15 @@ class CatalogueClass
         }
 
         $i = 0;
+
+        $count_mas = count($mas);
+        if ($count_mas >= 2) {
+            $faq_pos = 2;
+        } else {
+            $faq_pos = $count_mas;
+        }
+
         if (!empty($mas)) {
-            if ($view && $i == 0) {
-                $faq_form = $this->getFaqForm();
-                $list .= $faq_form;
-            }
             foreach ($mas as $mas_key => $mas_val) {
                 foreach ($mas_val as $key => $val) {
                     $art_id = $mas_key;
@@ -2807,6 +2813,10 @@ class CatalogueClass
                     $return_days = $val["return_days"];
                     $storage_id = $val["storage_id"];
                     $status = ($saleout > 0) ? $val["status"] : 1;
+                    if ($view && ($i == $faq_pos)) {
+                        $faq_form = $this->getFaqForm();
+                        $list .= $faq_form;
+                    }
                     $list .= $this->printSearchList($i, $art_id, $name, $brand_id, $brand, $text, $delivery_info, $stock, $price, $article_nr_search, $ll[$i], $class[$i], $hide[$i], $border[$i], $none[$i], $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view);
                     $i++;
                 }

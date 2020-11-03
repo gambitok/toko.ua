@@ -397,7 +397,6 @@ class AutoClass extends CatalogueClass
     public function getGroupInfo($typ_id)
     {
         $db = DbSingleton::getTokoDb();
-        $list = "";
         $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' AND `ACTIVE`=1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
@@ -423,9 +422,11 @@ class AutoClass extends CatalogueClass
                 $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
             }
             $d_end_true = $d_end;
-            $list = "$full_name ($d_start - $d_end_true)<br>$fuel, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}, $ccm cm3, $eng_cod";
+            $text = "$full_name ($d_start - $d_end_true)<br>$fuel, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}, $ccm cm3, $eng_cod";
+        } else {
+            $text = "";
         }
-        return $list;
+        return $text;
     }
 
     /*
@@ -983,14 +984,18 @@ class AutoClass extends CatalogueClass
         return $list;
     }
 
-    public function getDetailsHeadImage($head_id)
+    /*
+     * get details header image
+     * */
+    public function showDetailsHeader($head_id)
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEX_RU` FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 AND `HEAD_ID`='$head_id' LIMIT 1;");
         $head_tex_text = $db->result($r, 0, "TEX_RU");
-        $title = "<div class=\"tree-block-title__text\"><div class=\"container pad0\"><h1>$head_tex_text</h1></div></div>";
-        $img = "$head_id.jpg";
-        return "<div class=\"tree-block-title\" style=\"background-image: url('/images/tree_head/$img');\">$title</div>";
+        $form = $this->getHtmlForm("details/head_title");
+        $form = str_replace("{head_tex_text}", $head_tex_text, $form);
+        $form = str_replace("{head_img}",  "$head_id.jpg", $form);
+        return $form;
     }
 
     public function getDetailsList($head, $category = "", $mfa_link = "", $mod_link = "")
@@ -1006,7 +1011,6 @@ class AutoClass extends CatalogueClass
         }
 
         $list = "<div class=\"tree-block\">";
-
         $r3 = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 $where;");
         $n3 = $db->num_rows($r3);
         for ($i3 = 1; $i3 <= $n3; $i3++) {
