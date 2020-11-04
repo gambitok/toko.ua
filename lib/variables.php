@@ -4,6 +4,17 @@ trait Variables
 {
 
     /*
+     * get secret article
+     * add zero to first digit in string
+     * */
+    public function getSecretString($str)
+    {
+        preg_match('/\d+/', $str, $matches);
+        $pos = strpos($str, $matches[0]);
+        return substr_replace($str, '0', $pos, 0);
+    }
+
+    /*
      * Format Article
      * */
     public function getFormatAticle($name)

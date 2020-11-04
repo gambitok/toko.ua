@@ -664,8 +664,8 @@ function getPath() {
 }
 
 function findPath() {
-    session_start();
-    $_SESSION["lang"] = 1;
+    $language = new LangClass();
+    $language->setLangID(1);
 	$link = "https://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
     if (substr($link, -1) != "/") {
         $link .= "/";
@@ -677,19 +677,17 @@ function findPath() {
         $path = substr($url,0,$pos+1);
         $cur_path = substr($path, 0, -1);
         if ($cur_path == "uk" || $cur_path == "en") {
-            //if ($cur_path=="ru") $_SESSION["lang"]=1;
             if ($cur_path == "uk") {
-                $_SESSION["lang"] = 2;
+                $language->setLangID(2);
             }
             if ($cur_path == "en") {
-                $_SESSION["lang"] = 3;
+                $language->setLangID(3);
             }
             $url = str_replace_first($path, "", $url);
             $pos = strpos($url, "/");
             $path = substr($url, 0, $pos);
         } else {
             $path = substr($url, 0, $pos);
-            //$res = ($path != null) ? $path : $url;
         }
         $res = ($path != null) ? $path : $url;
     } else {
@@ -705,8 +703,8 @@ function findUrl() {
 }
 
 function findLinks() {
-    session_start();
-    $_SESSION["lang"] = 1;
+    $language = new LangClass();
+    $language->setLangID(1);
 	$link = "https://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
 	if (substr($link, -1) != "/") {
 	    $link .= "/";
@@ -723,10 +721,10 @@ function findLinks() {
             $cur_path = substr($path, 0, -1);
             if ($cur_path == "uk" || $cur_path == "en") {
                 if ($cur_path == "uk") {
-                    $_SESSION["lang"] = 2;
+                    $language->setLangID(2);
                 }
                 if ($cur_path == "en") {
-                    $_SESSION["lang"] = 3;
+                    $language->setLangID(3);
                 }
                 $i = 0;
             } else {

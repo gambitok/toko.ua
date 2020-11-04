@@ -1002,6 +1002,7 @@ function setClientRequest() {
     let vin = $("#help-vin").val(); if ($("#help-vin").length === 0) vin = "";
     let text = $("#help-text").val(); if ($("#help-text").length === 0) text = "";
     let status = 0;
+    console.log(phone);
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors) { if (errors) {alert(errors);} if (result) {
             if (result.content === false) {
@@ -1028,9 +1029,9 @@ function setClientRequestFaq() {
 }
 
 function setClientRequestCard() {
-    let phone = $("#help-phone").val(); if ($("#help-phone").length === 0) phone = "";
-    let vin = $("#help-vin").val(); if ($("#help-vin").length === 0) vin = "";
-    let text = $("#help-text").val(); if ($("#help-text").length === 0) text = "";
+    let phone = $("#help-phone-2").val(); if ($("#help-phone-2").length === 0) phone = "";
+    let vin = $("#help-vin-2").val(); if ($("#help-vin-2").length === 0) vin = "";
+    let text = $("#help-text-2").val(); if ($("#help-text-2").length === 0) text = "";
     let status = 1;
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
@@ -1040,14 +1041,6 @@ function setClientRequestCard() {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
                 setClientRequestDone();
             }
-        }}, true);
-}
-
-function setClientRequestDone() {
-    $("#request-card").html("");
-    JsHttpRequest.query(folder,{'w':'setClientRequestDone'},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#request-card").html(result.content);
         }}, true);
 }
 
@@ -1062,5 +1055,13 @@ function setClientRequest2() {
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
             }
+        }}, true);
+}
+
+function setClientRequestDone() {
+    $("#request-card").html("");
+    JsHttpRequest.query(folder,{'w':'setClientRequestDone'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#request-card").html(result.content);
         }}, true);
 }

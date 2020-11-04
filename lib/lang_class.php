@@ -5,6 +5,8 @@ class LangClass
 
     use Helper;
 
+    public $default_lang_id = 1;
+
     private static $langVariables;
     private static $langNames;
 
@@ -13,10 +15,17 @@ class LangClass
      * */
     public function getLanguageData()
     {
-        if ($_SESSION["lang"] == "" || $_SESSION["lang"] == 0) {
-            $_SESSION["lang"] = 1;
+        $cookie_lang_id = $this->getUrlNumber($_COOKIE["lang_id"]);
+        if ($cookie_lang_id != "") {
+            $_SESSION["lang_id"] = $cookie_lang_id;
         }
-        return $_SESSION["lang"];
+
+        $session_lang_id = $this->getUrlNumber($_SESSION["client_id"]);
+        if ($session_lang_id == "" || $session_lang_id == 0 || $session_lang_id == NULL) {
+            $_SESSION["lang_id"] = $this->default_lang_id;
+        }
+
+        return $_SESSION["lang_id"];
     }
 
     /*
@@ -85,7 +94,7 @@ class LangClass
     public function getLangPrefix()
     {
         session_start();
-        $lang = $_SESSION["lang"];
+        $lang = $this->getLanguageData();
         $pre = "";
         if ($lang == 1) {
             $pre = "";
@@ -101,11 +110,21 @@ class LangClass
 
     /*
      * set site language
+     * by LANG_ID
      * */
-    public function setSiteLang($id)
+    public function setLangID($lang_id) {
+        $lang_id = $this->getUrlNumber($lang_id);
+        $_SESSION["lang_id"] = $lang_id;
+        setcookie("lang_id", $lang_id, time() + (86400 * 30), "/");
+    }
+
+    /*
+     * set site language
+     * return prefix
+     * */
+    public function setSiteLang($lang_id)
     {
-        $id = $this->getUrlNumber($id);
-        $_SESSION["lang"] = $id;
+        $this->setLangID($lang_id);
         return $this->getLangPrefix();
     }
 
@@ -141,6 +160,7 @@ class LangClass
         foreach (self::$langVariables as $langVariable) {
             $cont = str_replace("{" . $langVariable . "}", $this->getLanguageName($langVariable), $cont);
         }
+        $cont = str_replace("{prefix}", $this->getLangPrefix(), $cont);
         return $cont;
     }
 

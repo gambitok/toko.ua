@@ -281,8 +281,8 @@ a, a:not([href]):not([tabindex]) {
             width: 100%;
         }
         input[type='submit'] {
-            background: #0ca9ee;
-            border: 1px solid #17a2b8;
+            background: #36cd76;
+            border: 1px solid #4f996c;
             border-radius: .2rem;
             color: #fff;
             cursor: pointer;
@@ -290,7 +290,7 @@ a, a:not([href]):not([tabindex]) {
             text-align: center;
             width: 100%;
             &:hover {
-                background: #17a2b8;
+                background: #4f996c;
             }
         }
         &__image {

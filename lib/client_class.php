@@ -12,6 +12,7 @@ class ClientClass
     public $default_client_category = 140;
     public $vin_len = 17;
     public $max_history_count = 10;
+    public $default_lang_id = 1;
 
     use Helper;
     use Variables;
@@ -22,22 +23,23 @@ class ClientClass
     public function getClientData()
     {
         $cookie_client_id = $this->getUrlNumber($_COOKIE["client_id"]);
-        $cookie_user_id = $this->getUrlNumber($_COOKIE["user"]);
         if ($cookie_client_id != "") {
             $_SESSION["client_id"] = $cookie_client_id;
         }
+
+        $cookie_user_id = $this->getUrlNumber($_COOKIE["user"]);
         if ($cookie_user_id != "") {
-            $_SESSION["user"] = $cookie_user_id;
+            $_SESSION["user_id"] = $cookie_user_id;
         }
 
         $session_client_id = $this->getUrlNumber($_SESSION["client_id"]);
         if ($session_client_id == "" || $session_client_id == 0 || $session_client_id == NULL) {
             $_SESSION["client_id"] = $this->default_client_id;
-            $_SESSION["user"] = $this->default_user;
+            $_SESSION["user_id"] = $this->default_user;
         }
 
         $client_id = $_SESSION["client_id"];
-        $user_id = $_SESSION["user"];
+        $user_id = $_SESSION["user_id"];
 
         $client_id = $this->getUrlNumber($client_id);
         $user_id = $this->getUrlNumber($user_id);
@@ -188,12 +190,12 @@ class ClientClass
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
         $client_id = $db->result($r, 0, "client_id");
         $cash_id = $this->getClientCurrency($client_id);
-        $_SESSION["user"] = $user_id;
+        $_SESSION["user_id"] = $user_id;
         $_SESSION["client_id"] = $client_id;
         $_SESSION["currency"] = $cash_id;
-        $_SESSION["tpoint"] = $this->getTpoint($client_id);
+        $_SESSION["tpoint_id"] = $this->getTpoint($client_id);
         setcookie("client_id", $client_id, time() + (86400 * 30), "/");
-        setcookie("user", $user_id, time() + (86400 * 30), "/");
+        setcookie("user_id", $user_id, time() + (86400 * 30), "/");
         setcookie("currency", $cash_id, time() + (86400 * 30), "/");
         setcookie("tpoint_id", $this->getTpoint($client_id), time() + (86400 * 30), "/");
         setcookie("auto_typ_id", $this->getClientAutoGarage($client_id, $user_id), time() + (86400 * 30), "/");
@@ -223,12 +225,12 @@ class ClientClass
         $client_id = $db->result($r, 0, "client_id");
         $cash_id = $this->getClientCurrency($client_id);
 
-        $_SESSION["user"] = $user_id;
+        $_SESSION["user_id"] = $user_id;
         $_SESSION["client_id"] = $client_id;
         $_SESSION["currency"] = $cash_id;
-        $_SESSION["tpoint"] = $this->getTpoint($client_id);
+        $_SESSION["tpoint_id"] = $this->getTpoint($client_id);
         setcookie("client_id", $client_id, time() + (86400 * 30), "/");
-        setcookie("user", $user_id, time() + (86400 * 30), "/");
+        setcookie("user_id", $user_id, time() + (86400 * 30), "/");
         setcookie("currency", $cash_id, time() + (86400 * 30), "/");
         setcookie("tpoint_id", $this->getTpoint($client_id), time() + (86400 * 30), "/");
         setcookie("auto_typ_id", $this->getClientAutoGarage($client_id, $user_id), time() + (86400 * 30), "/");
@@ -242,14 +244,18 @@ class ClientClass
      * */
     public function logoutClient()
     {
-        $_SESSION["client_id"] = $this->default_client_id;    // Retail Client
-        $_SESSION["user"] = $this->default_user;              // Retail User
-        $_SESSION["currency"] = $this->default_currency;      // UAH Currency
-        $_SESSION["tpoint"] = $this->default_tpoint;          // KHM City
-        setcookie("tpoint_id", "", time() - 3600);
+        $_SESSION["client_id"] = $this->default_client_id;
+        $_SESSION["user_id"] = $this->default_user;
+        $_SESSION["tpoint_id"] = $this->default_tpoint;
+        $_SESSION["currency"] = $this->default_currency;
+        $_SESSION["lang_id"] = $this->default_lang_id;
+
         setcookie("client_id", "", time() - 3600);
-        setcookie("user", "", time() - 3600);
+        setcookie("user_id", "", time() - 3600);
+        setcookie("tpoint_id", $this->default_tpoint, time() - 3600);
         setcookie("currency", $this->default_currency);
+        setcookie("lang_id", $this->default_lang_id);
+
         setcookie("action_status", "", time() - 3600, "/");
         setcookie("auto_typ_id", "", time() - 3600, "/");
         return true;
@@ -366,12 +372,12 @@ class ClientClass
         $date = date("Y-m-d H:i:s");
         list($region, $state, $country) = $this->getLocationCity($city_id);
         if ($client_category == "") {
-            $client_category = 140;
+            $client_category = $this->default_client_category;
         }
 
-        if ($client_category == 140) {
+        if ($client_category == $this->default_client_category) {
             // REGISTRATION AS CLIENT
-            $this->addRetailClient($client_id, $phone, $name, $city_id, $email, $pass, 140);
+            $this->addRetailClient($client_id, $phone, $name, $city_id, $email, $pass, $this->default_client_category);
         } else {
             // REGISTRATION AS RETAIL
             $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone`='$phone' LIMIT 1;");
@@ -397,7 +403,7 @@ class ClientClass
 //        $client_id = $this->getClientByTpoint($tpoint_id);
 //        $date = date("Y-m-d H:i:s");
 //        list($region, $state, $country) = $this->getLocationCity($city);
-//        if ($category == "") $category = 140;
+//        if ($category == "") $category = $this->default_client_category;
 //        $pass = $this->randomPassword();
 //
 //        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone`='$phone' LIMIT 1;");
@@ -470,7 +476,7 @@ class ClientClass
     {
         $tpoint_id = $this->getUrlNumber($tpoint_id);
         $client_id = $this->getClientByTpoint($tpoint_id);
-        $_SESSION["tpoint"] = $tpoint_id;
+        $_SESSION["tpoint_id"] = $tpoint_id;
         $_SESSION["client_id"] = $client_id;
         setcookie("tpoint_id", $tpoint_id, time() + (86400 * 30), "/");
         setcookie("client_id", $client_id, time() + (86400 * 30), "/");
@@ -513,7 +519,7 @@ class ClientClass
      * */
     public function setTpointRetail()
     {
-        ($_SESSION["tpoint"] != "") ?: $_SESSION["tpoint"] = $this->default_tpoint;
+        ($_SESSION["tpoint_id"] != "") ?: $_SESSION["tpoint_id"] = $this->default_tpoint;
         return true;
     }
 
@@ -800,6 +806,7 @@ class ClientClass
 
     /*
      * MOVE CLIENT CONDITION
+     * add new client from existing
      * */
     public function moveClientsConditionsRetail($tpoint_client_id, $client_id)
     {
@@ -828,17 +835,18 @@ class ClientClass
 
     /*
      * check client category
+     * check if client shop
      * */
     public function checkRetailClientCategory($client_id)
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
         $client_category = $db->result($r, 0, "client_category");
-        return ($client_category == 140);
+        return ($client_category == $this->default_client_category);
     }
 
     /*
-     * get Users Count
+     * get all users count
      * */
     public function getUsersCount()
     {

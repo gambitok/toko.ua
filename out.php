@@ -13,12 +13,11 @@ if ($path == "seoshield-client") {
 } elseif ($path == "" || $path == "/") {
     include_once RDD . "/event/main.php";
 } elseif ($path == "/uk/" || $path == "/en/") {
-    session_start();
     if ($path == "uk") {
-        $_SESSION["lang"] = 2;
+        $language->setLangID(2);
     }
     if ($path == "en") {
-        $_SESSION["lang"] = 3;
+        $language->setLangID(3);
     }
     include_once RDD . "/event/main.php";
 } elseif (file_exists(RDD . "/event/$path.php")) {

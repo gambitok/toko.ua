@@ -435,7 +435,6 @@ class AutoClass extends CatalogueClass
     public function getChosenAutoGarage($client_id, $user_id)
     {
         $db = DbSingleton::getTokoDb();
-        $prefix = $this->getLangPrefix();
         $cookie = $this->getSessionID();
         $where = ($user_id == 0) ? "`client_id`='$client_id' AND `cookie_id`='$cookie'" : "`client_id`='$client_id' AND `user_id`='$user_id'";
         $r = $db->query("SELECT `typ_id` FROM `AUTO_GARAGE` WHERE $where AND `status`=1 LIMIT 1;");
@@ -451,7 +450,6 @@ class AutoClass extends CatalogueClass
             $auto_form = str_replace("{model_id_cap}", $model_id_cap, $auto_form);
             $auto_form = str_replace("{models_img}", $models_img, $auto_form);
             $auto_form = str_replace("{typ_text}", $typ_text, $auto_form);
-            $auto_form = str_replace("{prefix}", $prefix, $auto_form);
         } else {
             $auto_form = "{choose_auto_first}";
         }
@@ -998,10 +996,14 @@ class AutoClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * show details list
+     * cars / catalog
+     * only names & links
+     * */
     public function getDetailsList($head, $category = "", $mfa_link = "", $mod_link = "")
     {
         $db = DbSingleton::getTokoDb();
-        $prefix = $this->getLangPrefix();
         $where = $where_category = "";
         if ($head != "") {
             $where = "AND `HEAD_ID`='$head'";
@@ -1023,7 +1025,7 @@ class AutoClass extends CatalogueClass
                 $cat_id = $db->result($r2, $i2 - 1, "CAT_ID");
                 $cat_tex_text = $db->result($r2, $i2 - 1, "TEX_RU");
                 $cat_tex_link = $db->result($r2, $i2 - 1, "TEX_LINK");
-                $title_cat = ($category != "") ? "<h1>$cat_tex_text</h1>" : "<a href=\"https://toko.ua$prefix/catalog/$head_tex_link/$cat_tex_link/\">$cat_tex_text</a>";
+                $title_cat = ($category != "") ? "<h1>$cat_tex_text</h1>" : "<a href=\"https://toko.ua{prefix}/catalog/$head_tex_link/$cat_tex_link/\">$cat_tex_text</a>";
                 $list .= "<div class=\"tree-item-title\">$title_cat</div>";
                 $list .= "<div class=\"tree-item-list\">";
                 $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `CAT_ID`='$cat_id' ORDER BY `TEX_RU` ASC;");
@@ -1038,7 +1040,7 @@ class AutoClass extends CatalogueClass
                         $tex_link .= "/$mod_link";
                     }
                     $list .= "<div class=\"tree-item-list__element\">
-                        <a href=\"https://toko.ua$prefix/catalog/$tex_link/\">
+                        <a href=\"https://toko.ua{prefix}/catalog/$tex_link/\">
                             $tex_text
                         </a>
                     </div>";
@@ -1048,7 +1050,7 @@ class AutoClass extends CatalogueClass
             $list .= "</div>";
         }
         $list .= "</div>";
-
+        $list = $this->replaceLang($list);
         return $list;
     }
 

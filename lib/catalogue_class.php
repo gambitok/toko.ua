@@ -9,6 +9,7 @@ class CatalogueClass
     public $products_link = "products";
     public $catalog_link = "catalog";
     public $search_link = "search";
+    public $faq_card_count = 2;
 
     /*
      * get catalog search form
@@ -2789,12 +2790,7 @@ class CatalogueClass
 
         $i = 0;
 
-        $count_mas = count($mas);
-        if ($count_mas >= 2) {
-            $faq_pos = 2;
-        } else {
-            $faq_pos = $count_mas;
-        }
+        $faq_pos = (count($mas) >= $this->faq_card_count) ? $this->faq_card_count : count($mas);
 
         if (!empty($mas)) {
             foreach ($mas as $mas_key => $mas_val) {

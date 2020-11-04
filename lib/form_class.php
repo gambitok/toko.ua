@@ -97,8 +97,9 @@ class FormClass extends CatalogueClass
      * */
     public function showArticle($art_id)
     {
-        $auto = new AutoClass();
         $art_id = $this->getUrlNumber($art_id);
+        $auto = new AutoClass();
+        $client = new ClientClass();
         $auto_typ_id = $this->getCookieAuto();
 
         $form = $this->getHtmlForm("article/card");
@@ -119,7 +120,11 @@ class FormClass extends CatalogueClass
         $brand_name = $articleData["brand_name"];
         $article_name = $articleData["text"];
 
-//        $brand_link = $this->getArtBrandLink($art_id, $brand_id);
+        if ($client->checkRetailClientCategory($this->getClient())) {
+            $article_nr_displ = $this->getSecretString($article_nr_displ);
+        }
+
+        // $brand_link = $this->getArtBrandLink($art_id, $brand_id);
         $brand_link = "";
         $flagData = $this->getCountryFlag($brand_id);
         if ($flagData !== false) {
@@ -138,7 +143,6 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_name}", $article_nr_displ, $form);
         $form = str_replace("{art_brand_id}", $brand_id, $form);
         $form = str_replace("{art_brand_name}", $brand_name, $form);
-        $form = str_replace("{art_text}", $article_name, $form);
         $form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $form);
         $form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-red" : (($articleData["delivery_days"] == 1) ? "delivery-blue" : (($articleData["delivery_days"] > 1) ? "delivery-dark" : "")), $form);
         $form = str_replace("{art_stock}", $articleData["stock"], $form);
@@ -940,14 +944,14 @@ class FormClass extends CatalogueClass
             $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
             $mfa_image = $db->result($r, $i - 1, "LOGO_SVG");
-            $arr[$i] = ["brand" => $mfa_brand, "link" => $mfa_link, "image" => $mfa_image];
+            $arr[$i] = compact("mfa_brand", "mfa_link", "mfa_image");
         }
         sort($arr);
         $list = "";
         foreach ($arr as $value) {
-            $mfa_brand = $value["brand"];
-            $mfa_link = $value["link"];
-            $mfa_image = $value["image"];
+            $mfa_brand = $value["mfa_brand"];
+            $mfa_link = $value["mfa_link"];
+            $mfa_image = $value["mfa_image"];
             $form_list = $this->getHtmlForm("menu/seo_details_card");
             $form_list = str_replace("{prefix}", $prefix, $form_list);
             $form_list = str_replace("{mfa_brand}", $mfa_brand, $form_list);
