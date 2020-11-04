@@ -112,12 +112,7 @@ class ExRateClass
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `abr` FROM `CASH` WHERE `id`='$cur' LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n > 0) {
-            $result = $db->result($r, 0, "abr");
-        } else {
-            $result = "{uah_cap}";
-        }
-        return $result;
+        return ($n > 0) ? $db->result($r, 0, "abr") : "{uah_cap}";
     }
 
     /*
@@ -129,12 +124,7 @@ class ExRateClass
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `abr2` FROM `CASH` WHERE `id`='$cur' LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n > 0) {
-            $result = $db->result($r, 0, "abr2");
-        } else {
-            $result = "{uah_cap}";
-        }
-        return $result;
+        return ($n > 0) ? $db->result($r, 0, "abr2") : "{uah_cap}";
     }
 
     /*

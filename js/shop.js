@@ -203,8 +203,9 @@ function showBasketStatus() {
     let status5 = $("#tool-basket");
     JsHttpRequest.query(folder,{'w':'updateBasketStatus'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
+            console.log('asdasd');
             if (result.content[0] !== "") {
-                status1.addClass("show"); status1.removeClass("none"); status1.html(result.content[0]);
+                status1.addClass("show"); status1.removeClass("none"); status1.removeClass("tool-status-hidden"); status1.html(result.content[0]);
                 status3.addClass("show"); status3.removeClass("none"); status3.html(result.content[0]);
                 status5.removeClass("tool-status-hidden"); status5.text(result.content[0]);
             } else {

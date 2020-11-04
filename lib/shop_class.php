@@ -243,11 +243,8 @@ class ShopClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $where_arts = "";
         $arts = $this->getBasketArts();
-        if ($arts != "") {
-            $where_arts = " AND `ART_ID` NOT IN ($arts)";
-        }
+        $where_arts = ($arts != "") ? " AND `ART_ID` NOT IN ($arts)" : "";
         $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS`=1 $where_arts;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -364,6 +361,7 @@ class ShopClass extends CatalogueClass
             VALUES ('$art_id', '$brand_id', '$amount', $price, '$stock', '$delivery_days', '$user_id', '$cookie', '$date_time', '$storage_id', '$delivery_short_info', '$suppl_id', '$status_action', '0');");
         }
         $amount_cap = ($amount > 0) ? $this->replaceLang("{site_basket}: $amount {amount_abbr}.") : "";
+
         return array($old_amount, $art_name, $amount_cap);
     }
 
@@ -465,8 +463,9 @@ class ShopClass extends CatalogueClass
      * */
     public function countGarage()
     {
-        $auto_typ_id = $this->getCookieAuto();
-        return ($auto_typ_id != "") ? "tool-status-hidden" : "";
+//        $auto_typ_id = $this->getCookieAuto();
+//        $res = ($auto_typ_id != "") ? "tool-status-hidden" : "";
+        return "";
     }
 
     /*
@@ -529,7 +528,9 @@ class ShopClass extends CatalogueClass
                 $id = $dbt->result($r, $i - 1, "id");
                 $price = $dbt->result($r, $i - 1, "price");
                 $price = $exrate->getKoursPrice($price, $cur);
-                if ($cur == 1) $price = $client->getClientPriceRounding($client_id, $price);
+                if ($cur == 1) {
+                    $price = $client->getClientPriceRounding($client_id, $price);
+                }
                 $discountData = $this->getBonusDiscount($order_sum, $bonus_summ, $price);
                 $discount = abs($discountData["discount"]);
                 $real_discount = abs($discountData["real_discount"]);
@@ -1139,7 +1140,9 @@ class ShopClass extends CatalogueClass
             case 2:
             case 5:
             {
-                if ($porch != "") $porch = ", {entrance_cap} $porch";
+                if ($porch != "") {
+                    $porch = ", {entrance_cap} $porch";
+                }
                 $info = "{address_cap}: {street_cap} $street, {house_cap} $house $porch";
                 break;
             }
@@ -1567,7 +1570,9 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $lang_id = $this->getLanguage();
         $postfix = $where_user_city = $list = "";
-        if ($lang_id == 1 || $lang_id == 3) $postfix = "_RU";
+        if ($lang_id == 1 || $lang_id == 3) {
+            $postfix = "_RU";
+        }
         if ($user_city > 0) {
             $where_user_city = "OR `CITY_ID`='$user_city'";
         }

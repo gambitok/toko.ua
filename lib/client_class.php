@@ -207,11 +207,9 @@ class ClientClass
      * */
     public function loginClient($phone, $password)
     {
-        $db = DbSingleton::getDbm();
-
-        // fixed SQL injections
         $phone_list = $this->formatPhone($this->getUrlString($phone));
         $password = $this->getUrlString($password);
+        $db = DbSingleton::getDbm();
 
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `pass`='$password' AND `phone` IN ($phone_list) AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
@@ -315,7 +313,8 @@ class ClientClass
         if ($user_id == 0) {
             $name = "{not_chosen}";
         }
-        return array("phone" => $phone, "password" => $password, "email" => $email, "name" => $name, "type" => $type, "country" => $country, "region" => $region, "city" => $city);
+//        return array("phone" => $phone, "password" => $password, "email" => $email, "name" => $name, "type" => $type, "country" => $country, "region" => $region, "city" => $city);
+        return compact("phone", "password", "email", "name", "type", "country", "region", "city");
     }
 
 //    public function getOrderInfo($client_id, $user_id) { $db = DbSingleton::getDbm();

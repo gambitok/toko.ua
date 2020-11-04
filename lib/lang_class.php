@@ -96,9 +96,6 @@ class LangClass
         session_start();
         $lang = $this->getLanguageData();
         $pre = "";
-        if ($lang == 1) {
-            $pre = "";
-        }
         if ($lang == 2) {
             $pre = "/uk";
         }
@@ -116,6 +113,7 @@ class LangClass
         $lang_id = $this->getUrlNumber($lang_id);
         $_SESSION["lang_id"] = $lang_id;
         setcookie("lang_id", $lang_id, time() + (86400 * 30), "/");
+        return true;
     }
 
     /*

@@ -37,12 +37,9 @@ trait Helper
      * */
     public function checkRedirectLink($str)
     {
-        $pos = strpos($str, ".htm");
-        if ($pos !== false) return 0;
-        $pos = strpos($str, ".html");
-        if ($pos !== false) return 0;
-        $pos = strpos($str, ".php");
-        if ($pos !== false) return 0;
+        if (strpos($str, ".htm") !== false) return 0;
+        if (strpos($str, ".html") !== false) return 0;
+        if (strpos($str, ".php") !== false) return 0;
         return 1;
     }
 

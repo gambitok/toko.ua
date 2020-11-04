@@ -763,7 +763,7 @@ class ProductsClass extends CatalogueClass
         $form = str_replace("{model_id_cap}", $model_id_cap, $form);
         $form = str_replace("{typ_text}", $automan->getGroupInfo($auto_typ_id), $form);
         $form = str_replace("{models_img}", $models_img, $form);
-        $form = str_replace("{garage_button}", ($auto_typ_id != "" ? ($automan->checkUserGarage($auto_typ_id) ? "btn-img-disabled" : "") : ""), $form);
+        $form = str_replace("{garage_button}", (($auto_typ_id != "") ? (!($automan->checkUserGarage($auto_typ_id)) ? "btn-img-disabled" : "") : ""), $form);
         $form = str_replace("{typ_id}", $auto_typ_id, $form);
         $form = $this->replaceLang($form);
         return $form;

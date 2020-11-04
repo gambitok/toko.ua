@@ -115,14 +115,14 @@ class FormClass extends CatalogueClass
 
         $articleData = $this->getArticleInfo($art_id);
         $article_nr_displ = $articleData["article_nr_displ"];
-        $format_article = $this->getFormatAticle($article_nr_displ);
         $brand_id = $articleData["brand_id"];
         $brand_name = $articleData["brand_name"];
         $article_name = $articleData["text"];
 
-        if ($client->checkRetailClientCategory($this->getClient())) {
+        if ($client->checkRetailClientCategory($this->getClient()) && $this->getCookieAuto() != "") {
             $article_nr_displ = $this->getSecretString($article_nr_displ);
         }
+        $format_article = $this->getFormatAticle($article_nr_displ);
 
         // $brand_link = $this->getArtBrandLink($art_id, $brand_id);
         $brand_link = "";
@@ -141,6 +141,7 @@ class FormClass extends CatalogueClass
 
         $form = str_replace("{art_id}", $art_id, $form);
         $form = str_replace("{art_name}", $article_nr_displ, $form);
+        $form = str_replace("{art_format_name}", $format_article, $form);
         $form = str_replace("{art_brand_id}", $brand_id, $form);
         $form = str_replace("{art_brand_name}", $brand_name, $form);
         $form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $form);
@@ -150,18 +151,13 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_cur}", $articleData["currency"], $form);
         $form = str_replace("{art_basket}", $articleData["basket"], $form);
         $form = str_replace("{art_images}", $this->showArticlePhotoGallery($art_id), $form);
-        $form = str_replace("{analogs_capa}", "$article_nr_displ $brand_name", $form);
-        $form = str_replace("{analogs_link}", "https://toko.ua" . $this->getLangPrefix() . "/search/$format_article/$brand_id/$brand_name/", $form);
 
         $analogs = $this->shortSearchList($art_id);
         $form = str_replace("{analogs_list}", $analogs, $form);
         $form = str_replace("{analogs_display}", ($analogs == "") ? "dnone" : "", $form);
-        $form = str_replace("{analogs_header}", "$brand_name $format_article ('$article_nr_displ, $article_nr_displ, $brand_name $article_nr_displ)", $form);
-
         $form = str_replace("{article_header}", "<h1>$article_name $brand_name $article_nr_displ</h1>", $form);
         $form = str_replace("{applicable_display}", "dnone", $form);
         $form = str_replace("{applicable_cap}", "", $form);
-        $form = str_replace("{applicable_display_text}", "{is_not_applicable}", $form);
         $form = str_replace("{flag_visible}", "dnone", $form);
 
         $form = $this->replaceLang($form);
@@ -342,11 +338,7 @@ class FormClass extends CatalogueClass
         if ($city_id == "") {
             $city_id = 0;
         }
-        if ($city_like != "") {
-            $where = "WHERE `CITY_NAME` LIKE '%$city_like%'";
-        } else {
-            $where = "WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
-        }
+        $where = ($city_like != "") ? "WHERE `CITY_NAME` LIKE '%$city_like%'" : "WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
         $r = $db->query("SELECT * FROM `T2_CITY` t2c
             LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID=t2c.REGION_ID)
             LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID=t2r.STATE_ID)
@@ -357,16 +349,8 @@ class FormClass extends CatalogueClass
             $city = $db->result($r, $i - 1, "CITY_NAME");
             $region = $db->result($r, $i - 1, "REGION_NAME");
             $state = $db->result($r, $i - 1, "STATE_NAME");
-            if ($region == "") {
-                $location = "$city";
-            } else {
-                $location = "$city - $region - $state";
-            }
-            if ($id == $city_id) {
-                $checked = "selected=\"selected\"";
-            } else {
-                $checked = "";
-            }
+            $location = ($region == "") ? "$city" : "$city - $region - $state";
+            $checked = ($id == $city_id) ? "selected=\"selected\"" : "";
             $list .= "<option value=\"$id\" $checked>$location</option>";
         }
         return $list;
@@ -465,11 +449,7 @@ class FormClass extends CatalogueClass
             $cookie = $this->getSessionID();
             $client_id = $this->getClient();
             $user_id = $this->getUser();
-            if ($user_id == 0) {
-                $where = "`cookie_id`='$cookie'";
-            } else {
-                $where = "`client_id`='$client_id' AND `client_user_id`='$user_id'";
-            }
+            $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id`='$client_id' AND `client_user_id`='$user_id'";
         } else {
             $where = "`id`='$history_id'";
         }
@@ -501,7 +481,7 @@ class FormClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
         }
-        ($photo_name == "") ? $photo_name = $this->noPhoto : $photo_name = "$this->uploads_link/$photo_name";
+        $photo_name = ($photo_name == "") ? $this->noPhoto : "$this->uploads_link/$photo_name";
         return $photo_name;
     }
 

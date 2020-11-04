@@ -4,7 +4,7 @@ function setCookies() {
     session_start();
     $catalogue = new CatalogueClass();
     $ses = session_id();
-    if (!empty($catalogue->getSessionID())) {
+    if (empty($catalogue->getSessionID())) {
         setcookie("session_id", $ses, time() + (86400 * 30), "/"); // 86400 = 1 day
     }
     return true;
