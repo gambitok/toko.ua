@@ -1,38 +1,34 @@
 $(document).ready(function() {
 
-    if ($("#cars_form-selected").length !== 0 && $("#car_form-select").length !==0 ) {
-
-        $("#catalogue-auto").addClass("sticky");
-
-        $("body").scroll(function() {
-            let checked_index = $(".cars-nav__item-checked")[0];
-            let header = $("#catalogue-auto");
-            let top = header.offset().top;
-            let sticky = top - 64;
-            if (window.pageYOffset >= top) {
-                $("#myHeader").addClass("sticky-header-active");
-                $("#myBackdrop").addClass("sticky-backdrop-active");
-            } else {
-                $("#myHeader").removeClass("sticky-header-active");
-                $("#myBackdrop").removeClass("sticky-backdrop-active");
-            }
-
-            if ($("#toggle_active_nav").val() == 0) {
-                if (window.pageYOffset >= sticky) {
-                    hideCarsNavigation(checked_index);
-                } else {
-                    showCarsNavigation(checked_index);
-                }
-            } else {
-                if (window.pageYOffset >= sticky) {
-                    //
-                } else {
-                    $("#toggle_active_nav").val(0);
-                }
-            }
-
-        });
-    }
+    // if ($("#cars_form-selected").length !== 0 && $("#car_form-select").length !== 0) {
+    //     $("#catalogue-auto").addClass("sticky");
+    //     $("body").scroll(function() {
+    //         let checked_index = $(".cars-nav__item-checked")[0];
+    //         let header = $("#catalogue-auto");
+    //         let top = header.offset().top;
+    //         let sticky = top - 64;
+    //         if (window.pageYOffset >= top) {
+    //             $("#myHeader").addClass("sticky-header-active");
+    //             $("#myBackdrop").addClass("sticky-backdrop-active");
+    //         } else {
+    //             $("#myHeader").removeClass("sticky-header-active");
+    //             $("#myBackdrop").removeClass("sticky-backdrop-active");
+    //         }
+    //         if ($("#toggle_active_nav").val() == 0) {
+    //             if (window.pageYOffset >= sticky) {
+    //                 hideCarsNavigation(checked_index);
+    //             } else {
+    //                 showCarsNavigation(checked_index);
+    //             }
+    //         } else {
+    //             if (window.pageYOffset >= sticky) {
+    //                 //
+    //             } else {
+    //                 $("#toggle_active_nav").val(0);
+    //             }
+    //         }
+    //     });
+    // }
 
     // hide on mobile
     if (detectmob()) {
@@ -43,7 +39,6 @@ $(document).ready(function() {
 });
 
 function showPop(e) {
-
     let index = $(".cars-nav__item-checked")[0];
 
     if (index.length === 0) {
@@ -109,12 +104,10 @@ function toggleCarsTab(index) {
 }
 
 function hideCarsNavigation(index) {
-    // hidePop();
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
         // Uncheck Non-Active Nav
         // Close Non-Active Tab
-        // showPop(index);
         $("#myBackdrop").addClass("sticky-backdrop-hidden");
         $(index).removeClass("cars-nav__item-active");
         $("#" + $(index).attr("data-tab")).removeClass("cars-tab__block-active");
@@ -133,7 +126,6 @@ function showCarsNavigation(index, type, attr) {
         type = "";
         attr = 0;
     }
-    // hidePop();
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
         $("#myBackdrop").removeClass("sticky-backdrop-hidden");
@@ -173,14 +165,11 @@ function toggleCarsNavigation(index, type, attr) {
         attr = 0;
     }
 
-    // hidePop();
-
     // Tab Non-Disabled
     if (!$(index).hasClass("cars-nav__item-disabled")) {
         // Uncheck Non-Active Nav
         // Close Non-Active Tab
         if ($(index).hasClass("cars-nav__item-active")) {
-            // showPop(index);
             $("#myBackdrop").addClass("sticky-backdrop-hidden");
             $(index).removeClass("cars-nav__item-active");
             $("#" + $(index).attr("data-tab")).removeClass("cars-tab__block-active");

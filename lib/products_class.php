@@ -466,6 +466,39 @@ class ProductsClass extends CatalogueClass
         return $form;
     }
 
+    public function getYearsForm($start, $end, $mfa_id, $model)
+    {
+        $mas = [];
+        for($i = $end; $i > $start; $i--) {
+            $mas[] = $i;
+        }
+        $headers = [];
+        foreach($mas as $val) {
+            $item = floor($val / 10) * 10;
+            if (!in_array($item, $headers)) {
+                $headers[] = $item;
+            }
+        }
+        $res = [];
+        foreach($headers as $head) {
+            foreach($mas as $val) {
+                if (($val - $head) < 10 && ($val - $head) >= 0) {
+                    $res[$head][] = $val;
+                }
+            }
+        }
+        $form = "";
+        foreach ($res as $key => $value) {
+            $form .= "<div class='cars-tab__block-item-years'><div class=\"cars-tab__block-item cars-tab__block-item-min cars-tab__block-item-min-disabled\">$key - e</div>";
+            foreach ($value as $year) {
+                $year_cap = $mfa_id . "_" . $model . "_" . $year;
+                $form .= "<div class=\"cars-tab__block-item cars-tab__block-item-min\" data-url=\"years/$year_cap\" onclick=\"toggleCarsTab(this)\">$year</div>";
+            }
+            $form .= "</div>";
+        }
+        return $form;
+    }
+
     public function getCarsSearchContent($type = "", $value = "", $str_id = 0)
     {
         $type =  $this->getNameString($type);
@@ -511,7 +544,7 @@ class ProductsClass extends CatalogueClass
         if ($type == "model") {
             list($mfa_id, $model) = explode("_", $value);
             $min_date_start = 1947;
-            $max_date_end = 2019;
+            $max_date_end = 2020;
             $n = 1;
             $r = $db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
                 CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
@@ -527,11 +560,7 @@ class ProductsClass extends CatalogueClass
             if ($date_start == "" || $date_start == 0) {
                 $date_start = $min_date_start;
             }
-            for ($i = $date_end; $i >= $date_start; $i--) {
-                $year = $i;
-                $year_cap = $mfa_id . "_" . $model . "_" . $year;
-                $list .= "<div data-url=\"years/$year_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$year</div>";
-            }
+            $list .= $this->getYearsForm($date_start, $date_end, $mfa_id, $model);
             $title = $model;
             $nav = "model";
             $tab = "cars-tab3";
@@ -550,7 +579,6 @@ class ProductsClass extends CatalogueClass
                 $mod_id = $db->result($r, $i - 1, "MOD_ID");
                 $tex_text = $db->result($r, $i - 1, "TEX_TEXT");
                 $image = $db->result($r, $i - 1, "Car_pict");
-                $img_path = "https://toko.ua/uploads/images/models/$image";
                 list($body_name, $body_path) = $this->getBodyCarImage($mod_id);
                 $d_start = $db->result($r, $i - 1, "MOD_PCON_START");
                 $d_start = substr($d_start, 0, 4);
@@ -572,7 +600,7 @@ class ProductsClass extends CatalogueClass
                                 {year_issue}: $d_start - $d_end
                             </div>
                             <div class='bodyc__image'>
-                                <img src='$img_path' alt='$tex_text' title='$tex_text'>
+                                <img src='https://toko.ua/uploads/images/models/$image' alt='$tex_text' title='$tex_text'>
                             </div>
                         </div>
                     </div>
@@ -597,7 +625,7 @@ class ProductsClass extends CatalogueClass
                 $fuel_text = $this->getFuelName($fuel_id);
                 $fuel_cap = $mod_id . "_" . $volume_cm . "_" . $fuel_id;
                 if ($count_types == 1) {
-                    $onclick = "setCookie('auto_typ_id','$typ_id'); addToGarage('$typ_id'); location.href='https://toko.ua/catalog/$str_link';";
+                    $onclick = "finishGarage('$typ_id', '$str_link')";
                 } else {
                     $onclick = "toggleCarsTab(this)";
                 }
@@ -633,7 +661,7 @@ class ProductsClass extends CatalogueClass
                     $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
                 }
                 $eng_cod = $db->result($r, $i - 1, "ENG_Cod");
-                $onclick = "setCookie('auto_typ_id','$typ_id'); addToGarage('$typ_id'); location.href='https://toko.ua/catalog/$str_link';";
+                $onclick = "finishGarage('$typ_id', '$str_link')";
                 $list .= "<div class=\"cars-tab__block-item cars-tab__block-item-modif\"><a href=\"#\" onclick=\"$onclick\">
                 <b>$typ_text</b> 
                     <table>
@@ -695,10 +723,8 @@ class ProductsClass extends CatalogueClass
     {
         $sel_tab = $this->getUrlNumber($sel_tab);
         $cur_tab = $this->getUrlNumber($cur_tab);
-
         $disabled = "cars-nav__item-disabled";
         $hidden = "cars-nav__item-hidden";
-
         if ($sel_tab == ($cur_tab + 1)) {
             $disabled = "";
             $hidden = "";
@@ -742,7 +768,6 @@ class ProductsClass extends CatalogueClass
                 break;
             }
         }
-
         $text = $this->replaceLang($text);
         return array($classes, $text);
     }

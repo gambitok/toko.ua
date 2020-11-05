@@ -473,6 +473,15 @@ function copyToClipboard(element, art_name) {
 
 /*==== Garage ====*/
 
+/*
+* finish add car to garage
+* */
+function finishGarage(typ_id, str_link) {
+    setCookie('auto_typ_id', typ_id);
+    addToGarage(typ_id);
+    location.href = "https://toko.ua/catalog/" + str_link;
+}
+
 // ADD NEW CAR TO GARAGE
 function addToGarage(typ_id = 0) {
     if (typ_id === 0) {

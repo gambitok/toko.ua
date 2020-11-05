@@ -1109,193 +1109,7 @@ class CatalogueClass
         return array($list, $list_brand, $filters, $count, $brand_ids);
     }
 
-    public function shortSearchList($art_id_search)
-    {
-        $db = DbSingleton::getTokoDb();
-        $kours = new ExRateClass();
-        $client = new ClientClass();
-        $client_id = $this->getClient();
-        $tpoint_id = $this->getTpointID();
-        $cur = $this->getCurrentExrate();
-        $view = $client->getProductView();
-        session_start();
-        $temp_key = session_id();
-        $mas = [];
-        $list = $where_art_id_str = "";
-
-        $article_nr_search = $this->getArticleDispl($art_id_search);
-        $brand_nr_search = $this->getArticleBrand($art_id_search);
-
-        $r = $db->query("SELECT t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2c.BRAND_ID, t2c.DISPLAY_NR, t2c.ART_ID, t2c.KIND, t2c.RELATION 
-        FROM `T2_CROSS` t2c
-            LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
-            LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
-        WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
-        ORDER BY t2n.NAME ASC;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id = $db->result($r, $i - 1, "ART_ID");
-            if ($art_id_search != $art_id) {
-                $where_art_id_str .= "'$art_id',";
-            }
-        }
-        $where_art_id_str = rtrim($where_art_id_str, ",");
-
-        if ($where_art_id_str != "") {
-            $this->createTemporarySearchTable($temp_key);
-            list($error, ,) = $this->getSearchMessages(1);
-
-            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", "");
-            $n = $db->num_rows($r);
-
-            $list = $this->drawHeaderSearchList(1, $view);
-
-            if ($n > 0) {
-                for ($i = 1; $i <= $n; $i++) {
-                    $art_id = $db->result($r, $i - 1, "ART_ID");
-                    $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-                    $brand = $db->result($r, $i - 1, "BRAND_NAME");
-                    $name = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
-                    $text = $db->result($r, $i - 1, "NAME");
-                    $return_days = $db->result($r, $i - 1, "return_delay");
-                    $suppl_id = $db->result($r, $i - 1, "suppl_id");
-                    $stock = intval($db->result($r, $i - 1, "AMOUNT"));
-                    $storage_id = $db->result($r, $i - 1, "storage_id");
-
-                    // price
-                    $price = $this->getArticlePrice($art_id);
-                    if ($suppl_id != 0) {
-                        $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-                    }
-                    $price = $kours->getKoursPrice($price, $cur);
-                    if ($cur == 1) {
-                        $price = $client->getClientPriceRounding($client_id, $price);
-                    }
-
-                    // delivery
-                    $deliveryData = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
-                    $delivery_info = $deliveryData["info"];
-                    $delivery_days = $deliveryData["days"];
-                    $delivery_short_info = $deliveryData["short"];
-
-                    if ($suppl_id != 0) {
-                        $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
-                        $delivery_info = $deliveryData["info"];
-                        $delivery_days = $deliveryData["days"];
-                        $delivery_short_info = $deliveryData["short"];
-                    }
-
-                    // ORDER BY search art and suppl_id
-                    if ($art_id == $art_id_search) {
-                        $status = 2;
-                    } else {
-                        $status = ($suppl_id == 0) ? 1 : 0;
-                    }
-
-                    // show articles with suppl_id=0 or with price!=0 and stock!=0
-                    if ($price != 0 || ($art_id == $art_id_search)) {
-                        if ($stock > 0 || ($art_id == $art_id_search)) {
-                            // visible suppl storage
-                            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
-                                $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `name`, `brand_id`, `brand`, `text`, `del`, `stock`, `price`, `dd`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
-                                VALUES ('$art_id', '$name', '$brand_id', '$brand', '$text', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
-                            }
-                        }
-                    }
-                }
-
-                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `name` ASC;");
-                $n = $db->num_rows($r);
-
-                if ($n == 1) {
-                    $stock = $db->result($r, 0, "stock");
-                    $price = $db->result($r, 0, "price");
-                    if ($stock == 0 && $price == 0) {
-                        $list = $this->getHtmlForm("error/nothing_found");
-                        $list = str_replace("{error_nothing_found}", $this->err1, $list);
-                        return array($list, "", "", 0);
-                    }
-                }
-
-                for ($i = 1; $i <= $n; $i++) {
-                    $art_id = $db->result($r, $i - 1, "art_id");
-                    $name = $db->result($r, $i - 1, "name");
-                    $brand_id = $db->result($r, $i - 1, "brand_id");
-                    $brand = $db->result($r, $i - 1, "brand");
-                    $text = $db->result($r, $i - 1, "text");
-                    $delivery_info = $db->result($r, $i - 1, "del");
-                    $stock = $db->result($r, $i - 1, "stock");
-                    $price = $db->result($r, $i - 1, "price");
-                    $delivery_days = $db->result($r, $i - 1, "dd");
-                    $delivery_short_info = $db->result($r, $i - 1, "delivery_short_info");
-                    $suppl_id = $db->result($r, $i - 1, "suppl_id");
-                    $return_days = $db->result($r, $i - 1, "return_days");
-                    $storage_id = $db->result($r, $i - 1, "storage_id");
-                    $status = $db->result($r, $i - 1, "status");
-                    $mas[$art_id][$i] = [
-                        "name" => $name,
-                        "brand_id" => $brand_id,
-                        "brand" => $brand,
-                        "text" => $text,
-                        "del" => $delivery_info,
-                        "stock" => $stock,
-                        "price" => $price,
-                        "dd" => $delivery_days,
-                        "delivery_short_info" => $delivery_short_info,
-                        "suppl_id" => $suppl_id,
-                        "return_days" => $return_days,
-                        "storage_id" => $storage_id,
-                        "status" => $status
-                    ];
-                }
-
-                // delete temp table
-                $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$temp_key`;");
-
-                // delete empty stocks and prices
-                $mas = $this->deleteEmptyPosition($mas);
-                $mas = $this->deleteSupplPosition($mas);
-                $mas = $this->deleteRepeatPosition($mas);
-
-                if (empty($mas)) {
-                    $list = $this->getHtmlForm("error/nothing_found");
-                    $list = str_replace("{error_nothing_found}", $this->err1, $list);
-                    return array($list, "", "", 0);
-                }
-
-                // sort by delivery and price
-                foreach ($mas as $mas_key => $mas_val) {
-                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "dd", "price");
-                }
-
-                // sort like: first = min delivery, second = min price, else = default
-                $mas = $this->sortByMinStock($mas);
-
-                // show other storages
-                $other_storages = $this->showOtherStorages($mas, $cur, $view);
-
-                $cc = 0;
-                if (!empty($mas)) {
-                    foreach ($mas as $mas_key => $mas_val) {
-                        $cc++;
-                        if ($cc > 3) {
-                            unset($mas[$mas_key]);
-                        }
-                    }
-                }
-
-                // show search list
-                $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view);
-            }
-
-            if (count($mas) < 1) {
-                $list = "";
-            }
-        }
-
-        return $list;
-    }
-
+//    public function searchList($where_art_id_str, $type_filter = 1, $view = 0, $article_nr_search = "", $brand_nr_search = "")
     public function searchListFilter($where_art_id_str, $article_nr_search, $brand_filter, $text_filter, $cur, $price_min, $price_max, $del_min, $del_max, $brand_nr_search, $order_value, $type_filter = 1)
     {
         $db = DbSingleton::getTokoDb();
@@ -1533,6 +1347,193 @@ class CatalogueClass
         $art_id_array = implode(",", $art_id_array);
 
         return array($list, $filters, $list_brand, $current_value, $art_id_array, $count);
+    }
+
+    public function shortSearchList($art_id_search)
+    {
+        $db = DbSingleton::getTokoDb();
+        $kours = new ExRateClass();
+        $client = new ClientClass();
+        $client_id = $this->getClient();
+        $tpoint_id = $this->getTpointID();
+        $cur = $this->getCurrentExrate();
+        $view = $client->getProductView();
+        session_start();
+        $temp_key = session_id();
+        $mas = [];
+        $list = $where_art_id_str = "";
+
+        $article_nr_search = $this->getArticleDispl($art_id_search);
+        $brand_nr_search = $this->getArticleBrand($art_id_search);
+
+        $r = $db->query("SELECT t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2c.BRAND_ID, t2c.DISPLAY_NR, t2c.ART_ID, t2c.KIND, t2c.RELATION 
+        FROM `T2_CROSS` t2c
+            LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
+            LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
+        WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
+        ORDER BY t2n.NAME ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
+            if ($art_id_search != $art_id) {
+                $where_art_id_str .= "'$art_id',";
+            }
+        }
+        $where_art_id_str = rtrim($where_art_id_str, ",");
+
+        if ($where_art_id_str != "") {
+            $this->createTemporarySearchTable($temp_key);
+            list($error, ,) = $this->getSearchMessages(1);
+
+            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", "");
+            $n = $db->num_rows($r);
+
+            $list = $this->drawHeaderSearchList(1, $view);
+
+            if ($n > 0) {
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id = $db->result($r, $i - 1, "ART_ID");
+                    $brand_id = $db->result($r, $i - 1, "BRAND_ID");
+                    $brand = $db->result($r, $i - 1, "BRAND_NAME");
+                    $name = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+                    $text = $db->result($r, $i - 1, "NAME");
+                    $return_days = $db->result($r, $i - 1, "return_delay");
+                    $suppl_id = $db->result($r, $i - 1, "suppl_id");
+                    $stock = intval($db->result($r, $i - 1, "AMOUNT"));
+                    $storage_id = $db->result($r, $i - 1, "storage_id");
+
+                    // price
+                    $price = $this->getArticlePrice($art_id);
+                    if ($suppl_id != 0) {
+                        $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+                    }
+                    $price = $kours->getKoursPrice($price, $cur);
+                    if ($cur == 1) {
+                        $price = $client->getClientPriceRounding($client_id, $price);
+                    }
+
+                    // delivery
+                    $deliveryData = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
+                    $delivery_info = $deliveryData["info"];
+                    $delivery_days = $deliveryData["days"];
+                    $delivery_short_info = $deliveryData["short"];
+
+                    if ($suppl_id != 0) {
+                        $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
+                        $delivery_info = $deliveryData["info"];
+                        $delivery_days = $deliveryData["days"];
+                        $delivery_short_info = $deliveryData["short"];
+                    }
+
+                    // ORDER BY search art and suppl_id
+                    if ($art_id == $art_id_search) {
+                        $status = 2;
+                    } else {
+                        $status = ($suppl_id == 0) ? 1 : 0;
+                    }
+
+                    // show articles with suppl_id=0 or with price!=0 and stock!=0
+                    if ($price != 0 || ($art_id == $art_id_search)) {
+                        if ($stock > 0 || ($art_id == $art_id_search)) {
+                            // visible suppl storage
+                            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+                                $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `name`, `brand_id`, `brand`, `text`, `del`, `stock`, `price`, `dd`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
+                                VALUES ('$art_id', '$name', '$brand_id', '$brand', '$text', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
+                            }
+                        }
+                    }
+                }
+
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `name` ASC;");
+                $n = $db->num_rows($r);
+
+                if ($n == 1) {
+                    $stock = $db->result($r, 0, "stock");
+                    $price = $db->result($r, 0, "price");
+                    if ($stock == 0 && $price == 0) {
+                        $list = $this->getHtmlForm("error/nothing_found");
+                        $list = str_replace("{error_nothing_found}", $this->err1, $list);
+                        return array($list, "", "", 0);
+                    }
+                }
+
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id = $db->result($r, $i - 1, "art_id");
+                    $name = $db->result($r, $i - 1, "name");
+                    $brand_id = $db->result($r, $i - 1, "brand_id");
+                    $brand = $db->result($r, $i - 1, "brand");
+                    $text = $db->result($r, $i - 1, "text");
+                    $delivery_info = $db->result($r, $i - 1, "del");
+                    $stock = $db->result($r, $i - 1, "stock");
+                    $price = $db->result($r, $i - 1, "price");
+                    $delivery_days = $db->result($r, $i - 1, "dd");
+                    $delivery_short_info = $db->result($r, $i - 1, "delivery_short_info");
+                    $suppl_id = $db->result($r, $i - 1, "suppl_id");
+                    $return_days = $db->result($r, $i - 1, "return_days");
+                    $storage_id = $db->result($r, $i - 1, "storage_id");
+                    $status = $db->result($r, $i - 1, "status");
+                    $mas[$art_id][$i] = [
+                        "name" => $name,
+                        "brand_id" => $brand_id,
+                        "brand" => $brand,
+                        "text" => $text,
+                        "del" => $delivery_info,
+                        "stock" => $stock,
+                        "price" => $price,
+                        "dd" => $delivery_days,
+                        "delivery_short_info" => $delivery_short_info,
+                        "suppl_id" => $suppl_id,
+                        "return_days" => $return_days,
+                        "storage_id" => $storage_id,
+                        "status" => $status
+                    ];
+                }
+
+                // delete temp table
+                $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$temp_key`;");
+
+                // delete empty stocks and prices
+                $mas = $this->deleteEmptyPosition($mas);
+                $mas = $this->deleteSupplPosition($mas);
+                $mas = $this->deleteRepeatPosition($mas);
+
+                if (empty($mas)) {
+                    $list = $this->getHtmlForm("error/nothing_found");
+                    $list = str_replace("{error_nothing_found}", $this->err1, $list);
+                    return array($list, "", "", 0);
+                }
+
+                // sort by delivery and price
+                foreach ($mas as $mas_key => $mas_val) {
+                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "dd", "price");
+                }
+
+                // sort like: first = min delivery, second = min price, else = default
+                $mas = $this->sortByMinStock($mas);
+
+                // show other storages
+                $other_storages = $this->showOtherStorages($mas, $cur, $view);
+
+                $cc = 0;
+                if (!empty($mas)) {
+                    foreach ($mas as $mas_key => $mas_val) {
+                        $cc++;
+                        if ($cc > 3) {
+                            unset($mas[$mas_key]);
+                        }
+                    }
+                }
+
+                // show search list
+                $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view);
+            }
+
+            if (count($mas) < 1) {
+                $list = "";
+            }
+        }
+
+        return $list;
     }
 
     public function getTpointDeliveryInfos($tpoint_id, $where_art_id_str)

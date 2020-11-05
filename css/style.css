@@ -31,7 +31,7 @@ a:hover, a:not([href]):not([tabindex]):hover { color: #000; }
 
 .sticky-backdrop-hidden { left: -100%; opacity: 0; }
 
-.sticky-header { background: #fff; border-bottom: 3px solid #333; display: none; height: 67px; width: 100%; position: fixed; top: 0; z-index: 100; }
+.sticky-header { background: #fff; border-bottom: 3px solid #2d8bfa; display: none; height: 67px; width: 100%; position: fixed; top: 0; z-index: 100; }
 
 .sticky-header-active { display: block; }
 
@@ -2587,11 +2587,11 @@ table thead td { border: 1px solid #000; }
 
 .cars-nav__item:not(:first-child):before { background: #ececec; bottom: 19px; content: ''; left: 0; position: absolute; top: 19px; width: 1px; }
 
-.cars-nav__item-checked { background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat lightcoral; color: #fff; }
+.cars-nav__item-checked { background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #2d8bfa; color: #fff; }
 
 .cars-nav__item-checked:before { content: none !important; }
 
-.cars-nav__item-active { background: url("/images/icons/dropdown-black.svg") calc(100% - 20px) center no-repeat #238795; color: #fff; }
+.cars-nav__item-active { background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat #2d8bfa; color: #fff; }
 
 .cars-nav__item-active:before { content: none !important; }
 
@@ -2603,13 +2603,21 @@ table thead td { border: 1px solid #000; }
 
 .cars-nav__item-disabled:hover { filter: unset; }
 
-.cars-tab__block { border-top: 3px solid #333; display: none; flex-wrap: wrap; }
+.cars-tab__block { border-top: 3px solid #2d8bfa; display: none; flex-wrap: wrap; }
 
 .cars-tab__block-active { display: flex; }
 
 .cars-tab__block-item { background: #fff; border: 1px solid #ebebeb; color: #000; cursor: pointer; padding: 15px; transition: .3s; width: calc(12.5%); }
 
+.cars-tab__block-item-years { display: flex; width: 100%; }
+
 .cars-tab__block-item:hover { filter: brightness(90%); }
+
+.cars-tab__block-item-min { width: calc(9.09%); }
+
+.cars-tab__block-item-min-disabled { cursor: default; color: #a7a7a7; }
+
+.cars-tab__block-item-min-disabled:hover { filter: unset; }
 
 .cars-tab__block-item-body { padding: 10px; width: calc(25%); }
 
@@ -2643,7 +2651,9 @@ table thead td { border: 1px solid #000; }
   .cars-nav__item-mob { display: block; }
   .cars-nav__item-hidden { display: none; }
   .cars-tab__block { border-bottom: 3px solid #228b94; border-top: none; max-height: 40vh; overflow-x: hidden; overflow-y: auto; }
-  .cars-tab__block-item { width: 100%; } }
+  .cars-tab__block-item { width: 100%; }
+  .cars-tab__block-item-years { display: block; }
+  .cars-tab__block-item-min { width: 100%; } }
 
 .cars-garage { background: #fff; box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.11); margin: 30px 0; }
 
