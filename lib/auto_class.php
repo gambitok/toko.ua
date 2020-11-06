@@ -1011,7 +1011,6 @@ class AutoClass extends CatalogueClass
         if ($category != "") {
             $where_category = "AND `CAT_ID`='$category'";
         }
-
         $list = "<div class=\"tree-block\">";
         $r3 = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 $where;");
         $n3 = $db->num_rows($r3);

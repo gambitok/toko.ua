@@ -86,7 +86,9 @@ class ProductsClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $amount = $db->result($r, $i - 1, "AMOUNT");
-            if ($amount > 0) $db->query("UPDATE `TEMP_ARTICLES_$key` SET `amount`=1 WHERE `art_id`='$art_id';");
+            if ($amount > 0) {
+                $db->query("UPDATE `TEMP_ARTICLES_$key` SET `amount`=1 WHERE `art_id`='$art_id';");
+            }
         }
 
         $r = $db->query("SELECT ta.art_id, t2si.suppl_id, t2si.client_storage_id FROM `TEMP_ARTICLES_$key` ta
@@ -97,8 +99,12 @@ class ProductsClass extends CatalogueClass
             $suppl_id = $db->result($r, $i - 1, "suppl_id");
             $suppl_storage_id = $db->result($r, $i - 1, "client_storage_id");
             $price = $this->getArticlePrice($art_id);
-            if ($suppl_id > 0) $price = $this->getArticleSupplPrice($art_id, $suppl_id, $suppl_storage_id);
-            if ($price > 0) $db->query("UPDATE `TEMP_ARTICLES_$key` SET `status`=1 WHERE `art_id`='$art_id';");
+            if ($suppl_id > 0) {
+                $price = $this->getArticleSupplPrice($art_id, $suppl_id, $suppl_storage_id);
+            }
+            if ($price > 0) {
+                $db->query("UPDATE `TEMP_ARTICLES_$key` SET `status`=1 WHERE `art_id`='$art_id';");
+            }
         }
 
         $r = $db->query("SELECT `art_id` FROM `TEMP_ARTICLES_$key` WHERE ((`amount`=1) OR (`status`=1));");
@@ -466,10 +472,24 @@ class ProductsClass extends CatalogueClass
         return $form;
     }
 
-    public function getYearsForm($start, $end, $mfa_id, $model)
+    public function getYearsForm($date_start, $date_end, $mfa_id, $model)
     {
+        $min_date_start = 1947;
+        $max_date_end = 2020;
+
+        if ($date_end != "" && $date_end != 0) {
+            $date_end = substr($date_end, 0, -2) . "";
+        } else {
+            $date_end = $max_date_end;
+        }
+        if ($date_start != "" && $date_start != 0) {
+            $date_start = substr($date_start, 0, -2) . "";
+        } else {
+            $date_start = $min_date_start;
+        }
+
         $mas = [];
-        for($i = $end; $i > $start; $i--) {
+        for($i = $date_end; $i >= $date_start; $i--) {
             $mas[] = $i;
         }
         $headers = [];
@@ -489,7 +509,7 @@ class ProductsClass extends CatalogueClass
         }
         $form = "";
         foreach ($res as $key => $value) {
-            $form .= "<div class='cars-tab__block-item-years'><div class=\"cars-tab__block-item cars-tab__block-item-min cars-tab__block-item-min-disabled\">$key - e</div>";
+            $form .= "<div class=\"cars-tab__block-item-years\"><div class=\"cars-tab__block-item cars-tab__block-item-min cars-tab__block-item-min-disabled\">$key - e</div>";
             foreach ($value as $year) {
                 $year_cap = $mfa_id . "_" . $model . "_" . $year;
                 $form .= "<div class=\"cars-tab__block-item cars-tab__block-item-min\" data-url=\"years/$year_cap\" onclick=\"toggleCarsTab(this)\">$year</div>";
@@ -543,23 +563,12 @@ class ProductsClass extends CatalogueClass
         // YEAR
         if ($type == "model") {
             list($mfa_id, $model) = explode("_", $value);
-            $min_date_start = 1947;
-            $max_date_end = 2020;
             $n = 1;
             $r = $db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
                 CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
             FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id';");
             $date_start = $db->result($r, 0, "min_year");
-            $date_start = substr($date_start, 0, -2) . "";
             $date_end = $db->result($r, 0, "max_year");
-            if ($date_end != 0) {
-                $date_end = substr($date_end, 0, -2) . "";
-            } else {
-                $date_end = $max_date_end;
-            }
-            if ($date_start == "" || $date_start == 0) {
-                $date_start = $min_date_start;
-            }
             $list .= $this->getYearsForm($date_start, $date_end, $mfa_id, $model);
             $title = $model;
             $nav = "model";
@@ -624,11 +633,7 @@ class ProductsClass extends CatalogueClass
                 $fuel_id = $db->result($r, $i - 1, "FUEL_ID");
                 $fuel_text = $this->getFuelName($fuel_id);
                 $fuel_cap = $mod_id . "_" . $volume_cm . "_" . $fuel_id;
-                if ($count_types == 1) {
-                    $onclick = "finishGarage('$typ_id', '$str_link')";
-                } else {
-                    $onclick = "toggleCarsTab(this)";
-                }
+                $onclick = ($count_types == 1) ? "finishGarage('$typ_id', '$str_link')" : "toggleCarsTab(this)";
                 $list .= "<div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"$onclick\">$volume_cm $fuel_text</div>";
             }
             $title = $this->getModIdText($mod_id);

@@ -5,7 +5,7 @@ function setCookies() {
     $catalogue = new CatalogueClass();
     $ses = session_id();
     if (empty($catalogue->getSessionID())) {
-        setcookie("session_id", $ses, time() + (86400 * 30), "/"); // 86400 = 1 day
+        setcookie("session_id", $ses, time() + (86400 * 30), "/");
     }
     return true;
 }
@@ -158,12 +158,14 @@ function getMoreTitle($path) {
     elseif ($path == "catalog") {
         $pager = "";
         if ($page !== NULL && $page > 0) {
-            $pager = "- {pager_cap}".$page;
+            $pager = "- {pager_cap}" . $page;
         }
         $result = explode($cat->getUrlString($linka[0]) . "/", $_SERVER["REQUEST_URI"], 2);
         $link = ltrim($result[1]);
         $arr = explode("/", $link);
-        $str_link = ""; $mfa_link = ""; $mod_link = "";
+        $str_link = "";
+        $mfa_link = "";
+        $mod_link = "";
         if (!empty($arr[0])) $str_link = $arr[0]; $filters = "";
         if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $filters = "";
         if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
@@ -392,7 +394,7 @@ function printBreadcrumbs($path) {
         case "products" : {
             $template_link = $cat->getUrlString($bread[1]);
             $template_id = $pattern->getTemplateID($template_link);
-            $result = explode($template_link."/", $_SERVER["REQUEST_URI"], 2);
+            $result = explode($template_link . "/", $_SERVER["REQUEST_URI"], 2);
             $link = ltrim($result[1]);
             if ($template_link == "") {
                 $pretitle = "$a_home > $h_section";
@@ -418,7 +420,7 @@ function printBreadcrumbs($path) {
             if ($cat->getUrlString($bread[1]) == "state") {
                 $state_link = $cat->getUrlString($bread[2]);
                 $state_name = $menu->getNewsStateTitle($state_link);
-                $info = "$a_section > ".$state_name;
+                $info = "$a_section > " . $state_name;
                 $b_arr[3] = ["name" => $state_name, "item" => "$actual_link"];
             } else {
                 $info = "$h_section";
@@ -431,7 +433,7 @@ function printBreadcrumbs($path) {
             if ($cat->getUrlString($bread[1]) == "state") {
                 $state_link = $cat->getUrlString($bread[2]);
                 $state_name = $menu->getReviewStateTitle($state_link);
-                $info = "$a_section > ".$state_name;
+                $info = "$a_section > " . $state_name;
                 $b_arr[3] = ["name" => $state_name, "item" => "$actual_link"];
             } else {
                 $info = "$h_section";
@@ -496,7 +498,7 @@ function printBreadcrumbs($path) {
 
 function getHtmlForm($name) {
     $form = "";
-    $form_htm = RDD."/tpl/$name.htm";
+    $form_htm = RDD . "/tpl/$name.htm";
     if (file_exists("$form_htm")) {
         $form = file_get_contents($form_htm);
     }

@@ -1049,10 +1049,10 @@ class CatalogueClass
                         "brand_id" => $brand_id,
                         "brand" => $brand,
                         "text" => $text,
-                        "del" => $delivery_info,
+                        "delivery_info" => $delivery_info,
                         "stock" => $stock,
                         "price" => $price,
-                        "dd" => $delivery_days,
+                        "delivery_days" => $delivery_days,
                         "delivery_short_info" => $delivery_short_info,
                         "suppl_id" => $suppl_id,
                         "return_days" => $return_days,
@@ -1081,7 +1081,7 @@ class CatalogueClass
 
                 // sort by delivery and price
                 foreach ($mas as $mas_key => $mas_val) {
-                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "dd", "price");
+                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "delivery_days", "price");
                 }
 
                 // sort like: first = min delivery, second = min price, else = default
@@ -1276,10 +1276,10 @@ class CatalogueClass
                             "brand_id" => $brand_id,
                             "brand" => $brand,
                             "text" => $text,
-                            "del" => $delivery_info,
+                            "delivery_info" => $delivery_info,
                             "stock" => $stock,
                             "price" => $price,
-                            "dd" => $delivery_days,
+                            "delivery_days" => $delivery_days,
                             "delivery_short_info" => $delivery_short_info,
                             "suppl_id" => $suppl_id,
                             "return_days" => $return_days,
@@ -1293,10 +1293,10 @@ class CatalogueClass
                                 "brand_id" => $brand_id,
                                 "brand" => $brand,
                                 "text" => $text,
-                                "del" => $delivery_info,
+                                "delivery_info" => $delivery_info,
                                 "stock" => $stock,
                                 "price" => $price,
-                                "dd" => $delivery_days,
+                                "delivery_days" => $delivery_days,
                                 "delivery_short_info" => $delivery_short_info,
                                 "suppl_id" => $suppl_id,
                                 "return_days" => $return_days,
@@ -1320,7 +1320,7 @@ class CatalogueClass
 
                 // sort by delivery and price
                 foreach ($mas as $mas_key => $mas_val) {
-                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "dd", "price");
+                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "delivery_days", "price");
                 }
 
                 // sort like: first = min delivery, second = min price, else = default
@@ -1477,10 +1477,10 @@ class CatalogueClass
                         "brand_id" => $brand_id,
                         "brand" => $brand,
                         "text" => $text,
-                        "del" => $delivery_info,
+                        "delivery_info" => $delivery_info,
                         "stock" => $stock,
                         "price" => $price,
-                        "dd" => $delivery_days,
+                        "delivery_days" => $delivery_days,
                         "delivery_short_info" => $delivery_short_info,
                         "suppl_id" => $suppl_id,
                         "return_days" => $return_days,
@@ -1505,7 +1505,7 @@ class CatalogueClass
 
                 // sort by delivery and price
                 foreach ($mas as $mas_key => $mas_val) {
-                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "dd", "price");
+                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "delivery_days", "price");
                 }
 
                 // sort like: first = min delivery, second = min price, else = default
@@ -2625,15 +2625,15 @@ class CatalogueClass
         $uniq = [];
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
-                $dd = $val["dd"];
-                $del = $val["del"];
+                $dd = $val["delivery_days"];
+                $del = $val["delivery_info"];
                 $price = $val["price"];
                 $stock = $val["stock"];
                 if (!empty($uniq)) {
                     foreach ($uniq as $uval) {
-                        if ($dd == $uval['dd'] && $del == $uval['del'] && $price == $uval['price']) {
-                            if ($stock > $uval['stock']) {
-                                $ukey = intval($uval['key']);
+                        if ($dd == $uval["delivery_days"] && $del == $uval["delivery_info"] && $price == $uval["price"]) {
+                            if ($stock > $uval["stock"]) {
+                                $ukey = intval($uval["key"]);
                             } else {
                                 $ukey = $key;
                             }
@@ -2642,7 +2642,7 @@ class CatalogueClass
                         }
                     }
                 }
-                $uniq[$key] = ['key' => $key, 'dd' => $dd, 'del' => $del, 'price' => $price, 'stock' => $stock];
+                $uniq[$key] = ["key" => $key, "delivery_days" => $dd, "delivery_info" => $del, "price" => $price, "stock" => $stock];
             }
             $uniq = [];
         }
@@ -2659,7 +2659,7 @@ class CatalogueClass
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
                 if ($min_key != 0) {
-                    if ($mas[$pred_key][0]["price"] > $mas[$pred_key][$min_key]["price"] && $mas[$pred_key][0]["dd"] > $mas[$pred_key][$min_key]["dd"]) {
+                    if ($mas[$pred_key][0]["price"] > $mas[$pred_key][$min_key]["price"] && $mas[$pred_key][0]["delivery_days"] > $mas[$pred_key][$min_key]["delivery_days"]) {
                         $null_key = 0;
                     } else {
                         $null_key = 1;
@@ -2708,11 +2708,11 @@ class CatalogueClass
                             }
                             if (!$view) {
                                 $ll[$i] = "<div class=\"row tables__row show_hidden\">
-                                    <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage('$art_id');\">{more_cap} <span class='span-grey'>$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
-                                    <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\"><span class='span-grey'>{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
+                                    <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage('$art_id');\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
+                                    <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\"><span class=\"span-grey\">{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
                                 </div>";
                             } else {
-                                $ll[$i] = "<a href='https://toko.ua{content_prefix}/$this->search_link/{content_search_number}/{content_brand_link}/'>{more_cap} <span class='span-grey'>$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class='fa fa-chevron-right'></i></a>";
+                                $ll[$i] = "<a href='https://toko.ua{content_prefix}/$this->search_link/{content_search_number}/{content_brand_link}/'>{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> <i class=\"fa fa-chevron-right\"></i></a>";
                             }
                             $hide[$i] = "none";
                             $class[$i] = "$art_id-hide";
@@ -2726,11 +2726,11 @@ class CatalogueClass
                         }
                         if (!$view) {
                             $ll[$i] = "<div class=\"row tables__row show_hidden\">
-                                <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage('$art_id');\">{more_cap} <span class='span-grey'>$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
-                                <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\"><span class='span-grey'>{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
+                                <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage('$art_id');\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
+                                <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\"><span class=\"span-grey\">{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
                             </div>";
                         } else {
-                            $ll[$i] = "<a href='https://toko.ua{content_prefix}/$this->search_link/{content_search_number}/{content_brand_link}/'>{more_cap} <span class='span-grey'>$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class='span-dark-red'>$min_price $currency_cap</span> <i class='fa fa-chevron-right'></i></a>";
+                            $ll[$i] = "<a href='https://toko.ua{content_prefix}/$this->search_link/{content_search_number}/{content_brand_link}/'>{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> <i class=\"fa fa-chevron-right\"></i></a>";
                         }
                         $hide[$i] = "none";
                         $class[$i] = "$art_id-hide";
@@ -2802,9 +2802,9 @@ class CatalogueClass
                     $brand = $val["brand"];
                     $text = $val["text"];
                     $stock = $val["stock"];
-                    $delivery_info = $val["del"];
+                    $delivery_info = $val["delivery_info"];
                     $price = $val["price"];
-                    $delivery_days = $val["dd"];
+                    $delivery_days = $val["delivery_days"];
                     $delivery_short_info = $val["delivery_short_info"];
                     $suppl_id = $val["suppl_id"];
                     $return_days = $val["return_days"];
@@ -2968,7 +2968,7 @@ class CatalogueClass
                     $delivery_info = $db->result($r, $i - 1, "del");
                     $stock = $db->result($r, $i - 1, "stock");
                     $price = $db->result($r, $i - 1, "price");
-                    $delivery_days = $db->result($r, $i - 1, "dd");
+                    $delivery_days = $db->result($r, $i - 1, "delivery_days");
                     $delivery_short_info = $db->result($r, $i - 1, "delivery_short_info");
                     $suppl_id = $db->result($r, $i - 1, "suppl_id");
                     $return_days = $db->result($r, $i - 1, "return_days");
@@ -2979,10 +2979,10 @@ class CatalogueClass
                         "brand_id" => $brand_id,
                         "brand" => $brand,
                         "text" => $text,
-                        "del" => $delivery_info,
+                        "delivery_info" => $delivery_info,
                         "stock" => $stock,
                         "price" => $price,
-                        "dd" => $delivery_days,
+                        "delivery_days" => $delivery_days,
                         "delivery_short_info" => $delivery_short_info,
                         "suppl_id" => $suppl_id,
                         "return_days" => $return_days,

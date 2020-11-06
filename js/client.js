@@ -196,7 +196,11 @@ function loginFormParams() {
     } else {
         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-                if (result.content===false) showAlertModal("{user_not_logged}!","{error_cap}",0); else location.href="/profile/";
+                if (result.content === false) {
+                    showAlertModal("{user_not_logged}!","{error_cap}",0);
+                } else {
+                    location.href="/profile/";
+                }
             }}, true);
     }
 }
@@ -204,7 +208,7 @@ function loginFormParams() {
 function logoutForm() {
     JsHttpRequest.query(folder,{'w':'logoutClient'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.href="/";
+            location.href = "/";
         }}, true);
 }
 
