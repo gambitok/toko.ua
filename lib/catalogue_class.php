@@ -146,7 +146,7 @@ class CatalogueClass
         }
 
         $brand_filter = json_decode($brand_filter);
-        if (count($brand_filter) > 1) {
+        if (count($brand_filter) > 0) {
             $brand_filter = implode(",", $brand_filter);
         } else {
             $brand_filter = "";

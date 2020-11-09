@@ -226,7 +226,7 @@ function catalogueFilter(order) {
     let text = $("#text_filter").val();
 
     $(".check-brand").each(function () {
-        if ($(this).hasClass("main-brand")===false) {
+        if ($(this).hasClass("main-brand") === false) {
             $(this).attr("disabled", true);
         }
     });
@@ -294,7 +294,7 @@ function catalogueFilter(order) {
             $("#cur_value").val(cur);
 
             $(".check-brand").each(function () {
-                if ($(this).hasClass("main-brand")===false) {
+                if ($(this).hasClass("main-brand") === false) {
                     $(this).removeAttr("disabled");
                 }
             });

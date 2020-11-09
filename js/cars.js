@@ -9,13 +9,16 @@ $(document).ready(function() {
             let sticky = top - 64;
 
             if (window.pageYOffset >= top) {
-                $("#catalogue-auto").addClass("sticky");
-                $("#myHeader").addClass("sticky-header-active");
                 $("#myBackdrop").addClass("sticky-backdrop-active");
+                if (!$("#catalogue-auto").hasClass("sticky")) {
+                    $( "#myHeader" ).animate({width:'toggle'},1000);
+                }
+                $("#catalogue-auto").addClass("sticky");
+
             } else {
                 $("#catalogue-auto").removeClass("sticky");
-                $("#myHeader").removeClass("sticky-header-active");
                 $("#myBackdrop").removeClass("sticky-backdrop-active");
+                $("#myHeader").hide();
             }
             if ($("#toggle_active_nav").val() == 0) {
                 if (window.pageYOffset >= sticky) {

@@ -1365,8 +1365,7 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{basket_order_delivery_price}", $delivery_total_text, $form);
         $form = str_replace("{basket_order_price}", $this->getOrderTotal($total), $form);
         $form = str_replace("{basket_button_status}", "", $form);
-
-        $form = str_replace("{basket_client_bonus}", $this->showClientBonusOrder($bonus_status, $bonus_total), $form);
+        $form = str_replace("{basket_client_bonus}", ($bonus_summ > 0) ? $this->showClientBonusOrder($bonus_status, $bonus_total) : "", $form);
         $form = $this->replaceLang($form);
         return $form;
     }
@@ -1389,14 +1388,12 @@ class ShopClass extends CatalogueClass
         $bonus_summ = $this->getBonusSumm($this->getClient());
         $checked = ($bonus_status) ? "checked='checked'" : "";
         $bonus_checked = ($bonus_status) ? "- $bonus_total {uah_cap}" : "";
-        $list = "
-            <div class='row'>
-                <div class='col-6'><input type='checkbox' id='bonus_status' $checked onclick='getBasketOrder();'><label for='bonus_status'>{bonus_cap} ($bonus_summ {uah_cap})</label></div>
-                <div class='col-6 text-right'><span class='span-red'>$bonus_checked</span></div>
-            </div>
-        ";
-        $list = $this->replaceLang($list);
-        return $list;
+        $form = $this->getHtmlForm("bonus/status");
+        $form = str_replace("{checked}", $checked, $form);
+        $form = str_replace("{bonus_summ}", $bonus_summ, $form);
+        $form = str_replace("{bonus_checked}", $bonus_checked, $form);
+        $form = $this->replaceLang($form);
+        return $form;
     }
 
     /*

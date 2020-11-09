@@ -30,12 +30,12 @@ $cars-item-active: #2d8bfa;
             background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat $white;
             color: $black;
             cursor: pointer;
+            overflow: hidden;
             padding: 20px 65px 20px 30px;
             position: relative;
-            overflow: hidden;
-            white-space: nowrap;
             transition: .3s;
             text-overflow: ellipsis;
+            white-space: nowrap;
             &:hover {
                 filter: brightness(90%);
             }
@@ -105,8 +105,8 @@ $cars-item-active: #2d8bfa;
                 &-min {
                     width: calc(9.09%);
                     &-disabled {
-                        cursor: default;
                         color: #a7a7a7;
+                        cursor: default;
                         &:hover {
                             filter: unset;
                         }
@@ -197,7 +197,7 @@ $cars-item-active: #2d8bfa;
         }
         &-tab {
             &__block {
-                border-bottom: 3px solid $cars-primary;
+                border-bottom: 3px solid $cars-item-active;
                 border-top: none;
                 max-height: 40vh;
                 overflow-x: hidden;
