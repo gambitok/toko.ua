@@ -530,6 +530,7 @@ class ProductsClass extends CatalogueClass
         $n = 0;
         $list = $title = $nav = $tab = "";
         $str_link = $automan->getStrNewLink($str_id);
+        $skip = 0;
 
         // MANUFACTURE
         if ($type == "") {
@@ -584,6 +585,10 @@ class ProductsClass extends CatalogueClass
                 OR (`MOD_PCON_START`<=" . $year . "12 AND `MOD_PCON_END`=0))";
             $r = $db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id' AND `ACTIVE`=1 $where;");
             $n = $db->num_rows($r);
+            if ($n == 1) {
+                $skip = $db->result($r, 0, "MOD_ID");
+            }
+
             for ($i = 1; $i <= $n; $i++) {
                 $mod_id = $db->result($r, $i - 1, "MOD_ID");
                 $tex_text = $db->result($r, $i - 1, "TEX_TEXT");
@@ -597,34 +602,35 @@ class ProductsClass extends CatalogueClass
                     $d_end = "{cur_time}";
                 }
                 $list .= "<div data-url=\"bodyc/$mod_id\" class=\"cars-tab__block-item cars-tab__block-item-body\" onclick=\"toggleCarsTab(this)\">
-                    <div class='bodyc'>
-                        <div class='bodyc-head'>
-                            <div class='bodyc__title'>$tex_text</div>
-                            <div class='bodyc__type'><img src='$body_path' alt='$body_name' title='$body_name'></div></div>
-                        </div>    
-                        <div class='bodyc-content'>
-                            <div class='bodyc__descr'>
-                                {model_number_type}: $body_name
-                                <br>
-                                {year_issue}: $d_start - $d_end
-                            </div>
-                            <div class='bodyc__image'>
-                                <img src='https://toko.ua/uploads/images/models/$image' alt='$tex_text' title='$tex_text'>
-                            </div>
+                <div class=\"bodyc\">
+                    <div class=\"bodyc-head\">
+                        <div class=\"bodyc__title\">$tex_text</div>
+                        <div class=\"bodyc__type\"><img src=\"$body_path\" alt=\"$body_name\" title=\"$body_name\"></div></div>
+                    </div>    
+                    <div class=\"bodyc-content\">
+                        <div class=\"bodyc__descr\">
+                            {model_number_type}: $body_name
+                            <br>
+                            {year_issue}: $d_start - $d_end
+                        </div>
+                        <div class=\"bodyc__image\">
+                            <img src=\"https://toko.ua/uploads/images/models/$image\" alt=\"$tex_text\" title=\"$tex_text\">
                         </div>
                     </div>
-                </div>";
+                </div>
+            </div>";
             }
             $title = $year;
             $nav = "years";
             $tab = "cars-tab4";
+
         }
 
         // ENGINE
         if ($type == "bodyc") {
             $mod_id = $value;
             $r = $db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` FROM `T_types` 
-            WHERE `TYP_MOD_ID`='$mod_id' GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;");
+            WHERE `TYP_MOD_ID`='$mod_id' AND `ACTIVE`=1 GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $typ_id = $db->result($r, $i - 1, "TYP_ID");
@@ -670,9 +676,9 @@ class ProductsClass extends CatalogueClass
                 $list .= "<div class=\"cars-tab__block-item cars-tab__block-item-modif\"><a href=\"#\" onclick=\"$onclick\">
                 <b>$typ_text</b> 
                     <table>
-                        <tr><td>{date_release}:</td><td class='text-right'>$d_start - $d_end</td></tr>
-                        <tr><td>{engine_model}:</td><td class='text-right'>$eng_cod</td></tr>
-                        <tr><td>{power_cap}:</td><td class='text-right'>$hp_from {horse_power_cap}, $kw_from {kilo_wat_cap}</td></tr>
+                        <tr><td>{date_release}:</td><td class=\"text-right\">$d_start - $d_end</td></tr>
+                        <tr><td>{engine_model}:</td><td class=\"text-right\">$eng_cod</td></tr>
+                        <tr><td>{power_cap}:</td><td class=\"text-right\">$hp_from {horse_power_cap}, $kw_from {kilo_wat_cap}</td></tr>
                     </table>
                 </a></div>";
             }
@@ -690,12 +696,13 @@ class ProductsClass extends CatalogueClass
         }
 
         if ($n == 0) {
-            $list = "<div style='margin: 30px auto;'>{nothing_found}</div>";
+            $list = "<div style=\"margin: 30px auto;\">{nothing_found}</div>";
         }
 
         $list = $this->replaceLang($list);
 
-        return array($list, $title, $nav, $tab);
+
+        return array($list, $title, $nav, $tab, $skip);
     }
 
     public function getBodyCarImage($mod_id)

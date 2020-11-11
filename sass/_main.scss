@@ -2487,9 +2487,10 @@ header {
 
 .garage-user {
     background: #fff;
-    border-bottom: 3px solid #0c5460;
+    //border-bottom: 3px solid #0c5460;
     box-shadow: 0 1px 4px #ccc;
     height: auto;
+    border: 2px solid #2d8afa;
     .btn-arrow {
         display: none;
         float: right;
@@ -2501,21 +2502,20 @@ header {
         padding-right: 0;
     }
     &__title {
-        background: #0c5460;
+        background: #2d8afa;
         color: #fff;
         padding: 15px;
-        margin-right: 30px;
         height: 100%;
-        &:after {
-            background: url(/images/icons/back-arrow.png) left no-repeat;
-            background-size: contain;
-            content: "";
-            position: absolute;
-            left: calc(100% - 30px);
-            bottom: 0;
-            width: 30px;
-            height: 100%;
-        }
+        //&:after {
+        //    background: url(/images/icons/back-arrow.png) left no-repeat;
+        //    background-size: contain;
+        //    content: "";
+        //    position: absolute;
+        //    left: calc(100% - 30px);
+        //    bottom: 0;
+        //    width: 30px;
+        //    height: 100%;
+        //}
         span {
             display: inline-block;
             font-size: 11px;
@@ -2539,7 +2539,18 @@ header {
         justify-content: flex-end;
         height: 100%;
         .btn-img {
+            color: #2d8afa;
+            border: 2px solid #fff;
+            border-radius: 0;
             margin-right: 10px;
+            &:hover {
+                background: #fff;
+                border: 2px solid;
+            }
+            &-disabled {
+                background: #f3f3f3;
+                opacity: .6;
+            }
         }
     }
     &__image {
@@ -2547,7 +2558,7 @@ header {
         img {
             float: right;
             max-height: 85px;
-            width: auto;
+            width: 100%;
         }
     }
 }

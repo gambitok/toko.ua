@@ -1017,7 +1017,7 @@ class AutoClass extends CatalogueClass
         for ($i3 = 1; $i3 <= $n3; $i3++) {
             $head_id = $db->result($r3, $i3 - 1, "HEAD_ID");
             $head_tex_link = $db->result($r3, $i3 - 1, "TEX_LINK");
-            $list .= "<div class='tree-item'>";
+            $list .= "<div class=\"tree-item\">";
             $r2 = $db->query("SELECT * FROM `T2_GROUP_TREE_CATEGORY` WHERE `HEAD_ID`='$head_id' $where_category;");
             $n2 = $db->num_rows($r2);
             for ($i2 = 1; $i2 <= $n2; $i2++) {

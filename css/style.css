@@ -960,7 +960,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .garage-history-block-list__item { color: #000; cursor: pointer; font-size: 14px; margin-bottom: 5px; }
 
-.garage-user { background: #fff; border-bottom: 3px solid #0c5460; box-shadow: 0 1px 4px #ccc; height: auto; }
+.garage-user { background: #fff; box-shadow: 0 1px 4px #ccc; height: auto; border: 2px solid #2d8afa; }
 
 .garage-user .btn-arrow { display: none; float: right; }
 
@@ -968,9 +968,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .garage-user-select { padding-right: 0; }
 
-.garage-user__title { background: #0c5460; color: #fff; padding: 15px; margin-right: 30px; height: 100%; }
-
-.garage-user__title:after { background: url(/images/icons/back-arrow.png) left no-repeat; background-size: contain; content: ""; position: absolute; left: calc(100% - 30px); bottom: 0; width: 30px; height: 100%; }
+.garage-user__title { background: #2d8afa; color: #fff; padding: 15px; height: 100%; }
 
 .garage-user__title span { display: inline-block; font-size: 11px; position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: calc(100% - 29px); }
 
@@ -978,11 +976,15 @@ header { width: 100%; color: #a9a9a9; }
 
 .garage-user__nav { display: flex; flex-wrap: nowrap; padding: 15px; align-items: center; justify-content: flex-end; height: 100%; }
 
-.garage-user__nav .btn-img { margin-right: 10px; }
+.garage-user__nav .btn-img { color: #2d8afa; border: 2px solid #fff; border-radius: 0; margin-right: 10px; }
+
+.garage-user__nav .btn-img:hover { background: #fff; border: 2px solid; }
+
+.garage-user__nav .btn-img-disabled { background: #f3f3f3; opacity: .6; }
 
 .garage-user__image { padding: 15px; }
 
-.garage-user__image img { float: right; max-height: 85px; width: auto; }
+.garage-user__image img { float: right; max-height: 85px; width: 100%; }
 
 .garage_typ_form { background: #0c5460; }
 
@@ -1067,7 +1069,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .home h3 { color: #333; font-size: 16px; margin-top: 15px; text-align: center; width: 100%; }
 
-.home-banner { height: auto; left: 50%; margin-left: -50vw; position: relative; width: calc(100vw - 5px); }
+.home-banner { height: auto; left: 50%; margin-left: -50vw; margin-top: 15px; position: relative; width: calc(100vw - 5px); }
 
 .home-banner .carousel-indicators { justify-content: flex-end; margin-right: 5%; }
 
@@ -2581,7 +2583,7 @@ table thead td { border: 1px solid #000; }
 
 .cars-nav { background: #fff; color: #fff; display: flex; flex-wrap: nowrap; justify-content: start; }
 
-.cars-nav__item { background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat #fff; color: #000; cursor: pointer; padding: 20px 65px 20px 30px; position: relative; overflow: hidden; white-space: nowrap; transition: .3s; text-overflow: ellipsis; }
+.cars-nav__item { background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat #fff; color: #000; cursor: pointer; overflow: hidden; padding: 20px 65px 20px 30px; position: relative; transition: .3s; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
 
 .cars-nav__item:hover { filter: brightness(90%); }
 
@@ -2615,7 +2617,7 @@ table thead td { border: 1px solid #000; }
 
 .cars-tab__block-item-min { width: calc(9.09%); }
 
-.cars-tab__block-item-min-disabled { cursor: default; color: #a7a7a7; }
+.cars-tab__block-item-min-disabled { color: #a7a7a7; cursor: default; }
 
 .cars-tab__block-item-min-disabled:hover { filter: unset; }
 

@@ -403,8 +403,8 @@ if ($_REQUEST["w"] == "showFilterOptionsForm") {
 /*==== HOME CARS ====*/
 
 if ($_REQUEST["w"] == "getCarsSearchContent") {
-    list($list, $title, $nav, $tab) = $prod->getCarsSearchContent($_REQUEST["type"], $_REQUEST["attr"], $_REQUEST["str_id"]);
-    $GLOBALS['_RESULT'] = array("list" => $list, "title" => $title, "nav" => $nav, "tab" => $tab);
+    list($list, $title, $nav, $tab, $skip) = $prod->getCarsSearchContent($_REQUEST["type"], $_REQUEST["attr"], $_REQUEST["str_id"]);
+    $GLOBALS['_RESULT'] = array("list" => $list, "title" => $title, "nav" => $nav, "tab" => $tab, "skip" => $skip);
 }
 
 if ($_REQUEST["w"] == "clearCarsBlock") {

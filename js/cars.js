@@ -188,6 +188,7 @@ function toggleNavMob() {
 }
 
 function toggleCarsNavigation(index, type, attr) {
+
     $("#toggle_active_nav").val(1);
 
     let data_pred = $("div[data-type='" + $(index).attr("data-pred") + "']");
@@ -245,6 +246,13 @@ function getCarsSearchContent(type, attr) {
             tab.html(result.list);
             let nav = $("div[data-type='" + result.nav + "']");
             nav.html(result.title);
+
+            if (result.skip > 0) {
+                // getCarsSearchContent('bodyc', result.skip);
+                let index = $("div[data-url='bodyc/" + result.skip + "']")
+                toggleCarsTab(index);
+            }
+            // console.log('type: ' + type + ', attr: ' + attr);
         }}, true);
 }
 

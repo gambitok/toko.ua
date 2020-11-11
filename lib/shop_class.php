@@ -899,7 +899,7 @@ class ShopClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "ID");
             $text = $db->result($r, $i - 1, "TEXT");
-            $list .= "<option value='$id'>$text</option>";
+            $list .= "<option value=\"$id\">$text</option>";
         }
         $list = $this->replaceLang($list);
         return $list;
@@ -1349,7 +1349,7 @@ class ShopClass extends CatalogueClass
 
         $basket_total_cap = $basket_total . " $cur_cap";
         if ($bonus_total > 0) {
-            $basket_total_cap = "<span class='span-red' style='text-decoration: line-through'>$basket_total_full $cur_cap</span><br>" . $basket_total_cap;
+            $basket_total_cap = "<span class=\"span-red\" style=\"text-decoration: line-through\">$basket_total_full $cur_cap</span><br>" . $basket_total_cap;
         }
 
         $total = $basket_total + $delivery_total;
@@ -1525,7 +1525,7 @@ class ShopClass extends CatalogueClass
                     $price_cap = "<span>$full_price $cur_cap</span>";
                     $bonus_total += $discount;
                     if ($full_price != $price_discount) {
-                        $price_cap = "<span class='span-red' style='text-decoration: line-through;'>$full_price $cur_cap ($real_discount%)</span><br /><span>$price_discount $cur_cap</span>";
+                        $price_cap = "<span class=\"span-red\" style=\"text-decoration: line-through;\">$full_price $cur_cap ($real_discount%)</span><br /><span>$price_discount $cur_cap</span>";
                     }
                 }
                 $list .= "<div class=\"cart-table-row\">
@@ -1579,7 +1579,7 @@ class ShopClass extends CatalogueClass
             $city_id = $db->result($r, $i - 1, "CITY_ID");
             $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
             $sel = ($user_city > 0 && $user_city == $city_id) ? "selected" : "";
-            $list .= "<option value='$city_id' $sel>$city_name</option>";
+            $list .= "<option value=\"$city_id\" $sel>$city_name</option>";
         }
         return $list;
     }
@@ -1627,7 +1627,7 @@ class ShopClass extends CatalogueClass
             $ref = $db->result($r, $i - 1, "CITY_REF");
             $name = $db->result($r, $i - 1, "CITY_NAME");
             $area_name = $db->result($r, $i - 1, "AREA_NAME");
-            $list .= "<option value='$ref'>$name ($area_name)</option>";
+            $list .= "<option value=\"$ref\">$name ($area_name)</option>";
         }
         return $list;
     }
@@ -1639,7 +1639,7 @@ class ShopClass extends CatalogueClass
     {
         $city_ref = $this->getNameString($city_ref);
         $list_np = $this->getNovaPoshtaWarehousesSelect($city_ref);
-        $list_up = "<option value='0'>{not_chosen}</option>";
+        $list_up = "<option value=\"0\">{not_chosen}</option>";
         return array($list_np, $list_up);
     }
 
@@ -1655,7 +1655,7 @@ class ShopClass extends CatalogueClass
         foreach ($arr as $val) {
             $name = iconv("UTF-8", "windows-1251", $val["Description"]);
             $war_ref = $val["Ref"];
-            $list .= "<option value='$war_ref'>$name</option>";
+            $list .= "<option value=\"$war_ref\">$name</option>";
         }
         return $list;
     }

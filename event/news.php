@@ -1,6 +1,7 @@
 <?php
 
-$user_id = $catalogue->getUser(); $today = date("Y-m-d");
+$user_id = $catalogue->getUser();
+$today = date("Y-m-d");
 $dbm->query("UPDATE `A_CLIENTS_USERS` SET `update_news`='$today' WHERE `id`='$user_id' LIMIT 1;");
 
 $link = $catalogue->getUrlString(findLinks()[1]);

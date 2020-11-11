@@ -16,15 +16,17 @@ if ($client->checkUnRegClient()) {
     }
     $content = str_replace("{profile-$panel}", "in active", $content);
 
-    if ($client->getClientPriceList())
+    if ($client->getClientPriceList()) {
         $content = str_replace("{price_visible}", "block", $content);
-    else
+    } else {
         $content = str_replace("{price_visible}", "none", $content);
+    }
 
-    if ($client->getClientCheckList())
+    if ($client->getClientCheckList()) {
         $content = str_replace("{check_visible}", "block", $content);
-    else
+    } else {
         $content = str_replace("{check_visible}", "none", $content);
+    }
 
     $content = str_replace("{date_saldo_from}", date("Y-m-01"), $content);
     $content = str_replace("{date_saldo_to}", date("Y-m-d"), $content);

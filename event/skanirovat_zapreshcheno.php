@@ -2,7 +2,7 @@
 
 $bonus = 1;
 
-$phone = $client->formatValidPhone($_POST['bonus_phone']);
+$phone = $client->formatValidPhone($_POST["bonus_phone"]);
 
 if ($phone == "") {
         $content = str_replace("{main_window}", $menu->showScanForm(), $content);
@@ -27,5 +27,5 @@ if ($phone == "") {
         $client->validatePhone($phone);
         $content = str_replace("{main_window}", $menu->showScanPhoneForm($phone), $content);
     }
-    $_POST['bonus_phone'] = "";
+    $_POST["bonus_phone"] = "";
 }

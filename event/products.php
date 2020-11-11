@@ -5,7 +5,7 @@
 $linka = findLinks();
 $w = $catalogue->getUrlString($linka[1]);
 $template_id = $pattern->getTemplateID($w);
-$page = $catalogue->getUrlNumber($_GET['page']);
+$page = $catalogue->getUrlNumber($_GET["page"]);
 ($page != NULL) ?: $page = 1;
 $result = explode($w . "/", $_SERVER["REQUEST_URI"], 2);
 $link = ltrim($result[1]);

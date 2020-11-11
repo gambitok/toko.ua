@@ -36,6 +36,7 @@ $cars-item-active: #2d8bfa;
             transition: .3s;
             text-overflow: ellipsis;
             white-space: nowrap;
+            width: 100%;
             &:hover {
                 filter: brightness(90%);
             }

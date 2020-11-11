@@ -1555,13 +1555,14 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $delivery_days . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
-            if ($delivery_days == 0) {
-                $today = "<i>{today_cap}</i>";
-            } elseif ($delivery_days == 1) {
-                $today = "<i>{tomorrow_cap}</i>";
-            } else {
-                $today = "<i>$date_del ($week_day_short)</i>";
-            }
+            $today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+//            if ($delivery_days == 0) {
+//                $today = "<i>{today_cap}</i>";
+//            } elseif ($delivery_days == 1) {
+//                $today = "<i>{tomorrow_cap}</i>";
+//            } else {
+//                $today = "<i>$date_del ($week_day_short)</i>";
+//            }
             $info = "$today<br>$time_from_del - $time_to_del";
             $delivery_short_info = "$today<br>{with_cap} $time_from_del";
             $array[$deliver["storage_id"]] = compact("info", "delivery_days", "delivery_short_info");
@@ -1613,13 +1614,14 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $deliveryTime["delivery_days"] . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $deliveryTime["delivery_days"] . " days"));
-            if ($deliveryTime["delivery_days"] == 0) {
-                $today = "<i>{today_cap}</i>";
-            } elseif ($deliveryTime["delivery_days"] == 1) {
-                $today = "<i>{tomorrow_cap}</i>";
-            } else {
-                $today = "<i>$date_del ($week_day_short)</i>";
-            }
+            $today = (($deliveryTime["delivery_days"] == 0) ? "<i>{today_cap}</i>" : (($deliveryTime["delivery_days"] == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+//            if ($deliveryTime["delivery_days"] == 0) {
+//                $today = "<i>{today_cap}</i>";
+//            } elseif ($deliveryTime["delivery_days"] == 1) {
+//                $today = "<i>{tomorrow_cap}</i>";
+//            } else {
+//                $today = "<i>$date_del ($week_day_short)</i>";
+//            }
             $info = "$today<br>{$time_from_del} - {$time_to_del}";
             $delivery_short_info = "$today<br>{with_cap} $time_from_del";
             $result[$deliveryTime["suppl_id"]][$deliveryTime["suppl_storage_id"]] = [
@@ -1682,6 +1684,9 @@ class CatalogueClass
         return $prices;
     }
 
+    /*
+     * check if art_id is original
+     * */
     public function checkOriginalEquipment($art_id, $search_number)
     {
         $db = DbSingleton::getTokoDb();
@@ -1794,7 +1799,6 @@ class CatalogueClass
         $cur = $this->getCurrentExrate();
         $kours_cap = $this->getSymbolExrate($cur);
         $format_name = $this->getFormatAticle($article_name);
-
         $return_days_alt = $return_days_img = "";
         if ($suppl_id > 0) {
             if ($stock != 0) {
@@ -1813,7 +1817,6 @@ class CatalogueClass
                 }
             }
         }
-
         if (!($this->checkActionPrice($art_id))) {
             $action_form = "";
             $action_count = "";
@@ -1953,7 +1956,7 @@ class CatalogueClass
     public function getFaqForm()
     {
         $form = $this->getHtmlForm("faq/request-card");
-        $form = "<div class='col-lg-4 col-12 pad0'><div class='article-card'>$form</div></div>";
+        $form = "<div class=\"col-lg-4 col-12 pad0\"><div class=\"article-card\">$form</div></div>";
         $form = $this->replaceLang($form);
         return $form;
     }
@@ -2148,7 +2151,6 @@ class CatalogueClass
                 } else {
                     $price = $proc_oper_price_min;
                 }
-
                 $price = $this->getPriceRatingKours($price, 2, $cash_id);
             }
             $price = $this->getPriceRatingKours($price, $cash_id, 1);
@@ -2276,13 +2278,15 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $delivery_days . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
-            if ($delivery_days == 0) {
-                $today = "<i>{today_cap}</i>";
-            } elseif ($delivery_days == 1) {
-                $today = "<i>{tomorrow_cap}</i>";
-            } else {
-                $today = "<i>$date_del ($week_day_short)</i>";
-            }
+
+            $today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+//            if ($delivery_days == 0) {
+//                $today = "<i>{today_cap}</i>";
+//            } elseif ($delivery_days == 1) {
+//                $today = "<i>{tomorrow_cap}</i>";
+//            } else {
+//                $today = "<i>$date_del ($week_day_short)</i>";
+//            }
             $info = "$today<br>$time_from_del - $time_to_del";
             $short_info = "$today<br>{with_cap} $time_from_del";
         }
@@ -2307,13 +2311,14 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $delivery_days . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
-            if ($delivery_days == 0) {
-                $today = "<i>{today_cap}</i>";
-            } elseif ($delivery_days == 1) {
-                $today = "<i>{tomorrow_cap}</i>";
-            } else {
-                $today = "<i>$date_del ($week_day_short)</i>";
-            }
+            $today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+//            if ($delivery_days == 0) {
+//                $today = "<i>{today_cap}</i>";
+//            } elseif ($delivery_days == 1) {
+//                $today = "<i>{tomorrow_cap}</i>";
+//            } else {
+//                $today = "<i>$date_del ($week_day_short)</i>";
+//            }
             $info = "$today<br>$time_from_del - $time_to_del";
             $short_info = "$today<br>{with_cap} $time_from_del";
         }
