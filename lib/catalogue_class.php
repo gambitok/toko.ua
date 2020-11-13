@@ -2429,7 +2429,7 @@ class CatalogueClass
         $cur = $client->getClientCurrency($client_id);
         $cur_cap = $kours->getKoursCaption($cur);
         $list = $storages = [];
-        $filials_list = ["#", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "Barcode"];
+        $filials_list = ["#", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "{barcode_cap}"];
 
         $tpoints = $client->getOtherTpoints($tpoint_user_id);
         foreach ($tpoints as $tpoint) {

@@ -460,6 +460,10 @@ function saveOrder() {
     let recipient_name = $("#user_recipient_name").val();
     let recipient_phone = $("#user_recipient_phone").val();
     let bonus_status = $("#bonus_status").prop("checked");
+    if (bonus_status === undefined) {
+        bonus_status = 0;
+    }
+    console.log(bonus_status);
 
     JsHttpRequest.query(folder,{'w':'saveOrder', 'user_id':user_id, 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment, 'recipient_name':recipient_name, 'recipient_phone':recipient_phone, 'bonus_status':bonus_status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {

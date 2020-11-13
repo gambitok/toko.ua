@@ -49,9 +49,9 @@ if ($_REQUEST["w"] == "showProfilePrice") {
     $GLOBALS['_RESULT'] = array("content" => $profile->showPriceList());
 }
 
-if ($_REQUEST["w"] == "getPriceList") {
-    $GLOBALS['_RESULT'] = array("content" => $profile->getPriceList());
-}
+//if ($_REQUEST["w"] == "getPriceList") {
+//    $GLOBALS['_RESULT'] = array("content" => $profile->getPriceList());
+//}
 
 if ($_REQUEST["w"] == "setPriceList") {
     $GLOBALS['_RESULT'] = array("content" => $profile->setPriceList());
@@ -123,7 +123,7 @@ if ($_REQUEST["w"] == "setClientRequest") {
 
 if ($_REQUEST["w"] == "getUserSavedData") {
     list($status, $list, $info_id) = $shop->getUserSavedData($_REQUEST["user_id"], $_REQUEST["city"]);
-    $GLOBALS['_RESULT'] = array("status" => $status,"list" => $list,"info_id" => $info_id);
+    $GLOBALS['_RESULT'] = array("status" => $status, "list" => $list, "info_id" => $info_id);
 }
 
 if ($_REQUEST["w"] == "getCityVal") {

@@ -511,31 +511,33 @@ class ShopClass extends CatalogueClass
         $bonus_summ = $this->getBonusSumm($client_id);
         $order_sum = 0;
 
-        $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;");
-        $n = $dbt->num_rows($r);
-        if ($n > 0) {
-            for ($i = 1; $i <= $n; $i++) {
-                $amount = $dbt->result($r, $i - 1, "amount");
-                $price = $dbt->result($r, $i - 1, "price");
-                $price = $exrate->getKoursPrice($price, $cur);
-                if ($cur == 1) {
-                    $price = $client->getClientPriceRounding($client_id, $price);
+        if ($bonus_summ > 0) {
+            $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;");
+            $n = $dbt->num_rows($r);
+            if ($n > 0) {
+                for ($i = 1; $i <= $n; $i++) {
+                    $amount = $dbt->result($r, $i - 1, "amount");
+                    $price = $dbt->result($r, $i - 1, "price");
+                    $price = $exrate->getKoursPrice($price, $cur);
+                    if ($cur == 1) {
+                        $price = $client->getClientPriceRounding($client_id, $price);
+                    }
+                    $full_price = $price * $amount;
+                    $order_sum += $full_price;
                 }
-                $full_price = $price * $amount;
-                $order_sum += $full_price;
-            }
-            for ($i = 1; $i <= $n; $i++) {
-                $id = $dbt->result($r, $i - 1, "id");
-                $price = $dbt->result($r, $i - 1, "price");
-                $price = $exrate->getKoursPrice($price, $cur);
-                if ($cur == 1) {
-                    $price = $client->getClientPriceRounding($client_id, $price);
+                for ($i = 1; $i <= $n; $i++) {
+                    $id = $dbt->result($r, $i - 1, "id");
+                    $price = $dbt->result($r, $i - 1, "price");
+                    $price = $exrate->getKoursPrice($price, $cur);
+                    if ($cur == 1) {
+                        $price = $client->getClientPriceRounding($client_id, $price);
+                    }
+                    $discountData = $this->getBonusDiscount($order_sum, $bonus_summ, $price);
+                    $discount = abs($discountData["discount"]);
+                    $real_discount = abs($discountData["real_discount"]);
+                    $this->updateBonusClient($discount);
+                    $dbt->query("UPDATE `basket` SET `price`='$price', `discount`='$real_discount' WHERE `id`='$id';");
                 }
-                $discountData = $this->getBonusDiscount($order_sum, $bonus_summ, $price);
-                $discount = abs($discountData["discount"]);
-                $real_discount = abs($discountData["real_discount"]);
-                $this->updateBonusClient($discount);
-                $dbt->query("UPDATE `basket` SET `price`='$price', `discount`='$real_discount' WHERE `id`='$id';");
             }
         }
         return true;
@@ -1006,7 +1008,6 @@ class ShopClass extends CatalogueClass
     {
         $client = new ClientClass();
 
-        // SQL injections fixed
         $phone = $client->formatValidPhone($phone);
         $name = $this->getUrlString($name);
         $email = $this->getUrlString($email);

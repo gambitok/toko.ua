@@ -43,6 +43,7 @@ class ProductsClass extends CatalogueClass
         $form = str_replace("{cat_search_brands}", "", $form);
         $form = str_replace("{search_typ_id}", $typ_id, $form);
         $form = str_replace("{search_str_id}", $str_id, $form);
+        $form = str_replace("{garage_style}", ($this->getCookieAuto()) ? "none" : "", $form);
         $form = $this->replaceLang($form);
 
         return $form;
@@ -549,7 +550,7 @@ class ProductsClass extends CatalogueClass
         // MODEL
         if ($type == "manuf") {
             $mfa_id = $value;
-            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;");
+            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' AND `ACTIVE`=1 GROUP BY `Model`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
@@ -588,7 +589,6 @@ class ProductsClass extends CatalogueClass
             if ($n == 1) {
                 $skip = $db->result($r, 0, "MOD_ID");
             }
-
             for ($i = 1; $i <= $n; $i++) {
                 $mod_id = $db->result($r, $i - 1, "MOD_ID");
                 $tex_text = $db->result($r, $i - 1, "TEX_TEXT");
@@ -623,7 +623,6 @@ class ProductsClass extends CatalogueClass
             $title = $year;
             $nav = "years";
             $tab = "cars-tab4";
-
         }
 
         // ENGINE

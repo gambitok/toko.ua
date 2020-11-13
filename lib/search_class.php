@@ -84,16 +84,22 @@ class SearchClass extends CatalogueClass
 
         list($mfa_text, $mod_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
         $mod_id_text = $automan->getAutoModelIdLink($mod_id_link)["text"];
-        if ($mod_id_text != "") $mod_text = $mod_id_text;
+        if ($mod_id_text != "") {
+            $mod_text = $mod_id_text;
+        }
         $auto_text = "$mfa_text $mod_text";
 
         $str_text = $automan->getStrNewDescr($str_id);
         $str_link = $automan->getStrNewLink($str_id);
 
         $h1_text = $this->getStaticH1("/catalog/$str_link/");
-        if ($h1_text != "") $str_text = $h1_text;
+        if ($h1_text != "") {
+            $str_text = $h1_text;
+        }
         $h1 = $str_text;
-        if ($auto_text != "" && $auto_text != " ") $h1 .= " {for_cap} $auto_text $translit";
+        if ($auto_text != "" && $auto_text != " ") {
+            $h1 .= " {for_cap} $auto_text $translit";
+        }
 
         $filters = $this->getFiltersTitle($active_filters, 1);
 
@@ -141,9 +147,15 @@ class SearchClass extends CatalogueClass
                 $suppl_id = $suppl_array[$j];
                 $storage_id = $storage_array[$j];
                 $stock = $stock_array[$j];
-                if ($suppl_id == 0) $price = $this->getArticlePrice($art_id); else $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+                if ($suppl_id == 0) {
+                    $price = $this->getArticlePrice($art_id);
+                } else {
+                    $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+                }
                 if ($price > 0 && $stock > 0) {
-                    if ($price > $max_price_art) $max_price_art = $price;
+                    if ($price > $max_price_art) {
+                        $max_price_art = $price;
+                    }
                     $validate_art_count++;
                 }
             }
@@ -906,10 +918,14 @@ class SearchClass extends CatalogueClass
         if ($n == 0) {
             $page_h1 = "{details_on_cap} $mfa_text $model_text";
             $translit = $this->getCarManufTranslit($mfa_id, $model);
-            if ($translit != "") $page_h1 .= " $translit";
+            if ($translit != "") {
+                $page_h1 .= " $translit";
+            }
             $page_h1_lower = "{details_on_cap_min} $mfa_text $model_text";
             $translit = $this->getCarManufTranslit($mfa_id, $model);
-            if ($translit != "") $page_h1_lower .= " $translit";
+            if ($translit != "") {
+                $page_h1_lower .= " $translit";
+            }
 
             list($brand1, $brand2, $brand3) = $this->getRandomBrands(3);
 
