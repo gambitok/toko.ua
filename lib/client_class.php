@@ -544,14 +544,19 @@ class ClientClass
         $phone = $this->formatValidPhone($phone);
         $type = $this->getUrlNumber($type);
 
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
+        $r = $db->query("SELECT `client_id`, `phone`, `pass` FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
 
+        $client_id = $db->result($r, 0, "client_id");
         $client_phone = $db->result($r, 0, "phone");
         $client_pass = $db->result($r, 0, "pass");
 
         $res = ($n == 0) ? false : array($client_phone, $client_pass);
         if ($type == 1) {
+            $res = false;
+        }
+
+        if ($this->checkRetailClientCategory($client_id)) {
             $res = false;
         }
 
@@ -563,6 +568,8 @@ class ClientClass
                 $res = false;
             }
         }
+
+        var_dump($res);
 
         return $res;
     }

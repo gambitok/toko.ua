@@ -252,7 +252,7 @@ function finishFastOrder(name) {
     } else {
         JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-                if (result.content!==false) {
+                if (result.content !== false) {
                     let text = "{user_already_logged}!<br>{phone_cap}: " + result.content[0];
                     showAlertModal(text, "{error_cap}", 0, showLoginForm);
                 } else {
