@@ -60,6 +60,11 @@ $content = str_replace("{main_auto_window}", "", $content);
 $content = str_replace("{main_site_breadcrumbs}", printBreadcrumbs($path)[0], $content);
 $content = str_replace("{main_window}", "", $content);
 $content = str_replace("{main_metro}", "", $content);
+$content = str_replace("{meta_noindex}", '
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="yandex" content="index, follow">
+', $content);
 
 $linka = findLinks();
 $mfa_link = $catalogue->getUrlString($linka[1]);

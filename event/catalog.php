@@ -21,7 +21,7 @@ if (!$catalogue->checkRedirectLink($some_link)) {
 $result = explode($some . "/", $_SERVER["REQUEST_URI"], 2);
 $link = ltrim($result[1]);
 
-list($form1, $car_content, $pages_count) = $search->catalogRouter($link, $some_link, $page, $some_link2);
+list($form1, $car_content, $pages_count, $filters_count) = $search->catalogRouter($link, $some_link, $page, $some_link2);
 
 if ($page > 1) {
     if ($page>$pages_count) {
@@ -42,6 +42,10 @@ if ($car_content == "") {
     if ($some_link2 == "") {
         $content = str_replace("{main_metro}", $automan->showDetailsHeader($head_id), $content);
     }
+}
+
+if ($filters_count > 1) {
+    $content = str_replace("{meta_noindex}", '<meta name="robots" content="noindex, nofollow" />', $content);
 }
 
 $content = str_replace("{main_auto_window}", $car_form, $content);

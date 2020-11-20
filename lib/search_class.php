@@ -45,9 +45,14 @@ class SearchClass extends CatalogueClass
             $where_arts = $parts->initPartsArts($str_id);
             $brand_ids = $this->getBrandIds($where_arts);
             $active_brands = array_unique($brand_ids);
+            $filters_count = count($active_filters);
             $filters_form = $this->printBrandsList(array_unique($brand_ids), array_unique($active_filters), $this->getActualLink());
 
-            $form = str_replace("{details_listing}", $this->getSeoLinking($str_id, $h1, $filters, $brands), $form);
+            $details_listing = "";
+            if (count($active_filters) == 1) {
+                $details_listing = $this->getSeoLinking($str_id, $h1, $filters, $brands);
+            }
+            $form = str_replace("{details_listing}", $details_listing, $form);
 
             if (!empty($active_filters) && count($active_filters) == 1) {
                 $brand_id = $active_filters[0];
@@ -66,13 +71,14 @@ class SearchClass extends CatalogueClass
         } else {
             $str_type = 0;
             $pages_count = 0;
+            $filters_count = 0;
             $details_content = "";
             $form = str_replace("{details_brands}", "", $form);
         }
 
         $form = str_replace("{details_str_type}", $str_type, $form);
         $form = str_replace("{details_content}", $details_content, $form);
-        return array($form, $pages_count);
+        return array($form, $pages_count, $filters_count);
     }
 
     public function getCatalogTitle($str_id, $active_filters, $mfa_link, $mod_link, $mod_id_link, $page)
@@ -223,6 +229,7 @@ class SearchClass extends CatalogueClass
         $details_form = $this->getHtmlForm("details_offers");
 
         $pages_count = 0;
+        $filters_count = 0;
         $form = $car_form = $str_id = $str_link = $mfa_link = $mod_link = $mod_id_link = $filters = "";
 
         $cookie_typ_id = $this->getCookieAuto();
@@ -290,7 +297,7 @@ class SearchClass extends CatalogueClass
                 // 2: /catalog/shrus
                 // 3: /catalog/shrus/brandy=bosch
                 $str_id = $automan->getStrNewLinkStr($str_link);
-                list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link);
+                list($details_form, $pages_count, $filters_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link);
                 $car_form = $prod->getCarsSearch($mfa_link, $mod_link, $str_id);
                 $form = $details_form;
             }
@@ -302,7 +309,7 @@ class SearchClass extends CatalogueClass
                 // 7: /catalog/shrus/kia/sportage/brandy=bosch
                 if ($cookie_typ_id == "") {
                     $str_id = $automan->getStrNewLinkStr($str_link);
-                    list($details_form, $pages_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link);
+                    list($details_form, $pages_count, $filters_count) = $this->showDetailsForm($details_form, $str_id, $page, $brand_ids[0], $mfa_link, $mod_link, $mod_id_link);
 
                     if ($mfa_link != "" && $mod_link != "") {
                         if ($mod_id_link != "") {
@@ -353,7 +360,7 @@ class SearchClass extends CatalogueClass
             $form = str_replace("{details_faq}", $menu->getCatalogFaqForm($h1_text), $form);
         }
 
-        return array($form, $car_form, $pages_count);
+        return array($form, $car_form, $pages_count, $filters_count);
     }
 
     public function getActiveFilters($filters)
