@@ -62,7 +62,7 @@ function checkLangVariable($variable) { $db = DbSingleton::getTokoDb();
 
 function getTitle($path) {
     $language = new LangClass();
-    $path = str_replace("/","",$path);
+    $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
     $title = ($path != "") ? "$prefix" : "{site_title}";
     $title = $language->replaceLangData($title);
@@ -83,7 +83,7 @@ function getMoreTitle($path) {
     if ($path == "search") {
         $article_nr_search = $cat->getUrlString($linka[1]);
         $brand_link = $cat->getUrlString($linka[2]);
-        $brand_id = ($brand_link!="") ? $cat->getCatalogueBrandID($brand_link) : 0;
+        $brand_id = ($brand_link != "") ? $cat->getCatalogueBrandID($brand_link) : 0;
         if ($article_nr_search == "") {
             $pretitle = "{site_title_short}";
         } elseif ($brand_id == 0) {
@@ -118,7 +118,7 @@ function getMoreTitle($path) {
             } else {
                 $pager = "";
                 if ($page !== NULL && $page > 0) {
-                    $pager = " - {pager_cap}".$page;
+                    $pager = " - {pager_cap}" . $page;
                 }
                 $result = explode($url_link . "/", $_SERVER["REQUEST_URI"], 2);
                 $link = ltrim($result[1]);
@@ -328,7 +328,7 @@ function printBreadcrumbs($path) {
 
             if ($str_text == "") {
                 $pretitle = "$a_home > $h_section";
-                $b_arr[2] = ["name"=>"$h_section", "item"=>"$actual_link"];
+                $b_arr[2] = ["name" => "$h_section", "item" => "$actual_link"];
             } else {
                 $title = $automan->getStrNewDescr($str_id);
                 if ($title == "") {
@@ -587,7 +587,7 @@ function getDescription($path) {
             $h1 = "$str_text";
             ($mm == "") ?: $h1 .= " $mm";
             ($filters_cap == "") ?: $h1 .= ": $filters_cap";
-            ($pager == "") ?: $h1.=" $pager";
+            ($pager == "") ?: $h1 .= " $pager";
 
         }
         $description = "$h1 - {seo_description_catalog1}, $h1 {seo_description_catalog2}";
@@ -647,8 +647,8 @@ function translateContent($content) { $db = DbSingleton::getTokoDb();
     $language = new LangClass();
     $r = $db->query("SELECT `variable` FROM `new_lang_wd`;");
     $n = $db->num_rows($r);
-    for ($i=1; $i<=$n; $i++) {
-        $code = $db->result($r, $i-1, "variable");
+    for ($i = 1; $i <= $n; $i++) {
+        $code = $db->result($r, $i - 1, "variable");
         $word = $language->getLanguageName($code);
         //$word = iconv("windows-1251", "UTF-8", $word);
         $content = str_replace("{" . $code . "}", $word, $content);
@@ -673,10 +673,10 @@ function findPath() {
         $link .= "/";
     }
 	$link = parse_url($link);
-	$url = substr($link["path"],1);
-	$pos = strpos($url,"/");
+	$url = substr($link["path"], 1);
+	$pos = strpos($url, "/");
     if ($pos) {
-        $path = substr($url,0,$pos+1);
+        $path = substr($url, 0, $pos + 1);
         $cur_path = substr($path, 0, -1);
         if ($cur_path == "uk" || $cur_path == "en") {
             if ($cur_path == "uk") {
@@ -699,7 +699,7 @@ function findPath() {
 }
 
 function findUrl() {
-	$link = "https://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
+	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 	$link = parse_url($link);
     return $link["path"];
 }
@@ -707,16 +707,16 @@ function findUrl() {
 function findLinks() {
     $language = new LangClass();
     $language->setLangID(1);
-	$link = "https://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
+	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 	if (substr($link, -1) != "/") {
 	    $link .= "/";
     }
 	$link = parse_url($link);
-    $durl = substr($link["path"],1);
+    $durl = substr($link["path"], 1);
 	$i = 0;
 	$linka = [];
-	while ($durl != ""){
-		$pos = strpos($durl,"/");
+	while ($durl != "") {
+		$pos = strpos($durl, "/");
 		if ($pos) {
             $path = substr($durl,0, $pos + 1);
             $durl = str_replace_first($path, "", $durl);
@@ -739,7 +739,7 @@ function findLinks() {
 }
 
 function str_replace_first($from, $to, $content) {
-    $from = "/".preg_quote($from, "/") . "/";
+    $from = "/" . preg_quote($from, "/") . "/";
     return preg_replace($from, $to, $content, 1);
 }
 
@@ -748,5 +748,3 @@ function getSeoText($seo_text) {
     $form = str_replace("{seo_text}", $seo_text, $form);
     return $form;
 }
-
-

@@ -31,14 +31,21 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
     let count_id = $("#count_" + id);
     let basket_count_id = $("#basket_count_" + id);
     let count = count_id.val();
-    if (id == 'one') count = 1; // for single product
+    // for single product
+    if (id == 'one') {
+        count = 1;
+    }
 
     if (parseInt(stock) < parseInt(count) || parseInt(count) === 0) {
         var secret = parseInt(stock) + 1;
         while (parseInt(secret) > parseInt(stock)) {
             secret = prompt("Выбранное количество продукта превышает доступное количество!", 1);
-            if (secret === null) {
-                count_id.val(stock); return;
+            if (parseInt(secret) === 0) {
+                console.log('null');
+                // count_id.val(stock);
+                count_id.val(1);
+                showNotify("{error_cap}!", "{wrong_count_cap}!", "danger");
+                return;
             }
             if (parseInt(secret) < 0) {
                 secret = 999999;
@@ -46,9 +53,13 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
                 secret = 999999;
             }
         }
-        if (secret === "") secret = 0;
+        if (secret === "") {
+            secret = 0;
+        }
         count_id.val(secret);
         count = secret;
+        console.log('secret - ' + secret);
+        console.log('count - ' + count);
 
         if (secret !== 0 && secret !== "") {
             JsHttpRequest.query(folder,{'w':'moveToBasket', 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
@@ -61,7 +72,7 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
                     if (old_count > 0) {
                         message_all = "<br><b>{total_basket_cap}:</b> " + all_count + " {amount_abbr}.";
                     }
-                    showNotify("{done_cap}:","{art_cap} '" + art_name + "' - " + message + " {added_to_basket}!" + message_all,"success");
+                    showNotify("{done_cap}:", "{art_cap} '" + art_name + "' - " + message + " {added_to_basket}!" + message_all, "success");
                     showBasketStatus();
                     showBasketForm();
                     basket_count_id.html(result["basket_count"]);
@@ -99,7 +110,9 @@ function showBasketMinForm() {
 
 function updateCountBasket(status, art_id, storage_id, stock, phone) {
     let prefix = "";
-    if (phone > 0) prefix = "_phone";
+    if (phone > 0) {
+        prefix = "_phone";
+    }
     let count_id = $("#count_" + art_id + "_" + storage_id + prefix);
     let count = parseInt(count_id.val());
     if (status > 0) {
@@ -116,7 +129,9 @@ function updateCountBasket(status, art_id, storage_id, stock, phone) {
 
 function updateBasketForm(art_id, storage_id, stock, phone) {
     let prefix = "";
-    if (phone > 0) prefix = "_phone";
+    if (phone > 0) {
+        prefix = "_phone";
+    }
     var count_id = $("#count_" + art_id + "_" + storage_id + prefix);
     var count = count_id.val();
     if (parseInt(stock) < parseInt(count) || parseInt(count) === 0) {
@@ -131,7 +146,9 @@ function updateBasketForm(art_id, storage_id, stock, phone) {
                 secret = 999999;
             }
         }
-        if (secret === "") secret = 0;
+        if (secret === "") {
+            secret = 0;
+        }
         count_id.val(secret);
         count = secret;
         if (secret !== 0 && secret !== "") {
@@ -203,7 +220,6 @@ function showBasketStatus() {
     let status5 = $("#tool-basket");
     JsHttpRequest.query(folder,{'w':'updateBasketStatus'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            console.log('asdasd');
             if (result.content[0] !== "") {
                 status1.addClass("show"); status1.removeClass("none"); status1.removeClass("tool-status-hidden"); status1.html(result.content[0]);
                 status3.addClass("show"); status3.removeClass("none"); status3.html(result.content[0]);
