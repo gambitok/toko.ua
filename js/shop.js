@@ -41,7 +41,6 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
         while (parseInt(secret) > parseInt(stock)) {
             secret = prompt("Выбранное количество продукта превышает доступное количество!", 1);
             if (parseInt(secret) === 0) {
-                console.log('null');
                 // count_id.val(stock);
                 count_id.val(1);
                 showNotify("{error_cap}!", "{wrong_count_cap}!", "danger");
@@ -58,8 +57,6 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
         }
         count_id.val(secret);
         count = secret;
-        console.log('secret - ' + secret);
-        console.log('count - ' + count);
 
         if (secret !== 0 && secret !== "") {
             JsHttpRequest.query(folder,{'w':'moveToBasket', 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},

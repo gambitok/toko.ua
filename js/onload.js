@@ -233,7 +233,7 @@ $(document).ready(function() {
         this.scrollTop = 999999;
     }).focus();
 
-    let cookie_user_id = getCookie('user');
+    let cookie_user_id = getCookie("user_id");
 
     if (!detectmob()) {
         if (cookie_user_id === "") {
