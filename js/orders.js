@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
     // INIT PHONE
-    $(".masked-phone").mask("+38(099) 999-99-99", {
-        placeholder:"+38(0__) ___-__-__",
+    $(".masked-phone").mask("+38(999) 999-99-99", {
+        placeholder:"+38(___) ___-__-__",
         autoclear: false,
         alias: "numeric"
     });
@@ -153,6 +153,7 @@ function getOrderDeliveryBlock() {
         let city_id = $("#user_city").select2("val");
         let block = $(this);
         block.removeClass("orders-block-row-hidden");
+        console.log(delivery_id + ' - ' + city_id);
         JsHttpRequest.query(folder,{'w':'getOrderDeliveryBlock', 'delivery_id':delivery_id, 'city_id':city_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 let status = result.content;
@@ -507,8 +508,8 @@ function setClientOrderInfo(id) {
 
             $("#user_recipient_name").val(recipient_name);
             $("#user_recipient_phone").val(recipient_phone);
-            $("#user_recipient_phone").mask("+38(099) 999-99-99", {
-                placeholder:"+38(0__) ___-__-__",
+            $("#user_recipient_phone").mask("+38(999) 999-99-99", {
+                placeholder:"+38(___) ___-__-__",
                 autoclear: false,
                 alias: "numeric"
             });

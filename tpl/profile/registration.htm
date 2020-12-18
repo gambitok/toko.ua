@@ -1,8 +1,8 @@
 <link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
 <script>
     $(document).ready(function(){
-        $(".masked-phone").mask("+38(099) 999-99-99", {
-            placeholder:"+38(0__) ___-__-__",
+        $(".masked-phone").mask("+38(999) 999-99-99", {
+            placeholder:"+38(___) ___-__-__",
             autoclear: false,
             alias: "numeric"
         });
@@ -60,7 +60,7 @@
 					<label class="label-required">{phone_cap}:</label>
 				</div>
 				<div class="col-lg-8 col-12 pad0">
-					<input id="reg_phone" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(0__) ___-__-__">
+					<input id="reg_phone" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__">
 				</div>
 			</div>
 

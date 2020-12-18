@@ -1,8 +1,8 @@
 <link rel="stylesheet" href="/css/plugins/flags.min.css">
 <script>
     $(document).ready(function(){
-        $(".masked-phone").mask("+38(099) 999-99-99", {
-            placeholder:"+38(0__) ___-__-__",
+        $(".masked-phone").mask("+38(999) 999-99-99", {
+            placeholder:"+38(___) ___-__-__",
             autoclear: false,
             alias: "numeric"
         });
@@ -88,7 +88,7 @@
                             <div class="col-lg-6 col-11 basket-fast-phone">
                                 <input
                                     id="input_phone2" class="form-control masked-phone" type="tel" name="phone"
-                                    placeholder="+38(0__) ___-__-__" onchange="validationInput('input_phone2');"
+                                    placeholder="+38(___) ___-__-__" onchange="validationInput('input_phone2');"
                                     title="{input_valid_phone}" data-toggle="tooltip" data-placement="top" data-html="true" value="{user_phone}"
                                 >
                             </div>

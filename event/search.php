@@ -12,6 +12,7 @@ if ($article_nr_search == "") {
         $content = str_replace("{search}", $catalogue->getSearchList($article_nr_search), $content);
     } else {
         $brand_id = $catalogue->getCatalogueBrandID($brand_link);
+        $article_nr_search = $catalogue->getFormatAticle($article_nr_search);
         $content = str_replace("{search}", $catalogue->getCatalogList($article_nr_search, $brand_id), $content);
     }
 }

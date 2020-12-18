@@ -1,6 +1,6 @@
 <?php
 
-print_r($menu->getSecretArticle("oc90"));
+//print_r($menu->getSecretArticle("oc90"));
 //$content = str_replace("{main_window}", $menu->getCatalogFaqForm(), $content);
 
 //print_r($shop->getCitiesNP());

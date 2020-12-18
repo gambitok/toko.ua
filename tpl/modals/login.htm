@@ -1,7 +1,7 @@
 <script>
     $(document).ready(function(){
-        $(".masked-phone").mask("+38(099) 999-99-99", {
-            placeholder:"+38(0__) ___-__-__",
+        $(".masked-phone").mask("+38(999) 999-99-99", {
+            placeholder:"+38(___) ___-__-__",
             autoclear: false,
             alias: "numeric"
         });
@@ -24,12 +24,11 @@
                                 <input class="clearAll TextBox" id="remember" type="hidden" name="remember" value="1">
                                 <div class="auth-input">
                                     <label class="auth-label">{client_login}</label><br>
-                                    <!--<input class="form-control" id="userlogin" type="text" name="userlogin" value="" placeholder="{input_phone}">-->
-                                    <input id="userlogin" name="userlogin" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(0__) ___-__-__">
+                                    <input id="userlogin" name="userlogin" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__">
                                 </div><br>
                                 <div class="auth-input">
                                     <label class="auth-label">{client_password_cap}</label><br>
-                                    <input class="form-control" id="userpassword" type="password" name="userpassword" placeholder="{input_password}">
+                                    <input class="form-control" id="userpassword" type="password" name="userpassword" placeholder="{input_password}" title="{password_cap}">
                                 </div><br>
                                 <input class="btn btn-primary" type="submit" value="{login}" onClick="loginForm();"><br><br>
                                 <a class="dblock" href="https://toko.ua{site_lang_prefix}/recover_password/">{forget_password}?</a>

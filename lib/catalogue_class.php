@@ -125,8 +125,8 @@ class CatalogueClass
         $text_filter = $this->getNameString($text_filter);
         $cur = $this->getUrlNumber($cur);
         $order_value = $this->getUrlNumber($order_value);
-        $db = DbSingleton::getTokoDb();
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
+        $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2c.BRAND_ID, t2c.DISPLAY_NR, t2c.ART_ID, t2c.KIND, t2c.RELATION 
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID

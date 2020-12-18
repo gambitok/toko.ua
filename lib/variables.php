@@ -19,6 +19,7 @@ trait Variables
      * */
     public function getFormatAticle($name)
     {
+        $name = strtolower($name);
         return str_replace(str_split('.,+-\/:*?"<>| '), "", $name);
     }
 

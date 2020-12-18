@@ -413,17 +413,19 @@ class FormClass extends CatalogueClass
     public function showHistoryList()
     {
         $client = new ClientClass();
+        $cat = new CatalogueClass();
         $prefix = $this->getLangPrefix();
         $list = $client->getClientHistory();
         $list_history = "";
         for ($i = 0; $i < count($list); $i++) {
             $id = $list[$i]["id"];
             $article_nr_displ = $list[$i]["article_nr_displ"];
+            $format_article = $cat->getFormatAticle($article_nr_displ);
             $brand = $list[$i]["brand"];
             $brand_link = $list[$i]["brand_link"];
             $history_form = $this->getHtmlForm("history/card");
             $history_form = str_replace("{history_id}", $id, $history_form);
-            $history_form = str_replace("{history_link}", "https://toko.ua$prefix/$this->search_link/$article_nr_displ/$brand_link/", $history_form);
+            $history_form = str_replace("{history_link}", "https://toko.ua$prefix/$this->search_link/$format_article/$brand_link/", $history_form);
             $history_form = str_replace("{history_brand}", $brand, $history_form);
             $history_form = str_replace("{history_article}", $article_nr_displ, $history_form);
             $list_history .= $history_form;

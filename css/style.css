@@ -275,6 +275,10 @@ a:hover, a:not([href]):not([tabindex]):hover { color: #000; }
 /* ==== HEADER ==== */
 header { width: 100%; color: #a9a9a9; }
 
+.header-warning { background: #2d8afa; color: white; }
+
+.header-warning span { display: block; text-align: center; width: 100%; }
+
 .header-top { background: #f1f1f1; color: #606975; padding: 0; border-bottom: 1px solid #ced4da; }
 
 .header-top a, .header-top a:not([href]):not([tabindex]) { color: #606975; }
@@ -984,7 +988,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .garage-user__image { padding: 15px; }
 
-.garage-user__image img { float: right; max-height: 85px; width: 100%; }
+.garage-user__image img { float: right; max-height: 85px; }
 
 .garage_typ_form { background: #0c5460; }
 

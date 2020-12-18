@@ -5,8 +5,8 @@
         $("input[type='submit']").prop('disabled', false);
     }
     $(document).ready(function(){
-        $(".masked-phone").mask("+38(099) 999-99-99", {
-            placeholder:"+38(0__) ___-__-__",
+        $(".masked-phone").mask("+38(999) 999-99-99", {
+            placeholder:"+38(___) ___-__-__",
             autoclear: false,
             alias: "numeric"
         });
@@ -25,7 +25,7 @@
     <div class="row">
         <div class="col-lg-6 col-12">
             <form action="" method="POST">
-                <input id="phone" title="{phone_cap}" class="form-control masked-phone" name="bonus_phone" type="tel" placeholder="+38(0__) ___-__-__">
+                <input id="phone" title="{phone_cap}" class="form-control masked-phone" name="bonus_phone" type="tel" placeholder="+38(___) ___-__-__">
                 <br/>
                 <div class="g-recaptcha" data-sitekey="6Lfl4ZYUAAAAADHfyeRU4-_byLTXBh4GBhw8Lcin" data-callback="recaptchaCallback"></div>
                 <br/>

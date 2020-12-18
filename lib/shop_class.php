@@ -1651,7 +1651,7 @@ class ShopClass extends CatalogueClass
     {
         $list = "<option value=\"0\">{not_chosen}</option>";
         $list = $this->replaceLang($list);
-        $np = new NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+        $np = new NovaPoshtaApi2('4a18892255b3c9a8e7ef4813c790e75f');
         $arr = $np->getWarehouses($ref)['data'];
         foreach ($arr as $val) {
             $name = iconv("UTF-8", "windows-1251", $val["Description"]);
@@ -1662,7 +1662,7 @@ class ShopClass extends CatalogueClass
     }
 
 //    public function getCitiesNP() {
-//        $np = new \LisDev\Delivery\NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+//        $np = new \LisDev\Delivery\NovaPoshtaApi2('4a18892255b3c9a8e7ef4813c790e75f');
 //        $arr = $np->getCities()['data'];
 //        foreach ($arr as $val) {
 //            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
@@ -1684,7 +1684,7 @@ class ShopClass extends CatalogueClass
 
 //    public function getAreaName($ref)
 //    {
-//        $np = new NovaPoshtaApi2('656d2934ac1411fdb377a1d6de96fd92');
+//        $np = new NovaPoshtaApi2('4a18892255b3c9a8e7ef4813c790e75f');
 //        $val = $np->getWarehouses($ref)['data'][0];
 //        return iconv("UTF-8", "windows-1251", $val["Description"]);
 //    }
