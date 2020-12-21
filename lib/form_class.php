@@ -520,6 +520,23 @@ class FormClass extends CatalogueClass
         }
     }
 
+    public function showPhotoCertificates($brand_id) {
+        $db = DbSingleton::getTokoDb();
+        $client = new ClientClass();
+        $arr = [];
+        if ($client->checkRetailClientCategory($this->getClient())) {
+            $date_cur = date("Y-m-d");
+            $r = $db->query("SELECT * FROM `T2_CERTIFICATES` WHERE `brand_id`='$brand_id' AND `date_from`<='$date_cur' AND `date_to`>='$date_cur' AND `status`=1;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $photo_link = $db->result($r, $i - 1, "photo_link");
+                $link = "https://toko.ua/uploads/images/certificates/$photo_link";
+                array_push($arr, $link);
+            }
+        }
+        return $arr;
+    }
+
     public function showPhotoGallery($art_id, $display = 0)
     {
         $art_id = $this->getUrlNumber($art_id);
@@ -528,28 +545,42 @@ class FormClass extends CatalogueClass
         $nophoto = $this->noPhoto;
         $list = "";
         $article_name = $this->getArticleSearch($art_id);
-        $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
+        $brand_id = $this->getArticleBrand($art_id);
+        $brand_name = $this->getBrandName($brand_id);
         $format_name = $this->getFormatAticle($article_name);
         $format_brand = $this->getFormatBrand($brand_name);
+        $arr = [];
 
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
+            $link = "$this->uploads_link/$photo_name";
+            array_push($arr, $link);
+        }
+
+        if (!empty($this->showPhotoCertificates($brand_id))) {
+            $arr = array_merge($arr, $this->showPhotoCertificates($brand_id));
+        }
+
+        $i = 0; $count_pages = count($arr);
+        foreach ($arr as $link) {
+            $i++;
             $active = ($i == 1) ? "active" : "";
             if ($display == 1) {
                 $list .= "<div class=\"carousel-item $active\">
                     <a itemprop=\"url\" href=\"https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/\">
-                        <img itemprop=\"image\" class=\"d-block img-fluid lazy\" data-src=\"$this->uploads_link/$photo_name\" alt=\"Slide $i\">
+                        <img itemprop=\"image\" class=\"d-block img-fluid lazy\" data-src=\"$link\" alt=\"Slide $i\">
                     </a>
                 </div>";
             } else {
                 $list .= "<div class=\"carousel-item $active\">
-                    <img itemprop=\"image\" class=\"d-block img-fluid lazy\" data-src=\"$this->uploads_link/$photo_name\" alt=\"Slide $i\">
-                    <div class=\"carousel-caption\">{page_cap} $i {of_cap} $n</div>
+                    <img itemprop=\"image\" class=\"d-block img-fluid lazy\" data-src=\"$link\" alt=\"Slide $i\">
+                    <div class=\"carousel-caption\">{photo_card_cap} $i {of_cap} $count_pages</div>
                 </div>";
             }
         }
+
         if ($n > 0) {
             $info = "<div class=\"row\">
                 <div class=\"col-12\">

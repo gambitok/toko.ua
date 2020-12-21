@@ -690,6 +690,16 @@ header {
     color: $site_dark_secondary;
 }
 
+.header-warning {
+    background: #2d8afa;
+    color: white;
+    span {
+        display: block;
+        text-align: center;
+        width: 100%;
+    }
+}
+
 .header-top {
     background: #f1f1f1;
     color: #606975;
@@ -2558,7 +2568,6 @@ header {
         img {
             float: right;
             max-height: 85px;
-            width: 100%;
         }
     }
 }
