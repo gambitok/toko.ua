@@ -27,7 +27,7 @@ class ClientClass
             $_SESSION["client_id"] = $cookie_client_id;
         }
 
-        $cookie_user_id = $this->getUrlNumber($_COOKIE["user"]);
+        $cookie_user_id = $this->getUrlNumber($_COOKIE["user_id"]);
         if ($cookie_user_id != "") {
             $_SESSION["user_id"] = $cookie_user_id;
         }
@@ -952,8 +952,10 @@ class ClientClass
             $user_id = $db->result($r, 0, "id");
             $client_id = $db->result($r, 0, "client_id");
         }
-        if ($client_id > 0) { // found client-phone
-            if (!$this->checkRetailClientCategory($client_id)) { // found client-shop
+        // found client-phone
+        if ($client_id > 0) {
+            // found client-shop
+            if (!$this->checkRetailClientCategory($client_id)) {
                 $status = true;
             }
         }

@@ -6,12 +6,6 @@
 <input type="hidden" value="{details_str_type}" id="details_str_type">
 <input type="hidden" value="{details_link}" id="details_link">
 
-<style>
-    .anchor-contacts {
-        display: none;
-    }
-</style>
-
 <div class="container">
     <div class="row details-offers">
         <div class="col-lg-3 col-12 order-lg-0 order-1 content details-offers-side">
@@ -37,29 +31,29 @@
         </div>
     </div>
 
-    <div class="row">
+<!--    <div class="row">-->
+<!--        <div class="col-12 pad0">-->
+<!--            <div class="content-min" style="margin: 15px 0;">-->
+<!--                <div id="details_listing">{details_listing}</div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="row" style="margin: 0 -15px; margin-bottom: 15px;">-->
+<!--        <div class="col-12 pad0 seo-listing">-->
+<!--            {details_listing_2}-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="row" style="margin: 0 -15px; margin-bottom: 15px;">-->
+<!--        <div class="col-12 pad0 seo-listing">-->
+<!--            {details_listing_3}-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="row" style="margin-top: 15px;">
         <div class="col-12 pad0">
-            <div class="content-min" style="margin: 15px 0;">
-                <div id="details_listing">{details_listing}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row" style="margin: 0 -15px; margin-bottom: 15px;">
-        <div class="col-12 pad0 seo-listing">
-            {details_listing_2}
-        </div>
-    </div>
-
-    <div class="row" style="margin: 0 -15px; margin-bottom: 15px;">
-        <div class="col-12 pad0 seo-listing">
-            {details_listing_3}
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12 pad0">
-            <div class="content-auto seo_auto seo_details">
+            <div class="content-auto seo_auto seo_details" style="height: 300px; outline: hidden; overflow: hidden; overflow-y: scroll;">
                 {seo_auto}
             </div>
         </div>
@@ -72,6 +66,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <div id="fixed-nav-catalog" class="fixed-nav">
@@ -110,5 +105,6 @@
 <script>
     $(document).ready(function() {
         showSearchParameters();
+        $(".anchor-contacts").addClass("mob-non-display");
     });
 </script>

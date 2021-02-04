@@ -224,7 +224,7 @@ class CatalogueClass
                 $count = $mas[$i]["count"];
                 $name = $mas[$i]["name"];
                 $photo_name = $showform->getShortArticlePhoto($mas[$i]["art_id"]);
-                $link = ($count == 0) ?  "showAlertModal(\"{brand_no_offer} `$text/$brand_name`\",\"{sorry_cap}\");" : "location.href=\"https://toko.ua$prefix/$this->search_link/$search_number/$brand_link/\";";
+                $link = ($count == 0) ? "showAlertModal(\"{brand_no_offer} `$text/$brand_name`\",\"{sorry_cap}\");" : "location.href=\"https://toko.ua$prefix/$this->search_link/$search_number/$brand_link/\";";
                 $list .= "<tr class=\"pointer table-row\" onclick='$link'>
                     <td class=\"minify\">
                         <img itemprop=\"image\" src=\"$photo_name\" alt=\"Article\">
@@ -753,18 +753,18 @@ class CatalogueClass
     public function getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands, $where_text)
     {
         $db = DbSingleton::getTokoDb();
-//        if ($article_nr_search != "") {
-//            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' AND `BRAND_ID`='$brand_nr_search' LIMIT 1;");
-//            $n = $db->num_rows($r);
-//            if ($n > 0) {
-//                $art_id = $db->result($r, 0, "ART_ID");
-//                $where_oe_art_id = $this->getOriginalEquipment($art_id);
-//                $where_art_id_str .= ",$where_oe_art_id";
-//            }
-//        }
-//        if ($where_art_id_str == "") {
-//            $where_art_id_str = 0;
-//        }
+        if ($article_nr_search != "") {
+            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' AND `BRAND_ID`='$brand_nr_search' LIMIT 1;");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $art_id = $db->result($r, 0, "ART_ID");
+                $where_oe_art_id = $this->getOriginalEquipment($art_id);
+                $where_art_id_str .= ",$where_oe_art_id";
+            }
+        }
+        if ($where_art_id_str == "") {
+            $where_art_id_str = 0;
+        }
         $where_art_id_str = rtrim($where_art_id_str, ",");
         $r = $db->query("
         SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT as AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
@@ -791,38 +791,21 @@ class CatalogueClass
     public function getOriginalEquipment($art_id)
     {
         $db = DbSingleton::getTokoDb();
-//        $search_arr = [];
-//        $brand_arr = [];
         $arts = [];
         $art_id_arr = [];
-
         $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` 
         WHERE `ART_ID`='$art_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND` IN (3,4) AND `RELATION`=1) OR (`KIND` IN (3,4) AND `RELATION`=2)) 
-        GROUP BY `SEARCH_NUMBER`;");
+        GROUP BY `SEARCH_NUMBER` LIMIT 0,10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $article_search = $db->result($r, $i - 1, "SEARCH_NUMBER");
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-//            array_push($search_arr, "'$article_search'");
-//            array_push($brand_arr, $brand_id);
             $arts[$i] = ["search_number" => $article_search, "brand_id" => $brand_id];
         }
-//        $search_str = implode(",", $search_arr);
-//        $brand_str = implode(",", $brand_arr);
-
-//        if ($search_str != "") {
-//            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` IN ($search_str) AND `BRAND_ID` IN ($brand_str);");
-//            $n = $db->num_rows($r);
-//            for ($i = 1; $i <= $n; $i++) {
-//                $cross_art_id = $db->result($r, $i - 1, "ART_ID");
-//                array_push($art_id_arr, $cross_art_id);
-//            }
-//        }
-
         foreach ($arts as $art) {
             $article_search = $art["search_number"];
             $brand_id = $art["brand_id"];
-            $r = $db->query("SELECT `ART_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`='$brand_id' AND `KIND`=3 AND `RELATION`=0;");
+            $r = $db->query("SELECT `ART_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`='$brand_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND`=0 AND `RELATION`=0))");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $cross_art_id = $db->result($r, $i - 1, "ART_ID");
@@ -2170,11 +2153,15 @@ class CatalogueClass
         $client_id = $this->getClient();
         $price = 0;
         list(, , $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat) = $this->getDpClientPriceLevels($client_id);
+//        $query = "SELECT t2si.price_usd
+//        FROM `T2_ARTICLES` t2a
+//            LEFT OUTER JOIN `T2_SUPPL_ARTICLES_IMPORT` t2sai ON (t2sai.art_id=t2a.ART_ID)
+//            LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2sai.art_id AND t2si.suppl_id=t2sai.suppl_id AND t2si.status=1)
+//        WHERE t2a.ART_ID='$art_id' AND t2sai.suppl_id='$suppl_id' LIMIT 1;";
         $query = "SELECT t2si.price_usd 
         FROM `T2_ARTICLES` t2a 
-            LEFT OUTER JOIN `T2_SUPPL_ARTICLES_IMPORT` t2sai ON (t2sai.art_id=t2a.ART_ID)
-            LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2sai.art_id AND t2si.suppl_id=t2sai.suppl_id AND t2si.status=1)
-        WHERE t2a.ART_ID='$art_id' AND t2sai.suppl_id='$suppl_id' LIMIT 1;";
+            LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
+        WHERE t2a.ART_ID='$art_id' AND t2si.suppl_id='$suppl_id' LIMIT 1;";
         $r = $dbt->query($query);
         $n = $dbt->num_rows($r);
         if ($n == 1) {
@@ -3013,6 +3000,170 @@ class CatalogueClass
 
         return array($list);
     }
+
+    /*
+     * CATALOG ROW
+     * */
+
+    function showCatalogRow()
+    {
+        $form = $this->getHtmlForm("catalog_menu/form");
+        $list = $this->getCatalogRowList();
+        $form = str_replace("{catalog_range}", $list, $form);
+        return $form;
+    }
+
+    function getCatalogRowList()
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $head_id = $db->result($r, $i - 1, "HEAD_ID");
+            $head_name = $this->getHeadRowName($head_id);
+            $list .= "<li class='' style='height: 60px;'>
+                <a onclick='getHeaderContent(\"$head_id\")'>$head_name</a>
+            </li>";
+        }
+
+        return $list;
+    }
+
+    function getHeadRowName($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        return $db->result($r, 0, "TEX_RU");
+    }
+
+    function getCatRowName($cat_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID`='$cat_id' LIMIT 1;");
+        return $db->result($r, 0, "TEX_RU");
+    }
+
+    function getGroupRowName($group_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        return $db->result($r, 0, "TEX_RU");
+    }
+
+    function getHeaderContent($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $form = $this->getHtmlForm("catalog_menu/list");
+        $list = "";
+
+        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        $column_id = $db->result($r, 0, "COLUMN_ID");
+        $width = $db->result($r, 0, "WIDTH"); if ($width <=0) $width = 1;
+
+        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `COLUMN_ID`='$column_id' ORDER BY `POSITION` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $cat_id = $db->result($r, $i - 1, "CAT_ID");
+            $cat_name = $this->getCatRowName($cat_id);
+            $list .= "<div class='tree-item' style='width: calc(100% / $width)'>";
+            $list .= "<div class='tree-item-title'><a href='/'>$cat_name</a></div>";
+            $list .= $this->getCatRowGroupList($head_id, $cat_id);
+            $list .= "</div>";
+        }
+
+        $form = str_replace("{content_range}", $list, $form);
+
+        return $form;
+    }
+
+    function getCatRowGroupList($head_id, $cat_id) {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT * FROM `T2_TREE_HCG_EXIST` WHERE `CAT_ID`='$cat_id' AND `HEAD_ID`='$head_id';");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $list .= "<div class='tree-item-list'>";
+            for ($i = 1; $i <= $n; $i++) {
+                $group_id = $db->result($r, $i - 1, "GROUP_ID");
+                $group_name = $this->getGroupRowName($group_id);
+                $list .= "<div class='tree-item-list__element'>
+                    <a href='/'>$group_name</a>
+                </div>";
+            }
+            $list .= "</div>";
+        }
+        return $list;
+    }
+
+//    function showCatalogRow()
+//    {
+//        $form = $this->getHtmlForm("catalog_row/form");
+//        $list = $this->getCatalogRowList();
+//        $form = str_replace("{catalog_range}", $list, $form);
+//        return $form;
+//    }
+//
+//    function getCatalogRowList()
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $list = "";
+//        $r = $db->query("SELECT * FROM `T2_TREE_HEAD_EXIST` WHERE 1;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $head_id = $db->result($r, $i - 1, "HEAD_ID");
+//            $text = $db->result($r, $i - 1, "TEX_RU");
+//            $list .= "<li><h2><a onclick='getCatalogRowGroupList(\"$head_id\")'>$head_id. $text</a></h2><div>" . $this->getCatalogRowGroupList($head_id) . "</div></li>";
+//        }
+//        return $list;
+//    }
+//
+//    function getCatalogRowGroupList($head_id)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $list = "";
+//        $array = [];
+//        $r = $db->query("SELECT * FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id';");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $cat_id = $db->result($r, $i - 1, "CAT_ID");
+//            $group_id = $db->result($r, $i - 1, "GROUP_ID");
+//            if (empty($array[$cat_id])) {
+//                $array[$cat_id] = [];
+//            }
+//            array_push($array[$cat_id], $group_id);
+//        }
+//
+//        if (!empty($array)) {
+//            $list .= "<div class='row'><div class='col-12'>";
+//            foreach ($array as $cat_id => $value) {
+//                $cat_name = $this->getCatRowName($cat_id);
+//                $list .= "<h2>$cat_name</h2><ul>";
+//                foreach ($value as $group_id) {
+//                    $group_name = $this->getGroupRowName($group_id);
+//                    $list .= "<li>$group_name</li>";
+//                }
+//                $list .= "</ul>";
+//            }
+//            $list .= "</div></div>";
+//        }
+//
+//        return $list;
+//    }
+//
+//    function getGroupRowName($group_id)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+//        return $db->result($r, 0, "TEX_RU");
+//    }
+//
+//    function getCatRowName($cat_id)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT * FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID`='$cat_id' LIMIT 1;");
+//        return $db->result($r, 0, "TEX_RU");
+//    }
 
 }
 

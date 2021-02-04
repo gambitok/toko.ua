@@ -234,6 +234,17 @@ class AutoClass extends CatalogueClass
     }
 
     /*
+     * get car model_id name
+     * from ID
+     * */
+    public function getModIdCode($mod_id_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `MOD_ID` FROM `T_models` WHERE `TEX_TEXT_link`='$mod_id_link' LIMIT 1;");
+        return $db->result($r, 0, "MOD_ID");
+    }
+
+    /*
      * get car model_id name & id
      * from LINK
      * */

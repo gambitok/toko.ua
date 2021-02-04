@@ -1529,7 +1529,8 @@ table thead td { border: 1px solid #000; }
 .rotate__icon { transform: rotate(180deg); }
 
 /* ==== PHONE ==== */
-@media (max-width: 768px) { .fixed-nav { display: flex; }
+@media (max-width: 768px) { .mob-non-display { display: none; }
+  .fixed-nav { display: flex; }
   .sticky { position: relative; }
   .sticky-backdrop-active { left: -100%; opacity: 0; }
   .backdrop-show { left: -100%; opacity: 0; }
@@ -2691,7 +2692,8 @@ table thead td { border: 1px solid #000; }
 
 /*==== Adaptive ====*/
 /* ==== PHONE ==== */
-@media (max-width: 768px) { .fixed-nav { display: flex; }
+@media (max-width: 768px) { .mob-non-display { display: none; }
+  .fixed-nav { display: flex; }
   .sticky { position: relative; }
   .sticky-backdrop-active { left: -100%; opacity: 0; }
   .backdrop-show { left: -100%; opacity: 0; }

@@ -278,7 +278,7 @@ function finishFastOrder(name) {
 function validateOperator(phone) {
     JsHttpRequest.query(folder,{'w':'validateOperator', 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            if (result.content===false) {
+            if (result.content === false) {
                 let text = "{check_phone_data}!";
                 showAlertModal(text, "{error_cap}", 0);
             } else {
@@ -380,7 +380,7 @@ function updateOrderArt() {
 
 function validateForm(name, type) {
     let valid = $("#validate_input_" + name);
-    let variable = "";
+    let variable;
     if (type === "input") {
         variable = $("#input_" + name).val();
     } else {

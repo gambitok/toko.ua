@@ -59,7 +59,7 @@ $(document).ready(function() {
     });
 
     // CHECK LOGIN
-    if ($("#order_user_status").val()==true) {
+    if ($("#order_user_status").val() == true) {
         setTimeout(function() {
             validInfoFields();
         }, 1000);
@@ -68,7 +68,15 @@ $(document).ready(function() {
 });
 
 function getPhone(str) {
-    str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");str = str.replace("_", "");
+    str = str.replace("_", "");
+    str = str.replace("_", "");
+    str = str.replace("_", "");
+    str = str.replace("_", "");
+    str = str.replace("_", "");
+    str = str.replace("_", "");
+    str = str.replace("_", "");
+    str = str.replace("_", "");
+    str = str.replace("_", "");
     str = str.replace("-", "");
     str = str.replace("-", "");
     str = str.replace("+", "");
@@ -108,7 +116,7 @@ function getCityVal() {
                         user_city.append(result.content);
                         var mas = result.content;
                         var len = Object.keys(mas).length;
-                        for (var i=1; i<=len; i++) {
+                        for (var i = 1; i <= len; i++) {
                             var id_city = Object.entries(mas[i])[0][1];
                             var value_city = Object.entries(mas[i])[1][1];
                             addOption(id_city, value_city);
@@ -153,11 +161,12 @@ function getOrderDeliveryBlock() {
         let city_id = $("#user_city").select2("val");
         let block = $(this);
         block.removeClass("orders-block-row-hidden");
-        console.log(delivery_id + ' - ' + city_id);
         JsHttpRequest.query(folder,{'w':'getOrderDeliveryBlock', 'delivery_id':delivery_id, 'city_id':city_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 let status = result.content;
-                if (status == 0) block.addClass("orders-block-row-hidden");
+                if (status == 0) {
+                    block.addClass("orders-block-row-hidden");
+                }
                 if ($("#user_city_np option:selected").val() === undefined) {
                     $("div[data-tab-delivery='4']").addClass("orders-block-row-hidden");
                 }
@@ -219,9 +228,13 @@ function editFields() {
     $("#valid_button").removeClass("none");
     $("#orders-delivery").addClass("none");
     $("#orders-payment").addClass("none");
-    $(".valid_field").each(function() {
-        $(this).prop("disabled", false);
-    });
+    // $(".valid_field").each(function() {
+    //     $(this).prop("disabled", false);
+    // });
+    let user_id = $("#order_cookie_user_id").val();
+    if (user_id == 0 || user_id == undefined) {
+        $("#order_user_id").val(user_id);
+    }
     uncheckRadioDelivery();
     uncheckRadioPayment();
     showOrderInfo();
@@ -296,7 +309,7 @@ function getBasketOrder() {
     let bonus_status = $("#bonus_status").prop("checked");
     $("#orders-basket").html("");
     let delivery_id = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
-    JsHttpRequest.query(folder,{'w':'getBasketOrder', 'delivery_id':delivery_id, bonus_status},
+    JsHttpRequest.query(folder,{'w':'getBasketOrder', 'delivery_id':delivery_id, 'bonus_status':bonus_status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             $("#orders-basket").html(result.content);
         }}, true);
@@ -337,7 +350,7 @@ function validInfoFields() {
             }
         }
         // SELECT FIELD
-        if (data_attr==="select") {
+        if (data_attr === "select") {
             let data_id = "0";
             let data = $(this).select2("data");
             if (data.length !== 0) {
@@ -369,20 +382,20 @@ function validInfoFields() {
                     } else {
                         valid_field.each(function() {
                             $(this).removeClass("not-valid accept-valid");
-                            $(this).prop("disabled", true);
+                            // $(this).prop("disabled", true);
                             $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid accept-valid");
                         });
                         $("#valid_button").addClass("none");
                         $("#orders-delivery").removeClass("none");
                         hideOrderInfo();
                         getUserSavedData(user_id);
+                        $("#order_user_id").val(user_id);
                     }
-                    $("#order_user_id").val(user_id);
                 }}, true);
         } else {
             valid_field.each(function() {
                 $(this).removeClass("not-valid accept-valid");
-                $(this).prop("disabled", true);
+                // $(this).prop("disabled", true);
                 $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid accept-valid");
             });
             $("#valid_button").addClass("none");
@@ -464,7 +477,6 @@ function saveOrder() {
     if (bonus_status === undefined) {
         bonus_status = 0;
     }
-    console.log(bonus_status);
 
     JsHttpRequest.query(folder,{'w':'saveOrder', 'user_id':user_id, 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment, 'recipient_name':recipient_name, 'recipient_phone':recipient_phone, 'bonus_status':bonus_status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
@@ -498,7 +510,7 @@ function setClientOrderInfo(id) {
             let recipient_name = arr["recipient_name"];
             let recipient_phone = arr["recipient_phone"];
 
-            if (recipient_name==="" && recipient_phone==="") {
+            if (recipient_name === "" && recipient_phone === "") {
                 $("input[data-id-recipient='1']").prop("checked", true);
                 $("input[data-id-recipient='2']").prop("checked", false);
             } else {

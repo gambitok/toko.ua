@@ -27,6 +27,7 @@
 </style>
 
 <input type="hidden" id="order_user_id" value="{order_user_id}">
+<input type="hidden" id="order_cookie_user_id" value="{order_user_id}">
 <input type="hidden" id="order_user_status" value="{order_user_status}">
 
 <div class="orders">
@@ -52,7 +53,7 @@
                             <label class="orders-block-row__label" for="user_name">{name_surname}</label>
                         </div>
                         <div class="orders-block-row-content">
-                            <input class="orders-block-row__input valid_field" type="text" name="user_name" id="user_name" data-attr="text" placeholder="{name_surname}"  value="{user_name}">
+                            <input class="orders-block-row__input valid_field" {user_name_disable} type="text" name="user_name" id="user_name" data-attr="text" placeholder="{name_surname}"  value="{user_name}">
                         </div>
                     </div>
                     <div class="orders-block-row">
@@ -60,7 +61,7 @@
                             <label class="orders-block-row__label" for="user_phone">{phone_number}</label>
                         </div>
                         <div class="orders-block-row-content">
-                            <input class="orders-block-row__input masked-phone valid_field" type="tel" placeholder="+38(___) ___-__-__" name="user_phone" id="user_phone" data-attr="phone" value="{user_phone}">
+                            <input class="orders-block-row__input masked-phone valid_field" {user_phone_disable} type="tel" placeholder="+38(___) ___-__-__" name="user_phone" id="user_phone" data-attr="phone" value="{user_phone}">
                         </div>
                     </div>
                     <div class="orders-block-row">

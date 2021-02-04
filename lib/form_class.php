@@ -74,24 +74,6 @@ class FormClass extends CatalogueClass
         return $info;
     }
 
-// SEO
-//    public function getArtBrandLink($art_id, $brand_id) { $db = DbSingleton::getTokoDb();
-//        $link = "";
-//        $r = $db->query("SELECT `STR_ID` FROM `T2_TREE` WHERE `ART_ID`='$art_id';"); $n = $db->num_rows($r);
-//        if ($n>0) {
-//            $str_text = "";
-//            for ($i=1; $i<=$n; $i++) {
-//                $str_id = $db->result($r, $i-1, "STR_ID");
-//                $r1 = $db->query("SELECT `TEX_LINK` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;"); $n1 = $db->query($r1);
-//                if ($n1>0) $str_text = $db->result($r1, 0, "TEX_LINK");
-//                if ($str_text!="") break;
-//            }
-//            $brand_link = $this->getBrandLink($brand_id);
-//            if ($str_text!="") $link = "https://toko.ua/catalog/$str_text/brandy=$brand_link/";
-//        }
-//        return $link;
-//    }
-
     /*
      * show article form
      * */
@@ -124,7 +106,6 @@ class FormClass extends CatalogueClass
         }
         $format_article = $this->getFormatAticle($article_nr_displ);
 
-        // $brand_link = $this->getArtBrandLink($art_id, $brand_id);
         $brand_link = "";
         $flagData = $this->getCountryFlag($brand_id);
         if ($flagData !== false) {
@@ -972,10 +953,8 @@ class FormClass extends CatalogueClass
             $form_list = str_replace("{mfa_link}", $mfa_link, $form_list);
             $list .= $form_list;
         }
-
         $form = $this->getHtmlForm("menu/seo_details");
         $form = str_replace("{details_range}", $list, $form);
-
         return $form;
     }
 

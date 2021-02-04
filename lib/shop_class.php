@@ -759,6 +759,8 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{user_email}", $user_email, $form);
         $form = str_replace("{basket_range}", $this->getBasketOrder(), $form);
         $form = str_replace("{order_user_status}", $status, $form);
+        $form = str_replace("{user_name_disable}", ($user_id > 0) ? "disabled" : "", $form);
+        $form = str_replace("{user_phone_disable}", ($user_id > 0) ? "disabled" : "", $form);
         $form = $this->replaceLang($form);
         return $form;
     }

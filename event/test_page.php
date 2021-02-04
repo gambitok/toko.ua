@@ -1,5 +1,9 @@
 <?php
 
+
+$content = str_replace("{main_window}", $catalogue->showCatalogRow(), $content);
+
+
 //print_r($menu->getSecretArticle("oc90"));
 //$content = str_replace("{main_window}", $menu->getCatalogFaqForm(), $content);
 

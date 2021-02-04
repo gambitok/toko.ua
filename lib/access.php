@@ -748,3 +748,27 @@ function getSeoText($seo_text) {
     $form = str_replace("{seo_text}", $seo_text, $form);
     return $form;
 }
+
+function getSeoBreadcrumbs($str_id, $mfa_id, $mod, $mod_id) {
+    $automan = new AutoClass();
+    $list = "";
+    if ($str_id > 0) {
+        $str_name = $automan->getStrNewDescr($str_id);
+        if ($str_name == "") {
+            $str_name = $automan->getStrDescr($str_id);
+        }
+        $list .= "{seo_shop_toko} >> {spare_parts_catalog_cap} >> $str_name";
+    }
+    if ($mfa_id > 0) {
+        $mfa_name = $automan->getMfaBrand($mfa_id);
+        $list .= " >> $mfa_name";
+    }
+    if ($mod != "") {
+        $list .= " >> $mod";
+    }
+    if ($mod_id > 0) {
+        $mod_id_name = $automan->getModIdLink($mod_id);
+        $list .= " >> $mod_id_name";
+    }
+    return $list;
+}

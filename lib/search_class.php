@@ -40,7 +40,9 @@ class SearchClass extends CatalogueClass
             $count_arts = $parts->getPartsCount($str_id, $active_filters);
             $count = $parts->products_on_page;
             $pages_count = ceil($count_arts / $count);
-            if ($count_arts < $count) $pages_count = 1;
+            if ($count_arts < $count) {
+                $pages_count = 1;
+            }
 
             $where_arts = $parts->initPartsArts($str_id);
             $brand_ids = $this->getBrandIds($where_arts);
@@ -49,6 +51,10 @@ class SearchClass extends CatalogueClass
             $filters_form = $this->printBrandsList(array_unique($brand_ids), array_unique($active_filters), $this->getActualLink());
 
             $details_listing = "";
+//            if (count($active_filters) == 0 && $mfa_link !== "") {
+//                $details_listing = "<!--seo_text_start--><!--seo_text_end-->";
+//            }
+
             if (count($active_filters) == 1) {
                 $details_listing = $this->getSeoLinking($str_id, $h1, $filters, $brands);
             }
@@ -198,22 +204,18 @@ class SearchClass extends CatalogueClass
     {
         $automan = new AutoClass();
         $h1_text = "";
-
         if ($str_link != "") {
             $str_name = $automan->getStrNewDescr($automan->getStrNewLinkStr($str_link));
             $h1_text .= "$str_name ";
         }
-
         if ($mfa_link != "") {
             $mfa_name = $automan->getMfaBrand($automan->getMfaLink($mfa_link));
             $h1_text .= "$mfa_name ";
         }
-
         if ($mod_link != "") {
             $mod_name = $automan->getModLink($mod_link);
             $h1_text .= "$mod_name ";
         }
-
         return $h1_text;
     }
 
@@ -522,8 +524,7 @@ class SearchClass extends CatalogueClass
     public function getCountSearchList($art_ids, $where_brands)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("
-        SELECT COUNT(*) as count_arts FROM (
+        $r = $db->query("SELECT COUNT(*) as count_arts FROM (
         SELECT AA.ART_ID FROM (
             SELECT t2a.ART_ID FROM `T2_ARTICLES` t2a
                 LEFT JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
@@ -535,16 +536,14 @@ class SearchClass extends CatalogueClass
                 LEFT JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID=t2a.BRAND_ID)
             WHERE t2a.ART_ID IN ($art_ids) $where_brands AND t2asc.AMOUNT>0 
         ) as AA GROUP BY AA.ART_ID 
-        ) as AB
-        ");
+        ) as AB");
         return $db->result($r, 0, "count_arts") + 0;
     }
 
     public function getBrandIds($art_ids)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("       
-        SELECT AA.BRAND_ID FROM (
+        $r = $db->query("SELECT AA.BRAND_ID FROM (
             SELECT t2a.BRAND_ID FROM `T2_ARTICLES` t2a
                 LEFT JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
                 LEFT JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID=t2a.BRAND_ID)
@@ -554,8 +553,7 @@ class SearchClass extends CatalogueClass
                 LEFT JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
                 LEFT JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID=t2a.BRAND_ID)
             WHERE t2a.ART_ID IN ($art_ids) AND t2asc.AMOUNT>0 
-        ) as AA GROUP BY AA.BRAND_ID 
-        ");
+        ) as AA GROUP BY AA.BRAND_ID");
         $n = $db->num_rows($r);
         $brands = [];
         for ($i = 1; $i <= $n; $i++) {
@@ -639,7 +637,7 @@ class SearchClass extends CatalogueClass
             $link .= $this->getBrandLink($brand_id);
         }
         $link = rtrim($link, ",");
-        $link = ($link != "") ? $actual_link . "brandy=$link" : $link = $actual_link;
+        $link = ($link != "") ? $actual_link . "brandy=$link" : $actual_link;
         return $link;
     }
 
