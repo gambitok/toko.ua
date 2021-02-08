@@ -51,9 +51,6 @@ class SearchClass extends CatalogueClass
             $filters_form = $this->printBrandsList(array_unique($brand_ids), array_unique($active_filters), $this->getActualLink());
 
             $details_listing = "";
-//            if (count($active_filters) == 0 && $mfa_link !== "") {
-//                $details_listing = "<!--seo_text_start--><!--seo_text_end-->";
-//            }
 
             if (count($active_filters) == 1) {
                 $details_listing = $this->getSeoLinking($str_id, $h1, $filters, $brands);
@@ -383,47 +380,6 @@ class SearchClass extends CatalogueClass
         }
         return $active_filters;
     }
-
-//    public function getDetailsForm($str_id, $page, $current_products, $active_products, $status_filters)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $limit = $this->getSearchLimit($page);
-//
-//        if ($status_filters) {
-//            if (!empty($active_products)) {
-//                // filter_products
-//                $arts = implode(",", $active_products);
-//                $where_arts = " AND t2t.ART_ID IN ($arts)";
-//            } else {
-//                // none products
-//                $where_arts = " AND t2t.ART_ID IN (0)";
-//            }
-//        } else {
-//            // all products
-//            $current_products_arts = implode(",", array_keys($this->getExistedProducts($current_products)));
-//            $where_arts = " AND t2t.ART_ID IN ($current_products_arts)";
-//        }
-//
-//        $art_ids = [];
-//        $r = $db->query("SELECT t2t.`ART_ID`, t2a.`BRAND_ID` FROM `T2_TREE` t2t
-//            LEFT JOIN `T2_ARTICLES` t2a ON t2a.ART_ID=t2t.ART_ID
-//        WHERE t2t.`STR_ID`=$str_id $where_arts GROUP BY t2t.ART_ID $limit;");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id = $db->result($r, $i - 1, "ART_ID");
-//            array_push($art_ids, $art_id);
-//        }
-//        $where_art_ids = implode(",", $art_ids);
-//
-//        if ($where_art_ids == "") {
-//            $list = $this->replaceLang($this->getHtmlForm("error/404_found"));
-//        } else {
-//            $where_art_ids = trim($where_art_ids, ",");
-//            list($list) = $this->searchList($where_art_ids, 1, 1);
-//        }
-//
-//        return $list;
-//    }
 
     public function getCurrentDetails($str_id)
     {
@@ -860,52 +816,6 @@ class SearchClass extends CatalogueClass
         return $groups;
     }
 
-//    public function getSeoArticleLinking($art_id)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `TEXT` FROM `SEO_ART_STR` WHERE `ART_ID`='$art_id' LIMIT 1;");
-//        $n = $db->num_rows($r);
-//
-//        if ($n == 0) {
-//            $main_h1 = "";
-//            $text = $this->getArticleName($art_id);
-//            $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
-//            $article_nr_displ = $this->getArticleDispl($art_id);
-//
-//            $page_h1 = "$text $brand_name $article_nr_displ - {seo_title_article}";
-//
-//            $dataProduct = $this->getRandomArticles();
-//            $product1 = $dataProduct[0];
-//            $product2 = $dataProduct[1];
-//            $product3 = $dataProduct[2];
-//
-//            $dataBrand = $this->getRandomBrands(2);
-//            $tags_brand_1 = $dataBrand[0];
-//            $tags_brand_2 = $dataBrand[1];
-//
-//            $geo_nominative = $this->getSeoLinkingParam("CITY", 1);
-//            $cat_random = $this->getSeoLinkingParam("CATEGORY", 1);
-//            $bigramma_random = $this->getSeoLinkingParam("GRAMMA", 1);
-//
-//            $list = "{_still_search} $main_h1? {_go_store_toko} {_choose_best} : $product1, $product2 {or_cap} $product3. {_lowest_prices} $cat_random {_high_quality_category} $main_h1. {_cooperate} {_popular_brands} $tags_brand_1 {and_cap} $tags_brand_2, {_presented_in_section} $cat_random. {_most_reliable} $bigramma_random. {_right_choice} $page_h1. {_fast_order} $geo_nominative {_other_cities} .";
-//
-//            $list = $this->replaceLang($list);
-//            $list = str_replace(str_split("{}"), "", $list);
-//            $list = explode(" ", $list);
-//            $seo_text = "";
-//
-//            foreach ($list as $value) {
-//                $value = $this->getSeoListingValue($value);
-//                $seo_text .= "$value ";
-//            }
-//
-//        } else {
-//            $seo_text = $db->result($r, 0, "TEXT");
-//        }
-//
-//        return $seo_text;
-//    }
-
     /*
      * SEO BLOCK: MFA + MODEL
      * https://toko.ua/cars/acura/mdx
@@ -1097,7 +1007,6 @@ class SearchClass extends CatalogueClass
         $n = $db->num_rows($r);
 
         if ($n == 0) {
-
             $head_id = $automan->getHeadStr($str_id);
             $head_text = $automan->getHeadNewDescr($head_id)["text"];
             $parrent_h1 = $head_text;
@@ -1160,17 +1069,6 @@ class SearchClass extends CatalogueClass
         $params = implode(", ", $params);
         return $params;
     }
-
-//    public function getSeoLinkingMfaModel()
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY RAND() LIMIT 1;");
-//        $mfa_id = $db->result($r, 0, "MFA_ID");
-//        $mfa_text = $db->result($r, 0, "MFA_BRAND");
-//        $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' ORDER BY RAND() LIMIT 1;");
-//        $mod_text = $db->result($r, 0, "Model");
-//        return array($mfa_text, $mod_text);
-//    }
 
     public function getRandomManuf($limit = 1)
     {

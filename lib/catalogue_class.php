@@ -1863,17 +1863,18 @@ class CatalogueClass
         $form = str_replace("{style_none}", $none, $form);
         $form = str_replace("{style_hide}", $hide, $form);
 
-        if ($view) {
-            $link = $ll;
-            $search_number = $this->getArticleSearch($art_id);
-            $brand_link = $this->getBrandLink($brand_id);
-            $link = str_replace("{content_prefix}", $prefix, $link);
-            $link = str_replace("{content_search_number}", $search_number, $link);
-            $link = str_replace("{content_brand_link}", $brand_link, $link);
-            $form = str_replace("{product_test_offers}", $link, $form);
-        } else {
-            $form = str_replace("{product_test_offers}", "", $form);
-        }
+//        if ($view) {
+//            $link = $ll;
+//            $search_number = $this->getArticleSearch($art_id);
+//            $brand_link = $this->getBrandLink($brand_id);
+//            $link = str_replace("{content_prefix}", $prefix, $link);
+//            $link = str_replace("{content_search_number}", $search_number, $link);
+//            $link = str_replace("{content_brand_link}", $brand_link, $link);
+//            $form = str_replace("{product_test_offers}", $link, $form);
+//        }
+//        else {
+//            $form = str_replace("{product_test_offers}", "", $form);
+//        }
 
         $flagData = $showform->getCountryFlag($brand_id);
         $form = str_replace("{country_display}", (!$flagData) ? "none" : "", $form);
@@ -3005,15 +3006,189 @@ class CatalogueClass
      * CATALOG ROW
      * */
 
-    function showCatalogRow()
+    public function getHeadRowName($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_RU` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        return $db->result($r, 0, "TEX_RU");
+    }
+
+    public function getHeadRowLink($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        return $db->result($r, 0, "TEX_LINK");
+    }
+
+    public function getHeadRowImage($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `IMAGES` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        return $db->result($r, 0, "IMAGES");
+    }
+
+    public function getCatRowName($cat_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID`='$cat_id' LIMIT 1;");
+        $name = $db->result($r, 0, "TEX_RU");
+        if ($cat_id == 0) {
+            $name = $this->replaceLang("{popular_goods_cap}");
+        }
+        return $name;
+    }
+
+    public function getCatRowLink($cat_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID`='$cat_id' LIMIT 1;");
+        return $db->result($r, 0, "TEX_LINK");
+    }
+
+    public function getGroupRowName($group_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        return $db->result($r, 0, "TEX_RU");
+    }
+
+    public function getGroupRowLink($group_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        return $db->result($r, 0, "TEX_LINK");
+    }
+
+    public function getMaxPosition($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT MAX(`COL`) as max_col, MAX(`ROW`) as max_row FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id';");
+        $max_col = $db->result($r, 0, "max_col") + 1;
+        $max_row = $db->result($r, 0, "max_row") + 1;
+        return array($max_col, $max_row);
+    }
+
+    /*
+     * Show Catalog TEST FORM
+     * */
+    public function showCatalogRow()
     {
         $form = $this->getHtmlForm("catalog_menu/form");
-        $list = $this->getCatalogRowList();
-        $form = str_replace("{catalog_range}", $list, $form);
+        $form = str_replace("{catalog_range}", $this->getCatalogRowList(), $form);
+        $form = str_replace("{catalog_range_view}", $this->getCatalogColList(), $form);
         return $form;
     }
 
-    function getCatalogRowList()
+    /*
+     * Tree GRID Headers
+     * */
+    public function getCatalogColList()
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            for ($i = 1; $i <= $n; $i++) {
+                $head_id = $db->result($r, $i - 1, "HEAD_ID");
+                $head_name = $this->getHeadRowName($head_id);
+                $head_img = $this->getHeadRowImage($head_id);
+                $head_content = $this->getCatalogColListCat($head_id);
+                $list .= "<div class='tree-heads__item'>
+                    <input type='checkbox' id='toggle-head-$head_id'>
+                    <label for='toggle-head-$head_id'>
+                        <div id='tree_head-$head_id' class='tree-heads__item-title'>
+                            <div class='tree-heads__item-image'>
+                                <img src=\"/uploads/images/group_tree_head/$head_img\" alt='$head_name'>
+                            </div>
+                            <div class='tree-heads__item-text'>
+                                $head_name
+                            </div>
+                            <div class='tree-heads__item-arrow'>
+                                <i class='fa fa-chevron-right rotate_animation'></i>
+                            </div>
+                        </div>
+                    </label>
+                    <div id='toggle-head-$head_id' class='tree-cat' style='display: none;'>
+                        $head_content
+                    </div>
+                </div>";
+            }
+        }
+        return $list;
+    }
+
+    /*
+     * Tree GRID Categories
+     * */
+    public function getCatalogColListCat($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $head_link = $this->getHeadRowLink($head_id);
+        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id' ORDER BY `COL` ASC, `ROW` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $cat_id = $db->result($r, $i - 1, "CAT_ID");
+            $cat_name = $this->getCatRowName($cat_id);
+            $cat_link = $this->getCatRowLink($cat_id);
+            $group_list = $this->getCatalogColListGroup($head_id, $cat_id);
+            $list .= "<div class='tree-cat__item'>
+                <div class='tree-cat__item-title'>
+                    <a href='/catalog/$head_link/$cat_link'>$cat_name</a>
+                </div>
+                <div class='tree-group'>
+                    $group_list    
+                </div>
+            </div>";
+        }
+        return $list;
+    }
+
+    /*
+     * Tree GRID Groups
+     * */
+    public function getCatalogColListGroup($head_id, $cat_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT t2hcg.`GROUP_ID` FROM `T2_TREE_HCG_EXIST` t2hcg
+            LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON t2g.GROUP_ID = t2hcg.GROUP_ID
+        WHERE t2hcg.`HEAD_ID`='$head_id' AND t2hcg.`CAT_ID`='$cat_id' AND t2g.`STATUS`=1;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $db->result($r, $i - 1, "GROUP_ID");
+            $group_name = $this->getGroupRowName($group_id);
+            $group_link = $this->getGroupRowLink($group_id);
+            $list .= "<div class='tree-group__item'>
+                <div class='tree-group__item-image'><img src='/images/tree-group/group_1.jpg' alt='$group_name'></div>
+                <div class='tree-group__item-text'>
+                    <a href='/catalog/$group_link'>$group_name</a>
+                </div>
+            </div>";
+        }
+        if ($cat_id == 0) {
+            $r = $db->query("SELECT * FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `POPULAR`=1;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $group_id = $db->result($r, $i - 1, "GROUP_ID");
+                $group_name = $this->getGroupRowName($group_id);
+                $group_link = $this->getGroupRowLink($group_id);
+                $list .= "<div class='tree-group__item'>
+                    <div class='tree-group__item-image'><img src='/images/tree-group/group_1.jpg' alt='$group_name'></div>
+                    <div class='tree-group__item-text'>
+                        <a href='/catalog/$group_link'>$group_name</a>
+                    </div>
+                </div>";
+            }
+        }
+        return $list;
+    }
+
+    /*
+     * Tree List Headers
+     * */
+    public function getCatalogRowList()
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
@@ -3023,67 +3198,77 @@ class CatalogueClass
             $head_id = $db->result($r, $i - 1, "HEAD_ID");
             $head_name = $this->getHeadRowName($head_id);
             $list .= "<li class='' style='height: 60px;'>
-                <a onclick='getHeaderContent(\"$head_id\")'>$head_name</a>
+                <a style='color: white;' onclick='getHeaderContent(\"$head_id\")'>$head_name</a>
             </li>";
         }
-
         return $list;
     }
 
-    function getHeadRowName($head_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
-        return $db->result($r, 0, "TEX_RU");
-    }
-
-    function getCatRowName($cat_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID`='$cat_id' LIMIT 1;");
-        return $db->result($r, 0, "TEX_RU");
-    }
-
-    function getGroupRowName($group_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
-        return $db->result($r, 0, "TEX_RU");
-    }
-
-    function getHeaderContent($head_id)
+    /*
+     * Show Tree List Categories
+     * */
+    public function getHeaderContent($head_id)
     {
         $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("catalog_menu/list");
         $list = "";
-
-        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
-        $column_id = $db->result($r, 0, "COLUMN_ID");
-        $width = $db->result($r, 0, "WIDTH"); if ($width <=0) $width = 1;
-
-        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `COLUMN_ID`='$column_id' ORDER BY `POSITION` ASC;");
+        $arr = [];
+        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id' ORDER BY `COL` ASC, `ROW` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = $db->result($r, $i - 1, "CAT_ID");
-            $cat_name = $this->getCatRowName($cat_id);
-            $list .= "<div class='tree-item' style='width: calc(100% / $width)'>";
-            $list .= "<div class='tree-item-title'><a href='/'>$cat_name</a></div>";
-            $list .= $this->getCatRowGroupList($head_id, $cat_id);
+            $col = $db->result($r, $i - 1, "COL");
+            $row = $db->result($r, $i - 1, "ROW");
+            $arr[$col][$row] = $cat_id;
+        }
+        list($max_col, ) = $this->getMaxPosition($head_id);
+        if ($n > 0) {
+            $list = "<div class='tree-block'>";
+            foreach ($arr as $col_id => $rows) {
+                $list .= "<div class='tree-block__col' style='width: calc(100% / $max_col)'>";
+                foreach ($rows as $row_id => $cat_id) {
+                    $cat_name = $this->getCatRowName($cat_id);
+                    $group_list = $this->getTreeConsGroupList($head_id, $cat_id);
+                    $icon = "";
+                    if ($cat_id == 0) {
+                        $icon = "<i class='fa fa-circle' style='margin-right: 5px; color: #f44438'></i>";
+                    }
+                    $list .= "<div>
+                        <div class='tree-item'>
+                            <div class='tree-item-title'>
+                                <a href='/'>$icon$cat_name</a>
+                            </div>
+                            <div class='tree-item-list'>$group_list</div>
+                        </div>
+                    </div>";
+                }
+                $list .= "</div>";
+            }
             $list .= "</div>";
         }
-
         $form = str_replace("{content_range}", $list, $form);
-
         return $form;
     }
 
-    function getCatRowGroupList($head_id, $cat_id) {
+    /*
+     * Tree List Groups
+     * */
+    public function getTreeConsGroupList($head_id, $cat_id)
+    {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT * FROM `T2_TREE_HCG_EXIST` WHERE `CAT_ID`='$cat_id' AND `HEAD_ID`='$head_id';");
+        $r = $db->query("SELECT * FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `CAT_ID`='$cat_id';");
         $n = $db->num_rows($r);
-        if ($n > 0) {
-            $list .= "<div class='tree-item-list'>";
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $db->result($r, $i - 1, "GROUP_ID");
+            $group_name = $this->getGroupRowName($group_id);
+            $list .= "<div class='tree-item-list__element'>
+                <a href='/'>$group_name</a>
+            </div>";
+        }
+        if ($cat_id == 0) {
+            $r = $db->query("SELECT * FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `POPULAR`=1;");
+            $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
                 $group_name = $this->getGroupRowName($group_id);
@@ -3091,11 +3276,31 @@ class CatalogueClass
                     <a href='/'>$group_name</a>
                 </div>";
             }
-            $list .= "</div>";
         }
         return $list;
     }
 
+//    public function getCatRowGroupList($head_id, $cat_id) {
+//        $db = DbSingleton::getTokoDb();
+//        $list = "";
+//        $r = $db->query("SELECT t2hcg.'GROUP_ID' FROM `T2_TREE_HCG_EXIST` t2hcg
+//            LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON t2g.GROUP_ID = t2hcg.GROUP_ID
+//        WHERE t2hcg.`CAT_ID`='$cat_id' AND t2hcg.`HEAD_ID`='$head_id' AND t2g.STATUS=1;");
+//        $n = $db->num_rows($r);
+//        if ($n > 0) {
+//            $list .= "<div class='tree-item-list'>";
+//            for ($i = 1; $i <= $n; $i++) {
+//                $group_id = $db->result($r, $i - 1, "GROUP_ID");
+//                $group_name = $this->getGroupRowName($group_id);
+//                $list .= "<div class='tree-item-list__element'>
+//                    <a href='/'>$group_name</a>
+//                </div>";
+//            }
+//            $list .= "</div>";
+//        }
+//        return $list;
+//    }
+//
 //    function showCatalogRow()
 //    {
 //        $form = $this->getHtmlForm("catalog_row/form");

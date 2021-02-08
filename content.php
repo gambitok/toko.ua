@@ -49,10 +49,6 @@ if ($_REQUEST["w"] == "showProfilePrice") {
     $GLOBALS['_RESULT'] = array("content" => $profile->showPriceList());
 }
 
-//if ($_REQUEST["w"] == "getPriceList") {
-//    $GLOBALS['_RESULT'] = array("content" => $profile->getPriceList());
-//}
-
 if ($_REQUEST["w"] == "setPriceList") {
     $GLOBALS['_RESULT'] = array("content" => $profile->setPriceList());
 }
@@ -429,14 +425,11 @@ if ($_REQUEST["w"] == "showSearchParameters") {
     $GLOBALS['_RESULT'] = array("content" => $search->showSearchParameters($_REQUEST["str_id"], $_REQUEST["page"], $_REQUEST["active_filters"], $_REQUEST["type"]));
 }
 
-/*
- * MENU
- * */
+/*==== MENU ====*/
 
 if ($_REQUEST["w"] == "getHeaderContent") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->getHeaderContent($_REQUEST["head_id"]));
 }
-
 
 //
 //if ($_REQUEST["w"] == "setParamsAuto") {

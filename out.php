@@ -134,11 +134,12 @@ if ($url == "catalog") {
     if (!empty($arr[1])) {
         ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
     }
+
     // check brandy
     $brand_filters = $search->getActiveFilters($filters);
     $active_filters = $brand_filters[0];
-    if (count($active_filters) == 1) {
 
+    if (count($active_filters) == 1) {
         $str_id = $automan->getStrNewLinkStr($str_link);
         $str_name = $automan->getStrDescr($str_id);
         $mfa_id = $automan->getMfaLink($mfa_link);
@@ -146,18 +147,23 @@ if ($url == "catalog") {
         $mod_id = $automan->getModIdCode($mod_id_link);
         $brand_name = $catalogue->getBrandName($active_filters[0]);
 
-        $content .= "<!--seoshield_formulas--fil-traciya-->";
-        $content .= "<!--ss_selected_filters_info|brandy|$brand_name-->";
-//        $content .= "<!--product_in_listingEX-->";
-//        $content .= "<!--ss_pagination_page-->";
-//        $content .= "<!--ss_category_name:$str_name-->";
+        $seo_content = "";
+        $seo_content .= "<!--isset_listing_page-->";
+        $seo_content .= "<!--product_in_listingEX-->";
+
+        $seo_content .= "<!--seoshield_formulas--fil-traciya-->";
+        $seo_content .= "<!--ss_selected_filters_info|brandy|$brand_name-->";
 
         $seo_breadcrumb = getSeoBreadcrumbs($str_id, $mfa_id, $mod, $mod_id);
         $seo_breadcrumb = $automan->replaceLang($seo_breadcrumb);
-        $content .= "<!--ss_breadcrums_list:$seo_breadcrumb-->";
+        $seo_content .= "<!--ss_breadcrums_list:$seo_breadcrumb-->";
+
+        $content = str_replace("{main_seo_products_content}", $seo_content, $content);
     }
 
 }
+
+$content = str_replace("{main_seo_products_content}", "", $content);
 
 $content = str_replace("{main_seo_text_cars}", "", $content);
 

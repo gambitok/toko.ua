@@ -1,5 +1,9 @@
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
+    
+    .mob-non-display {
+        display: none;
+    }
 
     .fixed-nav {
         display: flex;

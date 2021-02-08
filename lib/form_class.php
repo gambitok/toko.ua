@@ -501,7 +501,8 @@ class FormClass extends CatalogueClass
         }
     }
 
-    public function showPhotoCertificates($brand_id) {
+    public function showPhotoCertificates($brand_id)
+    {
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $arr = [];
@@ -773,7 +774,9 @@ class FormClass extends CatalogueClass
             if (strlen($d_end) == 6) {
                 $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
             }
-            if ($d_end == "" || $d_end == "-") $d_end = "{cur_time}";
+            if ($d_end == "" || $d_end == "-") {
+                $d_end = "{cur_time}";
+            }
             $list .= "<li class=\"list-inline\">
                 <a onclick=\"loadApplicModelsInfo2('$art_id','$typ_id')\" id=\"mm_car$typ_id\">$model ($d_start-$d_end)</a> 
                 <div id=\"AMI$typ_id\"></div>
@@ -835,7 +838,7 @@ class FormClass extends CatalogueClass
         }
         $form = $this->getHtmlForm("cat_modif_group_form");
         $form = str_replace("{list}", $list, $form);
-        $form = "<div>" . $form . "</div>";
+        $form = "<div>$form</div>";
         $form = $this->replaceLang($form);
         return $form;
     }
@@ -863,7 +866,7 @@ class FormClass extends CatalogueClass
             $class = (!$display) ? "info__table" : "info__table_min";
             $info .= "<table class='$class'>";
             $max = $n;
-            $type ?: $n <= 5 ?: $max = 5;
+            $type ?: ($n <= 5) ?: $max = 5;
             for ($i = 1; $i <= $max; $i++) {
                 $text = $db->result($r, $i - 1, "TEXT");
                 $value = $db->result($r, $i - 1, "VALUE");
