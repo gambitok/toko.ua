@@ -1876,7 +1876,8 @@ header {
     display: block;
     &__item {
         display: block;
-        border-bottom: 1px solid #ddd;
+       // margin-bottom: 15px;
+        border-bottom: 1px solid #ccc;
         label {
             cursor: pointer;
             margin: 0;
@@ -1887,25 +1888,28 @@ header {
             &:checked ~ div {
                 display: block!important;
             }
-            &:checked ~ label .tree-heads__item-title {
-                background: #ffb74f;
-                color: #fff;
-                i {
-                    transform: rotate(90deg);
-                }
-            }
+            //&:checked ~ label .tree-heads__item-title {
+            //    background: #ffb74f;
+            //    color: #fff;
+            //    i {
+            //        transform: rotate(90deg);
+            //    }
+            //}
         }
-        &-title {
+        &-header {
             display: flex;
             align-items: center;
             padding: 15px;
+            background: #fff!important;
             &:hover {
-                background: #f5f5f5;
+                // opacity: 0.85;
+                filter: brightness(0.9);
             }
         }
         &-image {
-            width: 20%;
-            display: flex;
+            width: 50%;
+            display: block;
+            text-align: right;
             align-items: center;
             img {
                 width: auto;
@@ -1914,32 +1918,47 @@ header {
             }
         }
         &-text {
-            font-size: 20px;
-            font-weight: 500;
-            text-align: right;
+            text-align: left;
             padding-right: 15px;
-            width: 80%;
+            width: 50%;
             transition: .5s ease-in-out;
-
         }
-        &-arrow {
-            text-align: right;
+        &-title {
+            display: block;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            // text-shadow: 2px 2px #707883;
+            color: #000;
+        }
+        &-descr {
+            display: block;
+            font-size: 14px;
+            color: #707883;
+            text-transform: uppercase;
+            font-weight: 400;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     }
 }
 
 .tree-cat {
-    margin-top: 30px;
     &__item {
         margin-bottom: 10px;
         &-title {
-            color: #0c5460;
-            font-size: 16px;
-            font-weight: bold;
+            color: #000;
+            font-size: 14px;
+            font-weight: 500;
             margin-bottom: 10px;
-            padding: 0 10px;
+            padding: 15px;
+            background: #ddd;
             a {
-                color: #0c5460;
+                color: #707883;
+                text-transform: uppercase;
             }
         }
     }
@@ -1963,7 +1982,7 @@ header {
         }
         &-text {
             color: #000;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             text-align: center;
             a {

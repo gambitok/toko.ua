@@ -753,7 +753,7 @@ header { width: 100%; color: #a9a9a9; }
 /*==== TREE ROW ====*/
 .tree-heads { display: block; }
 
-.tree-heads__item { display: block; border-bottom: 1px solid #ddd; }
+.tree-heads__item { display: block; border-bottom: 1px solid #ccc; }
 
 .tree-heads__item label { cursor: pointer; margin: 0; width: 100%; }
 
@@ -761,29 +761,25 @@ header { width: 100%; color: #a9a9a9; }
 
 .tree-heads__item input[type="checkbox"]:checked ~ div { display: block !important; }
 
-.tree-heads__item input[type="checkbox"]:checked ~ label .tree-heads__item-title { background: #ffb74f; color: #fff; }
+.tree-heads__item-header { display: flex; align-items: center; padding: 15px; background: #fff !important; }
 
-.tree-heads__item input[type="checkbox"]:checked ~ label .tree-heads__item-title i { transform: rotate(90deg); }
+.tree-heads__item-header:hover { filter: brightness(0.9); }
 
-.tree-heads__item-title { display: flex; align-items: center; padding: 15px; }
-
-.tree-heads__item-title:hover { background: #f5f5f5; }
-
-.tree-heads__item-image { width: 20%; display: flex; align-items: center; }
+.tree-heads__item-image { width: 50%; display: block; text-align: right; align-items: center; }
 
 .tree-heads__item-image img { width: auto; height: 120px; max-width: 100%; }
 
-.tree-heads__item-text { font-size: 20px; font-weight: 500; text-align: right; padding-right: 15px; width: 80%; transition: .5s ease-in-out; }
+.tree-heads__item-text { text-align: left; padding-right: 15px; width: 50%; transition: .5s ease-in-out; }
 
-.tree-heads__item-arrow { text-align: right; }
+.tree-heads__item-title { display: block; font-size: 20px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #000; }
 
-.tree-cat { margin-top: 30px; }
+.tree-heads__item-descr { display: block; font-size: 14px; color: #707883; text-transform: uppercase; font-weight: 400; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
 .tree-cat__item { margin-bottom: 10px; }
 
-.tree-cat__item-title { color: #0c5460; font-size: 16px; font-weight: bold; margin-bottom: 10px; padding: 0 10px; }
+.tree-cat__item-title { color: #000; font-size: 14px; font-weight: 500; margin-bottom: 10px; padding: 15px; background: #ddd; }
 
-.tree-cat__item-title a { color: #0c5460; }
+.tree-cat__item-title a { color: #707883; text-transform: uppercase; }
 
 .tree-group { display: flex; flex-wrap: wrap; align-items: baseline; }
 
@@ -791,7 +787,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .tree-group__item-image img { display: block; margin: 0 auto; width: 100%; }
 
-.tree-group__item-text { color: #000; font-size: 14px; font-weight: 500; text-align: center; }
+.tree-group__item-text { color: #000; font-size: 13px; font-weight: 500; text-align: center; }
 
 .tree-group__item-text a { color: #000; word-wrap: break-word; }
 
