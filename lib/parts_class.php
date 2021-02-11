@@ -8,19 +8,17 @@ class PartsClass extends CatalogueClass
 
     public $products_on_page = 25;
 
-    public function getHeadFromStr($str_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");
-        return $db->result($r, 0, "HEAD_ID");
-    }
+//    public function getHeadFromStr($str_id)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");
+//        return $db->result($r, 0, "HEAD_ID");
+//    }
 
     public function getInitForm($str_id)
     {
         $result = $this->initPartsTable($str_id);
-        return "<div class='content'>
-            $result
-        </div>";
+        return "<div class='content'>$result</div>";
     }
 
     public function initPartsTable($str_id)
@@ -95,6 +93,32 @@ class PartsClass extends CatalogueClass
 
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
     }
+
+//    public function initPartsMfaTable($str_id)
+//    {
+//        // T2_LINKS
+//        // XX_TABLE_TREE_$str_id
+//        $db = DbSingleton::getTokoDb();
+//        $dbc = DbSingleton::getTokoCacheDb();
+//
+//        $arts = [];
+//        $r = $dbc->query("SELECT `art_id` FROM `XX_TABLE_TREE_$str_id` WHERE 1;");
+//        $n = $dbc->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $dbc->result($r, $i - 1, "art_id");
+//            array_push($arts, $art_id);
+//        }
+//
+//        $where_arts = implode(",", $arts);
+//
+//        $r = $db->query("SELECT * FROM `T2_LINKS` WHERE `ART_ID` IN ($where_arts);");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//
+//        }
+//
+//        return "";
+//    }
 
     public function showPartsForm()
     {
@@ -220,23 +244,6 @@ class PartsClass extends CatalogueClass
         return array("form" => $form, "filters" => $filters, "brands" => $brands);
     }
 
-//    public function getPartsBrandForm($str_id) { $dbc = DbSingleton::getTokoCacheDb();
-//        $list = "<ul class=\"list-inline\">";
-//        $r = $dbc->query("SELECT `brand_id` FROM `XX_TABLE_TREE_$str_id` GROUP BY `brand_id`;"); $n = $dbc->num_rows($r);
-//        for ($i=1; $i<=$n; $i++) {
-//            $brand_id = $dbc->result($r,$i-1,"brand_id");
-//            $brand_name = $this->getBrandName($brand_id);
-//            $brand_link = $this->getBrandLink($brand_id);
-//            $label = "<i class=\"far fa-square\"></i>";
-//            if (!empty($brands_ch)) {
-//                if (in_array($brand_id, $brands_ch)) $label = "<i class=\"fa fa-check-square\"></i>";
-//            }
-//            $list.="<li><a class=\"pointer\" href=\"?brandy=$brand_link\">$label $brand_name</a></li>";
-//        }
-//        $list.="</ul>";
-//        return $list;
-//    }
-
     public function initPartsArts($str_id)
     {
         $dbc = DbSingleton::getTokoCacheDb();
@@ -254,29 +261,30 @@ class PartsClass extends CatalogueClass
     {
         $count = $this->products_on_page;
         $off = $count * $page - $count;
-        $off >= 0 ? $limit = " LIMIT $count OFFSET $off" : $limit = "";
-        return $limit;
+        return ($off >= 0) ? " LIMIT $count OFFSET $off" : "";
     }
 
     public function getPartsPaginationForm($n, $page)
     {
         $count = $this->products_on_page;
         $pages_count = ceil($n / $count);
-        if ($n < $count) $pages_count = 1;
+        if ($n < $count) {
+            $pages_count = 1;
+        }
         $pagination = "";
 
         $min_count = 5;
         $max_count = $pages_count - $min_count + 1;
         $pred_page = $page - 1;
         $next_page = $page + 1;
-        if ($page == 1) $disabled_pred = "disabled"; else $disabled_pred = "";
-        if ($page == $pages_count) $disabled_next = "disabled"; else $disabled_next = "";
+        $disabled_pred = ($page == 1) ? "disabled" : "";
+        $disabled_next = ($page == $pages_count) ? "disabled" :"";
 
         if ($pages_count > 5) {
 
             if ($page < $min_count) {
                 for ($i = 1; $i <= $min_count; $i++) {
-                    $i == $page ? $active = "active" : $active = "";
+                    $active = ($i == $page) ? "active" : "";
                     $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
                 }
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
@@ -287,7 +295,7 @@ class PartsClass extends CatalogueClass
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
                 for ($i = $max_count; $i <= $pages_count; $i++) {
-                    $i == $page ? $active = "active" : $active = "";
+                    $active = ($i == $page) ? "active" : "";
                     $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
                 }
             }
@@ -306,7 +314,7 @@ class PartsClass extends CatalogueClass
 
         } else {
             for ($i = 1; $i <= $pages_count; $i++) {
-                $i == $page ? $active = "active" : $active = "";
+                $active = ($i == $page) ? "active" : "";
                 $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
             }
         }
@@ -321,7 +329,9 @@ class PartsClass extends CatalogueClass
             </nav>
         </div>";
 
-        if ($pages_count == 1) $list = "";
+        if ($pages_count == 1) {
+            $list = "";
+        }
 
         $list = $this->replaceLang($list);
 

@@ -29,6 +29,7 @@ require_once (RDD . "/lib/class.phpmailer.php");
 require_once (RDD . "/lib/parameters_class.php");
 require_once (RDD . "/lib/pattern_class.php");
 require_once (RDD . "/lib/parts_class.php");
+require_once (RDD . "/lib/catalog_exist_class.php");
 require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 require_once (RDD . "/lib/ukr-poshta-api/UkrPoshtaApi.php");
 
@@ -51,6 +52,7 @@ $search = new SearchClass();
 $parameters = new ParametersClass();
 $pattern = new PatternClass();
 $parts = new PartsClass();
+$catalog_exist = new CatalogExistClass();
 
 //set cookies for user
 setCookies();
