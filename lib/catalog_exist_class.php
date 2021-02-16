@@ -53,7 +53,7 @@ class CatalogExistClass extends CatalogueClass
         }
 
         $arts = [];
-        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `STR_ID`='$group_id' GROUP BY `ART_ID`;");
+        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID`='$group_id' GROUP BY `ART_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -123,21 +123,9 @@ class CatalogExistClass extends CatalogueClass
         return "<div class='content'>$result</div>";
     }
 
-    public function getTypInfo($typ_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $mfa_id = 0; $model = "";
-        $r = $db->query("SELECT tm.`MOD_MFA_ID`, tm.`Model` FROM `T_types` tt
-            LEFT JOIN `T_models` tm ON tm.MOD_ID = tt.TYP_MOD_ID
-        WHERE tt.TYP_ID = '$typ_id' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $mfa_id = $db->result($r, 0, "MOD_MFA_ID");
-            $model = $db->result($r, 0, "Model");
-        }
-        return array($mfa_id, $model);
-    }
-
+    /*
+     * init tree manufacturers
+     * */
     public function initPartsMfaTable($group_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -146,30 +134,30 @@ class CatalogExistClass extends CatalogueClass
         $table = "EX_TABLE_TREE_$group_id";
         $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
 
-        $where_arts = [];
-        $r = $dbc->query("SELECT `art_id` FROM `$table` WHERE 1;");
-        $n = $dbc->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id = $dbc->result($r, $i - 1, "art_id");
-            array_push($where_arts, $art_id);
-        }
-
-        $where_arts = implode(",", $where_arts);
-
         $arts = [];
-        $r = $db->query("SELECT `ART_ID`, `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID` IN ($where_arts);");
+        $r = $db->query("SELECT tl.`ART_ID`, tm.MOD_MFA_ID, tm.Model 
+        FROM `T2_LINKS` tl
+            LEFT JOIN `T_types` tt ON tt.TYP_ID = tl.TYP_ID
+            LEFT JOIN `T_models` tm ON tm.MOD_ID = tt.TYP_MOD_ID
+        WHERE `ART_ID` IN (
+          SELECT ex.`ART_ID`
+          FROM toko_dba_cache.`$table` as ex
+        )
+        GROUP BY tl.ART_ID, tm.MOD_MFA_ID, tm.Model;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
-            $typ_id = $db->result($r, $i - 1, "TYP_ID");
-            list($mfa_id, $model) = $this->getTypInfo($typ_id);
-            if (empty($arts[$art_id])) {
-                $arts[$art_id] = [];
+            $mfa_id = $db->result($r, $i - 1, "MOD_MFA_ID");
+            $model = $db->result($r, $i - 1, "Model");
+            if ($mfa_id > 0) {
+                if (empty($arts[$art_id])) {
+                    $arts[$art_id] = [];
+                }
+                if (empty($arts[$art_id][$mfa_id])) {
+                    $arts[$art_id][$mfa_id] = [];
+                }
+                $arts[$art_id][$mfa_id][] = $model;
             }
-            if (empty($arts[$art_id][$mfa_id])) {
-                $arts[$art_id][$mfa_id] = [];
-            }
-            $arts[$art_id][$mfa_id][] = $model;
         }
 
         if ($this->checkTableMfa($group_id) > 0) {
@@ -190,8 +178,7 @@ class CatalogExistClass extends CatalogueClass
         foreach ($arts as $art_id => $mfas) {
             foreach ($mfas as $mfa_id => $models) {
                 foreach ($models as $model) {
-
-                    $r = $dbc->query("SELECT COUNT(`art_id`) as count_art FROM `$table_mfa` WHERE `art_id`='$art_id';");
+                    $r = $dbc->query("SELECT COUNT(`art_id`) as count_art FROM `$table_mfa` WHERE `art_id`='$art_id' AND `mfa_id`='$mfa_id' AND `model`='$model';");
                     $n = $dbc->result($r, 0, "count_art") + 0;
                     if ($n == 0) {
                         $dbc->query("INSERT INTO `$table_mfa` (`art_id`, `mfa_id`, `model`, `status`) VALUES ('$art_id', '$mfa_id', '$model', 1);");
@@ -200,24 +187,9 @@ class CatalogExistClass extends CatalogueClass
                         $dbc->query("UPDATE `$table_mfa` SET `status`=1 WHERE `art_id`='$art_id';");
                         $count_upd++;
                     }
-
                 }
             }
         }
-//        foreach ($arts as $key => $values) {
-//            $art_id = $values["art_id"];
-//            $mfa_id = $values["mfa_id"];
-//            $model = $values["model"];
-//            $r = $dbc->query("SELECT COUNT(`art_id`) as count_art FROM `$table_mfa` WHERE `art_id`='$art_id';");
-//            $n = $dbc->result($r, 0, "count_art") + 0;
-//            if ($n == 0) {
-//                $dbc->query("INSERT INTO `$table_mfa` (`art_id`, `mfa_id`, `model`, `status`) VALUES ('$art_id', '$mfa_id', '$model', 1);");
-//                $count_add++;
-//            } else {
-//                $dbc->query("UPDATE `$table_mfa` SET `status`=1 WHERE `art_id`='$art_id';");
-//                $count_upd++;
-//            }
-//        }
 
         $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table_mfa` WHERE `status`=0");
         $count_del = $dbc->result($r, 0, "count_nulls") + 0;
@@ -316,11 +288,26 @@ class CatalogExistClass extends CatalogueClass
                         $check_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
                         $col = "";
                     }
-                    $list .= "<li>
-                        <a href='/catalog_exist/init/$group_link/'>
-                            $check_form
-                        </a>
-                        <a href='/catalog_exist/show/$group_link/'>$group_name $col</a>
+                    $check_mfa = $this->checkTableMfa($group_id);
+                    if ($check_mfa > 0) {
+                        $check_mfa_form = "<span class='span-red'><i class='fa fa-edit'></i> UPDATE</span>";
+                        $col_mfa = "($check_mfa)";
+                    } else {
+                        $check_mfa_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
+                        $col_mfa = "";
+                    }
+                    $list .= "<li style='display:flex; justify-content: space-between;'>
+                        <div style='width: 50%;'>
+                            $group_name
+                        </div>
+                        <div style='width: 25%; text-align: right;'>
+                            <a href='/catalog_exist/init/$group_link/'>$check_form</a>   
+                            <a href='/catalog_exist/show/$group_link/'>ZAPCHASTI $col</a>  
+                        </div>
+                        <div style='width: 25%; text-align: right;'>
+                            <a href='/catalog_exist/init_mfa/$group_link/'>$check_mfa_form</a>
+                            <a href='/catalog_exist/show_mfa/$group_link/'>MACHINU $col_mfa</a>
+                        </div>
                     </li>";
                 }
                 $list .= "</ul></li>";
@@ -360,10 +347,14 @@ class CatalogExistClass extends CatalogueClass
 
         $art_id_str = implode(",", array_unique($arts));
         list($list, , $filters, , $brands) = $this->searchList($art_id_str, 1, 1);
+        $count = $this->getPartsCount($group_id, $brandy);
+        $pagination_form = $this->getPartsPaginationForm(count($arts), $page);
 
         $form = $this->getHtmlForm("parts/parts_list");
         $form = str_replace("{parts_name}", $group_text, $form);
         $form = str_replace("{parts_list}", $list, $form);
+        $form = str_replace("{parts_count}", $count, $form);
+        $form = str_replace("{parts_pagination}", $pagination_form, $form);
 
         return array("form" => $form, "filters" => $filters, "brands" => $brands);
     }
@@ -376,6 +367,200 @@ class CatalogExistClass extends CatalogueClass
         $count = $this->products_on_page;
         $off = $count * $page - $count;
         return ($off >= 0) ? " LIMIT $count OFFSET $off" : "";
+    }
+
+    public function showPartsCatalogueForm($group_id)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $automan = new AutoClass();
+        $table = "EX_TABLE_TREE_MFA_$group_id";
+
+        $form = $this->getHtmlForm("parts/parts_list");
+        $group_text = $this->getGroupExistName($group_id);
+
+        $list = "";
+        $arts = [];
+        $r = $dbc->query("SELECT * FROM `$table` WHERE 1;");
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $dbc->result($r, $i - 1, "art_id");
+            $mfa_id = $dbc->result($r, $i - 1, "mfa_id");
+            $model = $dbc->result($r, $i - 1, "model");
+            $arts[$art_id][$mfa_id][] = $model;
+        }
+
+        foreach ($arts as $art_id => $mfas) {
+            $article_nr_displ = $automan->getArticleDispl($art_id);
+            $list .= "<ul><li><b>$article_nr_displ:</b></li><li>";
+            foreach ($mfas as $mfa_id => $models) {
+                $mfa_name = $automan->getMfaBrand($mfa_id);
+                $mfa_link = $automan->getMfaBrandLink($mfa_id);
+                $list .= "<ul><li><a href='./$mfa_link'><b>$mfa_name:</b></a> ";
+                foreach ($models as $model) {
+                    $list .= "<a href='./$mfa_link/$model'>$model</a>; ";
+                }
+                $list .= "</li></ul>";
+            }
+            $list .= "</li></ul>";
+        }
+
+        $form = str_replace("{parts_name}", $group_text, $form);
+        $form = str_replace("{parts_list}", $list, $form);
+        return $form;
+    }
+
+    public function showPartsCatalogueMfa($group_id, $mfa_id = 0, $model = "", $page = 1)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_MFA_$group_id";
+
+        $limit = $this->getSearchLimit($page);
+        $group_text = $this->getGroupExistName($group_id);
+
+        $where_mfa = "";
+        if ($mfa_id > 0) {
+            $where_mfa .= " AND `mfa_id`='$mfa_id'";
+            if ($model != "") {
+                $where_mfa .= " AND `model`='$model'";
+            }
+        }
+
+        $arts = [];
+        $r = $dbc->query("SELECT * FROM `$table` WHERE 1 $where_mfa $limit;");
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $dbc->result($r, $i - 1, "art_id");
+            array_push($arts, $art_id);
+        }
+
+        $art_id_str = implode(",", array_unique($arts));
+        list($list, , $filters, , $brands) = $this->searchList($art_id_str, 1, 1);
+        $count = $this->getPartsCountMfa($group_id, $mfa_id, $model);
+        $pagination_form = $this->getPartsPaginationForm($count, $page);
+
+        $form = $this->getHtmlForm("parts/parts_list");
+        $form = str_replace("{parts_name}", $group_text, $form);
+        $form = str_replace("{parts_list}", $list, $form);
+        $form = str_replace("{parts_count}", $count, $form);
+        $form = str_replace("{parts_pagination}", $pagination_form, $form);
+
+        return array("form" => $form, "filters" => $filters, "brands" => $brands);
+    }
+
+    public function getPartsCount($group_id, $brandy)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+        $where_brands = "";
+        if (!empty($brandy)) {
+            $brand_list = implode(",", $brandy);
+            if ($brand_list != "") {
+                $where_brands = "WHERE `brand_id` IN ($brand_list)";
+            }
+        }
+        $r = $dbc->query("SHOW TABLES LIKE '$table';");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
+            $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` $where_brands;");
+            $n = $dbc->result($r, 0, "col_arts");
+        }
+        return $n;
+    }
+
+    public function getPartsCountMfa($group_id, $mfa_id, $model)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_MFA_$group_id";
+
+        $where_mfa = "";
+        if ($mfa_id > 0) {
+            $where_mfa .= " AND `mfa_id`='$mfa_id'";
+            if ($model != "") {
+                $where_mfa .= " AND `model`='$model'";
+            }
+        }
+
+        $r = $dbc->query("SHOW TABLES LIKE '$table';");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
+            $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1 $where_mfa;");
+            $n = $dbc->result($r, 0, "col_arts");
+        }
+        return $n;
+    }
+
+    public function getPartsPaginationForm($n, $page)
+    {
+        $count = $this->products_on_page;
+        $pages_count = ceil($n / $count);
+        if ($n < $count) {
+            $pages_count = 1;
+        }
+        $pagination = "";
+
+        $min_count = 5;
+        $max_count = $pages_count - $min_count + 1;
+        $pred_page = $page - 1;
+        $next_page = $page + 1;
+        $disabled_pred = ($page == 1) ? "disabled" : "";
+        $disabled_next = ($page == $pages_count) ? "disabled" :"";
+
+        if ($pages_count > 5) {
+
+            if ($page < $min_count) {
+                for ($i = 1; $i <= $min_count; $i++) {
+                    $active = ($i == $page) ? "active" : "";
+                    $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
+                }
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pages_count\">$pages_count</a></li>";
+            }
+
+            if ($page > $max_count) {
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
+                for ($i = $max_count; $i <= $pages_count; $i++) {
+                    $active = ($i == $page) ? "active" : "";
+                    $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
+                }
+            }
+
+            if ($page >= $min_count && $page <= $max_count) {
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?page=1\">1</a></li>";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
+
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pred_page\">$pred_page</a></li>";
+                $pagination .= "<li class=\"page-item active\"><a class=\"page-link\" href=\"?page=$page\">$page</a></li>";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$next_page\">$next_page</a></li>";
+
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"#\">...</a></li>";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" href=\"?page=$pages_count\">$pages_count</a></li>";
+            }
+
+        } else {
+            for ($i = 1; $i <= $pages_count; $i++) {
+                $active = ($i == $page) ? "active" : "";
+                $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
+            }
+        }
+
+        $list = "<div class=\"row\">
+            <nav aria-label=\"Page navigation\">
+                <ul class=\"pagination\">
+                    <li class=\"page-item $disabled_pred\"><a class=\"page-link\" href=\"?page=$pred_page\"><i class='fa fa-chevron-left'></i> <span class='span-media'>{previous_cap}</span></a></li>
+                    $pagination
+                    <li class=\"page-item $disabled_next\"><a class=\"page-link\" href=\"?page=$next_page\"><span class='span-media'>{next_cap}</span> <i class='fa fa-chevron-right'></i></a></li>
+                </ul>
+            </nav>
+        </div>";
+
+        if ($pages_count == 1) {
+            $list = "";
+        }
+
+        $list = $this->replaceLang($list);
+
+        return $list;
     }
 
 }

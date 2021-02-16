@@ -211,6 +211,13 @@ class AutoClass extends CatalogueClass
         return $db->result($r, 0, "MFA_ID");
     }
 
+    public function getMfaBrandLink($mfa_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `MFA_ID`='$mfa_id' LIMIT 1;");
+        return $db->result($r, 0, "MFA_BRAND_LINK");
+    }
+
     /*
      * get car model name
      * from LINK
