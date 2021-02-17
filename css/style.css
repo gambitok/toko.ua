@@ -761,6 +761,8 @@ header { width: 100%; color: #a9a9a9; }
 
 .tree-heads__item input[type="checkbox"]:checked ~ div { display: block !important; }
 
+.tree-heads__item input[type="checkbox"]:checked ~ label .tree-heads__item-header { background: #ccc !important; }
+
 .tree-heads__item-header { display: flex; align-items: center; padding: 15px; background: #fff !important; }
 
 .tree-heads__item-header:hover { filter: brightness(0.9); }

@@ -1888,6 +1888,9 @@ header {
             &:checked ~ div {
                 display: block!important;
             }
+            &:checked ~ label .tree-heads__item-header {
+                background: #ccc!important;
+            }
             //&:checked ~ label .tree-heads__item-title {
             //    background: #ffb74f;
             //    color: #fff;
@@ -1929,7 +1932,6 @@ header {
             font-weight: 700;
             text-transform: uppercase;
             margin-bottom: 10px;
-            // text-shadow: 2px 2px #707883;
             color: #000;
         }
         &-descr {
