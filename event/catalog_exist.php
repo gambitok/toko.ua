@@ -11,6 +11,9 @@ $router = $linka[1];
 if ($router == "") {
     $content = str_replace("{main_window}", $catalog_exist->showPartsForm(), $content);
 }
+if ($router == "cut") {
+    $content = str_replace("{main_window}", $catalog_exist->showPartsForm(1), $content);
+}
 
 if ($router == "init") {
     $group_link = $linka[2];

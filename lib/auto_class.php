@@ -229,6 +229,13 @@ class AutoClass extends CatalogueClass
         return $db->result($r, 0, "Model");
     }
 
+    public function getModBrandLink($model)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `Model_Link` FROM `T_models` WHERE `Model`='$model' LIMIT 1;");
+        return $db->result($r, 0, "Model_Link");
+    }
+
     /*
      * get car model_id name
      * from ID

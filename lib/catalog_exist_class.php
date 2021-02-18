@@ -230,10 +230,10 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show `Parts` catalog
      * */
-    public function showPartsForm()
+    public function showPartsForm($status = 0)
     {
-        $form = $this->getHtmlForm("parts/parts");
-        $list = $this->showGroupExistList();
+        $form = $this->getHtmlForm("catalog_exist/form");
+        $list = $this->showGroupExistList($status);
         $form = str_replace("{parts_name}", "{spare_parts_catalog_cap}", $form);
         $form = str_replace("{parts_list}", $list, $form);
         return $form;
@@ -242,11 +242,18 @@ class CatalogExistClass extends CatalogueClass
     /*
      * get TREE HCG LIST
      * */
-    public function getGroupExistList()
+    public function getGroupExistList($status)
     {
         $db = DbSingleton::getTokoDb();
         $arr = [];
         $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE 1;");
+        if ($status) {
+            $r = $db->query("SELECT cs.`HEAD_ID`, cs.`CAT_ID`, he.`GROUP_ID` 
+            FROM `T2_TREE_CONSTRUCTOR_STR` cs
+                LEFT JOIN `T2_TREE_HCG_EXIST` he ON (he.HEAD_ID = cs.HEAD_ID AND he.CAT_ID = cs.CAT_ID)
+                LEFT JOIN `T2_TREE_GROUP_EXIST` ge ON (ge.GROUP_ID = he.GROUP_ID)
+            WHERE cs.`CAT_ID` > 0 AND ge.`STATUS` = 1;");
+        }
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $head_id = $db->result($r, $i - 1, "HEAD_ID");
@@ -266,17 +273,17 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show TREE HCG LIST
      * */
-    public function showGroupExistList()
+    public function showGroupExistList($status)
     {
         $list = "";
-        $arr = $this->getGroupExistList();
-        $list .= "<ul>";
+        $arr = $this->getGroupExistList($status);
+        $list .= "<ul class='list-inline'>";
         foreach ($arr as $head_id => $cats) {
             $head_name = $this->getHeadRowName($head_id);
-            $list .= "<li>$head_name</li><li><ul>";
+            $list .= "<li style='font-weight: bold; font-size: 20px; color: black;'>$head_name</li><li><ul class='list-inline' style='margin-bottom: 30px;'>";
             foreach ($cats as $cat_id => $groups) {
                 $cat_name = $this->getCatRowName($cat_id);
-                $list .= "<li>$cat_name</li><li><ul>";
+                $list .= "<li style='font-weight: bold; font-size: 18px; color: blue;'>$cat_name</li><li><ul style='margin-bottom: 10px;'>";
                 foreach ($groups as $group_id) {
                     $group_name = $this->getGroupRowName($group_id);
                     $group_link = $this->getGroupRowLink($group_id);
@@ -348,9 +355,9 @@ class CatalogExistClass extends CatalogueClass
         $art_id_str = implode(",", array_unique($arts));
         list($list, , $filters, , $brands) = $this->searchList($art_id_str, 1, 1);
         $count = $this->getPartsCount($group_id, $brandy);
-        $pagination_form = $this->getPartsPaginationForm(count($arts), $page);
+        $pagination_form = $this->getPartsPaginationForm($count, $page);
 
-        $form = $this->getHtmlForm("parts/parts_list");
+        $form = $this->getHtmlForm("catalog_exist/list");
         $form = str_replace("{parts_name}", $group_text, $form);
         $form = str_replace("{parts_list}", $list, $form);
         $form = str_replace("{parts_count}", $count, $form);
@@ -375,7 +382,7 @@ class CatalogExistClass extends CatalogueClass
         $automan = new AutoClass();
         $table = "EX_TABLE_TREE_MFA_$group_id";
 
-        $form = $this->getHtmlForm("parts/parts_list");
+        $form = $this->getHtmlForm("catalog_exist/list");
         $group_text = $this->getGroupExistName($group_id);
 
         $list = "";
@@ -397,7 +404,8 @@ class CatalogExistClass extends CatalogueClass
                 $mfa_link = $automan->getMfaBrandLink($mfa_id);
                 $list .= "<ul><li><a href='./$mfa_link'><b>$mfa_name:</b></a> ";
                 foreach ($models as $model) {
-                    $list .= "<a href='./$mfa_link/$model'>$model</a>; ";
+                    $model_link = $automan->getModBrandLink($model);
+                    $list .= "<a href='./$mfa_link/$model_link'>$model</a>; ";
                 }
                 $list .= "</li></ul>";
             }
@@ -406,6 +414,8 @@ class CatalogExistClass extends CatalogueClass
 
         $form = str_replace("{parts_name}", $group_text, $form);
         $form = str_replace("{parts_list}", $list, $form);
+        $form = str_replace("{parts_count}", "-", $form);
+        $form = str_replace("{parts_pagination}", "", $form);
         return $form;
     }
 
@@ -438,7 +448,7 @@ class CatalogExistClass extends CatalogueClass
         $count = $this->getPartsCountMfa($group_id, $mfa_id, $model);
         $pagination_form = $this->getPartsPaginationForm($count, $page);
 
-        $form = $this->getHtmlForm("parts/parts_list");
+        $form = $this->getHtmlForm("catalog_exist/list");
         $form = str_replace("{parts_name}", $group_text, $form);
         $form = str_replace("{parts_list}", $list, $form);
         $form = str_replace("{parts_count}", $count, $form);
