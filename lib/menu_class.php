@@ -759,4 +759,28 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+    * show navigation row (with Details headers)
+    * */
+    public function getDetailsListing()
+    {
+        $db = DbSingleton::getTokoDb();
+        $language = new LangClass();
+        $automan = new AutoClass();
+        $prefix = $language->getLangPrefix();
+        $lang_id = $this->getLanguage();
+        $lang_cap = $language->getTexCapLanguage($lang_id);
+        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1;");
+        $n = $db->num_rows($r);
+        $list = "";
+        for ($i = 1; $i <= $n; $i++) {
+            $head_id = $db->result($r, $i - 1, "HEAD_ID");
+            $tex_text = $db->result($r, $i - 1, "TEX_$lang_cap");
+            $head_link = $automan->getHeadNewDescr($head_id)["link"];
+            $header = "<a href=\"https://toko.ua$prefix/catalog/$head_link/\">$tex_text</a>";
+            $list .= "<li class=\"header-nav__li\" data-nav-id=\"$head_id\">$header</li>";
+        }
+        return $list;
+    }
+
 }

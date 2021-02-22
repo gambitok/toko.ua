@@ -8,19 +8,37 @@ $some = $catalogue->getUrlString($linka[0]);
 $some_link = $catalogue->getUrlString($linka[1]);
 $some_link2 = $catalogue->getUrlString($linka[2]);
 
+$result = explode($some . "/", $_SERVER["REQUEST_URI"], 2);
+$link = ltrim($result[1]);
+
+/*
+ * redirect new Links
+ * */
+if ($catalogue->checkRedirectStr($some_link)["status"]) {
+    $group_link = $catalogue->checkRedirectStr($some_link)["group_link"];
+    $except_some_link = explode("/", $link, 2)[1];
+    header("Location: /catalog/$group_link/$except_some_link", TRUE, 301);
+}
+
+/*
+ * redirect Uppercase
+ * */
 if (preg_match('~^\p{Lu}~u', $some_link)) {
     $new_link = strtolower($some_link);
     header("Location: /catalog/$new_link", TRUE, 301);
 }
 
+/*
+ * reditect .html, .php
+ * */
 if (!$catalogue->checkRedirectLink($some_link)) {
     $new_link = $catalogue->getRedirectLink($some_link);
     header("Location: /catalog/$new_link", TRUE, 301);
 }
 
-$result = explode($some . "/", $_SERVER["REQUEST_URI"], 2);
-$link = ltrim($result[1]);
-
+/*
+ * catalog Routing
+ * */
 list($form1, $car_content, $pages_count, $filters_count) = $search->catalogRouter($link, $some_link, $page, $some_link2);
 
 if ($page > 1) {

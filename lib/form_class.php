@@ -174,38 +174,58 @@ class FormClass extends CatalogueClass
         WHERE t2a.ART_ID IN ($art_id) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
         GROUP BY t2a.ART_ID, t2si.client_storage_id;");
 
-        $article_nr_displ = $db->result($r, 0, "ARTICLE_NR_DISPL");
-        $brand_id = $db->result($r, 0, "BRAND_ID");
-        $brand_name = $db->result($r, 0, "BRAND_NAME");
-        $text = $db->result($r, 0, "NAME");
-        $suppl_id = $db->result($r, 0, "suppl_id");
-        $stock = intval($db->result($r, 0, "AMOUNT"));
-        $storage_id = $db->result($r, 0, "storage_id");
+        $arr = [];
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $article_nr_displ = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+            $brand_id = $db->result($r, $i - 1, "BRAND_ID");
+            $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
+            $text = $db->result($r, $i - 1, "NAME");
+            $suppl_id = $db->result($r, $i - 1, "suppl_id");
+            $stock = intval($db->result($r, $i - 1, "AMOUNT"));
+            $storage_id = $db->result($r, $i - 1, "storage_id");
 
-        $price = $this->getArticlePrice($art_id);
-        if ($suppl_id != 0) {
-            $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-        }
-        $price = $kours->getKoursPrice($price, $cur);
-        if ($cur == 1) {
-            $price = $client->getClientPriceRounding($this->getClient(), $price);
-        }
+            $price = $this->getArticlePrice($art_id);
+            if ($suppl_id != 0) {
+                $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+            }
+            $price = $kours->getKoursPrice($price, $cur);
+            if ($cur == 1) {
+                $price = $client->getClientPriceRounding($this->getClient(), $price);
+            }
 
-        $deliveryData = $this->getTpointDeliveryInfo($tpoint, $storage_id);
-        $delivery_days = $deliveryData["days"];
-        $delivery_short_info = $deliveryData["short"];
-
-        if ($suppl_id != 0) {
-            $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
+            $deliveryData = $this->getTpointDeliveryInfo($tpoint, $storage_id);
             $delivery_days = $deliveryData["days"];
             $delivery_short_info = $deliveryData["short"];
+
+            if ($suppl_id != 0) {
+                $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
+                $delivery_days = $deliveryData["days"];
+                $delivery_short_info = $deliveryData["short"];
+            }
+
+            $real_stock = $stock;
+            if ($stock > 10) {
+                $stock = ">10";
+            }
+
+            $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
+
+            $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "text", "stock", "delivery_short_info", "price", "cur_cap", "delivery_days", "basket");
         }
 
-        $real_stock = $stock;
-        if ($stock > 10) {
-            $stock = ">10";
-        }
-        $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
+        $arr = $this->multiSort($arr, "delivery_days", "price");
+
+        $article_nr_displ = $arr[0]["article_nr_displ"];
+        $brand_id = $arr[0]["brand_id"];
+        $brand_name = $arr[0]["brand_name"];
+        $text = $arr[0]["text"];
+        $stock = $arr[0]["stock"];
+        $delivery_short_info = $arr[0]["delivery_short_info"];
+        $price = $arr[0]["price"];
+        $cur_cap = $arr[0]["cur_cap"];
+        $delivery_days = $arr[0]["delivery_days"];
+        $basket = $arr[0]["basket"];
 
         return [
             "article_nr_displ" => $article_nr_displ,

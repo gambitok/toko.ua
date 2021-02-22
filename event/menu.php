@@ -6,7 +6,7 @@ $content = str_replace("{profile_info}", $profile->getProfileInfo(), $content);
 $content = str_replace("{special_offers}", $profile->getSpecialOffers(), $content);
 $content = str_replace("{news_info}", $profile->getNewsInfo(), $content);
 
-$content = str_replace("{details_info}", $catalogue->getDetailsListing(), $content);
+$content = str_replace("{details_info}", $menu->getDetailsListing(), $content);
 
 $content = str_replace("{current_language}", $language->getLangCap($catalogue->getLanguage()), $content);
 $content = str_replace("{language_dropdown}", $language->getLanguageSelectList($catalogue->getLanguage()), $content);
