@@ -178,6 +178,8 @@ class AutoClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $mfa_brand = $model = "";
+        $mf = $this->getUrlString($mf);
+        $ml = $this->getUrlString($ml);
         if ($mf != "") {
             $r = $db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mf' LIMIT 1;");
             $mfa_brand = $db->result($r, 0, "MFA_BRAND");
@@ -282,6 +284,8 @@ class AutoClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $mfa_id = $model = "";
+        $mf = $this->getUrlString($mf);
+        $ml = $this->getUrlString($ml);
         if ($mf != "") {
             $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK`='$mf' LIMIT 1;");
             $mfa_id = $db->result($r, 0, "MFA_ID");

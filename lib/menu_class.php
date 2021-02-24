@@ -40,8 +40,16 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $state_id = $this->getUrlNumber($state_id);
+        $lang_id = $this->getLanguage();
+        $prefix = "";
+        if ($lang_id == 2) {
+            $prefix = "_UA";
+        }
+        if ($lang_id == 3) {
+            $prefix = "_EN";
+        }
         $r = $db->query("SELECT `TITLE` FROM `T2_REVIEWS` WHERE `ID`='$state_id' LIMIT 1;");
-        $title = $db->result($r, 0, "TITLE");
+        $title = $db->result($r, 0, "TITLE$prefix");
         $title = str_replace(str_split('.+\/:*?"<>|!?'), "", $title);
         if ($title == "") {
             $title = $this->replaceLang("{state_one_cap}" . "-$state_id");
@@ -688,12 +696,20 @@ class MenuClass extends CatalogueClass
     public function showReviews()
     {
         $db = DbSingleton::getTokoDb();
+        $lang_id = $this->getLanguage();
+        $prefix = "";
+        if ($lang_id == 2) {
+            $prefix = "_UA";
+        }
+        if ($lang_id == 3) {
+            $prefix = "_EN";
+        }
         $list = "";
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `STATUS`=1 ORDER BY `data` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
-                $title = $db->result($r, $i - 1, "TITLE");
+                $title = $db->result($r, $i - 1, "TITLE$prefix");
                 $transcript = $this->formatUrlText($title);
                 $form_range = $this->getHtmlForm("reviews/form_range");
                 $form_range = str_replace("{review_title}", $title, $form_range);
@@ -716,15 +732,23 @@ class MenuClass extends CatalogueClass
     public function getReviewsState($state_id)
     {
         $db = DbSingleton::getTokoDb();
+        $lang_id = $this->getLanguage();
+        $prefix = "";
+        if ($lang_id == 2) {
+            $prefix = "_UA";
+        }
+        if ($lang_id == 3) {
+            $prefix = "_EN";
+        }
         $state_id = $this->getUrlNumber($state_id);
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID`='$state_id';");
         $list = $this->getHtmlForm("reviews/card_range");
         $list = str_replace("{review_date}", $db->result($r, 0, "DATA"), $list);
-        $list = str_replace("{review_title}", $db->result($r, 0, "TITLE"), $list);
-        $list = str_replace("{review_text}", $db->result($r, 0, "TEXT"), $list);
+        $list = str_replace("{review_title}", $db->result($r, 0, "TITLE$prefix"), $list);
+        $list = str_replace("{review_text}", $db->result($r, 0, "TEXT$prefix"), $list);
         $form = $this->getHtmlForm("reviews/card");
         $form = str_replace("{state_id}", $state_id, $form);
-        $form = str_replace("{state_info}", $state_id > 0 ? $list : "<h1>$this->err1</h1>", $form);
+        $form = str_replace("{state_info}", ($state_id > 0) ? $list : "<h1>$this->err1</h1>", $form);
         return $form;
     }
 

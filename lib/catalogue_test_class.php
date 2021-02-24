@@ -1,6 +1,6 @@
 <?php
 
-class CatalogueClass
+class CatalogueTestClass
 {
 
     use Helper;
@@ -46,8 +46,9 @@ class CatalogueClass
         $article_nr_search = $this->getUrlString($article_nr_search);
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
 
-        $r = $db->query("SELECT t2c.ART_ID
+        $r = $db->query("SELECT t2c.ART_ID, t2c.KIND, t2c.RELATION
         FROM `T2_CROSS` t2c
+            LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
         WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
         GROUP BY t2c.`ART_ID` ORDER BY t2n.NAME ASC;");
@@ -56,6 +57,8 @@ class CatalogueClass
         $art_ids = [];
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
+            $kind = $db->result($r, $i - 1, "KIND");
+            $relation = $db->result($r, $i - 1, "RELATION");
             array_push($art_ids, $art_id);
         }
         $art_id_str = implode(",", $art_ids);
@@ -69,8 +72,8 @@ class CatalogueClass
         list($list, $list_brand, $filters) = $this->searchList($art_id_str, 1, 0, $article_nr_search, $brand_nr_search);
         // if found something
         if (($list_brand) && ($filters)) {
-            $colon = "col-lg-9 col-12 cat_result_table";
-            $colon_filter = "col-lg-3 col-12";
+            $colon = "col-lg-10 col-12 cat_result_table";
+            $colon_filter = "col-12 col-lg-2";
         } else {
             $colon = "col-lg-12 col-12 pad0";
             $colon_filter = "none";
@@ -126,27 +129,30 @@ class CatalogueClass
         $order_value = $this->getUrlNumber($order_value);
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT t2c.ART_ID
+        $r = $db->query("SELECT t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2c.BRAND_ID, t2c.DISPLAY_NR, t2c.ART_ID, t2c.KIND, t2c.RELATION 
         FROM `T2_CROSS` t2c
+            LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
         WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
         ORDER BY t2n.NAME ASC;");
         $n = $db->num_rows($r);
-
-        $art_ids = [];
+        $art_id_str = "";
+        $brand_name = "";
         for ($i = 1; $i <= $n; $i++) {
+            $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
             $art_id = $db->result($r, $i - 1, "ART_ID");
-            array_push($art_ids, $art_id);
+            $art_id_str .= "'$art_id'";
+            if ($i < $n) {
+                $art_id_str .= ",";
+            }
         }
-        $art_id_str = implode(",", $art_ids);
 
         $brand_filter = json_decode($brand_filter);
-        if (count($brand_filter) > 1) {
+        if (count($brand_filter) > 0) {
             $brand_filter = implode(",", $brand_filter);
         } else {
             $brand_filter = "";
         }
-
         $exp_price = explode(",", $price_f);
         $exp_deliv = explode(",", $deliv_f);
 
@@ -155,7 +161,7 @@ class CatalogueClass
         $search_main = $this->getHtmlForm("cat_search_main");
         $search_filters = $this->getHtmlForm("cat_search_filters");
         $search_brands = $this->getHtmlForm("cat_search_brands");
-        $search_main = $this->getSearchMain($search_main, $article_nr_search, $this->getBrandName($brand_nr_search), $list, 1, $cur);
+        $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_name, $list, 1, $cur);
         $search_main = $this->replaceLang($search_main);
         $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value, 1, 0);
         $search_filters = $this->replaceLang($search_filters);
@@ -530,7 +536,7 @@ class CatalogueClass
             $cash_add = "<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"tecModelsFilter();\"><label for=\"radio_usd\">$</label>";
         }
         if ($cash_id == 3) {
-            $cash_add = "<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"tecModelsFilter();\"><label for=\"radio_eur\">â‚¬</label>";
+            $cash_add = "<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"tecModelsFilter();\"><label for=\"radio_eur\">ˆ</label>";
         }
 
         if ($this->getUser() != 0) {
@@ -3288,17 +3294,17 @@ class CatalogueClass
 
 }
 
-function myBrandCmp($a, $b) {
-   if ($a["count"] == $b["count"]) return 0;
-   return $a["count"] < $b["count"] ? 1 : -1;
-}
-
-function cmpPrice($a, $b) {
-    if (floatval($a["price"]) == floatval($b["price"])) return 0;
-    return floatval($a["price"]) > floatval($b["price"]) ? 1 : -1;
-}
-
-function cmpChecked($a, $b) {
-    if ($a["checked"] == $b["checked"]) return 0;
-    return $a["checked"] > $b["checked"] ? 1 : -1;
-}
+//function myBrandCmp($a, $b) {
+//    if ($a["count"] == $b["count"]) return 0;
+//    return $a["count"] < $b["count"] ? 1 : -1;
+//}
+//
+//function cmpPrice($a, $b) {
+//    if (floatval($a["price"]) == floatval($b["price"])) return 0;
+//    return floatval($a["price"]) > floatval($b["price"]) ? 1 : -1;
+//}
+//
+//function cmpChecked($a, $b) {
+//    if ($a["checked"] == $b["checked"]) return 0;
+//    return $a["checked"] > $b["checked"] ? 1 : -1;
+//}

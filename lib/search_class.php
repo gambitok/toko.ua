@@ -250,6 +250,11 @@ class SearchClass extends CatalogueClass
             ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
         }
 
+        $str_link = $this->getUrlString($str_link);
+        $mfa_link = $this->getUrlString($mfa_link);
+        $mod_link = $this->getUrlString($mod_link);
+        $mod_id_link = $this->getUrlString($mod_id_link);
+
         $brand_ids = $this->getActiveFilters($filters);
 
         if ($cookie_typ_id != "" && $mfa_link != "") {

@@ -64,6 +64,8 @@ trait Helper
         $str = str_replace(",", "", $str);
         $str = str_replace('"', "", $str);
         $str = str_replace("%20", " ", $str);
+        $str = str_replace("%22", "", $str);
+        $str = str_replace("%27", "", $str);
         $str = str_replace("%60", "", $str);
         $str = str_replace("&nbsp;", "", $str);
         $str = str_replace("&rsquo;", "", $str);
@@ -79,6 +81,8 @@ trait Helper
         $str = str_replace("`", "", $str);
         $str = str_replace('"', "", $str);
         $str = str_replace("%20", " ", $str);
+        $str = str_replace("%22", "", $str);
+        $str = str_replace("%27", "", $str);
         $str = str_replace("%60", "", $str);
         $str = str_replace("&rsquo;", "", $str);
         return $str;

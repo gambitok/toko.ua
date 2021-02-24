@@ -476,8 +476,8 @@ table {
     color: #606975;
     cursor: pointer;
     display: block;
-    font-size: 12px;
-    margin-bottom: 12px;
+    font-size: 14px;
+    margin-bottom: 15px;
     position: relative;
     padding-left: 20px;
     user-select: none;
@@ -493,16 +493,20 @@ table {
 
 .checkmark {
     background-color: #eee;
-    height: 14px;
-    left: 0;
+    height: 20px;
+    width: 20px;
     position: absolute;
+    left: 0;
     top: 0;
-    width: 14px;
     &:after {
         content: "";
         display: none;
         position: absolute;
     }
+}
+
+.check-brand__text {
+    margin-left: 10px;
 }
 
 .container_check:hover input~.checkmark {
@@ -525,10 +529,10 @@ table {
     border: solid #fff;
     border-width: 0 3px 3px 0;
     height: 10px;
-    left: 5px;
-    top: 2px;
+    left: 6px;
+    top: 4px;
     transform: rotate(45deg);
-    width: 5px;
+    width: 8px;
 }
 
 .container_radio {

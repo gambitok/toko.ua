@@ -224,6 +224,9 @@ function catalogueFilter(order) {
     let art = $("#art_value").val();
     let brand = $("#brand_value").val();
     let text = $("#text_filter").val();
+    if (text === undefined) {
+        text = "";
+    }
 
     $(".check-brand").each(function () {
         if ($(this).hasClass("main-brand") === false) {
@@ -239,7 +242,9 @@ function catalogueFilter(order) {
     let bb = JSON.stringify(brands);
 
     let cur = parseInt($(".radio-group input[name=cur]:checked").attr("value"));
-    if (isNaN(cur)) cur = 1;
+    if (isNaN(cur)) {
+        cur = 1;
+    }
     let cur_old = parseInt($("#cur_value").val());
     let price = $("#ex1").val();
     let deliv = $("#ex3").val();
@@ -256,24 +261,45 @@ function catalogueFilter(order) {
 
             var ex1 = $("#ex1"), ex3 = $("#ex3");
             ex1.slider();
-            ex1.on("slide", function(slideEvt) { $("#price_val").text(slideEvt.value); });
+            ex1.on("slide", function(e) {
+                let evalue = e.value;
+                $("#price_val").text(evalue);
+                $("#price_val_min").val(evalue[0]);
+                $("#price_val_max").val(evalue[1]);
+            });
             ex3.slider();
-            ex3.on("slide", function(slideEvt) { $("#dd_val").text(slideEvt.value); });
+            ex3.on("slide", function(e) {
+                let evalue = e.value;
+                $("#dd_val").text(evalue);
+                $("#dd_val_min").val(evalue[0]);
+                $("#dd_val_max").val(evalue[1]);
+            });
 
             $(".js-example-basic-single").select2();
 
             var max_price = parseInt(result.content[3]);
             var value = ex1.data("slider").getValue();
+            var value_dd = ex3.data("slider").getValue();
 
             $("#filter-max-price").html(max_price);
             ex1.attr("data-slider-max", max_price);
             ex1.slider("setAttribute", "max", max_price);
             ex1.slider("refresh");
 
-            if (value[1] > max_price) value[1] = max_price;
+            if (value[1] > max_price) {
+                value[1] = max_price;
+            }
             var max_min = value[0] + "," + value[1];
             ex1.attr("data-slider-value", max_min);
             $("#price_val").html(max_min);
+            $("#price_val_min").val(value[0]);
+            $("#price_val_max").val(value[1]);
+
+            var max_min_dd = value_dd[0] + "," + value_dd[1];
+            ex3.attr("data-slider-value", max_min_dd);
+            $("#dd_val").html(max_min_dd);
+            $("#dd_val_min").val(value_dd[0]);
+            $("#dd_val_max").val(value_dd[1]);
 
             if (cur !== cur_old) {
                 value[1] = max_price;
@@ -282,9 +308,11 @@ function catalogueFilter(order) {
                 $("#filter-max-price").html(max_price);
                 ex1.attr("data-slider-max", max_price);
                 ex1.slider("setAttribute", "max", max_price);
-                max_min=value[0] + "," + value[1];
+                max_min = value[0] + "," + value[1];
                 ex1.attr("data-slider-value", max_min);
                 $("#price_val").html(max_min);
+                $("#price_val_min").val(value[0]);
+                $("#price_val_max").val(value[1]);
                 $("#cur_value").val(cur);
                 ex1.slider("setValue", value);
                 catalogueFilter(order);

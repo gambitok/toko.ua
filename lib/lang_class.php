@@ -20,8 +20,8 @@ class LangClass
             $_SESSION["lang_id"] = $cookie_lang_id;
         }
 
-        $session_lang_id = $this->getUrlNumber($_SESSION["client_id"]);
-        if ($session_lang_id == "" || $session_lang_id == 0 || $session_lang_id == NULL) {
+        $session_lang_id = $this->getUrlNumber($_SESSION["lang_id"]);
+        if (empty($session_lang_id)) {
             $_SESSION["lang_id"] = $this->default_lang_id;
         }
 

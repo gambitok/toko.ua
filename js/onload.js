@@ -148,14 +148,20 @@ $(document).ready(function() {
     var ex1 = $("#ex1"), ex3 = $("#ex3");
     if (ex1.length) {
         ex1.slider();
-        ex1.on("slide", function(slideEvt) {
-            $("#price_val").text(slideEvt.value);
+        ex1.on("slide", function(e) {
+            let evalue = e.value;
+            $("#price_val").text(evalue);
+            $("#price_val_min").val(evalue[0]);
+            $("#price_val_max").val(evalue[1]);
         });
     }
     if (ex3.length) {
         ex3.slider();
-        ex3.on("slide", function (slideEvt) {
-            $("#dd_val").text(slideEvt.value);
+        ex3.on("slide", function (e) {
+            let evalue = e.value;
+            $("#dd_val").text(evalue);
+            $("#dd_val_min").val(evalue[0]);
+            $("#dd_val_max").val(evalue[1]);
         });
     }
 
