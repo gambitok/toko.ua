@@ -145,19 +145,19 @@ $(document).ready(function() {
     });
 
     // Catalog Filters
-    var ex1 = $("#ex1"), ex3 = $("#ex3");
-    if (ex1.length) {
-        ex1.slider();
-        ex1.on("slide", function(e) {
+    var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
+    if (input_price.length) {
+        input_price.slider();
+        input_price.on("slide", function(e) {
             let evalue = e.value;
             $("#price_val").text(evalue);
             $("#price_val_min").val(evalue[0]);
             $("#price_val_max").val(evalue[1]);
         });
     }
-    if (ex3.length) {
-        ex3.slider();
-        ex3.on("slide", function (e) {
+    if (input_delivery.length) {
+        input_delivery.slider();
+        input_delivery.on("slide", function (e) {
             let evalue = e.value;
             $("#dd_val").text(evalue);
             $("#dd_val_min").val(evalue[0]);

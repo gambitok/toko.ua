@@ -242,8 +242,8 @@ function catalogueFilter(order) {
         cur = 1;
     }
     let cur_old = parseInt($("#cur_value").val());
-    let price = $("#ex1").val();
-    let deliv = $("#ex3").val();
+    let price = $("#filter-price").val();
+    let deliv = $("#filter-delivery").val();
 
     JsHttpRequest.query(folder,{'w':'show_catalogue_filter_all', 'art':art, 'brand':brand, 'bb':bb, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -254,16 +254,16 @@ function catalogueFilter(order) {
 
             loadInputNumber();
 
-            var ex1 = $("#ex1"), ex3 = $("#ex3");
-            ex1.slider();
-            ex1.on("slide", function(e) {
+            var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
+            input_price.slider();
+            input_price.on("slide", function(e) {
                 let evalue = e.value;
                 $("#price_val").text(evalue);
                 $("#price_val_min").val(evalue[0]);
                 $("#price_val_max").val(evalue[1]);
             });
-            ex3.slider();
-            ex3.on("slide", function(e) {
+            input_delivery.slider();
+            input_delivery.on("slide", function(e) {
                 let evalue = e.value;
                 $("#dd_val").text(evalue);
                 $("#dd_val_min").val(evalue[0]);
@@ -273,25 +273,25 @@ function catalogueFilter(order) {
             $(".js-example-basic-single").select2();
 
             var max_price = parseInt(result.content[3]);
-            var value = ex1.data("slider").getValue();
-            var value_dd = ex3.data("slider").getValue();
+            var value = input_price.data("slider").getValue();
+            var value_dd = input_delivery.data("slider").getValue();
 
             $("#filter-max-price").html(max_price);
-            ex1.attr("data-slider-max", max_price);
-            ex1.slider("setAttribute", "max", max_price);
-            ex1.slider("refresh");
+            input_price.attr("data-slider-max", max_price);
+            input_price.slider("setAttribute", "max", max_price);
+            input_price.slider("refresh");
 
             if (value[1] > max_price) {
                 value[1] = max_price;
             }
             var max_min = value[0] + "," + value[1];
-            ex1.attr("data-slider-value", max_min);
+            input_price.attr("data-slider-value", max_min);
             $("#price_val").html(max_min);
             $("#price_val_min").val(value[0]);
             $("#price_val_max").val(value[1]);
 
             var max_min_dd = value_dd[0] + "," + value_dd[1];
-            ex3.attr("data-slider-value", max_min_dd);
+            input_delivery.attr("data-slider-value", max_min_dd);
             $("#dd_val").html(max_min_dd);
             $("#dd_val_min").val(value_dd[0]);
             $("#dd_val_max").val(value_dd[1]);
@@ -299,21 +299,21 @@ function catalogueFilter(order) {
             if (cur !== cur_old) {
                 value[1] = max_price;
                 value[0] = 0;
-                ex1.slider("refresh");
+                input_price.slider("refresh");
                 $("#filter-max-price").html(max_price);
-                ex1.attr("data-slider-max", max_price);
-                ex1.slider("setAttribute", "max", max_price);
+                input_price.attr("data-slider-max", max_price);
+                input_price.slider("setAttribute", "max", max_price);
                 max_min = value[0] + "," + value[1];
-                ex1.attr("data-slider-value", max_min);
+                input_price.attr("data-slider-value", max_min);
                 $("#price_val").html(max_min);
                 $("#price_val_min").val(value[0]);
                 $("#price_val_max").val(value[1]);
                 $("#cur_value").val(cur);
-                ex1.slider("setValue", value);
+                input_price.slider("setValue", value);
                 catalogueFilter(order);
             }
 
-            ex1.slider("setValue", value);
+            input_price.slider("setValue", value);
             $("#cur_value").val(cur);
 
             $(".check-brand").each(function () {
@@ -344,8 +344,8 @@ function tecModelsFilter(order) {
     let cur = parseInt($(".radio-group input[name=cur]:checked").attr("value"));
     if (isNaN(cur)) cur = 1;
     let cur_old = parseInt($("#cur_value").val());
-    let price = $("#ex1").val();
-    let deliv = $("#ex3").val();
+    let price = $("#filter-price").val();
+    let deliv = $("#filter-delivery").val();
 
     JsHttpRequest.query(folder,{'w':'show_model_filter_all', 'art':art, 'brand':brand, 'bb':bb, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -356,43 +356,43 @@ function tecModelsFilter(order) {
 
             loadInputNumber();
 
-            var ex1 = $("#ex1"), ex3 = $("#ex3");
-            ex1.slider();
-            ex1.on("slide", function(slideEvt) { $("#price_val").text(slideEvt.value); });
-            ex3.slider();
-            ex3.on("slide", function(slideEvt) { $("#dd_val").text(slideEvt.value); });
+            var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
+            input_price.slider();
+            input_price.on("slide", function(slideEvt) { $("#price_val").text(slideEvt.value); });
+            input_delivery.slider();
+            input_delivery.on("slide", function(slideEvt) { $("#dd_val").text(slideEvt.value); });
 
             $(".js-example-basic-single").select2();
 
             var max_price = parseInt(result.content[3]);
-            var value = ex1.data("slider").getValue();
+            var value = input_price.data("slider").getValue();
 
             $("#filter-max-price").html(max_price);
-            ex1.attr("data-slider-max", max_price);
-            ex1.slider("setAttribute", "max", max_price);
-            ex1.slider("refresh");
+            input_price.attr("data-slider-max", max_price);
+            input_price.slider("setAttribute", "max", max_price);
+            input_price.slider("refresh");
 
             if (value[1]>max_price) value[1] = max_price;
             var max_min = value[0] + "," + value[1];
-            ex1.attr("data-slider-value",max_min);
+            input_price.attr("data-slider-value",max_min);
             $("#price_val").html(max_min);
 
             if (cur !== cur_old) {
                 value[1] = max_price;
                 value[0] = 0;
-                ex1.slider("refresh");
+                input_price.slider("refresh");
                 $("#filter-max-price").html(max_price);
-                ex1.attr("data-slider-max", max_price);
-                ex1.slider("setAttribute", "max", max_price);
+                input_price.attr("data-slider-max", max_price);
+                input_price.slider("setAttribute", "max", max_price);
                 max_min=value[0] + "," + value[1];
-                ex1.attr("data-slider-value", max_min);
+                input_price.attr("data-slider-value", max_min);
                 $("#price_val").html(max_min);
                 $("#cur_value").val(cur);
-                ex1.slider("setValue", value);
+                input_price.slider("setValue", value);
                 tecModelsFilter(order);
             }
 
-            ex1.slider("setValue", value);
+            input_price.slider("setValue", value);
             $("#cur_value").val(cur);
             $(".tooltips").tooltip();
             new LazyLoad({ elements_selector: ".lazy" });
@@ -418,11 +418,11 @@ function tecModelsFilter(order) {
 //
 //             loadInputNumber();
 //
-//             var ex1=$("#ex1"), ex3=$("#ex3");
-//             ex1.slider();
-//             ex1.on("slide", function(slideEvt) { $("#price_val").text(slideEvt.value); });
-//             ex3.slider();
-//             ex3.on("slide", function(slideEvt) { $("#dd_val").text(slideEvt.value); });
+//             var input_price=$("#filter-price"), input_delivery=$("#filter-delivery");
+//             input_price.slider();
+//             input_price.on("slide", function(slideEvt) { $("#price_val").text(slideEvt.value); });
+//             input_delivery.slider();
+//             input_delivery.on("slide", function(slideEvt) { $("#dd_val").text(slideEvt.value); });
 //
 //             $(".js-example-basic-single").select2();
 //             $(".tooltips").tooltip();
@@ -929,16 +929,16 @@ function techCarModelsFilter() {
 
             new treefilter($("#my-tree"), { searcher : $("input#my-search") });
 
-            var ex1 = $("#ex1"), ex3 = $("#ex3");
-            if (ex1.length) {
-                ex1.slider();
-                ex1.on("slide", function(slideEvt) {
+            var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
+            if (input_price.length) {
+                input_price.slider();
+                input_price.on("slide", function(slideEvt) {
                     $("#price_val").text(slideEvt.value);
                 });
             }
-            if (ex3.length) {
-                ex3.slider();
-                ex3.on("slide", function (slideEvt) {
+            if (input_delivery.length) {
+                input_delivery.slider();
+                input_delivery.on("slide", function (slideEvt) {
                     $("#dd_val").text(slideEvt.value);
                 });
             }
@@ -956,16 +956,16 @@ function techCarModels(typ_id, str_id) {
 
             new treefilter($("#my-tree"), { searcher : $("input#my-search") });
 
-            var ex1 = $("#ex1"), ex3 = $("#ex3");
-            if (ex1.length) {
-                ex1.slider();
-                ex1.on("slide", function(slideEvt) {
+            var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
+            if (input_price.length) {
+                input_price.slider();
+                input_price.on("slide", function(slideEvt) {
                     $("#price_val").text(slideEvt.value);
                 });
             }
-            if (ex3.length) {
-                ex3.slider();
-                ex3.on("slide", function (slideEvt) {
+            if (input_delivery.length) {
+                input_delivery.slider();
+                input_delivery.on("slide", function (slideEvt) {
                     $("#dd_val").text(slideEvt.value);
                 });
             }

@@ -139,11 +139,15 @@ trait Variables
     /*
      * ARTICLE_NR_SEARCH => ARTICLE_NR_DISPL
      * */
-    public function getArtDispl($article_nr_search)
+    public function getArtDispl($article_nr_search, $brand_nr_search = 0)
     {
         $db = DbSingleton::getTokoDb();
         $article_nr_displ = $article_nr_search;
-        $r = $db->query("SELECT `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' LIMIT 1;");
+        $where_brand = "";
+        if ($brand_nr_search > 0) {
+            $where_brand = "AND `BRAND_ID`='$brand_nr_search'";
+        }
+        $r = $db->query("SELECT `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' $where_brand LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $article_nr_displ = $db->result($r, 0, "ARTICLE_NR_DISPL");
@@ -193,24 +197,24 @@ trait Variables
     /*
      * ARTICLE_NR_SEARCH => BRAND_NAME
      * */
-    public function getBrandIdArt($article_nr_search)
-    {
-        $db = DbSingleton::getTokoDb();
-        $brand_name = "";
-        $article_nr_search = $this->getUrlString($article_nr_search);
-        if ($article_nr_search != "") {
-            $r = $db->query("SELECT `BRAND_ID`, `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' LIMIT 1;");
-            $n = $db->num_rows($r);
-            if ($n > 0) {
-                $brand_id = $db->result($r, 0, "BRAND_ID");
-                $brand_id = $this->getUrlNumber($brand_id);
-                $r = $db->query("SELECT `BRAND_NAME` FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
-                $n = $db->num_rows($r);
-                $brand_name = ($n == 1) ? $db->result($r, 0, "BRAND_NAME") : "";
-            }
-        }
-        return $brand_name;
-    }
+//    public function getBrandIdArt($article_nr_search)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $brand_name = "";
+//        $article_nr_search = $this->getUrlString($article_nr_search);
+//        if ($article_nr_search != "") {
+//            $r = $db->query("SELECT `BRAND_ID`, `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' LIMIT 1;");
+//            $n = $db->num_rows($r);
+//            if ($n > 0) {
+//                $brand_id = $db->result($r, 0, "BRAND_ID");
+//                $brand_id = $this->getUrlNumber($brand_id);
+//                $r = $db->query("SELECT `BRAND_NAME` FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
+//                $n = $db->num_rows($r);
+//                $brand_name = ($n == 1) ? $db->result($r, 0, "BRAND_NAME") : "";
+//            }
+//        }
+//        return $brand_name;
+//    }
 
     /*==== BRAND =====================================================================================================*/
 
