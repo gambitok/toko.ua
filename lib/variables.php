@@ -389,19 +389,14 @@ trait Variables
         return $brand_link;
     }
 
-    public function getFilters($text_filter, $brand_filter)
+    public function getFiltersSearch($brand_filter)
     {
-        if ($text_filter != "" && $text_filter != " ") {
-            $where_text = " AND t2a.ARTICLE_NR_DISPL LIKE '%$text_filter%' ";
-        } else {
-            $where_text = "";
-        }
         if ($brand_filter != "") {
             $where_brands = " AND t2a.BRAND_ID IN ($brand_filter) ";
         } else {
             $where_brands = "";
         }
-        return array($where_text, $where_brands);
+        return $where_brands;
     }
 
     /*

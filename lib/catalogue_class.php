@@ -117,11 +117,10 @@ class CatalogueClass
     /*
     * get catalog search List filtred
     * */
-    public function getCatalogListFilter($article_nr_search, $brand_nr_search, $brand_filter, $text_filter, $cur, $price_f, $deliv_f, $order_value)
+    public function getCatalogListFilter($article_nr_search, $brand_nr_search, $brand_filter, $cur, $price_f, $deliv_f, $order_value)
     {
         $article_nr_search = $this->getNameString($article_nr_search);
         $brand_nr_search = $this->getNameString($brand_nr_search);
-        $text_filter = $this->getNameString($text_filter);
         $cur = $this->getUrlNumber($cur);
         $order_value = $this->getUrlNumber($order_value);
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
@@ -150,7 +149,7 @@ class CatalogueClass
         $exp_price = explode(",", $price_f);
         $exp_deliv = explode(",", $deliv_f);
 
-        list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($art_id_str, $article_nr_search, $brand_filter, $text_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand_nr_search, $order_value, 1);
+        list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($art_id_str, $article_nr_search, $brand_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand_nr_search, $order_value, 1);
 
         $search_main = $this->getHtmlForm("cat_search_main");
         $search_filters = $this->getHtmlForm("cat_search_filters");
@@ -163,7 +162,7 @@ class CatalogueClass
         $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
         $search_brands = $this->replaceLang($search_brands);
 
-        return array($search_main, $search_filters, $search_brands, $filters["max_price"], $text_filter);
+        return array($search_main, $search_filters, $search_brands, $filters["max_price"]);
     }
 
     /*
@@ -373,11 +372,10 @@ class CatalogueClass
      * show tec models list filtred
      * catalog/maslyanyj-filtr/ + TYP_ID
      * */
-    public function techModelsFilters($art, $brand, $brand_filter, $text_filter, $cur, $price_f, $deliv_f, $order_value)
+    public function techModelsFilters($art, $brand, $brand_filter, $cur, $price_f, $deliv_f, $order_value)
     {
         $art = $this->getNameString($art);
         $brand = $this->getNameString($brand);
-        $text_filter = $this->getNameString($text_filter);
         $cur = $this->getUrlNumber($cur);
         $order_value = $this->getUrlNumber($order_value);
         $db = DbSingleton::getTokoDb();
@@ -387,7 +385,6 @@ class CatalogueClass
         $_SESSION["currency"] = $cur;
         $typ_id = $_SESSION["group"];
         $str_id = $_SESSION["str_id"];
-        $text_filter = $this->getNameString($text_filter);
 
         $str_text = $automan->getStrNewDescr($str_id);
         if ($str_text == "") {
@@ -417,7 +414,7 @@ class CatalogueClass
         $exp_price = explode(",", $price_f);
         $exp_deliv = explode(",", $deliv_f);
 
-        list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($t2_tree_arts, $art, $brand_filter, $text_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand, $order_value, 2);
+        list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($t2_tree_arts, $art, $brand_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand, $order_value, 2);
 
         $search_main = $this->getHtmlForm("cat_search_main");
         $search_main = $this->getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id);
@@ -427,7 +424,7 @@ class CatalogueClass
         $search_brands = str_replace("{brands}", $list_brand, $search_brands);
         $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
 
-        return array($this->replaceLang($search_main), $this->replaceLang($search_filters), $this->replaceLang($search_brands), $filters["max_price"], $text_filter);
+        return array($this->replaceLang($search_main), $this->replaceLang($search_filters), $this->replaceLang($search_brands), $filters["max_price"]);
     }
 
     public function getSearchMain($search_main, $article_nr_search, $brand_name, $list, $type_filter, $cur, $status_brand = 0)
@@ -722,7 +719,7 @@ class CatalogueClass
     /*
      * get Main Search Order
      * */
-    public function getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands, $where_text)
+    public function getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands)
     {
         $db = DbSingleton::getTokoDb();
         if ($article_nr_search != "") {
@@ -747,7 +744,7 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
             LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
-        WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0) $where_brands $where_text
+        WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0) $where_brands
         GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
         UNION ALL
         SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2si.stock_suppl as AMOUNT, t2si.client_storage_id as storage_id, t2si.suppl_id, t2si.return_delay
@@ -755,7 +752,7 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
-        WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0) $where_brands $where_text
+        WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0) $where_brands
         GROUP BY t2a.ART_ID, t2si.client_storage_id;");
         return $r;
     }
@@ -885,7 +882,7 @@ class CatalogueClass
 
         if ($where_art_id_str != "") {
             $this->createTemporarySearchTable($temp_key);
-            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", "");
+            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
             $n = $db->num_rows($r);
             $list = $this->drawHeaderSearchList($type_filter, $view);
 
@@ -1070,7 +1067,7 @@ class CatalogueClass
     }
 
 //    public function searchList($where_art_id_str, $type_filter = 1, $view = 0, $article_nr_search = "", $brand_nr_search = "")
-    public function searchListFilter($where_art_id_str, $article_nr_search, $brand_filter, $text_filter, $cur, $price_min, $price_max, $del_min, $del_max, $brand_nr_search, $order_value, $type_filter = 1)
+    public function searchListFilter($where_art_id_str, $article_nr_search, $brand_filter, $cur, $price_min, $price_max, $del_min, $del_max, $brand_nr_search, $order_value, $type_filter = 1)
     {
         $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
@@ -1088,24 +1085,24 @@ class CatalogueClass
         $list = "$error";
         $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
 
-        $text_filter = $this->getNameString($text_filter);
-        list($where_text, $where_brands) = $this->getFilters($text_filter, $brand_filter);
+        //?
+        $where_brands = $this->getFiltersSearch($brand_filter);
 
         if ($where_art_id_str != "") {
             $articlePrices = $this->getArticlePrices($where_art_id_str);
             $deliverInfo = $this->getTpointDeliveryInfos($tpoint_id, $where_art_id_str);
             $articleSupplPrices = $this->getArticleSupplPrices($where_art_id_str);
             $supplDeliverInfo = $this->getTpointSupplDeliveriesInfo($tpoint_id);
-            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands, $where_text);
+            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands);
             $n = $db->num_rows($r);
 
             $list = $this->drawHeaderSearchList($type_filter, $view, $order_value);
 
-            if ($where_brands == "" && $where_text == "") {
+            if ($where_brands == "") {
                 $rs = $r;
                 $ns = $n;
             } else {
-                $rs = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", "");
+                $rs = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
                 $ns = $db->num_rows($rs);
             }
 
@@ -1345,7 +1342,7 @@ class CatalogueClass
             $this->createTemporarySearchTable($temp_key);
             list($error, ,) = $this->getSearchMessages(1);
 
-            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", "");
+            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
             $n = $db->num_rows($r);
 
             $list = $this->drawHeaderSearchList(1, $view);

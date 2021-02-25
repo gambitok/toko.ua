@@ -223,10 +223,6 @@ function showPhotoGallery(ref) {
 function catalogueFilter(order) {
     let art = $("#art_value").val();
     let brand = $("#brand_value").val();
-    let text = $("#text_filter").val();
-    if (text === undefined) {
-        text = "";
-    }
 
     $(".check-brand").each(function () {
         if ($(this).hasClass("main-brand") === false) {
@@ -249,13 +245,12 @@ function catalogueFilter(order) {
     let price = $("#ex1").val();
     let deliv = $("#ex3").val();
 
-    JsHttpRequest.query(folder,{'w':'show_catalogue_filter_all', 'art':art, 'brand':brand, 'bb':bb, 'text':text, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
+    JsHttpRequest.query(folder,{'w':'show_catalogue_filter_all', 'art':art, 'brand':brand, 'bb':bb, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
         function (result, errors){ if (errors) {alert(errors);} if (result){
 
             $("#cat_search_main").html(result.content[0]);
             $("#cat_search_filters").html(result.content[1]);
             $("#cat_search_brands").html(result.content[2]);
-            $("#text_filter").val(result.content[4]);
 
             loadInputNumber();
 
@@ -337,7 +332,6 @@ function catalogueFilter(order) {
 function tecModelsFilter(order) {
     let art = $("#art_value").val();
     let brand = $("#brand_value").val();
-    let text = $("#text_filter").val();
 
     let brands = [];
     $("input[type=checkbox]").each(function () {
@@ -353,13 +347,12 @@ function tecModelsFilter(order) {
     let price = $("#ex1").val();
     let deliv = $("#ex3").val();
 
-    JsHttpRequest.query(folder,{'w':'show_model_filter_all', 'art':art, 'brand':brand, 'bb':bb, 'text':text, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
+    JsHttpRequest.query(folder,{'w':'show_model_filter_all', 'art':art, 'brand':brand, 'bb':bb, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
         function (result, errors){ if (errors) {alert(errors);} if (result){
 
             $("#cat_search_main").html(result.content[0]);
             $("#cat_search_filters").html(result.content[1]);
             $("#cat_search_brands").html(result.content[2]);
-            $("#text_filter").val(result.content[4]);
 
             loadInputNumber();
 

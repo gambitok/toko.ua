@@ -145,11 +145,11 @@ if ($_REQUEST["w"] == "getCatalogueLink") {
 }
 
 if ($_REQUEST["w"] == "show_catalogue_filter_all") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogListFilter($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["text"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));
+    $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogListFilter($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));
 }
 
 if ($_REQUEST["w"] == "show_model_filter_all") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->techModelsFilters($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["text"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));
+    $GLOBALS['_RESULT'] = array("content" => $catalog->techModelsFilters($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));
 }
 
 /*==== GARAGE ====*/

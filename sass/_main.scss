@@ -637,14 +637,14 @@ a, a:not([href]):not([tabindex]) {
 /*==== MAIN CONTENT =====*/
 .content {
     background: $white;
-    padding: 2%;
+    padding: 30px;
     width: 100%;
     box-shadow: 0 1px 4px #ccc;
 }
 
 .content-auto {
     background: $white;
-    padding: 2%;
+    padding: 30px;
     width: 100%;
     box-shadow: 0 1px 10px #ccc;
     h1 {
@@ -1385,7 +1385,8 @@ header {
         font-weight: 700;
         list-style: none;
         display: flex;
-        justify-content: space-between;
+        //justify-content: space-between;
+        justify-content: start;
         align-items: flex-start;
         li {
             color: #fff;
@@ -1399,6 +1400,7 @@ header {
             align-items: center;
             position: relative;
             margin-left: -1px;
+            min-height: 50px;
             a {
                 color: #fff;
                 &:hover {
