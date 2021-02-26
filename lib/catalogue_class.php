@@ -99,7 +99,7 @@ class CatalogueClass
 
         //search brands
         if (!empty($list_brand)) {
-            $search_brands = str_replace("{brands}", $list_brand, $search_brands);
+            $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
             $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
             $form = str_replace("{cat_search_brands}", $search_brands, $form);
         }
@@ -157,7 +157,7 @@ class CatalogueClass
         $search_main = $this->replaceLang($search_main);
         $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value, 1, 0);
         $search_filters = $this->replaceLang($search_filters);
-        $search_brands = str_replace("{brands}", $list_brand, $search_brands);
+        $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
         $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
         $search_brands = $this->replaceLang($search_brands);
 
@@ -360,7 +360,7 @@ class CatalogueClass
         $search_brands = $this->getHtmlForm("cat_search_brands");
         $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, [], 2, 0);
         $search_filters = $this->replaceLang($search_filters);
-        $search_brands = str_replace("{brands}", $list_brand, $search_brands);
+        $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
         $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
         $search_brands = $this->replaceLang($search_brands);
 
@@ -420,7 +420,7 @@ class CatalogueClass
         $search_filters = $this->getHtmlForm("cat_search_filters");
         $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value, 2, 0);
         $search_brands = $this->getHtmlForm("cat_search_brands");
-        $search_brands = str_replace("{brands}", $list_brand, $search_brands);
+        $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
         $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
 
         return array($this->replaceLang($search_main), $this->replaceLang($search_filters), $this->replaceLang($search_brands), $filters["max_price"]);

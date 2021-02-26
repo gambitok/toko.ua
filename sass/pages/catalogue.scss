@@ -609,63 +609,126 @@
     margin-right: auto;
     padding: 20px 15px;
     width: 100%;
-    h1 {
-        font-size: 16px;
-    }
-    &-title {
-        color: #9da9b9;
-        font-size: 16px;
-        font-weight: bold;
-        margin-bottom: 30px;
-        text-transform: uppercase;
-    }
-    &-item {
+    &__item {
+        margin-bottom: 15px;
         padding: 10px;
-        &__header {
+        &-title {
+            display: block;
             color: #9da9b9;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: bold;
+            margin-bottom: 30px;
             text-transform: uppercase;
+            &-h {
+                color: #9da9b9;
+                float: left;
+            }
+            &-i {
+                color: #9da9b9;
+                float: right;
+            }
         }
-        &__input {
-            display: flex;
-            justify-content: space-between;
-            input {
-                border: 1px solid #ccc;
-                font-size: 14px;
-                margin-bottom: 15px;
-                margin-top: 15px;
-                max-width: 100px;
-                padding: 5px;
-                text-align: center;
-                width: auto;
+        &-content {
+            &-r {
+                display: flex;
+                justify-content: space-between;
+                button, input, span {
+                    font-size: 14px;
+                    margin-bottom: 15px;
+                    margin-top: 15px;
+                    max-width: 100px;
+                    padding: 5px;
+                    text-align: center;
+                }
+                input {
+                    border: 1px solid #ccc;
+                    width: auto;
+                }
+                button {
+                    background: #f1f1f1;
+                    border: 1px solid #ccc;
+                    border-radius: .25rem;
+                    cursor: pointer;
+                    width: 50px;
+                }
+                span {
+                    display: block;
+                    width: auto;
+                }
             }
-            button {
-                background: #f1f1f1;
-                border: 1px solid #ccc;
-                border-radius: .25rem;
-                cursor: pointer;
-                font-size: 14px;
-                margin-bottom: 15px;
-                margin-top: 15px;
-                max-width: 100px;
-                padding: 5px;
-                text-align: center;
-                width: 50px;
-            }
-            span {
+            &-d {
                 display: block;
-                font-size: 14px;
-                margin-bottom: 15px;
-                margin-top: 15px;
-                max-width: 100px;
-                padding: 5px;
-                text-align: center;
-                width: auto;
+                margin: 0 10px;
             }
         }
     }
 }
+
+//.side-menu {
+//    background: #fff;
+//    box-shadow: 0 1px 4px #ccc;
+//    font-size: 11px;
+//    margin-left: auto;
+//    margin-right: auto;
+//    padding: 20px 15px;
+//    width: 100%;
+//    h1 {
+//        font-size: 16px;
+//    }
+//    &-title {
+//        color: #9da9b9;
+//        font-size: 16px;
+//        font-weight: bold;
+//        margin-bottom: 30px;
+//        text-transform: uppercase;
+//    }
+//    &-item {
+//        padding: 10px;
+//        &__header {
+//            color: #9da9b9;
+//            font-size: 16px;
+//            font-weight: 700;
+//            text-transform: uppercase;
+//        }
+//        &__input {
+//            display: flex;
+//            justify-content: space-between;
+//            input {
+//                border: 1px solid #ccc;
+//                font-size: 14px;
+//                margin-bottom: 15px;
+//                margin-top: 15px;
+//                max-width: 100px;
+//                padding: 5px;
+//                text-align: center;
+//                width: auto;
+//            }
+//            button {
+//                background: #f1f1f1;
+//                border: 1px solid #ccc;
+//                border-radius: .25rem;
+//                cursor: pointer;
+//                font-size: 14px;
+//                margin-bottom: 15px;
+//                margin-top: 15px;
+//                max-width: 100px;
+//                padding: 5px;
+//                text-align: center;
+//                width: 50px;
+//            }
+//            span {
+//                display: block;
+//                font-size: 14px;
+//                margin-bottom: 15px;
+//                margin-top: 15px;
+//                max-width: 100px;
+//                padding: 5px;
+//                text-align: center;
+//                width: auto;
+//            }
+//        }
+//    }
+//}
 
 .side-tree {
     background: #fff;

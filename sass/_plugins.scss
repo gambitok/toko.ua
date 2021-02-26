@@ -472,6 +472,16 @@ table {
     }
 }
 
+.container_brands {
+    max-height: 245px;
+    overflow: hidden;
+    overflow-y: auto;
+    &-active {
+        max-height: unset;
+        overflow-y: unset;
+    }
+}
+
 .container_check {
     color: #606975;
     cursor: pointer;
@@ -482,6 +492,8 @@ table {
     padding-left: 20px;
     user-select: none;
     word-wrap: break-word;
+    overflow: hidden;
+    white-space: nowrap;
     input {
         cursor: pointer;
         height: 0;
