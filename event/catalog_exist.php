@@ -64,3 +64,11 @@ if ($router == "show_mfa") {
     }
 }
 
+if ($router == "show_params") {
+    $group_link = $linka[2];
+    $filters = $linka[3];
+    $group_id = $catalog_exist->getGroupExistId($group_link);
+    $page = $catalogue->getUrlNumber($_GET['page']);
+    ($page != NULL) ?: $page = 1;
+    $content = str_replace("{main_window}", $catalog_exist->showPartsCatalogue($group_id, $page, $filters)["form"], $content);
+}
