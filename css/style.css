@@ -2408,6 +2408,8 @@ table thead td { border: 1px solid #000; }
 
 .side-menu { background: #fff; box-shadow: 0 1px 4px #ccc; font-size: 11px; margin-left: auto; margin-right: auto; padding: 20px 15px; width: 100%; }
 
+.side-menu h1 { font-size: 14px; }
+
 .side-menu__item { margin-bottom: 15px; padding: 10px; }
 
 .side-menu__item-title { display: block; color: #9da9b9; font-size: 16px; font-weight: bold; margin-bottom: 30px; text-transform: uppercase; }
@@ -2416,15 +2418,17 @@ table thead td { border: 1px solid #000; }
 
 .side-menu__item-title-i { color: #9da9b9; float: right; }
 
-.side-menu__item-content-r { display: flex; justify-content: space-between; }
+.side-menu__item-content-r { display: block; }
 
-.side-menu__item-content-r button, .side-menu__item-content-r input, .side-menu__item-content-r span { font-size: 14px; margin-bottom: 15px; margin-top: 15px; max-width: 100px; padding: 5px; text-align: center; }
+.side-menu__item-content-r_block { display: flex; justify-content: space-between; }
 
-.side-menu__item-content-r input { border: 1px solid #ccc; width: auto; }
+.side-menu__item-content-r_block button, .side-menu__item-content-r_block input, .side-menu__item-content-r_block span { font-size: 14px; margin-bottom: 15px; margin-top: 15px; max-width: 100px; padding: 5px; text-align: center; }
 
-.side-menu__item-content-r button { background: #f1f1f1; border: 1px solid #ccc; border-radius: .25rem; cursor: pointer; width: 50px; }
+.side-menu__item-content-r_block input { border: 1px solid #ccc; width: auto; max-width: 65px; }
 
-.side-menu__item-content-r span { display: block; width: auto; }
+.side-menu__item-content-r_block button { background: #f1f1f1; border: 1px solid #ccc; border-radius: .25rem; cursor: pointer; width: 40px; }
+
+.side-menu__item-content-r_block span { display: block; width: auto; }
 
 .side-menu__item-content-d { display: block; margin: 0 10px; }
 

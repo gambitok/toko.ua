@@ -22,10 +22,12 @@
                     </a>
                     <div class="side-menu__item-content">
                         <div class="side-menu__item-content-r">
-                            <input type="text" title="{price_cap}" id="price_val_min" value="0">
-                            <span>-</span>
-                            <input type="text" title="{price_cap}" id="price_val_max" value="{sideblock_max_price}">
-                            <button onClick="{catalogue_js_filter}">OK</button>
+                            <div class="side-menu__item-content-r_block">
+                                <input type="text" title="{price_cap}" id="price_val_min" value="0">
+                                <span>-</span>
+                                <input type="text" title="{price_cap}" id="price_val_max" value="{sideblock_max_price}">
+                                <button onClick="{catalogue_js_filter}">OK</button>
+                            </div>
                         </div>
                         <div class="side-menu__item-content-d">
                             <input id="filter-price" title="{price_cap}" type="text" class="span2" value="" data-slider-min="0" data-slider-max="{sideblock_max_price}" data-slider-step="1" data-slider-value="[{sideblock_min_price_val},{sideblock_max_price_val}]" style="width: 100%"/>
@@ -40,10 +42,12 @@
                     </a>
                     <div class="side-menu__item-content">
                         <div class="side-menu__item-content-r">
-                            <input type="text" title="{delivery_cap}" id="dd_val_min" value="0">
-                            <span>-</span>
-                            <input type="text" title="{delivery_cap}" id="dd_val_max" value="{sideblock_max_dd}">
-                            <button onClick="{catalogue_js_filter}">OK</button>
+                            <div class="side-menu__item-content-r_block">
+                                <input type="text" title="{delivery_cap}" id="dd_val_min" value="0">
+                                <span>-</span>
+                                <input type="text" title="{delivery_cap}" id="dd_val_max" value="{sideblock_max_dd}">
+                                <button onClick="{catalogue_js_filter}">OK</button>
+                            </div>
                         </div>
                         <div class="side-menu__item-content-d">
                             <input id="filter-delivery" title="{delivery_cap}" type="text" class="span2" value="" data-slider-min="0" data-slider-max="{sideblock_max_dd}" data-slider-step="1" data-slider-value="[{sideblock_min_dd_val},{sideblock_max_dd_val}]" style="width: 100%"/>

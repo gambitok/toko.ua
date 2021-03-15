@@ -609,6 +609,9 @@
     margin-right: auto;
     padding: 20px 15px;
     width: 100%;
+    h1 {
+        font-size: 14px;
+    }
     &__item {
         margin-bottom: 15px;
         padding: 10px;
@@ -630,30 +633,34 @@
         }
         &-content {
             &-r {
-                display: flex;
-                justify-content: space-between;
-                button, input, span {
-                    font-size: 14px;
-                    margin-bottom: 15px;
-                    margin-top: 15px;
-                    max-width: 100px;
-                    padding: 5px;
-                    text-align: center;
-                }
-                input {
-                    border: 1px solid #ccc;
-                    width: auto;
-                }
-                button {
-                    background: #f1f1f1;
-                    border: 1px solid #ccc;
-                    border-radius: .25rem;
-                    cursor: pointer;
-                    width: 50px;
-                }
-                span {
-                    display: block;
-                    width: auto;
+                display: block;
+                &_block {
+                    display: flex;
+                    justify-content: space-between;
+                    button, input, span {
+                        font-size: 14px;
+                        margin-bottom: 15px;
+                        margin-top: 15px;
+                        max-width: 100px;
+                        padding: 5px;
+                        text-align: center;
+                    }
+                    input {
+                        border: 1px solid #ccc;
+                        width: auto;
+                        max-width: 65px;
+                    }
+                    button {
+                        background: #f1f1f1;
+                        border: 1px solid #ccc;
+                        border-radius: .25rem;
+                        cursor: pointer;
+                        width: 40px;
+                    }
+                    span {
+                        display: block;
+                        width: auto;
+                    }
                 }
             }
             &-d {
