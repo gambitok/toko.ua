@@ -346,7 +346,7 @@ class CatalogExistClass extends CatalogueClass
 
         $checked_filters = $this->getCheckedFilters($group_id, $filters);
         if (!empty($checked_filters)) {
-            var_dump($checked_filters);
+            var_dump($this->getParamsValuesName($checked_filters));
         }
 
         $arts = [];
@@ -578,31 +578,12 @@ class CatalogExistClass extends CatalogueClass
         return $list;
     }
 
-//    public function getFiltredArts($group_id, $page, $filters)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $dbc = DbSingleton::getTokoCacheDb();
-//
-//        $table = "EX_TABLE_TREE_$group_id";
-//        $limit = $this->getSearchLimit($page);
-//
-//        $arts = [];
-//        $r = $dbc->query("SELECT * FROM `$table` $limit;");
-//        $n = $dbc->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id = $dbc->result($r, $i - 1, "art_id");
-//            array_push($arts, $art_id);
-//        }
-//
-//        return $arts;
-//    }
-
-/*
-    T2_TREE_GROUP_EXIST - группы
-    T2_TREE_PARAMS_EXIST - параметры
-    T2_TREE_VALUE_EXIST - значение
-    T2_TREE_ARTS_PARAMS_VALUE_EXIST - связка
- * */
+    /*
+        T2_TREE_GROUP_EXIST - группы
+        T2_TREE_PARAMS_EXIST - параметры
+        T2_TREE_VALUE_EXIST - значение
+        T2_TREE_ARTS_PARAMS_VALUE_EXIST - связка
+     * */
 
     /*
      * T2_TREE_PARAMS_EXIST
@@ -715,7 +696,6 @@ class CatalogExistClass extends CatalogueClass
                 $params_item_values_arr = explode(",", $params_item_values);
                 foreach ($params_item_values_arr as $value_link)
                 {
-                    // $params[$param_link][] = $value_link;
                     $param_id = $this->getGroupParamID($group_id, $param_link);
                     $value_id = $this->getGroupValueID($group_id, $param_id, $value_link);
                     if ($value_id != 0) {
@@ -725,6 +705,19 @@ class CatalogExistClass extends CatalogueClass
             }
         }
         return $params;
+    }
+
+    public function getParamsValuesName($params)
+    {
+        $str = [];
+        foreach ($params as $param_id => $values) {
+            $param_name = $this->getGroupParamName($param_id);
+            foreach ($values as $value_id) {
+                $value_name = $this->getGroupValueName($value_id, $param_id);
+                $str[$param_name][] = $value_name;
+            }
+        }
+        return $str;
     }
 
 }
