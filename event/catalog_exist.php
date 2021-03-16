@@ -31,6 +31,14 @@ if ($router == "init_mfa") {
     }
 }
 
+if ($router == "init_params") {
+    $group_link = $linka[2];
+    $group_id = $catalog_exist->getGroupExistId($group_link);
+    if ($group_id > 0) {
+        $content = str_replace("{main_window}", $catalog_exist->getInitParamsForm($group_id), $content);
+    }
+}
+
 if ($router == "show") {
     $group_link = $linka[2];
     $group_id = $catalog_exist->getGroupExistId($group_link);
@@ -56,9 +64,8 @@ if ($router == "show_mfa") {
     $page = $catalogue->getUrlNumber($_GET['page']);
     ($page != NULL) ?: $page = 1;
 
-
     if ($mfa_link == "") {
-        $content = str_replace("{main_window}", $catalog_exist->showPartsCatalogueForm($group_id), $content);
+        $content = str_replace("{main_window}", $catalog_exist->showCarsCatalogue($group_id), $content);
     } else {
         $content = str_replace("{main_window}", $catalog_exist->showPartsCatalogueMfa($group_id, $mfa_id, $model, $page)["form"], $content);
     }
@@ -70,5 +77,5 @@ if ($router == "show_params") {
     $group_id = $catalog_exist->getGroupExistId($group_link);
     $page = $catalogue->getUrlNumber($_GET['page']);
     ($page != NULL) ?: $page = 1;
-    $content = str_replace("{main_window}", $catalog_exist->showPartsCatalogue($group_id, $page, $filters)["form"], $content);
+    $content = str_replace("{main_window}", $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters)["form"], $content);
 }

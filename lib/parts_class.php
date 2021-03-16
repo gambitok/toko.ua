@@ -8,13 +8,6 @@ class PartsClass extends CatalogueClass
 
     public $products_on_page = 25;
 
-//    public function getHeadFromStr($str_id)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_STR` WHERE `STR_ID`='$str_id' LIMIT 1;");
-//        return $db->result($r, 0, "HEAD_ID");
-//    }
-
     public function getInitForm($str_id)
     {
         $result = $this->initPartsTable($str_id);
@@ -93,32 +86,6 @@ class PartsClass extends CatalogueClass
 
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
     }
-
-//    public function initPartsMfaTable($str_id)
-//    {
-//        // T2_LINKS
-//        // XX_TABLE_TREE_$str_id
-//        $db = DbSingleton::getTokoDb();
-//        $dbc = DbSingleton::getTokoCacheDb();
-//
-//        $arts = [];
-//        $r = $dbc->query("SELECT `art_id` FROM `XX_TABLE_TREE_$str_id` WHERE 1;");
-//        $n = $dbc->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id = $dbc->result($r, $i - 1, "art_id");
-//            array_push($arts, $art_id);
-//        }
-//
-//        $where_arts = implode(",", $arts);
-//
-//        $r = $db->query("SELECT * FROM `T2_LINKS` WHERE `ART_ID` IN ($where_arts);");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//
-//        }
-//
-//        return "";
-//    }
 
     public function showPartsForm()
     {

@@ -8,6 +8,9 @@ class CatalogExistClass extends CatalogueClass
 
     public $products_on_page = 25;
 
+    /*
+     * GROUP EXIST
+     * */
     public function getGroupExistId($group_link)
     {
         $db = DbSingleton::getTokoDb();
@@ -19,7 +22,6 @@ class CatalogExistClass extends CatalogueClass
         }
         return $group_id;
     }
-
     public function getGroupExistName($group_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -32,10 +34,252 @@ class CatalogExistClass extends CatalogueClass
         return $group_name;
     }
 
+    /*
+     * PARAMS EXIST
+     * */
+    public function getGroupParamID($group_id, $param_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $param_id = "";
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id' AND `PARAM_LINK`='$param_link' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $param_id = $db->result($r, 0, "PARAM_ID");
+        }
+        if ($param_link == "brandy") {
+            $param_id = 0;
+        }
+        return $param_id;
+    }
+    public function getGroupParamName($param_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $param_name = "";
+        $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $param_name = $db->result($r, 0, "PARAM_NAME");
+        }
+        if ($param_id == 0) {
+            $param_name = "Brandy";
+        }
+        return $param_name;
+    }
+
+    /*
+     * VALUE EXIST
+     * */
+    public function getGroupValueID($group_id, $param_id, $value_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $value_id = "";
+        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID`='$group_id' AND `PARAM_ID`='$param_id' AND `VALUE_LINK`='$value_link' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $value_id = $db->result($r, 0, "VALUE_ID");
+        }
+        if ($param_id == 0) {
+            $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE `BRAND_LINK`='$value_link' LIMIT 1;");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $value_id = $db->result($r, 0, "BRAND_ID");
+            }
+        }
+        return $value_id;
+    }
+    public function getGroupValueName($value_id, $param_id = 0)
+    {
+        $db = DbSingleton::getTokoDb();
+        $value_name = "";
+        $r = $db->query("SELECT `VALUE_NAME` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $value_name = $db->result($r, 0, "VALUE_NAME");
+        }
+        if ($param_id == 0) {
+            $value_name = $this->getBrandName($value_id);
+        }
+        return $value_name;
+    }
+
+    /*
+     * get products limit
+     * */
+    public function getSearchLimit($page)
+    {
+        $count = $this->products_on_page;
+        $off = $count * $page - $count;
+        return ($off >= 0) ? " LIMIT $count OFFSET $off" : "";
+    }
+
+    /*======================================================================= PRODUCTS PARAMS =*/
+    /*
+     * show products params init form
+     * */
+    public function getInitParamsForm($group_id)
+    {
+        $result = $this->initPartsParamsTable($group_id);
+        return "<div class='content'>$result</div>";
+    }
+
+    /*
+     * check exist of group params table
+     * */
+    public function checkTableParams($group_id)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_PARAMS_$group_id";
+        $r = $dbc->query("SHOW TABLES LIKE '$table';");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
+            $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1;");
+            $n = $dbc->result($r, 0, "col_arts");
+        }
+        return $n;
+    }
+
+    /*
+     * init products params cache
+     * */
+    public function initPartsParamsTable($group_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+
+        $table = "EX_TABLE_TREE_PARAMS_$group_id";
+
+        if ($this->checkTableParams($group_id) > 0) {
+            $dbc->query("UPDATE `$table` SET `status`=0 WHERE 1;");
+        }
+
+        $params_str = "";
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id';");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $param_id = $db->result($r, $i - 1, "PARAM_ID");
+            $params_str .= "`param_$param_id` VARCHAR(50),";
+        }
+
+        $dbc->query("CREATE TABLE IF NOT EXISTS `$table` 
+        (
+            `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `art_id` INT(100) NOT NULL,
+            `brand_id` INT(100),
+            `status` TINYINT(2),
+            $params_str
+            PRIMARY KEY (`id`)
+        ) ENGINE = MYISAM;");
+
+        $products = [];
+        $r = $db->query("SELECT t2a.`ART_ID`, t2p.`PARAM_ID`, t2p.`VALUE_ID` 
+        FROM `T2_TREE_ARTS_EXIST` t2a
+            LEFT JOIN `T2_TREE_ARTS_PARAMS_VALUE_EXIST` t2p ON t2p.ART_ID=t2a.ART_ID
+        WHERE t2a.`GROUP_ID`='$group_id';");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
+            $param_id = $db->result($r, $i - 1, "PARAM_ID");
+            $value_id = $db->result($r, $i - 1, "VALUE_ID");
+            $products[$art_id][0] = 0;
+            if (empty($products[$art_id])) {
+                $products[$art_id] = [];
+            }
+            if (empty($products[$art_id][$param_id])) {
+                $products[$art_id][$param_id] = [];
+            }
+            if ($param_id > 0) {
+                array_push($products[$art_id][$param_id], $value_id);
+            }
+        }
+
+        foreach ($products as $art_id => $params) {
+            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT
+            FROM `T2_ARTICLES` t2a
+                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
+            WHERE t2a.ART_ID IN ($art_id) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0)
+            GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
+            UNION ALL
+            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl
+            FROM `T2_ARTICLES` t2a
+                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
+            WHERE t2a.ART_ID IN ($art_id) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
+            GROUP BY t2a.ART_ID, t2si.client_storage_id;");
+
+            $stock = $db->num_rows($r);
+            $brand_id = $db->result($r, 0, "BRAND_ID");
+
+            $products[$art_id][0] = $brand_id;
+
+            if ($stock == 0) {
+                unset($products[$art_id]);
+            }
+        }
+
+        $count_add = 0;
+        $count_upd = 0;
+
+        foreach ($products as $art_id => $params) {
+            $params_values = "";
+            $params_column = "";
+            $set_column = "";
+            $brand_id = $products[$art_id][0];
+            foreach ($params as $param_id => $values) {
+                $params_arr = [];
+                foreach ($values as $value_id) {
+                    array_push($params_arr, $value_id);
+                }
+                if ($param_id > 0) {
+                    $params_values .= "'" . implode(",", $params_arr) . "',";
+                    $params_column .= "`param_$param_id`,";
+                    $set_column .= "`param_$param_id`='" . implode(",", $params_arr) . "',";
+                }
+            }
+            $params_values = rtrim($params_values, ","); if ($params_values != "") $params_values = ", " . $params_values;
+            $params_column = rtrim($params_column, ","); if ($params_column != "") $params_column = ", " . $params_column;
+            $set_column = rtrim($set_column, ","); if ($set_column != "") $set_column = ", " . $set_column;
+
+            $r = $dbc->query("SELECT * FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;");
+            $n = $dbc->num_rows($r);
+            if ($n == 0) {
+                $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status` $params_column) VALUES ('$art_id', '$brand_id', 1 $params_values);");
+                $count_add++;
+            } else {
+                $dbc->query("UPDATE `$table` SET `status`=1 $set_column WHERE `art_id`='$art_id' LIMIT 1;");
+                $count_upd++;
+            }
+        }
+
+        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table` WHERE `status`=0");
+        $count_del = $dbc->result($r, 0, "count_nulls") + 0;
+        $dbc->query("DELETE FROM `$table` WHERE `status`=0;");
+
+        return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
+    }
+
+    /*======================================================================= PRODUCTS =*/
+    /*
+     * show products init form
+     * */
     public function getInitForm($group_id)
     {
         $result = $this->initPartsTable($group_id);
         return "<div class='content'>$result</div>";
+    }
+
+    /*
+     * check exist of group table
+     * */
+    public function checkTable($group_id)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+        $r = $dbc->query("SHOW TABLES LIKE '$table';");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
+            $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1;");
+            $n = $dbc->result($r, 0, "col_arts");
+        }
+        return $n;
     }
 
     /*
@@ -117,6 +361,10 @@ class CatalogExistClass extends CatalogueClass
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
     }
 
+    /*======================================================================= PRODUCTS MFA =*/
+    /*
+     * show products mfa init form
+     * */
     public function getInitMfaForm($group_id)
     {
         $result = $this->initPartsMfaTable($group_id);
@@ -124,7 +372,23 @@ class CatalogExistClass extends CatalogueClass
     }
 
     /*
-     * init tree manufacturers
+     * check exist of group mfa table
+     * */
+    public function checkTableMfa($group_id)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_MFA_$group_id";
+        $r = $dbc->query("SHOW TABLES LIKE '$table';");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
+            $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1;");
+            $n = $dbc->result($r, 0, "col_arts");
+        }
+        return $n;
+    }
+
+    /*
+     * init group mfa
      * */
     public function initPartsMfaTable($group_id)
     {
@@ -199,36 +463,7 @@ class CatalogExistClass extends CatalogueClass
     }
 
     /*
-     * check exist of group table
-     * */
-    public function checkTable($group_id)
-    {
-        $dbc = DbSingleton::getTokoCacheDb();
-        $table = "EX_TABLE_TREE_$group_id";
-        $r = $dbc->query("SHOW TABLES LIKE '$table';");
-        $n = $dbc->num_rows($r);
-        if ($n > 0) {
-            $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1;");
-            $n = $dbc->result($r, 0, "col_arts");
-        }
-        return $n;
-    }
-
-    public function checkTableMfa($group_id)
-    {
-        $dbc = DbSingleton::getTokoCacheDb();
-        $table = "EX_TABLE_TREE_MFA_$group_id";
-        $r = $dbc->query("SHOW TABLES LIKE '$table';");
-        $n = $dbc->num_rows($r);
-        if ($n > 0) {
-            $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1;");
-            $n = $dbc->result($r, 0, "col_arts");
-        }
-        return $n;
-    }
-
-    /*
-     * show `Parts` catalog
+     * show products catalog
      * */
     public function showPartsForm($status = 0)
     {
@@ -303,17 +538,29 @@ class CatalogExistClass extends CatalogueClass
                         $check_mfa_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
                         $col_mfa = "";
                     }
+                    $check_params = $this->checkTableParams($group_id);
+                    if ($check_params > 0) {
+                        $check_params_form = "<span class='span-red'><i class='fa fa-edit'></i> UPDATE</span>";
+                        $col_params = "($check_params)";
+                    } else {
+                        $check_params_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
+                        $col_params = "";
+                    }
                     $list .= "<li style='display:flex; justify-content: space-between;'>
-                        <div style='width: 50%;'>
+                        <div style='width: 40%;'>
                             $group_name
                         </div>
-                        <div style='width: 25%; text-align: right;'>
+                        <div style='width: 20%; text-align: right;'>
                             <a href='/catalog_exist/init/$group_link/'>$check_form</a>   
                             <a href='/catalog_exist/show/$group_link/'>ZAPCHASTI $col</a>  
                         </div>
-                        <div style='width: 25%; text-align: right;'>
+                        <div style='width: 20%; text-align: right;'>
                             <a href='/catalog_exist/init_mfa/$group_link/'>$check_mfa_form</a>
                             <a href='/catalog_exist/show_mfa/$group_link/'>MACHINU $col_mfa</a>
+                        </div>
+                        <div style='width: 20%; text-align: right;'>
+                            <a href='/catalog_exist/init_params/$group_link/'>$check_params_form</a>
+                            <a href='/catalog_exist/show_params/$group_link/'>PARAMS $col_params</a>
                         </div>
                     </li>";
                 }
@@ -326,28 +573,15 @@ class CatalogExistClass extends CatalogueClass
     }
 
     /*
-     * show `PARTS` form
+     * show products form
      * */
-    public function showPartsCatalogue($group_id, $page = 1, $filters = [])
+    public function showPartsCatalogue($group_id, $page = 1)
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
 
         $limit = $this->getSearchLimit($page);
         $group_text = $this->getGroupExistName($group_id);
-
-//        $where_brands = "";
-//        if (!empty($brandy)) {
-//            $brand_list = implode(",", $brandy);
-//            if ($brand_list != "") {
-//                $where_brands = "WHERE `brand_id` IN ($brand_list)";
-//            }
-//        }
-
-        $checked_filters = $this->getCheckedFilters($group_id, $filters);
-        if (!empty($checked_filters)) {
-            var_dump($this->getParamsValuesName($checked_filters));
-        }
 
         $arts = [];
         $r = $dbc->query("SELECT * FROM `$table` $limit;");
@@ -372,16 +606,9 @@ class CatalogExistClass extends CatalogueClass
     }
 
     /*
-     * get `Parts` form limit
+     * show cars form
      * */
-    public function getSearchLimit($page)
-    {
-        $count = $this->products_on_page;
-        $off = $count * $page - $count;
-        return ($off >= 0) ? " LIMIT $count OFFSET $off" : "";
-    }
-
-    public function showPartsCatalogueForm($group_id)
+    public function showCarsCatalogue($group_id)
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $automan = new AutoClass();
@@ -578,111 +805,6 @@ class CatalogExistClass extends CatalogueClass
         return $list;
     }
 
-    /*
-        T2_TREE_GROUP_EXIST - группы
-        T2_TREE_PARAMS_EXIST - параметры
-        T2_TREE_VALUE_EXIST - значение
-        T2_TREE_ARTS_PARAMS_VALUE_EXIST - связка
-     * */
-
-    /*
-     * T2_TREE_PARAMS_EXIST
-     * get Params
-     * */
-    public function getGroupParamID($group_id, $param_link)
-    {
-        $db = DbSingleton::getTokoDb();
-        $param_id = "";
-        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id' AND `PARAM_LINK`='$param_link' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $param_id = $db->result($r, 0, "PARAM_ID");
-        }
-        if ($param_link == "brandy") {
-            $param_id = 0;
-        }
-        return $param_id;
-    }
-    public function getGroupParamName($param_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $param_name = "";
-        $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $param_name = $db->result($r, 0, "PARAM_NAME");
-        }
-        if ($param_id == 0) {
-            $param_name = "Brandy";
-        }
-        return $param_name;
-    }
-    public function getGroupParamLink($param_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $param_link = "";
-        $r = $db->query("SELECT `PARAM_LINK` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $param_link = $db->result($r, 0, "PARAM_LINK");
-        }
-        if ($param_id == 0) {
-            $param_link = "brandy";
-        }
-        return $param_link;
-    }
-
-    /*
-     * T2_TREE_VALUE_EXIST
-     * get Values
-     * */
-    public function getGroupValueID($group_id, $param_id, $value_link)
-    {
-        $db = DbSingleton::getTokoDb();
-        $value_id = "";
-        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID`='$group_id' AND `PARAM_ID`='$param_id' AND `VALUE_LINK`='$value_link' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $value_id = $db->result($r, 0, "VALUE_ID");
-        }
-        if ($param_id == 0) {
-            $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE `BRAND_LINK`='$value_link' LIMIT 1;");
-            $n = $db->num_rows($r);
-            if ($n > 0) {
-                $value_id = $db->result($r, 0, "BRAND_ID");
-            }
-        }
-        return $value_id;
-    }
-    public function getGroupValueName($value_id, $param_id = 0)
-    {
-        $db = DbSingleton::getTokoDb();
-        $value_name = "";
-        $r = $db->query("SELECT `VALUE_NAME` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $value_name = $db->result($r, 0, "VALUE_NAME");
-        }
-        if ($param_id == 0) {
-            $value_name = $this->getBrandName($value_id);
-        }
-        return $value_name;
-    }
-    public function getGroupValueLink($value_id, $param_id = 0)
-    {
-        $db = DbSingleton::getTokoDb();
-        $value_link = "";
-        $r = $db->query("SELECT `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $value_link = $db->result($r, 0, "VALUE_LINK");
-        }
-        if ($param_id == 0) {
-            $value_link = $this->getBrandLink($value_id);
-        }
-        return $value_link;
-    }
-
     public function getCheckedFilters($group_id, $filters)
     {
         $params = [];
@@ -718,6 +840,99 @@ class CatalogExistClass extends CatalogueClass
             }
         }
         return $str;
+    }
+
+    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [])
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+
+        $limit = $this->getSearchLimit($page);
+        $group_text = $this->getGroupExistName($group_id);
+
+        $arts = [];
+        $r = $dbc->query("SELECT * FROM `$table` $limit;");
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $dbc->result($r, $i - 1, "art_id");
+            array_push($arts, $art_id);
+        }
+
+        $art_id_str = implode(",", array_unique($arts));
+        list($list, , $active_filters, , $brands) = $this->searchList($art_id_str, 1, 1);
+        $count = $this->getPartsCount($group_id, []);
+        $pagination_form = $this->getPartsPaginationForm($count, $page);
+        $filters_form = $this->getPartsFiltersForm($group_id, $filters);
+
+        $form = $this->getHtmlForm("catalog_exist/list_params");
+        $form = str_replace("{parts_name}", $group_text, $form);
+        $form = str_replace("{parts_list}", $list, $form);
+        $form = str_replace("{parts_count}", $count, $form);
+        $form = str_replace("{parts_pagination}", $pagination_form, $form);
+        $form = str_replace("{parts_params}", $filters_form, $form);
+
+        return array("form" => $form, "filters" => $active_filters, "brands" => $brands);
+    }
+
+    public function getGroupExistParams($group_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $params = [];
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id';");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $param_id = $db->result($r, $i - 1, "PARAM_ID");
+            $params[] = $param_id;
+        }
+        return $params;
+    }
+
+    public function getPartsFiltersForm($group_id, $filters)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_PARAMS_$group_id";
+        $params_check = $this->getCheckedFilters($group_id, $filters);
+
+        $exist_params = $this->getGroupExistParams($group_id);
+
+        $params = [];
+        $r = $dbc->query("SELECT * FROM `$table`");
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $brand_id = $dbc->result($r, $i - 1, "brand_id");
+            $params[0][] = $brand_id;
+            foreach($exist_params as $param_id) {
+                $value_str = $dbc->result($r, $i - 1, "param_$param_id");
+                if (!empty($value_str)) {
+                    $params[$param_id] = explode(",", $value_str);
+                }
+            }
+        }
+
+        foreach ($params as $param_id => $values) {
+            $params[$param_id] = array_unique($params[$param_id]);
+        }
+
+       $list_params = "";
+        if (!empty($params)) {
+            foreach ($params as $param_id => $values) {
+                $param_name = $this->getGroupParamName($param_id);
+                $list_params .= "<ul class='hidden-list'><h5>$param_name</h5>";
+                foreach ($values as $value_id) {
+                    $value_name = $this->getGroupValueName($value_id, $param_id);
+                    $checked = "";
+                    if (in_array($value_id, $params_check[$param_id])) {
+                        $checked = "***";
+                    }
+                    $list_params .= "<li>$checked $value_name</li>";
+                }
+                $list_params .= "</ul>";
+            }
+        }
+
+        $form = $this->getHtmlForm("catalog_exist/params");
+        $form = str_replace("{list_params}", $list_params, $form);
+        return $form;
     }
 
 }

@@ -32,12 +32,12 @@ class PatternClass extends CatalogueClass
             array_push($products[$art_id][$param_id], $value_id);
         }
 
-        $params = "";
+        $params_str = "";
         $r = $db->query("SELECT * FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id';");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $param_id = $db->result($r, $i - 1, "PARAM_ID");
-            $params .= "`param_$param_id` VARCHAR(50),";
+            $params_str .= "`param_$param_id` VARCHAR(50),";
         }
 
         $db->query("CREATE TABLE IF NOT EXISTS `XX_TABLE_TEMPLATE_$template_id` 
@@ -45,7 +45,7 @@ class PatternClass extends CatalogueClass
             `id` INT(11) NOT NULL AUTO_INCREMENT,
             `art_id` INT(100) NOT NULL,
             `brand_id` INT(100),
-            $params
+            $params_str
             PRIMARY KEY (`id`)
         ) ENGINE = MYISAM;");
 
