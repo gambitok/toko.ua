@@ -65,6 +65,20 @@ class CatalogExistClass extends CatalogueClass
         }
         return $param_name;
     }
+    public function getGroupParamLink($param_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $param_name = "";
+        $r = $db->query("SELECT `PARAM_LINK` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $param_name = $db->result($r, 0, "PARAM_LINK");
+        }
+        if ($param_id == 0) {
+            $param_name = "brandy";
+        }
+        return $param_name;
+    }
 
     /*
      * VALUE EXIST
@@ -98,6 +112,20 @@ class CatalogExistClass extends CatalogueClass
         }
         if ($param_id == 0) {
             $value_name = $this->getBrandName($value_id);
+        }
+        return $value_name;
+    }
+    public function getGroupValueLink($value_id, $param_id = 0)
+    {
+        $db = DbSingleton::getTokoDb();
+        $value_name = "";
+        $r = $db->query("SELECT `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $value_name = $db->result($r, 0, "VALUE_LINK");
+        }
+        if ($param_id == 0) {
+            $value_name = $this->getBrandLink($value_id);
         }
         return $value_name;
     }
@@ -842,16 +870,45 @@ class CatalogExistClass extends CatalogueClass
         return $str;
     }
 
+    public function getFiltersWhere($group_id, $filters)
+    {
+        $params = $this->getCheckedFilters($group_id, $filters);
+        $where = "";
+        foreach ($params as $param_id => $values) {
+            $param_name = ($param_id == 0) ? "brand_id" : "param_$param_id";
+            if (!empty($values)) {
+                $where .= " AND (";
+                $count = 0 ;
+                foreach ($values as $value_id) {
+                    $count++;
+                    $separator = ($count > 1) ? "OR" : "";
+                    $where .= " $separator (`$param_name` = '$value_id' OR `$param_name` LIKE '%,$value_id%' OR `$param_name` LIKE '%$value_id,%')";
+                }
+                $where .= ") ";
+            }
+        }
+        return $where;
+    }
+
     public function showPartsCatalogueParams($group_id, $page = 1, $filters = [])
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
+        $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
 
         $limit = $this->getSearchLimit($page);
         $group_text = $this->getGroupExistName($group_id);
 
         $arts = [];
-        $r = $dbc->query("SELECT * FROM `$table` $limit;");
+
+        if (empty($filters)) {
+            $r = $dbc->query("SELECT * FROM `$table` $limit;");
+        } else {
+            $where = $this->getFiltersWhere($group_id, $filters);
+            var_dump("SELECT * FROM `$table_params` WHERE 1 $where $limit;");
+            $r = $dbc->query("SELECT * FROM `$table_params` WHERE 1 $where $limit;");
+        }
+
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $dbc->result($r, $i - 1, "art_id");
@@ -889,6 +946,7 @@ class CatalogExistClass extends CatalogueClass
 
     public function getPartsFiltersForm($group_id, $filters)
     {
+        $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_PARAMS_$group_id";
         $params_check = $this->getCheckedFilters($group_id, $filters);
@@ -904,7 +962,9 @@ class CatalogExistClass extends CatalogueClass
             foreach($exist_params as $param_id) {
                 $value_str = $dbc->result($r, $i - 1, "param_$param_id");
                 if (!empty($value_str)) {
-                    $params[$param_id] = explode(",", $value_str);
+                    foreach (explode(",", $value_str) as $item) {
+                        $params[$param_id][] = $item;
+                    }
                 }
             }
         }
@@ -913,18 +973,38 @@ class CatalogExistClass extends CatalogueClass
             $params[$param_id] = array_unique($params[$param_id]);
         }
 
-       $list_params = "";
         if (!empty($params)) {
-            foreach ($params as $param_id => $values) {
+            $keys = implode(",", array_keys($params));
+
+            $param_ids = [];
+            $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` IN ($keys) ORDER BY `POSITION` ASC;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $param_id = $db->result($r, $i - 1, "PARAM_ID");
+                $param_ids[] = $param_id;
+            }
+
+            $arr = [];
+            $arr[0] = $params[0];
+            foreach ($param_ids as $param_id) {
+                $arr[$param_id] = $params[$param_id];
+            }
+
+        }
+
+       $list_params = "";
+        if (!empty($arr)) {
+            foreach ($arr as $param_id => $values) {
                 $param_name = $this->getGroupParamName($param_id);
-                $list_params .= "<ul class='hidden-list'><h5>$param_name</h5>";
+                $list_params .= "<ul class='hidden-list'><h5>[$param_id] $param_name</h5>";
                 foreach ($values as $value_id) {
                     $value_name = $this->getGroupValueName($value_id, $param_id);
-                    $checked = "";
+                    $link = $this->getPartsFilterLinks($group_id, $filters, $param_id, $value_id);
+                    $checked = "<i class='far fa-square'></i>";
                     if (in_array($value_id, $params_check[$param_id])) {
-                        $checked = "***";
+                        $checked = "<i class='fas fa-check-square'></i>";
                     }
-                    $list_params .= "<li>$checked $value_name</li>";
+                    $list_params .= "<li><a href='$link'>$checked [$value_id] $value_name</a></li>";
                 }
                 $list_params .= "</ul>";
             }
@@ -933,6 +1013,46 @@ class CatalogExistClass extends CatalogueClass
         $form = $this->getHtmlForm("catalog_exist/params");
         $form = str_replace("{list_params}", $list_params, $form);
         return $form;
+    }
+
+    public function getPartsFilterLinks($group_id, $filters_link, $param_id, $value_id)
+    {
+        $filters = $this->getCheckedFilters($group_id, $filters_link);
+        $link = "";
+        if (!empty($filters)) {
+            $link = "../$link";
+        }
+
+        if (!empty($filters)) {
+            foreach ($filters as $param => $values) {
+                foreach ($values as $value) {
+                    if ($param == $param_id && $value == $value_id) {
+                        unset($filters[$param_id][$value_id]);
+                    } elseif (!in_array($value_id, $filters[$param_id])) {
+                        $filters[$param_id][] = $value_id;
+                    }
+                }
+            }
+        } else {
+            $filters[$param_id][] = $value_id;
+        }
+
+        foreach ($filters as $param => $values) {
+            $param_link = $this->getGroupParamLink($param);
+            if (!empty($values)) {
+                $link .= "$param_link=";
+                foreach ($values as $value) {
+                    $value_link = $this->getGroupValueLink($value, $param);
+                    $link .= "$value_link,";
+                }
+                $link = rtrim($link, ",");
+                $link .= ";";
+            }
+            $link = rtrim($link, ",");
+        }
+        $link = rtrim($link, ";");
+
+        return $link;
     }
 
 }
