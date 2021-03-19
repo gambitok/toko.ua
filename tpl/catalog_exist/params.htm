@@ -1,14 +1,14 @@
-<style>
-    .hidden-list {
-        display: block;
-        max-height: 150px;
-        overflow: hidden;
-        overflow-y: auto;
-    }
-</style>
-
 <div class="row">
     <div class="col-12">
         {list_params}
     </div>
 </div>
+
+<script>
+    function toggleSideMenu(e) {
+        $(e).prev().toggleClass('show');
+        $(e).find("span").each(function() {
+           $(this).toggleClass('none');
+        });
+    }
+</script>

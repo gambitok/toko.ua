@@ -411,6 +411,45 @@
     }
 }
 
+.hidden-list {
+    display: block;
+    margin-bottom: 30px;
+    &-title {
+        display: block;
+        font-weight: 700;
+        color: #606975;
+        text-transform: uppercase;
+    }
+    &-content {
+        display: block;
+        max-height: 190px;
+        overflow: hidden;
+        &.show {
+            max-height: unset;
+            overflow: unset;
+        }
+        &__item {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 14px;
+            margin: 5px 0;
+            color: #606975;
+            &-left {
+                float: left;
+            }
+            &-right {
+                float: right;
+            }
+        }
+    }
+    &-more {
+        color: #a9a9a9;
+        cursor: pointer;
+        display: block;
+    }
+}
+
 .btn-labeled {
     background-color: #0ca9ee;
     border-color: #0ca9ee;

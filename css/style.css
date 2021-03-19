@@ -2334,6 +2334,22 @@ table thead td { border: 1px solid #000; }
 
 .list-hide-link:hover { color: gray !important; }
 
+.hidden-list { display: block; margin-bottom: 30px; }
+
+.hidden-list-title { display: block; font-weight: 700; color: #606975; text-transform: uppercase; }
+
+.hidden-list-content { display: block; max-height: 190px; overflow: hidden; }
+
+.hidden-list-content.show { max-height: unset; overflow: unset; }
+
+.hidden-list-content__item { display: flex; justify-content: space-between; width: 100%; font-size: 14px; margin: 5px 0; color: #606975; }
+
+.hidden-list-content__item-left { float: left; }
+
+.hidden-list-content__item-right { float: right; }
+
+.hidden-list-more { color: #a9a9a9; cursor: pointer; display: block; }
+
 .btn-labeled { background-color: #0ca9ee; border-color: #0ca9ee; border-radius: 4px; color: #fff; font-size: 12px; line-height: 1.5; margin-bottom: 10px; margin-right: 10px; padding: 4px 8px; }
 
 .btn-labeled:hover { background-color: #fff; color: #0ca9ee; }
