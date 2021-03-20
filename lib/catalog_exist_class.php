@@ -129,6 +129,20 @@ class CatalogExistClass extends CatalogueClass
         }
         return $value_name;
     }
+    public function getGroupValueH1($value_id, $param_id = 0)
+    {
+        $db = DbSingleton::getTokoDb();
+        $value_h1 = "";
+        $r = $db->query("SELECT `VALUE_H1_RU` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $value_h1 = $db->result($r, 0, "VALUE_H1_RU");
+        }
+        if ($param_id == 0) {
+            $value_h1 = "";
+        }
+        return $value_h1;
+    }
 
     /*
      * get products limit
@@ -956,15 +970,46 @@ class CatalogExistClass extends CatalogueClass
         $count = $this->getPartsCount($group_id, $filters);
         $pagination_form = $this->getPartsPaginationForm($count, $page);
         $filters_form = $this->getPartsFiltersForm($group_id, $filters);
+        list($filters_title, $filters_btn) = $this->getPartsFiltersItems($group_id, $filters);
 
         $form = $this->getHtmlForm("catalog_exist/list_params");
         $form = str_replace("{parts_name}", $group_text, $form);
         $form = str_replace("{parts_list}", $list, $form);
-        $form = str_replace("{parts_count}", $count, $form);
+        $form = str_replace("{parts_title}", "$filters_title", $form);
+        $form = str_replace("{parts_count}", "($count {offer_tenths_cap})", $form);
+        $form = str_replace("{parts_filters}", "$filters_btn", $form);
         $form = str_replace("{parts_pagination}", $pagination_form, $form);
         $form = str_replace("{parts_params}", $filters_form, $form);
 
         return array("form" => $form, "filters" => $active_filters, "brands" => $brands);
+    }
+
+    public function getPartsFiltersItems($group_id, $filters)
+    {
+        $filters_btn = "";
+        $filters_title = $this->getGroupExistName($group_id);
+        if (!empty($filters)) {
+            $count_vals = 0; $value_id = 0; $param_id = 0;
+            $params_check = $this->getCheckedFilters($group_id, $filters);
+            foreach ($params_check as $param_id => $values) {
+                foreach ($values as $value_id) {
+                    $count_vals++;
+                    $value_name = $this->getGroupValueName($value_id, $param_id);
+                    $link = $this->getPartsFilterLinks($group_id, $filters, $param_id, $value_id);
+                    $filters_btn .= "<a href='$link' class='btn btn-sm'>$value_name <i class='fa fa-times'></i></a>";
+                }
+            }
+            if ($count_vals == 1) {
+                $value_h1 = $this->getGroupValueH1($value_id, $param_id);
+                if ($value_h1 != "") {
+                    $filters_title = $value_h1;
+                } else {
+                    $value_name = $this->getGroupValueName($value_id, $param_id);
+                    $filters_title .= " $value_name";
+                }
+            }
+        }
+        return array($filters_title, $filters_btn);
     }
 
     public function getGroupExistParams($group_id)
@@ -1108,37 +1153,71 @@ class CatalogExistClass extends CatalogueClass
             foreach ($arr as $param_id => $values) {
                 $param_name = $this->getGroupParamName($param_id);
                 if (!empty($values)) {
+                    $input = "";
+                    if (count($values) > $max_items) {
+                        $input = "<div class='hidden-list-search'>
+                            <input type='text' class='text-filter' onkeyup=\"textParamSearch('$param_id')\" data-attr='$param_id' placeholder='{search_by_name}'>
+                        </div>";
+                    }
                     $list_params .= "<div class='hidden-list'>
                     <div class='hidden-list-title'>$param_name</div>
-                    <div class='hidden-list-content'>";
+                    $input
+                    <div class='hidden-list-content' data-attr='$param_id'>";
+                    $items = [];
                     foreach ($values as $value_id) {
                         $value_name = $this->getGroupValueName($value_id, $param_id);
                         $link = $this->getPartsFilterLinks($group_id, $filters, $param_id, $value_id);
+                        $checked = (in_array($value_id, $params_check[$param_id]));
                         $count_arts = 0;
                         if (!empty($filters)) {
                             if (in_array($param_id, $checked_params_keys)) {
                                 $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id);
                                 $count_arts = $count_arts - $count_arts_full;
-                                $count_arts = "[+$count_arts]";
                             }
                             if (in_array($param_id, $unchecked_params_keys)) {
                                 $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id);
-                                $count_arts = "($count_arts)";
                             }
                         } else {
                             $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id);
-                            $count_arts = "($count_arts)";
                         }
-                        $checked = "<i class='far fa-square'></i>";
-                        if (in_array($value_id, $params_check[$param_id])) {
-                            $checked = "<i class='fas fa-check-square'></i>";
-                            $count_arts = "";
+                        $items[$value_id] = compact("value_name", "link", "checked", "count_arts");
+                    }
+
+                    $arr_checked = []; $arr_value_name = []; $arr_count_arts = [];
+                    foreach ($items as $key => $row) {
+                        $arr_checked[$key]  = $row['checked'];
+                        $arr_value_name[$key] = $row['value_name'];
+                        $arr_count_arts[$key] = $row['count_arts'];
+                    }
+                    if ($param_id == 0) {
+                        array_multisort($arr_checked, SORT_DESC, SORT_NUMERIC, $arr_value_name, SORT_ASC, SORT_STRING, $items);
+                    } else {
+                        array_multisort($arr_checked, SORT_DESC, SORT_NUMERIC, $arr_count_arts, SORT_DESC, SORT_NUMERIC, $items);
+                    }
+
+                    foreach ($items as $item) {
+                        $value_name = $item["value_name"];
+                        $link = $item["link"];
+                        $checked = $item["checked"];
+                        $count_arts = $item["count_arts"];
+
+                        $count_arts_label = "($count_arts)";
+                        if (!empty($filters)) {
+                            if (in_array($param_id, $checked_params_keys)) {
+                                $count_arts_label = "[+$count_arts]";
+                            }
+                        }
+                        $checked_label = "<i class='fas fa-square unchecked'></i>";
+                        if ($checked) {
+                            $checked_label = "<i class='fas fa-check-square checked'></i>";
+                            $count_arts_label = "";
                         }
                         $list_params .= "<a href='$link' class='hidden-list-content__item'>
-                            <div class='hidden-list-content__item-left'>$checked $value_name</div> 
-                            <div class='hidden-list-content__item-right'>$count_arts</div>
+                            <div class='hidden-list-content__item-left'>$checked_label $value_name</div> 
+                            <div class='hidden-list-content__item-right'>$count_arts_label</div>
                         </a>";
                     }
+
                     $bottom = "";
                     if (count($values) > $max_items) {
                         $more_count = count($values) - $max_items;
@@ -1169,9 +1248,9 @@ class CatalogExistClass extends CatalogueClass
 
         if (!empty($filters)) {
             foreach ($filters as $param => $values) {
-                foreach ($values as $value) {
+                foreach ($values as $key => $value) {
                     if ($param == $param_id && $value == $value_id) {
-                        unset($filters[$param_id][$value_id]);
+                        unset($filters[$param_id][$key]);
                     } elseif (!in_array($value_id, $filters[$param_id])) {
                         $filters[$param_id][] = $value_id;
                     }

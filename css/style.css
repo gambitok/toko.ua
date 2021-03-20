@@ -2334,6 +2334,20 @@ table thead td { border: 1px solid #000; }
 
 .list-hide-link:hover { color: gray !important; }
 
+.products-title { margin: 0 15px; }
+
+.products-title__h1 { color: #333; font-size: 32px; font-weight: 700; text-transform: uppercase; }
+
+.products-title__count { color: #606975; display: inline; font-size: 22px; font-weight: 700; text-transform: uppercase; }
+
+.products-title__filters { display: block; margin-top: 10px; }
+
+.products-title__filters a { background: #f44336; color: #fff; margin-right: 15px; }
+
+.products-pagination { margin: 0 15px; }
+
+.products-pagination nav { display: block; margin: 2em auto 0 auto; }
+
 .hidden-list { display: block; margin-bottom: 30px; }
 
 .hidden-list-title { display: block; font-weight: 700; color: #606975; text-transform: uppercase; }
@@ -2345,6 +2359,10 @@ table thead td { border: 1px solid #000; }
 .hidden-list-content__item { display: flex; justify-content: space-between; width: 100%; font-size: 14px; margin: 5px 0; color: #606975; }
 
 .hidden-list-content__item-left { float: left; }
+
+.hidden-list-content__item-left i.checked { color: #228b94; }
+
+.hidden-list-content__item-left i.unchecked { color: #eee; }
 
 .hidden-list-content__item-right { float: right; }
 

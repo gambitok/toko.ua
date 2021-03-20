@@ -11,4 +11,15 @@
            $(this).toggleClass('none');
         });
     }
+    function textParamSearch(param_id) {
+        let search = $("input[data-attr='" + param_id + "']").val();
+        // $( "div[data-attr='" + param_id + "'] a div:not(:contains('" + search + "'))" ).parent().css( "display", "none" );
+        // $( "div[data-attr='" + param_id + "'] a div:contains('" + search + "')" ).parent().css( "display", "flex" );
+        $( "div[data-attr='" + param_id + "'] a .hidden-list-content__item-left:not(:contains('" + search + "'))" ).each(function(){
+            $(this).parent().css( "display", "none" );
+        });
+        $( "div[data-attr='" + param_id + "'] a .hidden-list-content__item-left:contains('" + search + "')" ).each(function(){
+            $(this).parent().css( "display", "flex" );
+        });
+    }
 </script>
