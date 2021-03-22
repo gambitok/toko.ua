@@ -12,14 +12,25 @@
         });
     }
     function textParamSearch(param_id) {
-        let search = $("input[data-attr='" + param_id + "']").val();
-        // $( "div[data-attr='" + param_id + "'] a div:not(:contains('" + search + "'))" ).parent().css( "display", "none" );
-        // $( "div[data-attr='" + param_id + "'] a div:contains('" + search + "')" ).parent().css( "display", "flex" );
-        $( "div[data-attr='" + param_id + "'] a .hidden-list-content__item-left:not(:contains('" + search + "'))" ).each(function(){
-            $(this).parent().css( "display", "none" );
-        });
-        $( "div[data-attr='" + param_id + "'] a .hidden-list-content__item-left:contains('" + search + "')" ).each(function(){
-            $(this).parent().css( "display", "flex" );
+
+        let search = $("input[data-attr='" + param_id + "']").val().toLowerCase();
+
+        if (search !== "") {
+            //$("div[data-attr='" + param_id + "']").addClass("show");
+            $("div[data-attr-more='" + param_id + "']").addClass("none");
+        } else {
+            $("div[data-attr-more='" + param_id + "']").removeClass("none");
+        }
+
+        $("div[data-param-value='" + param_id + "'] span").each(function () {
+            let text = $(this).text().toLowerCase();
+            let indexOfText = text.indexOf(search); // 0 OR -1
+            console.log(search + " = " + text + " = " + indexOfText);
+            if (indexOfText >= 0) {
+                $(this).parent().parent().css('display', 'flex');
+            } else {
+                $(this).parent().parent().css('display', 'none');
+            }
         });
     }
 </script>

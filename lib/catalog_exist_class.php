@@ -235,13 +235,13 @@ class CatalogExistClass extends CatalogueClass
         }
 
         foreach ($products as $art_id => $params) {
-            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT
+            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id
             FROM `T2_ARTICLES` t2a
                 LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
             WHERE t2a.ART_ID IN ($art_id) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0)
             GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
             UNION ALL
-            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl
+            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl, t2si.client_storage_id as storage_id, t2si.suppl_id
             FROM `T2_ARTICLES` t2a
                 LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
             WHERE t2a.ART_ID IN ($art_id) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
@@ -249,10 +249,17 @@ class CatalogExistClass extends CatalogueClass
 
             $stock = $db->num_rows($r);
             $brand_id = $db->result($r, 0, "BRAND_ID");
+            $suppl_id = $db->result($r, 0, "suppl_id");
+            $storage_id = $db->result($r, 0, "storage_id");
 
             $products[$art_id][0] = $brand_id;
 
-            if ($stock == 0) {
+            $status_supll_storage = 0;
+            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+                $status_supll_storage = 1;
+            }
+
+            if ($stock == 0 || $status_supll_storage == 0) {
                 unset($products[$art_id]);
             }
         }
@@ -291,7 +298,7 @@ class CatalogExistClass extends CatalogueClass
             }
         }
 
-        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table` WHERE `status`=0");
+        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table` WHERE `status`=0;");
         $count_del = $dbc->result($r, 0, "count_nulls") + 0;
         $dbc->query("DELETE FROM `$table` WHERE `status`=0;");
 
@@ -956,6 +963,7 @@ class CatalogExistClass extends CatalogueClass
             $r = $dbc->query("SELECT * FROM `$table` $limit;");
         } else {
             $where = $this->getFiltersWhere($group_id, $filters);
+            var_dump("SELECT * FROM `$table_params` WHERE 1 $where $limit");
             $r = $dbc->query("SELECT * FROM `$table_params` WHERE 1 $where $limit;");
         }
 
@@ -976,10 +984,11 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{parts_name}", $group_text, $form);
         $form = str_replace("{parts_list}", $list, $form);
         $form = str_replace("{parts_title}", "$filters_title", $form);
-        $form = str_replace("{parts_count}", "($count {offer_tenths_cap})", $form);
+        $form = str_replace("{parts_count}", "{unselect_cap} $count {chosen_goods}", $form);
         $form = str_replace("{parts_filters}", "$filters_btn", $form);
         $form = str_replace("{parts_pagination}", $pagination_form, $form);
         $form = str_replace("{parts_params}", $filters_form, $form);
+        $form = str_replace("{parts_breadcrumbs}", $this->getGroupBreadcrumb($group_id, $filters), $form);
 
         return array("form" => $form, "filters" => $active_filters, "brands" => $brands);
     }
@@ -1007,6 +1016,10 @@ class CatalogExistClass extends CatalogueClass
                     $value_name = $this->getGroupValueName($value_id, $param_id);
                     $filters_title .= " $value_name";
                 }
+            }
+            if ($count_vals > 1) {
+                $group_link = $this->getGroupRowLink($group_id);
+                $filters_btn = "<a class=\"btn btn-sm\" href=\"/catalog_exist/show_params/$group_link/\" style='background: white; border: 1px solid #292929; color: #292929;'>{filter_cap_empty} <i class='fa fa-times'></i></a>" . $filters_btn;
             }
         }
         return array($filters_title, $filters_btn);
@@ -1153,12 +1166,12 @@ class CatalogExistClass extends CatalogueClass
             foreach ($arr as $param_id => $values) {
                 $param_name = $this->getGroupParamName($param_id);
                 if (!empty($values)) {
-                    $input = "";
-                    if (count($values) > $max_items) {
+                    //$input = "";
+                    //if (count($values) > $max_items) {
                         $input = "<div class='hidden-list-search'>
                             <input type='text' class='text-filter' onkeyup=\"textParamSearch('$param_id')\" data-attr='$param_id' placeholder='{search_by_name}'>
                         </div>";
-                    }
+                    //}
                     $list_params .= "<div class='hidden-list'>
                     <div class='hidden-list-title'>$param_name</div>
                     $input
@@ -1213,7 +1226,7 @@ class CatalogExistClass extends CatalogueClass
                             $count_arts_label = "";
                         }
                         $list_params .= "<a href='$link' class='hidden-list-content__item'>
-                            <div class='hidden-list-content__item-left'>$checked_label $value_name</div> 
+                            <div class='hidden-list-content__item-left' data-param-value='$param_id'>$checked_label <span>$value_name</span></div> 
                             <div class='hidden-list-content__item-right'>$count_arts_label</div>
                         </a>";
                     }
@@ -1221,7 +1234,7 @@ class CatalogExistClass extends CatalogueClass
                     $bottom = "";
                     if (count($values) > $max_items) {
                         $more_count = count($values) - $max_items;
-                        $bottom = "<div class='hidden-list-more' onclick=\"toggleSideMenu(this);\">
+                        $bottom = "<div class='hidden-list-more' onclick=\"toggleSideMenu(this);\" data-attr-more='$param_id'>
                             <span>{more_cap} $more_count</span>
                             <span class='none'>{hide_cap}</span>
                         </div>";
@@ -1247,11 +1260,16 @@ class CatalogExistClass extends CatalogueClass
         }
 
         if (!empty($filters)) {
+            $unset = 0;
             foreach ($filters as $param => $values) {
                 foreach ($values as $key => $value) {
                     if ($param == $param_id && $value == $value_id) {
+                        $unset++;
                         unset($filters[$param_id][$key]);
-                    } elseif (!in_array($value_id, $filters[$param_id])) {
+                        if (empty($filters[$param])) {
+                            unset($filters[$param]);
+                        }
+                    } elseif (!in_array($value_id, $filters[$param_id]) && $unset == 0) {
                         $filters[$param_id][] = $value_id;
                     }
                 }
@@ -1276,6 +1294,57 @@ class CatalogExistClass extends CatalogueClass
         $link = rtrim($link, ";");
 
         return $link;
+    }
+
+    public function getGroupBreadcrumb($group_id, $filters)
+    {
+        $list = "";
+        // Интернет магазин автозапчастей > Каталог запчастей > Запчасти для ТО > Масляные фильтры
+        if ($group_id > 0) {
+            $group_name = $this->getGroupExistName($group_id);
+            $head_id = $this->getHeadExistID($group_id);
+            $head_name = $this->getHeadExistName($head_id);
+            $head_link= $this->getHeadExistLink($head_id);
+            $icon = "<i class='fa fa-chevron-right'></i>";
+            $list = "<a href='/'>{seo_shop_toko}</a> $icon <a href='/catalog_exist'>{site_catalog}</a> $icon <a href='/catalog_exist/$head_link'>$head_name</a> $icon $group_name";
+        }
+        return $list;
+    }
+
+    public function getHeadExistID($group_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $head_id = 0;
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $head_id = $db->result($r, 0, "HEAD_ID");
+        }
+        return $head_id;
+    }
+
+    public function getHeadExistName($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $head_name = 0;
+        $r = $db->query("SELECT `TEX_RU` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $head_name = $db->result($r, 0, "TEX_RU");
+        }
+        return $head_name;
+    }
+
+    public function getHeadExistLink($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $head_link = 0;
+        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $head_link = $db->result($r, 0, "TEX_LINK");
+        }
+        return $head_link;
     }
 
 }
