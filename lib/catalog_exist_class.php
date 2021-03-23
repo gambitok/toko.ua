@@ -188,10 +188,11 @@ class CatalogExistClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
 
-        $table = "EX_TABLE_TREE_PARAMS_$group_id";
+        $table = "EX_TABLE_TREE_$group_id";
+        $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
 
         if ($this->checkTableParams($group_id) > 0) {
-            $dbc->query("UPDATE `$table` SET `status`=0 WHERE 1;");
+            $dbc->query("UPDATE `$table_params` SET `status`=0 WHERE 1;");
         }
 
         $params_str = "";
@@ -202,7 +203,7 @@ class CatalogExistClass extends CatalogueClass
             $params_str .= "`param_$param_id` VARCHAR(50),";
         }
 
-        $dbc->query("CREATE TABLE IF NOT EXISTS `$table` 
+        $dbc->query("CREATE TABLE IF NOT EXISTS `$table_params` 
         (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
             `art_id` INT(100) NOT NULL,
@@ -213,55 +214,55 @@ class CatalogExistClass extends CatalogueClass
         ) ENGINE = MYISAM;");
 
         $products = [];
-        $r = $db->query("SELECT t2a.`ART_ID`, t2p.`PARAM_ID`, t2p.`VALUE_ID` 
-        FROM `T2_TREE_ARTS_EXIST` t2a
-            LEFT JOIN `T2_TREE_ARTS_PARAMS_VALUE_EXIST` t2p ON t2p.ART_ID=t2a.ART_ID
-        WHERE t2a.`GROUP_ID`='$group_id';");
+//        $r = $db->query("SELECT t2a.`ART_ID`, t2p.`PARAM_ID`, t2p.`VALUE_ID`
+//        FROM `T2_TREE_ARTS_EXIST` t2a
+//            LEFT JOIN `T2_TREE_ARTS_PARAMS_VALUE_EXIST` t2p ON t2p.ART_ID=t2a.ART_ID
+//        WHERE t2a.`GROUP_ID`='$group_id';");
+        $r = $db->query("SELECT t2a.`ART_ID`, t2a.`PARAM_ID`, t2a.`VALUE_ID`
+        FROM `T2_TREE_ARTS_PARAMS_VALUE_EXIST` t2a
+        WHERE t2a.`ART_ID` IN (
+            SELECT ex.`ART_ID`
+            FROM toko_dba_cache.`$table` as ex
+        );");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $param_id = $db->result($r, $i - 1, "PARAM_ID");
             $value_id = $db->result($r, $i - 1, "VALUE_ID");
             $products[$art_id][0] = 0;
-            if (empty($products[$art_id])) {
-                $products[$art_id] = [];
-            }
-            if (empty($products[$art_id][$param_id])) {
-                $products[$art_id][$param_id] = [];
-            }
             if ($param_id > 0) {
-                array_push($products[$art_id][$param_id], $value_id);
+                $products[$art_id][$param_id][] = $value_id;
             }
         }
 
         foreach ($products as $art_id => $params) {
-            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id
-            FROM `T2_ARTICLES` t2a
-                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
-            WHERE t2a.ART_ID IN ($art_id) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0)
-            GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
-            UNION ALL
-            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl, t2si.client_storage_id as storage_id, t2si.suppl_id
-            FROM `T2_ARTICLES` t2a
-                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
-            WHERE t2a.ART_ID IN ($art_id) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
-            GROUP BY t2a.ART_ID, t2si.client_storage_id;");
-
-            $stock = $db->num_rows($r);
-            $brand_id = $db->result($r, 0, "BRAND_ID");
-            $suppl_id = $db->result($r, 0, "suppl_id");
-            $storage_id = $db->result($r, 0, "storage_id");
-
+//            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id
+//            FROM `T2_ARTICLES` t2a
+//                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
+//            WHERE t2a.ART_ID IN ($art_id) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0)
+//            GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
+//            UNION ALL
+//            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl, t2si.client_storage_id as storage_id, t2si.suppl_id
+//            FROM `T2_ARTICLES` t2a
+//                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
+//            WHERE t2a.ART_ID IN ($art_id) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
+//            GROUP BY t2a.ART_ID, t2si.client_storage_id;");
+//            $stock = $db->num_rows($r);
+//            $brand_id = $db->result($r, 0, "BRAND_ID");
+//            $suppl_id = $db->result($r, 0, "suppl_id");
+//            $storage_id = $db->result($r, 0, "storage_id");
+            $r = $dbc->query("SELECT `brand_id` FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;");
+            $brand_id = $dbc->result($r, 0, "brand_id");
             $products[$art_id][0] = $brand_id;
 
-            $status_supll_storage = 0;
-            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
-                $status_supll_storage = 1;
-            }
-
-            if ($stock == 0 || $status_supll_storage == 0) {
-                unset($products[$art_id]);
-            }
+//            $status_supll_storage = 0;
+//            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+//                $status_supll_storage = 1;
+//            }
+//
+//            if ($stock == 0 || $status_supll_storage == 0) {
+//                unset($products[$art_id]);
+//            }
         }
 
         $count_add = 0;
@@ -287,20 +288,20 @@ class CatalogExistClass extends CatalogueClass
             $params_column = rtrim($params_column, ","); if ($params_column != "") $params_column = ", " . $params_column;
             $set_column = rtrim($set_column, ","); if ($set_column != "") $set_column = ", " . $set_column;
 
-            $r = $dbc->query("SELECT * FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;");
+            $r = $dbc->query("SELECT * FROM `$table_params` WHERE `art_id`='$art_id' LIMIT 1;");
             $n = $dbc->num_rows($r);
             if ($n == 0) {
-                $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status` $params_column) VALUES ('$art_id', '$brand_id', 1 $params_values);");
+                $dbc->query("INSERT INTO `$table_params` (`art_id`, `brand_id`, `status` $params_column) VALUES ('$art_id', '$brand_id', 1 $params_values);");
                 $count_add++;
             } else {
-                $dbc->query("UPDATE `$table` SET `status`=1 $set_column WHERE `art_id`='$art_id' LIMIT 1;");
+                $dbc->query("UPDATE `$table_params` SET `status`=1 $set_column WHERE `art_id`='$art_id' LIMIT 1;");
                 $count_upd++;
             }
         }
 
-        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table` WHERE `status`=0;");
+        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table_params` WHERE `status`=0;");
         $count_del = $dbc->result($r, 0, "count_nulls") + 0;
-        $dbc->query("DELETE FROM `$table` WHERE `status`=0;");
+        $dbc->query("DELETE FROM `$table_params` WHERE `status`=0;");
 
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
     }
@@ -356,13 +357,13 @@ class CatalogExistClass extends CatalogueClass
         foreach ($arts as $key => $values) {
             $art_id = $values["art_id"];
 
-            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT
+            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id
             FROM `T2_ARTICLES` t2a
                 LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
             WHERE t2a.ART_ID IN ($art_id) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0) 
             GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
             UNION ALL
-            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl
+            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl, t2si.client_storage_id as storage_id, t2si.suppl_id
             FROM `T2_ARTICLES` t2a
                 LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
             WHERE t2a.ART_ID IN ($art_id) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
@@ -370,10 +371,17 @@ class CatalogExistClass extends CatalogueClass
 
             $stock = $db->num_rows($r);
             $brand_id = $db->result($r, 0, "BRAND_ID");
+            $suppl_id = $db->result($r, 0, "suppl_id");
+            $storage_id = $db->result($r, 0, "storage_id");
 
             $arts[$key]["brand_id"] = $brand_id;
 
-            if ($stock == 0) {
+            $status_supll_storage = 0;
+            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+                $status_supll_storage = 1;
+            }
+
+            if ($stock == 0 || $status_supll_storage == 0) {
                 unset($arts[$key]);
             }
         }
@@ -463,12 +471,6 @@ class CatalogExistClass extends CatalogueClass
             $mfa_id = $db->result($r, $i - 1, "MOD_MFA_ID");
             $model = $db->result($r, $i - 1, "Model");
             if ($mfa_id > 0) {
-                if (empty($arts[$art_id])) {
-                    $arts[$art_id] = [];
-                }
-                if (empty($arts[$art_id][$mfa_id])) {
-                    $arts[$art_id][$mfa_id] = [];
-                }
                 $arts[$art_id][$mfa_id][] = $model;
             }
         }
@@ -963,7 +965,6 @@ class CatalogExistClass extends CatalogueClass
             $r = $dbc->query("SELECT * FROM `$table` $limit;");
         } else {
             $where = $this->getFiltersWhere($group_id, $filters);
-            var_dump("SELECT * FROM `$table_params` WHERE 1 $where $limit");
             $r = $dbc->query("SELECT * FROM `$table_params` WHERE 1 $where $limit;");
         }
 
