@@ -236,33 +236,9 @@ class CatalogExistClass extends CatalogueClass
         }
 
         foreach ($products as $art_id => $params) {
-//            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id
-//            FROM `T2_ARTICLES` t2a
-//                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
-//            WHERE t2a.ART_ID IN ($art_id) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0)
-//            GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
-//            UNION ALL
-//            SELECT t2a.ART_ID, t2a.BRAND_ID, t2si.stock_suppl, t2si.client_storage_id as storage_id, t2si.suppl_id
-//            FROM `T2_ARTICLES` t2a
-//                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
-//            WHERE t2a.ART_ID IN ($art_id) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
-//            GROUP BY t2a.ART_ID, t2si.client_storage_id;");
-//            $stock = $db->num_rows($r);
-//            $brand_id = $db->result($r, 0, "BRAND_ID");
-//            $suppl_id = $db->result($r, 0, "suppl_id");
-//            $storage_id = $db->result($r, 0, "storage_id");
             $r = $dbc->query("SELECT `brand_id` FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;");
             $brand_id = $dbc->result($r, 0, "brand_id");
             $products[$art_id][0] = $brand_id;
-
-//            $status_supll_storage = 0;
-//            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
-//                $status_supll_storage = 1;
-//            }
-//
-//            if ($stock == 0 || $status_supll_storage == 0) {
-//                unset($products[$art_id]);
-//            }
         }
 
         $count_add = 0;
@@ -569,7 +545,7 @@ class CatalogExistClass extends CatalogueClass
             $list .= "<li style='font-weight: bold; font-size: 20px; color: black;'>$head_name</li><li><ul class='list-inline' style='margin-bottom: 30px;'>";
             foreach ($cats as $cat_id => $groups) {
                 $cat_name = $this->getCatRowName($cat_id);
-                $list .= "<li style='font-weight: bold; font-size: 18px; color: blue;'>$cat_name</li><li><ul style='margin-bottom: 10px;'>";
+                $list .= "<li style='font-weight: bold; font-size: 18px; color: #0000ff;'>$cat_name</li><li><ul style='margin-bottom: 10px;'>";
                 foreach ($groups as $group_id) {
                     $group_name = $this->getGroupRowName($group_id);
                     $group_link = $this->getGroupRowLink($group_id);
@@ -989,7 +965,7 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{parts_filters}", "$filters_btn", $form);
         $form = str_replace("{parts_pagination}", $pagination_form, $form);
         $form = str_replace("{parts_params}", $filters_form, $form);
-        $form = str_replace("{parts_breadcrumbs}", $this->getGroupBreadcrumb($group_id, $filters), $form);
+        $form = str_replace("{parts_breadcrumbs}", $this->getGroupBreadcrumb($group_id), $form);
 
         return array("form" => $form, "filters" => $active_filters, "brands" => $brands);
     }
@@ -1167,12 +1143,9 @@ class CatalogExistClass extends CatalogueClass
             foreach ($arr as $param_id => $values) {
                 $param_name = $this->getGroupParamName($param_id);
                 if (!empty($values)) {
-                    //$input = "";
-                    //if (count($values) > $max_items) {
-                        $input = "<div class='hidden-list-search'>
-                            <input type='text' class='text-filter' onkeyup=\"textParamSearch('$param_id')\" data-attr='$param_id' placeholder='{search_by_name}'>
-                        </div>";
-                    //}
+                    $input = "<div class='hidden-list-search'>
+                        <input type='text' class='text-filter' onkeyup=\"textParamSearch('$param_id')\" data-attr='$param_id' placeholder='{search_by_name}'>
+                    </div>";
                     $list_params .= "<div class='hidden-list'>
                     <div class='hidden-list-title'>$param_name</div>
                     $input
@@ -1297,7 +1270,7 @@ class CatalogExistClass extends CatalogueClass
         return $link;
     }
 
-    public function getGroupBreadcrumb($group_id, $filters)
+    public function getGroupBreadcrumb($group_id)
     {
         $list = "";
         // Интернет магазин автозапчастей > Каталог запчастей > Запчасти для ТО > Масляные фильтры
@@ -1346,6 +1319,513 @@ class CatalogExistClass extends CatalogueClass
             $head_link = $db->result($r, 0, "TEX_LINK");
         }
         return $head_link;
+    }
+
+    /* ======================================================================================================== */
+
+    /*
+     * check Catalog Table
+     * */
+    public function checkTableParamsNew($group_id)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_PARAMS_NEW_$group_id";
+        $r = $dbc->query("SHOW TABLES LIKE '$table';");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
+            $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1;");
+            $n = $dbc->result($r, 0, "col_arts");
+        }
+        return $n;
+    }
+
+    /*
+     * init Catalog Form
+     * */
+    public function initPartsParamsTableNew($group_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+
+        $table = "EX_TABLE_TREE_$group_id";
+        $table_params = "EX_TABLE_TREE_PARAMS_NEW_$group_id";
+
+        $index_new = 0;
+        if ($this->checkTableParamsNew($group_id) > 0) {
+            $dbc->query("UPDATE `$table_params` SET `status`=0 WHERE 1;");
+        } else {
+            $index_new = 1;
+        }
+
+        $dbc->query("CREATE TABLE IF NOT EXISTS `$table_params` 
+        (
+            `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `art_id` INT(100) NOT NULL,
+            `param_id` INT(100),
+            `value_id` INT(100),
+            `status` TINYINT(2),
+            PRIMARY KEY (`id`)
+        ) ENGINE = MYISAM;");
+
+        $products = [];
+        $r = $db->query("SELECT t2a.`ART_ID`, t2a.`PARAM_ID`, t2a.`VALUE_ID`
+        FROM `T2_TREE_ARTS_PARAMS_VALUE_EXIST` t2a
+        WHERE t2a.GROUP_ID=$group_id AND t2a.`ART_ID` IN (
+            SELECT ex.`ART_ID`
+            FROM toko_dba_cache.`$table` as ex
+        );");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
+            $param_id = $db->result($r, $i - 1, "PARAM_ID");
+            $value_id = $db->result($r, $i - 1, "VALUE_ID");
+            if ($param_id > 0) {
+                $products[$art_id][$param_id][] = $value_id;
+            }
+        }
+
+        $count_add = 0;
+        $count_upd = 0;
+        foreach ($products as $art_id => $params) {
+            foreach ($params as $param_id => $values) {
+                foreach ($values as $value_id) {
+                    $r = $dbc->query("SELECT * FROM `$table_params` WHERE `art_id`='$art_id' AND `param_id`='$param_id' AND `value_id`='$value_id' LIMIT 1;");
+                    $n = $dbc->num_rows($r);
+                    if ($n > 0) {
+                        $dbc->query("UPDATE `$table_params` SET `status`=1 WHERE `art_id`='$art_id' AND `param_id`='$param_id' AND `value_id`='$value_id' LIMIT 1;");
+                        $count_upd++;
+                    } else {
+                        $dbc->query("INSERT INTO `$table_params` (`art_id`, `status`, `param_id`, `value_id`) VALUES ('$art_id', 1, '$param_id', '$value_id');");
+                        $count_add++;
+                    }
+                }
+            }
+        }
+
+        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table_params` WHERE `status`=0;");
+        $count_del = $dbc->result($r, 0, "count_nulls") + 0;
+        $dbc->query("DELETE FROM `$table_params` WHERE `status`=0;");
+
+        if ($index_new == 1) {
+            $dbc->query("ALTER TABLE `$table_params` ADD INDEX `PARAM_ID & VALUE_ID` (`param_id`, `value_id`);");
+        }
+
+        return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
+    }
+
+    public function getFiltersWhereNew($group_id, $filters)
+    {
+        $params = $this->getCheckedFilters($group_id, $filters);
+        $where = "";
+        foreach ($params as $param_id => $values) {
+            if (!empty($values)) {
+                $param_name = ($param_id == 0) ? "t.`brand_id`" : "tp.`value_id`";
+                $where .= " AND (";
+                if ($param_id > 0) {
+                    $where .= "tp.`param_id` = $param_id AND (";
+                }
+                $where_values = [];
+                foreach ($values as $value_id) {
+                    $where_values[] = "$param_name = $value_id";
+                }
+                $where .= implode(" OR ", $where_values);
+                if ($param_id > 0) {
+                    $where .= ")";
+                }
+                $where .= ")";
+            }
+        }
+        return $where;
+    }
+
+    public function getFiltersWhereSelectedNew($group_id, $filters, $sel_param_id)
+    {
+        $params = $this->getCheckedFilters($group_id, $filters);
+        $where = "";
+        foreach ($params as $param_id => $values) {
+            if ($sel_param_id != $param_id) {
+                if (!empty($values)) {
+                    $param_name = ($param_id == 0) ? "t.`brand_id`" : "tp.`value_id`";
+                    $where .= " AND (";
+                    if ($param_id > 0) {
+                        $where .= "tp.`param_id` = $param_id AND (";
+                    }
+                    $where_values = [];
+                    foreach ($values as $value_id) {
+                        $where_values[] = "$param_name = $value_id";
+                    }
+                    $where .= implode(" OR ", $where_values);
+                    if ($param_id > 0) {
+                        $where .= ")";
+                    }
+                    $where .= ") ";
+                }
+            }
+        }
+        return $where;
+    }
+
+    public function getFiltersWhereWillNew($group_id, $filters, $sel_param_id, $sel_value_id)
+    {
+        $params = $this->getCheckedFilters($group_id, $filters);
+        $params[$sel_param_id][] = $sel_value_id;
+        $where = "";
+        foreach ($params as $param_id => $values) {
+            $param_name = ($param_id == 0) ? "t.`brand_id`" : "tp.`value_id`";
+            if (!empty($values)) {
+                $where .= " AND (";
+                if ($param_id > 0) {
+                    $where .= "tp.`param_id` = $param_id AND (";
+                }
+                $where_values = [];
+                foreach ($values as $value_id) {
+                    $where_values[] = "$param_name = $value_id";
+                }
+                $where .= implode(" OR ", $where_values);
+                if ($param_id > 0) {
+                    $where .= ") ";
+                }
+                $where .= ") ";
+            }
+        }
+        return $where;
+    }
+
+    /*
+     * get Catalog Form
+     * */
+    public function showPartsCatalogueParamsNew($group_id, $page = 1, $filters = [])
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+        $table_params = "EX_TABLE_TREE_PARAMS_NEW_$group_id";
+
+        $limit = $this->getSearchLimit($page);
+        $group_text = $this->getGroupExistName($group_id);
+
+        $arts = [];
+
+        if (empty($filters)) {
+            $r = $dbc->query("SELECT * FROM `$table` $limit;");
+        } else {
+            $where = $this->getFiltersWhereNew($group_id, $filters);
+            $r = $dbc->query("SELECT t.art_id FROM `$table` t 
+                LEFT JOIN `$table_params` tp ON tp.art_id = t.art_id
+            WHERE 1 $where GROUP BY t.`art_id` $limit;");
+        }
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $dbc->result($r, $i - 1, "art_id");
+            if (!empty($art_id)) {
+                $arts[] = $art_id;
+            }
+        }
+
+        $art_id_str = implode(",", array_unique($arts));
+        list($list, , $active_filters, , $brands) = $this->searchList($art_id_str, 1, 1);
+        $count = $this->getPartsCountNew($group_id, $filters);
+        $pagination_form = $this->getPartsPaginationForm($count, $page);
+        $filters_form = $this->getPartsFiltersFormNew($group_id, $filters, $count);
+        list($filters_title, $filters_btn) = $this->getPartsFiltersItems($group_id, $filters);
+
+        $form = $this->getHtmlForm("catalog_exist/list_params");
+        $form = str_replace("{parts_name}", $group_text, $form);
+        $form = str_replace("{parts_list}", $list, $form);
+        $form = str_replace("{parts_title}", "$filters_title", $form);
+        $form = str_replace("{parts_count}", "{unselect_cap} $count {chosen_goods}", $form);
+        $form = str_replace("{parts_filters}", "$filters_btn", $form);
+        $form = str_replace("{parts_pagination}", $pagination_form, $form);
+        $form = str_replace("{parts_params}", $filters_form, $form);
+        $form = str_replace("{parts_breadcrumbs}", $this->getGroupBreadcrumb($group_id), $form);
+
+        return array("form" => $form, "filters" => $active_filters, "brands" => $brands);
+    }
+
+    /*
+     * get Filters Form
+     * */
+    public function getPartsFiltersFormNew($group_id, $filters, $count_arts_full)
+    {
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+        $table_params = "EX_TABLE_TREE_PARAMS_NEW_$group_id";
+        $max_items = 7;
+
+        $params_check = $this->getCheckedFilters($group_id, $filters);
+        $exist_params = $this->getGroupExistParams($group_id);
+
+        $params = []; $checked_params_keys = []; $unchecked_params_keys = [];
+        if (empty($filters)) {
+            $r = $dbc->query("SELECT tp.param_id, tp.value_id, t.brand_id FROM `$table` t
+                LEFT JOIN `$table_params` tp ON tp.art_id = t.art_id
+            WHERE 1;");
+            $n = $dbc->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $brand_id = $dbc->result($r, $i - 1, "brand_id");
+                $param_id = $dbc->result($r, $i - 1, "param_id");
+                $value_id = $dbc->result($r, $i - 1, "value_id");
+                if ($brand_id > 0) {
+                    $params[0][] = $brand_id;
+                }
+                if ($param_id > 0 && $value_id > 0) {
+                    $params[$param_id][] = $value_id;
+                }
+            }
+        } else {
+            $checked_params_keys = array_keys($params_check);
+            $existed_params_keys = array_keys($exist_params);
+            $unchecked_params_keys = array_diff($existed_params_keys, $checked_params_keys);
+
+            // CHECKED PARAMS
+            foreach ($checked_params_keys as $param_id) {
+                $where = $this->getFiltersWhereSelectedNew($group_id, $filters, $param_id);
+                $r = $dbc->query("SELECT tp.*, t.brand_id FROM `$table` t
+                    LEFT JOIN `$table_params` tp ON tp.art_id = t.art_id
+                WHERE 1 $where;");
+                $n = $dbc->num_rows($r);
+                $arts = [];
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id = $dbc->result($r, $i - 1, "art_id");
+                    if (!empty($art_id)) {
+                        $arts[] = $art_id;
+                    }
+                }
+                $where_arts = implode(",", $arts);
+                if (!empty($arts)) {
+                    $r = $dbc->query("SELECT tp.param_id, tp.value_id, t.brand_id FROM `$table` t
+                        LEFT JOIN `$table_params` tp ON tp.art_id = t.art_id
+                    WHERE 1 AND tp.`art_id` IN ($where_arts);");
+                    $n = $dbc->num_rows($r);
+                    for ($i = 1; $i <= $n; $i++) {
+                        $brand_id = $dbc->result($r, $i - 1, "brand_id");
+                        $param_id = $dbc->result($r, $i - 1, "param_id");
+                        $value_id = $dbc->result($r, $i - 1, "value_id");
+                        if ($brand_id > 0) {
+                            $params[0][] = $brand_id;
+                        }
+                        if ($param_id > 0 && $value_id > 0) {
+                            $params[$param_id][] = $value_id;
+                        }
+                    }
+                }
+            }
+
+            // UNCHECKED PARAMS
+            $where = $this->getFiltersWhereNew($group_id, $filters);
+            $r = $dbc->query("SELECT tp.art_id FROM `$table` t
+                LEFT JOIN `$table_params` tp ON tp.art_id = t.art_id
+            WHERE 1 $where;");
+            $n = $dbc->num_rows($r);
+            $arts = [];
+            for ($i = 1; $i <= $n; $i++) {
+                $art_id = $dbc->result($r, $i - 1, "art_id");
+                if (!empty($art_id)) {
+                    $arts[] = $art_id;
+                }
+            }
+            $where_arts = implode(",", $arts);
+            if (!empty($arts)) {
+                $r = $dbc->query("SELECT tp.param_id, tp.value_id, t.brand_id FROM `$table` t
+                    LEFT JOIN `$table_params` tp ON tp.art_id = t.art_id
+                WHERE 1 AND tp.`art_id` IN ($where_arts);");
+                $n = $dbc->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    $brand_id = $dbc->result($r, $i - 1, "brand_id");
+                    $param_id = $dbc->result($r, $i - 1, "param_id");
+                    $value_id = $dbc->result($r, $i - 1, "value_id");
+                    if ($brand_id > 0) {
+                        $params[0][] = $brand_id;
+                    }
+                    if ($param_id > 0 && $value_id > 0) {
+                        $params[$param_id][] = $value_id;
+                    }
+                }
+            }
+
+        }
+
+        foreach ($params as $param_id => $values) {
+            $params[$param_id] = array_unique($params[$param_id]);
+            if (empty($params[$param_id])) {
+                unset($params[$param_id]);
+            }
+        }
+
+        if (!empty($params)) {
+            $keys = implode(",", array_keys($params));
+            $param_ids = [];
+            $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` IN ($keys) ORDER BY `POSITION` ASC;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $param_id = $db->result($r, $i - 1, "PARAM_ID");
+                $param_ids[] = $param_id;
+            }
+            $arr = [];
+            $arr[0] = $params[0];
+            foreach ($param_ids as $param_id) {
+                $arr[$param_id] = $params[$param_id];
+            }
+        }
+
+        $list_params = "";
+        if (!empty($arr)) {
+            foreach ($arr as $param_id => $values) {
+                $param_name = $this->getGroupParamName($param_id);
+                if (!empty($values)) {
+                    $input = "<div class='hidden-list-search'>
+                        <input type='text' class='text-filter' onkeyup=\"textParamSearch('$param_id')\" data-attr='$param_id' placeholder='{search_by_name}'>
+                    </div>";
+                    $list_params .= "<div class='hidden-list'>
+                    <div class='hidden-list-title'>[$param_id] $param_name</div>
+                    $input
+                    <div class='hidden-list-content' data-attr='$param_id'>";
+                    $items = [];
+                    foreach ($values as $value_id) {
+                        if ($value_id > 0) {
+                            $value_name = $this->getGroupValueName($value_id, $param_id);
+                            $link = $this->getPartsFilterLinks($group_id, $filters, $param_id, $value_id);
+                            $checked = (in_array($value_id, $params_check[$param_id]));
+                            $count_arts = 0;
+                            if (!empty($filters)) {
+                                if (in_array($param_id, $checked_params_keys)) {
+                                    $count_arts = $this->getPartsCountWillNew($group_id, $filters, $param_id, $value_id);
+                                    $count_arts = $count_arts - $count_arts_full;
+                                }
+                                if (in_array($param_id, $unchecked_params_keys)) {
+                                    $count_arts = $this->getPartsCountWillNew($group_id, $filters, $param_id, $value_id);
+                                }
+                            } else {
+                                $count_arts = $this->getPartsCountWillNew($group_id, $filters, $param_id, $value_id);
+                            }
+                            $items[$value_id] = compact("value_name", "link", "checked", "count_arts", "value_id");
+                        }
+                    }
+
+                    $arr_checked = []; $arr_value_name = []; $arr_count_arts = [];
+                    foreach ($items as $key => $row) {
+                        $arr_checked[$key]  = $row['checked'];
+                        $arr_value_name[$key] = $row['value_name'];
+                        $arr_count_arts[$key] = $row['count_arts'];
+                    }
+                    if ($param_id == 0) {
+                        array_multisort($arr_checked, SORT_DESC, SORT_NUMERIC, $arr_value_name, SORT_ASC, SORT_STRING, $items);
+                    } else {
+                        array_multisort($arr_checked, SORT_DESC, SORT_NUMERIC, $arr_count_arts, SORT_DESC, SORT_NUMERIC, $items);
+                    }
+
+                    foreach ($items as  $item) {
+                        $value_id = $item["value_id"];
+                        $value_name = $item["value_name"];
+                        $link = $item["link"];
+                        $checked = $item["checked"];
+                        $count_arts = $item["count_arts"];
+
+                        $count_arts_label = "($count_arts)";
+                        if (!empty($filters)) {
+                            if (in_array($param_id, $checked_params_keys)) {
+                                $count_arts_label = "[+$count_arts]";
+                            }
+                        }
+                        $checked_label = "<i class='fas fa-square unchecked'></i>";
+                        if ($checked) {
+                            $checked_label = "<i class='fas fa-check-square checked'></i>";
+                            $count_arts_label = "";
+                        }
+                        $list_params .= "<a href='$link' class='hidden-list-content__item'>
+                            <div class='hidden-list-content__item-left' data-param-value='$param_id'>$checked_label [$value_id]<span>$value_name</span></div> 
+                            <div class='hidden-list-content__item-right'>$count_arts_label</div>
+                        </a>";
+                    }
+
+                    $bottom = "";
+                    if (count($values) > $max_items) {
+                        $more_count = count($values) - $max_items;
+                        $bottom = "<div class='hidden-list-more' onclick=\"toggleSideMenu(this);\" data-attr-more='$param_id'>
+                            <span>{more_cap} $more_count</span>
+                            <span class='none'>{hide_cap}</span>
+                        </div>";
+                    }
+                    $list_params .= "</div>
+                    $bottom
+                    </div>";
+                }
+            }
+        }
+
+        $form = $this->getHtmlForm("catalog_exist/params");
+        $form = str_replace("{list_params}", $list_params, $form);
+        return $form;
+    }
+
+    /*
+     * get Count Catalog with Values
+     * */
+    public function getPartsCountWillNew($group_id, $filters, $sel_param_id, $sel_value_id)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+        $table_params = "EX_TABLE_TREE_PARAMS_NEW_$group_id";
+
+        $rc = $dbc->query("SHOW TABLES LIKE '$table_params';");
+        $nc = $dbc->num_rows($rc);
+
+        $n = 0;
+        if ($nc > 0) {
+            $where = $this->getFiltersWhereWillNew($group_id, $filters, $sel_param_id, $sel_value_id);
+            $r = $dbc->query("
+                SELECT t.art_id FROM `$table` t 
+                    LEFT JOIN `$table_params` tp ON tp.art_id = t.art_id
+                WHERE 1 $where GROUP BY t.`art_id`;");
+            $n = $dbc->num_rows($r);
+            $arts = [];
+            for ($i = 1; $i <= $n; $i++) {
+                $art_id = $dbc->result($r, $i - 1, "art_id");
+                if (!empty($art_id)) {
+                    $arts[] = $art_id;
+                }
+            }
+            $n = count(array_unique($arts));
+        }
+        return $n;
+    }
+
+    /*
+     * get Count Filtred Catalog
+     * */
+    public function getPartsCountNew($group_id, $filters)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+        $table_params = "EX_TABLE_TREE_PARAMS_NEW_$group_id";
+
+        $rc = $dbc->query("SHOW TABLES LIKE '$table';");
+        $nc = $dbc->num_rows($rc);
+
+        $n = 0;
+        if ($nc > 0) {
+            if (empty($filters)) {
+                $r = $dbc->query("SELECT COUNT(`art_id`) as sum_arts FROM `$table`;");
+                $n = $dbc->result($r, 0, "col_arts");
+            } else {
+                $where = $this->getFiltersWhereNew($group_id, $filters);
+
+                $r = $dbc->query("
+                SELECT t.art_id FROM `$table` t 
+                    LEFT JOIN `$table_params` tp ON tp.art_id = t.art_id
+                WHERE 1 $where GROUP BY t.`art_id`;");
+                $n = $dbc->num_rows($r);
+                $arts = [];
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id = $dbc->result($r, $i - 1, "art_id");
+                    if (!empty($art_id)) {
+                        $arts[] = $art_id;
+                    }
+                }
+                $n = count(array_unique($arts));
+            }
+        }
+        return $n;
     }
 
 }
