@@ -77,14 +77,16 @@ if ($router == "show_params") {
     $group_id = $catalog_exist->getGroupExistId($group_link);
     $page = $catalogue->getUrlNumber($_GET['page']);
     ($page != NULL) ?: $page = 1;
-    $content = str_replace("{main_window}", $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters)["form"], $content);
+    $status_auto = $catalogue->getUrlNumber($_GET['status_auto']);
+    ($status_auto != NULL) ?: $status_auto = 0;
+    $content = str_replace("{main_window}", $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $status_auto)["form"], $content);
 }
 
-if ($router == "show_params_new") {
-    $group_link = $linka[2];
-    $filters = $linka[3];
-    $group_id = $catalog_exist->getGroupExistId($group_link);
-    $page = $catalogue->getUrlNumber($_GET['page']);
-    ($page != NULL) ?: $page = 1;
-    $content = str_replace("{main_window}", $catalog_exist->showPartsCatalogueParamsNew($group_id, $page, $filters)["form"], $content);
-}
+//if ($router == "show_params_new") {
+//    $group_link = $linka[2];
+//    $filters = $linka[3];
+//    $group_id = $catalog_exist->getGroupExistId($group_link);
+//    $page = $catalogue->getUrlNumber($_GET['page']);
+//    ($page != NULL) ?: $page = 1;
+//    $content = str_replace("{main_window}", $catalog_exist->showPartsCatalogueParamsNew($group_id, $page, $filters)["form"], $content);
+//}

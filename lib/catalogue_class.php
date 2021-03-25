@@ -875,7 +875,7 @@ class CatalogueClass
         return $list_brand;
     }
 
-    public function searchList($where_art_id_str, $type_filter = 1, $view = 0, $article_nr_search = "", $brand_nr_search = "")
+    public function searchList($where_art_id_str, $type_filter = 1, $view = 0, $article_nr_search = "", $brand_nr_search = "", $status_auto = 0)
     {
         $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
@@ -1063,7 +1063,7 @@ class CatalogueClass
                 $other_storages = $this->showOtherStorages($mas, $cur, $view);
 
                 // show search list
-                $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view);
+                $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, 0, $status_auto);
             }
 
             $count = count($mas);
@@ -1759,7 +1759,7 @@ class CatalogueClass
     /*
      * Show SEARCH Line OR Card
      * */
-    public function printSearchList($id, $art_id, $article_name, $brand_id, $brand_name, $text, $delivery_info, $stock, $price, $article_nr_search, $ll, $class, $hide, $border, $none, $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view)
+    public function printSearchList($id, $art_id, $article_name, $brand_id, $brand_name, $text, $delivery_info, $stock, $price, $article_nr_search, $ll, $class, $hide, $border, $none, $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto = 0)
     {
         $showform = new FormClass();
         $kours = new ExRateClass();
@@ -1898,6 +1898,12 @@ class CatalogueClass
             $form = str_replace("{soldout_row_status}", "", $form);
         }
 
+        // $status_auto
+
+        if ($status_auto == 2) {
+            $form = str_replace("{applicable_display}", "dnone", $form);
+        }
+
         $auto_typ_id = $this->getCookieAuto();
         if ($auto_typ_id != "") {
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
@@ -1905,10 +1911,16 @@ class CatalogueClass
                 $form = str_replace("{applicable_display_text}", "{is_applicable}", $form);
                 $form = str_replace("{applicable_onclick}", "", $form);
             } else {
+                if ($status_auto == 1) {
+                    $form = str_replace("{applicable_display}", "dnone", $form);
+                }
                 $form = str_replace("{applicable_display}", "", $form);
                 $form = str_replace("{applicable_display_text}", "{is_didnt_applicable}", $form);
                 $form = str_replace("{applicable_onclick}", "", $form);
             }
+        }
+        if ($status_auto == 1) {
+            $form = str_replace("{applicable_display}", "dnone", $form);
         }
         $form = str_replace("{applicable_display}", "", $form);
         $form = str_replace("{applicable_display_text}", "{is_not_applicable}", $form);
@@ -2753,8 +2765,9 @@ class CatalogueClass
 
     /*
      * show search list
+     * $status_auto - 0,1,2
      * */
-    public function outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, $saleout = 0)
+    public function outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, $saleout = 0, $status_auto = 0)
     {
         $ll = $other_storages["content"];
         $class = $other_storages["class"];
@@ -2798,11 +2811,13 @@ class CatalogueClass
                     $return_days = $val["return_days"];
                     $storage_id = $val["storage_id"];
                     $status = ($saleout > 0) ? $val["status"] : 1;
-                    if ($view && ($i == $faq_pos)) {
-                        $faq_form = $this->getFaqForm();
-                        $list .= $faq_form;
+                    if ($status_auto == 0) {
+                        if ($view && ($i == $faq_pos)) {
+                            $faq_form = $this->getFaqForm();
+                            $list .= $faq_form;
+                        }
                     }
-                    $list .= $this->printSearchList($i, $art_id, $name, $brand_id, $brand, $text, $delivery_info, $stock, $price, $article_nr_search, $ll[$i], $class[$i], $hide[$i], $border[$i], $none[$i], $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view);
+                    $list .= $this->printSearchList($i, $art_id, $name, $brand_id, $brand, $text, $delivery_info, $stock, $price, $article_nr_search, $ll[$i], $class[$i], $hide[$i], $border[$i], $none[$i], $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto);
                     $i++;
                 }
             }
