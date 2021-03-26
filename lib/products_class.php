@@ -700,7 +700,6 @@ class ProductsClass extends CatalogueClass
 
         $list = $this->replaceLang($list);
 
-
         return array($list, $title, $nav, $tab, $skip);
     }
 

@@ -5,24 +5,24 @@
                 {show_filters_cars}
             </div>
             <div class="hidden-list-content">
-                <div class="hidden-list-content__item">
+                <a href="./?status_auto_type=1" class="hidden-list-content__item {on_car_disable}">
                     <div class="hidden-list-content__item-left">
-                        <i class="fas fa-square unchecked"></i>
+                        {on_car_checked}
                         <span>{on_cap} {typ_text}</span>
                     </div>
                     <div class="hidden-list-content__item-right">
-                        (99)
+                        {on_car_count}
                     </div>
-                </div>
-                <div class="hidden-list-content__item">
+                </a>
+                <a href="./?status_auto_type=0" class="hidden-list-content__item">
                     <div class="hidden-list-content__item-left">
-                        <i class="fas fa-check-square checked"></i>
+                        {on_all_checked}
                         <span>{show_all_car}</span>
                     </div>
                     <div class="hidden-list-content__item-right">
-                        (99)
+                        {on_all_count}
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
