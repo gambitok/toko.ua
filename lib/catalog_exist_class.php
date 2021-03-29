@@ -204,6 +204,7 @@ class CatalogExistClass extends CatalogueClass
     }
 
     /*======================================================================= PRODUCTS PARAMS =*/
+
     /*
      * show products params init form
      * */
@@ -324,10 +325,13 @@ class CatalogExistClass extends CatalogueClass
         $count_del = $dbc->result($r, 0, "count_nulls") + 0;
         $dbc->query("DELETE FROM `$table_params` WHERE `status`=0;");
 
+        $dbc->query("ALTER TABLE `$table_params` ADD INDEX `art_id` (`art_id`);");
+
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
     }
 
     /*======================================================================= PRODUCTS =*/
+
     /*
      * show products init form
      * */
@@ -436,10 +440,13 @@ class CatalogExistClass extends CatalogueClass
         $count_del = $dbc->result($r, 0, "count_nulls") + 0;
         $dbc->query("DELETE FROM `$table` WHERE `status`=0;");
 
+        $dbc->query("ALTER TABLE `$table` ADD INDEX `art_id` (`art_id`);");
+
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
     }
 
     /*======================================================================= PRODUCTS MFA =*/
+
     /*
      * show products mfa init form
      * */
@@ -531,10 +538,13 @@ class CatalogExistClass extends CatalogueClass
         $count_del = $dbc->result($r, 0, "count_nulls") + 0;
         $dbc->query("DELETE FROM `$table_mfa` WHERE `status`=0;");
 
+        $dbc->query("ALTER TABLE `$table_mfa` ADD INDEX `art_id` (`art_id`);");
+
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
     }
 
     /*======================================================================= PARTS =*/
+
     /*
      * show products catalog
      * */
@@ -857,52 +867,50 @@ class CatalogExistClass extends CatalogueClass
     }
 
     /*
-     * get products count
+     * get count parts from all group
      * */
-    public function getPartsCount($group_id, $filters, $where_mfa = "")
+    public function getPartsCountGroup($group_id, $filters, $where_link_arts = "")
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
-        $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
         $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
-
+        $n = 0;
         $r = $dbc->query("SHOW TABLES LIKE '$table_params';");
-        $n = $dbc->num_rows($r);
-        if ($n > 0) {
-            if ($where_mfa == "") {
-                if (empty($filters)) {
-                    $r = $dbc->query("SELECT COUNT(t.`art_id`) as sum_arts FROM `$table` t WHERE 1;");
-                } else {
-                    $where = $this->getFiltersWhere($group_id, $filters);
-                    $r = $dbc->query("
-                    SELECT SUM(ex.col_arts) as sum_arts FROM (
-                        SELECT COUNT(t.`art_id`) as col_arts FROM `$table` t 
-                            LEFT JOIN `$table_params` tp ON tp.`art_id`=t.`art_id`
-                        WHERE 1 $where
-                        GROUP BY t.`art_id`
-                    ) as ex ;");
-                }
-            } elseif (empty($filters)) {
-                $r = $dbc->query("SELECT SUM(ex.col_arts) as sum_arts FROM (
-                     SELECT COUNT(t.art_id) as col_arts FROM `$table` t
-                        LEFT JOIN `$table_params` tp ON tp.art_id=t.art_id 
-                        LEFT JOIN `$table_mfa` tm ON tm.art_id=t.art_id
-                    WHERE 1 $where_mfa
-                    GROUP BY t.art_id
-                ) as ex ;");
+        $nc = $dbc->num_rows($r);
+        if ($nc > 0) {
+            if (empty($filters)) {
+                $r = $dbc->query("SELECT COUNT(t.`art_id`) as count_arts FROM `$table` t WHERE 1 $where_link_arts;");
             } else {
                 $where = $this->getFiltersWhere($group_id, $filters);
                 $r = $dbc->query("
-                SELECT SUM(ex.col_arts) as sum_arts FROM (
-                     SELECT COUNT(t.art_id) as col_arts FROM `$table` t
-                        LEFT JOIN `$table_params` tp ON tp.art_id=t.art_id 
-                        LEFT JOIN `$table_mfa` tm ON tm.art_id=t.art_id
-                    WHERE 1 $where $where_mfa
-                    GROUP BY t.art_id
+                SELECT SUM(ex.col_arts) as count_arts FROM (
+                    SELECT COUNT(t.`art_id`) as col_arts FROM `$table` t
+                        LEFT JOIN `$table_params` tp ON tp.`art_id`=t.`art_id`
+                    WHERE 1 $where $where_link_arts
+                    GROUP BY t.`art_id`
                 ) as ex ;");
             }
+            $n = $dbc->result($r, 0, "count_arts");
+        }
+        return $n;
+    }
 
-            $n = $dbc->result($r, 0, "sum_arts");
+    /*
+     * get products count
+     * */
+    public function getPartsCount($group_id, $query = "")
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
+        $n = 0;
+        $r = $dbc->query("SHOW TABLES LIKE '$table_params';");
+        $nc = $dbc->num_rows($r);
+        if ($nc > 0) {
+            if ($query != "") {
+                $query_count = "SELECT COUNT(ex.art_id) as ex_count FROM ( $query ) as ex;";
+                $r = $dbc->query($query_count);
+                $n = $dbc->result($r, 0, "ex_count");
+            }
         }
         return $n;
     }
@@ -910,7 +918,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * get products count will
      * */
-    public function getPartsCountWill($group_id, $filters, $sel_param_id, $sel_value_id, $where_mfa)
+    public function getPartsCountWill($group_id, $filters, $sel_param_id, $sel_value_id, $where_mfa, $where_link_arts)
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
@@ -926,7 +934,7 @@ class CatalogExistClass extends CatalogueClass
                 SELECT SUM(ex.col_arts) as sum_arts FROM (
                     SELECT COUNT(t.`art_id`) as col_arts FROM `$table` t 
                         LEFT JOIN `$table_params` tp ON tp.`art_id`=t.`art_id`
-                    WHERE 1 $where
+                    WHERE 1 $where $where_link_arts
                     GROUP BY t.`art_id`
                 ) as ex ;");
             } else {
@@ -935,7 +943,7 @@ class CatalogExistClass extends CatalogueClass
                      SELECT COUNT(t.art_id) as col_arts FROM `$table` t
                         LEFT JOIN `$table_params` tp ON tp.art_id=t.art_id 
                         LEFT JOIN `$table_mfa` tm ON tm.art_id=t.art_id
-                    WHERE 1 $where $where_mfa
+                    WHERE 1 $where $where_mfa $where_link_arts
                     GROUP BY t.art_id
                 ) as ex ;");
             }
@@ -945,11 +953,32 @@ class CatalogExistClass extends CatalogueClass
     }
 
     /*
-     * show catalog form
+     * get mfa where
      * */
-    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $status_auto = 0, $status_auto_type = 0, $mfa_link = "", $model_link = "")
+    public function getMfaWhere($status_auto, $status_auto_type, $mfa_link, $model_link)
     {
         $auto = new AutoClass();
+        $where_mfa = "";
+        if (!empty($mfa_link)) {
+            if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 1)) {
+                $mfa_id = $auto->getMfaLink($mfa_link);
+                $model = $auto->getModLink($model_link);
+                if ($mfa_id > 0) {
+                    $where_mfa .= " AND tm.`mfa_id`=$mfa_id";
+                }
+                if ($model != "") {
+                    $where_mfa .= " AND tm.`model`='$model'";
+                }
+            }
+        }
+        return $where_mfa;
+    }
+
+    /*
+     * show catalog form
+     * */
+    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $status_auto_type = 0, $mfa_link = "", $model_link = "")
+    {
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
         $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
@@ -957,38 +986,34 @@ class CatalogExistClass extends CatalogueClass
         $limit = $this->getSearchLimit($page);
         $group_text = $this->getGroupExistName($group_id);
         $status_auto = $this->getGroupExistStatusAuto($group_id);
+        $where_mfa = $this->getMfaWhere($status_auto, $status_auto_type, $mfa_link, $model_link);
 
-        $where_mfa = "";
+        $where_link_arts = "";
         if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 1)) {
-            $mfa_id = $auto->getMfaLink($mfa_link);
-            $model = $auto->getModLink($model_link);
-            if ($mfa_id > 0) {
-                $where_mfa .= " AND tm.`mfa_id`=$mfa_id";
-            }
-            if ($model != "") {
-                $where_mfa .= " AND tm.`model`='$model'";
+            $auto_typ_id = $this->getCookieAuto();
+            if ($auto_typ_id != "") {
+                $typ_arts = $this->getPartsCatalogueAuto($auto_typ_id);
+                $where_link_arts = " AND t.art_id IN (" . implode(",", $typ_arts) . ") ";
             }
         }
 
         $arts = [];
         if (empty($filters)) {
-            $r = $dbc->query("
-            SELECT t.art_id FROM `$table` t
+            $query = "SELECT t.art_id FROM `$table` t
                 LEFT JOIN `$table_params` tp ON tp.art_id=t.art_id 
                 LEFT JOIN `$table_mfa` tm ON tm.art_id=t.art_id
-            WHERE 1 $where_mfa
-            GROUP BY t.art_id 
-            $limit;");
+            WHERE 1 $where_mfa $where_link_arts
+            GROUP BY t.art_id";
         } else {
             $where = $this->getFiltersWhere($group_id, $filters);
-            $r = $dbc->query("
-            SELECT t.art_id FROM `$table` t
+            $query = "SELECT t.art_id FROM `$table` t
                 LEFT JOIN `$table_params` tp ON tp.art_id=t.art_id 
                 LEFT JOIN `$table_mfa` tm ON tm.art_id=t.art_id
-            WHERE 1 $where $where_mfa
-            GROUP BY t.art_id 
-            $limit;");
+            WHERE 1 $where $where_mfa $where_link_arts
+            GROUP BY t.art_id";
         }
+        $query_limit = "$query $limit ;";
+        $r = $dbc->query($query_limit);
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $dbc->result($r, $i - 1, "art_id");
@@ -996,10 +1021,12 @@ class CatalogExistClass extends CatalogueClass
         }
 
         $art_id_str = implode(",", array_unique($arts));
-        list($list, , $active_filters, , $brands) = $this->searchList($art_id_str, 1, 1, "", "", $status_auto);
-        $count = $this->getPartsCount($group_id, $filters, $where_mfa);
+        list($list) = $this->searchList($art_id_str, 1, 1, "", "", $status_auto);
+
+        $count = $this->getPartsCount($group_id, $query);
+        $filters_form = $this->getPartsFiltersForm($group_id, $filters, $where_mfa, $where_link_arts, $query, $mfa_link, $model_link);
+
         $pagination_form = $this->getPartsPaginationForm($count, $page);
-        $filters_form = $this->getPartsFiltersForm($group_id, $filters, $where_mfa, $mfa_link, $model_link);
         list($filters_title, $filters_btn) = $this->getPartsFiltersItems($group_id, $filters, $mfa_link, $model_link);
 
         $form = $this->getHtmlForm("catalog_exist/list_params");
@@ -1011,12 +1038,13 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{parts_pagination}", $pagination_form, $form);
         $form = str_replace("{parts_params}", $filters_form, $form);
         $form = str_replace("{parts_breadcrumbs}", $this->getPartsBreadcrumbsForm($group_id), $form);
+        $form = str_replace("{status_auto}", $status_auto, $form);
 
-        $form = str_replace("{parts_cars}", $this->getPartsCatalogueCars($status_auto, $mfa_link, $model_link), $form);
-        $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $filters, $status_auto, $status_auto_type, $mfa_link, $model_link), $form);
-        $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($status_auto), $form);
+        $form = str_replace("{parts_cars}", $this->getPartsCatalogueCars($status_auto, $status_auto_type, $mfa_link, $model_link), $form);
+        $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $filters, $status_auto, $status_auto_type), $form);
+        $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $status_auto, $mfa_link, $model_link), $form);
 
-        return array("form" => $form, "filters" => $active_filters, "brands" => $brands);
+        return array("form" => $form);
     }
 
     /*
@@ -1055,7 +1083,7 @@ class CatalogExistClass extends CatalogueClass
                 if ($model_link != "") {
                     $auto_link .= "$model_link/";
                 }
-                $filters_btn = "<a class=\"btn btn-sm\" href=\"/catalog_exist/show_params/$group_link/$auto_link\" style='background: white; border: 1px solid #292929; color: #292929;'>{filter_cap_empty} <i class='fa fa-times'></i></a>" . $filters_btn;
+                $filters_btn = "<a class=\"btn btn-sm btn-filter\" href=\"/catalog_exist/show_params/$group_link/$auto_link\">{filter_cap_empty} <i class='fa fa-times'></i></a>" . $filters_btn;
             }
         }
         return array($filters_title, $filters_btn);
@@ -1064,7 +1092,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show filter form
      * */
-    public function getPartsFiltersForm($group_id, $filters, $where_mfa, $mfa_link = "", $model_link = "")
+    public function getPartsFiltersForm($group_id, $filters, $where_mfa = "", $where_link_arts = "", $query = "", $mfa_link = "", $model_link = "")
     {
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
@@ -1072,8 +1100,7 @@ class CatalogExistClass extends CatalogueClass
         $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
         $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
         $max_items = 7;
-
-        $count_arts_full = $this->getPartsCount($group_id, $filters, $where_mfa);
+        $count_arts_full = $this->getPartsCount($group_id, $query);
 
         $params_check = $this->getCheckedFilters($group_id, $filters);
 
@@ -1086,7 +1113,7 @@ class CatalogExistClass extends CatalogueClass
             SELECT tp.*, t.brand_id as brand_cur_id FROM `$table` t
                 LEFT JOIN `$table_params` tp ON tp.art_id=t.art_id 
                 LEFT JOIN `$table_mfa` tm ON tm.art_id=t.art_id
-            WHERE 1 $where_mfa
+            WHERE 1 $where_mfa $where_link_arts
             GROUP BY t.art_id ;");
             $n = $dbc->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
@@ -1113,7 +1140,7 @@ class CatalogExistClass extends CatalogueClass
                 SELECT tp.*, t.brand_id as brand_cur_id FROM `$table` t
                     LEFT JOIN `$table_params` tp ON tp.art_id=t.art_id 
                     LEFT JOIN `$table_mfa` tm ON tm.art_id=t.art_id
-                WHERE 1 $where $where_mfa
+                WHERE 1 $where $where_mfa $where_link_arts
                 GROUP BY t.art_id ;");
                 $n = $dbc->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
@@ -1138,7 +1165,7 @@ class CatalogExistClass extends CatalogueClass
                 SELECT tp.*, t.brand_id as brand_cur_id FROM `$table` t
                     LEFT JOIN `$table_params` tp ON tp.art_id=t.art_id 
                     LEFT JOIN `$table_mfa` tm ON tm.art_id=t.art_id
-                WHERE 1 $where $where_mfa
+                WHERE 1 $where $where_mfa $where_link_arts
                 GROUP BY t.art_id ;");
                 $n = $dbc->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
@@ -1201,14 +1228,14 @@ class CatalogExistClass extends CatalogueClass
                         $count_arts = 0;
                         if (!empty($filters)) {
                             if (in_array($param_id, $checked_params_keys)) {
-                                $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id, $where_mfa);
+                                $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id, $where_mfa, $where_link_arts);
                                 $count_arts = $count_arts - $count_arts_full;
                             }
                             if (in_array($param_id, $unchecked_params_keys)) {
-                                $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id, $where_mfa);
+                                $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id, $where_mfa, $where_link_arts);
                             }
                         } else {
-                            $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id, $where_mfa);
+                            $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id, $where_mfa, $where_link_arts);
                         }
                         $items[$value_id] = compact("value_name", "link", "checked", "count_arts");
                     }
@@ -1334,46 +1361,37 @@ class CatalogExistClass extends CatalogueClass
 
     /*======================================================================= STATUS AUTO =*/
 
-    public function getPartsCatalogueParamsCars($group_id, $filters, $status_auto = 0, $status_auto_type = 0, $mfa_link = "", $model_link = "")
+    /*
+     * show param cars form
+     * */
+    public function getPartsCatalogueParamsCars($group_id, $filters, $status_auto = 0, $status_auto_type = 0)
     {
         $auto = new AutoClass();
         $form = "";
-        if ($status_auto == 1) {
-            $typ_text = "";
-            $car_disable = "";
-            $mfa_id = $auto->getMfaLink($mfa_link);
-            $model = $auto->getModLink($model_link);
-            if ($mfa_id > 0) {
-                $mfa_name = $auto->getMfaBrand($mfa_id);
-                $typ_text = "$mfa_name $model";
-            }
-            if (empty($mfa_link)) {
-                $car_disable = "none";
-            }
+        $auto_typ_id = $this->getCookieAuto();
+        if ($status_auto == 1 && $auto_typ_id != "") {
             $car_checked = ""; $all_checked = "";
             $car_count = ""; $all_count = "";
+            list($mfa_id, $model) = $auto->getCarInfo($auto_typ_id);
+            $mfa_name = $auto->getMfaBrand($mfa_id);
+            $typ_text = "$mfa_name $model";
+            // всі запчастини
             if ($status_auto_type == 0) {
                 $car_checked = "<i class=\"fas fa-circle unchecked\"></i>";
                 $all_checked = "<i class=\"fas fa-check-circle checked\"></i>";
-                $where_mfa = "";
-                $mfa_id = $auto->getMfaLink($mfa_link);
-                $model = $auto->getModLink($model_link);
-                if ($mfa_id > 0) {
-                    $where_mfa .= " AND tm.`mfa_id`=$mfa_id";
+                $where_link_arts = "";
+                $typ_arts = $this->getPartsCatalogueAuto($auto_typ_id);
+                if (!empty($typ_arts)) {
+                    $where_link_arts = " AND t.art_id IN (" . implode(",", $typ_arts) . ") ";
                 }
-                if ($model != "") {
-                    $where_mfa .= " AND tm.`model`='$model'";
-                }
-                $count = $this->getPartsCount($group_id, $filters, $where_mfa);
-                if ($count == "") {
-                    $car_disable = "none";
-                }
+                $count = $this->getPartsCountGroup($group_id, $filters, $where_link_arts);
                 $car_count = "($count)";
             }
+            // вибрана машина
             if ($status_auto_type == 1) {
-                $car_checked = "<i class=\"fas fa-check-square checked\"></i>";
-                $all_checked = "<i class=\"fas fa-square unchecked\"></i>";
-                $count = $this->getPartsCount($group_id, $filters);
+                $car_checked = "<i class=\"fas fa-check-circle checked\"></i>";
+                $all_checked = "<i class=\"fas fa-circle unchecked\"></i>";
+                $count = $this->getPartsCountGroup($group_id, $filters);
                 $all_count = "($count)";
             }
             $form = $this->getHtmlForm("catalog_exist/params_cars");
@@ -1382,51 +1400,269 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{on_car_count}", $car_count, $form);
             $form = str_replace("{on_all_checked}", $all_checked, $form);
             $form = str_replace("{on_all_count}", $all_count, $form);
-            $form = str_replace("{on_car_disable}", $car_disable, $form);
         }
         return $form;
     }
 
-    public function getPartsCatalogueSeo($status_auto = 0)
+
+    /*
+     * show cars form
+     * */
+    public function getPartsCatalogueCars($status_auto = 0, $status_auto_type = 0, $mfa_link = "", $model_link = "")
     {
-        $form = $this->getHtmlForm("catalog_exist/seo");
-        $text = "";
-        if ($status_auto == 0) {
-            $text = "SEO STATUS 0";
-        }
-        if ($status_auto == 1) {
-            $text = "SEO STATUS 1";
-        }
-        if ($status_auto == 2) {
-            $text = "SEO STATUS 2";
-        }
-        $form = str_replace("{seo_text}", $text, $form);
-        return $form;
-    }
-
-    public function getPartsCatalogueCars($status_auto = 0, $mfa_link = "", $model_link = "")
-    {
-//        $auto = new AutoClass();
-//        $form = "";
-//        if ($status_auto == 0 || $status_auto == 1) {
-//            $typ_text = "";
-//            $mfa_id = $auto->getMfaLink($mfa_link);
-//            $model = $auto->getModLink($model_link);
-//            if ($mfa_id > 0) {
-//                $mfa_name = $auto->getMfaBrand($mfa_id);
-//                $typ_text = "$mfa_name $model";
-//            }
-//            $form = $this->getHtmlForm("catalog_exist/cars");
-//            $form = str_replace("{typ_text}", $typ_text, $form);
-//        }
-
-
         $products = new ProductsClass();
         $form = "";
+        $auto_typ_id = $this->getCookieAuto();
         if ($status_auto == 0 || $status_auto == 1) {
-            $form = $products->getCarsSearch($mfa_link, $model_link);
+            if ($auto_typ_id != "") {
+                if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 1)) {
+                    $form = $products->getCarsGarage();
+                } else {
+                    $form = $products->getCarsSearch($mfa_link, $model_link);
+                }
+            } else {
+                $form = $products->getCarsSearch($mfa_link, $model_link);
+            }
         }
         return $form;
+    }
+
+    /*
+     * get products from t2_links
+     * */
+    public function getPartsCatalogueAuto($auto_typ_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $arts = [];
+        $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$auto_typ_id' GROUP BY `ART_ID`;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i < $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
+            $arts[] = $art_id;
+        }
+        return $arts;
+    }
+
+
+    /*
+     * show products seo form
+     * */
+    public function getPartsCatalogueSeo($group_id, $status_auto = 0, $mfa_link = "", $mod_link = "", $mod_id_link = "")
+    {
+        $automan = new AutoClass();
+        $form = $this->getHtmlForm("catalog_exist/seo");
+
+        if ($status_auto == 0 || $status_auto == 1) {
+            if ($mfa_link != "") {
+                $mfa_id = $automan->getMfaLink($mfa_link);
+                if ($mod_link != "") {
+                    if ($mod_id_link != "") {
+                        $mod_id = $automan->getAutoModelIdLink($mod_id_link)["model_id"];
+                        $form = str_replace("{seo_auto}", $this->getGroupCarTypeList($group_id, $mfa_id, $mod_id), $form);
+                    } else {
+                        $model = $automan->getModLink($mod_link);
+                        $form = str_replace("{seo_auto}", $this->getGroupCarModIDList($group_id, $mfa_id, $model), $form);
+                    }
+                } else {
+                    $form = str_replace("{seo_auto}", $this->getGroupCarModList($group_id, $mfa_id), $form);
+                }
+            } else {
+                $form = str_replace("{seo_auto}", $this->getGroupCarMfaList($group_id), $form);
+            }
+        }
+
+        $form = str_replace("{seo_auto}", "", $form);
+        return $form;
+    }
+
+    /*
+     * get TYP list
+     * */
+    public function getGroupCarTypeList($group_id, $mfa_id = 0, $mod_id = 0)
+    {
+        $db = DbSingleton::getTokoDb();
+        $auto = new AutoClass();
+        $mfa_text = $auto->getMfaBrand($mfa_id);
+        $mod_id_text = $auto->getModIdLink($mod_id);
+        $title = "$mfa_text $mod_id_text";
+        $details_cap = "{details_on_cap}";
+        if ($group_id != "") {
+            $details_cap = $this->getGroupRowName($group_id);
+            $details_cap .= " {on_cap}";
+        }
+        $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id';");
+        $n = $db->num_rows($r);
+        $list = "<span class=\"title-b\">$details_cap $title</span>";
+        $list .= "<div class=\"t_types\">";
+        $mas = [];
+        for ($i = 1; $i <= $n; $i++) {
+            $fuel_id = $db->result($r, $i - 1, "FUEL_ID");
+            $typ_text = $db->result($r, $i - 1, "TYP_TEXT");
+            $kw_from = $db->result($r, $i - 1, "TYP_KW_FROM");
+            $hp_from = $db->result($r, $i - 1, "TYP_HP_FROM");
+            $link = $this->replaceLang("<span><b>$typ_text</b> ($hp_from {horse_power_cap}, $kw_from {kilo_wat_cap})</span>");
+            $mas[$fuel_id][] = $link;
+        }
+        foreach ($mas as $fuel_id => $types) {
+            $fuel_name = $this->getFuelName($fuel_id);
+            $list .= "<div><span class=\"text-dark bold\">$fuel_name: </span>";
+            foreach ($types as $typ) {
+                $list .= "$typ";
+            }
+            $list .= "</div>";
+        }
+        $list .= "</div>";
+        return $list;
+    }
+
+    /*
+     * get MOD ID list
+     * */
+    public function getGroupCarModIDList($group_id, $mfa_id_sel = 0, $model = "")
+    {
+        $db = DbSingleton::getTokoDb();
+        $prefix = $this->getLangPrefix();
+        $list = $link = "";
+        $details_cap = "{all_type_models}";
+        if ($group_id != "") {
+            $details_cap = $this->getGroupRowName($group_id);
+            $details_cap .= " {on_cap}";
+        }
+
+        $r = $db->query("SELECT mf.*, md.Model, md.Model_Link FROM `T_manufacturers` mf
+            LEFT JOIN `T_models` md ON md.MOD_MFA_ID=mf.MFA_ID
+        WHERE mf.`MFA_ID`='$mfa_id_sel' AND md.`Model`='$model' GROUP BY md.`Model`;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
+            $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
+            $mod_link = $db->result($r, $i - 1, "Model_Link");
+
+            $list .= "<span class=\"title-b\">$details_cap $mfa_brand $model</span>";
+            $list .= "<div class=\"seo_details\"><div class=\"seo-ul\">";
+
+            $r2 = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id_sel' AND `Model`='$model' ORDER BY `MOD_PCON_START`;");
+            $n2 = $db->num_rows($r2);
+            for ($i2 = 1; $i2 <= $n2; $i2++) {
+                $mod_id_link = $db->result($r2, $i2 - 1, "TEX_TEXT_link");
+                $text = $db->result($r2, $i2 - 1, "TEX_TEXT");
+                $image = $db->result($r2, $i2 - 1, "Car_pict");
+                $path = "https://toko.ua/uploads/images/models/$image";
+                $d_start = $db->result($r2, $i2 - 1, "MOD_PCON_START");
+                $d_start = substr($d_start, 0, 4);
+                $d_end = $db->result($r2, $i2 - 1, "MOD_PCON_END");
+                $d_end = substr($d_end, 0, 4);
+                if ($d_end == 0) {
+                    $d_end = "{cur_time}";
+                }
+                $list .= "<a class=\"seo-li seo-li-id\" href=\"https://toko.ua$prefix/$link/$mfa_link/$mod_link/$mod_id_link/\">
+                    <div class=\"row mar0\">
+                        <div class=\"col-4 pad0\"><img src=\"$path\" alt=\"$text\" title=\"$text\"></div>
+                        <div class=\"col-8\"><span>$mfa_brand $text ($d_start - $d_end)</span></div>
+                    </div>
+                </a>";
+            }
+            $list .= "</div></div>";
+        }
+        $list .= $this->getGroupCarMfaList($group_id, $mfa_id_sel);
+
+        return $list;
+    }
+
+    /*
+     * get MOD ID list
+     * */
+    public function getGroupCarModList($group_id, $mfa_id_sel = 0)
+    {
+        $db = DbSingleton::getTokoDb();
+        $prefix = $this->getLangPrefix();
+
+        $link = "";
+        if ($group_id != "") {
+            $details_cap = $this->getGroupRowName($group_id);
+            $details_cap .= " {on_cap}";
+        } else {
+            $details_cap = "{details_on_cap}";
+            $link = "cars";
+        }
+
+        $where = ($mfa_id_sel != "") ? "AND `MFA_ID`='$mfa_id_sel'" : "";
+        $list = "<ul>";
+        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 $where ORDER BY `MFA_BRAND`;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $mfa_id = $db->result($r, $i - 1, "MFA_ID");
+            $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
+            $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
+
+            if ($mfa_id_sel == "") {
+                $list .= "<li class=\"title\"><span class=\"bold\"><a href=\"https://toko.ua$prefix/$link/$mfa_link/\">$details_cap $mfa_brand</a></span>";
+            } else {
+                $list = "";
+                $list .= "<span class=\"title-b\">$details_cap $mfa_brand</span>";
+            }
+            $list .= "<div class=\"seo_details\"><div class=\"seo-ul\">";
+
+            $r2 = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;");
+            $n2 = $db->num_rows($r2);
+            for ($i2 = 1; $i2 <= $n2; $i2++) {
+                $mod = $db->result($r2, $i2 - 1, "Model");
+                $mod_link = $db->result($r2, $i2 - 1, "Model_Link");
+                $list .= "<a class=\"seo-li\" href=\"https://toko.ua$prefix/$link/$mfa_link/$mod_link/\">
+                    <span>$mfa_brand $mod</span>
+                </a>";
+            }
+            $list .= "</div></div>";
+        }
+        if ($mfa_id_sel != "") {
+            $list .= "</ul>";
+        }
+        return $list;
+    }
+
+    /*
+     * get MOD ID list
+     * */
+    public function getGroupCarMfaList($group_id, $mfa_id_sel = 0)
+    {
+        $db = DbSingleton::getTokoDb();
+        $details_cap = "{details_on_cap}";
+        $title = "";
+        $link = "cars";
+        $where = ($mfa_id_sel != "") ? " AND `MFA_ID`='$mfa_id_sel'" : "";
+        if ($group_id != "") {
+            $details_cap = $this->getGroupRowName($group_id);
+            $details_cap .= " {on_cap}";
+        }
+        $list = "<div class=\"seo_auto\">$title";
+        $mas = [];
+        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 $where ORDER BY `MFA_BRAND` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $mfa_id = $db->result($r, $i - 1, "MFA_ID");
+            $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
+            $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
+            $image = $db->result($r, $i - 1, "LOGO");
+            $mas[$mfa_brand] = ["mfa_id" => $mfa_id, "link" => $mfa_link, "logo" => $image];
+        }
+        foreach ($mas as $mfa_brand => $values) {
+            $mfa_id = $values["mfa_id"];
+            $mfa_link = $values["link"];
+            if ($mfa_id_sel == "") {
+                $list .= "<div class=\"title\"><a href='https://toko.ua/$link/$mfa_link/'>$details_cap $mfa_brand</a></div>";
+            }
+            $list .= "<ul class=\"list-inline\">";
+            $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $model = $db->result($r, $i - 1, "Model");
+                $model_link = $db->result($r, $i - 1, "Model_Link");
+                $list .= "<li><a href=\"https://toko.ua/$link/$mfa_link/$model_link/\">$mfa_brand $model</a></li>";
+            }
+            $list .= "</ul>";
+        }
+        $list .= "</div>";
+        return $list;
     }
 
 }

@@ -5,7 +5,7 @@
                 {show_filters_cars}
             </div>
             <div class="hidden-list-content">
-                <a href="./?status_auto_type=1" class="hidden-list-content__item {on_car_disable}">
+                <a onclick="setStatusAutoType(this);" data-cookie-value="1" class="hidden-list-content__item" style="cursor:pointer;">
                     <div class="hidden-list-content__item-left">
                         {on_car_checked}
                         <span>{on_cap} {typ_text}</span>
@@ -14,7 +14,7 @@
                         {on_car_count}
                     </div>
                 </a>
-                <a href="./?status_auto_type=0" class="hidden-list-content__item">
+                <a onclick="setStatusAutoType(this);" data-cookie-value="0" class="hidden-list-content__item" style="cursor:pointer;">
                     <div class="hidden-list-content__item-left">
                         {on_all_checked}
                         <span>{show_all_car}</span>
@@ -27,3 +27,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    function setStatusAutoType(e) {
+        let status_auto_type = $(e).attr("data-cookie-value");
+        setCookie("status_auto_type", status_auto_type);
+        location.reload();
+    }
+</script>

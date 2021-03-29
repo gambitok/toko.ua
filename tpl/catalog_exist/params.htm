@@ -12,16 +12,12 @@
         });
     }
     function textParamSearch(param_id) {
-
         let search = $("input[data-attr='" + param_id + "']").val().toLowerCase();
-
         if (search !== "") {
-            //$("div[data-attr='" + param_id + "']").addClass("show");
             $("div[data-attr-more='" + param_id + "']").addClass("none");
         } else {
             $("div[data-attr-more='" + param_id + "']").removeClass("none");
         }
-
         $("div[data-param-value='" + param_id + "'] span").each(function () {
             let text = $(this).text().toLowerCase();
             let indexOfText = text.indexOf(search); // 0 OR -1

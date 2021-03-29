@@ -1,5 +1,10 @@
 <link rel="stylesheet" href="/css/plugins/flags.min.css">
 <style>
+    .btn-filter {
+        background: white;
+        border: 1px solid #292929;
+        color: #292929;
+    }
     .bread {
         padding: 0;
     }
@@ -43,6 +48,8 @@
         margin: 30px 0;
     }
 </style>
+
+<input type="hidden" id="status_auto" value="{status_auto}">
 
 <div class="container">
     <div class="row products">
@@ -98,3 +105,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        if ($("#status_auto").val() == "1") {
+            toggleCarsNavigation($("div[data-type='manuf']"));
+        }
+    });
+</script>
