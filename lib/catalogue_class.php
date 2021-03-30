@@ -10,6 +10,7 @@ class CatalogueClass
     public $catalog_link = "catalog";
     public $search_link = "search";
     public $faq_card_count = 2;
+    public $catalog_exist_link = "catalog_exist";
 
     /*
      * get catalog search form
@@ -46,14 +47,13 @@ class CatalogueClass
         $article_nr_search = $this->getUrlString($article_nr_search);
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
 
+        $art_ids = [];
         $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
         WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
         GROUP BY t2c.`ART_ID` ORDER BY t2n.NAME ASC;");
         $n = $db->num_rows($r);
-
-        $art_ids = [];
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             array_push($art_ids, $art_id);
@@ -125,14 +125,13 @@ class CatalogueClass
         $order_value = $this->getUrlNumber($order_value);
         $brand_nr_search = $this->getUrlNumber($brand_nr_search);
         $db = DbSingleton::getTokoDb();
+        $art_ids = [];
         $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
         WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
         ORDER BY t2n.NAME ASC;");
         $n = $db->num_rows($r);
-
-        $art_ids = [];
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             array_push($art_ids, $art_id);
@@ -189,7 +188,6 @@ class CatalogueClass
         WHERE t2c.SEARCH_NUMBER='$article_search' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) 
         GROUP BY t2c.BRAND_ID;");
         $n = $db->num_rows($r);
-
         if ($article_search != "") {
             for ($i = 1; $i <= $n; $i++) {
                 $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -316,8 +314,8 @@ class CatalogueClass
                 $text = $db->result($r, $i - 1, "TEX_$lang_cap");
                 $image = $db->result($r, $i - 1, "IMAGES");
                 $str_id = $db->result($r, $i - 1, "STR_ID");
-                $link = $db->result($r, $i - 1, "TEX_LINK");
-                $arr[$cat_id][$i] = ["text" => $text, "image" => $image, "str_id" => $str_id, "str_link" => $link];
+                $str_link = $db->result($r, $i - 1, "TEX_LINK");
+                $arr[$cat_id][$i] = compact("text", "image", "str_id", "str_link");
             }
             foreach ($arr as $key => $value) {
                 list($cat_name, $cat_link) = $automan->getCatNewDescr($key);
@@ -782,7 +780,8 @@ class CatalogueClass
         $db = DbSingleton::getTokoDb();
         $arts = [];
         $art_id_arr = [];
-        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` 
+        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` 
+        FROM `T2_CROSS` 
         WHERE `ART_ID`='$art_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND` IN (3,4) AND `RELATION`=1) OR (`KIND` IN (3,4) AND `RELATION`=2)) 
         GROUP BY `SEARCH_NUMBER` LIMIT 0,10;");
         $n = $db->num_rows($r);
@@ -794,7 +793,7 @@ class CatalogueClass
         foreach ($arts as $art) {
             $article_search = $art["search_number"];
             $brand_id = $art["brand_id"];
-            $r = $db->query("SELECT `ART_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`='$brand_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND`=0 AND `RELATION`=0))");
+            $r = $db->query("SELECT `ART_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`='$brand_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND`=0 AND `RELATION`=0));");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $cross_art_id = $db->result($r, $i - 1, "ART_ID");
@@ -1016,21 +1015,7 @@ class CatalogueClass
                     $return_days = $db->result($r, $i - 1, "return_days");
                     $storage_id = $db->result($r, $i - 1, "storage_id");
                     $status = $db->result($r, $i - 1, "status");
-                    $mas[$art_id][$i] = [
-                        "name" => $name,
-                        "brand_id" => $brand_id,
-                        "brand" => $brand,
-                        "text" => $text,
-                        "delivery_info" => $delivery_info,
-                        "stock" => $stock,
-                        "price" => $price,
-                        "delivery_days" => $delivery_days,
-                        "delivery_short_info" => $delivery_short_info,
-                        "suppl_id" => $suppl_id,
-                        "return_days" => $return_days,
-                        "storage_id" => $storage_id,
-                        "status" => $status
-                    ];
+                    $mas[$art_id][$i] = compact("name", "brand_id", "brand", "text", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
                 }
 
                 // delete temp table
@@ -1081,7 +1066,6 @@ class CatalogueClass
         return array($list, $list_brand, $filters, $count, $brand_ids);
     }
 
-//    public function searchList($where_art_id_str, $type_filter = 1, $view = 0, $article_nr_search = "", $brand_nr_search = "")
     public function searchListFilter($where_art_id_str, $article_nr_search, $brand_filter, $cur, $price_min, $price_max, $del_min, $del_max, $brand_nr_search, $order_value, $type_filter = 1)
     {
         $db = DbSingleton::getTokoDb();
@@ -1241,38 +1225,10 @@ class CatalogueClass
                     }
 
                     if (($name == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search) {
-                        $mas[$art_id][$i] = [
-                            "name" => $name,
-                            "brand_id" => $brand_id,
-                            "brand" => $brand,
-                            "text" => $text,
-                            "delivery_info" => $delivery_info,
-                            "stock" => $stock,
-                            "price" => $price,
-                            "delivery_days" => $delivery_days,
-                            "delivery_short_info" => $delivery_short_info,
-                            "suppl_id" => $suppl_id,
-                            "return_days" => $return_days,
-                            "storage_id" => $storage_id,
-                            "status" => $status
-                        ];
+                        $mas[$art_id][$i] = compact("name", "brand_id", "brand", "text", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
                     } elseif ($stock > 0) {
                         if ($price >= $price_min && $price <= $price_max && $delivery_days >= $del_min && $delivery_days <= $del_max) {
-                            $mas[$art_id][$i] = [
-                                "name" => $name,
-                                "brand_id" => $brand_id,
-                                "brand" => $brand,
-                                "text" => $text,
-                                "delivery_info" => $delivery_info,
-                                "stock" => $stock,
-                                "price" => $price,
-                                "delivery_days" => $delivery_days,
-                                "delivery_short_info" => $delivery_short_info,
-                                "suppl_id" => $suppl_id,
-                                "return_days" => $return_days,
-                                "storage_id" => $storage_id,
-                                "status" => $status
-                            ];
+                            $mas[$art_id][$i] = compact("name", "brand_id", "brand", "text", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
                         }
                     }
                 }
@@ -1442,21 +1398,7 @@ class CatalogueClass
                     $return_days = $db->result($r, $i - 1, "return_days");
                     $storage_id = $db->result($r, $i - 1, "storage_id");
                     $status = $db->result($r, $i - 1, "status");
-                    $mas[$art_id][$i] = [
-                        "name" => $name,
-                        "brand_id" => $brand_id,
-                        "brand" => $brand,
-                        "text" => $text,
-                        "delivery_info" => $delivery_info,
-                        "stock" => $stock,
-                        "price" => $price,
-                        "delivery_days" => $delivery_days,
-                        "delivery_short_info" => $delivery_short_info,
-                        "suppl_id" => $suppl_id,
-                        "return_days" => $return_days,
-                        "storage_id" => $storage_id,
-                        "status" => $status
-                    ];
+                    $mas[$art_id][$i] = compact("name", "brand_id", "brand", "text", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
                 }
 
                 // delete temp table
@@ -1526,13 +1468,6 @@ class CatalogueClass
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
             $today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
-//            if ($delivery_days == 0) {
-//                $today = "<i>{today_cap}</i>";
-//            } elseif ($delivery_days == 1) {
-//                $today = "<i>{tomorrow_cap}</i>";
-//            } else {
-//                $today = "<i>$date_del ($week_day_short)</i>";
-//            }
             $info = "$today<br>$time_from_del - $time_to_del";
             $delivery_short_info = "$today<br>{with_cap} $time_from_del";
             $array[$deliver["storage_id"]] = compact("info", "delivery_days", "delivery_short_info");
@@ -1585,13 +1520,6 @@ class CatalogueClass
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $deliveryTime["delivery_days"] . " days"));
             $today = (($deliveryTime["delivery_days"] == 0) ? "<i>{today_cap}</i>" : (($deliveryTime["delivery_days"] == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
-//            if ($deliveryTime["delivery_days"] == 0) {
-//                $today = "<i>{today_cap}</i>";
-//            } elseif ($deliveryTime["delivery_days"] == 1) {
-//                $today = "<i>{tomorrow_cap}</i>";
-//            } else {
-//                $today = "<i>$date_del ($week_day_short)</i>";
-//            }
             $info = "$today<br>{$time_from_del} - {$time_to_del}";
             $delivery_short_info = "$today<br>{with_cap} $time_from_del";
             $result[$deliveryTime["suppl_id"]][$deliveryTime["suppl_storage_id"]] = [
@@ -1898,8 +1826,7 @@ class CatalogueClass
             $form = str_replace("{soldout_row_status}", "", $form);
         }
 
-        // $status_auto
-
+        // status_auto
         if ($status_auto == 2) {
             $form = str_replace("{applicable_display}", "dnone", $form);
         }
@@ -2161,11 +2088,6 @@ class CatalogueClass
         $client_id = $this->getClient();
         $price = 0;
         list(, , $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat) = $this->getDpClientPriceLevels($client_id);
-//        $query = "SELECT t2si.price_usd
-//        FROM `T2_ARTICLES` t2a
-//            LEFT OUTER JOIN `T2_SUPPL_ARTICLES_IMPORT` t2sai ON (t2sai.art_id=t2a.ART_ID)
-//            LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2sai.art_id AND t2si.suppl_id=t2sai.suppl_id AND t2si.status=1)
-//        WHERE t2a.ART_ID='$art_id' AND t2sai.suppl_id='$suppl_id' LIMIT 1;";
         $query = "SELECT t2si.price_usd 
         FROM `T2_ARTICLES` t2a 
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
@@ -2242,7 +2164,8 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $margin = $delivery = $margin2 = 0;
-        $query = "SELECT `margin`, `delivery`, `margin2` FROM `T_POINT_SUPPL_FM` 
+        $query = "SELECT `margin`, `delivery`, `margin2` 
+        FROM `T_POINT_SUPPL_FM` 
         WHERE `tpoint_id`='$tpoint_id' AND `suppl_id`='$suppl_id' AND `suppl_storage_id`='$suppl_storage_id' AND `price_from`<='$price_suppl' 
         AND `price_to`>='$price_suppl' AND `price_rating_id`='$price_suppl_lvl' LIMIT 1;";
         $r = $db->query($query);
@@ -2262,7 +2185,8 @@ class CatalogueClass
         $cur_time = date("H:i:s");
         $delivery_days = 0;
         $info = $short_info = "";
-        $r = $db->query("SELECT `delivery_days`, `time_from_del`, `time_to_del` FROM `T_POINT_DELIVERY_TIME`
+        $r = $db->query("SELECT `delivery_days`, `time_from_del`, `time_to_del` 
+        FROM `T_POINT_DELIVERY_TIME`
         WHERE `status`='1' AND `tpoint_id`='$tpoint_id' AND `storage_id`='$storage_id' AND `week_day`='$week_day' AND `time_from`<='$cur_time' 
         AND `time_to`>='$cur_time' ORDER BY `delivery_days` ASC LIMIT 1;");
         $n = $db->num_rows($r);
@@ -2273,15 +2197,7 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $delivery_days . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
-
             $today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
-//            if ($delivery_days == 0) {
-//                $today = "<i>{today_cap}</i>";
-//            } elseif ($delivery_days == 1) {
-//                $today = "<i>{tomorrow_cap}</i>";
-//            } else {
-//                $today = "<i>$date_del ($week_day_short)</i>";
-//            }
             $info = "$today<br>$time_from_del - $time_to_del";
             $short_info = "$today<br>{with_cap} $time_from_del";
         }
@@ -2295,7 +2211,8 @@ class CatalogueClass
         $cur_time = date("H:i:s");
         $delivery_days = 0;
         $info = $short_info = "";
-        $r = $db->query("SELECT `delivery_days`, `time_from_del`, `time_to_del` FROM `T_POINT_SUPPL_DELIVERY_TIME` 
+        $r = $db->query("SELECT `delivery_days`, `time_from_del`, `time_to_del` 
+        FROM `T_POINT_SUPPL_DELIVERY_TIME` 
         WHERE `status`='1' AND `tpoint_id`='$tpoint_id' AND `suppl_storage_id`='$suppl_storage_id' AND `suppl_id`='$suppl_id' AND `week_day`='$week_day' 
         AND `time_from`<='$cur_time' AND `time_to`>='$cur_time' LIMIT 1;");
         $n = $db->num_rows($r);
@@ -2307,13 +2224,6 @@ class CatalogueClass
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
             $today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
-//            if ($delivery_days == 0) {
-//                $today = "<i>{today_cap}</i>";
-//            } elseif ($delivery_days == 1) {
-//                $today = "<i>{tomorrow_cap}</i>";
-//            } else {
-//                $today = "<i>$date_del ($week_day_short)</i>";
-//            }
             $info = "$today<br>$time_from_del - $time_to_del";
             $short_info = "$today<br>{with_cap} $time_from_del";
         }
@@ -2345,15 +2255,15 @@ class CatalogueClass
                 <div class=\"col-9\">{art_cap}</div>
             </div>";
             $i = 1;
-            foreach ($arr as $arr_key => $arr_val) {
+            foreach ($arr as $key => $values) {
                 $list .= "<div class=\"row info__numbers-row\">
-                <div class=\"col-3 info__numbers-row-auto\">" . $arr_key . "</div>
+                <div class=\"col-3 info__numbers-row-auto\">" . $key . "</div>
                 <div class=\"col-9 info__numbers-row-article\">";
-                foreach ($arr_val as $key => $val) {
-                    $format_val = str_replace(str_split('.,+-\/:*?"<>| '), "", $val);
-                    $list .= "<a target=\"_blank\" href=\"https://toko.ua$prefix/$this->search_link/$format_val/\">$val</a>";
+                foreach ($values as $value) {
+                    $format_value = str_replace(str_split('.,+-\/:*?"<>| '), "", $value);
+                    $list .= "<a target=\"_blank\" href=\"https://toko.ua$prefix/$this->search_link/$format_value/\">$value</a>";
                     $i++;
-                    if ($i <= count($arr_val)) {
+                    if ($i <= count($values)) {
                         $list .= ", ";
                     }
                 }
@@ -2512,13 +2422,9 @@ class CatalogueClass
         return $cash_id;
     }
 
-    /**
+    /*
      * getPriceRatingKours
-     * @param $price
-     * @param $cash_id_from
-     * @param $cash_id_to
-     * @return float
-     */
+     * */
     public function getPriceRatingKours($price, $cash_id_from, $cash_id_to)
     {
         $kours = new ExRateClass();
@@ -2625,13 +2531,13 @@ class CatalogueClass
         $uniq = [];
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
-                $dd = $val["delivery_days"];
-                $del = $val["delivery_info"];
+                $delivery_days = $val["delivery_days"];
+                $delivery_info = $val["delivery_info"];
                 $price = $val["price"];
                 $stock = $val["stock"];
                 if (!empty($uniq)) {
                     foreach ($uniq as $uval) {
-                        if ($dd == $uval["delivery_days"] && $del == $uval["delivery_info"] && $price == $uval["price"]) {
+                        if ($delivery_days == $uval["delivery_days"] && $delivery_info == $uval["delivery_info"] && $price == $uval["price"]) {
                             if ($stock > $uval["stock"]) {
                                 $ukey = intval($uval["key"]);
                             } else {
@@ -2642,7 +2548,7 @@ class CatalogueClass
                         }
                     }
                 }
-                $uniq[$key] = ["key" => $key, "delivery_days" => $dd, "delivery_info" => $del, "price" => $price, "stock" => $stock];
+                $uniq[$key] = compact("key", "delivery_days", "delivery_info", "price", "stock");
             }
             $uniq = [];
         }
@@ -2775,7 +2681,7 @@ class CatalogueClass
         $border = $other_storages["border"];
         $none = $other_storages["none"];
 
-        (!$view) ?: $list .= "<div class='row'>";
+        (!$view) ?: $list .= "<div class=\"row\">";
 
         $cc = 0;
         if ($view) {
@@ -2791,7 +2697,6 @@ class CatalogueClass
         }
 
         $i = 0;
-
         $faq_pos = (count($mas) >= $this->faq_card_count) ? $this->faq_card_count : count($mas);
 
         if (!empty($mas)) {
@@ -3080,7 +2985,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $cats = [];
-        $r = $db->query("SELECT * FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' GROUP BY `CAT_ID`;");
+        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' GROUP BY `CAT_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = $db->result($r, $i - 1, "CAT_ID");
@@ -3120,7 +3025,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
+        $r = $db->query("SELECT `HEAD_ID`, `HEAD_COLOR` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -3131,24 +3036,24 @@ class CatalogueClass
                 $head_img = $this->getHeadRowImage($head_id);
                 $head_content = $this->getCatalogColListCat($head_id);
                 $head_text = $this->getHeadRowText($head_id);
-                $list .= "<div class='tree-heads__item'>
-                    <input type='checkbox' id='toggle-head-$head_id'>
-                    <label for='toggle-head-$head_id'>
-                        <div id='tree_head-$head_id' class='tree-heads__item-header' style='background: $bg; color: $color;'>
-                            <div class='tree-heads__item-text'>
-                                <div class='tree-heads__item-title'>
+                $list .= "<div class=\"tree-heads__item\">
+                    <input type=\"checkbox\" id=\"toggle-head-$head_id\">
+                    <label for=\"toggle-head-$head_id\">
+                        <div id=\"tree_head-$head_id\" class=\"tree-heads__item-header\" style=\"background: $bg; color: $color;\">
+                            <div class=\"tree-heads__item-text\">
+                                <div class=\"tree-heads__item-title\">
                                     $head_name
                                 </div>
-                                <div class='tree-heads__item-descr'>
+                                <div class=\"tree-heads__item-descr\">
                                     $head_text
                                 </div>
                             </div>
-                            <div class='tree-heads__item-image'>
-                                <img src=\"/uploads/images/group_tree_head/$head_img\" alt='$head_name'>
+                            <div class=\"tree-heads__item-image\">
+                                <img src=\"/uploads/images/group_tree_head/$head_img\" alt=\"$head_name\">
                             </div>
                         </div>
                     </label>
-                    <div id='toggle-head-$head_id' class='tree-cat' style='display: none;'>
+                    <div id=\"toggle-head-$head_id\" class=\"tree-cat\" style=\"display: none;\">
                         $head_content
                     </div>
                 </div>";
@@ -3165,18 +3070,22 @@ class CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "";
         $head_link = $this->getHeadRowLink($head_id);
-        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id' ORDER BY `COL` ASC, `ROW` ASC;");
+        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id' ORDER BY `COL` ASC, `ROW` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = $db->result($r, $i - 1, "CAT_ID");
             $cat_name = $this->getCatRowName($cat_id);
             $cat_link = $this->getCatRowLink($cat_id);
             $group_list = $this->getCatalogColListGroup($head_id, $cat_id);
-            $list .= "<div class='tree-cat__item'>
-                <div class='tree-cat__item-title'>
-                    <a href='/catalog/$head_link/$cat_link'>$cat_name</a>
+            $icon = "";
+            if ($cat_id == 0) {
+                $icon = "<i class=\"fa fa-circle\" style=\"margin-right: 5px; color: #f44438\"></i>";
+            }
+            $list .= "<div class=\"tree-cat__item\">
+                <div class=\"tree-cat__item-title\">
+                    <a href=\"/$this->catalog_exist_link/$head_link/$cat_link\">$icon $cat_name</a>
                 </div>
-                <div class='tree-group'>
+                <div class=\"tree-group\">
                     $group_list    
                 </div>
             </div>";
@@ -3191,7 +3100,9 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT t2hcg.`GROUP_ID` FROM `T2_TREE_HCG_EXIST` t2hcg
+        $groups = [];
+        $r = $db->query("SELECT t2hcg.`GROUP_ID` 
+        FROM `T2_TREE_HCG_EXIST` t2hcg
             LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON t2g.GROUP_ID = t2hcg.GROUP_ID
         WHERE t2hcg.`HEAD_ID`='$head_id' AND t2hcg.`CAT_ID`='$cat_id' AND t2g.`STATUS`=1;");
         $n = $db->num_rows($r);
@@ -3199,29 +3110,33 @@ class CatalogueClass
             $group_id = $db->result($r, $i - 1, "GROUP_ID");
             $group_name = $this->getGroupRowName($group_id);
             $group_link = $this->getGroupRowLink($group_id);
-            $image = $this->getGroupRowImage($group_id);
-            $list .= "<div class='tree-group__item'>
-                <div class='tree-group__item-image'><img src='/images/tree-group/$image' alt='$group_name'></div>
-                <div class='tree-group__item-text'>
-                    <a href='/catalog/$group_link'>$group_name</a>
-                </div>
-            </div>";
+            $group_image = $this->getGroupRowImage($group_id);
+            $groups[] = compact("group_name", "group_link", "group_image");
+
         }
         if ($cat_id == 0) {
-            $r = $db->query("SELECT * FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `POPULAR`=1;");
+            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `POPULAR`=1;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
                 $group_name = $this->getGroupRowName($group_id);
                 $group_link = $this->getGroupRowLink($group_id);
-                $image = $this->getGroupRowImage($group_id);
-                $list .= "<div class='tree-group__item'>
-                    <div class='tree-group__item-image'><img src='/images/tree-group/$image' alt='$group_name'></div>
-                    <div class='tree-group__item-text'>
-                        <a href='/catalog/$group_link'>$group_name</a>
-                    </div>
-                </div>";
+                $group_image = $this->getGroupRowImage($group_id);
+                $groups[] = compact("group_name", "group_link", "group_image");
             }
+        }
+        foreach ($groups as $value) {
+            $group_name = $value["group_name"];
+            $group_link = $value["group_link"];
+            $group_image = $value["group_image"];
+            $list .= "<div class=\"tree-group__item\">
+                <div class=\"tree-group__item-image\">
+                    <img src=\"/images/tree-group/$group_image\" alt=\"$group_name\">
+                </div>
+                <div class=\"tree-group__item-text\">
+                    <a href=\"/$this->catalog_exist_link/$group_link\">$group_name</a>
+                </div>
+            </div>";
         }
         return $list;
     }
@@ -3233,12 +3148,12 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $head_id = $db->result($r, $i - 1, "HEAD_ID");
             $head_name = $this->getHeadRowName($head_id);
-            $list .= "<li class='' style='height: 60px;'>
+            $list .= "<li style='height: 60px;'>
                 <a style='color: white;' onclick='getHeaderContent(\"$head_id\")'>$head_name</a>
             </li>";
         }
@@ -3254,7 +3169,7 @@ class CatalogueClass
         $form = $this->getHtmlForm("catalog_menu/list");
         $list = "";
         $arr = [];
-        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id' ORDER BY `COL` ASC, `ROW` ASC;");
+        $r = $db->query("SELECT `CAT_ID`, `COL`, `ROW` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id' ORDER BY `COL` ASC, `ROW` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = $db->result($r, $i - 1, "CAT_ID");
@@ -3262,7 +3177,7 @@ class CatalogueClass
             $row = $db->result($r, $i - 1, "ROW");
             $arr[$col][$row] = $cat_id;
         }
-        list($max_col, ) = $this->getMaxPosition($head_id);
+        list($max_col) = $this->getMaxPosition($head_id);
         if ($n > 0) {
             $list = "<div class='tree-block'>";
             foreach ($arr as $col_id => $rows) {
@@ -3298,23 +3213,25 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT * FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `CAT_ID`='$cat_id';");
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `CAT_ID`='$cat_id';");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id = $db->result($r, $i - 1, "GROUP_ID");
             $group_name = $this->getGroupRowName($group_id);
-            $list .= "<div class='tree-item-list__element'>
-                <a href='/'>$group_name</a>
+            $group_link = $this->getGroupRowLink($group_id);
+            $list .= "<div class=\"tree-item-list__element\">
+                <a href=\"/$this->catalog_exist_link/$group_link\">$group_name</a>
             </div>";
         }
         if ($cat_id == 0) {
-            $r = $db->query("SELECT * FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `POPULAR`=1;");
+            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `POPULAR`=1;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
                 $group_name = $this->getGroupRowName($group_id);
-                $list .= "<div class='tree-item-list__element'>
-                    <a href='/'>$group_name</a>
+                $group_link = $this->getGroupRowLink($group_id);
+                $list .= "<div class=\"tree-item-list__element\">
+                    <a href=\"/$this->catalog_exist_link/$group_link\">$group_name</a>
                 </div>";
             }
         }

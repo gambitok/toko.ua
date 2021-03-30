@@ -807,4 +807,24 @@ class MenuClass extends CatalogueClass
         return $list;
     }
 
+    public function getSiteWarningMessage()
+    {
+        $db = DbSingleton::getTokoDb();
+        $form = "";
+        $r = $db->query("SELECT * FROM `T2_SITE_CONFIGS` WHERE `BLOCK`='site_warning_message' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $text = $db->result($r, 0, "TEXT");
+            $styles = $db->result($r, 0, "STYLES");
+            $status = $db->result($r, 0, "STATUS");
+            $display = ($status) ? "dblock" : "none";
+            $form = "		
+            <div class=\"row $display\" style='$styles'>
+                <span>$text</span>
+            </div>";
+        }
+        $form = $this->replaceLang($form);
+        return $form;
+    }
+
 }

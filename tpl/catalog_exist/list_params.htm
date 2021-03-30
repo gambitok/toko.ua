@@ -1,85 +1,36 @@
 <link rel="stylesheet" href="/css/plugins/flags.min.css">
-<style>
-    .btn-filter {
-        background: white;
-        border: 1px solid #292929;
-        color: #292929;
-    }
-    .bread {
-        padding: 0;
-    }
-    .bread a {
-        color: #606975;
-    }
-    .bread i {
-        color: #ddd;
-        margin: 0 10px;
-    }
-    .products-title {
-        margin: 30px 0;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #ddd;
-    }
-    .products-title__count {
-        font-size: 16px;
-        display: inline-block;
-        margin-right: 15px;
-        line-height: 30px;
-    }
-    .products-title__filters a {
-        background: #eee;
-        color: #606975;
-        margin-right: 15px;
-        border: 1px solid #606975;
-        font-size: 13px;
-    }
-    .products-title__filters i {
-        color: #228b94;
-    }
-    .hidden-list-more {
-        color: #228b94;
-        font-size: 16px;
-        margin-top: 10px;
-    }
-    .hidden-list-more:hover {
-        text-decoration: underline;
-    }
-    .products-cars {
-        margin: 30px 0;
-    }
-</style>
 
 <input type="hidden" id="status_auto" value="{status_auto}">
 
 <div class="container">
-    <div class="row products">
+    <div class="row cat-products">
         <div class="col-12">
             <div class="bread">
                 {parts_breadcrumbs}
             </div>
         </div>
     </div>
-    <div class="row products">
+    <div class="row cat-products">
         <div class="col-12">
-            <div class="products-cars">
+            <div class="cat-products-cars">
                 {parts_cars}
             </div>
         </div>
     </div>
-    <div class="row products">
+    <div class="row cat-products">
         <div class="col-12">
-            <div class="products-title">
-                <h1 class="products-title__h1">{parts_title}</h1>
-                <div class="products-title__filters">
-                    <span class="products-title__count">{parts_count}</span>
+            <div class="cat-products-title">
+                <h1 class="cat-products-title__h1">{parts_title}</h1>
+                <div class="cat-products-title__filters">
+                    <span class="cat-products-title__count">{parts_count}</span>
                     {parts_filters}
                 </div>
             </div>
         </div>
     </div>
-    <div class="row products">
+    <div class="row cat-products">
         <div class="col-12 col-lg-3 order-lg-0 order-1">
-            <div class="products-filters">
+            <div class="cat-products-filters">
                 {parts_params_cars}
                 {parts_params}
             </div>
@@ -87,19 +38,19 @@
         <div class="col-12 col-lg-9 order-lg-1 order-0">
             <div class="row">
                 <div class="col-12">
-                    <div class="products-list">
+                    <div class="cat-products-list">
                         {parts_list}
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="products-pagination">
+                    <div class="cat-products-pagination">
                         {parts_pagination}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row products">
+    <div class="row cat-products">
         <div class="col-12">
             {parts_seo}
         </div>

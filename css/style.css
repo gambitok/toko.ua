@@ -100,6 +100,8 @@ a:hover, a:not([href]):not([tabindex]):hover { color: #000; }
 
 .faq-tab input[type="checkbox"]:checked ~ .faq-label:after { content: "-"; }
 
+.faq-tab .request { min-height: unset !important; }
+
 .faq-label { background: #55bae6; border-top: 1px solid white; color: #fff; cursor: pointer; display: block; font-size: 16px; font-weight: bold; margin: 0; padding: 10px; }
 
 .faq-label:hover { background: #17a2b8; }
@@ -271,6 +273,32 @@ a:hover, a:not([href]):not([tabindex]):hover { color: #000; }
 .breadcrumbs { background: #fff; width: 100%; box-shadow: 0 1px 4px #ccc; min-height: 0; margin-bottom: 15px; padding: 10px 15px; word-wrap: break-word; overflow: auto; white-space: nowrap; }
 
 .breadcrumbs a { color: #000; }
+
+.btn-filter { background: white; border: 1px solid #292929; color: #292929; }
+
+.bread { padding: 0; }
+
+.bread a { color: #606975; }
+
+.bread i { color: #ddd; margin: 0 10px; }
+
+.hidden-list-more { color: #228b94; font-size: 16px; margin-top: 10px; }
+
+.hidden-list-more:hover { text-decoration: underline; }
+
+.cat-products-cars { margin: 30px 0; }
+
+.cat-products-title { margin: 30px 0; padding-bottom: 15px; border-bottom: 1px solid #ddd; }
+
+.cat-products-title__count { font-size: 16px; display: inline-block; margin-right: 15px; line-height: 30px; }
+
+.cat-products-title__filters a { background: #eee; color: #606975; margin-right: 15px; border: 1px solid #606975; font-size: 13px; }
+
+.cat-products-title__filters i { color: #228b94; }
+
+.cat-products-pagination { margin: 0 15px; }
+
+.cat-products-pagination nav { display: block; margin: 2em auto 0 auto; }
 
 /* ==== HEADER ==== */
 header { width: 100%; color: #a9a9a9; }
@@ -549,7 +577,7 @@ header { width: 100%; color: #a9a9a9; }
 /*==== NAVIGATION =====*/
 .header-nav { background: #f44336; position: relative; z-index: 999; }
 
-.header-nav-hide { position: relative; width: calc(100% + 30px); z-index: 999999; height: auto; }
+.header-nav-hide { position: absolute; width: calc(100% + 30px); z-index: 999999; height: auto; top: 50px; }
 
 .header-nav nav { height: 100%; }
 
@@ -753,7 +781,7 @@ header { width: 100%; color: #a9a9a9; }
 /*==== TREE ROW ====*/
 .tree-heads { display: block; }
 
-.tree-heads__item { display: block; border-bottom: 1px solid #ccc; }
+.tree-heads__item { border-bottom: 1px solid #ccc; display: block; }
 
 .tree-heads__item label { cursor: pointer; margin: 0; width: 100%; }
 
@@ -763,27 +791,29 @@ header { width: 100%; color: #a9a9a9; }
 
 .tree-heads__item input[type="checkbox"]:checked ~ label .tree-heads__item-header { background: #ccc !important; }
 
-.tree-heads__item-header { display: flex; align-items: center; padding: 15px; background: #fff !important; }
+.tree-heads__item-header { align-items: center; background: #fff !important; display: flex; padding: 15px; }
 
 .tree-heads__item-header:hover { filter: brightness(0.9); }
 
-.tree-heads__item-image { width: 50%; display: block; text-align: right; align-items: center; }
+.tree-heads__item-header:hover img { transform: scale(1.1); }
 
-.tree-heads__item-image img { width: auto; height: 120px; max-width: 100%; }
+.tree-heads__item-image { align-items: center; display: block; text-align: right; width: 50%; }
 
-.tree-heads__item-text { text-align: left; padding-right: 15px; width: 50%; transition: .5s ease-in-out; }
+.tree-heads__item-image img { width: auto; height: 120px; max-width: 100%; transition: all 1s ease-out; }
 
-.tree-heads__item-title { display: block; font-size: 20px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #000; }
+.tree-heads__item-text { padding-right: 15px; text-align: left; transition: .5s ease-in-out; width: 50%; }
 
-.tree-heads__item-descr { display: block; font-size: 14px; color: #707883; text-transform: uppercase; font-weight: 400; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.tree-heads__item-title { color: #000; display: block; font-size: 20px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
+
+.tree-heads__item-descr { color: #707883; display: -webkit-box; display: block; font-size: 14px; font-weight: 400; overflow: hidden; text-transform: uppercase; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 
 .tree-cat__item { margin-bottom: 10px; }
 
-.tree-cat__item-title { color: #000; font-size: 14px; font-weight: 500; margin-bottom: 10px; padding: 15px; background: #ddd; }
+.tree-cat__item-title { background: #ddd; color: #000; font-size: 14px; font-weight: 500; margin-bottom: 10px; padding: 15px; }
 
 .tree-cat__item-title a { color: #707883; text-transform: uppercase; }
 
-.tree-group { display: flex; flex-wrap: wrap; align-items: baseline; }
+.tree-group { align-items: baseline; display: flex; flex-wrap: wrap; }
 
 .tree-group__item { margin-bottom: 15px; min-height: 80px; padding: 0 10px; width: calc(100% / 7); }
 
