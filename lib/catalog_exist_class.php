@@ -208,11 +208,11 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show products params init form
      * */
-    public function getInitParamsForm($group_id)
-    {
-        $result = $this->initPartsParamsTable($group_id);
-        return "<div class='content'>$result</div>";
-    }
+//    public function getInitParamsForm($group_id)
+//    {
+//        $result = $this->initPartsParamsTable($group_id);
+//        return "<div class='content'>$result</div>";
+//    }
 
     /*
      * check exist of group params table
@@ -328,6 +328,110 @@ class CatalogExistClass extends CatalogueClass
         $dbc->query("ALTER TABLE `$table_params` ADD INDEX `art_id` (`art_id`);");
 
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
+    }
+
+    /*======================================================================= MAIN =*/
+
+    /*
+     * init main table
+     * */
+    public function initMainTable()
+    {
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE";
+        $count_add = 0; $cound_group_add = 0;
+
+        $dbc->query("CREATE TABLE IF NOT EXISTS `$table` 
+        (
+            `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `art_id` INT(11) NOT NULL,
+            `group_id` SMALLINT(4),
+            `brand_id` INT(11),
+            `status` TINYINT(2),
+            PRIMARY KEY (`id`)
+        ) ENGINE = MYISAM;");
+
+        $dbc->query("TRUNCATE TABLE `$table`;");
+
+        $r = $db->query("SELECT t2si.art_id, t2a.BRAND_ID
+        FROM `T2_SUPPL_IMPORT` t2si
+            LEFT JOIN `T2_ARTICLES` t2a ON t2a.ART_ID = t2si.art_id
+            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
+        WHERE t2si.art_id > 0 AND t2si.stock_suppl > 0 AND cs.visible = 1
+        GROUP BY t2si.art_id;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "art_id");
+            $brand_id = $db->result($r, $i - 1, "BRAND_ID");
+            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `status`) VALUES ('$art_id', '0', '$brand_id', 1);");
+            $count_add++;
+        }
+
+        $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID
+        FROM `T2_ARTICLES` t2a
+            LEFT JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID = t2a.ART_ID
+        WHERE t2a.ART_ID > 0 AND t2asc.AMOUNT > 0
+        GROUP BY t2a.art_id;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
+            $brand_id = $db->result($r, $i - 1, "BRAND_ID");
+            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `status`) VALUES ('$art_id', '0', '$brand_id', 1);");
+            $count_add++;
+        }
+
+        // fixed brand_id = 0 in T2_SUPPL_IMPORT
+        $db->query("UPDATE `T2_SUPPL_IMPORT` t2si
+            INNER JOIN toko_dba_cache.`EX_TABLE_TREE` ex ON ex.art_id = t2si.art_id
+        SET t2si.art_id = 0
+        WHERE ex.brand_id = 0;");
+
+        // fixed brand_id = 0 in T2_SUPPL_ARTICLES_IMPORT
+        $db->query("DELETE t2sai
+        FROM `T2_SUPPL_ARTICLES_IMPORT` t2sai
+            INNER JOIN toko_dba_cache.`EX_TABLE_TREE` ex ON ex.art_id = t2sai.art_id
+        WHERE ex.brand_id = 0;");
+
+        // deleted nulls
+        $dbc->query("DELETE FROM `$table` WHERE `brand_id`=0;");
+
+//        $dbc->query("UPDATE `$table` t
+//            INNER JOIN toko_dba.`T2_TREE_ARTS_EXIST` tt ON t.art_id = tt.ART_ID
+//        SET t.group_id = tt.GROUP_ID;");
+
+        $r = $dbc->query("SELECT `art_id` FROM `$table` WHERE 1;");
+        $n = $dbc->num_rows($r);
+        $arts = [];
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $dbc->result($r, $i - 1, "art_id");
+            $arts[] = $art_id;
+        }
+
+        foreach ($arts as $art_id) {
+            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `ART_ID`='$art_id';");
+            $n = $db->num_rows($r);
+            if ($n == 1) {
+                $group_id = $db->result($r, 0, "GROUP_ID");
+                $dbc->query("UPDATE `$table` SET `group_id` = '$group_id' LIMIT 1;");
+            }
+            if ($n > 1) {
+                $rr = $dbc->query("SELECT `brand_id` FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;");
+                $brand_id = $dbc->result($rr, 0, "brand_id");
+                for ($i = 1; $i <= $n; $i++) {
+                    $group_id = $db->result($r, $i - 1, "GROUP_ID");
+                    $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `group_id`, `status`) VALUES ('$art_id', '$brand_id', '$group_id', 1);");
+                    $cound_group_add++;
+                }
+            }
+        }
+
+        // deleted group_id = 0
+        // $dbc->query("DELETE FROM `$table` WHERE `group_id`=0;");
+
+        // $dbc->query("ALTER TABLE `$table` ADD INDEX `art_id` (`art_id`);");
+
+        return "ADDED: $count_add, ADDED MULTI: $cound_group_add";
     }
 
     /*======================================================================= PRODUCTS =*/
@@ -450,11 +554,11 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show products mfa init form
      * */
-    public function getInitMfaForm($group_id)
-    {
-        $result = $this->initPartsMfaTable($group_id);
-        return "<div class='content'>$result</div>";
-    }
+//    public function getInitMfaForm($group_id)
+//    {
+//        $result = $this->initPartsMfaTable($group_id);
+//        return "<div class='content'>$result</div>";
+//    }
 
     /*
      * check exist of group mfa table
@@ -1487,6 +1591,9 @@ class CatalogExistClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * get h1
+     * */
     public function getCatalogTitleH1($group_id, $mfa_link = "", $mod_link = "")
     {
         $automan = new AutoClass();
