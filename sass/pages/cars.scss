@@ -26,6 +26,7 @@ $cars-item-active: #2d8bfa;
         display: flex;
         flex-wrap: nowrap;
         justify-content: start;
+        border-bottom: 3px solid #2d8bfa;
         &__item {
             background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat $white;
             color: $black;
@@ -82,7 +83,7 @@ $cars-item-active: #2d8bfa;
     }
     &-tab {
         &__block {
-            border-top: 3px solid $cars-item-active;
+            //border-top: 3px solid $cars-item-active;
             display: none;
             flex-wrap: wrap;
             &-active {

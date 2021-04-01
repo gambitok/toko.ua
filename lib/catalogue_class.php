@@ -10,7 +10,7 @@ class CatalogueClass
     public $catalog_link = "catalog";
     public $search_link = "search";
     public $faq_card_count = 2;
-    public $catalog_exist_link = "catalog_exist";
+    public $catalog_exist_link = "catalog_new";
 
     /*
      * get catalog search form
@@ -2963,8 +2963,14 @@ class CatalogueClass
     public function getGroupRowName($group_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
-        return $db->result($r, 0, "TEX_RU");
+        $r = $db->query("SELECT `TEX_RU`, `H1_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        $h1 = $db->result($r, 0, "H1_RU");
+        if ($h1 == "") {
+            $text = $db->result($r, 0, "TEX_RU");
+        } else {
+            $text = $h1;
+        }
+        return $text;
     }
 
     public function getGroupRowLink($group_id)
@@ -3129,14 +3135,14 @@ class CatalogueClass
             $group_name = $value["group_name"];
             $group_link = $value["group_link"];
             $group_image = $value["group_image"];
-            $list .= "<div class=\"tree-group__item\">
+            $list .= "<a href=\"/$this->catalog_exist_link/$group_link\" class=\"tree-group__item\">
                 <div class=\"tree-group__item-image\">
                     <img src=\"/images/tree-group/$group_image\" alt=\"$group_name\">
                 </div>
                 <div class=\"tree-group__item-text\">
-                    <a href=\"/$this->catalog_exist_link/$group_link\">$group_name</a>
+                    $group_name
                 </div>
-            </div>";
+            </a>";
         }
         return $list;
     }
