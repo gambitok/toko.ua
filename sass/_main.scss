@@ -693,17 +693,6 @@ a, a:not([href]):not([tabindex]) {
     color: #292929;
 }
 
-.bread {
-    padding: 0;
-    a {
-        color: #606975;
-    }
-    i {
-        color: #ddd;
-        margin: 0 10px;
-    }
-}
-
 .hidden-list-more {
     color: #228b94;
     font-size: 16px;
@@ -714,31 +703,42 @@ a, a:not([href]):not([tabindex]) {
 }
 
 .cat-products {
+    &-bread {
+        font-size: 14px;
+        padding: 0;
+        a {
+            color: #606975;
+        }
+        i {
+            color: #ddd;
+            margin: 0 10px;
+        }
+    }
     &-cars {
-        margin: 30px 0;
+        box-shadow: 0 1px 4px #ccc;
+        margin-bottom: 60px;
+    }
+    &-count {
+        margin-bottom: 15px;
+        span {
+            font-size: 16px;
+            display: inline-block;
+            margin: 0 15px;
+            line-height: 30px;
+        }
+        a {
+            background: #eee;
+            color: #606975;
+            margin-right: 15px;
+            border: 1px solid #606975;
+            font-size: 13px;
+        }
+        i {
+            color: #228b94;
+        }
     }
     &-title {
         margin: 30px 0;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #ddd;
-        &__count {
-            font-size: 16px;
-            display: inline-block;
-            margin-right: 15px;
-            line-height: 30px;
-        }
-        &__filters {
-            a {
-                background: #eee;
-                color: #606975;
-                margin-right: 15px;
-                border: 1px solid #606975;
-                font-size: 13px;
-            }
-            i {
-                color: #228b94;
-            }
-        }
     }
     &-pagination {
         margin: 0 15px;
