@@ -1803,4 +1803,43 @@ class CatalogExistClass extends CatalogueClass
         return $list;
     }
 
+    public function getCatalogH1($group_id, $filters = [], $mfa_link = "", $model_link = "")
+    {
+        $auto = new AutoClass();
+        $text = "";
+        $group_name = $this->getGroupRowName($group_id);
+        if ($mfa_link != "") {
+            $mfa_id = $auto->getMfaLink($mfa_link);
+            $mfa_name = $auto->getMfaBrand($mfa_id);
+            if ($model_link != "") {
+                $model = $auto->getModLink($model_link);
+            }
+        }
+        if (!empty($filters)) {
+            $params = $this->getCheckedFilters($group_id, $filters);
+            if (array_key_exists(0, $params)) {
+                // only brand
+                if (count($params) == 1) {
+
+                }
+                // brand + param
+                if (count($params) == 2) {
+
+                }
+            }
+            // only param
+            elseif (count($params) == 1) {
+
+            }
+        }
+
+        return $text;
+    }
+
+    public function getCatalogTitle($group_id, $filters, $mfa_link, $model_link)
+    {
+        $text = "";
+        return $text;
+    }
+
 }
