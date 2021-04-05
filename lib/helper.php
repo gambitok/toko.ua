@@ -360,4 +360,52 @@ trait Helper
         return array("status" => $status, "group_link" => $group_link);
     }
 
+    public function getCatalogRedirectLink($link, $mfa_link = "", $model_link = "")
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_CATALOG_REDIRECT` WHERE `LINK_FROM` LIKE '%$link%' LIMIT 1;");
+        $n = $db->num_rows($r);
+        $status = 0;
+        $redirect_link = "";
+        if ($n > 0) {
+            $status = 1;
+            $redirect_link = $db->result($r, 0, "LINK_TO");
+            if (substr($redirect_link, -1) != "/") {
+                $redirect_link .= "/";
+            }
+        }
+
+
+        if ($mfa_link != "") {
+            if (!$this->checkCatalogRedirectFilters($redirect_link)) {
+                $redirect_link .= "auto/";
+            }
+            $redirect_link .= "$mfa_link/";
+            if ($model_link != "") {
+                $redirect_link .= "$model_link";
+            }
+        }
+
+        return array("status" => $status, "redirect_link" => $redirect_link);
+    }
+
+    /*
+     * if status = 1 - link have filters
+     * */
+    public function checkCatalogRedirectFilters($link, $path = "/catalog_new/")
+    {
+        $str_len = strlen($path);
+        $str_pos = strpos($link, $path);
+        $sub_str = substr($link, $str_pos + $str_len);
+
+        $sub_str_arr = explode("/", $sub_str);
+        $sub_str_arr = array_filter($sub_str_arr);
+
+        $status = 0;
+        if (count($sub_str_arr) > 1) {
+            $status = 1;
+        }
+        return $status;
+    }
+
 }

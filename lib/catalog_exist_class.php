@@ -1115,11 +1115,12 @@ class CatalogExistClass extends CatalogueClass
         $filters_form = $this->getPartsFiltersForm($group_id, $filters, $where_mfa, $where_link_arts, $query, $mfa_link, $model_link);
 
         $pagination_form = $this->getPartsPaginationForm($count, $page);
-        list($filters_title, $filters_btn) = $this->getPartsFiltersItems($group_id, $filters, $mfa_link, $model_link);
+        list($filters_h1, $filters_title, $filters_btn) = $this->getPartsFiltersItems($group_id, $filters, $mfa_link, $model_link);
 
         $form = $this->getHtmlForm("catalog_exist/list_params");
         $form = str_replace("{parts_name}", $group_text, $form);
         $form = str_replace("{parts_list}", $list, $form);
+        $form = str_replace("{parts_h1}", "$filters_h1", $form);
         $form = str_replace("{parts_title}", "$filters_title", $form);
         $form = str_replace("{parts_count}", "{unselect_cap} $count {chosen_goods}", $form);
         $form = str_replace("{parts_filters}", "$filters_btn", $form);
@@ -1142,7 +1143,6 @@ class CatalogExistClass extends CatalogueClass
     public function getPartsFiltersItems($group_id, $filters, $mfa_link = "", $model_link = "")
     {
         $filters_btn = "";
-        $filters_title = $this->getGroupRowName($group_id);
         if (!empty($filters)) {
             $count_vals = 0; $value_id = 0; $param_id = 0;
             $params_check = $this->getCheckedFilters($group_id, $filters);
@@ -1157,10 +1157,10 @@ class CatalogExistClass extends CatalogueClass
             if ($count_vals == 1) {
                 $value_h1 = $this->getGroupValueH1($value_id, $param_id);
                 if ($value_h1 != "") {
-                    $filters_title = $value_h1;
+                    //$filters_title = $value_h1;
                 } else {
                     $value_name = $this->getGroupValueName($value_id, $param_id);
-                    $filters_title .= " $value_name";
+                    //$filters_title .= " $value_name";
                 }
             }
             if ($count_vals > 1) {
@@ -1175,7 +1175,9 @@ class CatalogExistClass extends CatalogueClass
                 $filters_btn = "<a class=\"btn btn-sm btn-filter\" href=\"/$this->catalog_exist_link/$group_link/$auto_link\">{filter_cap_empty} <i class='fa fa-times'></i></a>" . $filters_btn;
             }
         }
-        return array($filters_title, $filters_btn);
+        $filters_h1 = $this->getCatalogH1($group_id, $filters, $mfa_link, $model_link);
+        $filters_title = $this->getCatalogTitle($group_id, $filters, $mfa_link, $model_link);
+        return array($filters_h1, $filters_title, $filters_btn);
     }
 
     /*
@@ -1806,39 +1808,149 @@ class CatalogExistClass extends CatalogueClass
     public function getCatalogH1($group_id, $filters = [], $mfa_link = "", $model_link = "")
     {
         $auto = new AutoClass();
-        $text = "";
-        $group_name = $this->getGroupRowName($group_id);
+        $group_text = ""; $car_text = "";
+
+        if ($group_id > 0) {
+            $group_text = $this->getGroupRowName($group_id);
+        }
+
         if ($mfa_link != "") {
             $mfa_id = $auto->getMfaLink($mfa_link);
             $mfa_name = $auto->getMfaBrand($mfa_id);
+            $car_text = "{on_cap} $mfa_name";
             if ($model_link != "") {
                 $model = $auto->getModLink($model_link);
+                $car_text .= " $model";
             }
         }
+
         if (!empty($filters)) {
             $params = $this->getCheckedFilters($group_id, $filters);
+
             if (array_key_exists(0, $params)) {
-                // only brand
+                // only 1 brand
                 if (count($params) == 1) {
-
+                    if (count($params[0]) == 1) {
+                        foreach ($params[0] as $value_id) {
+                            $brand_name = $this->getGroupValueName($value_id);
+                            $group_text .= " $brand_name";
+                        }
+                    }
                 }
-                // brand + param
+                // 1 brand + 1 param
                 if (count($params) == 2) {
-
+                    foreach ($params as $param_id => $values) {
+                        foreach ($values as $value_id) {
+                            $value_name = $this->getGroupValueName($value_id, $param_id);
+                            $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
+                            if ($value_h1_name != "") {
+                                $group_text = $value_h1_name;
+                            } else {
+                                $group_text .= " $value_name";
+                            }
+                        }
+                    }
                 }
             }
-            // only param
+            // only 1 param
             elseif (count($params) == 1) {
-
+                foreach ($params as $param_id => $values) {
+                    foreach ($values as $value_id) {
+                        $value_name = $this->getGroupValueName($value_id, $param_id);
+                        $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
+                        if ($value_h1_name != "") {
+                            $group_text = $value_h1_name;
+                        } else {
+                            $group_text .= " $value_name";
+                        }
+                    }
+                }
             }
         }
 
-        return $text;
+        return "$group_text $car_text";
     }
 
     public function getCatalogTitle($group_id, $filters, $mfa_link, $model_link)
     {
-        $text = "";
+        $auto = new AutoClass();
+        $h1 = $this->getCatalogH1($group_id, $filters, $mfa_link, $model_link);
+        $text = "$h1 | ";
+
+        $brand_name = "";
+
+        // 1
+        if ($mfa_link == "" && $model_link == "" && empty($filters)) {
+            $text .= "{seo_new_tilte_1}";
+        }
+
+        // 2 - KIA
+        if ($mfa_link != "" && $model_link == "" && empty($filters)) {
+            $text .= "{seo_new_tilte_2}";
+        }
+
+        // 3 - KIA SPORTAGE
+        if ($mfa_link != "" && $model_link != "" && empty($filters)) {
+            $text .= "{seo_new_tilte_3}";
+        }
+
+        // 4 - BRAND
+        if (!empty($filters)) {
+            $params = $this->getCheckedFilters($group_id, $filters);
+            if (array_key_exists(0, $params)) {
+                // 1 brand
+                if (count($params) == 1) {
+                    if ($mfa_link == "") {
+                        // 1 brand + auto
+                        $text .= "{seo_new_tilte_4}";
+                        $text = str_replace("{brnm}", $brand_name, $text);
+                    } else {
+                        // 1 brand + kia sportage
+                        $text .= "{seo_new_tilte_5}";
+                        $mfa_id = $auto->getMfaLink($mfa_link);
+                        $mfa_name = $auto->getMfaBrand($mfa_id);
+                        $text = str_replace("{mfnm}", $mfa_name, $text);
+                        $text = str_replace("{brnm}", $brand_name, $text);
+                    }
+                }
+                // 1 brand + 1 param
+                if (count($params) == 2) {
+                    if ($mfa_link == "") {
+                        // 1 brand + 1 param + auto
+                        $text .= "{seo_new_tilte_6}";
+                        $text = str_replace("{brnm}", $brand_name, $text);
+                    } else {
+                        // 1 brand + 1 param + kia sportage
+                        $text .= "{seo_new_tilte_7}";
+                        $mfa_id = $auto->getMfaLink($mfa_link);
+                        $mfa_name = $auto->getMfaBrand($mfa_id);
+                        $text = str_replace("{mfnm}", $mfa_name, $text);
+                        $text = str_replace("{brnm}", $brand_name, $text);
+                    }
+                }
+            }
+            // 1 param
+            elseif (count($params) == 1) {
+                if ($mfa_link == "") {
+                    // 1 param + auto
+                    $text .= "{seo_new_tilte_6}";
+                    $text = str_replace("{brnm}", $brand_name, $text);
+                } else {
+                    // 1 param + kia sportage
+                    $text .= "{seo_new_tilte_7}";
+                    $mfa_id = $auto->getMfaLink($mfa_link);
+                    $mfa_name = $auto->getMfaBrand($mfa_id);
+                    $text = str_replace("{mfnm}", $mfa_name, $text);
+                    $text = str_replace("{brnm}", $brand_name, $text);
+                }
+            }
+        }
+
+        $group_name = $this->getGroupRowName($group_id);
+        $text = str_replace("{grnm}", $group_name, $text);
+
+        $text = $this->replaceLang($text);
+
         return $text;
     }
 

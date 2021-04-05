@@ -1,12 +1,22 @@
 <?php
 
-$page = $catalogue->getUrlNumber($_GET["page"]);
-($page != NULL) ?: $page = 1;
 
 $linka = findLinks();
+
+$path_from = $linka[0] . "/" . $linka[1] . "/";
+if ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
+    $mfa_link = $linka[2];
+    $model_link = $linka[3];
+    $path_to = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
+    header("Location: $path_to", TRUE, 301);
+}
+
 $some = $catalogue->getUrlString($linka[0]);
 $some_link = $catalogue->getUrlString($linka[1]);
 $some_link2 = $catalogue->getUrlString($linka[2]);
+
+$page = $catalogue->getUrlNumber($_GET["page"]);
+($page != NULL) ?: $page = 1;
 
 $result = explode($some . "/", $_SERVER["REQUEST_URI"], 2);
 $link = ltrim($result[1]);
