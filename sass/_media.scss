@@ -141,7 +141,8 @@
     }
 
     .main {
-        padding-bottom: 5%;
+        //padding-bottom: 5%;
+        padding-top: 0;
     }
 
     .main_menu {
@@ -431,6 +432,30 @@
                 }
             }
         }
+    }
+    .cat-products-title h1 {
+        font-size: 24px;
+    }
+    .cat-products-cars {
+        margin-bottom: 15px;
+    }
+    .cat-products-count a {
+        margin-left: 0;
+        margin-right: 15px;
+    }
+    .cat-products-count span {
+        margin-left: 0;
+        margin-right: 15px;
+    }
+    .request {
+        min-height: unset;
+    }
+    .request-row {
+        display: none;
+    }
+    .request-row-mob {
+        display: block;
+        margin: 0;
     }
 
 }

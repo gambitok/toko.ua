@@ -430,17 +430,17 @@ function tecModelsFilter(order) {
 //         }}, true);
 // }
 
-function loadApplicModels2(art_id_tcd, manufacture, a) {
-    $(".load_app").each(function () {
-        $(this).removeClass("span-red");
-    });
-    $(a).addClass("span-red");
-    JsHttpRequest.query(folder,{ 'w': 'loadApplicModels2', 'art_id_tcd':art_id_tcd, 'manufacture':manufacture},
-        function (result, errors){ if (errors) {} if (result){
-            $("#info2_more").html(result.content);
-            $("#info3_more").html(result.content);
-        }}, true);
-}
+// function loadApplicModels2(art_id_tcd, manufacture, a) {
+//     $(".load_app").each(function () {
+//         $(this).removeClass("span-red");
+//     });
+//     $(a).addClass("span-red");
+//     JsHttpRequest.query(folder,{ 'w': 'loadApplicModels2', 'art_id_tcd':art_id_tcd, 'manufacture':manufacture},
+//         function (result, errors){ if (errors) {} if (result){
+//             $("#info2_more").html(result.content);
+//             $("#info3_more").html(result.content);
+//         }}, true);
+// }
 
 function loadApplicModelsInfo2(art_id, typ_id) {
     let er = 0;
@@ -659,19 +659,18 @@ function changeActionCount(i, action_price, action_amount) {
 /*==== NEW STR CAR DETAILS ====*/
 function showCarDetailsStr(head_id) {
     let str_id_str = $("#tree_str_ids").val();
-    let class_name = $("#manufacture_head" + head_id).attr("class");
+    let manuf_head = $("#manufacture_head" + head_id);
+    let class_name = manuf_head.attr("class");
     if (class_name === "tree-list dnone") {
         JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str},
             function (result, errors){ if (errors) {} if (result){
                 $("#tree_head-" + head_id).toggleClass("check-head");
-                let manuf_head = $("#manufacture_head" + head_id);
                 manuf_head.removeClass("dnone");
                 manuf_head.addClass("dblock");
                 manuf_head.html(result.content);
             }}, true);
     } else {
         $("#tree_head-" + head_id).toggleClass("check-head");
-        let manuf_head = $("#manufacture_head" + head_id);
         manuf_head.removeClass("dblock");
         manuf_head.addClass("dnone");
         manuf_head.html("");
@@ -681,19 +680,18 @@ function showCarDetailsStr(head_id) {
 function showCarDetailsStrMin(head_id) {
     let typ_id = $("#typ_id").val();
     let str_id_str = $("#tree_str_ids").val();
-    let class_name = $("#manufacture_head" + head_id).attr("class");
+    let manuf_head = $("#manufacture_head" + head_id);
+    let class_name = manuf_head.attr("class");
     if (class_name === "tree-list_min dnone") {
         JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str, 'typ_id':typ_id},
             function (result, errors){ if (errors) {} if (result){
                 $("#tree_head-" + head_id).toggleClass("check-head");
-                let manuf_head = $("#manufacture_head" + head_id);
                 manuf_head.removeClass("dnone");
                 manuf_head.addClass("dblock");
                 manuf_head.html(result.content);
             }}, true);
     } else {
         $("#tree_head-" + head_id).toggleClass("check-head");
-        let manuf_head = $("#manufacture_head" + head_id);
         manuf_head.removeClass("dblock");
         manuf_head.addClass("dnone");
         manuf_head.html("");
@@ -1022,9 +1020,12 @@ function setParamsAuto(group_id, type) {
 }
 
 function setCatalogFilters() {
-    let filters = $("#catalog-filters").html();
-    $("#menu-catalog-content").html(filters);
-    $("#catalog-filters").html("");
+    let cat_filters = $("#catalog-filters");
+    let filters = cat_filters.html();
+    if (filters != "") {
+        $("#menu-catalog-content").html(filters);
+        cat_filters.html("");
+    }
 }
 
 function setClientRequest() {

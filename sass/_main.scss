@@ -276,6 +276,13 @@ a, a:not([href]):not([tabindex]) {
     &-row {
         display: flex;
         margin-bottom: 15px;
+        &-mob {
+            display: none;
+            a {
+                display: flex;
+                width: 100%;
+            }
+        }
         textarea {
             height: 100px;
         }
@@ -705,9 +712,15 @@ a, a:not([href]):not([tabindex]) {
 .cat-products {
     &-bread {
         font-size: 14px;
+        overflow: auto;
         padding: 0;
+        white-space: nowrap;
+        word-wrap: break-word;
         a {
-            color: #606975;
+            color: #ccc;
+            &:hover {
+                color: #606975;
+            }
         }
         i {
             color: #ddd;
@@ -723,22 +736,29 @@ a, a:not([href]):not([tabindex]) {
         span {
             font-size: 16px;
             display: inline-block;
-            margin: 0 15px;
+            margin: 15px 0 0 15px;
             line-height: 30px;
+            vertical-align: middle;
         }
         a {
             background: #eee;
             color: #606975;
-            margin-right: 15px;
+            margin-left: 15px;
             border: 1px solid #606975;
             font-size: 13px;
+            margin-top: 15px;
         }
         i {
             color: #228b94;
         }
     }
     &-title {
-        margin: 30px 0;
+        margin: 15px 0;
+        h1 {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0;
+        }
     }
     &-pagination {
         margin: 0 15px;
@@ -1107,12 +1127,17 @@ header {
     &-search {
         border-bottom: 1px solid #ccc;
         padding: 10px 15px;
+        background: #f1f1f1;
         button {
+            background: #f1f1f1;
+            border: 1px solid #0c5460;
+            color: #ccc;
             border-radius: .25em;
             text-align: left;
             i {
                 float: right;
                 line-height: 24px;
+                color: #0c5460;
             }
         }
     }
@@ -1120,12 +1145,10 @@ header {
         background: #f1f1f1;
         border-bottom: 1px solid #ccc;
         padding: 10px 15px;
-        .dropdown {
+        &__socials {
             display: block;
-            margin: 0 auto;
-        }
-        .dropdown-toggle {
-            margin-left: 15px;
+            margin: 0;
+            width: 100%;
         }
         .dropdown-menu {
             width: 100%;

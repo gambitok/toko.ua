@@ -15,7 +15,6 @@
         <div class="col-12">
             <div class="cat-products-title">
                 <h1>{parts_h1}</h1>
-                <h2>{parts_title}</h2>
             </div>
         </div>
     </div>
@@ -28,7 +27,7 @@
     </div>
     <div class="row cat-products">
         <div class="col-12 col-lg-3 order-lg-0 order-1">
-            <div class="cat-products-filters">
+            <div class="cat-products-filters" id="catalog-filters">
                 {parts_params_cars}
                 {parts_params}
             </div>
@@ -59,8 +58,45 @@
     </div>
 </div>
 
+<div id="fixed-nav-catalog" class="fixed-nav">
+    <div class="fixed-nav-item" onclick="showGarageForm();">
+        <div class="tool-status-contain">
+            <span id="tool-garage" class="tool-status {garage_style}">!</span>
+        </div>
+        <img class="fixed-nav-item__image" src="/images/icons/help/car.png" alt="img">
+        <span class="fixed-nav-item__text">{garage_cap_upper}</span>
+    </div>
+
+    <div class="fixed-nav-item" onclick="showPhoneForm();">
+        <img class="fixed-nav-item__image" src="/images/icons/help/help.png" alt="img">
+        <span class="fixed-nav-item__text">{call_cap}</span>
+    </div>
+
+    <div class="fixed-nav-item" onclick="showArtSearch();">
+        <img class="fixed-nav-item__image" src="/images/icons/help/search.png" alt="img">
+        <span class="fixed-nav-item__text">{search_cap}</span>
+    </div>
+
+    <div class="fixed-nav-item bar-catalog" onclick="setCatalogFilters();">
+        <img class="fixed-nav-item__image" src="/images/icons/help/filter.png" alt="img">
+        <span class="fixed-nav-item__text">{filter_cap}</span>
+    </div>
+
+    <div class="fixed-nav-item" onclick="showBasketMinForm();">
+        <div class="tool-status-contain">
+            <span id="tool-basket" class="tool-status {basket_style}">{basket_count}</span>
+        </div>
+        <img class="fixed-nav-item__image" src="/images/icons/help/basket.png" alt="img">
+        <span class="fixed-nav-item__text">{basket_cap}</span>
+    </div>
+</div>
+
 <script>
     $(document).ready(function() {
+
+        showSearchParameters();
+        $(".anchor-contacts").addClass("mob-non-display");
+
         if ($("#status_auto").val() == "1") {
             toggleCarsNavigation($("div[data-type='manuf']"));
         }
@@ -71,5 +107,6 @@
                 toggleCarsNavigation($("div[data-type='model']"));
             }
         }
+
     });
 </script>

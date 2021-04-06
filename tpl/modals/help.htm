@@ -6,7 +6,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-10">
-                            <span style="color:#000;">{help_modal_title}:</span>
+                            <span style="color:#000; font-size: 13px; font-weight: bold;">{help_modal_title}</span>
                         </div>
                         <div class="col-2">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -18,65 +18,65 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-12">
-                        <div class="modal-help">
+                            <div class="modal-help">
 
-                            <div class="modal-help-row">
-                                <span class="modal-help-row__circle">1</span>
-                                <span class="modal-help-row__text">{help_modal_call}</span>
+                                <div class="modal-help-row">
+                                    <span class="modal-help-row__circle">1</span>
+                                    <span class="modal-help-row__text">{help_modal_call_now}</span>
 
-                                <div class="modal-help-row-call">
-                                    <input id="help-phone" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__">
-                                    <button onclick="setClientRequest();">{help_modal_call_me}</button>
+                                    <ul class="modal-help-row-phones">
+                                        <li>
+                                            <img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
+                                            <a href="tel:0970803060">(097) <b>080 30 60</b></a>
+                                        </li>
+                                        <li>
+                                            <img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
+                                            <a href="tel:0500803060">(050) <b>080 30 60</b></a>
+                                        </li>
+                                        <li>
+                                            <img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
+                                            <a href="tel:0930803060">(093) <b>080 30 60</b></a>
+                                        </li>
+                                    </ul>
                                 </div>
-                            </div>
 
-                            <div class="modal-help-row">
-                                <span class="modal-help-row__circle">2</span>
-                                <span class="modal-help-row__text">{help_modal_mess}</span>
+                                <div class="modal-help-row">
+                                    <span class="modal-help-row__circle">2</span>
+                                    <span class="modal-help-row__text">{help_modal_call}</span>
 
-                                <div class="modal-help-row-socials">
-                                    <a href="https://t.me/tokoua_bot" target="_blank" class="modal-help-row-socials__item">
-                                        <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__telegram">
-                                            <img src="/images/icons/socials/telegram.svg" alt="Telegram">
-                                        </div>
-                                        <span>Telegram</span>
-                                    </a>
-                                    <a href="viber://pa?chatURI=tokogroup" target="_blank" class="modal-help-row-socials__item">
-                                        <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__viber">
-                                            <img src="/images/icons/socials/viber.svg" alt="Viber">
-                                        </div>
-                                        <span>Viber</span>
-                                    </a>
-                                    <a href="http://m.me/tokogroup" target="_blank" class="modal-help-row-socials__item">
-                                        <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__facebook">
-                                            <img src="/images/icons/socials/facebook.svg" alt="Facebook">
-                                        </div>
-                                        <span>Messenger</span>
-                                    </a>
+                                    <div class="modal-help-row-call">
+                                        <input id="help-phone" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__">
+                                        <button onclick="setClientRequest();">{help_modal_call_me}</button>
+                                    </div>
                                 </div>
+
+                                <div class="modal-help-row">
+                                    <span class="modal-help-row__circle">3</span>
+                                    <span class="modal-help-row__text">{help_modal_mess}</span>
+
+                                    <div class="modal-help-row-socials">
+                                        <a href="https://t.me/tokoua_bot" target="_blank" class="modal-help-row-socials__item">
+                                            <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__telegram">
+                                                <img src="/images/icons/socials/telegram.svg" alt="Telegram">
+                                            </div>
+                                            <span>Telegram</span>
+                                        </a>
+                                        <a href="viber://pa?chatURI=tokogroup" target="_blank" class="modal-help-row-socials__item">
+                                            <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__viber">
+                                                <img src="/images/icons/socials/viber.svg" alt="Viber">
+                                            </div>
+                                            <span>Viber</span>
+                                        </a>
+                                        <a href="http://m.me/tokogroup" target="_blank" class="modal-help-row-socials__item">
+                                            <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__facebook">
+                                                <img src="/images/icons/socials/facebook.svg" alt="Facebook">
+                                            </div>
+                                            <span>Messenger</span>
+                                        </a>
+                                    </div>
+                                </div>
+
                             </div>
-
-                            <div class="modal-help-row">
-                                <span class="modal-help-row__circle">3</span>
-                                <span class="modal-help-row__text">{help_modal_call_now}</span>
-
-                                <ul class="modal-help-row-phones">
-                                    <li>
-                                        <img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
-                                        <a href="tel:0970803060">(097) <b>080 30 60</b></a>
-                                    </li>
-                                    <li>
-                                        <img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
-                                        <a href="tel:0500803060">(050) <b>080 30 60</b></a>
-                                    </li>
-                                    <li>
-                                        <img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
-                                        <a href="tel:0930803060">(093) <b>080 30 60</b></a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                        </div>
                         </div>
                     </div>
                 </div>
