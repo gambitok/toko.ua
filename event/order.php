@@ -1,8 +1,8 @@
 <?php
 
-$order_id = $catalogue->getUrlNumber($_GET["order_id"]);
-$user_id = $catalogue->getUrlNumber($_GET["user_id"]);
-$user_status = $catalogue->getUrlNumber($_GET["user_status"]);
+$order_id = $catalogue->getUrlNumber($_GET['order_id']);
+$user_id = $catalogue->getUrlNumber($_GET['user_id']);
+$user_status = $catalogue->getUrlNumber($_GET['user_status']);
 
 if ($order_id == "") {
     $content = $shop->getHtmlForm("orders/template");

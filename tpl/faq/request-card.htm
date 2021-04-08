@@ -14,10 +14,19 @@
 </script>
 
 <div id="request-card" class="request">
+    <div class="request-row request-row-mob request-row-mob-main">
+        <a onclick="$('#VinFormPhone').modal('show');">
+            <div class="request-row__image"><img src="/images/icons/faq/vin-icon.png" alt="Icon"></div>
+            <div class="request-row__title">
+                <span style="color: #0CA9EE;">{faq_request_title}</span><br>
+                <span style="color: #36cd76;">{faq_request_title2}</span>
+            </div>
+        </a>
+    </div>
     <div class="request-row">
         <div class="request-row__image"><img src="/images/icons/faq/vin-icon.png" alt="Icon"></div>
         <div class="request-row__title">
-            <span>{faq_request_title}</span><br>
+            <span style="color: #0CA9EE;">{faq_request_title}</span><br>
             <span style="color: #36cd76;">{faq_request_title2}</span>
         </div>
     </div>
@@ -34,7 +43,7 @@
         <input type="submit" value="{send_seller}" onclick="setClientRequestCard();">
     </div>
     <div class="request-row">
-        <div class="request-row__text" style="text-align: left">
+        <div class="request-row__text" style="text-align: left;">
             <span>{faq_request_about}</span>
             <a onclick="$('#VinForm').modal('show');">{faq_request_about2} <span class="fa fa-info-circle"></span></a>
         </div>

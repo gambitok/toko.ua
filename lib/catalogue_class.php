@@ -10,6 +10,7 @@ class CatalogueClass
     public $catalog_link = "catalog";
     public $search_link = "search";
     public $faq_card_count = 2;
+    public $faq_socials_card_count = 4;
     public $catalog_exist_link = "catalog_new";
 
     /*
@@ -1766,6 +1767,7 @@ class CatalogueClass
         $form = str_replace("{product_price}", $price . " $kours_cap", $form);
         $form = str_replace("{product_true_price}", $price, $form);
         $form = str_replace("{product_kours_cap}", $kours_cap, $form);
+       // $form = str_replace("{product_availability}", "{in_availability}", $form);
 
         $form = str_replace("{product_action}", $action_form, $form);
         $form = str_replace("{product_action_count}", $action_count, $form);
@@ -1867,6 +1869,13 @@ class CatalogueClass
     {
         $form = $this->getHtmlForm("faq/request-card");
         $form = "<div class=\"col-lg-4 col-12 pad0\"><div class=\"article-card\">$form</div></div>";
+        $form = $this->replaceLang($form);
+        return $form;
+    }
+
+    public function getFaqSocialsForm()
+    {
+        $form = $this->getHtmlForm("faq/request-socials");
         $form = $this->replaceLang($form);
         return $form;
     }
@@ -2698,6 +2707,7 @@ class CatalogueClass
 
         $i = 0;
         $faq_pos = (count($mas) >= $this->faq_card_count) ? $this->faq_card_count : count($mas);
+        $faq_socials_pos = (count($mas) >= $this->faq_socials_card_count) ? $this->faq_socials_card_count : count($mas);
 
         if (!empty($mas)) {
             foreach ($mas as $mas_key => $mas_val) {
@@ -2720,6 +2730,12 @@ class CatalogueClass
                         if ($view && ($i == $faq_pos)) {
                             $faq_form = $this->getFaqForm();
                             $list .= $faq_form;
+                        }
+                    }
+                    if ($status_auto == 0) {
+                        if ($view && ($i == $faq_socials_pos)) {
+                            $faq_socials_form = $this->getFaqSocialsForm();
+                            $list .= $faq_socials_form;
                         }
                     }
                     $list .= $this->printSearchList($i, $art_id, $name, $brand_id, $brand, $text, $delivery_info, $stock, $price, $article_nr_search, $ll[$i], $class[$i], $hide[$i], $border[$i], $none[$i], $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto);

@@ -180,6 +180,42 @@
 
 <body>
 
+<style>
+	.request-mob {
+		display: none;
+	}
+	.request-row__image-socials {
+		width: 200px;
+		padding: 10px 5px;
+	}
+	@media (max-width: 768px) {
+		.request-row-mob {
+			display: block;
+			margin: 0;
+			margin-bottom: 15px;
+		}
+		.request-row-mob input[type=tel], .request-row-mob input[type=text], .request-row-mob textarea {
+			background: #f1f1f1;
+			padding: 10px;
+		}
+		.request-row-mob input[type=submit] {
+			background: #0ca9ee;
+			padding: 5px;
+		}
+		.request-row-mob-main {
+			margin: 0;
+			display: flex;
+		}
+		.request-mob {
+			display: block;
+		}
+		.request-mob .request {
+			border: 1px solid #ddd;
+			margin: 10px;
+		}
+	}
+</style>
+
 <div id="seo_form_cities_top"><!--footers_block--></div>
 <div id="seo_form_recomend_top"><!--seo_text_start--><!--seo_text_end--></div>
 <script>
@@ -348,25 +384,48 @@
         <div class="row header-phone">
             <div class="container">
                 <div class="row header-phone-drop">
-                    <div class="dropdown">
-                        <div class="dropdown-toggle" id="dropdownPhoneButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <label><i class="fa fa-phone"></i> (097) <b>080 30 60</b></label>
-                        </div>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownPhoneButton">
-                            <div class="dropdown-item">
-                                <img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
-                                <a href="tel:0970803060">(097) <b>080 30 60</b></a>
-                            </div>
-                            <div class="dropdown-item">
-                                <img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
-                                <a href="tel:0500803060">(050) <b>080 30 60</b></a>
-                            </div>
-                            <div class="dropdown-item">
-                                <img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
-                                <a href="tel:0930803060">(093) <b>080 30 60</b></a>
-                            </div>
-                        </div>
-                    </div>
+					<div class="col-8 pad0">
+						<div class="dropdown">
+							<div class="dropdown-toggle" id="dropdownPhoneButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<label><i class="fa fa-phone"></i> (097) <b>080 30 60</b></label>
+							</div>
+							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownPhoneButton">
+								<div class="dropdown-item">
+									<img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
+									<a href="tel:0970803060">(097) <b>080 30 60</b></a>
+								</div>
+								<div class="dropdown-item">
+									<img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
+									<a href="tel:0500803060">(050) <b>080 30 60</b></a>
+								</div>
+								<div class="dropdown-item">
+									<img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
+									<a href="tel:0930803060">(093) <b>080 30 60</b></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-4 pad0">
+						<div class="header-phone-drop__socials">
+							<div class="modal-help-row-socials">
+								<a href="https://t.me/tokoua_bot" target="_blank" class="modal-help-row-socials__item">
+									<div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__telegram modal-help-row-socials__item-image-min">
+										<img src="/images/icons/socials/telegram.svg" alt="Telegram">
+									</div>
+								</a>
+								<a href="viber://pa?chatURI=tokogroup" target="_blank" class="modal-help-row-socials__item">
+									<div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__viber modal-help-row-socials__item-image-min">
+										<img src="/images/icons/socials/viber.svg" alt="Viber">
+									</div>
+								</a>
+								<a href="http://m.me/tokogroup" target="_blank" class="modal-help-row-socials__item">
+									<div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__facebook modal-help-row-socials__item-image-min">
+										<img src="/images/icons/socials/facebook.svg" alt="Facebook">
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
                 </div>
                 <div class="row align-items-center header-phone-nav">
                     <div class="col-4 pad0">

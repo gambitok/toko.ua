@@ -60,7 +60,9 @@
     &__info {
         color: #606975;
         font-size: 12px;
-        min-height: 56px;
+        //min-height: 56px;
+        display: block;
+        margin-bottom: 0;
     }
     &__offers {
         a {
@@ -184,11 +186,10 @@
     color: #333;
     display: inline;
     font-size: 14px;
-    font-weight: 700;
 }
 
 .search__brand {
-    color: #228b94;
+    color: #35AAEC;
     display: inline;
     font-size: 14px;
     font-weight: 700;
@@ -235,9 +236,16 @@
 }
 
 .search__name {
-    color: #606975;
+    color: #808080;
     font-size: 13px;
     letter-spacing: normal;
+}
+
+.search__name-stock {
+    font-size: 13px;
+    letter-spacing: normal;
+    color: #64B961;
+    font-weight: bold;
 }
 
 .search__soldout {
@@ -978,14 +986,14 @@
     text-align: center;
     &.applicable {
         background: #fff;
-        border: 1px solid lightcoral;
+        border: 1px solid #ccc;
         border-radius: .25rem;
-        color: lightcoral;
+        color: #ccc;
         display: block!important;
         font-size: 11px;
         padding: 4px;
         span:before {
-            content: url(/images/icons/car-grey.png);
+            content: url(/images/icons/car-white.png);
             position: relative;
             right: 3px;
             top: 3px;
@@ -997,11 +1005,11 @@
             color: white;
         }
         &-active {
-            background: #7cc576;
+            background: #fff;
             border: 1px solid #7cc576;
-            color: #fff;
+            color: #7cc576;
             span:before {
-                content: url(/images/icons/car-white.png);
+                content: url(/images/icons/car-green.png);
                 position: relative;
                 right: 3px;
                 top: 3px;
@@ -1021,7 +1029,7 @@
 }
 
 .delivery-green i {
-    color: #009933!important;
+    color: #64B961!important;
     font-style: normal;
     font-weight: 700!important;
     text-transform: uppercase;

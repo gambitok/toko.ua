@@ -15,7 +15,17 @@
                 </div>
             </div>
 
-            <div class="row article-card__name">
+<!--            <div class="row article-card__name">-->
+<!--                <div class="col-12">-->
+<!--                    <a class="search__link" itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">-->
+<!--                        <span class="search__brand">{product_brand}</span>-->
+<!--                        <span class="search__name" title="{product_text}">{format_product_text}</span>-->
+<!--                        <span class="search__art">{product_name}</span>-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <div class="row">
                 <div class="col-12">
                     <a class="search__link" itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">
                         <span class="search__brand">{product_brand}</span>
@@ -31,17 +41,31 @@
                 </div>
             </div>
 
-            <div class="row {price_row_status} align-items-center article-card__price">
-                <div class="col-12">
-                    <span class="search__name">{price_cap}: </span>
-                    <span class="search__true_price">{product_price}</span>
-                </div>
-            </div>
+<!--            <div class="row {price_row_status} align-items-center article-card__price">-->
+<!--                <div class="col-12">-->
+<!--                    <span class="search__name">{price_cap}: </span>-->
+<!--                    <span class="search__true_price">{product_price}</span>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div class="row article-card__buy">
-                <div class="col-12">
+<!--            <div class="row article-card__buy">-->
+<!--                <div class="col-12">-->
+<!--                    <input type="hidden" value="1" id="count_{product_i}">-->
+<!--                    <button class="btn-group btn btn-md btn-info btn-buy float-right {product_button}" onclick="moveBasket({product_i},'{art_id}','{brand_id}','{product_real_stock}','{product_storage_id}',{product_suppl_id});">{buy_cap}</button>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <div class="row">
+                <div class="col-6">
+                    <div style="line-height: 42px;">
+                        <span class="search__name">{price_cap}: </span>
+                        <span class="search__true_price">{product_true_price}</span>
+                        <span class="search__name">{product_kours_cap}</span>
+                    </div>
+                </div>
+                <div class="col-6">
                     <input type="hidden" value="1" id="count_{product_i}">
-                    <button class="btn-group btn btn-md btn-info btn-buy float-right {product_button}" onclick="moveBasket({product_i},'{art_id}','{brand_id}','{product_real_stock}','{product_storage_id}',{product_suppl_id});">{buy_cap}</button>
+                    <button style="display: block; width: 100%; text-align: center; font-size: 18px;" class="btn-group btn btn-md btn-info btn-buy float-right {product_button}" onclick="moveBasket({product_i},'{art_id}','{brand_id}','{product_real_stock}','{product_storage_id}',{product_suppl_id});">{buy_cap}</button>
                 </div>
             </div>
 
@@ -55,10 +79,10 @@
 
             <div class="row {price_row_status} article-card__info">
                 <div class="col-12 {product_button}">
-                    <span class="search__name">{in_stock}:</span> <span>{product_stock} {amount_abbr}.</span>
+                    <span class="search__name-stock">{in_stock}</span> <span>{product_stock} {amount_abbr}.</span>
                 </div>
                 <div class="col-12 {product_delivery_class} {product_button}">
-                    <span class="search__name">{storage_info}:</span> {product_delivery_short_info}
+                    <span class="search__name">{storage_info}</span> {product_delivery_short_info}
                 </div>
             </div>
 
