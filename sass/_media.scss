@@ -1,5 +1,17 @@
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
+
+    .tables__row {
+        .search__name {
+            font-size: 12px;
+        }
+        .search__art {
+            font-size: 12px;
+        }
+        .tables__price {
+            font-size: 18px;
+        }
+    }
     
     .mob-non-display {
         display: none;
@@ -465,6 +477,37 @@
     .request-row-mob input[type=submit] {
         background: #0ca9ee;
         padding: 5px;
+    }	.request-row-mob {
+             display: block;
+             margin: 0;
+             margin-bottom: 15px;
+         }
+    .request-row-mob input[type=tel], .request-row-mob input[type=text], .request-row-mob textarea {
+        background: #f1f1f1;
+        padding: 10px;
+    }
+    .request-row-mob input[type=submit] {
+        background: #0ca9ee;
+        padding: 5px;
+    }
+    .request-row-mob-main {
+        margin: 0;
+        display: flex;
+    }
+    .request-mob {
+        display: block;
+    }
+    .request-mob .request {
+        border: 1px solid #ddd;
+        margin: 10px;
+    }
+
+    #cars-tab1, #cars-tab2, #cars-tab3, #cars-tab4, #cars-tab5 {
+        text-align: center;
+    }
+
+    .content {
+        padding: 15px;
     }
 
 }

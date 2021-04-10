@@ -875,7 +875,7 @@ class CatalogueClass
         return $list_brand;
     }
 
-    public function searchList($where_art_id_str, $type_filter = 1, $view = 0, $article_nr_search = "", $brand_nr_search = "", $status_auto = 0)
+    public function searchList($where_art_id_str, $type_filter = 1, $view = 0, $article_nr_search = "", $brand_nr_search = "", $status_auto = 0, $mfa_link = "", $model_link = "")
     {
         $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
@@ -1049,7 +1049,7 @@ class CatalogueClass
                 $other_storages = $this->showOtherStorages($mas, $cur, $view);
 
                 // show search list
-                $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, 0, $status_auto);
+                $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, 0, $status_auto, $mfa_link, $model_link);
             }
 
             $count = count($mas);
@@ -1688,12 +1688,13 @@ class CatalogueClass
     /*
      * Show SEARCH Line OR Card
      * */
-    public function printSearchList($id, $art_id, $article_name, $brand_id, $brand_name, $text, $delivery_info, $stock, $price, $article_nr_search, $ll, $class, $hide, $border, $none, $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto = 0)
+    public function printSearchList($id, $art_id, $article_name, $brand_id, $brand_name, $text, $delivery_info, $stock, $price, $article_nr_search, $ll, $class, $hide, $border, $none, $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto = 0, $mfa_link = "", $model_link = "")
     {
         $showform = new FormClass();
         $kours = new ExRateClass();
         $client = new ClientClass();
         $shop = new ShopClass();
+        $automan = new AutoClass();
         $prefix = $this->getLangPrefix();
         $cur = $this->getCurrentExrate();
         $kours_cap = $this->getSymbolExrate($cur);
@@ -1744,8 +1745,25 @@ class CatalogueClass
         $form = str_replace("{product_lang_prefix}", $prefix, $form);
         $form = str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
         $form = str_replace("{product_format_brand}", $this->getFormatBrand($brand_name), $form);
-        $form = str_replace("{product_text}", ($text == "") ? "{details_name_cap}" : $text, $form);
-        $form = str_replace("{format_product_text}", ($text == "") ? "{details_name_cap}" : $this->formatArticleName($text), $form);
+        $product_text = ($text == "") ? "{details_name_cap}" : $text;
+        $format_product_text = ($text == "") ? "{details_name_cap}" : $this->formatArticleName($text);
+        $mfa_text = "";
+        //$mfa_link = "KIA"; $model_link = "Sportage";
+        if ($status_auto == 0) {
+            if ($mfa_link != "") {
+                $mfa_id = $automan->getMfaLink($mfa_link);
+                $mfa_name = $automan->getMfaBrand($mfa_id);
+                $mfa_text .= " {on_cap} $mfa_name";
+                if ($model_link != "") {
+                    $model = $automan->getModLink($model_link);
+                    $mfa_text .= " $model";
+                }
+            }
+            $product_text .= $mfa_text;
+            $format_product_text .= $mfa_text;
+        }
+        $form = str_replace("{product_text}", $product_text, $form);
+        $form = str_replace("{format_product_text}", $format_product_text, $form);
         $form = str_replace("{product_stock}", ($suppl_id == 0) ? ($stock > 10 ? ">10" : $stock) : $stock, $form);
         $form = str_replace("{product_real_stock}", $stock, $form);
         $form = str_replace("{product_storage_id}", $storage_id, $form);
@@ -2682,7 +2700,7 @@ class CatalogueClass
      * show search list
      * $status_auto - 0,1,2
      * */
-    public function outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, $saleout = 0, $status_auto = 0)
+    public function outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, $saleout = 0, $status_auto = 0, $mfa_link = "", $model_link = "")
     {
         $ll = $other_storages["content"];
         $class = $other_storages["class"];
@@ -2738,7 +2756,7 @@ class CatalogueClass
                             $list .= $faq_socials_form;
                         }
                     }
-                    $list .= $this->printSearchList($i, $art_id, $name, $brand_id, $brand, $text, $delivery_info, $stock, $price, $article_nr_search, $ll[$i], $class[$i], $hide[$i], $border[$i], $none[$i], $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto);
+                    $list .= $this->printSearchList($i, $art_id, $name, $brand_id, $brand, $text, $delivery_info, $stock, $price, $article_nr_search, $ll[$i], $class[$i], $hide[$i], $border[$i], $none[$i], $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto, $mfa_link, $model_link);
                     $i++;
                 }
             }
