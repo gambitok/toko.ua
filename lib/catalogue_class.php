@@ -3174,7 +3174,7 @@ class CatalogueClass
                     <img src=\"/images/tree-group/$group_image\" alt=\"$group_name\">
                 </div>
                 <div class=\"tree-group__item-text\">
-                    $group_name
+                    <span>$group_name</span>
                 </div>
             </a>";
         }

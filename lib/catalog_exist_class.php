@@ -953,10 +953,27 @@ class CatalogExistClass extends CatalogueClass
         return $where_mfa;
     }
 
-    public function showPartsCatalogueError($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link)
+    public function showPartsCatalogueError($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1)
     {
+        $automan = new AutoClass();
         $form = $this->getHtmlForm("catalog_exist/error");
         $form = str_replace("{form_car}", $this->getPartsCatalogueCars($status_auto, $status_auto_type, $mfa_link, $model_link), $form);
+        $form = $this->replaceLang($form);
+        $form = str_replace("{h1_text}", "<b>$filters_h1</b>", $form);
+        $form = str_replace("{vin_text}", "<a class='blue-a' onclick=\"$('#VinFormPhone').modal('show');\">{vin_order}</a>", $form);
+        $catalog_text = "{in_catalog_strs}";
+        $catalog_link = "https://toko.ua/cars/";
+        if ($mfa_link != "") {
+            $mfa_name = $automan->getMfaBrand($automan->getMfaLink($mfa_link));
+            $catalog_text .= " {on_cap} $mfa_name";
+            $catalog_link .= "$mfa_link/";
+            if ($model_link != "") {
+                $mod_name = $automan->getModLink($model_link);
+                $catalog_text .= "$mod_name";
+                $catalog_link .= "$model_link/";
+            }
+        }
+        $form = str_replace("{catlog_link}", "<a class='blue-a' href='$catalog_link'>$catalog_text</a>", $form);
         return $form;
     }
 
@@ -1018,7 +1035,7 @@ class CatalogExistClass extends CatalogueClass
         $form = $this->getHtmlForm("catalog_exist/list_params");
 
         if (empty($art_id_str)) {
-            $form = $this->showPartsCatalogueError($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link);
+            $form = $this->showPartsCatalogueError($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1);
         }
 
         $form = str_replace("{parts_name}", $group_text, $form);
@@ -1178,7 +1195,7 @@ class CatalogExistClass extends CatalogueClass
         }
 
         if (!empty($params)) {
-            $keys = implode(",", array_keys($params));
+            $keys = implode(",", (array_keys($params)));
 
             $param_ids = [];
             $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` IN ($keys) ORDER BY `POSITION` ASC;");

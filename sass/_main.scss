@@ -22,13 +22,6 @@ html {
     letter-spacing: 0.5px;
 }
 
-a, a:not([href]):not([tabindex]) {
-    color: #000;
-    &:hover {
-        color: #000;
-    }
-}
-
 .pop {
     color: #721c24;
     background: #f8d7da;
@@ -119,6 +112,7 @@ a, a:not([href]):not([tabindex]) {
         color: $site_dark_primary;
         font-size: 32px;
         font-weight: bold;
+        margin-bottom: 15px;
     }
     h2 {
         color: $site_dark_secondary;
@@ -132,10 +126,10 @@ a, a:not([href]):not([tabindex]) {
         font-weight: bold;
     }
     ul > li {
-        font-weight: 400;
+        display: inline;
     }
     ul > li > a {
-        font-weight: bold;
+        font-size: 16px;
     }
 }
 

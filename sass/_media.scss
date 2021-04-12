@@ -1,6 +1,48 @@
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
 
+    .tree-heads {
+        &__item {
+            &-header {
+                flex-wrap: wrap;
+            }
+            &-text {
+                width: 100%;
+            }
+            &-image {
+                width: 100%;
+            }
+            &-descr {
+                font-size: 10px;
+            }
+            &-image {
+                margin-top: 15px;
+            }
+        }
+    }
+
+    .tree-group {
+        &__item {
+            width: calc(100%);
+            min-height: unset;
+            display: flex;
+            justify-content: center;
+            &-image {
+                width: 15%;
+            }
+            &-text {
+                width: 85%;
+                display: flex;
+                margin-left: 15px;
+                align-items: center;
+                font-weight: bold;
+                span {
+                    text-align: left;
+                }
+            }
+        }
+    }
+
     .tables__row {
         .search__name {
             font-size: 12px;
