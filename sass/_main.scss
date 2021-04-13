@@ -3014,5 +3014,52 @@ header {
     }
 }
 
+.menu-bar {
+    &-head {
+        margin-top: 30px;
+        &__title {
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        &__item {
+            border-bottom: 1px solid #ccc;
+            font-size: 16px;
+            margin-bottom: 5px;
+            margin-left: 10px;
+            padding: 5px;
+            &:after {
+                content: ">";
+                position: absolute;
+                right: 20px;
+            }
+        }
+    }
+    &-cat {
+        font-size: 16px;
+        font-weight: bold;
+        color: #0CA9EE;
+        margin-bottom: 5px;
+        &__title {
+
+        }
+    }
+    &-group {
+        font-size: 14px;
+        font-weight: 400;
+        color: #000;
+        margin-bottom: 10px;
+        &__item {
+            margin-left: 15px;
+            list-style: circle;
+            margin-bottom: 5px;
+            a {
+                color: #000;
+            }
+        }
+    }
+}
+
 
 

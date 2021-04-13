@@ -827,4 +827,53 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    public function getMenuBar($sel_head_id = 0)
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        if (empty($sel_head_id)) {
+            $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $list .= "<div class='menu-bar-head'>";
+                for ($i = 1; $i <= $n; $i++) {
+                    $head_id = $db->result($r, $i - 1, "HEAD_ID");
+                    $head_name = $this->getHeadRowName($head_id);
+                    $list .= "<div class='menu-bar-head__item' onclick=\"getMenuBar('$head_id')\">$head_name</div>";
+                }
+                $list .= "</div>";
+            }
+        } else {
+            $arr = [];
+            $head_name = $this->getHeadRowName($sel_head_id);
+            $r = $db->query("SELECT `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = '$sel_head_id' GROUP BY `CAT_ID`, `GROUP_ID`;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $cat_id = $db->result($r, $i - 1, "CAT_ID");
+                $group_id = $db->result($r, $i - 1, "GROUP_ID");
+                $arr[$cat_id][] = $group_id;
+            }
+            if (!empty($arr)) {
+                $list .= "<div class='menu-bar-head__title' onclick=\"getMenuBar('0');\"><i class='fa fa-chevron-left'></i> $head_name</div>";
+                $list .= "<div class='menu-bar-cat'>";
+                foreach ($arr as $cat_id => $groups) {
+                    $cat_name = $this->getCatRowName($cat_id);
+                    $list .= "<div class='menu-bar-cat__title'>$cat_name</div>";
+                    $list .= "<div class='menu-bar-group'>";
+                    foreach ($groups as $group_id) {
+                        $group_name = $this->getGroupRowName($group_id);
+                        $group_link = $this->getGroupRowLink($group_id);
+                        $list .= "<div class='menu-bar-group__item'><a href='/catalog_new/$group_link/'>$group_name</a></div>";
+                    }
+                    $list .= "</div>";
+                }
+                $list .= "</div>";
+            }
+        }
+
+        $form = $this->getHtmlForm("bar/form");
+        $form = str_replace("{bar_list}", $list, $form);
+        return $form;
+    }
+
 }

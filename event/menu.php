@@ -12,6 +12,7 @@ $content = str_replace("{current_language}", $language->getLangCap($catalogue->g
 $content = str_replace("{language_dropdown}", $language->getLanguageSelectList($catalogue->getLanguage()), $content);
 $content = str_replace("{garage_link}", $menu->getGarageLink(), $content);
 $content = str_replace("{site_mobile_panel}", $menu->getMediaNavPanel(), $content);
+$content = str_replace("{site_menu_bar}", $menu->getMenuBar(), $content);
 
 if (!$profile->getProfileClientInfo()) {
     $content = str_replace("{region_select}", $menu->getRegionSelect(), $content);

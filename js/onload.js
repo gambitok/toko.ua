@@ -225,6 +225,11 @@ $(document).ready(function() {
         menu: ('#menu-catalog')
     });
 
+    // Adaptive Catalog navigation
+    $(".bar-menu").bigSlide({
+        menu: ('#bar-menu')
+    });
+
     if(detectmob()) {
         setCatalogFilters();
     }
@@ -250,4 +255,11 @@ $(document).ready(function() {
     }
 
 });
+
+function getMenuBar(head_id) {
+    JsHttpRequest.query(folder,{'w':'getMenuBar', 'head_id':head_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#menu-bar-content").html(result.content);
+        }}, true);
+}
 

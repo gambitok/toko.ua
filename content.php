@@ -200,6 +200,10 @@ if ($_REQUEST["w"] == "getRegionSelect") {
     $GLOBALS['_RESULT'] = array("content" => $menu->getRegionSelect());
 }
 
+if ($_REQUEST["w"] == "getMenuBar") {
+    $GLOBALS['_RESULT'] = array("content" => $menu->getMenuBar(($_REQUEST["head_id"])));
+}
+
 /*==== MODALS ====*/
 
 if ($_REQUEST["w"] == "loadApplicModels2") {

@@ -953,7 +953,7 @@ class CatalogExistClass extends CatalogueClass
         return $where_mfa;
     }
 
-    public function showPartsCatalogueError($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1)
+    public function showPartsCatalogueError($status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1)
     {
         $automan = new AutoClass();
         $form = $this->getHtmlForm("catalog_exist/error");
@@ -1035,7 +1035,7 @@ class CatalogExistClass extends CatalogueClass
         $form = $this->getHtmlForm("catalog_exist/list_params");
 
         if (empty($art_id_str)) {
-            $form = $this->showPartsCatalogueError($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1);
+            $form = $this->showPartsCatalogueError($status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1);
         }
 
         $form = str_replace("{parts_name}", $group_text, $form);
@@ -1495,24 +1495,24 @@ class CatalogExistClass extends CatalogueClass
     /*
      * get h1
      * */
-    public function getCatalogTitleH1($group_id, $mfa_link = "", $mod_link = "")
-    {
-        $automan = new AutoClass();
-        $h1_text = "";
-        if ($group_id > 0) {
-            $group_name = $this->getGroupRowName($group_id);
-            $h1_text .= "$group_name ";
-        }
-        if ($mfa_link != "") {
-            $mfa_name = $automan->getMfaBrand($automan->getMfaLink($mfa_link));
-            $h1_text .= "$mfa_name ";
-        }
-        if ($mod_link != "") {
-            $mod_name = $automan->getModLink($mod_link);
-            $h1_text .= "$mod_name ";
-        }
-        return $h1_text;
-    }
+//    public function getCatalogTitleH1($group_id, $mfa_link = "", $mod_link = "")
+//    {
+//        $automan = new AutoClass();
+//        $h1_text = "";
+//        if ($group_id > 0) {
+//            $group_name = $this->getGroupRowName($group_id);
+//            $h1_text .= "$group_name ";
+//        }
+//        if ($mfa_link != "") {
+//            $mfa_name = $automan->getMfaBrand($automan->getMfaLink($mfa_link));
+//            $h1_text .= "$mfa_name ";
+//        }
+//        if ($mod_link != "") {
+//            $mod_name = $automan->getModLink($mod_link);
+//            $h1_text .= "$mod_name ";
+//        }
+//        return $h1_text;
+//    }
 
     /*
      * get TYP list
@@ -1949,6 +1949,100 @@ class CatalogExistClass extends CatalogueClass
             if ($n > 0) {
                 $list .= "</div>";
             }
+        }
+        return $list;
+    }
+
+    public function getGroupHeadExistId($head_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $head_id = 0;
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HEAD_EXIST` WHERE `TEX_LINK`='$head_link' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $head_id = $db->result($r, 0, "HEAD_ID");
+        }
+        return $head_id;
+    }
+
+    public function getGroupCatExistId($cat_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $cat_id = 0;
+        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CAT_EXIST` WHERE `TEX_LINK`='$cat_link' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $cat_id = $db->result($r, 0, "CAT_ID");
+        }
+        return $cat_id;
+    }
+
+    public function showGroupHeadForm($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_RU`, `IMAGES` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS`=1 AND `HEAD_ID`='$head_id' LIMIT 1;");
+        $head_title = $db->result($r, 0, "TEX_RU");
+        $form = $this->getHtmlForm("catalog_exist/head_form");
+        $form = str_replace("{head_title}", $head_title, $form);
+        $form = str_replace("{head_list}",  $this->getGroupHeadList($head_id), $form);
+        return $form;
+    }
+
+    public function showGroupCatForm($head_id, $cat_id)
+    {
+        $cat_title = $this->getCatRowName($cat_id);
+        $head_title = $this->getHeadRowName($head_id);
+        $form = $this->getHtmlForm("catalog_exist/cat_form");
+        $form = str_replace("{cat_title}", $cat_title, $form);
+        $form = str_replace("{head_title}", "<a href='../'><i class='fa fa-chevron-left'></i> $head_title</a>", $form);
+        $form = str_replace("{cat_list}", $this->getGroupCatList($head_id, $cat_id), $form);
+        return $form;
+    }
+
+    public function getGroupHeadList($head_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $arr = [];
+        $r = $db->query("SELECT `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' GROUP BY `CAT_ID`, `GROUP_ID`;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $cat_id = $db->result($r, $i - 1, "CAT_ID");
+            $group_id = $db->result($r, $i - 1, "GROUP_ID");
+            $arr[$cat_id][] = $group_id;
+        }
+        if (!empty($arr)) {
+            foreach ($arr as $cat_id => $groups) {
+                $cat_name = $this->getCatRowName($cat_id);
+                $cat_link = $this->getCatRowLink($cat_id);
+                $list .= "<div><a href='./$cat_link'>$cat_name</a></div>";
+                $list .= "<ul class='list-inline'>";
+                foreach ($groups as $group_id) {
+                    $group_name = $this->getGroupRowName($group_id);
+                    $group_link = $this->getGroupRowLink($group_id);
+                    $list .= "<li><a href='./$group_link'>$group_name</a></li>";
+                }
+                $list .= "</ul>";
+            }
+        }
+        return $list;
+    }
+
+    public function getGroupCatList($head_id, $cat_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `CAT_ID`='$cat_id' GROUP BY `GROUP_ID`;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $list .= "<ul class='list-inline'>";
+            for ($i = 1; $i <= $n; $i++) {
+                $group_id = $db->result($r, $i - 1, "GROUP_ID");
+                $group_name = $this->getGroupRowName($group_id);
+                $group_link = $this->getGroupRowLink($group_id);
+                $list .= "<li><a href='./$group_link'>$group_name</a></li>";
+            }
+            $list .= "</ul>";
         }
         return $list;
     }

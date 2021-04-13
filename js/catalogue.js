@@ -430,17 +430,17 @@ function tecModelsFilter(order) {
 //         }}, true);
 // }
 
-// function loadApplicModels2(art_id_tcd, manufacture, a) {
-//     $(".load_app").each(function () {
-//         $(this).removeClass("span-red");
-//     });
-//     $(a).addClass("span-red");
-//     JsHttpRequest.query(folder,{ 'w': 'loadApplicModels2', 'art_id_tcd':art_id_tcd, 'manufacture':manufacture},
-//         function (result, errors){ if (errors) {} if (result){
-//             $("#info2_more").html(result.content);
-//             $("#info3_more").html(result.content);
-//         }}, true);
-// }
+function loadApplicModels2(art_id_tcd, manufacture, a) {
+    $(".load_app").each(function () {
+        $(this).removeClass("span-red");
+    });
+    $(a).addClass("span-red");
+    JsHttpRequest.query(folder,{ 'w': 'loadApplicModels2', 'art_id_tcd':art_id_tcd, 'manufacture':manufacture},
+        function (result, errors){ if (errors) {} if (result){
+            $("#info2_more").html(result.content);
+            $("#info3_more").html(result.content);
+        }}, true);
+}
 
 function loadApplicModelsInfo2(art_id, typ_id) {
     let er = 0;
@@ -1096,3 +1096,4 @@ function setClientRequestDone() {
             $("#request-card").html(result.content);
         }}, true);
 }
+
