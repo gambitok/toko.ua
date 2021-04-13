@@ -88,3 +88,40 @@
         $(".anchor-contacts").addClass("mob-non-display");
     });
 </script>
+
+<!-- Modal Cars -->
+<div class="modal fade" id="VinFormPhone" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="request">
+                    <div class="request-row request-row-mob" style="display: flex">
+                        <div class="request-row__image"><img src="/images/icons/faq/vin-icon.png" alt="Icon"></div>
+                        <div class="request-row__title">
+                            <span style="color: #0CA9EE;">{faq_request_title}</span><br>
+                            <span style="color: #36cd76;">{faq_request_title2}</span>
+                        </div>
+                    </div>
+                    <div class="request-row request-row-mob">
+                        <input id="req-phone" class="masked-phone" type="tel" placeholder="{phone_cap}">
+                    </div>
+                    <div class="request-row request-row-mob">
+                        <input id="req-vin" class="masked-vin" type="text" placeholder="{vin_cap}">
+                    </div>
+                    <div class="request-row request-row-mob">
+                        <textarea id="req-text" placeholder="{spare_parts_list}"></textarea>
+                    </div>
+                    <div class="request-row request-row-mob">
+                        <input type="submit" value="{send_seller}" onclick="setClientRequest2();">
+                    </div>
+                    <div class="request-row request-row-mob">
+                        <div class="request-row__text" style="text-align: left">
+                            <span>{faq_request_about}</span>
+                            <a onclick="$('#VinForm').modal('show');">{faq_request_about2} <span class="fa fa-info-circle"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

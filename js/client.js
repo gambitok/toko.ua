@@ -196,11 +196,7 @@ function loginFormParams() {
     } else {
         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-                if (result.content === false) {
-                    showAlertModal("{user_not_logged}!","{error_cap}",0);
-                } else {
-                    location.href="/profile/";
-                }
+                if (result.content===false) showAlertModal("{user_not_logged}!","{error_cap}",0); else location.href="/profile/";
             }}, true);
     }
 }
@@ -208,7 +204,7 @@ function loginFormParams() {
 function logoutForm() {
     JsHttpRequest.query(folder,{'w':'logoutClient'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.href = "/";
+            location.href="/";
         }}, true);
 }
 
@@ -254,14 +250,8 @@ function showProfileOrdersArts(dp_id, order_id) {
 
 function showProfileCheckForm() {
     window.history.pushState("check", "Profile", "/profile/check/");
-    let data_start = $("#saldo_data_start").val();
-    if (data_start === undefined) {
-        data_start = 0;
-    }
-    let data_end = $("#saldo_data_end").val();
-    if (data_end === undefined) {
-        data_end = 0;
-    }
+    let data_start = $("#saldo_data_start").val(); if (data_start===undefined) data_start=0;
+    let data_end = $("#saldo_data_end").val(); if (data_end===undefined) data_end=0;
     $("#check_block").html("<div class=\"loader\"></div>");
     JsHttpRequest.query(folder,{'w':'showProfileCheckForm', 'data_start':data_start, 'data_end':data_end},
         function (result, errors){ if (errors) {alert(errors);} if (result){

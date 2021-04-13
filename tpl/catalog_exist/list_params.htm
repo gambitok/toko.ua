@@ -30,6 +30,7 @@
             <div class="cat-products-filters" id="catalog-filters">
                 {parts_params_cars}
                 {parts_params}
+                {parts_states}
             </div>
         </div>
         <div class="col-12 col-lg-9 order-lg-1 order-0">
@@ -58,6 +59,43 @@
     </div>
 </div>
 
+<!-- Modal Cars -->
+<div class="modal fade" id="VinFormPhone" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="request">
+                    <div class="request-row request-row-mob" style="display: flex">
+                        <div class="request-row__image"><img src="/images/icons/faq/vin-icon.png" alt="Icon"></div>
+                        <div class="request-row__title">
+                            <span style="color: #0CA9EE;">{faq_request_title}</span><br>
+                            <span style="color: #36cd76;">{faq_request_title2}</span>
+                        </div>
+                    </div>
+                    <div class="request-row request-row-mob">
+                        <input id="req-phone" class="masked-phone" type="tel" placeholder="{phone_cap}">
+                    </div>
+                    <div class="request-row request-row-mob">
+                        <input id="req-vin" class="masked-vin" type="text" placeholder="{vin_cap}">
+                    </div>
+                    <div class="request-row request-row-mob">
+                        <textarea id="req-text" placeholder="{spare_parts_list}"></textarea>
+                    </div>
+                    <div class="request-row request-row-mob">
+                        <input type="submit" value="{send_seller}" onclick="setClientRequest2();">
+                    </div>
+                    <div class="request-row request-row-mob">
+                        <div class="request-row__text" style="text-align: left">
+                            <span>{faq_request_about}</span>
+                            <a onclick="$('#VinForm').modal('show');">{faq_request_about2} <span class="fa fa-info-circle"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="fixed-nav-catalog" class="fixed-nav">
     <div class="fixed-nav-item" onclick="showGarageForm();">
         <div class="tool-status-contain">
@@ -78,6 +116,9 @@
     </div>
 
     <div class="fixed-nav-item bar-catalog" onclick="setCatalogFilters();">
+        <div class="tool-status-contain">
+            <span class="tool-status {filters_style}">{filters_count}</span>
+        </div>
         <img class="fixed-nav-item__image" src="/images/icons/help/filter.png" alt="img">
         <span class="fixed-nav-item__text">{filter_cap}</span>
     </div>
@@ -93,10 +134,13 @@
 
 <script>
     $(document).ready(function() {
-
         showSearchParameters();
         $(".anchor-contacts").addClass("mob-non-display");
+    });
+</script>
 
+<script>
+    $(document).ready(function() {
         if ($("#status_auto").val() == "1") {
             toggleCarsNavigation($("div[data-type='manuf']"));
         }
@@ -107,6 +151,5 @@
                 toggleCarsNavigation($("div[data-type='model']"));
             }
         }
-
     });
 </script>

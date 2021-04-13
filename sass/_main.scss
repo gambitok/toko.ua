@@ -22,13 +22,6 @@ html {
     letter-spacing: 0.5px;
 }
 
-a, a:not([href]):not([tabindex]) {
-    color: #000;
-    &:hover {
-        color: #000;
-    }
-}
-
 .pop {
     color: #721c24;
     background: #f8d7da;
@@ -119,6 +112,7 @@ a, a:not([href]):not([tabindex]) {
         color: $site_dark_primary;
         font-size: 32px;
         font-weight: bold;
+        margin-bottom: 15px;
     }
     h2 {
         color: $site_dark_secondary;
@@ -132,10 +126,10 @@ a, a:not([href]):not([tabindex]) {
         font-weight: bold;
     }
     ul > li {
-        font-weight: 400;
+        display: inline;
     }
     ul > li > a {
-        font-weight: bold;
+        font-size: 16px;
     }
 }
 
@@ -271,7 +265,7 @@ a, a:not([href]):not([tabindex]) {
 }
 
 .request {
-    min-height: 524px;
+    min-height: 446px;
     padding: 10px;
     &-row {
         display: flex;
@@ -309,6 +303,10 @@ a, a:not([href]):not([tabindex]) {
             img {
                 width: 100%;
             }
+            &-socials {
+                width: 200px;
+                padding: 10px 5px;
+            }
         }
         &__title {
             font-weight: bold;
@@ -319,7 +317,7 @@ a, a:not([href]):not([tabindex]) {
         }
         &__text {
             color: #606975;
-            font-size: 13px;
+            font-size: 11px;
             text-align: center;
             a, a:not([href]):not([tabindex]) {
                 color: #0ca9ee;
@@ -328,6 +326,30 @@ a, a:not([href]):not([tabindex]) {
                     color: #17a2b8;
                 }
             }
+        }
+    }
+    &-mob {
+        display: none;
+    }
+}
+
+.reviews-list {
+    &-title {
+        display: block;
+        font-weight: 700;
+        color: #606975;
+        text-transform: uppercase;
+    }
+    &__item {
+        font-size: 14px;
+        color: #606975;
+        margin-top: 5px;
+        a {
+            color: #606975;
+        }
+        i {
+            color: #0ca9ee;
+            margin-right: 5px;
         }
     }
 }
