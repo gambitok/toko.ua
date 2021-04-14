@@ -835,13 +835,16 @@ class MenuClass extends CatalogueClass
             $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
             $n = $db->num_rows($r);
             if ($n > 0) {
-                $list .= "<div class='menu-bar-head'>";
+                $list = $this->getHtmlForm("bar/main");
+                $head_list = "";
                 for ($i = 1; $i <= $n; $i++) {
                     $head_id = $db->result($r, $i - 1, "HEAD_ID");
                     $head_name = $this->getHeadRowName($head_id);
-                    $list .= "<div class='menu-bar-head__item' onclick=\"getMenuBar('$head_id')\">$head_name</div>";
+                    $head_list .= "<div class='menu-bar-head__item' onclick=\"getMenuBar('$head_id')\">$head_name</div>";
                 }
-                $list .= "</div>";
+                $list = str_replace("{head_list}", $head_list, $list);
+                $list = str_replace("{media_list}", $this->getPhoneNav(), $list);
+                $list = str_replace("{contacts_list}", $this->getPhoneContacts(), $list);
             }
         } else {
             $arr = [];
@@ -873,6 +876,42 @@ class MenuClass extends CatalogueClass
 
         $form = $this->getHtmlForm("bar/form");
         $form = str_replace("{bar_list}", $list, $form);
+        $form = $this->replaceLang($form);
+        return $form;
+    }
+
+    /*
+     * show mobile navigation
+     * */
+    public function getPhoneNav()
+    {
+        $profile = new ProfileClass();
+        $shop = new ShopClass();
+        $form = $this->getHtmlForm("bar/nav");
+        $form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
+        $form = str_replace("{lang_select}", $this->getLanguageList(), $form);
+        if (!$profile->getProfileClientInfo()) {
+            $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
+            $form = str_replace("{region_select_phone}", "<li>" . $this->getRegionSelect() . "</li>", $form);
+        } else {
+            $form = str_replace("{region_select}", "", $form);
+            $form = str_replace("{region_select_phone}", "", $form);
+        }
+        $form = str_replace("{profile_mobile}", $profile->getProfileInfoMobile(), $form);
+        $form = str_replace("{basket_summ}", $shop->countSummBasket(), $form);
+        return $form;
+    }
+
+    public function getPhoneContacts()
+    {
+        $profile = new ProfileClass();
+        $form = $this->getHtmlForm("bar/contacts");
+        if (!$profile->getProfileClientInfo()) {
+            $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
+        } else {
+            $form = str_replace("{region_select}", "", $form);
+        }
+        $form = str_replace("{menu_lang}", $this->getLanguageList(), $form);
         return $form;
     }
 

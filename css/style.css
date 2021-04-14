@@ -553,6 +553,8 @@ header { width: 100%; color: #a9a9a9; }
 
 .tool-status-hidden { display: none; }
 
+.tool-status-hidden.show { display: block !important; }
+
 .tool-status-contain { display: block; height: 0; }
 
 .basket_phone { background: #f44336; border: 1px solid; border-radius: 30px; color: #fff; height: 20px; position: relative; top: -8px; left: 35px; font-size: 12px; line-height: 20px; text-align: center; width: 20px; z-index: 99; }
@@ -1159,13 +1161,19 @@ header { width: 100%; color: #a9a9a9; }
 
 .anchor-contacts__item-facebook { background: #0099FF; }
 
+.menu-bar-contacts { margin: 10px; }
+
+.menu-bar-nav ul { list-style: none; margin-top: 30px; margin-bottom: 30px; }
+
+.menu-bar-nav ul li { margin-bottom: 5px; margin-left: 10px; padding: 5px; }
+
+.menu-bar-nav ul li a { font-size: 15px; }
+
 .menu-bar-head { margin-top: 30px; }
 
-.menu-bar-head__title { color: #000; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+.menu-bar-head__title { color: #000; font-size: 16px; font-weight: bold; margin-bottom: 15px; margin-left: 10px; }
 
-.menu-bar-head__item { border-bottom: 1px solid #ccc; font-size: 16px; margin-bottom: 5px; margin-left: 10px; padding: 5px; }
-
-.menu-bar-head__item:after { content: ">"; position: absolute; right: 20px; }
+.menu-bar-head__item { background: url("/images/icons/arrow-right.svg") calc(100% - 20px) center no-repeat; border-bottom: 1px solid #ccc; font-size: 16px; margin-bottom: 5px; margin-left: 10px; padding: 10px; }
 
 .menu-bar-cat { font-size: 16px; font-weight: bold; color: #0CA9EE; margin-bottom: 5px; }
 
@@ -1217,7 +1225,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .home-seo .form-toggle label:hover { background-color: #138496; border-color: #117a8b; color: #fff; }
 
-.home-seo .form-toggle label a { display: block; padding: 10px; }
+.home-seo .form-toggle label a { display: block; padding: 10px; color: white; }
 
 .home-seo .form-toggle input[type="checkbox"] { display: none; }
 

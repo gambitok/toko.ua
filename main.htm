@@ -350,23 +350,24 @@
                 <div class="row header-phone-drop">
 					<div class="col-8 pad0">
 						<div class="dropdown">
-							<div class="dropdown-toggle" id="dropdownPhoneButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<label><i class="fa fa-phone"></i> (097) <b>080 30 60</b></label>
-							</div>
-							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownPhoneButton">
-								<div class="dropdown-item">
-									<img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
-									<a href="tel:0970803060">(097) <b>080 30 60</b></a>
-								</div>
-								<div class="dropdown-item">
-									<img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
-									<a href="tel:0500803060">(050) <b>080 30 60</b></a>
-								</div>
-								<div class="dropdown-item">
-									<img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
-									<a href="tel:0930803060">(093) <b>080 30 60</b></a>
-								</div>
-							</div>
+							<label onclick="showPhoneForm();"><i class="fa fa-phone"></i> (097) <b>080 30 60</b></label>
+<!--							<div class="dropdown-toggle" id="dropdownPhoneButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--								<label><i class="fa fa-phone"></i> (097) <b>080 30 60</b></label>-->
+<!--							</div>-->
+<!--							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownPhoneButton">-->
+<!--								<div class="dropdown-item">-->
+<!--									<img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">-->
+<!--									<a href="tel:0970803060">(097) <b>080 30 60</b></a>-->
+<!--								</div>-->
+<!--								<div class="dropdown-item">-->
+<!--									<img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">-->
+<!--									<a href="tel:0500803060">(050) <b>080 30 60</b></a>-->
+<!--								</div>-->
+<!--								<div class="dropdown-item">-->
+<!--									<img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">-->
+<!--									<a href="tel:0930803060">(093) <b>080 30 60</b></a>-->
+<!--								</div>-->
+<!--							</div>-->
 						</div>
 					</div>
 					<div class="col-4 pad0">
@@ -419,7 +420,12 @@
                                     <img src="/images/icons/header/basket.png" alt="Basket">
                                 </a>
                             </li>
-                            <li class="bar-menu">
+                            <li class="bar">
+                                <a title="{mob_menu}">
+                                    <img src="/images/icons/header/bar.svg" alt="Bar">
+                                </a>
+                            </li>
+                            <li class="bar-menu" style="display: none;">
                                 <a title="{mob_menu}">
                                     <img src="/images/icons/header/bar.svg" alt="Bar">
                                 </a>

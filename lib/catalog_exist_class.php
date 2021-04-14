@@ -225,11 +225,12 @@ class CatalogExistClass extends CatalogueClass
             $dbc->query("UPDATE `$table_params` SET `status`=0 WHERE 1;");
         }
 
-        $params_str = "";
+        $params_str = ""; $params = [];
         $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id';");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $param_id = $db->result($r, $i - 1, "PARAM_ID");
+            $params[] = $param_id;
             $params_str .= "`param_$param_id` VARCHAR(50),";
         }
 
@@ -242,6 +243,28 @@ class CatalogExistClass extends CatalogueClass
             $params_str
             PRIMARY KEY (`id`)
         ) ENGINE = MYISAM;");
+
+        foreach ($params as $param_id) {
+            $dbc->query("
+            SET @dbname = DATABASE();
+            SET @tablename = '$table_params';
+            SET @columnname = 'param_$param_id';
+            SET @preparedStatement = (SELECT IF(
+              (
+                SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE
+                  (table_name = @tablename)
+                  AND (table_schema = @dbname)
+                  AND (column_name = @columnname)
+              ) > 0,
+              'SELECT 1',
+              CONCAT('ALTER TABLE ', @tablename, ' ADD ', @columnname, ' INT(11);')
+            ));
+            PREPARE alterIfNotExists FROM @preparedStatement;
+            EXECUTE alterIfNotExists;
+            DEALLOCATE PREPARE alterIfNotExists;
+            ");
+        }
 
         $products = [];
         $r = $db->query("SELECT t2a.`ART_ID`, t2a.`PARAM_ID`, t2a.`VALUE_ID`
