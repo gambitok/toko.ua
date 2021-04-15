@@ -19,6 +19,8 @@
 	<meta name="description" content="{site_description}">
 	<meta name="keywords" content="{site_keywords}">
 
+	<meta name="format-detection" content="telephone=no">
+
 	{meta_noindex}
 	<meta name="distribution" content="global">
 	<meta name="google-site-verification" content="KA_3DBoBspAeA7v6LtjRUB9bXdPhWPcgNUvlNhZjzac" />
@@ -420,12 +422,12 @@
                                     <img src="/images/icons/header/basket.png" alt="Basket">
                                 </a>
                             </li>
-                            <li class="bar">
-                                <a title="{mob_menu}">
-                                    <img src="/images/icons/header/bar.svg" alt="Bar">
-                                </a>
-                            </li>
-                            <li class="bar-menu" style="display: none;">
+<!--                            <li class="bar">-->
+<!--                                <a title="{mob_menu}">-->
+<!--                                    <img src="/images/icons/header/bar.svg" alt="Bar">-->
+<!--                                </a>-->
+<!--                            </li>-->
+                            <li class="bar-menu">
                                 <a title="{mob_menu}">
                                     <img src="/images/icons/header/bar.svg" alt="Bar">
                                 </a>
@@ -441,18 +443,34 @@
             </div>
         </div>
 
+<!--		<div id="navigation" class="row header-nav">-->
+<!--			<div class="container">-->
+<!--				<nav class="row align-items-center" itemscope itemtype="http://schema.org/SiteNavigationElement">-->
+<!--					<ul>{details_info}</ul>-->
+<!--				</nav>-->
+<!--			</div>-->
+<!--			<div id="navigation-hide" class="row header-nav-hide" style="display:none;">-->
+<!--				<div class="col-12 content-nav">-->
+<!--					<div class="container">-->
+<!--						<div id="content-nav__content" class="content-nav__content tree-block"></div>-->
+<!--					</div>-->
+<!--					<div id="content-nav__footer" class="content-nav__footer">-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
+
 		<div id="navigation" class="row header-nav">
 			<div class="container">
-				<nav class="row align-items-center" itemscope itemtype="http://schema.org/SiteNavigationElement">
-					<ul>{details_info}</ul>
+				<nav class="row align-items-center">
+					<ul>{catalog_range}</ul>
 				</nav>
 			</div>
-			<div id="navigation-hide" class="row header-nav-hide" style="display:none;">
+			<div id="navigation-hide" class="row header-nav-hide" style="top: 60px; width: 100%; left: 15px; display:none;">
 				<div class="col-12 content-nav">
 					<div class="container">
-						<div id="content-nav__content" class="content-nav__content tree-block"></div>
-					</div>
-					<div id="content-nav__footer" class="content-nav__footer">
+						<div id="content-nav__content" class="content-nav__content tree-block">
+						</div>
 					</div>
 				</div>
 			</div>

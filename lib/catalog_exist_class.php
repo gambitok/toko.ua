@@ -226,7 +226,7 @@ class CatalogExistClass extends CatalogueClass
         }
 
         $params_str = ""; $params = [];
-        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id';");
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id' AND `STATUS`=1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $param_id = $db->result($r, $i - 1, "PARAM_ID");
@@ -787,7 +787,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $params = [];
-        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id';");
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id' AND `STATUS`=1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $param_id = $db->result($r, $i - 1, "PARAM_ID");
@@ -976,11 +976,11 @@ class CatalogExistClass extends CatalogueClass
         return $where_mfa;
     }
 
-    public function showPartsCatalogueError($status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1)
+    public function showPartsCatalogueError($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1)
     {
         $automan = new AutoClass();
         $form = $this->getHtmlForm("catalog_exist/error");
-        $form = str_replace("{form_car}", $this->getPartsCatalogueCars($status_auto, $status_auto_type, $mfa_link, $model_link), $form);
+        $form = str_replace("{form_car}", $this->getPartsCatalogueCars($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link), $form);
         $form = $this->replaceLang($form);
         $form = str_replace("{h1_text}", "<b>$filters_h1</b>", $form);
         $form = str_replace("{vin_text}", "<a class='blue-a' onclick=\"$('#VinFormPhone').modal('show');\">{vin_order}</a>", $form);
@@ -1003,8 +1003,10 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show catalog form
      * */
-    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $status_auto_type = 0, $mfa_link = "", $model_link = "")
+    public function showPartsCatalogueParams($group_id, $str_linka = "", $page = 1, $filters = [], $status_auto_type = 0, $mfa_link = "", $model_link = "")
     {
+        $search = new SearchClass();
+        $automan = new AutoClass();
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
         $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
@@ -1053,17 +1055,29 @@ class CatalogExistClass extends CatalogueClass
         $filters_form = $this->getPartsFiltersForm($group_id, $filters, $where_mfa, $where_link_arts, $query, $mfa_link, $model_link);
 
         $pagination_form = $this->getPartsPaginationForm($count, $page);
-        list($filters_h1, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $filters, $mfa_link, $model_link);
+        list($filters_h1, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $str_linka, $filters, $mfa_link, $model_link);
 
         $form = $this->getHtmlForm("catalog_exist/list_params");
 
         if (empty($art_id_str)) {
-            $form = $this->showPartsCatalogueError($status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1);
+            $form = $this->showPartsCatalogueError($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1);
         }
 
+        $translit = "";
+        if ($mfa_link != "") {
+            $mfa_id = $automan->getMfaLink($mfa_link);
+            $model = "";
+            if ($model_link != "") {
+                $model = $automan->getModLink($model_link);
+            }
+            $translit = $search->getCarManufTranslit($mfa_id, $model);
+            $translit = "<span style='font-weight: 400;'>$translit</span>";
+        }
+
+        $form = str_replace("{details_group_id}", $group_id, $form);
         $form = str_replace("{parts_name}", $group_text, $form);
         $form = str_replace("{parts_list}", $list, $form);
-        $form = str_replace("{parts_h1}", "$filters_h1", $form);
+        $form = str_replace("{parts_h1}", "$filters_h1 $translit", $form);
         $form = str_replace("{parts_count}", "{unselect_cap} $count {chosen_goods}", $form);
         $form = str_replace("{parts_filters}", "$filters_btn", $form);
         $form = str_replace("{parts_pagination}", $pagination_form, $form);
@@ -1075,7 +1089,7 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{filters_count}", $filters_count, $form);
         $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);
 
-        $form = str_replace("{parts_cars}", $this->getPartsCatalogueCars($status_auto, $status_auto_type, $mfa_link, $model_link), $form);
+        $form = str_replace("{parts_cars}", $this->getPartsCatalogueCars($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link), $form);
         $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $filters, $status_auto, $status_auto_type), $form);
         $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $filters, $status_auto, $status_auto_type, $mfa_link, $model_link), $form);
         $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
@@ -1086,7 +1100,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show filter items form
      * */
-    public function getPartsFiltersItems($group_id, $filters = [], $mfa_link = "", $model_link = "")
+    public function getPartsFiltersItems($group_id, $str_linka = "", $filters = [], $mfa_link = "", $model_link = "")
     {
         $filters_btn = ""; $count_vals = 0;
         if (!empty($filters)) {
@@ -1113,7 +1127,12 @@ class CatalogExistClass extends CatalogueClass
             }
         }
         $filters_h1 = $this->getCatalogH1($group_id, $filters, $mfa_link, $model_link);
-        $filters_title = $this->getCatalogTitle($group_id, $filters, $mfa_link, $model_link);
+
+        $filters_title = $this->getCatalogTitleCache($str_linka);
+        if ($filters_title == "") {
+            $filters_title = $this->getCatalogTitle($group_id, $filters, $mfa_link, $model_link);
+        }
+
         return array($filters_h1, $filters_title, $filters_btn, $count_vals);
     }
 
@@ -1436,7 +1455,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show cars form
      * */
-    public function getPartsCatalogueCars($status_auto = 0, $status_auto_type = 0, $mfa_link = "", $model_link = "")
+    public function getPartsCatalogueCars($group_id, $status_auto = 0, $status_auto_type = 0, $mfa_link = "", $model_link = "")
     {
         $products = new ProductsClass();
         $form = "";
@@ -1446,10 +1465,10 @@ class CatalogExistClass extends CatalogueClass
                 if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 1)) {
                     $form = $products->getCarsGarage();
                 } else {
-                    $form = $products->getCarsSearch($mfa_link, $model_link);
+                    $form = $products->getCarsSearch($mfa_link, $model_link, 0, $group_id);
                 }
             } else {
-                $form = $products->getCarsSearch($mfa_link, $model_link);
+                $form = $products->getCarsSearch($mfa_link, $model_link, 0, $group_id);
             }
         }
         return $form;
@@ -1764,7 +1783,6 @@ class CatalogExistClass extends CatalogueClass
             }
         }
 
-
         if (!empty($filters)) {
             $params = $this->getCheckedFilters($group_id, $filters);
             if (array_key_exists(0, $params)) {
@@ -1811,6 +1829,21 @@ class CatalogExistClass extends CatalogueClass
         }
 
         return "$group_text $car_text";
+    }
+
+    /*
+     * catalog title cache
+     * */
+    public function getCatalogTitleCache($str_linka)
+    {
+        $db = DbSingleton::getTokoDb();
+        $title = "";
+        $r = $db->query("SELECT * FROM `T2_TITLES` WHERE `ROUTER`='$this->catalog_link' AND `LINK`='$str_linka' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $title = $db->result($r, 0, "TITLE_RU");
+        }
+        return $title;
     }
 
     /*

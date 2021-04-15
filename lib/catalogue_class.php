@@ -11,7 +11,7 @@ class CatalogueClass
     public $search_link = "search";
     public $faq_card_count = 2;
     public $faq_socials_card_count = 4;
-    public $catalog_exist_link = "catalog_new";
+    public $catalog_exist_link = "catalog";
 
     /*
      * get catalog search form
@@ -3007,6 +3007,13 @@ class CatalogueClass
         return $text;
     }
 
+    public function getGroupRowText($group_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        return $db->result($r, 0, "TEX_RU");
+    }
+
     public function getGroupRowLink($group_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -3148,7 +3155,8 @@ class CatalogueClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id = $db->result($r, $i - 1, "GROUP_ID");
-            $group_name = $this->getGroupRowName($group_id);
+            //$group_name = $this->getGroupRowName($group_id);
+            $group_name = $this->getGroupRowText($group_id);
             $group_link = $this->getGroupRowLink($group_id);
             $group_image = $this->getGroupRowImage($group_id);
             $groups[] = compact("group_name", "group_link", "group_image");
@@ -3193,8 +3201,9 @@ class CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $head_id = $db->result($r, $i - 1, "HEAD_ID");
             $head_name = $this->getHeadRowName($head_id);
-            $list .= "<li style='height: 60px;'>
-                <a style='color: white;' onclick='getHeaderContent(\"$head_id\")'>$head_name</a>
+            // onclick='getHeaderContent(\"$head_id\")'
+            $list .= "<li class='header-nav__li' data-nav-id=\"$head_id\" style='height: 60px;'>
+                <a style='color: white;'>$head_name</a>
             </li>";
         }
         return $list;

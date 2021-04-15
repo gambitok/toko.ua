@@ -497,10 +497,18 @@ function copyToClipboard(element, art_name) {
 /*
 * finish add car to garage
 * */
-function finishGarage(typ_id, str_link) {
+function finishGarage(typ_id, str_link, group_link) {
     setCookie('auto_typ_id', typ_id);
+    console.log(group_link);
     addToGarage(typ_id);
-    location.href = "https://toko.ua/catalog/" + str_link;
+    let add_link = "";
+    if (str_link != "") {
+        add_link = str_link;
+    }
+    if (group_link != "") {
+        add_link = group_link;
+    }
+    location.href = "https://toko.ua/catalog/" + add_link;
 }
 
 // ADD NEW CAR TO GARAGE

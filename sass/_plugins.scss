@@ -941,33 +941,33 @@ table {
         overflow: auto;
         z-index: 999999;
     }
-    ul {
-        list-style: none;
-        li {
-            border-bottom: 1px solid #ddd;
-            font-size: 24px;
-            padding: 15px 30px;
-            background: url("/images/icons/arrow-right.svg") calc(100% - 20px) center no-repeat;
-            &.title {
-                background: none;
-            }
-            &:hover > a {
-                color: #228b94;
-                text-decoration: underline;
-            }
-            span {
-                color: #333;
-                cursor: pointer;
-                font-size: 25px;
-            }
-            a {
-                display: block;
-                width: 100%;
-                color: #333;
-                font-size: 25px;
-            }
-        }
-    }
+    //ul {
+    //    list-style: none;
+    //    li {
+    //        border-bottom: 1px solid #ddd;
+    //        font-size: 24px;
+    //        padding: 15px 30px;
+    //        background: url("/images/icons/arrow-right.svg") calc(100% - 20px) center no-repeat;
+    //        &.title {
+    //            background: none;
+    //        }
+    //        &:hover > a {
+    //            color: #228b94;
+    //            text-decoration: underline;
+    //        }
+    //        span {
+    //            color: #333;
+    //            cursor: pointer;
+    //            font-size: 25px;
+    //        }
+    //        a {
+    //            display: block;
+    //            width: 100%;
+    //            color: #333;
+    //            font-size: 25px;
+    //        }
+    //    }
+    //}
 }
 
 /*==== /Mobile Navigation ====*/

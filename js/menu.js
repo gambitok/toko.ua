@@ -341,12 +341,26 @@ function saveSellForm() {
     }
 }
 
+// function showHideNavigation(head_id) {
+//     $("#navigation-hide").show();
+//     JsHttpRequest.query(folder,{'w':'showHeadTemplate', 'head_id':head_id},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//         $("#content-nav__content").html(result.content);
+//         $("#content-nav__footer").html(result.footer);
+//         $(".header-nav__li").each(function() {
+//             $(this).removeClass("header-nav__li-active");
+//         });
+//         $("li[data-nav-id='" + head_id + "']").addClass("header-nav__li-active");
+//         $(".backdrop").addClass("backdrop-show");
+//     }}, true);
+// }
 function showHideNavigation(head_id) {
+    console.log(head_id);
     $("#navigation-hide").show();
-    JsHttpRequest.query(folder,{'w':'showHeadTemplate', 'head_id':head_id},
+    JsHttpRequest.query(folder,{'w':'getHeaderContent', 'head_id':head_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
         $("#content-nav__content").html(result.content);
-        $("#content-nav__footer").html(result.footer);
+        // $("#content-nav__footer").html(result.footer);
         $(".header-nav__li").each(function() {
             $(this).removeClass("header-nav__li-active");
         });

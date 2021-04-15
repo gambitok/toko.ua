@@ -6,6 +6,10 @@ $linka = findLinks();
 $router = $linka[1];
 $router_2 = $linka[2];
 
+$str_linka = $linka;
+unset($str_linka[0]);
+$str_linka = implode("/", $str_linka);
+
 if ($router == "") {
     $content = str_replace("{main_window}", $catalogue->getCatalogColList(), $content);
 }
@@ -27,7 +31,8 @@ if (!empty($group_id)) {
     ($page != NULL) ?: $page = 1;
     $status_auto_type = $catalogue->getUrlNumber($_COOKIE['status_auto_type']);
     ($status_auto_type != NULL) ?: $status_auto_type = 0;
-    $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $status_auto_type, $mfa_link, $model_link);
+    $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $str_linka, $page, $filters, $status_auto_type, $mfa_link, $model_link);
+
     $content = str_replace("{main_window}", $catalog_form["form"], $content);
     $content = str_replace("{site_title}", $catalog_form["title"], $content);
 }

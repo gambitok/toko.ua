@@ -445,20 +445,20 @@ class ProductsClass extends CatalogueClass
         return $form;
     }
 
-    public function getCarsSearch($mfa_link = "", $mod_link = "", $str_id = 0)
+    public function getCarsSearch($mfa_link = "", $mod_link = "", $str_id = 0, $group_id = 0)
     {
         $automan = new AutoClass();
         $form = $this->getHtmlForm("cars/cars");
         if ($mfa_link != "") {
             $mfa_id = $automan->getMfaLink($mfa_link);
             $mfa_brand = $automan->getMfaBrand($mfa_id);
-            $list_model = $this->getCarsSearchContent("manuf", $mfa_id, $str_id)[0];
+            $list_model = $this->getCarsSearchContent("manuf", $mfa_id, $str_id, $group_id)[0];
             $form = str_replace("{cars_models}", $list_model, $form);
             $form = str_replace("{selected_manuf}", $mfa_id, $form);
             $form = str_replace("{cars_manufacturer}", $mfa_brand, $form);
             if ($mod_link != "") {
                 $model = $automan->getModLink($mod_link);
-                $form = str_replace("{cars_years}", $this->getCarsSearchContent("model", $mfa_id . "_" . $model, $str_id)[0], $form);
+                $form = str_replace("{cars_years}", $this->getCarsSearchContent("model", $mfa_id . "_" . $model, $str_id, $group_id)[0], $form);
                 $form = str_replace("{selected_model}", $mfa_id . "_" . $model, $form);
                 $form = str_replace("{cars_model}", $model, $form);
                 $form = str_replace("{active_nav}", "years", $form);
@@ -520,7 +520,7 @@ class ProductsClass extends CatalogueClass
         return $form;
     }
 
-    public function getCarsSearchContent($type = "", $value = "", $str_id = 0)
+    public function getCarsSearchContent($type = "", $value = "", $str_id = 0, $group_id = 0)
     {
         $type =  $this->getNameString($type);
         $value =  $this->getNameString($value);
@@ -531,6 +531,7 @@ class ProductsClass extends CatalogueClass
         $n = 0;
         $list = $title = $nav = $tab = "";
         $str_link = $automan->getStrNewLink($str_id);
+        $group_link = $automan->getGroupRowLink($group_id);
         $skip = 0;
 
         // MANUFACTURE
@@ -638,7 +639,7 @@ class ProductsClass extends CatalogueClass
                 $fuel_id = $db->result($r, $i - 1, "FUEL_ID");
                 $fuel_text = $this->getFuelName($fuel_id);
                 $fuel_cap = $mod_id . "_" . $volume_cm . "_" . $fuel_id;
-                $onclick = ($count_types == 1) ? "finishGarage('$typ_id', '$str_link')" : "toggleCarsTab(this)";
+                $onclick = ($count_types == 1) ? "finishGarage('$typ_id', '$str_link', '$group_link')" : "toggleCarsTab(this)";
                 $list .= "<div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"$onclick\">$volume_cm $fuel_text</div>";
             }
             $title = $this->getModIdText($mod_id);
@@ -671,8 +672,8 @@ class ProductsClass extends CatalogueClass
                     $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
                 }
                 $eng_cod = $db->result($r, $i - 1, "ENG_Cod");
-                $onclick = "finishGarage('$typ_id', '$str_link')";
-                $list .= "<div class=\"cars-tab__block-item cars-tab__block-item-modif\"><a href=\"#\" onclick=\"$onclick\">
+                $onclick = "finishGarage('$typ_id', '$str_link', '$group_link')";
+                $list .= "<div class=\"cars-tab__block-item cars-tab__block-item-modif\"><a onclick=\"$onclick\">
                 <b>$typ_text</b> 
                     <table>
                         <tr><td>{date_release}:</td><td class=\"text-right\">$d_start - $d_end</td></tr>

@@ -234,13 +234,14 @@ function toggleCarsNavigation(index, type, attr) {
 * */
 function getCarsSearchContent(type, attr) {
     let str_id = $("#details_str_id").val();
+    let group_id = $("#details_group_id").val();
     // $("#cars-tab1").html("<div class=\"spinner-border\"></div>");
     // $("#cars-tab2").html("<div class=\"spinner-border\"></div>");
     // $("#cars-tab3").html("<div class=\"spinner-border\"></div>");
     // $("#cars-tab4").html("<div class=\"spinner-border\"></div>");
     // $("#cars-tab5").html("<div class=\"spinner-border\"></div>");
     // $("#cars-tab6").html("<div class=\"spinner-border\"></div>");
-    JsHttpRequest.query(folder,{'w':'getCarsSearchContent', 'type':type, 'attr':attr, 'str_id':str_id},
+    JsHttpRequest.query(folder,{'w':'getCarsSearchContent', 'type':type, 'attr':attr, 'str_id':str_id, 'group_id':group_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             let tab = $("#" + result.tab);
             tab.html(result.list);

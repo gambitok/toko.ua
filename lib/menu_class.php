@@ -830,6 +830,7 @@ class MenuClass extends CatalogueClass
     public function getMenuBar($sel_head_id = 0)
     {
         $db = DbSingleton::getTokoDb();
+        $catalogue = new CatalogueClass();
         $list = "";
         if (empty($sel_head_id)) {
             $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
@@ -866,7 +867,7 @@ class MenuClass extends CatalogueClass
                     foreach ($groups as $group_id) {
                         $group_name = $this->getGroupRowName($group_id);
                         $group_link = $this->getGroupRowLink($group_id);
-                        $list .= "<div class='menu-bar-group__item'><a href='/catalog_new/$group_link/'>$group_name</a></div>";
+                        $list .= "<div class='menu-bar-group__item'><a href='/$catalogue->catalog_exist_link/$group_link/'>$group_name</a></div>";
                     }
                     $list .= "</div>";
                 }
