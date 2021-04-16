@@ -3,16 +3,19 @@
 ini_set('memory_limit', '2048M');
 $linka = findLinks();
 
-$path_from = $linka[0] . "/" . $linka[1] . "/";
+$site_name = $catalogue->getUrlString($linka[0]);
+$router = $catalogue->getUrlString($linka[1]);
+$router_2 = $catalogue->getUrlString($linka[2]);
+$router_3 = $catalogue->getUrlString($linka[3]);
+$router_4 = $catalogue->getUrlString($linka[4]);
+
+$path_from = $site_name . "/" . $router . "/";
 if ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
-    $mfa_link = $linka[2];
-    $model_link = $linka[3];
+    $mfa_link = $router_2;
+    $model_link = $router_3;
     $path_to = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
     header("Location: $path_to", TRUE, 301);
 }
-
-$router = $linka[1];
-$router_2 = $linka[2];
 
 $str_linka = $linka;
 unset($str_linka[0]);
@@ -29,12 +32,12 @@ if ($router == "show") {
 $group_id = $catalog_exist->getGroupExistId($router);
 
 if (!empty($group_id)) {
-    $filters = $linka[2];
+    $filters = $router_2;
     if ($filters == "auto") {
         $filters = [];
     }
-    $mfa_link = $linka[3];
-    $model_link = $linka[4];
+    $mfa_link = $router_3;
+    $model_link = $router_4;
     $page = $catalogue->getUrlNumber($_GET['page']);
     ($page != NULL) ?: $page = 1;
     $status_auto_type = $catalogue->getUrlNumber($_COOKIE['status_auto_type']);

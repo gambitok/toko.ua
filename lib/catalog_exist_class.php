@@ -1078,7 +1078,7 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{parts_name}", $group_text, $form);
         $form = str_replace("{parts_list}", $list, $form);
         $form = str_replace("{parts_h1}", "$filters_h1 $translit", $form);
-        $form = str_replace("{parts_count}", "{unselect_cap} $count {chosen_goods}", $form);
+        $form = str_replace("{parts_count}", "{unselect_cap} $count " . $this->getGoodsCap($count), $form);
         $form = str_replace("{parts_filters}", "$filters_btn", $form);
         $form = str_replace("{parts_pagination}", $pagination_form, $form);
         $form = str_replace("{parts_params}", $filters_form, $form);
@@ -1510,15 +1510,19 @@ class CatalogExistClass extends CatalogueClass
                         if ($mod_id_link != "") {
                             $mod_id = $automan->getAutoModelIdLink($mod_id_link)["model_id"];
                             $form = str_replace("{seo_auto}", $this->getGroupCarTypeList($group_id, $mfa_id, $mod_id), $form);
+                            $form = str_replace("{seo_style}", "", $form);
                         } else {
                             $model = $automan->getModLink($mod_link);
                             $form = str_replace("{seo_auto}", $this->getGroupCarModIDList($group_id, $mfa_id, $model), $form);
+                            $form = str_replace("{seo_style}", "", $form);
                         }
                     } else {
                         $form = str_replace("{seo_auto}", $this->getGroupCarModList($group_id, $mfa_id), $form);
+                        $form = str_replace("{seo_style}", "", $form);
                     }
                 } else {
                     $form = str_replace("{seo_auto}", $this->getGroupCarMfaList($group_id), $form);
+                    $form = str_replace("{seo_style}", "", $form);
                 }
             }
 
@@ -1530,6 +1534,7 @@ class CatalogExistClass extends CatalogueClass
         }
         $form = str_replace("{seo_auto}", "", $form);
         $form = str_replace("{seo_popular}", "", $form);
+        $form = str_replace("{seo_style}", "none", $form);
 
         return $form;
     }
@@ -1837,6 +1842,7 @@ class CatalogExistClass extends CatalogueClass
     public function getCatalogTitleCache($str_linka)
     {
         $db = DbSingleton::getTokoDb();
+        $str_linka = $this->getUrlString($str_linka);
         $title = "";
         $r = $db->query("SELECT * FROM `T2_TITLES` WHERE `ROUTER`='$this->catalog_link' AND `LINK`='$str_linka' LIMIT 1;");
         $n = $db->num_rows($r);

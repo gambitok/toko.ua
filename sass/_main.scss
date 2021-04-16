@@ -2747,7 +2747,6 @@ header {
 
 .garage-user {
     background: #fff;
-    //border-bottom: 3px solid #0c5460;
     box-shadow: 0 1px 4px #ccc;
     height: auto;
     border: 2px solid #2d8afa;
@@ -2766,16 +2765,6 @@ header {
         color: #fff;
         padding: 15px;
         height: 100%;
-        //&:after {
-        //    background: url(/images/icons/back-arrow.png) left no-repeat;
-        //    background-size: contain;
-        //    content: "";
-        //    position: absolute;
-        //    left: calc(100% - 30px);
-        //    bottom: 0;
-        //    width: 30px;
-        //    height: 100%;
-        //}
         span {
             display: inline-block;
             font-size: 11px;
@@ -2818,6 +2807,7 @@ header {
         img {
             float: right;
             max-height: 85px;
+            max-width: 100%;
         }
     }
 }

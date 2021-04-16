@@ -1,29 +1,22 @@
-<style>
-    .blue-a {
-        color: #0ca9ee;
-        font-weight: bold;
-    }
-</style>
-
 <div>
     <div>
         {form_car}
     </div>
-    <div class="content page-404">
+    <div class="content catalogue-error">
         <h1>{catalog_exist_error}</h1>
         <div class="row">
-            <div class="col-lg-3 col-12">
-                <img class="img-center" src="/images/sad_car.png" alt="404" type="404" style="margin: 30px auto;">
+            <div class="col-lg-3 col-12 order-lg-0 order-1 catalogue-error__image">
+                <img src="/images/sad_car.png" alt="404">
             </div>
-            <div class="col-lg-9 col-12">
+            <div class="col-lg-9 col-12 order-lg-1 order-0">
                 <div>
                     <p>{catalog_exist_error_1}</p>
                     <p>{catalog_exist_error_2}</p>
                     <p>{catalog_exist_error_3}</p>
                 </div>
-                <div style="padding: 15px; margin: 15px 0; background: #f1f1f1">
+                <div class="catalogue-error__contacts">
                     <div>
-                        <ul class="modal-help-row-phones" style="display: flex; flex-wrap: nowrap; justify-content: space-between; width: 100%;">
+                        <ul class="modal-help-row-phones">
                             <li>
                                 <img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
                                 <a href="tel:0970803060">(097) <b>080 30 60</b></a>
@@ -38,7 +31,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="modal-help-row-socials" style="justify-content: space-around; margin: 0 120px;">
+                    <div class="modal-help-row-socials">
                         <a href="https://t.me/tokoua_bot" target="_blank" class="modal-help-row-socials__item">
                             <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__telegram ">
                                 <img src="/images/icons/socials/telegram.svg" alt="Telegram">
@@ -63,12 +56,6 @@
         </div>
     </div>
 </div>
-
-<style>
-	.request-row-mob {
-		display: flex!important;
-	}
-</style>
 
 <!-- Modal Cars -->
 <div class="modal fade" id="VinFormPhone" role="dialog" tabindex="-1">

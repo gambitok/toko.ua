@@ -284,6 +284,32 @@ trait Helper
         $cap = $this->replaceLang($cap);
         return $cap;
     }
+    /*
+     * get text offer variables
+     * */
+    public function getGoodsCap($i)
+    {
+        $cap1 = "{goods_cap}";
+        $cap2 = "{goods_pair_cap}";
+        $cap3 = "{goods_tenths_cap}";
+        $cap = "";
+        $mas1 = [1];
+        $mas2 = [2, 3, 4];
+        $mas3 = [0, 5, 6, 7, 8, 9];
+        $mas4 = [11, 12, 13, 14, 15, 16, 17, 18, 19];
+        $mod = $i % 10;
+        if (in_array($mod, $mas1)) {
+            $cap = $cap1;
+        }
+        if (in_array($mod, $mas2)) {
+            $cap = $cap2;
+        }
+        if (in_array($mod, $mas3) || in_array($i, $mas4)) {
+            $cap = $cap3;
+        }
+        $cap = $this->replaceLang($cap);
+        return $cap;
+    }
 
     /*
      * Check ART_ID in PHOTO

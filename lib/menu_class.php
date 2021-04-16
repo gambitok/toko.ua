@@ -807,6 +807,9 @@ class MenuClass extends CatalogueClass
         return $list;
     }
 
+    /*
+     * site warning message
+     * */
     public function getSiteWarningMessage()
     {
         $db = DbSingleton::getTokoDb();
@@ -827,13 +830,16 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * get phone nav menu
+     * */
     public function getMenuBar($sel_head_id = 0)
     {
         $db = DbSingleton::getTokoDb();
         $catalogue = new CatalogueClass();
         $list = "";
         if (empty($sel_head_id)) {
-            $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
+            $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $list = $this->getHtmlForm("bar/main");
@@ -850,19 +856,33 @@ class MenuClass extends CatalogueClass
         } else {
             $arr = [];
             $head_name = $this->getHeadRowName($sel_head_id);
-            $r = $db->query("SELECT `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = '$sel_head_id' GROUP BY `CAT_ID`, `GROUP_ID`;");
+            $r = $db->query("SELECT he.`CAT_ID`, he.`GROUP_ID`, he.`POPULAR`
+            FROM `T2_TREE_CONSTRUCTOR_STR` cs
+                LEFT JOIN `T2_TREE_HCG_EXIST` he ON (he.HEAD_ID = cs.HEAD_ID AND he.CAT_ID = cs.CAT_ID)
+                LEFT JOIN `T2_TREE_GROUP_EXIST` ge ON (ge.GROUP_ID = he.GROUP_ID)
+            WHERE cs.`CAT_ID` > 0 AND ge.`STATUS` = 1 AND cs.`HEAD_ID` = '$sel_head_id'
+            ORDER BY he.`POPULAR` DESC, he.`CAT_ID` ASC, he.`GROUP_ID` ASC;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $cat_id = $db->result($r, $i - 1, "CAT_ID");
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
+                $popular = $db->result($r, $i - 1, "POPULAR");
+                if ($popular == 1) {
+                    $arr[0][] = $group_id;
+                }
                 $arr[$cat_id][] = $group_id;
             }
+            //sort($arr);
             if (!empty($arr)) {
                 $list .= "<div class='menu-bar-head__title' onclick=\"getMenuBar('0');\"><i class='fa fa-chevron-left'></i> $head_name</div>";
                 $list .= "<div class='menu-bar-cat'>";
                 foreach ($arr as $cat_id => $groups) {
                     $cat_name = $this->getCatRowName($cat_id);
-                    $list .= "<div class='menu-bar-cat__title'>$cat_name</div>";
+                    $icon = "";
+                    if ($cat_id == 0) {
+                        $icon = "<i class=\"fa fa-circle\" style=\"margin-right: 5px; color: #f44438\"></i>";
+                    }
+                    $list .= "<div class='menu-bar-cat__title'>$icon$cat_name</div>";
                     $list .= "<div class='menu-bar-group'>";
                     foreach ($groups as $group_id) {
                         $group_name = $this->getGroupRowName($group_id);
