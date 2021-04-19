@@ -157,6 +157,7 @@ class FormClass extends CatalogueClass
         $tpoint = $this->getTpointID();
         $cur = $this->getCurrentExrate();
         $cur_cap = $kours->getKoursCaption($cur);
+        $art_id = str_replace("'", "", $art_id);
 
         $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
         FROM `T2_ARTICLES` t2a

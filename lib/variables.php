@@ -145,7 +145,7 @@ trait Variables
         $article_nr_displ = $article_nr_search;
         $where_brand = "";
         if ($brand_nr_search > 0) {
-            $where_brand = "AND `BRAND_ID`='$brand_nr_search'";
+            $where_brand = "AND `BRAND_ID`=$brand_nr_search";
         }
         $r = $db->query("SELECT `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' $where_brand LIMIT 1;");
         $n = $db->num_rows($r);
@@ -396,6 +396,7 @@ trait Variables
     public function getFiltersSearch($brand_filter)
     {
         if ($brand_filter != "") {
+            $brand_filter = str_replace("'", "", $brand_filter);
             $where_brands = " AND t2a.BRAND_ID IN ($brand_filter) ";
         } else {
             $where_brands = "";

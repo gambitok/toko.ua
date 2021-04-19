@@ -742,7 +742,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         if ($article_nr_search != "") {
-            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' AND `BRAND_ID`='$brand_nr_search' LIMIT 1;");
+            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' AND `BRAND_ID`=$brand_nr_search LIMIT 1;");
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $art_id = $db->result($r, 0, "ART_ID");
@@ -754,22 +754,27 @@ class CatalogueClass
             $where_art_id_str = 0;
         }
         $where_art_id_str = rtrim($where_art_id_str, ",");
-        $r = $db->query("
-        SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT as AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
-        FROM `T2_ARTICLES` t2a
-            LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-            LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-            LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
-        WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0) $where_brands 
-        GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
-        UNION ALL
-        SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2si.stock_suppl as AMOUNT, t2si.client_storage_id as storage_id, t2si.suppl_id, t2si.return_delay
-        FROM `T2_ARTICLES` t2a
-            LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-            LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-            LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
-        WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0) $where_brands 
-        GROUP BY t2a.ART_ID, t2si.client_storage_id;");
+        $where_art_id_str = str_replace("'", "", $where_art_id_str);
+        $r = "";
+        if ($where_art_id_str != "") {
+            $r = $db->query("
+            SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT as AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
+            FROM `T2_ARTICLES` t2a
+                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
+                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
+                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
+            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0) $where_brands 
+            GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
+            UNION ALL
+            SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2si.stock_suppl as AMOUNT, t2si.client_storage_id as storage_id, t2si.suppl_id, t2si.return_delay
+            FROM `T2_ARTICLES` t2a
+                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
+                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
+                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
+            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0) $where_brands 
+            GROUP BY t2a.ART_ID, t2si.client_storage_id;");
+        }
+
         return $r;
     }
 
@@ -781,8 +786,7 @@ class CatalogueClass
         $db = DbSingleton::getTokoDb();
         $arts = [];
         $art_id_arr = [];
-        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` 
-        FROM `T2_CROSS` 
+        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` 
         WHERE `ART_ID`='$art_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND` IN (3,4) AND `RELATION`=1) OR (`KIND` IN (3,4) AND `RELATION`=2)) 
         GROUP BY `SEARCH_NUMBER` LIMIT 0,10;");
         $n = $db->num_rows($r);
@@ -794,7 +798,7 @@ class CatalogueClass
         foreach ($arts as $art) {
             $article_search = $art["search_number"];
             $brand_id = $art["brand_id"];
-            $r = $db->query("SELECT `ART_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`='$brand_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND`=0 AND `RELATION`=0));");
+            $r = $db->query("SELECT `ART_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`=$brand_id AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND`=0 AND `RELATION`=0));");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $cross_art_id = $db->result($r, $i - 1, "ART_ID");
@@ -1288,11 +1292,13 @@ class CatalogueClass
         session_start();
         $temp_key = session_id();
         $mas = [];
-        $list = $where_art_id_str = "";
+        $list = "";
+        // $where_art_id_str = "";
 
         $article_nr_search = $this->getArticleDispl($art_id_search);
         $brand_nr_search = $this->getArticleBrand($art_id_search);
 
+        $arts = [];
         $r = $db->query("SELECT t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2c.BRAND_ID, t2c.DISPLAY_NR, t2c.ART_ID, t2c.KIND, t2c.RELATION 
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
@@ -1303,14 +1309,16 @@ class CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             if ($art_id_search != $art_id) {
-                $where_art_id_str .= "'$art_id',";
+                //$where_art_id_str .= "$art_id,";
+                $arts[] = $art_id;
             }
         }
-        $where_art_id_str = rtrim($where_art_id_str, ",");
+        // $where_art_id_str = rtrim($where_art_id_str, ",");
+        $where_art_id_str = implode(",", $arts);
 
         if ($where_art_id_str != "") {
             $this->createTemporarySearchTable($temp_key);
-            list($error, ,) = $this->getSearchMessages(1);
+            list($error) = $this->getSearchMessages(1);
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
             $n = $db->num_rows($r);
@@ -1619,7 +1627,7 @@ class CatalogueClass
     public function getBrandType($brand_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `KIND` FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
+        $r = $db->query("SELECT `KIND` FROM `T2_BRANDS` WHERE `BRAND_ID`=$brand_id LIMIT 1;");
         $kind = $db->result($r, 0, "KIND");
         return ($kind == 3);
     }
@@ -3155,12 +3163,10 @@ class CatalogueClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id = $db->result($r, $i - 1, "GROUP_ID");
-            //$group_name = $this->getGroupRowName($group_id);
             $group_name = $this->getGroupRowText($group_id);
             $group_link = $this->getGroupRowLink($group_id);
             $group_image = $this->getGroupRowImage($group_id);
             $groups[] = compact("group_name", "group_link", "group_image");
-
         }
         if ($cat_id == 0) {
             $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `POPULAR`=1;");
@@ -3201,7 +3207,6 @@ class CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $head_id = $db->result($r, $i - 1, "HEAD_ID");
             $head_name = $this->getHeadRowName($head_id);
-            // onclick='getHeaderContent(\"$head_id\")'
             $list .= "<li class='header-nav__li' data-nav-id=\"$head_id\" style='height: 60px;'>
                 <a style='color: white;'>$head_name</a>
             </li>";
