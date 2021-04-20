@@ -635,7 +635,7 @@ class FormClass extends CatalogueClass
             $page_cap = "<div class=\"carousel-caption\">{page_cap} $i {of_cap} $n</div>";
             $list .= "<div class=\"carousel-item $active\">
                 <div class=\"search__photo\" style='height: 400px'>
-                    <img itemprop=\"image\" src=\"$this->uploads_link/$photo_name\" alt=\"$article_info #$i\" title=\"$article_info #$i\">
+                    <img class=\"lazy\" itemprop=\"image\" data-src=\"$this->uploads_link/$photo_name\" alt=\"$article_info #$i\" title=\"$article_info #$i\">
                 </div>
                 $page_cap
             </div>";
@@ -647,7 +647,7 @@ class FormClass extends CatalogueClass
                         <div class=\"carousel-inner\" role=\"listbox\">
                             <div class=\"carousel-item active\">
                                 <div class=\"search__photo\">
-                                    <img itemprop=\"image\" src=\"https://toko.ua$nophoto\" alt=\"$article_info\" title=\"$article_info\">
+                                    <img class=\"lazy\" itemprop=\"image\" data-src=\"https://toko.ua$nophoto\" alt=\"$article_info\" title=\"$article_info\">
                                 </div>
                             </div>
                         </div>

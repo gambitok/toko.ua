@@ -220,7 +220,7 @@ class CatalogueClass
                 $link = ($count == 0) ? "showAlertModal(\"{brand_no_offer} `$text/$brand_name`\",\"{sorry_cap}\");" : "location.href=\"https://toko.ua$prefix/$this->search_link/$search_number/$brand_link/\";";
                 $list .= "<tr class=\"pointer table-row\" onclick='$link'>
                     <td class=\"minify\">
-                        <img itemprop=\"image\" src=\"$photo_name\" alt=\"Article\">
+                        <img itemprop=\"image\" data-src=\"$photo_name\" class=\"lazy\" alt=\"Article\">
                     </td>
                     <td>$text</td>
                     <td>$brand_name</td>
@@ -1641,34 +1641,34 @@ class CatalogueClass
         $brand = $this->getBrandName($brand_nr_search);
         // ANALOGS
         $image_analog = $this->images . "/tcdanalogs/clone.svg";
-        $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_analog}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_analog} $article_nr_search $brand\">";
+        $index_type = "<img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_analog}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_analog} $article_nr_search $brand\">";
         // OE
         if ($this->checkOriginalEquipment($true_art_id, $format_name)) {
             $image_analog = $this->images . "/tcdanalogs/OE.svg";
-            $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_original}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_original} $article_nr_search $brand\">";
+            $index_type = "<img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_original}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_original} $article_nr_search $brand\">";
         }
         // INCLUDED
         if ($this->checkAnalogTypes($art_id, $article_nr_search, 1)) {
             $image_analog = $this->images . "/tcdanalogs/chevron-square-down.svg";
-            $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_included}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_included} $article_nr_search $brand\">";
+            $index_type = "<img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_included}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_included} $article_nr_search $brand\">";
         }
         // PRESENTED
         if ($this->checkAnalogTypes($art_id, $article_nr_search, 2)) {
             $image_analog = $this->images . "/tcdanalogs/chevron-square-up.svg";
-            $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_presented}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_presented} $article_nr_search $brand\">";
+            $index_type = "<img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_presented}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_presented} $article_nr_search $brand\">";
         }
         // COMPANION
         if ($this->checkAnalogTypes($art_id, $article_nr_search, 3)) {
             $image_analog = $this->images . "/tcdanalogs/plus-square.svg";
-            $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_companion}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_companion} $article_nr_search $brand\">";
+            $index_type = "<img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_companion}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_companion} $article_nr_search $brand\">";
         }
         // REQUESTED
         if ($article_nr_search != "") if (($name == $article_nr_search || $format_name == $article_nr_search) && ($brand_id == $brand_nr_search)) {
             $image_analog = $this->images . "/tcdanalogs/square.svg";
-            $index_type = "<img src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_requested}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_requested} $article_nr_search $brand\">";
+            $index_type = "<img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_requested}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_requested} $article_nr_search $brand\">";
             if ($this->getBrandType($brand_id)) {
                 $image_analog = $this->images . "/tcdanalogs/OE.svg";
-                $index_type .= "<img style=\"margin-left: 5px;\" src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_original}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_original} $article_nr_search $brand\">";
+                $index_type .= "<img style=\"margin-left: 5px;\" data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_original}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_original} $article_nr_search $brand\">";
             }
         }
         return $index_type;
@@ -3104,7 +3104,7 @@ class CatalogueClass
                                 </div>
                             </div>
                             <div class=\"tree-heads__item-image\">
-                                <img src=\"/uploads/images/group_tree_head/$head_img\" alt=\"$head_name\">
+                                <img data-src=\"/uploads/images/group_tree_head/$head_img\" class=\"lazy\" alt=\"$head_name\">
                             </div>
                         </div>
                     </label>
@@ -3185,7 +3185,7 @@ class CatalogueClass
             $group_image = $value["group_image"];
             $list .= "<a href=\"/$this->catalog_exist_link/$group_link\" class=\"tree-group__item\">
                 <div class=\"tree-group__item-image\">
-                    <img src=\"/images/tree-group/$group_image\" alt=\"$group_name\">
+                    <img data-src=\"/images/tree-group/$group_image\" class=\"lazy\" alt=\"$group_name\">
                 </div>
                 <div class=\"tree-group__item-text\">
                     <span>$group_name</span>

@@ -945,33 +945,33 @@ header {
                     & .icons-nav-item__descr {
                         color: #228B94;
                     }
-                    &.icons-nav-item-garage {
-                        background: url(/images/icons/header/hover/garage.png) left no-repeat;
-                        background-size: 30px;
-                    }
-                    &.icons-nav-item-profile {
-                        background: url(/images/icons/header/hover/profile.png) left no-repeat;
-                        background-size: 30px;
-                    }
-                    &.icons-nav-item-basket {
-                        background: url(/images/icons/header/hover/basket.png) left no-repeat;
-                        background-size: 30px;
-                    }
+                    //&.icons-nav-item-garage {
+                    //    background: url(/images/icons/header/hover/garage.png) left no-repeat;
+                    //    background-size: 30px;
+                    //}
+                    //&.icons-nav-item-profile {
+                    //    background: url(/images/icons/header/hover/profile.png) left no-repeat;
+                    //    background-size: 30px;
+                    //}
+                    //&.icons-nav-item-basket {
+                    //    background: url(/images/icons/header/hover/basket.png) left no-repeat;
+                    //    background-size: 30px;
+                    //}
                 }
                 &-row {
                     display: flex;
                     height: 25px;
                 }
                 &-garage {
-                    background: url(/images/icons/header/garage.png) left no-repeat;
+                    background: url(/images/icons/headers/30x30/garage.png) left no-repeat;
                     background-size: 30px;
                 }
                 &-profile {
-                    background: url(/images/icons/header/profile.png) left no-repeat;
+                    background: url(/images/icons/headers/30x30/profile.png) left no-repeat;
                     background-size: 30px;
                 }
                 &-basket {
-                    background: url(/images/icons/header/basket.png) left no-repeat;
+                    background: url(/images/icons/headers/30x30/basket.png) left no-repeat;
                     background-size: 30px;
                 }
                 &__title {
@@ -3053,6 +3053,10 @@ header {
         font-weight: bold;
         color: #0CA9EE;
         margin-bottom: 5px;
+        &__title {
+            margin-bottom: 15px;
+            margin-left: 10px;
+        }
     }
     &-group {
         font-size: 14px;
@@ -3060,9 +3064,9 @@ header {
         color: #000;
         margin-bottom: 10px;
         &__item {
-            margin-left: 15px;
+            margin-left: 10px;
             list-style: circle;
-            margin-bottom: 5px;
+            margin-bottom: 15px;
             a {
                 color: #000;
                 cursor: pointer;

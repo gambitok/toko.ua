@@ -49,6 +49,11 @@
                 &-image {
                     background: var(--background) center;
                     height: 100%;
+                    img {
+                        display: block;
+                        margin: 0 auto;
+                        height: 100%;
+                    }
                 }
                 &-panel {
                     background: rgba(34, 138, 148, 0.7);

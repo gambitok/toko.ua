@@ -111,6 +111,7 @@ function showGarageForm() {
     JsHttpRequest.query(folder,{ 'w': 'showGarageForm'},
         function (result, errors){ if (errors) {} if (result){
             $("#garage_block").html(result.content);
+            new LazyLoad({ elements_selector: ".lazy" });
         }}, true);
     if ($("#cars_form-selected").length == 0) {
         $("#garage_404_select").html("<div class=\"spinner-border\"></div>");

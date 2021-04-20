@@ -1,6 +1,17 @@
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
 
+    .gallery-item-image {
+        img {
+            width: 100%;
+        }
+    }
+
+    .header-phone-nav__logo img {
+        height: 30px;
+        width: 110px;
+    }
+
     .tree-heads {
         &__item {
             &-header {

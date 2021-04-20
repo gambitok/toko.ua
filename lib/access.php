@@ -749,6 +749,36 @@ function getSeoText($seo_text) {
     return $form;
 }
 
+function getSeoTextForm()
+{
+    $db = DbSingleton::getTokoDb();
+    $form = "";
+    $query = "";
+    $linka = findLinks();
+    $router = $linka[0];
+    $str_linka = $linka;
+    unset($str_linka[0]);
+    $str_linka = implode("/", $str_linka);
+    if ($router == "") {
+        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER`='/' LIMIT 1;";
+    }
+    if ($router == "cars") {
+        $link = $str_linka;
+        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER`='cars' AND `LINK`='$link' LIMIT 1;";
+    }
+    if ($router == "catalog") {
+        $link = $str_linka;
+        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER`='catalog' AND `LINK`='$link' LIMIT 1;";
+    }
+    $r = $db->query($query);
+    $n = $db->num_rows($r);
+    if ($n > 0) {
+        $text = $db->result($r, 0, "CONTENT_RU");
+        $form = getSeoText($text);
+    }
+    return $form;
+}
+
 function getSeoBreadcrumbs($str_id, $mfa_id, $mod, $mod_id) {
     $automan = new AutoClass();
     $list = "";

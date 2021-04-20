@@ -847,7 +847,7 @@ class MenuClass extends CatalogueClass
                 for ($i = 1; $i <= $n; $i++) {
                     $head_id = $db->result($r, $i - 1, "HEAD_ID");
                     $head_name = $this->getHeadRowName($head_id);
-                    $head_list .= "<div class='menu-bar-head__item' onclick=\"getMenuBar('$head_id')\">$head_name</div>";
+                    $head_list .= "<div class=\"menu-bar-head__item\" onclick=\"getMenuBar('$head_id')\">$head_name</div>";
                 }
                 $list = str_replace("{head_list}", $head_list, $list);
                 $list = str_replace("{media_list}", $this->getPhoneNav(), $list);
@@ -872,22 +872,21 @@ class MenuClass extends CatalogueClass
                 }
                 $arr[$cat_id][] = $group_id;
             }
-            //sort($arr);
             if (!empty($arr)) {
-                $list .= "<div class='menu-bar-head__title' onclick=\"getMenuBar('0');\"><i class='fa fa-chevron-left'></i> $head_name</div>";
-                $list .= "<div class='menu-bar-cat'>";
+                $list .= "<div class=\"menu-bar-head__title\" onclick=\"getMenuBar('0');\"><i class=\"fa fa-chevron-left\"></i> $head_name</div>";
+                $list .= "<div class=\"menu-bar-cat\">";
                 foreach ($arr as $cat_id => $groups) {
                     $cat_name = $this->getCatRowName($cat_id);
                     $icon = "";
                     if ($cat_id == 0) {
-                        $icon = "<i class=\"fa fa-circle\" style=\"margin-right: 5px; color: #f44438\"></i>";
+                        $icon = "<i class=\"fa fa-circle\" style=\"color: #f44438; margin-right: 5px;\"></i>";
                     }
-                    $list .= "<div class='menu-bar-cat__title'>$icon$cat_name</div>";
-                    $list .= "<div class='menu-bar-group'>";
+                    $list .= "<div class=\"menu-bar-cat__title\">$icon$cat_name</div>";
+                    $list .= "<div class=\"menu-bar-group\">";
                     foreach ($groups as $group_id) {
                         $group_name = $this->getGroupRowName($group_id);
                         $group_link = $this->getGroupRowLink($group_id);
-                        $list .= "<div class='menu-bar-group__item'><a href='/$catalogue->catalog_exist_link/$group_link/'>$group_name</a></div>";
+                        $list .= "<div class=\"menu-bar-group__item\"><a href=\"/$catalogue->catalog_exist_link/$group_link/\">$group_name</a></div>";
                     }
                     $list .= "</div>";
                 }

@@ -56,7 +56,8 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') 
 }
 
 // Main HTML
-$content = str_replace("{main_seo_text}", ($seo_text == "" || $seo_text == "<!--seo_text_start--><!--seo_text_end-->") ? "" : getSeoText($seo_text), $content);
+//$content = str_replace("{main_seo_text}", ($seo_text == "" || $seo_text == "<!--seo_text_start--><!--seo_text_end-->") ? "" : getSeoText($seo_text), $content);
+$content = str_replace("{main_seo_text}", getSeoTextForm(), $content);
 $content = str_replace("{main_auto_window}", "", $content);
 $content = str_replace("{main_site_breadcrumbs}", printBreadcrumbs($path)[0], $content);
 $content = str_replace("{main_window}", "", $content);
@@ -79,37 +80,6 @@ if ($url == "cars") {
         $content = str_replace("{main_seo_text_cars}", $search->getSeoCarsLinking($mfa_link, $mod_link), $content);
     }
 }
-
-//if ($url == "catalog") {
-//    $str_id = $str_link = $mfa_link = $mod_link = $filters = "";
-//
-//    $some = $catalogue->getUrlString($linka[0]);
-//
-//    $result = explode($some . "/", $_SERVER["REQUEST_URI"], 2);
-//    $link = ltrim($result[1]);
-//
-//    $arr = explode("/", $link);
-//    if (!empty($arr[0])) {
-//        $str_link = $arr[0];
-//    }
-//    if (!empty($arr[3])) {
-//        ((strpos($arr[4], "=") !== false)) ? $filters = $arr[4] : $filters = "";
-//    }
-//    if (!empty($arr[3])) {
-//        ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $mod_id_link = $arr[3];
-//    }
-//    if (!empty($arr[2])) {
-//        ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
-//    }
-//    if (!empty($arr[1])) {
-//        ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
-//    }
-//    $where_arts = $parts->initPartsArts($str_id);
-//    $brand_ids = $this->getBrandIds($where_arts);
-//    $active_brands = array_unique($brand_ids);
-//
-//    $content = str_replace("{main_seo_text_cars}", $search->getSeoMfaLinking($str_id, "H1", $where_arts, $active_brands, $mfa_link, $mod_link), $content);
-//}
 
 if ($url == "catalog") {
     $str_link = $mfa_link = $mod_link = $mod_id_link = $filters = "";

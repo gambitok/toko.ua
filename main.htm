@@ -225,13 +225,13 @@
             <a href="javascript:void(Tawk_API.toggle())" onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-chats"><img src="/images/icons/socials/chats.svg" alt="Online chat"></a>
         </div>
 		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Telegram" data-placement="left">
-			<a href="https://t.me/tokoua_bot" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram"><img src="/images/icons/socials/telegram.svg" alt="Telegram"></a>
+			<a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram"><img src="/images/icons/socials/telegram.svg" alt="Telegram"></a>
 		</div>
 		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Viber" data-placement="left">
-			<a href="viber://pa?chatURI=tokogroup" target="_blank" class="anchor-contacts__item anchor-contacts__item-viber"><img src="/images/icons/socials/viber.svg" alt="Viber"></a>
+			<a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-viber"><img src="/images/icons/socials/viber.svg" alt="Viber"></a>
 		</div>
 		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Facebook Messenger" data-placement="left">
-			<a href="http://m.me/tokogroup" target="_blank" class="anchor-contacts__item anchor-contacts__item-facebook"><img src="/images/icons/socials/facebook.svg" alt="Facebook Messenger"></a>
+			<a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-facebook"><img src="/images/icons/socials/facebook.svg" alt="Facebook Messenger"></a>
 		</div>
 		<div class="anchor-contacts-li anchor-contacts-li-main tooltips" title="{make_question}" data-placement="left">
 			<a onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-contacts"><img src="/images/icons/socials/chats.svg" alt="Socials"></a>
@@ -298,15 +298,15 @@
 					<div class="col-2 phones">
                         <ul>
                             <li>
-                                <img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
+                                <img data-src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
 								<a href="tel:0970803060">(097) <b>080 30 60</b></a>
                             </li>
                             <li>
-								<img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
+								<img data-src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
 								<a href="tel:0500803060">(050) <b>080 30 60</b></a>
                             </li>
                             <li>
-                                <img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
+                                <img data-src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
 								<a href="tel:0930803060">(093) <b>080 30 60</b></a>
                             </li>
                         </ul>
@@ -375,19 +375,19 @@
 					<div class="col-4 pad0">
 						<div class="header-phone-drop__socials">
 							<div class="modal-help-row-socials">
-								<a href="https://t.me/tokoua_bot" target="_blank" class="modal-help-row-socials__item">
+								<a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="modal-help-row-socials__item">
 									<div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__telegram modal-help-row-socials__item-image-min">
-										<img src="/images/icons/socials/telegram.svg" alt="Telegram">
+										<img class="lazy" data-src="/images/icons/socials/telegram.svg" alt="Telegram">
 									</div>
 								</a>
-								<a href="viber://pa?chatURI=tokogroup" target="_blank" class="modal-help-row-socials__item">
+								<a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="modal-help-row-socials__item">
 									<div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__viber modal-help-row-socials__item-image-min">
-										<img src="/images/icons/socials/viber.svg" alt="Viber">
+										<img class="lazy" data-src="/images/icons/socials/viber.svg" alt="Viber">
 									</div>
 								</a>
-								<a href="http://m.me/tokogroup" target="_blank" class="modal-help-row-socials__item">
+								<a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="modal-help-row-socials__item">
 									<div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__facebook modal-help-row-socials__item-image-min">
-										<img src="/images/icons/socials/facebook.svg" alt="Facebook">
+										<img class="lazy" data-src="/images/icons/socials/facebook.svg" alt="Facebook">
 									</div>
 								</a>
 							</div>
@@ -398,7 +398,7 @@
                     <div class="col-4 pad0">
                         <div class="header-phone-nav__logo">
                             <a href="{site_lang_prefix}/" class="btn">
-                                <img itemprop="logo" src="{image_logotype_phone}" alt="{site_title_short}" title="{site_title_short}">
+                                <img class="lazy" itemprop="logo" data-src="{image_logotype_phone}" alt="{site_title_short}" title="{site_title_short}">
                             </a>
                         </div>
                     </div>
@@ -406,12 +406,12 @@
                         <ul class="header-phone-nav__list">
                             <li>
                                 <a href="{site_lang_prefix}/catalogue/">
-                                    <img src="/images/icons/header/garage.png" alt="Garage">
+                                    <img class="lazy" data-src="/images/icons/headers/30x30/garage.png" alt="Garage">
                                 </a>
                             </li>
                             <li>
                                 <a href="{site_lang_prefix}/profile/">
-                                    <img src="/images/icons/header/profile.png" alt="Profile">
+                                    <img class="lazy" data-src="/images/icons/headers/30x30/profile.png" alt="Profile">
                                 </a>
                             </li>
                             <div class="basket_status">
@@ -419,7 +419,7 @@
                             </div>
                             <li>
                                 <a onclick="showBasketMinForm();">
-                                    <img src="/images/icons/header/basket.png" alt="Basket">
+                                    <img class="lazy" data-src="/images/icons/headers/30x30/basket.png" alt="Basket">
                                 </a>
                             </li>
 <!--                            <li class="bar">-->

@@ -1097,6 +1097,20 @@ function setClientRequest2() {
         }}, true);
 }
 
+function setClientRequest3() {
+    let phone = $("#req-phone-seo").val(); if ($("#req-phone-seo").length === 0) phone = "";
+    let vin = $("#req-vin-seo").val(); if ($("#req-vin-seo").length === 0) vin = "";
+    let text = $("#req-text-seo").val(); if ($("#req-text-seo").length === 0) text = "";
+    JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
+        function (result, errors){ if (errors) {alert(errors);} if (result) {
+            if (result.content === false) {
+                showNotify("{error_cap}:", "{input_all_data}", "danger");
+            } else {
+                showNotify("{done_cap}:", "{manager_call}!", "success");
+            }
+        }}, true);
+}
+
 function setClientRequestDone() {
     $("#request-card").html("");
     JsHttpRequest.query(folder,{'w':'setClientRequestDone'},
