@@ -577,7 +577,7 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT * FROM `contacts_bottom_new` WHERE `status`=1 AND `type_contact`=3;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $list_address .= "<div itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\">";
+            $list_address .= "<div itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\"><ul>";
         }
         for ($i = 1; $i <= $n; $i++) {
             $text = $db->result($r, $i - 1, "text");
@@ -593,7 +593,7 @@ class MenuClass extends CatalogueClass
             </li>";
         }
         if ($n > 0) {
-            $list_address .= "</div>";
+            $list_address .= "</ul></div>";
         }
         $form = $this->getHtmlForm("menu/contacts_bottom");
         $form = str_replace("{list_phone}", $list_phone, $form);

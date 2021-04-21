@@ -3207,8 +3207,8 @@ class CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $head_id = $db->result($r, $i - 1, "HEAD_ID");
             $head_name = $this->getHeadRowName($head_id);
-            $list .= "<li class='header-nav__li' data-nav-id=\"$head_id\" style='height: 60px;'>
-                <a style='color: white;'>$head_name</a>
+            $list .= "<li class=\"header-nav__li\" data-nav-id=\"$head_id\" style=\"height: 60px;\">
+                <div rel=\"noopener\" style='color: white;'>$head_name</div>
             </li>";
         }
         return $list;

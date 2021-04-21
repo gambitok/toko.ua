@@ -1109,7 +1109,7 @@ header {
         padding: 10px 15px;
         border-bottom: 1px solid #ccc;
         &__logo {
-            a, a:not([href]):not([tabindex]) {
+            a {
                 width: 100%;
                 padding: 0;
                 display: block;
@@ -1126,19 +1126,16 @@ header {
             li {
                 display: block;
                 margin-left: 10px;
-                a, a:not([href]):not([tabindex]) {
-                    cursor: pointer;
+            }
+            &-link {
+                cursor: pointer;
+                display: block;
+                padding: 5px;
+                img {
+                    width: 30px;
                     display: block;
-                    padding: 5px;
-                    img {
-                        width: 30px;
-                        display: block;
-                        margin: 0 auto;
-                        height: 28px;
-                    }
-                    &:hover {
-                        text-decoration: none;
-                    }
+                    margin: 0 auto;
+                    height: 30px;
                 }
             }
             .basket_status {

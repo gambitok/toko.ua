@@ -447,7 +447,7 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-phone-nav { padding: 10px 15px; border-bottom: 1px solid #ccc; }
 
-.header-phone-nav__logo a, .header-phone-nav__logo a:not([href]):not([tabindex]) { width: 100%; padding: 0; display: block; }
+.header-phone-nav__logo a { width: 100%; padding: 0; display: block; }
 
 .header-phone-nav__logo img { width: 100%; }
 
@@ -455,11 +455,9 @@ header { width: 100%; color: #a9a9a9; }
 
 .header-phone-nav__list li { display: block; margin-left: 10px; }
 
-.header-phone-nav__list li a, .header-phone-nav__list li a:not([href]):not([tabindex]) { cursor: pointer; display: block; padding: 5px; }
+.header-phone-nav__list-link { cursor: pointer; display: block; padding: 5px; }
 
-.header-phone-nav__list li a img, .header-phone-nav__list li a:not([href]):not([tabindex]) img { width: 30px; display: block; margin: 0 auto; height: 28px; }
-
-.header-phone-nav__list li a:hover, .header-phone-nav__list li a:not([href]):not([tabindex]):hover { text-decoration: none; }
+.header-phone-nav__list-link img { width: 30px; display: block; margin: 0 auto; height: 30px; }
 
 .header-phone-nav__list .basket_status { display: inline-block; width: 0; }
 
@@ -1639,7 +1637,7 @@ table thead td { border: 1px solid #000; }
 .rotate__icon { transform: rotate(180deg); }
 
 /* ==== PHONE ==== */
-@media (max-width: 768px) { .gallery-item-image img { width: 100%; }
+@media (max-width: 768px) { .gallery-item-image img { object-fit: cover; width: 100%; }
   .header-phone-nav__logo img { height: 30px; width: 110px; }
   .tree-heads__item-header { flex-wrap: wrap; }
   .tree-heads__item-text { width: 100%; }
@@ -2911,7 +2909,7 @@ table thead td { border: 1px solid #000; }
 
 /*==== Adaptive ====*/
 /* ==== PHONE ==== */
-@media (max-width: 768px) { .gallery-item-image img { width: 100%; }
+@media (max-width: 768px) { .gallery-item-image img { object-fit: cover; width: 100%; }
   .header-phone-nav__logo img { height: 30px; width: 110px; }
   .tree-heads__item-header { flex-wrap: wrap; }
   .tree-heads__item-text { width: 100%; }

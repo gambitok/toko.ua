@@ -135,7 +135,7 @@
 	<link rel="canonical" href="{canonical_link}"/>
 
 	<!-- Custom Fonts -->
-	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+	<link rel="preload" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap">
 	<!-- Fontawesome Fonts -->
 	<link rel="stylesheet" href="/fonts/fontawesome_web/css/all-minify.css">
 	<!-- Plugin Styles -->
@@ -174,9 +174,7 @@
         fbq('init', '473891079984386');
         fbq('track', 'PageView');
 	</script>
-	<noscript><img height="1" width="1" style="display:none"
-					src="https://www.facebook.com/tr?id=473891079984386&ev=PageView&noscript=1"
-	/></noscript>
+	<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=473891079984386&ev=PageView&noscript=1"/></noscript>
 
 </head>
 
@@ -222,19 +220,19 @@
 
 	<div class="anchor-contacts">
         <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips desktop-only" title="Online chat" data-placement="left">
-            <a href="javascript:void(Tawk_API.toggle())" onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-chats"><img src="/images/icons/socials/chats.svg" alt="Online chat"></a>
+            <a href="javascript:void(Tawk_API.toggle())" onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-chats"><img class="lazy" data-src="/images/icons/socials/chats.svg" alt="Online chat"></a>
         </div>
 		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Telegram" data-placement="left">
-			<a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram"><img src="/images/icons/socials/telegram.svg" alt="Telegram"></a>
+			<a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram"><img class="lazy" data-src="/images/icons/socials/telegram.svg" alt="Telegram"></a>
 		</div>
 		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Viber" data-placement="left">
-			<a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-viber"><img src="/images/icons/socials/viber.svg" alt="Viber"></a>
+			<a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-viber"><img class="lazy" data-src="/images/icons/socials/viber.svg" alt="Viber"></a>
 		</div>
 		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Facebook Messenger" data-placement="left">
-			<a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-facebook"><img src="/images/icons/socials/facebook.svg" alt="Facebook Messenger"></a>
+			<a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-facebook"><img class="lazy" data-src="/images/icons/socials/facebook.svg" alt="Facebook Messenger"></a>
 		</div>
 		<div class="anchor-contacts-li anchor-contacts-li-main tooltips" title="{make_question}" data-placement="left">
-			<a onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-contacts"><img src="/images/icons/socials/chats.svg" alt="Socials"></a>
+			<a onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-contacts"><img class="lazy" data-src="/images/icons/socials/chats.svg" alt="Socials"></a>
 		</div>
 	</div>
 
@@ -314,7 +312,7 @@
 
 					<div class="col-4 icons">
                         <div class="icons-nav">
-                            <div class="icons-nav-item icons-nav-item-garage" onclick="showGarageForm();">
+                            <div onclick="showGarageForm();" class="icons-nav-item icons-nav-item-garage">
                                 <div class="icons-nav-item-row">
                                     <div class="icons-nav-item__title">{my_cap}</div>
                                     <div class="icons-nav-item__status {garage_style}" id="garage_status">{garage_status}</div>
@@ -323,7 +321,7 @@
                                     <div class="icons-nav-item__descr">{user_garage}</div>
                                 </div>
                             </div>
-                            <a class="icons-nav-item icons-nav-item-profile" href="{site_lang_prefix}/profile/orders/">
+                            <a href="{site_lang_prefix}/profile/orders/" class="icons-nav-item icons-nav-item-profile">
                                 <div class="icons-nav-item-row">
                                     <div class="icons-nav-item__title">{private_cap}</div>
                                 </div>
@@ -331,7 +329,7 @@
                                     <div class="icons-nav-item__descr">{office_cap}</div>
                                 </div>
                             </a>
-                            <div class="icons-nav-item icons-nav-item-basket" onclick="showBasketMinForm();">
+                            <div onclick="showBasketMinForm();" class="icons-nav-item icons-nav-item-basket">
                                 <div class="icons-nav-item-row">
                                     <div class="icons-nav-item__title">{mine_cap}</div>
 									<div class="icons-nav-item__status {basket_style}" id="basket_status">{basket_count}</div>
@@ -405,12 +403,12 @@
                     <div class="col-8 pad0">
                         <ul class="header-phone-nav__list">
                             <li>
-                                <a href="{site_lang_prefix}/catalogue/">
+                                <a class="header-phone-nav__list-link" href="{site_lang_prefix}/catalogue/">
                                     <img class="lazy" data-src="/images/icons/headers/30x30/garage.png" alt="Garage">
                                 </a>
                             </li>
                             <li>
-                                <a href="{site_lang_prefix}/profile/">
+                                <a class="header-phone-nav__list-link" href="{site_lang_prefix}/profile/">
                                     <img class="lazy" data-src="/images/icons/headers/30x30/profile.png" alt="Profile">
                                 </a>
                             </li>
@@ -418,9 +416,9 @@
                             	<div id="basket_status3" class="tool-status {basket_style}">{basket_count}</div>
                             </div>
                             <li>
-                                <a onclick="showBasketMinForm();">
+                                <div class="header-phone-nav__list-link" onclick="showBasketMinForm();">
                                     <img class="lazy" data-src="/images/icons/headers/30x30/basket.png" alt="Basket">
-                                </a>
+                                </div>
                             </li>
 <!--                            <li class="bar">-->
 <!--                                <a title="{mob_menu}">-->
@@ -428,9 +426,9 @@
 <!--                                </a>-->
 <!--                            </li>-->
                             <li class="bar-menu">
-                                <a title="{mob_menu}">
-                                    <img src="/images/icons/header/bar.svg" alt="Bar">
-                                </a>
+                                <div class="header-phone-nav__list-link" title="{mob_menu}">
+                                    <img class="lazy" data-src="/images/icons/header/bar.svg" alt="Bar">
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -711,7 +709,7 @@
 	<nav id="menu-catalog" class="panel-filters" role="navigation">
 		<div class="container">
 			<div class="text-right">
-				<a class="bar-catalog"><span class="fa fa-times"></span></a>
+				<div class="bar-catalog"><span class="fa fa-times"></span></div>
 			</div>
 			<div class="template_filters">
 				<h2>{filters_cap}</h2>
@@ -723,7 +721,7 @@
 	</nav>
 	<nav id="bar-menu" class="panel" role="navigation">
 		<div class="col-12 text-right">
-			<a class="bar-menu"><span class="fa fa-times"></span></a>
+			<div class="bar-menu"><span class="fa fa-times"></span></div>
 		</div>
 		<div id="menu-bar-content">
 			{site_menu_bar}
