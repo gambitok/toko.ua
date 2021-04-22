@@ -194,28 +194,6 @@ trait Variables
         return $art_id;
     }
 
-    /*
-     * ARTICLE_NR_SEARCH => BRAND_NAME
-     * */
-//    public function getBrandIdArt($article_nr_search)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $brand_name = "";
-//        $article_nr_search = $this->getUrlString($article_nr_search);
-//        if ($article_nr_search != "") {
-//            $r = $db->query("SELECT `BRAND_ID`, `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' LIMIT 1;");
-//            $n = $db->num_rows($r);
-//            if ($n > 0) {
-//                $brand_id = $db->result($r, 0, "BRAND_ID");
-//                $brand_id = $this->getUrlNumber($brand_id);
-//                $r = $db->query("SELECT `BRAND_NAME` FROM `T2_BRANDS` WHERE `BRAND_ID`='$brand_id' LIMIT 1;");
-//                $n = $db->num_rows($r);
-//                $brand_name = ($n == 1) ? $db->result($r, 0, "BRAND_NAME") : "";
-//            }
-//        }
-//        return $brand_name;
-//    }
-
     /*==== BRAND =====================================================================================================*/
 
     /*
@@ -517,7 +495,6 @@ trait Variables
         $r = $db->query("SELECT `TEMPLATE_ID` FROM `T2_CATALOGUES_TEMPLATES` WHERE `TEMPLATE_LINK`='$template_link' LIMIT 1;");
         return $db->result($r, 0, "TEMPLATE_ID");
     }
-
     public function getTemplateName($template_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -525,7 +502,6 @@ trait Variables
         $r = $db->query("SELECT `TEMPLATE_NAME` FROM `T2_CATALOGUES_TEMPLATES` WHERE `TEMPLATE_ID`='$template_id' LIMIT 1;");
         return $db->result($r, 0, "TEMPLATE_NAME");
     }
-
     public function getTemplateLink($template_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -540,14 +516,12 @@ trait Variables
         $r = $db->query("SELECT `PARAM_ID` FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id' AND `PARAM_LINK`='$param_link' LIMIT 1;");
         return $db->result($r, 0, "PARAM_ID");
     }
-
     public function getCatalogueParamName($param_id, $template_id = 1)
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `PARAM_NAME` FROM `T2_CATALOGUES_PARAMS` WHERE `TEMPLATE_ID`='$template_id' AND `PARAM_ID`='$param_id' LIMIT 1;");
         return $db->result($r, 0, "PARAM_NAME");
     }
-
     public function getCatalogueParamLink($param_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -561,21 +535,18 @@ trait Variables
         $r = $db->query("SELECT `PARAM_ID` FROM `T2_CATALOGUES_VALUES` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
         return $db->result($r, 0, "PARAM_ID");
     }
-
     public function getCatalogueValueID($value_link, $param_id, $template_id = 1)
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `VALUE_ID` FROM `T2_CATALOGUES_VALUES` WHERE `TEMPLATE_ID`='$template_id' AND `PARAM_ID`='$param_id' AND `VALUE_LINK`='$value_link' LIMIT 1;");
         return $db->result($r, 0, "VALUE_ID");
     }
-
     public function getCatalogueValueName($value_id, $template_id = 1)
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `PARAM_VALUE` FROM `T2_CATALOGUES_VALUES` WHERE `TEMPLATE_ID`='$template_id' AND `VALUE_ID`='$value_id' LIMIT 1;");
         return $db->result($r, 0, "PARAM_VALUE");
     }
-
     public function getCatalogueValueLink($value_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -628,14 +599,12 @@ trait Variables
         $r = $db->query("SELECT `TEX_$prefix` FROM `T2_TREE_GROUP` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
         return $db->result($r, 0, "TEX_$prefix");
     }
-
     public function getGroupLink($group_id)
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_GROUP` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
         return $db->result($r, 0, "TEX_LINK");
     }
-
     public function getGroupLinkID($group_link)
     {
         $db = DbSingleton::getTokoDb();
@@ -644,20 +613,19 @@ trait Variables
     }
 
     /* GROUP VALUES */
+
     public function getValueID($value_link, $param_id, $group_id)
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE` WHERE `VALUE_LINK`='$value_link' AND `PARAM_ID`='$param_id' AND `GROUP_ID`='$group_id' LIMIT 1;");
         return $db->result($r, 0, "VALUE_ID");
     }
-
     public function getValueName($value_id)
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `PARAM_VALUE` FROM `T2_TREE_VALUE` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
         return $db->result($r, 0, "PARAM_VALUE");
     }
-
     public function getValueLink($value_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -666,20 +634,19 @@ trait Variables
     }
 
     /* GROUP PARAMS */
+
     public function getParamID($param_link, $group_id)
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS` WHERE `PARAM_LINK`='$param_link' AND `GROUP_ID`='$group_id' LIMIT 1;");
         return $db->result($r, 0, "PARAM_ID");
     }
-
     public function getParamName($param_id)
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
         return $db->result($r, 0, "PARAM_NAME");
     }
-
     public function getParamLink($param_id)
     {
         $db = DbSingleton::getTokoDb();

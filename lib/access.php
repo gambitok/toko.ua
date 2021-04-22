@@ -74,9 +74,7 @@ function getMoreTitle($path) {
     $cat = new CatalogueClass();
     $menu = new MenuClass();
     $search = new SearchClass();
-    $pattern = new PatternClass();
 
-    $page = $cat->getUrlNumber($_GET["page"]);
     $linka = findLinks();
     $pretitle = "";
 
@@ -107,30 +105,6 @@ function getMoreTitle($path) {
         $pretitle = "$art_name $brand_name $article_nr_search - {seo_title_article}";
         $pretitle = ltrim($pretitle," ");
     }
-    elseif ($path == "products") {
-        $url_link = $cat->getUrlString($linka[1]);
-        if ($url_link == "") {
-            $pretitle = "{professional_catalogs_sh}";
-        } else {
-            $template_id = $pattern->getTemplateID($url_link);
-            if ($template_id == "") {
-                $pretitle = "{seo_404_title}";
-            } else {
-                $pager = "";
-                if ($page !== NULL && $page > 0) {
-                    $pager = " - {pager_cap}" . $page;
-                }
-                $result = explode($url_link . "/", $_SERVER["REQUEST_URI"], 2);
-                $link = ltrim($result[1]);
-                if ($link != "") {
-                    $template_filter_name = $pattern->showTemplateTitle($template_id, $pattern->getTemplateLinkParams($template_id, $link));
-                } else {
-                    $template_filter_name = $pattern->getTemplateName($template_id);
-                }
-                $pretitle = "$template_filter_name $pager | {site_title_short}";
-            }
-        }
-    }
     elseif ($path == "cars") {
         $mfa_link = $cat->getUrlString($linka[1]);
         $mod_link = $cat->getUrlString($linka[2]);
@@ -153,76 +127,6 @@ function getMoreTitle($path) {
             $postfix = $cat->replaceLang("{seo_title_lvl3}");
             $postfix = str_replace("{title_lvl1}", $pretitle, $postfix);
             $pretitle = "$pretitle - $postfix";
-        }
-    }
-    elseif ($path == "catalog") {
-        $pager = "";
-        if ($page !== NULL && $page > 0) {
-            $pager = "- {pager_cap}" . $page;
-        }
-        $result = explode($cat->getUrlString($linka[0]) . "/", $_SERVER["REQUEST_URI"], 2);
-        $link = ltrim($result[1]);
-        $arr = explode("/", $link);
-        $str_link = "";
-        $mfa_link = "";
-        $mod_link = "";
-        if (!empty($arr[0])) $str_link = $arr[0]; $filters = "";
-        if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $filters = "";
-        if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
-        if (!empty($arr[1])) ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
-
-        $filters_cap = "";
-        if ($filters != "") {
-            $brand_ids = $search->getActiveFilters($filters);
-            foreach ($brand_ids[0] as $brand_id) {
-                $brand_name = $search->getBrandName($brand_id);
-                $filters_cap .= " $brand_name,";
-            }
-        }
-        $filters_cap = rtrim($filters_cap, ",");
-        $filters_cap = ltrim($filters_cap, " ");
-        $str_id = $automan->getStrNewLinkStr($str_link);
-        $str_text = $automan->getStrNewDescr($str_id);
-
-        if ($str_id == "") {
-            $head_id = $automan->getHeadNewLinkStr($str_link);
-            $head_text = $automan->getHeadNewDescr($head_id)["text"];
-            $cat_text = $cat->getUrlString($linka[2]);
-            if ($cat_text == "") {
-                $pretitle = "$head_text - {seo_title_lvl1}";
-            } else {
-                $cat_id = $automan->getCatNewLinkStr($head_id, $cat_text);
-                list($cat_text) = $automan->getCatNewDescr($cat_id);
-                $pretitle = "$cat_text - {seo_title_lvl1}";
-            }
-        } else {
-            $head_id = $automan->getHeadStr($str_id);
-            $head_text = $automan->getHeadNewDescr($head_id)["text"];
-
-            $seo_title_lvl2 = $cat->replaceLang("{seo_title_lvl2}");
-            $seo_title_lvl2 = str_replace("{title_lvl1}", $head_text, $seo_title_lvl2);
-
-            list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-            list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-            $translit = $search->getCarManufTranslit($mfa_id, $model);
-
-            if ($mfa_link != "") {
-                $mm = "{for_cap} $mfa_brand $model_text";
-                if ($translit != "") {
-                    $mm .= " $translit";
-                }
-            } else {
-                $mm = "";
-            }
-            $pretitle = "$str_text";
-            ($mm == "") ?: $pretitle .= " $mm";
-            ($filters_cap == "") ?: $pretitle .= ": $filters_cap";
-            ($pager == "") ?: $pretitle .= " $pager";
-            $pretitle .= " - $seo_title_lvl2";
-        }
-
-        if ($str_link == "") {
-            $pretitle = "{site_catalog} - {seo_details_title}";
         }
     }
     elseif ($path == "news") {
@@ -261,9 +165,6 @@ function getMoreTitle($path) {
 function printBreadcrumbs($path) {
     $cat = new CatalogueClass();
     $menu = new MenuClass();
-    $pattern = new PatternClass();
-    $automan = new AutoClass();
-    $search = new SearchClass();
     $language = new LangClass();
     $prefix = $language->getLangPrefix();
     $bread = findLinks();
@@ -295,124 +196,6 @@ function printBreadcrumbs($path) {
             $pretitle = "$a_home > $back > $info";
             $b_arr[2] = ["name" => "{site_catalog}", "item" => "https://toko.ua$prefix/catalog/"];
             $b_arr[3] = ["name" => "$info", "item" => "$actual_link"];
-            break;
-        }
-//        case "catalog" : {
-//            $linka = findLinks();
-//            $result = explode($cat->getUrlString($linka[0]) . "/", $_SERVER["REQUEST_URI"], 2);
-//            $link = ltrim($result[1]);
-//            $arr = explode("/", $link);
-//            $filters = [];
-//            $str_text = $mfa_link = $mod_link = "";
-//            if (!empty($arr[0])) $str_text = $arr[0];
-//            if (!empty($arr[3])) ((strpos($arr[4], "=") !== false)) ? $filters = $arr[4] : $filters = "";
-//            if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $mod_id_link = $arr[3];
-//            if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
-//            if (!empty($arr[1])) ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
-//
-//            $brand_ids = $search->getActiveFilters($filters);
-//            $active_filters = $brand_ids[0];
-//            $filters_cap = $search->getFiltersTitle($active_filters,1);
-//            $filters_cap = str_replace(": ", "", $filters_cap);
-//
-//            $str_id = $automan->getStrNewLinkStr($str_text);
-//
-//            if ($str_id == "") {
-//                $head_id = $automan->getHeadNewLinkStr($str_text);
-//            } else {
-//                $head_id = $automan->getHeadStr($str_id);
-//            }
-//            $headData = $automan->getHeadNewDescr($head_id);
-//            $head_text = $headData["text"];
-//            $head_link = $headData["link"];
-//
-//            if ($str_text == "") {
-//                $pretitle = "$a_home > $h_section";
-//                $b_arr[2] = ["name" => "$h_section", "item" => "$actual_link"];
-//            } else {
-//                $title = $automan->getStrNewDescr($str_id);
-//                if ($title == "") {
-//                    $title = $automan->getStrDescr($str_id);
-//                }
-//
-//                $str_link = $automan->getStrNewLink($str_id);
-//                $h1_text = $cat->getStaticH1("/catalog/$str_link/");
-//                if ($h1_text != "") {
-//                    $title = $h1_text;
-//                }
-//
-//                if ($str_id == "") {
-//                    $cat_text = $cat->getUrlString($bread[2]);
-//                    if ($cat_text == "") {
-//                        $pretitle = "$a_home > $a_section > $head_text";
-//                    } else {
-//                        $cat_id = $automan->getCatNewLinkStr($head_id, $cat_text);
-//                        list($cat_text) = $automan->getCatNewDescr($cat_id);
-//                        $back = "<a href='/catalog/$head_link/'>$head_text</a>";
-//                        $pretitle = "$a_home > $a_section > $back > $cat_text";
-//                    }
-//                } else {
-//                    list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-//
-//                    if ($mfa_link == "") {
-//                        $back = "<a href='/catalog/$head_link/'>$head_text</a>";
-//                        $back_str = "<a href='/catalog/$str_link/'>$title</a>";
-//                        $pretitle = "$a_home > $a_section > $back > ";
-//                        if ($filters_cap != "") {
-//                            $pretitle .= " $back_str > $filters_cap";
-//                        } else {
-//                            $pretitle .= " $title";
-//                        }
-//                    } elseif ($mod_link == "") {
-//                        $back = "<a href='/catalog/$head_link/'>$head_text</a>";
-//                        $back_str = "<a href='/catalog/$str_link/'>$title</a>";
-//                        $back_mfa_brand = "<a href='/catalog/$str_link/$mfa_link'>$mfa_brand</a>";
-//                        $pretitle = "$a_home > $a_section > $back > $back_str > ";
-//                        if ($filters_cap != "") {
-//                            $pretitle .= " $back_mfa_brand > $filters_cap";
-//                        } else {
-//                            $pretitle .= " $mfa_brand";
-//                        }
-//                    } else {
-//                        $back = "<a href='/catalog/$head_link/'>$head_text</a>";
-//                        $back_str = "<a href='/catalog/$str_link/'>$title</a>";
-//                        $back_mfa = "<a href='/catalog/$str_link/$mfa_link/'>$mfa_brand</a>";
-//                        $back_model_text = "<a href='/catalog/$str_link/$mfa_link/$mod_link'>$model_text</a>";
-//                        $pretitle = "$a_home > $a_section > $back > $back_str > $back_mfa > ";
-//                        if ($filters_cap != "") {
-//                            $pretitle.=" $back_model_text > $filters_cap";
-//                        } else {
-//                            $pretitle.=" $model_text";
-//                        }
-//                    }
-//                }
-//                $b_arr[2] = ["name" => "{site_catalog}", "item" => "https://toko.ua$prefix/catalog/"];
-//                $b_arr[3] = ["name" => "$title", "item" => "$actual_link"];
-//            }
-//            break;
-//        }
-        case "products" : {
-            $template_link = $cat->getUrlString($bread[1]);
-            $template_id = $pattern->getTemplateID($template_link);
-            $result = explode($template_link . "/", $_SERVER["REQUEST_URI"], 2);
-            $link = ltrim($result[1]);
-            if ($template_link == "") {
-                $pretitle = "$a_home > $h_section";
-                $b_arr[2] = ["name" => "$h_section", "item" => "$actual_link"];
-            } elseif ($link == "") {
-                $title = $pattern->showTemplateTitle($template_id, $pattern->getTemplateLinkParams($template_id, $link));
-                $pretitle = "$a_home > $a_section > $title";
-                $b_arr[2] = ["name" => "$h_section", "item" => "https://toko.ua$prefix/products/"];
-                $b_arr[3] = ["name" => "$title", "item" => "$actual_link"];
-            } else {
-                $template_name = $pattern->getTemplateName($template_id);
-                $back = "<a href=\"https://toko.ua/$section/$template_link/\">$template_name</a>";
-                $title = $pattern->showTemplateTitle($template_id, $pattern->getTemplateLinkParams($template_id, $link));
-                $pretitle = "$a_home > $a_section > $back > $title";
-                $b_arr[2] = ["name" => "$h_section", "item" => "https://toko.ua$prefix/products/"];
-                $b_arr[3] = ["name" => "$template_name", "item" => "https://toko.ua$prefix/$section/$template_link/"];
-                $b_arr[4] = ["name" => "$title", "item" => "$actual_link"];
-            }
             break;
         }
         case "news" : {
@@ -530,73 +313,72 @@ function getDescription($path) {
         $description = "$art_name $brand_name $article_nr_search - {seo_description_article}";
         $description = ltrim($description, " ");
     }
-
+//    if ($path == "catalog") {
+//        $pager = "";
+//        if ($page !== NULL && $page > 0) {
+//            $pager = "- {pager_cap}".$page;
+//        }
+//
+//        $result = explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2);
+//        $link = ltrim($result[1]);
+//        $arr = explode("/", $link);
+//        $str_link = "";
+//        $mfa_link = "";
+//        $mod_link = "";
+//        if (!empty($arr[0])) $str_link = $arr[0]; $filters = "";
+//        if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $filters = "";
+//        if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
+//        if (!empty($arr[1])) ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
+//
+//        $filters_cap = "";
+//        if ($filters != "") {
+//            $brand_ids = $search->getActiveFilters($filters);
+//            foreach ($brand_ids[0] as $brand_id) {
+//                $brand_name = $search->getBrandName($brand_id);
+//                $filters_cap .= " $brand_name,";
+//            }
+//        }
+//        $filters_cap = rtrim($filters_cap, ",");
+//        $filters_cap = ltrim($filters_cap, " ");
+//        $str_id = $automan->getStrNewLinkStr($str_link);
+//        $str_text = $automan->getStrNewDescr($str_id);
+//
+//        if ($str_id == "") {
+//            $head_id = $automan->getHeadNewLinkStr($str_link);
+//            $head_text = $automan->getHeadNewDescr($head_id)["text"];
+//            $cat_text = $linka[2];
+//            if ($cat_text == "") {
+//                $h1 = "$head_text";
+//            } else {
+//                $cat_id = $automan->getCatNewLinkStr($head_id, $cat_text);
+//                list($cat_text) = $automan->getCatNewDescr($cat_id);
+//                $h1 = "$cat_text";
+//            }
+//        } else {
+//            list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
+//            list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
+//            $translit = $search->getCarManufTranslit($mfa_id, $model);
+//            if ($mfa_link != "") {
+//                $mm = "{for_cap} $mfa_brand $model_text";
+//                if ($translit != "") {
+//                    $mm .= " $translit";
+//                }
+//            } else {
+//                $mm = "";
+//            }
+//            $h1 = "$str_text";
+//            ($mm == "") ?: $h1 .= " $mm";
+//            ($filters_cap == "") ?: $h1 .= ": $filters_cap";
+//            ($pager == "") ?: $h1 .= " $pager";
+//
+//        }
+//        $description = "$h1 - {seo_description_catalog1}, $h1 {seo_description_catalog2}";
+//        if ($str_link == "") {
+//            $description = "{seo_description} {seo_description2}";
+//        }
+//    }
     if ($path == "catalog") {
-        $pager = "";
-        if ($page !== NULL && $page > 0) {
-            $pager = "- {pager_cap}".$page;
-        }
-
-        $result = explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2);
-        $link = ltrim($result[1]);
-        $arr = explode("/", $link);
-        $str_link = "";
-        $mfa_link = "";
-        $mod_link = "";
-        if (!empty($arr[0])) $str_link = $arr[0]; $filters = "";
-        if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $filters = "";
-        if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
-        if (!empty($arr[1])) ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
-
-        $filters_cap = "";
-        if ($filters != "") {
-            $brand_ids = $search->getActiveFilters($filters);
-            foreach ($brand_ids[0] as $brand_id) {
-                $brand_name = $search->getBrandName($brand_id);
-                $filters_cap .= " $brand_name,";
-            }
-        }
-        $filters_cap = rtrim($filters_cap, ",");
-        $filters_cap = ltrim($filters_cap, " ");
-        $str_id = $automan->getStrNewLinkStr($str_link);
-        $str_text = $automan->getStrNewDescr($str_id);
-
-        if ($str_id == "") {
-            $head_id = $automan->getHeadNewLinkStr($str_link);
-            $head_text = $automan->getHeadNewDescr($head_id)["text"];
-            $cat_text = $linka[2];
-            if ($cat_text == "") {
-                $h1 = "$head_text";
-            } else {
-                $cat_id = $automan->getCatNewLinkStr($head_id, $cat_text);
-                list($cat_text) = $automan->getCatNewDescr($cat_id);
-                $h1 = "$cat_text";
-            }
-        } else {
-            list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-            list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-            $translit = $search->getCarManufTranslit($mfa_id, $model);
-            if ($mfa_link != "") {
-                $mm = "{for_cap} $mfa_brand $model_text";
-                if ($translit != "") {
-                    $mm .= " $translit";
-                }
-            } else {
-                $mm = "";
-            }
-            $h1 = "$str_text";
-            ($mm == "") ?: $h1 .= " $mm";
-            ($filters_cap == "") ?: $h1 .= ": $filters_cap";
-            ($pager == "") ?: $h1 .= " $pager";
-
-        }
-        $description = "$h1 - {seo_description_catalog1}, $h1 {seo_description_catalog2}";
-
-        // /catalog
-        if ($str_link == "") {
-            $description = "{seo_description} {seo_description2}";
-        }
-
+        $description = "{seo_description} {seo_description2}";
     }
     $description = $language->replaceLangData($description);
     ($cat->getUrlNumber($_GET['page']) == 0) ?: $description = "";

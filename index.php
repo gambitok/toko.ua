@@ -23,13 +23,13 @@ require_once (RDD . "/lib/client_class.php");                 //user configurati
 require_once (RDD . "/lib/profile_class.php");                //user configuration (profile form)
 require_once (RDD . "/lib/lang_class.php");                   //multilanguage
 require_once (RDD . "/lib/exrate_class.php");                 //exchange rate
-require_once (RDD . "/lib/template_class.php");               //templates (NEW CATALOG)
+//require_once (RDD . "/lib/template_class.php");               //templates (NEW CATALOG)
 require_once (RDD . "/lib/search_class.php");                 //search (products cards)
 require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");   //ajax requests
 require_once (RDD . "/lib/class.phpmailer.php");
-require_once (RDD . "/lib/parameters_class.php");
-require_once (RDD . "/lib/pattern_class.php");
-require_once (RDD . "/lib/parts_class.php");
+//require_once (RDD . "/lib/parameters_class.php");
+//require_once (RDD . "/lib/pattern_class.php");
+//require_once (RDD . "/lib/parts_class.php");
 require_once (RDD . "/lib/catalog_exist_class.php");
 require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 require_once (RDD . "/lib/ukr-poshta-api/UkrPoshtaApi.php");
@@ -49,11 +49,11 @@ $client = new ClientClass();
 $kours = new ExRateClass();
 $profile = new ProfileClass();
 $language = new LangClass();
-$template = new TemplateClass();
+//$template = new TemplateClass();
 $search = new SearchClass();
-$parameters = new ParametersClass();
-$pattern = new PatternClass();
-$parts = new PartsClass();
+//$parameters = new ParametersClass();
+//$pattern = new PatternClass();
+//$parts = new PartsClass();
 $catalog_exist = new CatalogExistClass();
 
 //set cookies for user

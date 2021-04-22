@@ -57,18 +57,18 @@ function searchBrandInput() {
 }
 
 // Catalog Cards Params (brands, count, pagination)
-function showSearchParameters() {
-    let str_id = $("#details_str_id").val();
-    let page = $("#details_page").val();
-    let active_filters = $("#details_active_filters").val();
-    let type = $("#details_str_type").val();
-    $("#details_pagination").html("<div class=\"spinner-border\"></div>");
-    JsHttpRequest.query(folder,{'w':'showSearchParameters', 'str_id':str_id, 'page':page, 'active_filters':active_filters, 'type':type},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#details_count").html(result.content[0]);
-            $("#details_pagination").html(result.content[1]);
-        }}, true);
-}
+// function showSearchParameters() {
+//     let str_id = $("#details_str_id").val();
+//     let page = $("#details_page").val();
+//     let active_filters = $("#details_active_filters").val();
+//     let type = $("#details_str_type").val();
+//     $("#details_pagination").html("<div class=\"spinner-border\"></div>");
+//     JsHttpRequest.query(folder,{'w':'showSearchParameters', 'str_id':str_id, 'page':page, 'active_filters':active_filters, 'type':type},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//             $("#details_count").html(result.content[0]);
+//             $("#details_pagination").html(result.content[1]);
+//         }}, true);
+// }
 
 function toggleListParams(a, param_id) {
     $("#param-" + param_id).toggleClass("list-hide");
@@ -922,34 +922,34 @@ function showCarsSelectMin(param_id, value_id = 0, fuel_id = 0) {
 //         }}, true);
 // }
 
-function techCarModelsFilter() {
-    let typ_id = $("#search_typ_id").val();
-    let str_id = $("#search_str_id").val();
-
-    JsHttpRequest.query(folder,{ 'w': 'techCarModelsFilter', 'typ_id':typ_id, 'str_id':str_id},
-        function (result, errors){ if (errors) {} if (result){
-            $("#search_new_tree").html(result.content[0]); $("#search_new_tree").fadeIn(3000);
-            $("#search_tree").html(result.content[1]); $("#search_tree").fadeIn(3000);
-            $("#search_filters").html(result.content[2]); $("#search_filters").fadeIn(3000);
-            $("#search_brands").html(result.content[3]); $("#search_brands").fadeIn(3000);
-
-            new treefilter($("#my-tree"), { searcher : $("input#my-search") });
-
-            var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
-            if (input_price.length) {
-                input_price.slider();
-                input_price.on("slide", function(slideEvt) {
-                    $("#price_val").text(slideEvt.value);
-                });
-            }
-            if (input_delivery.length) {
-                input_delivery.slider();
-                input_delivery.on("slide", function (slideEvt) {
-                    $("#dd_val").text(slideEvt.value);
-                });
-            }
-        }}, true);
-}
+// function techCarModelsFilter() {
+//     let typ_id = $("#search_typ_id").val();
+//     let str_id = $("#search_str_id").val();
+//
+//     JsHttpRequest.query(folder,{ 'w': 'techCarModelsFilter', 'typ_id':typ_id, 'str_id':str_id},
+//         function (result, errors){ if (errors) {} if (result){
+//             $("#search_new_tree").html(result.content[0]); $("#search_new_tree").fadeIn(3000);
+//             $("#search_tree").html(result.content[1]); $("#search_tree").fadeIn(3000);
+//             $("#search_filters").html(result.content[2]); $("#search_filters").fadeIn(3000);
+//             $("#search_brands").html(result.content[3]); $("#search_brands").fadeIn(3000);
+//
+//             new treefilter($("#my-tree"), { searcher : $("input#my-search") });
+//
+//             var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
+//             if (input_price.length) {
+//                 input_price.slider();
+//                 input_price.on("slide", function(slideEvt) {
+//                     $("#price_val").text(slideEvt.value);
+//                 });
+//             }
+//             if (input_delivery.length) {
+//                 input_delivery.slider();
+//                 input_delivery.on("slide", function (slideEvt) {
+//                     $("#dd_val").text(slideEvt.value);
+//                 });
+//             }
+//         }}, true);
+// }
 
 function techCarModels(typ_id, str_id) {
     showCarsSelectMin(6, typ_id);
@@ -996,29 +996,29 @@ function toggleProductView(ds) {
         }}, true);
 }
 
-function showFiltersForm() {
-    $("#template_filters").html("<div class=\"spinner-border\"></div>");
-    let template_id = $("#template_id").val();
-    let active_filters = JSON.parse($("#template_active_filters").val());
-    JsHttpRequest.query(folder,{'w':'showFiltersForm', 'template_id':template_id, 'active_filters':active_filters},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#template_filters").html(result.content[0]);
-        }}, true);
-}
+// function showFiltersForm() {
+//     $("#template_filters").html("<div class=\"spinner-border\"></div>");
+//     let template_id = $("#template_id").val();
+//     let active_filters = JSON.parse($("#template_active_filters").val());
+//     JsHttpRequest.query(folder,{'w':'showFiltersForm', 'template_id':template_id, 'active_filters':active_filters},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//             $("#template_filters").html(result.content[0]);
+//         }}, true);
+// }
 
-function showFilterOptionsForm(page) {
-    $("#template_pagination").html("<div class=\"spinner-border\"></div>");
-    $("#template_count").html();
-    $("#template_checked").html();
-    let template_id = $("#template_id").val();
-    let active_filters = JSON.parse($("#template_active_filters").val());
-    JsHttpRequest.query(folder,{'w':'showFilterOptionsForm', 'template_id':template_id, 'page':page, 'active_filters':active_filters},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#template_count").html(result.content[0]);
-            $("#template_pagination").html(result.content[1]);
-            $("#template_checked").html(result.content[2]);
-        }}, true);
-}
+// function showFilterOptionsForm(page) {
+//     $("#template_pagination").html("<div class=\"spinner-border\"></div>");
+//     $("#template_count").html();
+//     $("#template_checked").html();
+//     let template_id = $("#template_id").val();
+//     let active_filters = JSON.parse($("#template_active_filters").val());
+//     JsHttpRequest.query(folder,{'w':'showFilterOptionsForm', 'template_id':template_id, 'page':page, 'active_filters':active_filters},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//             $("#template_count").html(result.content[0]);
+//             $("#template_pagination").html(result.content[1]);
+//             $("#template_checked").html(result.content[2]);
+//         }}, true);
+// }
 
 function setParamsAuto(group_id, type) {
     JsHttpRequest.query(folder,{'w':'setParamsAuto', 'type':type},

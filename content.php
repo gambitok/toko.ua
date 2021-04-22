@@ -17,10 +17,9 @@ require_once (RDD . "/lib/profile_class.php");
 require_once (RDD . "/lib/lang_class.php");
 require_once (RDD . "/lib/exrate_class.php");
 require_once (RDD . "/lib/auto_class.php");
-require_once (RDD . "/lib/parameters_class.php");
-require_once (RDD . "/lib/search_class.php");
-require_once (RDD . "/lib/parts_class.php");
-require_once (RDD . "/lib/template_class.php");
+//require_once (RDD . "/lib/parameters_class.php");
+//require_once (RDD . "/lib/search_class.php");
+//require_once (RDD . "/lib/template_class.php");
 require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");
 require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 
@@ -35,9 +34,9 @@ $showform = new FormClass();
 $automan = new AutoClass();
 $profile = new ProfileClass();
 $prod = new ProductsClass();
-$parameters = new ParametersClass();
-$search = new SearchClass();
-$template = new TemplateClass();
+//$parameters = new ParametersClass();
+//$search = new SearchClass();
+//$template = new TemplateClass();
 
 /*==== PROFILE ====*/
 
@@ -378,27 +377,27 @@ if ($_REQUEST["w"] == "showModalForm") {
 
 /*==== PRODUCTS ====*/
 
-if ($_REQUEST["w"] == "showCarDetailsStr") {
-    $GLOBALS['_RESULT'] = array("content" => $prod->showCarDetailsStr($_REQUEST["head_id"], $_REQUEST["str_id_str"]));
-}
-
-if ($_REQUEST["w"] == "techCarModels") {
-    $GLOBALS['_RESULT'] = array("content" => $prod->techCarModels($_REQUEST["typ_id"], $_REQUEST["str_id"]));
-}
-
-if ($_REQUEST["w"] == "techCarModelsFilter") {
-    $GLOBALS['_RESULT'] = array("content" => $prod->techCarModelsFilter($_REQUEST["typ_id"], $_REQUEST["str_id"]));
-}
+//if ($_REQUEST["w"] == "showCarDetailsStr") {
+//    $GLOBALS['_RESULT'] = array("content" => $prod->showCarDetailsStr($_REQUEST["head_id"], $_REQUEST["str_id_str"]));
+//}
+//
+//if ($_REQUEST["w"] == "techCarModels") {
+//    $GLOBALS['_RESULT'] = array("content" => $prod->techCarModels($_REQUEST["typ_id"], $_REQUEST["str_id"]));
+//}
+//
+//if ($_REQUEST["w"] == "techCarModelsFilter") {
+//    $GLOBALS['_RESULT'] = array("content" => $prod->techCarModelsFilter($_REQUEST["typ_id"], $_REQUEST["str_id"]));
+//}
 
 /*==== PARAMETERS ====*/
 
-if ($_REQUEST["w"] == "showFiltersForm") {
-    $GLOBALS['_RESULT'] = array("content" => $parameters->showFiltersForm($_REQUEST["template_id"], $_REQUEST["active_filters"]));
-}
-
-if ($_REQUEST["w"] == "showFilterOptionsForm") {
-    $GLOBALS['_RESULT'] = array("content" => $parameters->showFilterOptionsForm($_REQUEST["template_id"], $_REQUEST["page"], $_REQUEST["active_filters"]));
-}
+//if ($_REQUEST["w"] == "showFiltersForm") {
+//    $GLOBALS['_RESULT'] = array("content" => $parameters->showFiltersForm($_REQUEST["template_id"], $_REQUEST["active_filters"]));
+//}
+//
+//if ($_REQUEST["w"] == "showFilterOptionsForm") {
+//    $GLOBALS['_RESULT'] = array("content" => $parameters->showFilterOptionsForm($_REQUEST["template_id"], $_REQUEST["page"], $_REQUEST["active_filters"]));
+//}
 
 /*==== HOME CARS ====*/
 
@@ -425,18 +424,13 @@ if ($_REQUEST["w"] == "showCarsSelectedForm") {
 
 /*==== SEARCH ====*/
 
-if ($_REQUEST["w"] == "showSearchParameters") {
-    $GLOBALS['_RESULT'] = array("content" => $search->showSearchParameters($_REQUEST["str_id"], $_REQUEST["page"], $_REQUEST["active_filters"], $_REQUEST["type"]));
-}
+//if ($_REQUEST["w"] == "showSearchParameters") {
+//    $GLOBALS['_RESULT'] = array("content" => $search->showSearchParameters($_REQUEST["str_id"], $_REQUEST["page"], $_REQUEST["active_filters"], $_REQUEST["type"]));
+//}
 
 /*==== MENU ====*/
 
 if ($_REQUEST["w"] == "getHeaderContent") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->getHeaderContent($_REQUEST["head_id"]));
 }
-
-//
-//if ($_REQUEST["w"] == "setParamsAuto") {
-//    $GLOBALS['_RESULT'] = array("content" => $template->setParamsAuto($_REQUEST["type"]));
-//}
 

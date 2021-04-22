@@ -17,10 +17,9 @@ $content = str_replace("{catalogue_tab_search}", $prod->getCarsSearch(), $conten
 $content = str_replace("{catalogue_banner}", $showform->getCarsBanner(), $content);
 
 // Профильные каталоги
-$content = str_replace("{select_group}", $catalogue->showCatalogueTemplates(), $content);
+//$content = str_replace("{select_group}", $catalogue->showCatalogueTemplates(), $content);
 
 // Каталог запчастей
-//$content = str_replace("{select_det_group}", $prod->getCarDetailsFull(), $content);
 $content = str_replace("{select_det_group}", $catalogue->getCatalogColList(), $content);
 $content = str_replace("{select_auto_group}", $automan->getAutoMfaModelList(), $content);
 
@@ -31,4 +30,3 @@ $content = str_replace("{select_recommendations}", $info_block, $content);
 
 // Контакты
 $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
-//$content = str_replace("{main_seo_text}", "", $content);

@@ -2312,35 +2312,35 @@ class CatalogueClass
         return $list;
     }
 
-    public function showCatalogueTemplates()
-    {
-        $db = DbSingleton::getTokoDb();
-        $prefix = $this->getLangPrefix();
-        $r = $db->query("SELECT * FROM `T2_CATALOGUES_TEMPLATES` WHERE `STATUS`=1 AND `PARENT_ID`=0;");
-        $n = $db->num_rows($r);
-        $list = "<ul class=\"goods\">";
-        for ($i = 1; $i <= $n; $i++) {
-            $template_id = $db->result($r, $i - 1, "TEMPLATE_ID");
-            $template_link = $db->result($r, $i - 1, "TEMPLATE_LINK");
-            $text = $db->result($r, $i - 1, "TEMPLATE_NAME");
-            $descr = $db->result($r, $i - 1, "TEMPLATE_DESCR");
-            $link = $this->images . "/templates/$template_id.png";
-            $url = "https://toko.ua$prefix/$this->products_link/$template_link/";
-            $list .= "<li class=\"goods__item\">
-                <a href=\"$url\">
-                    <img class=\"lazy\" data-src=\"$link\" alt=\"$text\" title=\"$text\">
-                    <span>$text</span>
-                    <input type=\"hidden\" value=\"$descr\" title=\"$text\">
-                </a>
-            </li>";
-        }
-        $list .= "</ul>";
-        if ($n == 0) {
-            $list = $this->err1;
-        }
-        $list = $this->replaceLang($list);
-        return $list;
-    }
+//    public function showCatalogueTemplates()
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $prefix = $this->getLangPrefix();
+//        $r = $db->query("SELECT * FROM `T2_CATALOGUES_TEMPLATES` WHERE `STATUS`=1 AND `PARENT_ID`=0;");
+//        $n = $db->num_rows($r);
+//        $list = "<ul class=\"goods\">";
+//        for ($i = 1; $i <= $n; $i++) {
+//            $template_id = $db->result($r, $i - 1, "TEMPLATE_ID");
+//            $template_link = $db->result($r, $i - 1, "TEMPLATE_LINK");
+//            $text = $db->result($r, $i - 1, "TEMPLATE_NAME");
+//            $descr = $db->result($r, $i - 1, "TEMPLATE_DESCR");
+//            $link = $this->images . "/templates/$template_id.png";
+//            $url = "https://toko.ua$prefix/$this->products_link/$template_link/";
+//            $list .= "<li class=\"goods__item\">
+//                <a href=\"$url\">
+//                    <img class=\"lazy\" data-src=\"$link\" alt=\"$text\" title=\"$text\">
+//                    <span>$text</span>
+//                    <input type=\"hidden\" value=\"$descr\" title=\"$text\">
+//                </a>
+//            </li>";
+//        }
+//        $list .= "</ul>";
+//        if ($n == 0) {
+//            $list = $this->err1;
+//        }
+//        $list = $this->replaceLang($list);
+//        return $list;
+//    }
 
     /*
      * format text for URL

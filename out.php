@@ -81,58 +81,58 @@ if ($url == "cars") {
     }
 }
 
-if ($url == "catalog") {
-    $str_link = $mfa_link = $mod_link = $mod_id_link = $filters = "";
-
-    $some = $catalogue->getUrlString($linka[0]);
-
-    $result = explode($some . "/", $_SERVER["REQUEST_URI"], 2);
-    $link = ltrim($result[1]);
-
-    $arr = explode("/", $link);
-    if (!empty($arr[0])) {
-        $str_link = $arr[0];
-    }
-    if (!empty($arr[3])) {
-        ((strpos($arr[4], "=") !== false)) ? $filters = $arr[4] : $filters = "";
-    }
-    if (!empty($arr[3])) {
-        ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $mod_id_link = $arr[3];
-    }
-    if (!empty($arr[2])) {
-        ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
-    }
-    if (!empty($arr[1])) {
-        ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
-    }
-
-    // check brandy
-    $brand_filters = $search->getActiveFilters($filters);
-    $active_filters = $brand_filters[0];
-
-    if (count($active_filters) == 1) {
-        $str_id = $automan->getStrNewLinkStr($str_link);
-        $str_name = $automan->getStrDescr($str_id);
-        $mfa_id = $automan->getMfaLink($mfa_link);
-        $mod = $automan->getModLink($mod_link);
-        $mod_id = $automan->getModIdCode($mod_id_link);
-        $brand_name = $catalogue->getBrandName($active_filters[0]);
-
-        $seo_content = "";
-        $seo_content .= "<!--isset_listing_page-->";
-        $seo_content .= "<!--product_in_listingEX-->";
-
-        $seo_content .= "<!--seoshield_formulas--fil-traciya-->";
-        $seo_content .= "<!--ss_selected_filters_info|brandy|$brand_name-->";
-
-        $seo_breadcrumb = getSeoBreadcrumbs($str_id, $mfa_id, $mod, $mod_id);
-        $seo_breadcrumb = $automan->replaceLang($seo_breadcrumb);
-        $seo_content .= "<!--ss_breadcrums_list:$seo_breadcrumb-->";
-
-        $content = str_replace("{main_seo_products_content}", $seo_content, $content);
-    }
-
-}
+//if ($url == "catalog") {
+//    $str_link = $mfa_link = $mod_link = $mod_id_link = $filters = "";
+//
+//    $some = $catalogue->getUrlString($linka[0]);
+//
+//    $result = explode($some . "/", $_SERVER["REQUEST_URI"], 2);
+//    $link = ltrim($result[1]);
+//
+//    $arr = explode("/", $link);
+//    if (!empty($arr[0])) {
+//        $str_link = $arr[0];
+//    }
+//    if (!empty($arr[3])) {
+//        ((strpos($arr[4], "=") !== false)) ? $filters = $arr[4] : $filters = "";
+//    }
+//    if (!empty($arr[3])) {
+//        ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $mod_id_link = $arr[3];
+//    }
+//    if (!empty($arr[2])) {
+//        ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
+//    }
+//    if (!empty($arr[1])) {
+//        ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
+//    }
+//
+//    // check brandy
+//    $brand_filters = $search->getActiveFilters($filters);
+//    $active_filters = $brand_filters[0];
+//
+//    if (count($active_filters) == 1) {
+//        $str_id = $automan->getStrNewLinkStr($str_link);
+//        $str_name = $automan->getStrDescr($str_id);
+//        $mfa_id = $automan->getMfaLink($mfa_link);
+//        $mod = $automan->getModLink($mod_link);
+//        $mod_id = $automan->getModIdCode($mod_id_link);
+//        $brand_name = $catalogue->getBrandName($active_filters[0]);
+//
+//        $seo_content = "";
+//        $seo_content .= "<!--isset_listing_page-->";
+//        $seo_content .= "<!--product_in_listingEX-->";
+//
+//        $seo_content .= "<!--seoshield_formulas--fil-traciya-->";
+//        $seo_content .= "<!--ss_selected_filters_info|brandy|$brand_name-->";
+//
+//        $seo_breadcrumb = getSeoBreadcrumbs($str_id, $mfa_id, $mod, $mod_id);
+//        $seo_breadcrumb = $automan->replaceLang($seo_breadcrumb);
+//        $seo_content .= "<!--ss_breadcrums_list:$seo_breadcrumb-->";
+//
+//        $content = str_replace("{main_seo_products_content}", $seo_content, $content);
+//    }
+//
+//}
 
 $content = str_replace("{main_seo_products_content}", "", $content);
 
