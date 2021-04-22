@@ -31,4 +31,4 @@ $content = str_replace("{select_recommendations}", $info_block, $content);
 
 // Контакты
 $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
-$content = str_replace("{main_seo_text}", "", $content);
+//$content = str_replace("{main_seo_text}", "", $content);

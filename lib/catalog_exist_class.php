@@ -1860,7 +1860,6 @@ class CatalogExistClass extends CatalogueClass
         $auto = new AutoClass();
         $h1 = $this->getCatalogH1($group_id, $filters, $mfa_link, $model_link);
         $text = "$h1 | ";
-
         $brand_name = "";
 
         // 1
@@ -1959,7 +1958,7 @@ class CatalogExistClass extends CatalogueClass
                     $text .= $this->replaceLang("{seo_new_tilte_3}");
                     $mfa_id = $auto->getMfaLink($mfa_link);
                     $mfa_name = $auto->getMfaBrand($mfa_id);
-                    $text .= str_replace("{mfnm}", $mfa_name, $text);
+                    $text = str_replace("{mfnm}", $mfa_name, $text);
                     foreach ($params as $param_id => $values) {
                         foreach ($values as $value_id) {
                             $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
