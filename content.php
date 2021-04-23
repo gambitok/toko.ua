@@ -205,12 +205,12 @@ if ($_REQUEST["w"] == "getMenuBar") {
 
 /*==== MODALS ====*/
 
-if ($_REQUEST["w"] == "loadApplicModels2") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->getApplModelTCD($_REQUEST["art_id_tcd"], $_REQUEST["manufacture"]));
+if ($_REQUEST["w"] == "getArticleApplModelForm") {
+    $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplModelForm($_REQUEST["art_id_tcd"], $_REQUEST["manufacture"]));
 }
 
-if ($_REQUEST["w"] == "loadApplicModelsInfo2") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->getApplModelInfoTCD($_REQUEST["art_id"], $_REQUEST["typ_id"]));
+if ($_REQUEST["w"] == "getArticleApplModelInfoForm") {
+    $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplModelInfoForm($_REQUEST["art_id"], $_REQUEST["typ_id"]));
 }
 
 if ($_REQUEST["w"] == "showInfoForm") {

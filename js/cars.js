@@ -253,7 +253,6 @@ function getCarsSearchContent(type, attr) {
                 let index = $("div[data-url='bodyc/" + result.skip + "']")
                 toggleCarsTab(index);
             }
-            // console.log('type: ' + type + ', attr: ' + attr);
         }}, true);
 }
 

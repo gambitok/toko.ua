@@ -19,23 +19,15 @@
                     <div itemprop="aggregateRating" itemtype="http://schema.org/AggregateRating" itemscope class="dnone">
                         <meta itemprop="reviewCount" content="100" />
                         <meta itemprop="ratingValue" content="5" />
-                        <!--<span itemprop="ratingValue">5</span> {stars_cap} - -->
-                        <!--{based_on_cap} <span itemprop="reviewCount">{count_users}</span> {reviews_stars_cap}-->
                     </div>
 
                     <div itemprop="review" itemtype="http://schema.org/Review" itemscope class="dnone">
                         <div itemprop="author" itemtype="http://schema.org/Person" itemscope>
                           <meta itemprop="name" content="Author" />
                         </div>
-                        <!--<span itemprop="name">Value purchase</span> - -->
-                        <!--by <span itemprop="author">Author</span>,-->
-                        <!--<meta itemprop="datePublished" content="{data_today}" />-->
                         <div itemprop="reviewRating" itemtype="http://schema.org/Rating" itemscope>
                             <meta itemprop="ratingValue" content="5" />
                             <meta itemprop="bestRating" content="5" />
-                            <!--<meta itemprop="worstRating" content="1"/>-->
-                            <!--<span itemprop="ratingValue">5</span>/-->
-                            <!--<span itemprop="bestRating">5</span>{reviews_stars_cap}-->
                         </div>
                     </div>
 
@@ -51,10 +43,6 @@
 
     <!--NAME & INFO-->
     <div class="col-lg-3 col-8 tables__text {style_none}">
-        <!--<div class="tables__delivery applicable {applicable_display}">-->
-            <!--<span>{applicable_display_text}</span>-->
-        <!--</div>-->
-        <!--<span itemprop="description" class="search__name" data-title="{caption_cap}">{product_text}</span>-->
         <span class="search__name" data-title="{caption_cap}" title="{product_text}">{format_product_text}</span>
         <div class="tables__info">
             <a class="{photo_display}" onClick="showPhotoGallery({art_id});"><i class="fas fa-camera show_basket tooltips" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<img width='250' src='{photo_src}' alt='ArticleImage'>"></i></a>

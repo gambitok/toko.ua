@@ -205,7 +205,6 @@ function showInfoForm(art_id) {
             $("#info_content").html(result.content[0]);
             $("#info_title").html(result.content[1]);
             $("#InfoForm").modal("toggle");
-            new LazyLoad({ elements_selector: ".lazy" });
         }}, true);
 }
 
@@ -215,7 +214,6 @@ function showPhotoGallery(ref) {
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#photo_gallery").html(result.content);
             $("#PhotoForm").modal("toggle");
-            new LazyLoad({ elements_selector: ".lazy" });
         }}, true);
 }
 
@@ -430,22 +428,22 @@ function tecModelsFilter(order) {
 //         }}, true);
 // }
 
-function loadApplicModels2(art_id_tcd, manufacture, a) {
+function getArticleApplModelForm(art_id_tcd, manufacture, a) {
     $(".load_app").each(function () {
         $(this).removeClass("span-red");
     });
     $(a).addClass("span-red");
-    JsHttpRequest.query(folder,{ 'w': 'loadApplicModels2', 'art_id_tcd':art_id_tcd, 'manufacture':manufacture},
+    JsHttpRequest.query(folder,{ 'w': 'getArticleApplModelForm', 'art_id_tcd':art_id_tcd, 'manufacture':manufacture},
         function (result, errors){ if (errors) {} if (result){
             $("#info2_more").html(result.content);
             $("#info3_more").html(result.content);
         }}, true);
 }
 
-function loadApplicModelsInfo2(art_id, typ_id) {
+function getArticleApplModelInfoForm(art_id, typ_id) {
     let er = 0;
     if (document.getElementById("AMI" + typ_id).innerHTML === "") {
-        JsHttpRequest.query(folder,{ 'w': 'loadApplicModelsInfo2', 'art_id':art_id, 'typ_id':typ_id},
+        JsHttpRequest.query(folder,{ 'w': 'getArticleApplModelInfoForm', 'art_id':art_id, 'typ_id':typ_id},
             function (result, errors){ if (errors) {} if (result){
                 document.getElementById("AMI" + typ_id).innerHTML = result.content;
             }}, true);
@@ -499,7 +497,6 @@ function copyToClipboard(element, art_name) {
 * */
 function finishGarage(typ_id, str_link, group_link) {
     setCookie('auto_typ_id', typ_id);
-    console.log(group_link);
     addToGarage(typ_id);
     let add_link = "";
     if (str_link != "") {
@@ -665,46 +662,46 @@ function changeActionCount(i, action_price, action_amount) {
 // }
 
 /*==== NEW STR CAR DETAILS ====*/
-function showCarDetailsStr(head_id) {
-    let str_id_str = $("#tree_str_ids").val();
-    let manuf_head = $("#manufacture_head" + head_id);
-    let class_name = manuf_head.attr("class");
-    if (class_name === "tree-list dnone") {
-        JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str},
-            function (result, errors){ if (errors) {} if (result){
-                $("#tree_head-" + head_id).toggleClass("check-head");
-                manuf_head.removeClass("dnone");
-                manuf_head.addClass("dblock");
-                manuf_head.html(result.content);
-            }}, true);
-    } else {
-        $("#tree_head-" + head_id).toggleClass("check-head");
-        manuf_head.removeClass("dblock");
-        manuf_head.addClass("dnone");
-        manuf_head.html("");
-    }
-}
+// function showCarDetailsStr(head_id) {
+//     let str_id_str = $("#tree_str_ids").val();
+//     let manuf_head = $("#manufacture_head" + head_id);
+//     let class_name = manuf_head.attr("class");
+//     if (class_name === "tree-list dnone") {
+//         JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str},
+//             function (result, errors){ if (errors) {} if (result){
+//                 $("#tree_head-" + head_id).toggleClass("check-head");
+//                 manuf_head.removeClass("dnone");
+//                 manuf_head.addClass("dblock");
+//                 manuf_head.html(result.content);
+//             }}, true);
+//     } else {
+//         $("#tree_head-" + head_id).toggleClass("check-head");
+//         manuf_head.removeClass("dblock");
+//         manuf_head.addClass("dnone");
+//         manuf_head.html("");
+//     }
+// }
 
-function showCarDetailsStrMin(head_id) {
-    let typ_id = $("#typ_id").val();
-    let str_id_str = $("#tree_str_ids").val();
-    let manuf_head = $("#manufacture_head" + head_id);
-    let class_name = manuf_head.attr("class");
-    if (class_name === "tree-list_min dnone") {
-        JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str, 'typ_id':typ_id},
-            function (result, errors){ if (errors) {} if (result){
-                $("#tree_head-" + head_id).toggleClass("check-head");
-                manuf_head.removeClass("dnone");
-                manuf_head.addClass("dblock");
-                manuf_head.html(result.content);
-            }}, true);
-    } else {
-        $("#tree_head-" + head_id).toggleClass("check-head");
-        manuf_head.removeClass("dblock");
-        manuf_head.addClass("dnone");
-        manuf_head.html("");
-    }
-}
+// function showCarDetailsStrMin(head_id) {
+//     let typ_id = $("#typ_id").val();
+//     let str_id_str = $("#tree_str_ids").val();
+//     let manuf_head = $("#manufacture_head" + head_id);
+//     let class_name = manuf_head.attr("class");
+//     if (class_name === "tree-list_min dnone") {
+//         JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str, 'typ_id':typ_id},
+//             function (result, errors){ if (errors) {} if (result){
+//                 $("#tree_head-" + head_id).toggleClass("check-head");
+//                 manuf_head.removeClass("dnone");
+//                 manuf_head.addClass("dblock");
+//                 manuf_head.html(result.content);
+//             }}, true);
+//     } else {
+//         $("#tree_head-" + head_id).toggleClass("check-head");
+//         manuf_head.removeClass("dblock");
+//         manuf_head.addClass("dnone");
+//         manuf_head.html("");
+//     }
+// }
 
 /*==== /NEW STR CAR DETAILS ====*/
 
@@ -951,36 +948,36 @@ function showCarsSelectMin(param_id, value_id = 0, fuel_id = 0) {
 //         }}, true);
 // }
 
-function techCarModels(typ_id, str_id) {
-    showCarsSelectMin(6, typ_id);
-    $(".car_form-select_card").toggle();
-
-    JsHttpRequest.query(folder,{ 'w': 'techCarModels', 'typ_id':typ_id, 'str_id':str_id},
-        function (result, errors){ if (errors) {} if (result){
-
-            $("#catalogue-main").html(result.content);
-
-            new treefilter($("#my-tree"), { searcher : $("input#my-search") });
-
-            var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
-            if (input_price.length) {
-                input_price.slider();
-                input_price.on("slide", function(slideEvt) {
-                    $("#price_val").text(slideEvt.value);
-                });
-            }
-            if (input_delivery.length) {
-                input_delivery.slider();
-                input_delivery.on("slide", function (slideEvt) {
-                    $("#dd_val").text(slideEvt.value);
-                });
-            }
-
-            $(".tooltips").tooltip();
-            new LazyLoad({ elements_selector: ".lazy" });
-
-        }}, true);
-}
+// function techCarModels(typ_id, str_id) {
+//     showCarsSelectMin(6, typ_id);
+//     $(".car_form-select_card").toggle();
+//
+//     JsHttpRequest.query(folder,{ 'w': 'techCarModels', 'typ_id':typ_id, 'str_id':str_id},
+//         function (result, errors){ if (errors) {} if (result){
+//
+//             $("#catalogue-main").html(result.content);
+//
+//             new treefilter($("#my-tree"), { searcher : $("input#my-search") });
+//
+//             var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
+//             if (input_price.length) {
+//                 input_price.slider();
+//                 input_price.on("slide", function(slideEvt) {
+//                     $("#price_val").text(slideEvt.value);
+//                 });
+//             }
+//             if (input_delivery.length) {
+//                 input_delivery.slider();
+//                 input_delivery.on("slide", function (slideEvt) {
+//                     $("#dd_val").text(slideEvt.value);
+//                 });
+//             }
+//
+//             $(".tooltips").tooltip();
+//             new LazyLoad({ elements_selector: ".lazy" });
+//
+//         }}, true);
+// }
 
 // TOGGLE VIEW (CARD / TABLE)
 function toggleProductView(ds) {
@@ -1020,13 +1017,6 @@ function toggleProductView(ds) {
 //         }}, true);
 // }
 
-function setParamsAuto(group_id, type) {
-    JsHttpRequest.query(folder,{'w':'setParamsAuto', 'type':type},
-        function (result, errors){ if (errors) {alert(errors);} if (result) {
-            location.href = "https://toko.ua/test_catalog/" + group_id + "/";
-        }}, true);
-}
-
 function setCatalogFilters() {
     let cat_filters = $("#catalog-filters");
     let filters = cat_filters.html();
@@ -1041,7 +1031,6 @@ function setClientRequest() {
     let vin = $("#help-vin").val(); if ($("#help-vin").length === 0) vin = "";
     let text = $("#help-text").val(); if ($("#help-text").length === 0) text = "";
     let status = 0;
-    console.log(phone);
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors) { if (errors) {alert(errors);} if (result) {
             if (result.content === false) {

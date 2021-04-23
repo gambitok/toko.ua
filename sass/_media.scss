@@ -101,21 +101,15 @@
         display: none!important;
     }
 
-    .sticky-header-active {
-        display: none;
-    }
-
     .desktop-only {
         display: none;
     }
 
-    #cat_search_auto,
     .header-main,
     .header-nav,
     .fixed-main,
     .ancor,
     .mob-span,
-    .searchtab__appl,
     .logotype-main {
         display: none;
     }
@@ -157,24 +151,12 @@
     .header-phone,
     .table-responsive,
     .info_block,
-    .searchtab__appl-phone,
     .nav-tabs {
         display: block;
     }
 
     .btn-basket {
         float: right;
-    }
-
-    .order__header-total {
-        float: left;
-    }
-
-    .tabs-auto {
-        display: block;
-        li {
-            display: block;
-        }
     }
 
     .header-top {
@@ -198,25 +180,12 @@
         padding: 0;
     }
 
-    .banner .nav-tabs {
-        display: flex;
-    }
-
     .label {
         width: 100%;
     }
 
     .main {
-        //padding-bottom: 5%;
         padding-top: 0;
-    }
-
-    .main_menu {
-        padding-left: 0;
-        padding-right: 0;
-        h1, h2 {
-            font-size: 14px;
-        }
     }
 
     .search {
@@ -229,36 +198,8 @@
         padding: 0!important;
     }
 
-    .tab_auto_group,
     .tables {
         padding: 0;
-    }
-
-    .searchtab__appl-phone {
-        .container {
-            border: 1px solid #a9a9a9;
-            margin: 15px 0;
-        }
-    }
-
-    .searchtab__appl-link {
-        background: #fff;
-    }
-
-    .searchtab__appl-head {
-        background: #ddd;
-        h3 {
-            color: #f44336;
-            font-weight: 700;
-            font-size: 12px;
-            margin: 0;
-        }
-        h4 {
-            color: #000;
-            font-size: 12px;
-            text-align: right;
-            margin: 0;
-        }
     }
 
     .fixed {
@@ -270,19 +211,8 @@
         }
     }
 
-    .manufacture_list {
-        column-count: 1;
-        &_min {
-            column-count: 1;
-        }
-    }
-
     .nav-title h1 {
         font-size: 1em;
-    }
-
-    .font10 {
-        font-size: 10px;
     }
 
     .owl-row {
@@ -293,20 +223,6 @@
         margin: 0;
         padding: 10px;
         width: 50%;
-    }
-
-    .tree-head {
-        min-height: 200px;
-        span {
-            float: left;
-        }
-    }
-
-    .goods {
-        justify-content: center;
-        &__item {
-            margin: 15px;
-        }
     }
 
     .footer {
@@ -329,55 +245,8 @@
         }
     }
 
-    .cars_range-title-h {
-        display: none;
-    }
-
-    .car_form-selected {
-        display: block!important;
-        padding: 10px!important;
-    }
-
-    .tabs-auto li a {
-        padding-left: 5px;
-    }
-
-    .main_menu .tabs-auto {
-        display: block!important;
-        .nav-item {
-            display: block!important;
-        }
-    }
-
     .span-media {
         display: none!important;
-    }
-
-    .t_mfa {
-        column-count: 2;
-    }
-
-    .t_model {
-        column-count: 2;
-    }
-
-    .t_model_id .row {
-        .body-car, .image-car {
-            padding: 0;
-        }
-    }
-
-    .t_modification div {
-        margin-right: 0;
-        width: 100%;
-    }
-
-    .cars_range-title {
-        margin-top: 1em;
-    }
-
-    .show_more_title {
-        display: block;
     }
 
     .car_form-select {
@@ -386,15 +255,6 @@
             font-size: 1em;
             margin: 0;
         }
-    }
-
-    .garage_row button {
-        width: 100px;
-    }
-
-    .garage_form-buttons {
-        margin-top: 15px;
-        text-align: left!important;
     }
 
     .garage-drop-block__select {
@@ -422,11 +282,6 @@
                 width: 40px;
             }
         }
-    }
-
-    .tree-head_min img {
-        max-width: unset;
-        width: 100%;
     }
 
     .seo_auto ul.list-inline {
@@ -480,6 +335,7 @@
             height: 200px;
         }
     }
+
     .tree-item {
         margin: 0;
         padding-left: 15px;
@@ -499,6 +355,7 @@
             }
         }
     }
+
     .cat-products-title h1 {
         font-size: 24px;
     }
@@ -513,47 +370,33 @@
         margin-left: 0;
         margin-right: 15px;
     }
+
     .request {
         min-height: unset;
-    }
-    .request-row {
-        display: none;
-    }
-    .request-row-mob {
-        display: block;
-        margin: 0;
-        margin-bottom: 15px;
-    }
-    .request-row-mob input[type=tel], .request-row-mob input[type=text], .request-row-mob textarea {
-        background: #f1f1f1;
-        padding: 10px;
-    }
-    .request-row-mob input[type=submit] {
-        background: #0ca9ee;
-        padding: 5px;
-    }	.request-row-mob {
-             display: block;
-             margin: 0;
-             margin-bottom: 15px;
-         }
-    .request-row-mob input[type=tel], .request-row-mob input[type=text], .request-row-mob textarea {
-        background: #f1f1f1;
-        padding: 10px;
-    }
-    .request-row-mob input[type=submit] {
-        background: #0ca9ee;
-        padding: 5px;
-    }
-    .request-row-mob-main {
-        margin: 0;
-        display: flex;
-    }
-    .request-mob {
-        display: block;
-    }
-    .request-mob .request {
-        border: 1px solid #ddd;
-        margin: 10px;
+        &-row {
+            display: none;
+            &-mob {
+                display: block;
+                margin: 0;
+                margin-bottom: 15px;
+                input[type=tel], input[type=text], textarea {
+                    background: #f1f1f1;
+                    padding: 10px;
+                }
+                input[type=submit] {
+                    background: #0ca9ee;
+                    padding: 5px;
+                }
+                .request {
+                    border: 1px solid #ddd;
+                    margin: 10px;
+                }
+                &-main {
+                    margin: 0;
+                    display: flex;
+                }
+            }
+        }
     }
 
     #cars-tab1, #cars-tab2, #cars-tab3, #cars-tab4, #cars-tab5 {
@@ -576,12 +419,8 @@
 
 /*==== PAD PRO ====*/
 @media (min-width: 992px) and (max-width: 1275px) {
-
     .pop {
         display: none!important;
-    }
-    .sticky-header-active {
-        display: none;
     }
     .desktop-only {
         display: none;
@@ -618,9 +457,6 @@
     .pop {
         display: none!important;
     }
-    .sticky-header-active {
-        display: none;
-    }
     .header-main {
         .icons {
             flex: 0 0 25%;
@@ -654,10 +490,6 @@
 
     #menu {
         display: none;
-    }
-
-    .main_menu .table-responsive {
-        display: block;
     }
 
     .label {

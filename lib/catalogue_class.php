@@ -61,10 +61,10 @@ class CatalogueClass
         }
         $art_id_str = implode(",", $art_ids);
 
-        $form = $this->getHtmlForm("cat_search");
-        $search_main = $this->getHtmlForm("cat_search_main");
-        $search_filters = $this->getHtmlForm("cat_search_filters");
-        $search_brands = $this->getHtmlForm("cat_search_brands");
+        $form = $this->getHtmlForm("search/form");
+        $search_main = $this->getHtmlForm("search/main");
+        $search_filters = $this->getHtmlForm("search/filters");
+        $search_brands = $this->getHtmlForm("search/brands");
 
         list($list, $list_brand, $filters) = $this->searchList($art_id_str, 1, 0, $article_nr_search, $brand_nr_search);
 
@@ -106,10 +106,6 @@ class CatalogueClass
             $form = str_replace("{cat_search_brands}", $search_brands, $form);
         }
 
-        //search auto & tree
-        $form = str_replace("{cat_search_auto}", "", $form);
-        $form = str_replace("{cat_search_tree}", "", $form);
-
         $form = $this->replaceLang($form);
 
         return $form;
@@ -150,9 +146,9 @@ class CatalogueClass
 
         list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($art_id_str, $article_nr_search, $brand_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand_nr_search, $order_value, 1);
 
-        $search_main = $this->getHtmlForm("cat_search_main");
-        $search_filters = $this->getHtmlForm("cat_search_filters");
-        $search_brands = $this->getHtmlForm("cat_search_brands");
+        $search_main = $this->getHtmlForm("search/main");
+        $search_filters = $this->getHtmlForm("search/filters");
+        $search_brands = $this->getHtmlForm("search/brands");
         $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $list, 1, $cur);
         $search_main = $this->replaceLang($search_main);
         $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value, 1, 0);
@@ -379,8 +375,8 @@ class CatalogueClass
 
         list($list, $list_brand, $filters) = $this->searchList($art_id_str, 2, 1);
 
-        $search_filters = $this->getHtmlForm("cat_search_filters");
-        $search_brands = $this->getHtmlForm("cat_search_brands");
+        $search_filters = $this->getHtmlForm("search/filters");
+        $search_brands = $this->getHtmlForm("search/brands");
         $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, [], 2, 0);
         $search_filters = $this->replaceLang($search_filters);
         $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
@@ -438,11 +434,11 @@ class CatalogueClass
 
         list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($t2_tree_arts, $art, $brand_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand, $order_value, 2);
 
-        $search_main = $this->getHtmlForm("cat_search_main");
+        $search_main = $this->getHtmlForm("search/main");
         $search_main = $this->getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id);
-        $search_filters = $this->getHtmlForm("cat_search_filters");
+        $search_filters = $this->getHtmlForm("search/filters");
         $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value, 2, 0);
-        $search_brands = $this->getHtmlForm("cat_search_brands");
+        $search_brands = $this->getHtmlForm("search/brands");
         $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
         $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
 
@@ -582,65 +578,65 @@ class CatalogueClass
         return $str_array;
     }
 
-    public function getSearchTree($search_tree, $td_array, $typ_id, $status_str, $str_id)
-    {
-        //DELETE?
-        $automan = new AutoClass();
-        $prefix = $this->getLangPrefix();
-        if ($str_id == 0) {
-            list($str_id, $slvl,) = $automan->getAutoStrData();
-        } else {
-            list($slvl,) = $automan->getStrParams($str_id);
-        }
-        $tree = "";
-        $lvl = 1;
-        $parrents = $this->getStrParrents($str_id, $slvl);
-
-        for ($i = 1; $i <= 10; $i++) {
-            $lvl += 1;
-            foreach ($td_array as $elm) {
-                if ($elm["level"] == $lvl) {
-                    $str_id2 = $elm["id_tree"];
-                    $str_id_parrent2 = $elm["id_parent"];
-                    $class_parrent = (in_array($str_id2, $parrents)) ? "tf-child-true tf-open" : "";
-                    $class_str = ($str_id_parrent2 == $str_id) ? "tf-child-false tf-open" : "";
-                    $class_check = ($str_id2 == $str_id) ? "detail-red" : "";
-
-                    $str = "<li class=\"$str_id2 $class_parrent $class_str\"><div>";
-                    if ($elm["child"] > 0) {
-                        $str .= $elm["name"];
-                    }
-                    if ($elm["child"] == 0) {
-                        $newLink = $automan->getCarLink($typ_id, $str_id2);
-                        $str .= "<a class=\"details_class $class_check\" href=\"$newLink\">" . $elm["name"] . "</a>";
-                    }
-                    $str .= "</div>";
-                    if ($elm["child"] > 0) {
-                        $str .= "\n<ul>\n{p" . $elm["id_tree"] . "}</ul>\n";
-                    }
-                    $str .= "</li>\n";
-                    if ($lvl == 2) {
-                        $tree .= $str;
-                    }
-                    if ($lvl > 2) {
-                        $tree = str_replace("{p" . $elm["id_parent"] . "}", $str . "{p" . $elm["id_parent"] . "}", $tree);
-                    }
-                }
-            }
-        }
-        foreach ($td_array as $elm) {
-            $tree = str_replace("{p" . $elm["id_parent"] . "}", "", $tree);
-            $tree = str_replace("{p" . $elm["id_tree"] . "}", "", $tree);
-        }
-
-        $treeFilter = $this->getHtmlForm("cat_tree_filter");
-        $treeFilter = str_replace("{tree_filter}", $tree, $treeFilter);
-        $treeFilter = str_replace("{tree_catalogue}", "https://toko.ua$prefix/$this->catalog_link/", $treeFilter);
-        $treeFilter = str_replace("{tree_catalogue_class}", $status_str, $treeFilter);
-        $search_tree = str_replace("{tree}", $treeFilter, $search_tree);
-        $search_tree = $this->replaceLang($search_tree);
-        return $search_tree;
-    }
+//    public function getSearchTree($search_tree, $td_array, $typ_id, $status_str, $str_id)
+//    {
+//        //DELETE?
+//        $automan = new AutoClass();
+//        $prefix = $this->getLangPrefix();
+//        if ($str_id == 0) {
+//            list($str_id, $slvl,) = $automan->getAutoStrData();
+//        } else {
+//            list($slvl,) = $automan->getStrParams($str_id);
+//        }
+//        $tree = "";
+//        $lvl = 1;
+//        $parrents = $this->getStrParrents($str_id, $slvl);
+//
+//        for ($i = 1; $i <= 10; $i++) {
+//            $lvl += 1;
+//            foreach ($td_array as $elm) {
+//                if ($elm["level"] == $lvl) {
+//                    $str_id2 = $elm["id_tree"];
+//                    $str_id_parrent2 = $elm["id_parent"];
+//                    $class_parrent = (in_array($str_id2, $parrents)) ? "tf-child-true tf-open" : "";
+//                    $class_str = ($str_id_parrent2 == $str_id) ? "tf-child-false tf-open" : "";
+//                    $class_check = ($str_id2 == $str_id) ? "font-weight: 700!important;color: red!important;background: #c0d2ec;" : "";
+//
+//                    $str = "<li class=\"$str_id2 $class_parrent $class_str\"><div>";
+//                    if ($elm["child"] > 0) {
+//                        $str .= $elm["name"];
+//                    }
+//                    if ($elm["child"] == 0) {
+//                        $newLink = $automan->getCarLink($typ_id, $str_id2);
+//                        $str .= "<a class=\"details_class\" $class_check href=\"$newLink\">" . $elm["name"] . "</a>";
+//                    }
+//                    $str .= "</div>";
+//                    if ($elm["child"] > 0) {
+//                        $str .= "\n<ul>\n{p" . $elm["id_tree"] . "}</ul>\n";
+//                    }
+//                    $str .= "</li>\n";
+//                    if ($lvl == 2) {
+//                        $tree .= $str;
+//                    }
+//                    if ($lvl > 2) {
+//                        $tree = str_replace("{p" . $elm["id_parent"] . "}", $str . "{p" . $elm["id_parent"] . "}", $tree);
+//                    }
+//                }
+//            }
+//        }
+//        foreach ($td_array as $elm) {
+//            $tree = str_replace("{p" . $elm["id_parent"] . "}", "", $tree);
+//            $tree = str_replace("{p" . $elm["id_tree"] . "}", "", $tree);
+//        }
+//
+//        $treeFilter = $this->getHtmlForm("cat_tree_filter");
+//        $treeFilter = str_replace("{tree_filter}", $tree, $treeFilter);
+//        $treeFilter = str_replace("{tree_catalogue}", "https://toko.ua$prefix/$this->catalog_link/", $treeFilter);
+//        $treeFilter = str_replace("{tree_catalogue_class}", $status_str, $treeFilter);
+//        $search_tree = str_replace("{tree}", $treeFilter, $search_tree);
+//        $search_tree = $this->replaceLang($search_tree);
+//        return $search_tree;
+//    }
 
     /*
      * get Search Articles Count
@@ -3108,7 +3104,7 @@ class CatalogueClass
                             </div>
                         </div>
                     </label>
-                    <div id=\"toggle-head-$head_id\" class=\"tree-cat\" style=\"display: none;\">
+                    <div class=\"tree-cat\" style=\"display: none;\">
                         $head_content
                     </div>
                 </div>";
@@ -3208,7 +3204,7 @@ class CatalogueClass
             $head_id = $db->result($r, $i - 1, "HEAD_ID");
             $head_name = $this->getHeadRowName($head_id);
             $list .= "<li class=\"header-nav__li\" data-nav-id=\"$head_id\" style=\"height: 60px;\">
-                <div rel=\"noopener\" style='color: white;'>$head_name</div>
+                <a rel=\"noopener\" style='color: white;'>$head_name</a>
             </li>";
         }
         return $list;

@@ -676,7 +676,7 @@ class FormClass extends CatalogueClass
         if ($info != "") {
             $info = "<div style='border:1px solid #e9e9e9; border-radius:.25em; padding:10px;'>$info</div>";
         }
-        $applicability = $this->getApplManufTCD($art_id);
+        $applicability = $this->getArticleApplForm($art_id);
         $originals = $this->getOriginalNumbers($art_id);
 
         $form = "
@@ -712,13 +712,16 @@ class FormClass extends CatalogueClass
         $form = $this->getHtmlForm("modals/form_info");
         $form = str_replace("{info-main__photo}", $this->showPhotoGallery($art_id), $form);
         $form = str_replace("{info-main__parameters}", $this->getArticleInfoForm($art_id), $form);
-        $form = str_replace("{info-applicability}", $this->getApplManufTCD($art_id), $form);
+        $form = str_replace("{info-applicability}", $this->getArticleApplForm($art_id), $form);
         $form = str_replace("{info-original}", $this->getOriginalNumbers($art_id), $form);
         $form = $this->replaceLang($form);
         return array($form, $title);
     }
 
-    public function getApplManufTCD($art_id)
+    /*
+     * применяемость
+     * */
+    public function getArticleApplForm($art_id)
     {
         $db = DbSingleton::getTokoDb();
         $art_id = $this->getUrlNumber($art_id);
@@ -744,7 +747,7 @@ class FormClass extends CatalogueClass
                 for ($i = 1; $i <= $n; $i++) {
                     $brand_id = $db->result($r, $i - 1, "MFA_ID");
                     $brand = $db->result($r, $i - 1, "MFA_BRAND");
-                    $list .= "<a class=\"padr15 load_app pointer\" onclick='loadApplicModels2(\"$art_id\",\"$brand_id\",this)'><i class=\"fas fa-car\"></i>$brand</a>";
+                    $list .= "<a class=\"padr15 load_app pointer\" onclick='getArticleApplModelForm(\"$art_id\",\"$brand_id\",this)'><i class=\"fas fa-car\"></i>$brand</a>";
                 }
             } else {
                 $list = $this->err1;
@@ -755,7 +758,8 @@ class FormClass extends CatalogueClass
         return $list;
     }
 
-    public function getApplModelTCD($art_id, $mfa)
+    // применяемость на машину
+    public function getArticleApplModelForm($art_id, $mfa)
     {
         $art_id = $this->getUrlNumber($art_id);
         $mfa = $this->getUrlNumber($mfa);
@@ -799,7 +803,7 @@ class FormClass extends CatalogueClass
                 $d_end = "{cur_time}";
             }
             $list .= "<li class=\"list-inline\">
-                <a onclick=\"loadApplicModelsInfo2('$art_id','$typ_id')\" id=\"mm_car$typ_id\">$model ($d_start-$d_end)</a> 
+                <a onclick=\"getArticleApplModelInfoForm('$art_id','$typ_id')\" id=\"mm_car$typ_id\">$model ($d_start-$d_end)</a> 
                 <div id=\"AMI$typ_id\"></div>
             </li>";
         }
@@ -811,7 +815,8 @@ class FormClass extends CatalogueClass
         return $list;
     }
 
-    public function getApplModelInfoTCD($art_id, $typ_id)
+    // применяемость на машину и модель
+    public function getArticleApplModelInfoForm($art_id, $typ_id)
     {
         $art_id = $this->getUrlNumber($art_id);
         $typ_id = $this->getUrlNumber($typ_id);

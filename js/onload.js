@@ -1,3 +1,6 @@
+$('.modal').on('shown.bs.modal', function () {
+    new LazyLoad({ elements_selector: ".lazy" });
+})
 
 var folder = '/content.php';
 

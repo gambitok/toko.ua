@@ -35,7 +35,7 @@ class ProductsClass extends CatalogueClass
 //        $form = $this->getHtmlForm("cat_new_search");
 //        $form = str_replace("{type_search}", 2, $form);
 //        $form = str_replace("{cur_value}", $cur, $form);
-//        $search_main = $this->getSearchMainTree($this->getHtmlForm("cat_search_main"), $list, $str_text, $typ_id, $str_id);
+//        $search_main = $this->getSearchMainTree($this->getHtmlForm("search/main"), $list, $str_text, $typ_id, $str_id);
 //        $form = str_replace("{cat_search_main}", $search_main, $form);
 //        $form = str_replace("{cat_search_new_tree}", "", $form);
 //        $form = str_replace("{cat_search_tree}", "", $form);
@@ -783,7 +783,7 @@ class ProductsClass extends CatalogueClass
     }
 
     /*
-     * Get User Garage selected car
+     * Get User Garage selected car in Catalog
      * */
     public function getCarsGarage()
     {
@@ -792,7 +792,7 @@ class ProductsClass extends CatalogueClass
         list($manufacture, $model, $model_id) = $automan->getCarInfo($auto_typ_id);
         list($manufacture_cap, , $model_id_cap,) = $automan->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
         $models_img = $automan->getAutoIMG($manufacture, $model, $model_id)["model_id_image"];
-        $form = $this->getHtmlForm("garage/garage_typ_block");
+        $form = $this->getHtmlForm("garage/selected");
         $form = str_replace("{typ_id}", $auto_typ_id, $form);
         $form = str_replace("{manufacture_cap}", $manufacture_cap, $form);
         $form = str_replace("{model_id_cap}", $model_id_cap, $form);

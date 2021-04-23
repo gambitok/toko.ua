@@ -66,7 +66,6 @@ function validate(evt) {
 
 // REGISTRATION VALIDATE
 function showValidateModal(phone, callback, callback2) {
-    console.log('show validate form');
     if (phone !== undefined) {
         JsHttpRequest.query(folder,{ 'w': 'validatePhone', 'phone':phone},
             function (result, errors){ if (errors) {} if (result){
@@ -111,7 +110,6 @@ function showGarageForm() {
     JsHttpRequest.query(folder,{ 'w': 'showGarageForm'},
         function (result, errors){ if (errors) {} if (result){
             $("#garage_block").html(result.content);
-            new LazyLoad({ elements_selector: ".lazy" });
         }}, true);
     if ($("#cars_form-selected").length == 0) {
         $("#garage_404_select").html("<div class=\"spinner-border\"></div>");
@@ -356,7 +354,6 @@ function saveSellForm() {
 //     }}, true);
 // }
 function showHideNavigation(head_id) {
-    console.log(head_id);
     $("#navigation-hide").show();
     JsHttpRequest.query(folder,{'w':'getHeaderContent', 'head_id':head_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){

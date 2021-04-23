@@ -1014,16 +1014,16 @@ class AutoClass extends CatalogueClass
     /*
      * get details header image
      * */
-    public function showDetailsHeader($head_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_RU` FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 AND `HEAD_ID`='$head_id' LIMIT 1;");
-        $head_tex_text = $db->result($r, 0, "TEX_RU");
-        $form = $this->getHtmlForm("details/head_title");
-        $form = str_replace("{head_tex_text}", $head_tex_text, $form);
-        $form = str_replace("{head_img}",  "$head_id.jpg", $form);
-        return $form;
-    }
+//    public function showDetailsHeader($head_id)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT `TEX_RU` FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1 AND `HEAD_ID`='$head_id' LIMIT 1;");
+//        $head_tex_text = $db->result($r, 0, "TEX_RU");
+//        $form = $this->getHtmlForm("details/head_title");
+//        $form = str_replace("{head_tex_text}", $head_tex_text, $form);
+//        $form = str_replace("{head_img}",  "$head_id.jpg", $form);
+//        return $form;
+//    }
 
     /*
      * show details list

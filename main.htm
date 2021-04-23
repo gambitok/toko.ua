@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="{site_lang_html}">
 <head>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-134334911-1"></script>
-	<script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-134334911-1');
-        gtag('config', 'AW-1023462949');
-	</script>
+	<link rel="preconnect" href="//google-analytics.com" crossorigin>
+	<link rel="preconnect" href="//embed.tawk.to" crossorigin>
+	<link rel="preconnect" href="//connect.facebook.net" crossorigin>
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 	{site_google_conversation}
 
@@ -130,23 +125,18 @@
 	<link rel="apple-touch-icon" href="/favicon.png" sizes="192x192">
 	<link rel="manifest" href="/manifest.json" type="text/json">
 
-	<script async src="https://www.google-analytics.com/analytics.js"></script>
-
 	<link rel="canonical" href="{canonical_link}"/>
 
 	<!-- Custom Fonts -->
-	<link rel="preload" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap">
+	<!--	<link rel="dns-prefetch" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" crossorigin>-->
+	<link rel="preload" as="font" type="font/woff2" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" crossorigin>
+<!--	<link rel="preload" as="font" type="font/woff2" href="/fonts/OpenSans/open-sans-v18-latin_cyrillic-regular.woff" crossorigin>-->
 	<!-- Fontawesome Fonts -->
 	<link rel="stylesheet" href="/fonts/fontawesome_web/css/all-minify.css">
 	<!-- Plugin Styles -->
 	<link rel="stylesheet" href="/css/plugins/bootstrap.min.css">
 	<!-- Custom Styles -->
 	<link rel="stylesheet" href="/css/style.min.css">
-	<!-- Plugin Scripts -->
-	<script type="text/javascript" src="/js/library/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="/js/library/popper.min.js"></script>
-	<script type="text/javascript" src="/js/library/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/js/JsHttpRequest/JsHttpRequest.min.js"></script>
 
 	<!-- Online Chat -->
 	<script type="text/javascript">
@@ -176,42 +166,34 @@
 	</script>
 	<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=473891079984386&ev=PageView&noscript=1"/></noscript>
 
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-134334911-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-134334911-1');
+		gtag('config', 'AW-1023462949');
+	</script>
+
+	<!-- Plugin Scripts -->
+	<script type="text/javascript" src="/js/library/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="/js/library/popper.min.js"></script>
+	<script type="text/javascript" src="/js/library/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/js/JsHttpRequest/JsHttpRequest.min.js"></script>
+
 </head>
 
 <body>
 
-<div id="seo_form_cities_top"><!--footers_block--></div>
-<div id="seo_form_recomend_top"><!--seo_text_start--><!--seo_text_end--></div>
-<script>
-    var html_cities = $("#seo_form_cities_top").html();
-    $("#seo_form_cities_top").html("");
-    var html_recomend = $("#seo_form_recomend_top").html();
-    $("#seo_form_recomend_top").html("");
-</script>
-
-<!-- Modal Garage -->
-<div class="modal fade" id="GarageForm" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" onclick="hideGarageForm();">x</button>
-            </div>
-            <div class="modal-body text-left" style="margin-bottom: 15px; padding: 0;">
-                <div class="container">
-                    <div class="row">
-                        <div id="garage_block" class="container garage-drop">
-                            {basket_content}
-                        </div>
-                        <div class="container">
-                            <div id="garage_404_select"></div>
-                            <div id="garage_cars_form"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<!--<div id="seo_form_cities_top">&lt;!&ndash;footers_block&ndash;&gt;</div>-->
+<!--<div id="seo_form_recomend_top">&lt;!&ndash;seo_text_start&ndash;&gt;&lt;!&ndash;seo_text_end&ndash;&gt;</div>-->
+<!--<script>-->
+<!--    var html_cities = $("#seo_form_cities_top").html();-->
+<!--    $("#seo_form_cities_top").html("");-->
+<!--    var html_recomend = $("#seo_form_recomend_top").html();-->
+<!--    $("#seo_form_recomend_top").html("");-->
+<!--</script>-->
 
 <div id="myHeader" class="sticky-header"></div>
 <div id="myBackdrop" class="sticky-backdrop"></div>
@@ -539,6 +521,30 @@
 
 <div id="modals" class="modals">
 
+	<!-- Modal Garage -->
+	<div class="modal fade" id="GarageForm" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" onclick="hideGarageForm();">x</button>
+				</div>
+				<div class="modal-body text-left" style="margin-bottom: 15px; padding: 0;">
+					<div class="container">
+						<div class="row">
+							<div id="garage_block" class="container garage-drop">
+								{basket_content}
+							</div>
+							<div class="container">
+								<div id="garage_404_select"></div>
+								<div id="garage_cars_form"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Modal Alert -->
 	<div class="modal fade" id="AlertForm" role="dialog" tabindex="-1">
 		<div class="modal-dialog">
@@ -744,10 +750,10 @@
 
 </html>
 
-<script>
-    $("#seo_form_cities_bottom").html(html_cities);
-    $("#seo_form_recomend_bottom").html(html_recomend);
-</script>
+<!--<script>-->
+<!--    $("#seo_form_cities_bottom").html(html_cities);-->
+<!--    $("#seo_form_recomend_bottom").html(html_recomend);-->
+<!--</script>-->
 
 <script>
     function toggleSocialIcons() {

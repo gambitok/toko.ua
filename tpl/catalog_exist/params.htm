@@ -20,8 +20,7 @@
         }
         $("div[data-param-value='" + param_id + "'] span").each(function () {
             let text = $(this).text().toLowerCase();
-            let indexOfText = text.indexOf(search); // 0 OR -1
-            console.log(search + " = " + text + " = " + indexOfText);
+            let indexOfText = text.indexOf(search);
             if (indexOfText >= 0) {
                 $(this).parent().parent().css('display', 'flex');
             } else {
