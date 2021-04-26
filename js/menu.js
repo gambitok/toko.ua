@@ -1,13 +1,3 @@
-// function showLoader() {
-    // $("#LoaderForm").modal("show");
-    // $(".modal-backdrop").css("background-color","white");
-// }
-
-// function hideLoader() {
-    // $("#LoaderForm").modal("hide");
-    // $(".modal-backdrop").css("background-color","black");
-// }
-
 // DROPZONE FILE UPLOAD
 function showUploadForm() {
     let myDropzone = new Dropzone("#myDropzone",{ dictDefaultMessage: "Press to choose file!" });
@@ -141,7 +131,6 @@ function hideGarageForm() {
     $("#GarageForm").modal("hide");
 }
 
-
 function dropHistoryShow() {
     let myDropDown = $("#myDropdown");
     myDropDown.show();
@@ -178,114 +167,6 @@ function toggleForm(slide) {
 function rotateIcon(a) {
     $(a).find("i").toggleClass("rotate__icon");
 }
-
-// function triggerTabAuto(year) {
-//     $(".year-list").each(function () {$(this).removeClass("span-red");});
-//     $("#year-"+year).addClass("span-red");
-//     JsHttpRequest.query(folder,{ 'w': 'tab_auto', 'year':year },
-//         function (result, errors){ if (errors) {} if (result){
-//             let link = $("#link_auto"); link.removeClass("disabled"); link.trigger("click");
-//             $("#link_model").addClass("disabled");
-//             $("#link_modelid").addClass("disabled");
-//             $("#link_group").addClass("disabled");
-//             $("#tab_auto").html(result.content);
-//             $([document.documentElement, document.body]).animate({
-//                 scrollTop: $("#navigation").offset().top
-//             }, 500);
-//         }}, true);
-//     return true;
-// }
-//
-// function triggerTabModel(auto, year) {
-//     $(".auto-list").each(function () {$(this).removeClass("span-red");});
-//     $("#auto-"+auto).addClass("span-red");
-//     JsHttpRequest.query(folder,{ 'w': 'tab_model', 'auto':auto, 'year':year },
-//         function (result, errors){ if (errors) {} if (result){
-//             let link = $("#link_model"); link.removeClass("disabled"); link.trigger("click");
-//             $("#link_modelid").addClass("disabled");
-//             $("#link_group").addClass("disabled");
-//             $("#tab_model").html(result.content);
-//             $([document.documentElement, document.body]).animate({
-//                 scrollTop: $("#navigation").offset().top
-//             }, 500);
-//         }}, true);
-//     return true;
-// }
-//
-// function triggerTabModelId(model, auto, year) {
-//     $(".model-list").each(function () {$(this).removeClass("span-red");});
-//     $("#model-"+model).addClass("span-red");
-//     JsHttpRequest.query(folder,{ 'w': 'tab_modelid', 'model':model, 'auto':auto, 'year':year },
-//         function (result, errors){ if (errors) {} if (result){
-//             let link = $("#link_modelid"); link.removeClass("disabled"); link.trigger("click");
-//             $("#link_group").addClass("disabled");
-//             $("#tab_modelid").html(result.content);
-//             $([document.documentElement, document.body]).animate({
-//                 scrollTop: $("#navigation").offset().top
-//             }, 500);
-//         }}, true);
-//     return true;
-// }
-//
-// function triggerTabGroup(modelid ,model, auto, year) {
-//     $(".modelid-list").each(function () {$(this).removeClass("span-red");});
-//     $("#modelid-"+modelid).addClass("span-red");
-//     JsHttpRequest.query(folder,{ 'w': 'tab_group', 'modelid':modelid, 'model':model, 'auto':auto, 'year':year },
-//         function (result, errors){ if (errors) {} if (result){
-//             let link = $("#link_group"); link.removeClass("disabled"); link.trigger("click");
-//             $("#tab_group").html(result.content);
-//             $([document.documentElement, document.body]).animate({
-//                 scrollTop: $("#navigation").offset().top
-//             }, 500);
-//         }}, true);
-//     return true;
-// }
-
-/*==== Load Catalogue page ====*/
-// function triggerTabModel2(auto,model,modelid) {
-//     window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/");
-//     $(".auto-list").each(function () {$(this).removeClass("span-red");});
-//     $("#auto-"+auto).addClass("span-red");
-//     JsHttpRequest.query(folder,{ 'w': 'tab_model', 'auto':auto },
-//         function (result, errors){ if (errors) {} if (result){
-//             let link = $("#link_model"); link.removeClass("disabled"); link.trigger("click");
-//             $("#link_modelid").addClass("disabled");
-//             $("#link_group").addClass("disabled");
-//             $("#tab_model").html(result.content);
-//             if (model!==undefined && model!=="") {triggerTabModelId2(auto,model,modelid);}
-//         }}, true);
-//     return true;
-// }
-//
-// function triggerTabModelId2(auto,model,modelid) {
-//     window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/"+model+"/");
-//     $(".model-list").each(function () {$(this).removeClass("span-red");});
-//     $("#model-"+model).addClass("span-red");
-//     JsHttpRequest.query(folder,{ 'w': 'tab_modelid', 'model':model, 'auto':auto },
-//         function (result, errors){ if (errors) {} if (result){
-//             let link = $("#link_modelid"); link.removeClass("disabled"); link.trigger("click");
-//             $("#link_group").addClass("disabled");
-//             $("#tab_modelid").html(result.content);
-//             if (modelid!==undefined && modelid!=="") {setTimeout(triggerTabGroup2(auto,model,modelid),2000);}
-//         }}, true);
-//     return true;
-// }
-//
-// function triggerTabGroup2(auto,model,modelid) {
-//     window.history.pushState("catalogue", "Auto", "/catalogue/auto/"+auto+"/"+model+"/"+modelid+"/");
-//     $(".modelid-list").each(function () {$(this).removeClass("span-red");});
-//     $("#modelid-"+modelid).addClass("span-red");
-//     JsHttpRequest.query(folder,{ 'w': 'tab_group', 'modelid':modelid, 'model':model, 'auto':auto },
-//         function (result, errors){ if (errors) {} if (result){
-//             let link = $("#link_group"); link.removeClass("disabled"); link.trigger("click");
-//             $("#tab_group").html(result.content);
-//         }}, true);
-//     return true;
-// }
-//
-// function triggerCatalogueTabs(auto,model,modelid) {
-//     if (auto!==undefined && auto!=="") triggerTabModel2(auto,model,modelid);
-// }
 
 function saveSellForm() {
     let company_input = $("#reg_company"), company = company_input.val();
@@ -340,25 +221,11 @@ function saveSellForm() {
     }
 }
 
-// function showHideNavigation(head_id) {
-//     $("#navigation-hide").show();
-//     JsHttpRequest.query(folder,{'w':'showHeadTemplate', 'head_id':head_id},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//         $("#content-nav__content").html(result.content);
-//         $("#content-nav__footer").html(result.footer);
-//         $(".header-nav__li").each(function() {
-//             $(this).removeClass("header-nav__li-active");
-//         });
-//         $("li[data-nav-id='" + head_id + "']").addClass("header-nav__li-active");
-//         $(".backdrop").addClass("backdrop-show");
-//     }}, true);
-// }
 function showHideNavigation(head_id) {
     $("#navigation-hide").show();
     JsHttpRequest.query(folder,{'w':'getHeaderContent', 'head_id':head_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
         $("#content-nav__content").html(result.content);
-        // $("#content-nav__footer").html(result.footer);
         $(".header-nav__li").each(function() {
             $(this).removeClass("header-nav__li-active");
         });
@@ -392,7 +259,6 @@ function showHomeCars() {
         }}, true);
 }
 
-// BONUS
 function validateBonusPhone() {
     let phone = $("#phone").val();
     let password = $("#sms_code").val();
@@ -412,5 +278,3 @@ function finishBonusPhone(phone, bonus) {
             $("#phone_valid").html(result.content);
         }}, true);
 }
-
-

@@ -1,14 +1,10 @@
 
-// function showLangForm() { $("#LangForm").modal("toggle"); }
-
 function setSiteLang(id) {
     JsHttpRequest.query(folder,{'w':'setSiteLang', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             location.href = "https://toko.ua/" + result.content;
         }}, true);
 }
-
-// function showProfilePageOrders() { location.href="/profile/orders/"; }
 
 function focusPhone() { $("#userlogin").focus(); }
 
@@ -158,18 +154,6 @@ function loginForm() {
             }}, true);
     }
 }
-
-// function loginFormOrder() {
-//     let login = $("#userlogin2").val();
-//     let password = $("#userpassword2").val();
-//     if (login==="" || password==="") showAlertModal("{input_all_data}!","{error_cap}",0);
-//     else {
-//         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
-//             function (result, errors){ if (errors) {alert(errors);} if (result){
-//                 if (result.content===false) showAlertModal("{user_not_logged}!", "{error_cap}", 0); else location.reload();
-//             }}, true);
-//     }
-// }
 
 function signInForm() {
     let login = $("#userlogin2").val();

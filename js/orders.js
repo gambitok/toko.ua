@@ -228,9 +228,6 @@ function editFields() {
     $("#valid_button").removeClass("none");
     $("#orders-delivery").addClass("none");
     $("#orders-payment").addClass("none");
-    // $(".valid_field").each(function() {
-    //     $(this).prop("disabled", false);
-    // });
     let user_id = $("#order_cookie_user_id").val();
     if (user_id == 0 || user_id == undefined) {
         $("#order_user_id").val(user_id);

@@ -23,6 +23,10 @@
             }
             &-image {
                 width: 100%;
+                img {
+                    display: block;
+                    margin: 0 auto;
+                }
             }
             &-descr {
                 font-size: 10px;

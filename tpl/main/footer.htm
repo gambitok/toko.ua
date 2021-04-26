@@ -1,0 +1,43 @@
+<div class="footer">
+    <div class="row footer__socials">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-2 col-5 padl0 madl0">
+                    <span>{social_contacts}: </span>
+                </div>
+                <div class="col-lg-7 col-7">
+						<span itemscope itemtype="http://schema.org/Organization">
+ 							<link itemprop="url" href="https://toko.ua/">
+							{list_social}
+						</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row footer__contacts">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-12 footer__contacts-head">
+                    <span>{contacts_cap}</span>
+                    {contacts_bottom}
+                </div>
+                <div class="col-lg-4 col-12 footer__contacts-column">
+                    <span>{for_suppliers_cap}</span>
+                    <ul class="list-inline">
+                        <li><a href="{site_lang_prefix}/sell/"><span class="fas fa-angle-right"></span> {sell_on_toko}</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-12 footer__contacts-column">
+                    <span>{info_cap}</span>
+                    <ul class="list-inline">
+                        <li><a href="{site_lang_prefix}/contacts/"><span class="fas fa-angle-right"></span> {contacts_cap}</a></li>
+                        <li><a href="{site_lang_prefix}/reviews/"><span class="fas fa-angle-right"></span> {review_state_cap}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row footer__cities">
+        <div id="seo_form_cities_bottom" class="wdt100"></div>
+    </div>
+</div>

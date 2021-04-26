@@ -17,9 +17,6 @@ require_once (RDD . "/lib/profile_class.php");
 require_once (RDD . "/lib/lang_class.php");
 require_once (RDD . "/lib/exrate_class.php");
 require_once (RDD . "/lib/auto_class.php");
-//require_once (RDD . "/lib/parameters_class.php");
-//require_once (RDD . "/lib/search_class.php");
-//require_once (RDD . "/lib/template_class.php");
 require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");
 require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 
@@ -34,9 +31,6 @@ $showform = new FormClass();
 $automan = new AutoClass();
 $profile = new ProfileClass();
 $prod = new ProductsClass();
-//$parameters = new ParametersClass();
-//$search = new SearchClass();
-//$template = new TemplateClass();
 
 /*==== PROFILE ====*/
 
@@ -145,10 +139,6 @@ if ($_REQUEST["w"] == "getCatalogueLink") {
 
 if ($_REQUEST["w"] == "show_catalogue_filter_all") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogListFilter($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));
-}
-
-if ($_REQUEST["w"] == "show_model_filter_all") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->techModelsFilters($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));
 }
 
 /*==== GARAGE ====*/
@@ -350,11 +340,6 @@ if ($_REQUEST["w"] == "updateOrderArt") {
 
 /*==== CATALOG TRIGGER LIST ====*/
 
-if ($_REQUEST["w"] == "showHeadTemplate") {
-    list($content, $footer) = $catalog->showHeadTemplate($_REQUEST["head_id"]);
-    $GLOBALS['_RESULT'] = array("content" => $content, "footer" => $footer);
-}
-
 if ($_REQUEST["w"] == "getSpecialOffersList") {
     $GLOBALS['_RESULT'] = array("content" => $menu->getSpecialOffersList($_REQUEST["template_id"], $_REQUEST["update_actions"])[0]);
 }
@@ -374,30 +359,6 @@ if ($_REQUEST["w"] == "showHomeCars") {
 if ($_REQUEST["w"] == "showModalForm") {
     $GLOBALS['_RESULT'] = array("content" => $showform->showModalForm($_REQUEST["form"]));
 }
-
-/*==== PRODUCTS ====*/
-
-//if ($_REQUEST["w"] == "showCarDetailsStr") {
-//    $GLOBALS['_RESULT'] = array("content" => $prod->showCarDetailsStr($_REQUEST["head_id"], $_REQUEST["str_id_str"]));
-//}
-//
-//if ($_REQUEST["w"] == "techCarModels") {
-//    $GLOBALS['_RESULT'] = array("content" => $prod->techCarModels($_REQUEST["typ_id"], $_REQUEST["str_id"]));
-//}
-//
-//if ($_REQUEST["w"] == "techCarModelsFilter") {
-//    $GLOBALS['_RESULT'] = array("content" => $prod->techCarModelsFilter($_REQUEST["typ_id"], $_REQUEST["str_id"]));
-//}
-
-/*==== PARAMETERS ====*/
-
-//if ($_REQUEST["w"] == "showFiltersForm") {
-//    $GLOBALS['_RESULT'] = array("content" => $parameters->showFiltersForm($_REQUEST["template_id"], $_REQUEST["active_filters"]));
-//}
-//
-//if ($_REQUEST["w"] == "showFilterOptionsForm") {
-//    $GLOBALS['_RESULT'] = array("content" => $parameters->showFilterOptionsForm($_REQUEST["template_id"], $_REQUEST["page"], $_REQUEST["active_filters"]));
-//}
 
 /*==== HOME CARS ====*/
 
@@ -421,12 +382,6 @@ if ($_REQUEST["w"] == "showCarsForm2") {
 if ($_REQUEST["w"] == "showCarsSelectedForm") {
     $GLOBALS['_RESULT'] = array("content" => $prod->showCarsSelectedForm());
 }
-
-/*==== SEARCH ====*/
-
-//if ($_REQUEST["w"] == "showSearchParameters") {
-//    $GLOBALS['_RESULT'] = array("content" => $search->showSearchParameters($_REQUEST["str_id"], $_REQUEST["page"], $_REQUEST["active_filters"], $_REQUEST["type"]));
-//}
 
 /*==== MENU ====*/
 

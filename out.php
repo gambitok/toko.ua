@@ -28,6 +28,9 @@ if ($path == "seoshield-client") {
 include_once(RDD . "/event/menu.php");
 
 // Main HEAD HTML
+$content = str_replace("{footer_content}", getHtmlForm("main/footer"), $content);
+$content = str_replace("{anchor_contacts_content}", getHtmlForm("main/anchor-contacts"), $content);
+
 $content = str_replace("{site_lang_html}", getSiteLang(), $content);
 $content = str_replace("{site_google_conversation}", "", $content);
 $content = str_replace("{site_title}", getTitle($path), $content);
@@ -58,7 +61,6 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') 
 // Main HTML
 //$content = str_replace("{main_seo_text}", ($seo_text == "" || $seo_text == "<!--seo_text_start--><!--seo_text_end-->") ? "" : getSeoText($seo_text), $content);
 $content = str_replace("{main_seo_text}", getSeoTextForm(), $content);
-$content = str_replace("{main_auto_window}", "", $content);
 $content = str_replace("{main_site_breadcrumbs}", printBreadcrumbs($path)[0], $content);
 $content = str_replace("{main_window}", "", $content);
 $content = str_replace("{main_metro}", "", $content);
@@ -69,70 +71,6 @@ $content = str_replace("{meta_noindex}", '
 ', $content);
 
 $linka = findLinks();
-
-$url = $catalogue->getUrlString($linka[0]);
-
-if ($url == "cars") {
-    $mfa_link = $catalogue->getUrlString($linka[1]);
-    $mod_link = $catalogue->getUrlString($linka[2]);
-    list($mfa_text, ) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-    if ($mfa_text != "") {
-        $content = str_replace("{main_seo_text_cars}", $search->getSeoCarsLinking($mfa_link, $mod_link), $content);
-    }
-}
-
-//if ($url == "catalog") {
-//    $str_link = $mfa_link = $mod_link = $mod_id_link = $filters = "";
-//
-//    $some = $catalogue->getUrlString($linka[0]);
-//
-//    $result = explode($some . "/", $_SERVER["REQUEST_URI"], 2);
-//    $link = ltrim($result[1]);
-//
-//    $arr = explode("/", $link);
-//    if (!empty($arr[0])) {
-//        $str_link = $arr[0];
-//    }
-//    if (!empty($arr[3])) {
-//        ((strpos($arr[4], "=") !== false)) ? $filters = $arr[4] : $filters = "";
-//    }
-//    if (!empty($arr[3])) {
-//        ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $mod_id_link = $arr[3];
-//    }
-//    if (!empty($arr[2])) {
-//        ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
-//    }
-//    if (!empty($arr[1])) {
-//        ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
-//    }
-//
-//    // check brandy
-//    $brand_filters = $search->getActiveFilters($filters);
-//    $active_filters = $brand_filters[0];
-//
-//    if (count($active_filters) == 1) {
-//        $str_id = $automan->getStrNewLinkStr($str_link);
-//        $str_name = $automan->getStrDescr($str_id);
-//        $mfa_id = $automan->getMfaLink($mfa_link);
-//        $mod = $automan->getModLink($mod_link);
-//        $mod_id = $automan->getModIdCode($mod_id_link);
-//        $brand_name = $catalogue->getBrandName($active_filters[0]);
-//
-//        $seo_content = "";
-//        $seo_content .= "<!--isset_listing_page-->";
-//        $seo_content .= "<!--product_in_listingEX-->";
-//
-//        $seo_content .= "<!--seoshield_formulas--fil-traciya-->";
-//        $seo_content .= "<!--ss_selected_filters_info|brandy|$brand_name-->";
-//
-//        $seo_breadcrumb = getSeoBreadcrumbs($str_id, $mfa_id, $mod, $mod_id);
-//        $seo_breadcrumb = $automan->replaceLang($seo_breadcrumb);
-//        $seo_content .= "<!--ss_breadcrums_list:$seo_breadcrumb-->";
-//
-//        $content = str_replace("{main_seo_products_content}", $seo_content, $content);
-//    }
-//
-//}
 
 $content = str_replace("{main_seo_products_content}", "", $content);
 

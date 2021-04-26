@@ -1054,7 +1054,6 @@ header {
             &-link {
                 cursor: pointer;
                 display: block;
-                padding: 5px;
                 img {
                     width: 30px;
                     display: block;
@@ -1063,8 +1062,7 @@ header {
                 }
             }
             .basket_status {
-                display: inline-block;
-                width: 0;
+                position: absolute;
             }
         }
     }
@@ -1316,64 +1314,57 @@ header {
     position: relative;
     z-index: 999;
     &-hide {
+        height: auto;
         position: absolute;
+        top: 50px;
         width: calc(100% + 30px);
         z-index: 999999;
-        height: auto;
-        top: 50px;
     }
-    nav {
-        height: 100%;
-    }
-    ul {
-        color: $white;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        text-transform: uppercase;
-        font-weight: 700;
-        list-style: none;
-        display: flex;
-        justify-content: start;
+    &__ul {
         align-items: flex-start;
-        li {
-            color: #fff;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            height: 100%;
-            padding: 10px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            position: relative;
-            margin-left: -1px;
-            min-height: 50px;
-            a {
-                color: #fff;
-                &:hover {
-                    text-decoration: none;
-                }
-            }
-            &:hover {
-                background: rgba(200, 67, 54, 1);
-                color: $white;
-                transition: all .3s ease;
-            }
-            &:not(:first-child) {
-                &:before {
-                    background: rgba(255, 255, 255, 0.3);
-                    bottom: 10px;
-                    content: '';
-                    left: 0;
-                    position: absolute;
-                    top: 10px;
-                    width: 1px;
-                }
-            }
-        }
+        display: flex;
+        height: 100%;
+        justify-content: start;
+        list-style: none;
+        margin: 0;
+        width: 100%;
     }
     &__li {
+        align-items: center;
+        color: $white;
+        cursor: pointer;
+        display: flex;
+        font-size: 12px;
+        font-weight: 700;
+        height: 60px;
+        margin-left: -1px;
+        min-height: 50px;
+        padding: 10px;
+        position: relative;
+        text-align: center;
+        text-transform: uppercase;
+        &:hover {
+            background: rgba(200, 67, 54, 1);
+            color: $white;
+            transition: all .3s ease;
+        }
+        &:not(:first-child) {
+            &:before {
+                background: rgba(255, 255, 255, 0.3);
+                bottom: 10px;
+                content: '';
+                left: 0;
+                position: absolute;
+                top: 10px;
+                width: 1px;
+            }
+        }
+        a {
+            color: $white;
+            &:hover {
+                text-decoration: none;
+            }
+        }
         &-active {
             background: $white!important;
             a {
@@ -1573,12 +1564,6 @@ header {
 }
 
 /*==== /FIXED ====*/
-
-/*==== MAIN ====*/
-.main {
-    background: $white;
-    padding: 15px 0;
-}
 
 /*==== TREE ROW ====*/
 

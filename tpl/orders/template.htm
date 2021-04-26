@@ -89,19 +89,19 @@
 
     <div class="anchor-contacts">
         <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Online chat" data-placement="left">
-            <a href="javascript:void(Tawk_API.toggle())" onclick="toggleSocialIcons()" class="anchor-contacts__item anchor-contacts__item-chats"><img src="/images/icons/socials/chats.svg" alt="Online chat"></a>
+            <a href="javascript:void(Tawk_API.toggle())" onclick="toggleSocialIcons()" class="anchor-contacts__item anchor-contacts__item-chats"><img src="/images/icons/socials/png/chats.png" alt="Online chat"></a>
         </div>
         <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Telegram" data-placement="left">
-            <a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram"><img src="/images/icons/socials/telegram.svg" alt="Telegram"></a>
+            <a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram"><img src="/images/icons/socials/png/telegram.png" alt="Telegram"></a>
         </div>
         <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Viber" data-placement="left">
-            <a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-viber"><img src="/images/icons/socials/viber.svg" alt="Viber"></a>
+            <a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-viber"><img src="/images/icons/socials/png/viber.png" alt="Viber"></a>
         </div>
         <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Facebook" data-placement="left">
-            <a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-facebook"><img src="/images/icons/socials/facebook.svg" alt="Facebook"></a>
+            <a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-facebook"><img src="/images/icons/socials/png/facebook.png" alt="Facebook"></a>
         </div>
         <div class="anchor-contacts-li anchor-contacts-li-main tooltips" title="{make_question}" data-placement="left">
-            <a onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-contacts"><img src="/images/icons/socials/chats.svg" alt="Socials"></a>
+            <a onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-contacts"><img src="/images/icons/socials/png/chats.png" alt="Socials"></a>
         </div>
     </div>
 
@@ -191,9 +191,9 @@
     function toggleSocialIcons() {
         $(".anchor-contacts-li-item").toggleClass("anchor-contacts-li-hidden");
         if ($(".anchor-contacts-li-item").hasClass("anchor-contacts-li-hidden")) {
-            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/chats.svg");
+            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/png/chats.png");
         } else {
-            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/close.svg");
+            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/png/close.png");
         }
     }
 </script>

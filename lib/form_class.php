@@ -869,13 +869,6 @@ class FormClass extends CatalogueClass
         return $form;
     }
 
-    /**
-     * @param $art_id
-     * @param int $display - view type: table || card
-     * @param int $type - info display type: 5 and more || All
-     * @return string
-     *
-     */
     public function getArticleInfoForm($art_id, $display = 0, $type = 0)
     {
         $db = DbSingleton::getTokoDb();

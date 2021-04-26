@@ -126,16 +126,10 @@
 	<link rel="manifest" href="/manifest.json" type="text/json">
 
 	<link rel="canonical" href="{canonical_link}"/>
-
-	<!-- Custom Fonts -->
 	<!--	<link rel="dns-prefetch" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" crossorigin>-->
-	<link rel="preload" as="font" type="font/woff2" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" crossorigin>
-<!--	<link rel="preload" as="font" type="font/woff2" href="/fonts/OpenSans/open-sans-v18-latin_cyrillic-regular.woff" crossorigin>-->
-	<!-- Fontawesome Fonts -->
+
 	<link rel="stylesheet" href="/fonts/fontawesome_web/css/all-minify.css">
-	<!-- Plugin Styles -->
 	<link rel="stylesheet" href="/css/plugins/bootstrap.min.css">
-	<!-- Custom Styles -->
 	<link rel="stylesheet" href="/css/style.min.css">
 
 	<!-- Online Chat -->
@@ -179,47 +173,20 @@
 	<!-- Plugin Scripts -->
 	<script type="text/javascript" src="/js/library/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="/js/library/popper.min.js"></script>
-	<script type="text/javascript" src="/js/library/bootstrap.min.js"></script>
+<!--	<script type="text/javascript" src="/js/library/bootstrap.min.js"></script>-->
+	<script type="text/javascript" src="/js/library/bootstrap-custom.min.js"></script>
 	<script type="text/javascript" src="/js/JsHttpRequest/JsHttpRequest.min.js"></script>
 
 </head>
 
 <body>
 
-<!--<div id="seo_form_cities_top">&lt;!&ndash;footers_block&ndash;&gt;</div>-->
-<!--<div id="seo_form_recomend_top">&lt;!&ndash;seo_text_start&ndash;&gt;&lt;!&ndash;seo_text_end&ndash;&gt;</div>-->
-<!--<script>-->
-<!--    var html_cities = $("#seo_form_cities_top").html();-->
-<!--    $("#seo_form_cities_top").html("");-->
-<!--    var html_recomend = $("#seo_form_recomend_top").html();-->
-<!--    $("#seo_form_recomend_top").html("");-->
-<!--</script>-->
-
 <div id="myHeader" class="sticky-header"></div>
 <div id="myBackdrop" class="sticky-backdrop"></div>
 
 <div class="wrapper container-fluid">
 
-	<div class="anchor-contacts">
-        <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips desktop-only" title="Online chat" data-placement="left">
-            <a href="javascript:void(Tawk_API.toggle())" onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-chats"><img class="lazy" data-src="/images/icons/socials/chats.svg" alt="Online chat"></a>
-        </div>
-		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Telegram" data-placement="left">
-			<a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram"><img class="lazy" data-src="/images/icons/socials/telegram.svg" alt="Telegram"></a>
-		</div>
-		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Viber" data-placement="left">
-			<a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-viber"><img class="lazy" data-src="/images/icons/socials/viber.svg" alt="Viber"></a>
-		</div>
-		<div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Facebook Messenger" data-placement="left">
-			<a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-facebook"><img class="lazy" data-src="/images/icons/socials/facebook.svg" alt="Facebook Messenger"></a>
-		</div>
-		<div class="anchor-contacts-li anchor-contacts-li-main tooltips" title="{make_question}" data-placement="left">
-			<a onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-contacts"><img class="lazy" data-src="/images/icons/socials/chats.svg" alt="Socials"></a>
-		</div>
-	</div>
-
 	<header>
-
 		{site_warning_message}
 
 		<div class="row header-top" id="header-top">
@@ -278,15 +245,15 @@
 					<div class="col-2 phones">
                         <ul>
                             <li>
-                                <img data-src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
+                                <img data-src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar" src="">
 								<a href="tel:0970803060">(097) <b>080 30 60</b></a>
                             </li>
                             <li>
-								<img data-src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
+								<img data-src="/images/phones/vodafone.png" class="lazy" alt="vodafone" src="">
 								<a href="tel:0500803060">(050) <b>080 30 60</b></a>
                             </li>
                             <li>
-                                <img data-src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
+                                <img data-src="/images/phones/lifecell.png" class="lazy" alt="lifecell" src="">
 								<a href="tel:0930803060">(093) <b>080 30 60</b></a>
                             </li>
                         </ul>
@@ -333,23 +300,6 @@
 					<div class="col-8 pad0">
 						<div class="dropdown">
 							<label onclick="showPhoneForm();"><i class="fa fa-phone"></i> (097) <b>080 30 60</b></label>
-<!--							<div class="dropdown-toggle" id="dropdownPhoneButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--								<label><i class="fa fa-phone"></i> (097) <b>080 30 60</b></label>-->
-<!--							</div>-->
-<!--							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownPhoneButton">-->
-<!--								<div class="dropdown-item">-->
-<!--									<img src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">-->
-<!--									<a href="tel:0970803060">(097) <b>080 30 60</b></a>-->
-<!--								</div>-->
-<!--								<div class="dropdown-item">-->
-<!--									<img src="/images/phones/vodafone.png" class="lazy" alt="vodafone">-->
-<!--									<a href="tel:0500803060">(050) <b>080 30 60</b></a>-->
-<!--								</div>-->
-<!--								<div class="dropdown-item">-->
-<!--									<img src="/images/phones/lifecell.png" class="lazy" alt="lifecell">-->
-<!--									<a href="tel:0930803060">(093) <b>080 30 60</b></a>-->
-<!--								</div>-->
-<!--							</div>-->
 						</div>
 					</div>
 					<div class="col-4 pad0">
@@ -357,17 +307,17 @@
 							<div class="modal-help-row-socials">
 								<a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="modal-help-row-socials__item">
 									<div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__telegram modal-help-row-socials__item-image-min">
-										<img class="lazy" data-src="/images/icons/socials/telegram.svg" alt="Telegram">
+										<img class="lazy" data-src="/images/icons/socials/png/telegram.png" alt="Telegram" src="">
 									</div>
 								</a>
 								<a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="modal-help-row-socials__item">
 									<div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__viber modal-help-row-socials__item-image-min">
-										<img class="lazy" data-src="/images/icons/socials/viber.svg" alt="Viber">
+										<img class="lazy" data-src="/images/icons/socials/png/viber.png" alt="Viber" src="">
 									</div>
 								</a>
 								<a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="modal-help-row-socials__item">
 									<div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__facebook modal-help-row-socials__item-image-min">
-										<img class="lazy" data-src="/images/icons/socials/facebook.svg" alt="Facebook">
+										<img class="lazy" data-src="/images/icons/socials/png/facebook.png" alt="Facebook" src="">
 									</div>
 								</a>
 							</div>
@@ -378,38 +328,33 @@
                     <div class="col-4 pad0">
                         <div class="header-phone-nav__logo">
                             <a href="{site_lang_prefix}/" class="btn">
-                                <img class="lazy" itemprop="logo" data-src="{image_logotype_phone}" alt="{site_title_short}" title="{site_title_short}">
+                                <img class="lazy" itemprop="logo" data-src="{image_logotype_phone}" alt="{site_title_short}" title="{site_title_short}" src="">
                             </a>
                         </div>
                     </div>
-                    <div class="col-8 pad0">
+                    <div class="offset-2 col-6 pad0">
                         <ul class="header-phone-nav__list">
                             <li>
                                 <a class="header-phone-nav__list-link" href="{site_lang_prefix}/catalogue/">
-                                    <img class="lazy" data-src="/images/icons/headers/30x30/garage.png" alt="Garage">
+                                    <img class="lazy" data-src="/images/icons/headers/30x30/garage.png" alt="Garage" src="">
                                 </a>
                             </li>
                             <li>
                                 <a class="header-phone-nav__list-link" href="{site_lang_prefix}/profile/">
-                                    <img class="lazy" data-src="/images/icons/headers/30x30/profile.png" alt="Profile">
+                                    <img class="lazy" data-src="/images/icons/headers/30x30/profile.png" alt="Profile" src="">
                                 </a>
                             </li>
-                            <div class="basket_status">
-                            	<div id="basket_status3" class="tool-status {basket_style}">{basket_count}</div>
-                            </div>
                             <li>
+								<div class="basket_status">
+									<div id="basket_status3" class="tool-status {basket_style}">{basket_count}</div>
+								</div>
                                 <div class="header-phone-nav__list-link" onclick="showBasketMinForm();">
-                                    <img class="lazy" data-src="/images/icons/headers/30x30/basket.png" alt="Basket">
+                                    <img class="lazy" data-src="/images/icons/headers/30x30/basket.png" alt="Basket" src="">
                                 </div>
                             </li>
-<!--                            <li class="bar">-->
-<!--                                <a title="{mob_menu}">-->
-<!--                                    <img src="/images/icons/header/bar.svg" alt="Bar">-->
-<!--                                </a>-->
-<!--                            </li>-->
                             <li class="bar-menu">
                                 <div class="header-phone-nav__list-link" title="{mob_menu}">
-                                    <img class="lazy" data-src="/images/icons/header/bar.svg" alt="Bar">
+                                    <img class="lazy" data-src="/images/icons/headers/30x30/bars.png" alt="Bar" src="">
                                 </div>
                             </li>
                         </ul>
@@ -423,27 +368,10 @@
             </div>
         </div>
 
-<!--		<div id="navigation" class="row header-nav">-->
-<!--			<div class="container">-->
-<!--				<nav class="row align-items-center" itemscope itemtype="http://schema.org/SiteNavigationElement">-->
-<!--					<ul>{details_info}</ul>-->
-<!--				</nav>-->
-<!--			</div>-->
-<!--			<div id="navigation-hide" class="row header-nav-hide" style="display:none;">-->
-<!--				<div class="col-12 content-nav">-->
-<!--					<div class="container">-->
-<!--						<div id="content-nav__content" class="content-nav__content tree-block"></div>-->
-<!--					</div>-->
-<!--					<div id="content-nav__footer" class="content-nav__footer">-->
-<!--					</div>-->
-<!--				</div>-->
-<!--			</div>-->
-<!--		</div>-->
-
 		<div id="navigation" class="row header-nav">
 			<div class="container">
 				<nav class="row align-items-center">
-					<ul>{catalog_range}</ul>
+					<ul class="header-nav__ul">{catalog_range}</ul>
 				</nav>
 			</div>
 			<div id="navigation-hide" class="row header-nav-hide" style="top: 60px; width: 100%; left: 15px; display:none;">
@@ -461,61 +389,17 @@
 	<section class="row main">
         <div id="metro" class="wdt100">{main_metro}</div>
 		<div id="catalogue" class="container pad0">
-			<div id="catalogue-auto" style="margin: 15px 0;">{main_auto_window}</div>
 			<div id="catalogue-breadcrumbs">{main_site_breadcrumbs}</div>
 			<div id="catalogue-main">{main_window}</div>
             <div id="catalogue-seo">{main_seo_text}</div>
-            <!--<div id="seo_form_recomend_bottom"></div>-->
 		</div>
 	</section>
 
 	<footer>
-        <div class="footer">
-            <div class="row footer__socials">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-2 col-5 padl0 madl0">
-                            <span>{social_contacts}: </span>
-                        </div>
-                        <div class="col-lg-7 col-7">
-						<span itemscope itemtype="http://schema.org/Organization">
- 							<link itemprop="url" href="https://toko.ua/">
-							<ul>{list_social}</ul>
-						</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row footer__contacts">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-4 col-12 footer__contacts-head">
-                            <span>{contacts_cap}</span>
-                            {contacts_bottom}
-                        </div>
-                        <div class="col-lg-4 col-12 footer__contacts-column">
-                            <span>{for_suppliers_cap}</span>
-                            <ul class="list-inline">
-                                <li><a href="{site_lang_prefix}/sell/"><span class="fas fa-angle-right"></span> {sell_on_toko}</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-4 col-12 footer__contacts-column">
-                            <span>{info_cap}</span>
-                            <ul class="list-inline">
-                                <li><a href="{site_lang_prefix}/contacts/"><span class="fas fa-angle-right"></span> {contacts_cap}</a></li>
-                                <li><a href="{site_lang_prefix}/reviews/"><span class="fas fa-angle-right"></span> {review_state_cap}</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row footer__cities">
-                <div id="seo_form_cities_bottom" class="wdt100"></div>
-            </div>
-
-        </div>
+        {footer_content}
 	</footer>
+
+	{anchor_contacts_content}
 
 </div>
 
@@ -532,7 +416,6 @@
 					<div class="container">
 						<div class="row">
 							<div id="garage_block" class="container garage-drop">
-								{basket_content}
 							</div>
 							<div class="container">
 								<div id="garage_404_select"></div>
@@ -602,7 +485,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 				<div class="modal-body text-left pad0">
-					<div id="info_content">{info_content}</div>
+					<div id="info_content"></div>
 				</div>
 			</div>
 		</div>
@@ -679,7 +562,7 @@
 					<div class="container">
 						<div class="row">
 							<div id="basket_block" class="container" style="min-height: 375px;">
-								{basket_content}
+
 							</div>
 						</div>
 					</div>
@@ -693,12 +576,10 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <span class="modal-title">{cars_cap}</span>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body text-left">
                     <div id="cars_block">
-                        {cars_content}
                     </div>
                 </div>
             </div>
@@ -719,9 +600,7 @@
 			</div>
 			<div class="template_filters">
 				<h2>{filters_cap}</h2>
-				<div id="menu-catalog-content">
-					MENU CATALOG
-				</div>
+				<div id="menu-catalog-content"></div>
 			</div>
 		</div>
 	</nav>
@@ -741,6 +620,7 @@
         <a href="#header-top" rel="nofollow"><span class="mob-span"><span class="fas fa-chevron-up"></span></span></a>
     </div>
 </div>
+
 {main_seo_products_content}
 
 <!-- Backdrop -->
@@ -750,23 +630,15 @@
 
 </html>
 
-<!--<script>-->
-<!--    $("#seo_form_cities_bottom").html(html_cities);-->
-<!--    $("#seo_form_recomend_bottom").html(html_recomend);-->
-<!--</script>-->
-
+<!-- Plugin Scripts -->
 <script>
-    function toggleSocialIcons() {
-        $(".anchor-contacts-li-item").toggleClass("anchor-contacts-li-hidden");
-        if ($(".anchor-contacts-li-item").hasClass("anchor-contacts-li-hidden")) {
-            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/chats.svg");
-        } else {
-            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/close.svg");
-        }
-    }
+	jQuery.event.special.touchstart = {
+		setup: function( _, ns, handle ) {
+			this.addEventListener("touchstart", handle, { passive: !ns.includes("noPreventDefault") });
+		}
+	};
 </script>
 
-<!-- Plugin Scripts -->
 <script type="text/javascript" src="/js/plugins/bigSlide.js"></script>
 <script type="text/javascript" src="/js/plugins/lazyload/lazyload.min.js"></script>
 <script type="text/javascript" src="/js/plugins/bootstrap-notify/bootstrap-notify.min.js"></script>

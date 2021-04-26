@@ -36,12 +36,12 @@ function getContent($content) {
     $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
     $content = str_replace("{basket_count}", $shop->countBasket()[0], $content);
     $content = str_replace("{basket_style}", $shop->countBasket()[1], $content);
-    $content = str_replace("{garage_style}", $shop->countGarage(), $content);
+    $content = str_replace("{garage_style}", "", $content);
     $content = str_replace("{garage_status}", $automan->getGarageAutoCount()[0], $content);
-    $content = str_replace("{garage_style}", $automan->getGarageAutoCount()[1], $content);
+//    $content = str_replace("{garage_style}", $automan->getGarageAutoCount()[1], $content);
     $content = str_replace("{basket_summ}", $shop->countSummBasket(), $content);
     $content = str_replace("{profile_mobile}", $profile->getProfileInfoMobile(), $content);
-    $content = str_replace("{list_social}", getPhpContent("/tpl/menu/social_icons.php"), $content);
+    $content = str_replace("{list_social}", "<ul>" . getPhpContent("/tpl/menu/social_icons.php") . "</ul>", $content);
     $content = str_replace("{info}", "", $content);
     $content = str_replace("{info_title}", "", $content);
     $content = str_replace("{info2}", "", $content);
@@ -292,8 +292,8 @@ function getHtmlForm($name) {
 function getDescription($path) {
     $language = new LangClass();
     $cat = new CatalogueClass();
-    $search = new SearchClass();
-    $automan = new AutoClass();
+//    $search = new SearchClass();
+//    $automan = new AutoClass();
     $linka = findLinks();
     $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
@@ -561,26 +561,3 @@ function getSeoTextForm()
     return $form;
 }
 
-function getSeoBreadcrumbs($str_id, $mfa_id, $mod, $mod_id) {
-    $automan = new AutoClass();
-    $list = "";
-    if ($str_id > 0) {
-        $str_name = $automan->getStrNewDescr($str_id);
-        if ($str_name == "") {
-            $str_name = $automan->getStrDescr($str_id);
-        }
-        $list .= "{seo_shop_toko} >> {spare_parts_catalog_cap} >> $str_name";
-    }
-    if ($mfa_id > 0) {
-        $mfa_name = $automan->getMfaBrand($mfa_id);
-        $list .= " >> $mfa_name";
-    }
-    if ($mod != "") {
-        $list .= " >> $mod";
-    }
-    if ($mod_id > 0) {
-        $mod_id_name = $automan->getModIdLink($mod_id);
-        $list .= " >> $mod_id_name";
-    }
-    return $list;
-}

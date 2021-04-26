@@ -38,54 +38,6 @@ function showPhoneForm() {
         }}, true);
 }
 
-// CATALOG BRAND INPUT SEARCH
-function searchBrandInput() {
-    var input, filter, ul, li, a, i, txtValue;
-    input = document.getElementById("brandSearchInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("brandSearchList");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("a")[0];
-        txtValue = a.textContent || a.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-        }
-    }
-}
-
-// Catalog Cards Params (brands, count, pagination)
-// function showSearchParameters() {
-//     let str_id = $("#details_str_id").val();
-//     let page = $("#details_page").val();
-//     let active_filters = $("#details_active_filters").val();
-//     let type = $("#details_str_type").val();
-//     $("#details_pagination").html("<div class=\"spinner-border\"></div>");
-//     JsHttpRequest.query(folder,{'w':'showSearchParameters', 'str_id':str_id, 'page':page, 'active_filters':active_filters, 'type':type},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             $("#details_count").html(result.content[0]);
-//             $("#details_pagination").html(result.content[1]);
-//         }}, true);
-// }
-
-function toggleListParams(a, param_id) {
-    $("#param-" + param_id).toggleClass("list-hide");
-    $(a).find("span").each(function() {
-        if ($(this).attr("class")==="show") {
-            $(this).addClass("none");
-            $(this).removeClass("show");
-            return true;
-        }
-        if ($(this).attr("class")==="none") {
-            $(this).addClass("show");
-            $(this).removeClass("none");
-            return true;
-        }
-    });
-}
-
 // SHOW OTHER STORAGES
 function showStorage(art_id) {
     $("." + art_id + "-hide").toggleClass("none");
@@ -111,53 +63,6 @@ function artSearch(input_name) {
     }
 }
 
-// function selectModel() { "use strict";
-//     let auto = $("#select_auto option:selected").val();
-//     $("#select_model_descr").empty();
-//     $("#select_number_descr").empty();
-//     $("#select_group_descr").empty();
-//     $("#select_model").empty(); $("#select_modelid").empty(); $("#select_group").empty();
-//     JsHttpRequest.query(folder,{'w':'select_model', 'auto':auto},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             let select_model=$("#select_model");
-//             select_model.html(result.content);
-//             select_model.select2("open");
-//         }}, true);
-// }
-//
-// function selectModelID() { "use strict";
-//     let model = $("#select_model option:selected").val();
-//     $("#select_number_descr").empty();
-//     $("#select_group_descr").empty();
-//     $("#select_modelid").empty(); $("#select_group").empty();
-//     JsHttpRequest.query(folder,{'w':'select_modelid', 'model':model},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             let select_modelid=$("#select_modelid");
-//             select_modelid.html(result.content);
-//             select_modelid.select2("open");
-//         }}, true);
-// }
-//
-// function selectGroup() { "use strict";
-//     let modelid = $("#select_modelid option:selected").val();
-//     $("#select_group").empty();
-//     $("#select_group_descr").empty();
-//     JsHttpRequest.query(folder,{'w':'select_group', 'modelid':modelid},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             let select_group=$("#select_group");
-//             select_group.html(result.content);
-//             select_group.select2("open");
-//         }}, true);
-// }
-//
-// function selectEnd() { "use strict";
-//     let group = $("#select_group option:selected").val();
-//     JsHttpRequest.query(folder,{'w':'select_end', 'group':group},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             $("#select_group_descr").html(result.content);
-//         }}, true);
-// }
-
 function selectRegion(id) {
     JsHttpRequest.query(folder,{'w':'setTpoint', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -173,21 +78,6 @@ function selectRegionText(id) {
             $("#region_select_tpoint").html(result.content);
         }}, true);
 }
-
-// function checkCookieTpoint() {
-    // let tpoint_id = getCookie("tpoint_id");
-    // if (tpoint_id==="") showRegionForm();
-    // let action_status = getCookie("action_status");
-    // let user = getCookie("user");
-    // JsHttpRequest.query(folder,{'w':'checkActionClients'},
-    //     function (result, errors){ if (errors) {alert(errors);} if (result){
-    //         if (action_status==="" && user!=="" && result.content>0) {
-    //             setCookie("action_status","1");
-    //             showActionForm();
-    //         }
-    //     }}, true);
-    // return true;
-// }
 
 // Modal `Brands`
 function showBrandForm(brand) {
@@ -327,107 +217,6 @@ function catalogueFilter(order) {
         }}, true);
 }
 
-function tecModelsFilter(order) {
-    let art = $("#art_value").val();
-    let brand = $("#brand_value").val();
-
-    let brands = [];
-    $("input[type=checkbox]").each(function () {
-        if (this.checked) {
-            brands.push($(this).attr("name"));
-        }
-    });
-    let bb = JSON.stringify(brands);
-
-    let cur = parseInt($(".radio-group input[name=cur]:checked").attr("value"));
-    if (isNaN(cur)) cur = 1;
-    let cur_old = parseInt($("#cur_value").val());
-    let price = $("#filter-price").val();
-    let deliv = $("#filter-delivery").val();
-
-    JsHttpRequest.query(folder,{'w':'show_model_filter_all', 'art':art, 'brand':brand, 'bb':bb, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-
-            $("#cat_search_main").html(result.content[0]);
-            $("#cat_search_filters").html(result.content[1]);
-            $("#cat_search_brands").html(result.content[2]);
-
-            loadInputNumber();
-
-            var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
-            input_price.slider();
-            input_price.on("slide", function(slideEvt) { $("#price_val").text(slideEvt.value); });
-            input_delivery.slider();
-            input_delivery.on("slide", function(slideEvt) { $("#dd_val").text(slideEvt.value); });
-
-            $(".js-example-basic-single").select2();
-
-            var max_price = parseInt(result.content[3]);
-            var value = input_price.data("slider").getValue();
-
-            $("#filter-max-price").html(max_price);
-            input_price.attr("data-slider-max", max_price);
-            input_price.slider("setAttribute", "max", max_price);
-            input_price.slider("refresh");
-
-            if (value[1]>max_price) value[1] = max_price;
-            var max_min = value[0] + "," + value[1];
-            input_price.attr("data-slider-value",max_min);
-            $("#price_val").html(max_min);
-
-            if (cur !== cur_old) {
-                value[1] = max_price;
-                value[0] = 0;
-                input_price.slider("refresh");
-                $("#filter-max-price").html(max_price);
-                input_price.attr("data-slider-max", max_price);
-                input_price.slider("setAttribute", "max", max_price);
-                max_min=value[0] + "," + value[1];
-                input_price.attr("data-slider-value", max_min);
-                $("#price_val").html(max_min);
-                $("#cur_value").val(cur);
-                input_price.slider("setValue", value);
-                tecModelsFilter(order);
-            }
-
-            input_price.slider("setValue", value);
-            $("#cur_value").val(cur);
-            $(".tooltips").tooltip();
-            new LazyLoad({ elements_selector: ".lazy" });
-
-            navigateTo("result_target");
-
-        }}, true);
-}
-
-// function tecModelsTreeStr(manuf, mod, modid, gr, str, lvl, par, a) { "use strict";
-//     $(".details_class").each(function () {$(this).removeClass("detail-red");}); $(a).addClass("detail-red");
-//
-//     JsHttpRequest.query(folder,{'w':'tecModelsTreeStr', 'manuf':manuf, 'mod':mod, 'modid':modid, 'gr':gr, 'str':str, 'lvl':lvl, 'par':par},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//
-//             $("#cat_search_main").html(result.content[0]);
-//             $("#cat_search_filters").html(result.content[1]);
-//             $("#cat_search_brands").html(result.content[2]);
-//
-//             window.history.pushState("catalogue", "Product", "/catalogue/findmodel/"+manuf+"/"+mod+"/"+modid+"/"+gr+"/"+str+"/"+lvl+"/"+par+"/"+result.content[4]+"/");
-//
-//             document.title = result.content[3];
-//
-//             loadInputNumber();
-//
-//             var input_price=$("#filter-price"), input_delivery=$("#filter-delivery");
-//             input_price.slider();
-//             input_price.on("slide", function(slideEvt) { $("#price_val").text(slideEvt.value); });
-//             input_delivery.slider();
-//             input_delivery.on("slide", function(slideEvt) { $("#dd_val").text(slideEvt.value); });
-//
-//             $(".js-example-basic-single").select2();
-//             $(".tooltips").tooltip();
-//             navigateTo("result_target");
-//         }}, true);
-// }
-
 function getArticleApplModelForm(art_id_tcd, manufacture, a) {
     $(".load_app").each(function () {
         $(this).removeClass("span-red");
@@ -454,32 +243,6 @@ function getArticleApplModelInfoForm(art_id, typ_id) {
     }
 }
 
-// function checkTypeAnalog(n) { "use strict";
-//     let art_id=document.getElementById(n).getAttribute("name");
-//     let art_dspl=document.getElementById(n).innerHTML;
-//     let brand_id=document.getElementById("brand"+n).getAttribute("name");
-//     JsHttpRequest.query(folder,{ 'w': 'check_type_analog', 'art_id':art_id, 'brand_id':brand_id, 'art_dspl':art_dspl},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             if (result.content>0) $("#analog"+n).css("color","#4b4e4f");
-//         }}, true);
-// }
-
-// function checkAnalog() { "use strict";
-//     var max=0;
-//     var element=document.getElementsByClassName("artclass");
-//     if (typeof(element)!=="undefined" && element!=null && document.getElementsByClassName("artclass").length!==0) {
-//         var str=document.getElementsByClassName("artclass")[0].getAttribute("id");
-//         var res=str.replace("art", "");
-//         res=parseInt(res);
-//     }
-//     $(".artclass").each(function() {
-//         max=Math.max(this.id, max);
-//     });
-//     for (var i=res; i<=max; i++) {
-//         if (document.getElementById(i)!=null) checkTypeAnalog(i);
-//     }
-// }
-
 // COPY ARTICLE BUTTON
 function copyToClipboard(element, art_name) {
     let $temp = $("<input>");
@@ -489,8 +252,6 @@ function copyToClipboard(element, art_name) {
     $temp.remove();
     showNotify("{done_cap}:", "{art_cap} '" + art_name + "' {copied_to_clipboard}!", "success");
 }
-
-/*==== Garage ====*/
 
 /*
 * finish add car to garage
@@ -532,26 +293,12 @@ function addToGarage(typ_id = 0) {
     }
 }
 
-// UPDATE SELECTED CAR FORM
-// function updateGarageForm() {
-//     $("#car_content").html();
-//     JsHttpRequest.query(folder,{'w':'showCarsSelectedForm'},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             $("#car_content").html(result.content);
-//         }}, true);
-// }
-
 // DELETE CAR FROM GARAGE
 function deleteAutoGarage(auto_id) {
     JsHttpRequest.query(folder,{'w':'deleteAutoGarage', 'auto_id':auto_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             showAutoGarage();
             showGarageStatus();
-            if (result.content === false) {
-                if (getCookie("auto_typ_id") === "") {
-                    showCarsSelectMin(1);
-                }
-            }
         }}, true);
 }
 
@@ -640,345 +387,6 @@ function changeActionCount(i, action_price, action_amount) {
     }
 }
 
-// function showManufactureDetails(head_id, str_id_str) {
-//     let request_link = window.location.href;
-//     let class_name = $("#manufacture_head" + head_id).attr("class");
-//     if (class_name === "tree-list dnone") {
-//         JsHttpRequest.query(folder,{ 'w': 'showManufactureDetails', 'head_id':head_id, 'request_link':request_link, 'str_id_str':str_id_str},
-//             function (result, errors){ if (errors) {} if (result){
-//                 $("#tree_head-" + head_id).toggleClass("check-head");
-//                 let manuf_head = $("#manufacture_head" + head_id);
-//                 manuf_head.removeClass("dnone");
-//                 manuf_head.addClass("dblock");
-//                 manuf_head.html(result.content);
-//             }}, true);
-//     } else {
-//         $("#tree_head-" + head_id).toggleClass("check-head");
-//         let manuf_head = $("#manufacture_head" + head_id);
-//         manuf_head.removeClass("dblock");
-//         manuf_head.addClass("dnone");
-//         manuf_head.html("");
-//     }
-// }
-
-/*==== NEW STR CAR DETAILS ====*/
-// function showCarDetailsStr(head_id) {
-//     let str_id_str = $("#tree_str_ids").val();
-//     let manuf_head = $("#manufacture_head" + head_id);
-//     let class_name = manuf_head.attr("class");
-//     if (class_name === "tree-list dnone") {
-//         JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str},
-//             function (result, errors){ if (errors) {} if (result){
-//                 $("#tree_head-" + head_id).toggleClass("check-head");
-//                 manuf_head.removeClass("dnone");
-//                 manuf_head.addClass("dblock");
-//                 manuf_head.html(result.content);
-//             }}, true);
-//     } else {
-//         $("#tree_head-" + head_id).toggleClass("check-head");
-//         manuf_head.removeClass("dblock");
-//         manuf_head.addClass("dnone");
-//         manuf_head.html("");
-//     }
-// }
-
-// function showCarDetailsStrMin(head_id) {
-//     let typ_id = $("#typ_id").val();
-//     let str_id_str = $("#tree_str_ids").val();
-//     let manuf_head = $("#manufacture_head" + head_id);
-//     let class_name = manuf_head.attr("class");
-//     if (class_name === "tree-list_min dnone") {
-//         JsHttpRequest.query(folder,{ 'w': 'showCarDetailsStr', 'head_id':head_id, 'str_id_str':str_id_str, 'typ_id':typ_id},
-//             function (result, errors){ if (errors) {} if (result){
-//                 $("#tree_head-" + head_id).toggleClass("check-head");
-//                 manuf_head.removeClass("dnone");
-//                 manuf_head.addClass("dblock");
-//                 manuf_head.html(result.content);
-//             }}, true);
-//     } else {
-//         $("#tree_head-" + head_id).toggleClass("check-head");
-//         manuf_head.removeClass("dblock");
-//         manuf_head.addClass("dnone");
-//         manuf_head.html("");
-//     }
-// }
-
-/*==== /NEW STR CAR DETAILS ====*/
-
-// function triggerDetailCar(type_id, value_id) {
-//     $("#toggle_manuf_list").show();
-//
-//     let str_id = $("#str_id").val();
-//     let str_level = $("#str_level").val();
-//     let str_id_parrent = $("#str_id_parrent").val();
-//
-//     let s_yr = $("#select_year");
-//     let s_mf = $("#select_manufacture");
-//     let s_md = $("#select_model");
-//     let s_mi = $("#select_model_id");
-//     let s_gr = $("#select_group");
-//
-//     let r_yr = $("#str_year");
-//     let r_mf = $("#str_manufacture");
-//     let r_md = $("#str_model");
-//     let r_mi = $("#str_model_id");
-//     let r_gr = $("#str_group");
-//
-//     let r_ti = $("#str_type");
-//
-//     $(".btn-select").each(function () {$(this).removeClass("btn-active");});
-//
-//     if (r_ti.val()!=="0") {
-//         if (r_yr.val()==="") {
-//             type_id=parseInt(r_ti.val());
-//             r_yr.val(value_id);
-//             switch (type_id) {
-//                 case 1: {value_id=parseInt(r_yr.val());break;}
-//                 case 2: {value_id=parseInt(r_mf.val());break;}
-//                 case 3: {value_id=r_md.val();break;}
-//                 case 4: {value_id=parseInt(r_mi.val());break;}
-//             }
-//         }
-//         if (r_yr.val()==="all") {
-//             type_id=0;
-//             r_yr.val("");
-//         }
-//     }
-//
-//     if (value_id===undefined) {
-//         switch (type_id) {
-//             case 0: {s_yr.addClass("btn-active");break;}
-//             case 1: {s_mf.addClass("btn-active");break;}
-//             case 2: {s_md.addClass("btn-active");break;}
-//             case 3: {s_mi.addClass("btn-active");break;}
-//             case 4: {s_gr.addClass("btn-active");break;}
-//         }
-//     } else {
-//         switch (type_id) {
-//             case 0: {s_yr.addClass("btn-active");break;}
-//             case 1: {r_yr.val(value_id);s_mf.addClass("btn-active");break;}
-//             case 2: {r_mf.val(value_id);s_md.addClass("btn-active");break;}
-//             case 3: {r_md.val(value_id);s_mi.addClass("btn-active");break;}
-//             case 4: {r_mi.val(value_id);s_gr.addClass("btn-active");break;}
-//         }
-//     }
-//
-//     if (value_id!==undefined) {
-//         switch (type_id) {
-//             case 0: {s_mf.attr("disabled", 'disabled');s_md.attr("disabled", 'disabled');s_mi.attr("disabled", 'disabled');s_gr.attr("disabled", 'disabled');break;}
-//             case 1: {s_mf.removeAttr("disabled");s_md.attr("disabled", 'disabled');s_mi.attr("disabled", 'disabled');s_gr.attr("disabled", 'disabled');break;}
-//             case 2: {s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.attr("disabled", 'disabled');s_gr.attr("disabled", 'disabled');break;}
-//             case 3: {s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");s_gr.attr("disabled", 'disabled');break;}
-//             case 4: {s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");s_gr.removeAttr("disabled");break;}
-//         }
-//     } else {
-//         switch (type_id) {
-//             case 0: {s_yr.addClass("btn-active");s_mf.removeAttr("disabled");break;}
-//             case 1: {s_mf.addClass("btn-active");s_mf.removeAttr("disabled");break;}
-//             case 2: {s_md.addClass("btn-active");s_mf.removeAttr("disabled");s_md.removeAttr("disabled");break;}
-//             case 3: {s_mi.addClass("btn-active");s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");break;}
-//             case 4: {s_gr.addClass("btn-active");s_mf.removeAttr("disabled");s_md.removeAttr("disabled");s_mi.removeAttr("disabled");s_gr.removeAttr("disabled");break;}
-//         }
-//     }
-//
-//     let year = r_yr.val();
-//     let manufacture = r_mf.val();
-//     let model = r_md.val();
-//     let model_id = r_mi.val();
-//     let group = r_gr.val();
-//
-//     switch (type_id) {
-//         case 1: {manufacture="";model="";model_id="";group="";break;}
-//         case 2: {model="";model_id="";group="";break;}
-//         case 3: {model_id="";group="";break;}
-//         case 4: {group="";break;}
-//     }
-//
-//     JsHttpRequest.query(folder,{'w':'triggerDetailCar', 'type_id':type_id, 'value_id':value_id, 'year':year, 'manufacture':manufacture, 'model':model, 'model_id':model_id, 'group':group, 'str_id':str_id},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//
-//             $("#select_form_car").html(result.content);
-//             $("#toggle_manuf_list").html(result.content);
-//             $("#str_str_text").val(result.header);
-//             $("#breadcrumb_auto").text(result.format);
-//
-//             if (result.skip_id>0) {
-//                 model_id=result.skip_id;
-//                 if (model_id>0) {
-//                     r_mi.val(model_id);
-//                     s_mi.removeClass("btn-active");
-//                     s_gr.addClass("btn-active");
-//                 }
-//             }
-//
-//             if (value_id!==undefined) {
-//                 let car_code="/";
-//                 if (year!=="") car_code+=year+"/";
-//                 if (year==="") car_code+="all/";
-//                 if (manufacture!=="") car_code+=manufacture+"/";
-//                 if (model!=="") car_code+=model+"/";
-//                 if (model_id!=="") car_code+=model_id+"/";
-//                 if (group!=="") car_code+=group+"/";
-//
-//                 if (str_id==="") {
-//                     window.history.pushState("catalogue", "Auto", "/catalogue/findmodel/"+car_code+"/"+result.header+"/");
-//                     document.title = result.title;
-//                 } else {
-//                     window.history.pushState("catalogue", "Auto", "/catalogue/finddetail/"+result.header+""+"/"+str_id+"/"+str_level+"/"+str_id_parrent+car_code);
-//                     document.title = result.title;
-//                 }
-//             }
-//
-//         }}, true);
-// }
-
-// function showTabCatalogueAuto() {
-//     JsHttpRequest.query(folder,{ 'w': 'showTabCatalogueAuto'},
-//         function (result, errors){ if (errors) {} if (result){
-//             $("#cat_tab_search").html(result.content);
-//             let link = $("#link_auto"); link.removeClass("disabled"); link.trigger("click");
-//             $("#link_model").addClass("disabled");
-//             $("#link_modelid").addClass("disabled");
-//             $("#link_group").addClass("disabled");
-//             $(".bootstrap-switch-label").text($(".bootstrap-switch-handle-off").text());
-//         }}, true);
-// }
-
-function showCarsSelectMin(param_id, value_id = 0, fuel_id = 0) {
-    let mfa = $("#mfa_select").val();
-    let model = $("#model_select").val();
-    let year = $("#year_select").val();
-    let modelid = $("#modelid_select").val();
-    let typ_id = $("#typ_id_select").val();
-    let fuel_id_selected = $("#fuel_id_select").val();
-    let str_id = $("#str_text_select").val();
-
-    if (param_id == 1) {
-        mfa = "";
-        model = "";
-        year = "";
-        modelid = "";
-        typ_id = "";
-    }
-
-    if (param_id==2 && value_id>0)   {mfa=value_id; model="";}
-    if (param_id==2 && value_id!="") {mfa=value_id; model="";}
-    if (param_id==2 && value_id==0)  {model="";}
-
-    if (param_id==3 && value_id>0)   {model=value_id; year="";}
-    if (param_id==3 && value_id!="") {model=value_id; year="";}
-    if (param_id==3 && value_id==0)  {year="";}
-
-    if (param_id==4 && value_id>0)   {year=value_id; modelid="";}
-    if (param_id==4 && value_id!="") {year=value_id; modelid="";}
-    if (param_id==4 && value_id==0)  {modelid="";}
-
-    if (param_id==5 && value_id>0)   {modelid=value_id;typ_id="";}
-    if (param_id==5 && value_id==0)  {typ_id="";$(".car_form-select_card").toggle();}
-
-    if (param_id==6 && value_id>0)   {typ_id=value_id;}
-    if (param_id==6 && value_id!="") {typ_id=value_id;}
-    if (param_id==6 && value_id==0)  {fuel_id=fuel_id_selected;}
-
-    JsHttpRequest.query(folder,{ 'w': 'showCarsSelectMin', 'str_id':str_id, 'mfa':mfa, 'model':model, 'year':year, 'modelid':modelid, 'typ_id':typ_id, 'fuel_id':fuel_id},
-        function (result, errors){ if (errors) {} if (result){
-            $("#car_content").html(result.content);
-            navigateTo("catalogue");
-        }}, true);
-}
-
-// function showCarsSelected(param_id, value_id=0) {
-//     let mfa=$("#mfa_select").val();
-//     let model=$("#model_select").val();
-//     let year=$("#year_select").val();
-//     let modelid=$("#modelid_select").val();
-//     let typ_id=$("#typ_id_select").val();
-//
-//     if (param_id==1) {mfa=""; model=""; year=""; modelid=""; typ_id="";}
-//
-//     if (param_id==2 && value_id>0)   {mfa=value_id; model="";}
-//     if (param_id==2 && value_id!="") {mfa=value_id; model="";}
-//     if (param_id==2 && value_id==0)  {model="";}
-//
-//     if (param_id==3 && value_id>0)   {model=value_id; year="";}
-//     if (param_id==3 && value_id!="") {model=value_id; year="";}
-//     if (param_id==3 && value_id==0)  {year="";}
-//
-//     if (param_id==4 && value_id>0)   {year=value_id; modelid="";}
-//     if (param_id==4 && value_id!="") {year=value_id; modelid="";}
-//     if (param_id==4 && value_id==0)  {modelid="";}
-//
-//     if (param_id==5 && value_id>0)   {modelid=value_id;typ_id="";}
-//     if (param_id==5 && value_id==0)  {typ_id="";$(".car_form-select_card").toggle();}
-//
-//     if (param_id==6 && value_id>0)   {typ_id=value_id;}
-//
-//     JsHttpRequest.query(folder,{ 'w': 'showCarsSelected', 'mfa':mfa, 'model':model, 'year':year, 'modelid':modelid, 'typ_id':typ_id},
-//         function (result, errors){ if (errors) {} if (result){
-//             $("#car_content").html(result.content);
-//         }}, true);
-// }
-
-// function techCarModelsFilter() {
-//     let typ_id = $("#search_typ_id").val();
-//     let str_id = $("#search_str_id").val();
-//
-//     JsHttpRequest.query(folder,{ 'w': 'techCarModelsFilter', 'typ_id':typ_id, 'str_id':str_id},
-//         function (result, errors){ if (errors) {} if (result){
-//             $("#search_new_tree").html(result.content[0]); $("#search_new_tree").fadeIn(3000);
-//             $("#search_tree").html(result.content[1]); $("#search_tree").fadeIn(3000);
-//             $("#search_filters").html(result.content[2]); $("#search_filters").fadeIn(3000);
-//             $("#search_brands").html(result.content[3]); $("#search_brands").fadeIn(3000);
-//
-//             new treefilter($("#my-tree"), { searcher : $("input#my-search") });
-//
-//             var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
-//             if (input_price.length) {
-//                 input_price.slider();
-//                 input_price.on("slide", function(slideEvt) {
-//                     $("#price_val").text(slideEvt.value);
-//                 });
-//             }
-//             if (input_delivery.length) {
-//                 input_delivery.slider();
-//                 input_delivery.on("slide", function (slideEvt) {
-//                     $("#dd_val").text(slideEvt.value);
-//                 });
-//             }
-//         }}, true);
-// }
-
-// function techCarModels(typ_id, str_id) {
-//     showCarsSelectMin(6, typ_id);
-//     $(".car_form-select_card").toggle();
-//
-//     JsHttpRequest.query(folder,{ 'w': 'techCarModels', 'typ_id':typ_id, 'str_id':str_id},
-//         function (result, errors){ if (errors) {} if (result){
-//
-//             $("#catalogue-main").html(result.content);
-//
-//             new treefilter($("#my-tree"), { searcher : $("input#my-search") });
-//
-//             var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
-//             if (input_price.length) {
-//                 input_price.slider();
-//                 input_price.on("slide", function(slideEvt) {
-//                     $("#price_val").text(slideEvt.value);
-//                 });
-//             }
-//             if (input_delivery.length) {
-//                 input_delivery.slider();
-//                 input_delivery.on("slide", function (slideEvt) {
-//                     $("#dd_val").text(slideEvt.value);
-//                 });
-//             }
-//
-//             $(".tooltips").tooltip();
-//             new LazyLoad({ elements_selector: ".lazy" });
-//
-//         }}, true);
-// }
-
 // TOGGLE VIEW (CARD / TABLE)
 function toggleProductView(ds) {
     JsHttpRequest.query(folder,{ 'w': 'toggleProductView', 'ds':ds},
@@ -992,30 +400,6 @@ function toggleProductView(ds) {
             }
         }}, true);
 }
-
-// function showFiltersForm() {
-//     $("#template_filters").html("<div class=\"spinner-border\"></div>");
-//     let template_id = $("#template_id").val();
-//     let active_filters = JSON.parse($("#template_active_filters").val());
-//     JsHttpRequest.query(folder,{'w':'showFiltersForm', 'template_id':template_id, 'active_filters':active_filters},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             $("#template_filters").html(result.content[0]);
-//         }}, true);
-// }
-
-// function showFilterOptionsForm(page) {
-//     $("#template_pagination").html("<div class=\"spinner-border\"></div>");
-//     $("#template_count").html();
-//     $("#template_checked").html();
-//     let template_id = $("#template_id").val();
-//     let active_filters = JSON.parse($("#template_active_filters").val());
-//     JsHttpRequest.query(folder,{'w':'showFilterOptionsForm', 'template_id':template_id, 'page':page, 'active_filters':active_filters},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             $("#template_count").html(result.content[0]);
-//             $("#template_pagination").html(result.content[1]);
-//             $("#template_checked").html(result.content[2]);
-//         }}, true);
-// }
 
 function setCatalogFilters() {
     let cat_filters = $("#catalog-filters");

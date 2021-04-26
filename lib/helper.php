@@ -33,28 +33,6 @@ trait Helper
     }
 
     /*
-     * check redirect links
-     * */
-    public function checkRedirectLink($str)
-    {
-        if (strpos($str, ".htm") !== false) return 0;
-        if (strpos($str, ".html") !== false) return 0;
-        if (strpos($str, ".php") !== false) return 0;
-        return 1;
-    }
-
-    /*
-     * get redirected link
-     * */
-    public function getRedirectLink($str)
-    {
-        $str = str_replace(".htm", "", $str);
-        $str = str_replace(".html", "", $str);
-        $str = str_replace(".php", "", $str);
-        return $str;
-    }
-
-    /*
      * validate string URL
      * */
     public function getUrlString($str)
@@ -372,19 +350,6 @@ trait Helper
             return true;
         }
     }
-
-//    public function checkRedirectStr($some_link)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $status = false; $group_link = "";
-//        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_REDIRECT` WHERE `STR_LINK`='$some_link';");
-//        $n = $db->num_rows($r);
-//        if ($n > 0) {
-//            $status = true;
-//            $group_link = $db->result($r, 0, "GROUP_LINK");
-//        }
-//        return array("status" => $status, "group_link" => $group_link);
-//    }
 
     public function getCatalogRedirectLink($link, $mfa_link = "", $model_link = "")
     {

@@ -229,27 +229,6 @@ function showBasketStatus() {
         }}, true);
 }
 
-// function finishOrder() {
-//     let name = $("#input_name").val();
-//     let phone = $("#input_phone").val();
-//     let user = $("#input_user").val();
-//     let region = $("#select2-select_city-container").attr("name");
-//     if (name==="" || !(validationInput('input_phone')) || region==="0") {
-//         showAlertModal("{input_all_data}!","{error_cap}!",0);
-//         return true;
-//     } else {
-//         JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
-//             function (result, errors){ if (errors) {alert(errors);} if (result){
-//                 if (result.content!==false && user==="0") {
-//                     let text = "{user_already_logged}!<br>{phone_cap}: " + result.content[0];
-//                     showAlertModal(text, "{error_cap}", 0, showLoginForm);
-//                 } else {
-//                     showFinishOrderForm();
-//                 }
-//             }}, true);
-//     }
-// }
-
 // FINISH FAST ORDER
 function finishFastOrder(name) {
     $("#input_phone").val("");
@@ -288,25 +267,6 @@ function validateOperator(phone) {
         }}, true);
 }
 
-// function showFinishOrderForm() {
-//     let client=$("#input_client").val();
-//     let client_user_id=$("#input_user").val();
-//     let tpoint_id=$("#input_tpoint").val();
-//     let name=$("#input_name").val();
-//     let phone=$("#input_phone").val();
-//     let email=$("#input_email").val();
-//     let region=$("#select2-select_city-container").attr("name");
-//     let delivery=$("#select_delivery option:selected").val();
-//     let delivery_info = $("#select_delivery_info option:selected").text();
-//     let carrier_id = $("#select_carrier_id option:selected").val();
-//     let payment = $("#select_payment option:selected").val();
-//     let payment_info = $("#input_payment_info").val();
-//     JsHttpRequest.query(folder,{'w':'finish_order', 'client_id':client, 'client_user_id':client_user_id, 'tpoint_id':tpoint_id, 'name':name, 'phone':phone, 'region':region, 'email':email, 'delivery':delivery, 'delivery_info':delivery_info, 'payment':payment, 'payment_info':payment_info, 'carrier_id':carrier_id},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             location.href = "https://toko.ua/order/?order_id=" + result.content[0] + "&client_id=" + result.content[1];
-//         }}, true);
-// }
-
 function showFastOrder() {
     let phone = $("#input_phone2").val();
     JsHttpRequest.query(folder,{'w':'finish_fast_order', 'phone':phone},
@@ -314,35 +274,6 @@ function showFastOrder() {
             location.href = "https://toko.ua/order/?order_id=" + result.content[0] + "&user_id=" + result.content[1] + "&user_status=" + result.content[2];
         }}, true);
 }
-
-// function saveClientRetail() {
-//     let pass = $("#reg_password").val();
-//     let client_id = $("#reg_client_id").val();
-//     let order_id = $("#reg_order_id").val();
-//     let name = $("#reg_name").val();
-//     let phone = $("#reg_phone").val();
-//     let email = $("#reg_email").val();
-//     if (pass==="") {
-//         showNotify("{error_cap}!","{input_all_data}!","danger");
-//         return true;
-//     } else {
-//         JsHttpRequest.query(folder,{'w':'finish_order_success', 'client_id':client_id, 'pass':pass, 'order_id':order_id, 'name':name, 'phone':phone, 'email':email},
-//             function (result, errors){ if (errors) {alert(errors);} if (result){
-//                 let text = "{success_registered}!<br>{phone_cap}: " + result.content[0] + "<br>{client_password_cap}: " + result.content[1];
-//                 showAlertModal(text, "{done_cap}!", 1, loginFormParams); return true;
-//             }}, true);
-//     }
-// }
-
-// function deleteClientRetail() {
-//     let pass = "";
-//     let client_id = $("#reg_client_id").val();
-//     let order_id = $("#reg_order_id").val();
-//     JsHttpRequest.query(folder,{'w':'finish_order_success', 'client_id':client_id, 'pass':pass, 'order_id':order_id},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             showAlertModal("{order_completed}!", "{done_cap}!", 1, goHome); return true;
-//         }}, true);
-// }
 
 function closeOrderArtUpdate(dp_id, art_id, order_id) {
     JsHttpRequest.query(folder,{'w':'closeOrderArtUpdate', 'dp_id':dp_id, 'art_id':art_id, 'order_id':order_id},
@@ -359,24 +290,6 @@ function updateOrderArt() {
             showProfileOrders();
         }}, true);
 }
-
-// function getTypeDeliveryId() {
-//     let delivery = $("#select_delivery option:selected").val();
-//     if (delivery==="60") $("#carrier_id_row").css("display", "flex");
-//     else $("#carrier_id_row").css("display","none");
-// }
-
-// function setDeliveryInfoInput() {
-//     let delivery_select = $("#select_delivery_info option:selected").text();
-//     $("#input_delivery_info").val(delivery_select);
-// }
-
-// function addNewAddressForm() {
-//     let address = $("#new_client_address").val();
-//     $("#AddressForm").modal("hide");
-//     let max_option = $("#select_delivery_info option:last").val();
-//     $("#select_delivery_info").append(new Option(address, max_option));
-// }
 
 function validateForm(name, type) {
     let valid = $("#validate_input_" + name);
@@ -419,4 +332,3 @@ function validationInput(name) {
         return false;
     }
 }
-

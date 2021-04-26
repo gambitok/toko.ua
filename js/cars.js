@@ -37,36 +37,6 @@ $(document).ready(function() {
 
     }
 
-    // if ($("#cars_form-selected").length !== 0 && $("#car_form-select").length !== 0) {
-    //     $("#catalogue-auto").addClass("sticky");
-    //     $("body").scroll(function() {
-    //         let checked_index = $(".cars-nav__item-checked")[0];
-    //         let header = $("#catalogue-auto");
-    //         let top = header.offset().top;
-    //         let sticky = top - 64;
-    //         if (window.pageYOffset >= top) {
-    //             $("#myHeader").addClass("sticky-header-active");
-    //             $("#myBackdrop").addClass("sticky-backdrop-active");
-    //         } else {
-    //             $("#myHeader").removeClass("sticky-header-active");
-    //             $("#myBackdrop").removeClass("sticky-backdrop-active");
-    //         }
-    //         if ($("#toggle_active_nav").val() == 0) {
-    //             if (window.pageYOffset >= sticky) {
-    //                 hideCarsNavigation(checked_index);
-    //             } else {
-    //                 showCarsNavigation(checked_index);
-    //             }
-    //         } else {
-    //             if (window.pageYOffset >= sticky) {
-    //                 //
-    //             } else {
-    //                 $("#toggle_active_nav").val(0);
-    //             }
-    //         }
-    //     });
-    // }
-
     // hide on mobile
     if (detectmob()) {
         if ($("div[data-type='manuf']").attr("data-id") === "0") {
@@ -74,38 +44,6 @@ $(document).ready(function() {
         }
     }
 });
-
-// function showPop(e) {
-//     let index = $(".cars-nav__item-checked")[0];
-//
-//     if (index.length === 0) {
-//         index = e;
-//     }
-//
-//     let data_pred = $("div[data-type='manuf']");
-//
-//     let offset;
-//     let left = $(index).offset().left;
-//     let pred_left = 0;
-//
-//     if (data_pred.length !== 0) {
-//         pred_left = $(data_pred).offset().left;
-//         offset = left - pred_left;
-//     } else {
-//         offset = 0;
-//     }
-//
-//     let pop = $("#pop");
-//     pop.css('display', 'block');
-//     pop.css('position', 'absolute');
-//     pop.css('left', offset);
-//     pop.css('top', 72);
-// }
-//
-// function hidePop() {
-//     let pop = $("#pop");
-//     pop.css('display', 'none');
-// }
 
 function toggleCarsTab(index) {
     $("#toggle_active_nav").val(1);
@@ -235,21 +173,13 @@ function toggleCarsNavigation(index, type, attr) {
 function getCarsSearchContent(type, attr) {
     let str_id = $("#details_str_id").val();
     let group_id = $("#details_group_id").val();
-    // $("#cars-tab1").html("<div class=\"spinner-border\"></div>");
-    // $("#cars-tab2").html("<div class=\"spinner-border\"></div>");
-    // $("#cars-tab3").html("<div class=\"spinner-border\"></div>");
-    // $("#cars-tab4").html("<div class=\"spinner-border\"></div>");
-    // $("#cars-tab5").html("<div class=\"spinner-border\"></div>");
-    // $("#cars-tab6").html("<div class=\"spinner-border\"></div>");
     JsHttpRequest.query(folder,{'w':'getCarsSearchContent', 'type':type, 'attr':attr, 'str_id':str_id, 'group_id':group_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             let tab = $("#" + result.tab);
             tab.html(result.list);
             let nav = $("div[data-type='" + result.nav + "']");
             nav.html(result.title);
-
             if (result.skip > 0) {
-                // getCarsSearchContent('bodyc', result.skip);
                 let index = $("div[data-url='bodyc/" + result.skip + "']")
                 toggleCarsTab(index);
             }

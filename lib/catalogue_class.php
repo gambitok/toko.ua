@@ -227,7 +227,7 @@ class CatalogueClass
             $form_brand = str_replace("{brand_list}", $list, $form_brand);
         } else {
             $search_form = str_replace("{search_results}", "{offers_request}", $search_form);
-            $search_form = str_replace("{search_result_index}", "<br><span class=\"span-search text-uppercase\">{search_result_for} <b style=\"color:#f44336\">$article_nr_search</b> {nothing_found}</span>
+            $search_form = str_replace("{search_result_index}", "<br><span class=\"span-search text-uppercase\">{search_result_for} <b class=\"span-dark-red\">$article_nr_search</b> {nothing_found}</span>
             <br><br><p class=\"span-search\">{check_the_data}</p>", $search_form);
             $search_form = str_replace("{search_result}", "", $search_form);
         }
@@ -249,201 +249,177 @@ class CatalogueClass
     }
 
     /*
-     * show navigation row (with Details headers)
-     * */
-    public function getDetailsListing()
-    {
-        $db = DbSingleton::getTokoDb();
-        $language = new LangClass();
-        $automan = new AutoClass();
-        $prefix = $language->getLangPrefix();
-        $lang_id = $this->getLanguage();
-        $lang_cap = $language->getTexCapLanguage($lang_id);
-        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1;");
-        $n = $db->num_rows($r);
-        $list = "";
-        for ($i = 1; $i <= $n; $i++) {
-            $head_id = $db->result($r, $i - 1, "HEAD_ID");
-            $tex_text = $db->result($r, $i - 1, "TEX_$lang_cap");
-            $head_link = $automan->getHeadNewDescr($head_id)["link"];
-            $header = "<a href=\"https://toko.ua$prefix/catalog/$head_link/\">$tex_text</a>";
-            $list .= "<li class=\"header-nav__li\" data-nav-id=\"$head_id\">$header</li>";
-        }
-        return $list;
-    }
-
-    /*
      * Show Header Navigation
      * */
-    public function showHeadTemplate($head_id)
-    {
-        $head_id = $this->getUrlNumber($head_id);
-        $automan = new AutoClass();
-        $head_link = $automan->getHeadNewDescr($head_id)["link"];
-        $list = $this->getGroupTreeStr($head_id);
-        $footer = "<a href=\"https://toko.ua/catalog/$head_link\">{show_all_cap} <i class=\"fa fa-chevron-right\"></i></a>";
-        $footer = $this->replaceLang($footer);
-        return array($list, $footer);
-    }
+//    public function showHeadTemplate($head_id)
+//    {
+//        $head_id = $this->getUrlNumber($head_id);
+//        $automan = new AutoClass();
+//        $head_link = $automan->getHeadNewDescr($head_id)["link"];
+//        $list = $this->getGroupTreeStr($head_id);
+//        $footer = "<a href=\"https://toko.ua/catalog/$head_link\">{show_all_cap} <i class=\"fa fa-chevron-right\"></i></a>";
+//        $footer = $this->replaceLang($footer);
+//        return array($list, $footer);
+//    }
 
     /*
      * Show Header Navigation Item
      * */
-    public function getGroupTreeStr($head_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $automan = new AutoClass();
-        $language = new LangClass();
-        $lang_id = $this->getLanguage();
-        $prefix = $this->getLangPrefix();
-        $lang_cap = $language->getTexCapLanguage($lang_id);
-        $arr = [];
-        $list = "";
-        $head_link = $automan->getHeadNewDescr($head_id)["link"];
-        $r = $db->query("SELECT cs.*, cat.CAT_ID
-        FROM `T2_GROUP_TREE_STR` cs 
-            LEFT OUTER JOIN `T2_GROUP_TREE_CATEGORY` cat ON cat.CAT_ID=cs.CAT_ID
-		WHERE cs.HEAD_ID='$head_id' ORDER BY cat.POSITION ASC, cs.POSITION ASC;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            for ($i = 1; $i <= $n; $i++) {
-                $cat_id = $db->result($r, $i - 1, "CAT_ID");
-                $text = $db->result($r, $i - 1, "TEX_$lang_cap");
-                $image = $db->result($r, $i - 1, "IMAGES");
-                $str_id = $db->result($r, $i - 1, "STR_ID");
-                $str_link = $db->result($r, $i - 1, "TEX_LINK");
-                $arr[$cat_id][$i] = compact("text", "image", "str_id", "str_link");
-            }
-            foreach ($arr as $key => $value) {
-                list($cat_name, $cat_link) = $automan->getCatNewDescr($key);
-                $list .= "<div class=\"tree-item\">";
-                $list .= "<div class=\"tree-item-title\">
-                    <a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$cat_link/\">$cat_name</a>
-                </div>";
-                $list .= "<div class=\"tree-item-list\">";
-                foreach ($value as $v) {
-                    $tex = $v["text"];
-                    $str_link = $v["str_link"];
-                    $link = "https://toko.ua$prefix/$this->catalog_link/$str_link/";
-                    $list .= "<div class=\"tree-item-list__element\">
-                        <a href=\"$link\">$tex</a>
-                    </div>";
-                }
-                $list .= "</div>";
-                $list .= "</div>";
-            }
-        }
-        if ($n == 0) {
-            $list = "";
-        }
-        $list = $this->replaceLang($list);
-        return $list;
-    }
+//    public function getGroupTreeStr($head_id)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $automan = new AutoClass();
+//        $language = new LangClass();
+//        $lang_id = $this->getLanguage();
+//        $prefix = $this->getLangPrefix();
+//        $lang_cap = $language->getTexCapLanguage($lang_id);
+//        $arr = [];
+//        $list = "";
+//        $head_link = $automan->getHeadNewDescr($head_id)["link"];
+//        $r = $db->query("SELECT cs.*, cat.CAT_ID
+//        FROM `T2_GROUP_TREE_STR` cs
+//            LEFT OUTER JOIN `T2_GROUP_TREE_CATEGORY` cat ON cat.CAT_ID=cs.CAT_ID
+//		WHERE cs.HEAD_ID='$head_id' ORDER BY cat.POSITION ASC, cs.POSITION ASC;");
+//        $n = $db->num_rows($r);
+//        if ($n > 0) {
+//            for ($i = 1; $i <= $n; $i++) {
+//                $cat_id = $db->result($r, $i - 1, "CAT_ID");
+//                $text = $db->result($r, $i - 1, "TEX_$lang_cap");
+//                $image = $db->result($r, $i - 1, "IMAGES");
+//                $str_id = $db->result($r, $i - 1, "STR_ID");
+//                $str_link = $db->result($r, $i - 1, "TEX_LINK");
+//                $arr[$cat_id][$i] = compact("text", "image", "str_id", "str_link");
+//            }
+//            foreach ($arr as $key => $value) {
+//                list($cat_name, $cat_link) = $automan->getCatNewDescr($key);
+//                $list .= "<div class=\"tree-item\">";
+//                $list .= "<div class=\"tree-item-title\">
+//                    <a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$cat_link/\">$cat_name</a>
+//                </div>";
+//                $list .= "<div class=\"tree-item-list\">";
+//                foreach ($value as $v) {
+//                    $tex = $v["text"];
+//                    $str_link = $v["str_link"];
+//                    $link = "https://toko.ua$prefix/$this->catalog_link/$str_link/";
+//                    $list .= "<div class=\"tree-item-list__element\">
+//                        <a href=\"$link\">$tex</a>
+//                    </div>";
+//                }
+//                $list .= "</div>";
+//                $list .= "</div>";
+//            }
+//        }
+//        if ($n == 0) {
+//            $list = "";
+//        }
+//        $list = $this->replaceLang($list);
+//        return $list;
+//    }
 
     /*
      * show tec models list
      * catalog/maslyanyj-filtr/ + TYP_ID
      * */
-    public function techModelsList($typ_id, $str_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $client = new ClientClass();
-        $automan = new AutoClass();
-        $cur = $this->getCurrentExrate();
-        $str_id = $this->getUrlNumber($str_id);
-        list($manufacture, $model, $model_id) = $automan->getCarInfo($typ_id);
-        $automan->setAutoData($manufacture, $model, $model_id, $typ_id, $str_id);
-        $client->toggleProductView(1);
-
-        $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$typ_id' GROUP BY `ART_ID`;");
-        $n = $db->num_rows($r);
-        $t2_link_arts = [];
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id = $db->result($r, $i - 1, "ART_ID");
-            $t2_link_arts[] = $art_id;
-        }
-        $t2_link_arts = implode(",", $t2_link_arts);
-
-        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE` WHERE `ART_ID` IN ($t2_link_arts) AND `STR_ID`=$str_id;");
-        $n = $db->num_rows($r);
-        $t2_tree_arts = [];
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id = $db->result($r, $i - 1, "ART_ID");
-            $t2_tree_arts[] = $art_id;
-        }
-        $art_id_str = implode(",", $t2_tree_arts);
-
-        list($list, $list_brand, $filters) = $this->searchList($art_id_str, 2, 1);
-
-        $search_filters = $this->getHtmlForm("search/filters");
-        $search_brands = $this->getHtmlForm("search/brands");
-        $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, [], 2, 0);
-        $search_filters = $this->replaceLang($search_filters);
-        $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
-        $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
-        $search_brands = $this->replaceLang($search_brands);
-
-        return array($list, $search_brands, $search_filters);
-    }
+//    public function techModelsList($typ_id, $str_id)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $client = new ClientClass();
+//        $automan = new AutoClass();
+//        $cur = $this->getCurrentExrate();
+//        $str_id = $this->getUrlNumber($str_id);
+//        list($manufacture, $model, $model_id) = $automan->getCarInfo($typ_id);
+//        $automan->setAutoData($manufacture, $model, $model_id, $typ_id, $str_id);
+//        $client->toggleProductView(1);
+//
+//        $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$typ_id' GROUP BY `ART_ID`;");
+//        $n = $db->num_rows($r);
+//        $t2_link_arts = [];
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $db->result($r, $i - 1, "ART_ID");
+//            $t2_link_arts[] = $art_id;
+//        }
+//        $t2_link_arts = implode(",", $t2_link_arts);
+//
+//        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE` WHERE `ART_ID` IN ($t2_link_arts) AND `STR_ID`=$str_id;");
+//        $n = $db->num_rows($r);
+//        $t2_tree_arts = [];
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $db->result($r, $i - 1, "ART_ID");
+//            $t2_tree_arts[] = $art_id;
+//        }
+//        $art_id_str = implode(",", $t2_tree_arts);
+//
+//        list($list, $list_brand, $filters) = $this->searchList($art_id_str, 2, 1);
+//
+//        $search_filters = $this->getHtmlForm("search/filters");
+//        $search_brands = $this->getHtmlForm("search/brands");
+//        $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, [], 2, 0);
+//        $search_filters = $this->replaceLang($search_filters);
+//        $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
+//        $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
+//        $search_brands = $this->replaceLang($search_brands);
+//
+//        return array($list, $search_brands, $search_filters);
+//    }
 
     /*
      * show tec models list filtred
      * catalog/maslyanyj-filtr/ + TYP_ID
      * */
-    public function techModelsFilters($art, $brand, $brand_filter, $cur, $price_f, $deliv_f, $order_value)
-    {
-        $art = $this->getNameString($art);
-        $brand = $this->getNameString($brand);
-        $cur = $this->getUrlNumber($cur);
-        $order_value = $this->getUrlNumber($order_value);
-        $db = DbSingleton::getTokoDb();
-        $automan = new AutoClass();
-        setcookie("currency", $cur);
-        session_start();
-        $_SESSION["currency"] = $cur;
-        $typ_id = $_SESSION["group"];
-        $str_id = $_SESSION["str_id"];
-
-        $str_text = $automan->getStrNewDescr($str_id);
-        if ($str_text == "") {
-            $str_text = $automan->getStrDescr($str_id);
-        }
-
-        $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$typ_id' GROUP BY `ART_ID`;");
-        $n = $db->num_rows($r);
-        $t2_link_arts = [];
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id = $db->result($r, $i - 1, "ART_ID");
-            $t2_link_arts[] = $art_id;
-        }
-        $t2_link_arts = implode(",", $t2_link_arts);
-
-        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE` WHERE `ART_ID` IN ($t2_link_arts) AND `STR_ID`=$str_id;");
-        $n = $db->num_rows($r);
-        $t2_tree_arts = [];
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id = $db->result($r, $i - 1, "ART_ID");
-            $t2_tree_arts[] = $art_id;
-        }
-        $t2_tree_arts = implode(",", $t2_tree_arts);
-
-        $brand_filter = json_decode($brand_filter);
-        $brand_filter = implode(",", $brand_filter);
-        $exp_price = explode(",", $price_f);
-        $exp_deliv = explode(",", $deliv_f);
-
-        list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($t2_tree_arts, $art, $brand_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand, $order_value, 2);
-
-        $search_main = $this->getHtmlForm("search/main");
-        $search_main = $this->getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id);
-        $search_filters = $this->getHtmlForm("search/filters");
-        $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value, 2, 0);
-        $search_brands = $this->getHtmlForm("search/brands");
-        $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
-        $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
-
-        return array($this->replaceLang($search_main), $this->replaceLang($search_filters), $this->replaceLang($search_brands), $filters["max_price"]);
-    }
+//    public function techModelsFilters($art, $brand, $brand_filter, $cur, $price_f, $deliv_f, $order_value)
+//    {
+//        $art = $this->getNameString($art);
+//        $brand = $this->getNameString($brand);
+//        $cur = $this->getUrlNumber($cur);
+//        $order_value = $this->getUrlNumber($order_value);
+//        $db = DbSingleton::getTokoDb();
+//        $automan = new AutoClass();
+//        setcookie("currency", $cur);
+//        session_start();
+//        $_SESSION["currency"] = $cur;
+//        $typ_id = $_SESSION["group"];
+//        $str_id = $_SESSION["str_id"];
+//
+//        $str_text = $automan->getStrNewDescr($str_id);
+//        if ($str_text == "") {
+//            $str_text = $automan->getStrDescr($str_id);
+//        }
+//
+//        $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$typ_id' GROUP BY `ART_ID`;");
+//        $n = $db->num_rows($r);
+//        $t2_link_arts = [];
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $db->result($r, $i - 1, "ART_ID");
+//            $t2_link_arts[] = $art_id;
+//        }
+//        $t2_link_arts = implode(",", $t2_link_arts);
+//
+//        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE` WHERE `ART_ID` IN ($t2_link_arts) AND `STR_ID`=$str_id;");
+//        $n = $db->num_rows($r);
+//        $t2_tree_arts = [];
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $db->result($r, $i - 1, "ART_ID");
+//            $t2_tree_arts[] = $art_id;
+//        }
+//        $t2_tree_arts = implode(",", $t2_tree_arts);
+//
+//        $brand_filter = json_decode($brand_filter);
+//        $brand_filter = implode(",", $brand_filter);
+//        $exp_price = explode(",", $price_f);
+//        $exp_deliv = explode(",", $deliv_f);
+//
+//        list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($t2_tree_arts, $art, $brand_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand, $order_value, 2);
+//
+//        $search_main = $this->getHtmlForm("search/main");
+//        $search_main = $this->getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id);
+//        $search_filters = $this->getHtmlForm("search/filters");
+//        $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value, 2, 0);
+//        $search_brands = $this->getHtmlForm("search/brands");
+//        $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
+//        $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
+//
+//        return array($this->replaceLang($search_main), $this->replaceLang($search_filters), $this->replaceLang($search_brands), $filters["max_price"]);
+//    }
 
     public function getSearchMain($search_main, $article_nr_search, $brand_nr_search, $list, $type_filter, $cur)
     {
@@ -509,133 +485,56 @@ class CatalogueClass
         return $search_filters;
     }
 
-    public function getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id)
-    {
-        $client = new ClientClass();
-        $automan = new AutoClass();
-        $cash_id = $client->getClientCurrency($this->getClient());
-        $cur = $this->getCurrentExrate();
-        $mfa_mod_typ_text = $automan->getCarDescription($typ_id);
-        $ch1 = $ch2 = $ch3 = $cash_add = "";
-
-        $str_link = $automan->getStrNewLink($str_id);
-        $h1_text = $this->getStaticH1("/catalog/$str_link/");
-        if ($h1_text != "") {
-            $str_text = $h1_text;
-        }
-
-        if ($str_text == "") {
-            $result = "<h1>{details_for} $mfa_mod_typ_text</h1>";
-        } else {
-            $result = "<h1>$str_text</h1>";
-        }
-
-        if ($cur == 2) {
-            $ch2 = "checked=\"checked\"";
-        } elseif ($cur == 3) {
-            $ch3 = "checked=\"checked\"";
-        } else {
-            $ch1 = "checked=\"checked\"";
-        }
-
-        if ($cash_id == 2) {
-            $cash_add = "<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"tecModelsFilter();\"><label for=\"radio_usd\">$</label>";
-        }
-        if ($cash_id == 3) {
-            $cash_add = "<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"tecModelsFilter();\"><label for=\"radio_eur\">€</label>";
-        }
-
-        if ($this->getUser() != 0) {
-            $currency = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>$cash_add";
-        } else {
-            $currency = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>";
-        }
-
-        $search_main = str_replace("{art}", $result, $search_main);
-        $search_main = str_replace("{currency}", ($cash_id == 1 || $str_text == "") ? "" : $currency, $search_main);
-        $radio_view = $this->getHtmlForm("products_view_radio");
-        $radio_view = str_replace("{checked_table}", ($client->getProductView() == 0) ? "checked" : "", $radio_view);
-        $radio_view = str_replace("{checked_cards}", ($client->getProductView() == 1) ? "checked" : "", $radio_view);
-        $search_main = str_replace("{products_view}", $radio_view, $search_main);
-        $search_main = str_replace("{search_result}", $list, $search_main);
-        return $search_main;
-    }
-
-    public function getStrParrents($str_id, $str_level)
-    {
-        //DELETE?
-        $db = DbSingleton::getTokoDb();
-        $str_id = $this->getUrlNumber($str_id);
-        $str_level = $this->getUrlNumber($str_level);
-        $str_array = [];
-        $n = $str_level - 2;
-        for ($i = 1; $i <= $n; $i++) {
-            $r = $db->query("SELECT `STR_ID_PARENT` FROM `T2_GROUP_TREE` WHERE `STR_ID`=$str_id LIMIT 1;");
-            $str_id_parrent = $db->result($r, 0, "STR_ID_PARENT");
-            array_push($str_array, $str_id_parrent);
-            $str_id = $str_id_parrent;
-        }
-        return $str_array;
-    }
-
-//    public function getSearchTree($search_tree, $td_array, $typ_id, $status_str, $str_id)
+//    public function getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id)
 //    {
-//        //DELETE?
+//        $client = new ClientClass();
 //        $automan = new AutoClass();
-//        $prefix = $this->getLangPrefix();
-//        if ($str_id == 0) {
-//            list($str_id, $slvl,) = $automan->getAutoStrData();
+//        $cash_id = $client->getClientCurrency($this->getClient());
+//        $cur = $this->getCurrentExrate();
+//        $mfa_mod_typ_text = $automan->getCarDescription($typ_id);
+//        $ch1 = $ch2 = $ch3 = $cash_add = "";
+//
+//        $str_link = $automan->getStrNewLink($str_id);
+//        $h1_text = $this->getStaticH1("/catalog/$str_link/");
+//        if ($h1_text != "") {
+//            $str_text = $h1_text;
+//        }
+//
+//        if ($str_text == "") {
+//            $result = "<h1>{details_for} $mfa_mod_typ_text</h1>";
 //        } else {
-//            list($slvl,) = $automan->getStrParams($str_id);
-//        }
-//        $tree = "";
-//        $lvl = 1;
-//        $parrents = $this->getStrParrents($str_id, $slvl);
-//
-//        for ($i = 1; $i <= 10; $i++) {
-//            $lvl += 1;
-//            foreach ($td_array as $elm) {
-//                if ($elm["level"] == $lvl) {
-//                    $str_id2 = $elm["id_tree"];
-//                    $str_id_parrent2 = $elm["id_parent"];
-//                    $class_parrent = (in_array($str_id2, $parrents)) ? "tf-child-true tf-open" : "";
-//                    $class_str = ($str_id_parrent2 == $str_id) ? "tf-child-false tf-open" : "";
-//                    $class_check = ($str_id2 == $str_id) ? "font-weight: 700!important;color: red!important;background: #c0d2ec;" : "";
-//
-//                    $str = "<li class=\"$str_id2 $class_parrent $class_str\"><div>";
-//                    if ($elm["child"] > 0) {
-//                        $str .= $elm["name"];
-//                    }
-//                    if ($elm["child"] == 0) {
-//                        $newLink = $automan->getCarLink($typ_id, $str_id2);
-//                        $str .= "<a class=\"details_class\" $class_check href=\"$newLink\">" . $elm["name"] . "</a>";
-//                    }
-//                    $str .= "</div>";
-//                    if ($elm["child"] > 0) {
-//                        $str .= "\n<ul>\n{p" . $elm["id_tree"] . "}</ul>\n";
-//                    }
-//                    $str .= "</li>\n";
-//                    if ($lvl == 2) {
-//                        $tree .= $str;
-//                    }
-//                    if ($lvl > 2) {
-//                        $tree = str_replace("{p" . $elm["id_parent"] . "}", $str . "{p" . $elm["id_parent"] . "}", $tree);
-//                    }
-//                }
-//            }
-//        }
-//        foreach ($td_array as $elm) {
-//            $tree = str_replace("{p" . $elm["id_parent"] . "}", "", $tree);
-//            $tree = str_replace("{p" . $elm["id_tree"] . "}", "", $tree);
+//            $result = "<h1>$str_text</h1>";
 //        }
 //
-//        $treeFilter = $this->getHtmlForm("cat_tree_filter");
-//        $treeFilter = str_replace("{tree_filter}", $tree, $treeFilter);
-//        $treeFilter = str_replace("{tree_catalogue}", "https://toko.ua$prefix/$this->catalog_link/", $treeFilter);
-//        $treeFilter = str_replace("{tree_catalogue_class}", $status_str, $treeFilter);
-//        $search_tree = str_replace("{tree}", $treeFilter, $search_tree);
-//        $search_tree = $this->replaceLang($search_tree);
-//        return $search_tree;
+//        if ($cur == 2) {
+//            $ch2 = "checked=\"checked\"";
+//        } elseif ($cur == 3) {
+//            $ch3 = "checked=\"checked\"";
+//        } else {
+//            $ch1 = "checked=\"checked\"";
+//        }
+//
+//        if ($cash_id == 2) {
+//            $cash_add = "<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"tecModelsFilter();\"><label for=\"radio_usd\">$</label>";
+//        }
+//        if ($cash_id == 3) {
+//            $cash_add = "<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"tecModelsFilter();\"><label for=\"radio_eur\">€</label>";
+//        }
+//
+//        if ($this->getUser() != 0) {
+//            $currency = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>$cash_add";
+//        } else {
+//            $currency = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>";
+//        }
+//
+//        $search_main = str_replace("{art}", $result, $search_main);
+//        $search_main = str_replace("{currency}", ($cash_id == 1 || $str_text == "") ? "" : $currency, $search_main);
+//        $radio_view = $this->getHtmlForm("products_view_radio");
+//        $radio_view = str_replace("{checked_table}", ($client->getProductView() == 0) ? "checked" : "", $radio_view);
+//        $radio_view = str_replace("{checked_cards}", ($client->getProductView() == 1) ? "checked" : "", $radio_view);
+//        $search_main = str_replace("{products_view}", $radio_view, $search_main);
+//        $search_main = str_replace("{search_result}", $list, $search_main);
+//        return $search_main;
 //    }
 
     /*
@@ -1289,7 +1188,6 @@ class CatalogueClass
         $temp_key = session_id();
         $mas = [];
         $list = "";
-        // $where_art_id_str = "";
 
         $article_nr_search = $this->getArticleDispl($art_id_search);
         $brand_nr_search = $this->getArticleBrand($art_id_search);
@@ -1305,11 +1203,9 @@ class CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             if ($art_id_search != $art_id) {
-                //$where_art_id_str .= "$art_id,";
                 $arts[] = $art_id;
             }
         }
-        // $where_art_id_str = rtrim($where_art_id_str, ",");
         $where_art_id_str = implode(",", $arts);
 
         if ($where_art_id_str != "") {
@@ -1440,11 +1336,9 @@ class CatalogueClass
                         }
                     }
                 }
-
                 // show search list
                 $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view);
             }
-
             if (count($mas) < 1) {
                 $list = "";
             }
@@ -1752,7 +1646,6 @@ class CatalogueClass
         $product_text = ($text == "") ? "{details_name_cap}" : $text;
         $format_product_text = ($text == "") ? "{details_name_cap}" : $this->formatArticleName($text);
         $mfa_text = "";
-        //$mfa_link = "KIA"; $model_link = "Sportage";
         if ($status_auto == 0) {
             if ($mfa_link != "") {
                 $mfa_id = $automan->getMfaLink($mfa_link);
@@ -2308,36 +2201,6 @@ class CatalogueClass
         return $list;
     }
 
-//    public function showCatalogueTemplates()
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $prefix = $this->getLangPrefix();
-//        $r = $db->query("SELECT * FROM `T2_CATALOGUES_TEMPLATES` WHERE `STATUS`=1 AND `PARENT_ID`=0;");
-//        $n = $db->num_rows($r);
-//        $list = "<ul class=\"goods\">";
-//        for ($i = 1; $i <= $n; $i++) {
-//            $template_id = $db->result($r, $i - 1, "TEMPLATE_ID");
-//            $template_link = $db->result($r, $i - 1, "TEMPLATE_LINK");
-//            $text = $db->result($r, $i - 1, "TEMPLATE_NAME");
-//            $descr = $db->result($r, $i - 1, "TEMPLATE_DESCR");
-//            $link = $this->images . "/templates/$template_id.png";
-//            $url = "https://toko.ua$prefix/$this->products_link/$template_link/";
-//            $list .= "<li class=\"goods__item\">
-//                <a href=\"$url\">
-//                    <img class=\"lazy\" data-src=\"$link\" alt=\"$text\" title=\"$text\">
-//                    <span>$text</span>
-//                    <input type=\"hidden\" value=\"$descr\" title=\"$text\">
-//                </a>
-//            </li>";
-//        }
-//        $list .= "</ul>";
-//        if ($n == 0) {
-//            $list = $this->err1;
-//        }
-//        $list = $this->replaceLang($list);
-//        return $list;
-//    }
-
     /*
      * format text for URL
      * */
@@ -2774,187 +2637,6 @@ class CatalogueClass
         return $list;
     }
 
-//    function triggerDetailCar($type_id, $year, $manufacture, $model, $model_id, $typ_id, $str_id) {
-//        $automan = new AutoClass;
-//        $skip_id = 0;
-//        switch ($type_id) {
-//            case 0: { $form = $automan->showTabCatalogueYear(1, $manufacture, $model); break; }
-//            case 1: { $form = $automan->showTabCatalogueManufacture($year, 1); break; }
-//            case 2: { $form = $automan->showTabCatalogueModel($manufacture, $year, 1); break; }
-//            case 3: {
-//                $model_id = $automan->skipShowTabCatalogueModelId($model, $manufacture, $year);
-//                if (!$model_id) {
-//                    $form = $automan->showTabCatalogueModelId($model, $manufacture, $year, 1);
-//                } else {
-//                    $str_id!=="" ? $onclick=1 : $onclick="";
-//                    $form = $automan->showTabCatalogueGroup($model_id, $model, $manufacture, $year);
-//                    $skip_id = $model_id;
-//                }
-//                break;
-//            }
-//            case 4: {
-//                $str_id!=="" ? $onclick=1 : $onclick="";
-//                $form = $automan->showTabCatalogueGroup($model_id, $model, $manufacture, $year); break;
-//            }
-//            default: { $form = "Something wrong!"; break; }
-//        }
-//        if ($year=="all") $form = $automan->showTabCatalogueYear(1);
-//        list($manufacture_text,, $model_id_cap, $typ_text) = $automan->getAutoDescr($manufacture, $model, $model_id, $typ_id);
-//        list($t_mf, $t_md, $t_mi,) = $automan->getAutoDescr($manufacture, $model, $model_id, $typ_id);
-//        $cat_text = "";
-//        if ($t_mf!="") $cat_text = " $t_mf";
-//        if ($t_md!="") $cat_text = " $t_mf $t_md";
-//        if ($t_mi!="") $cat_text = " $t_mf $t_mi";
-//        $str_text = $automan->getStrDescr($str_id);
-//        $title = "$str_text {for_cap} $manufacture_text $model_id_cap $typ_text | {site_title_short}";
-//        if ($str_id=="")  {
-//            $title = "$manufacture_text $model_id_cap $typ_text | {site_title_short}";
-//            $str_text = "$manufacture_text $model_id_cap $typ_text";
-//        }
-//        $str_text = $this->formatUrlText($str_text);
-//
-//        $title = $this->replaceLang($title);
-//        return array($form, $str_text, $cat_text, $skip_id, $title);
-//    }
-
-    public function searchListTest($where_art_id_str, $type_filter = 1, $view = 0)
-    {
-        // DELETE ????
-        $db = DbSingleton::getTokoDb();
-        $kours = new ExRateClass();
-        $client = new ClientClass();
-        $client_id = $this->getClient();
-        $tpoint_id = $this->getTpointID();
-        $cur = $this->getCurrentExrate();
-        if (!$view) {
-            $view = $client->getProductView();
-        }
-        session_start();
-        $temp_key = session_id();
-        $mas = [];
-        list($error, , $list) = $this->getSearchMessages($type_filter);
-
-        if ($where_art_id_str != "") {
-            $this->createTemporarySearchTable($temp_key);
-            $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
-            FROM `T2_ARTICLES` t2a
-                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
-            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
-            GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
-            UNION ALL
-            SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2si.stock_suppl as AMOUNT, t2si.client_storage_id as storage_id, t2si.suppl_id, t2si.return_delay
-            FROM `T2_ARTICLES` t2a
-                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
-            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
-            GROUP BY t2a.ART_ID, t2si.client_storage_id");
-            $n = $db->num_rows($r);
-            $list = $this->drawHeaderSearchList($type_filter, $view);
-
-            if ($n > 0) {
-                for ($i = 1; $i <= $n; $i++) {
-                    $art_id = $db->result($r, $i - 1, "ART_ID");
-                    $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-                    $brand = $db->result($r, $i - 1, "BRAND_NAME");
-                    $name = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
-                    $text = $db->result($r, $i - 1, "NAME");
-                    $suppl_id = $db->result($r, $i - 1, "suppl_id");
-                    $stock = intval($db->result($r, $i - 1, "AMOUNT"));
-                    $storage_id = $db->result($r, $i - 1, "storage_id");
-                    $return_days = $db->result($r, $i - 1, "return_delay");
-
-                    // price
-                    $price = $this->getArticlePrice($art_id);
-                    if ($suppl_id != 0) {
-                        $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-                    }
-                    $price = $kours->getKoursPrice($price, $cur);
-                    if ($cur == 1) {
-                        $price = $client->getClientPriceRounding($client_id, $price);
-                    }
-
-                    // delivery
-                    $deliveryData = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
-                    $delivery_info = $deliveryData["info"];
-                    $delivery_days = $deliveryData["days"];
-                    $delivery_short_info = $deliveryData["short"];
-                    if ($suppl_id != 0) {
-                        $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
-                        $delivery_info = $deliveryData["info"];
-                        $delivery_days = $deliveryData["days"];
-                        $delivery_short_info = $deliveryData["short"];
-                    }
-
-                    $status = 0;
-                    if ($price > 0) {
-                        if ($stock > 0) {
-                            if ($suppl_id == 0) {
-                                $status = 1;
-                            } elseif ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
-                                $status = 1;
-                            }
-                        }
-                    }
-
-                    $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `name`, `brand_id`, `brand`, `text`, `del`, `stock`, `price`, `dd`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
-                    VALUES ('$art_id', '$name', '$brand_id', '$brand', '$text', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
-                }
-
-                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `name` ASC;");
-                $n = $db->num_rows($r);
-                for ($i = 1; $i <= $n; $i++) {
-                    $art_id = $db->result($r, $i - 1, "art_id");
-                    $name = $db->result($r, $i - 1, "name");
-                    $brand_id = $db->result($r, $i - 1, "brand_id");
-                    $brand = $db->result($r, $i - 1, "brand");
-                    $text = $db->result($r, $i - 1, "text");
-                    $delivery_info = $db->result($r, $i - 1, "del");
-                    $stock = $db->result($r, $i - 1, "stock");
-                    $price = $db->result($r, $i - 1, "price");
-                    $delivery_days = $db->result($r, $i - 1, "delivery_days");
-                    $delivery_short_info = $db->result($r, $i - 1, "delivery_short_info");
-                    $suppl_id = $db->result($r, $i - 1, "suppl_id");
-                    $return_days = $db->result($r, $i - 1, "return_days");
-                    $storage_id = $db->result($r, $i - 1, "storage_id");
-                    $status = $db->result($r, $i - 1, "status");
-                    $mas[$art_id][$i] = [
-                        "name" => $name,
-                        "brand_id" => $brand_id,
-                        "brand" => $brand,
-                        "text" => $text,
-                        "delivery_info" => $delivery_info,
-                        "stock" => $stock,
-                        "price" => $price,
-                        "delivery_days" => $delivery_days,
-                        "delivery_short_info" => $delivery_short_info,
-                        "suppl_id" => $suppl_id,
-                        "return_days" => $return_days,
-                        "storage_id" => $storage_id,
-                        "status" => $status
-                    ];
-                }
-
-                // delete temp table
-                $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$temp_key`;");
-
-                // show other storages
-                $other_storages = $this->showOtherStorages($mas, $cur, $view);
-
-                // show search list
-                $list = $this->outSearchList($list, $error, $mas, "", "", $other_storages, $view, 1);
-            }
-
-            if (count($mas) < 1) {
-                $list = "$error";
-            }
-        }
-
-        return array($list);
-    }
-
     /*
      * CATALOG ROW
      * */
@@ -3059,17 +2741,6 @@ class CatalogueClass
     }
 
     /*
-     * Show Catalog TEST FORM
-     * */
-    public function showCatalogRow()
-    {
-        $form = $this->getHtmlForm("catalog_menu/form");
-        $form = str_replace("{catalog_range}", $this->getCatalogRowList(), $form);
-        $form = str_replace("{catalog_range_view}", $this->getCatalogColList(), $form);
-        return $form;
-    }
-
-    /*
      * Tree GRID Headers
      * */
     public function getCatalogColList()
@@ -3081,8 +2752,9 @@ class CatalogueClass
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $head_id = $db->result($r, $i - 1, "HEAD_ID");
-                $bg = $db->result($r, $i - 1, "HEAD_COLOR");
-                $color = ($bg == "") ? "#000" : "#fff";
+//                $bg = $db->result($r, $i - 1, "HEAD_COLOR");
+//                $color = ($bg == "") ? "#000" : "#fff";
+//                style=\"background: $bg; color: $color;\"
                 $head_name = $this->getHeadRowName($head_id);
                 $head_img = $this->getHeadRowImage($head_id);
                 $head_content = $this->getCatalogColListCat($head_id);
@@ -3090,7 +2762,7 @@ class CatalogueClass
                 $list .= "<div class=\"tree-heads__item\">
                     <input type=\"checkbox\" id=\"toggle-head-$head_id\">
                     <label for=\"toggle-head-$head_id\">
-                        <div id=\"tree_head-$head_id\" class=\"tree-heads__item-header\" style=\"background: $bg; color: $color;\">
+                        <div id=\"tree_head-$head_id\" class=\"tree-heads__item-header\">
                             <div class=\"tree-heads__item-text\">
                                 <div class=\"tree-heads__item-title\">
                                     $head_name
@@ -3100,7 +2772,7 @@ class CatalogueClass
                                 </div>
                             </div>
                             <div class=\"tree-heads__item-image\">
-                                <img data-src=\"/uploads/images/group_tree_head/$head_img\" class=\"lazy\" alt=\"$head_name\">
+                                <img data-src=\"/uploads/images/group_tree_head/$head_img\" class=\"lazy\" alt=\"$head_name\" src=\"/images/no_photo.png\">
                             </div>
                         </div>
                     </label>
@@ -3203,8 +2875,9 @@ class CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $head_id = $db->result($r, $i - 1, "HEAD_ID");
             $head_name = $this->getHeadRowName($head_id);
-            $list .= "<li class=\"header-nav__li\" data-nav-id=\"$head_id\" style=\"height: 60px;\">
-                <a rel=\"noopener\" style='color: white;'>$head_name</a>
+            $head_link = $this->getHeadRowLink($head_id);
+            $list .= "<li class=\"header-nav__li\" data-nav-id=\"$head_id\">
+                <a rel=\"noopener\" href=\"/$this->catalog_link/$head_link\">$head_name</a>
             </li>";
         }
         return $list;
@@ -3229,22 +2902,26 @@ class CatalogueClass
         }
         list($max_col) = $this->getMaxPosition($head_id);
         if ($n > 0) {
-            $list = "<div class='tree-block'>";
+            $list = "<div class=\"tree-block\">";
             foreach ($arr as $col_id => $rows) {
-                $list .= "<div class='tree-block__col' style='width: calc(100% / $max_col)'>";
+                $list .= "<div class=\"tree-block__col\" style=\"width: calc(100% / $max_col);\">";
                 foreach ($rows as $row_id => $cat_id) {
                     $cat_name = $this->getCatRowName($cat_id);
                     $group_list = $this->getTreeConsGroupList($head_id, $cat_id);
+                    $head_link = $this->getHeadRowLink($head_id);
+                    $cat_link = $this->getCatRowLink($cat_id);
+                    $href = "/$this->catalog_link/$head_link/$cat_link";
                     $icon = "";
                     if ($cat_id == 0) {
-                        $icon = "<i class='fa fa-circle' style='margin-right: 5px; color: #f44438'></i>";
+                        $href = "/";
+                        $icon = "<i class=\"fa fa-circle\" style=\"margin-right: 5px; color: #f44438;\"></i>";
                     }
                     $list .= "<div>
-                        <div class='tree-item'>
-                            <div class='tree-item-title'>
-                                <a href='/'>$icon$cat_name</a>
+                        <div class=\"tree-item\">
+                            <div class=\"tree-item-title\">
+                                <a href=\"$href\">$icon$cat_name</a>
                             </div>
-                            <div class='tree-item-list'>$group_list</div>
+                            <div class=\"tree-item-list\">$group_list</div>
                         </div>
                     </div>";
                 }

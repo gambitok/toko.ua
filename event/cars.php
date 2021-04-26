@@ -19,3 +19,6 @@ $form = str_replace("{seo_content}", $automan->getSeoContent($title, $mfa_link, 
 //$form = str_replace("{cars_listing}", "", $form);
 
 $content = str_replace("{main_window}", $form, $content);
+
+//??
+$content = str_replace("{main_seo_text_cars}", $search->getSeoCarsLinking($mfa_link, $mod_link), $content);

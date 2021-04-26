@@ -1,0 +1,39 @@
+<div class="anchor-contacts">
+    <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips desktop-only" title="Online chat" data-placement="left">
+        <a href="javascript:void(Tawk_API.toggle())" onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-chats">
+            <img class="lazy" data-src="/images/icons/socials/png/chats.png" alt="Online chat" src="">
+        </a>
+    </div>
+    <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Telegram" data-placement="left">
+        <a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram">
+            <img class="lazy" data-src="/images/icons/socials/png/telegram.png" alt="Telegram" src="">
+        </a>
+    </div>
+    <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Viber" data-placement="left">
+        <a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-viber">
+            <img class="lazy" data-src="/images/icons/socials/png/viber.png" alt="Viber" src="">
+        </a>
+    </div>
+    <div class="anchor-contacts-li anchor-contacts-li-item anchor-contacts-li-hidden tooltips" title="Facebook Messenger" data-placement="left">
+        <a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-facebook">
+            <img class="lazy" data-src="/images/icons/socials/png/facebook.png" alt="Facebook Messenger" src="">
+        </a>
+    </div>
+    <div class="anchor-contacts-li anchor-contacts-li-main tooltips" title="{make_question}" data-placement="left">
+        <a onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-contacts">
+            <img class="lazy" data-src="/images/icons/socials/png/chats.png" alt="Socials" src="">
+        </a>
+    </div>
+</div>
+
+<script>
+    function toggleSocialIcons() {
+        let social_icons = $(".anchor-contacts-li-item");
+        social_icons.toggleClass("anchor-contacts-li-hidden");
+        if (social_icons.hasClass("anchor-contacts-li-hidden")) {
+            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/png/chats.png");
+        } else {
+            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/png/close.png");
+        }
+    }
+</script>

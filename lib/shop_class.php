@@ -459,16 +459,6 @@ class ShopClass extends CatalogueClass
     }
 
     /*
-     * get count garage status
-     * */
-    public function countGarage()
-    {
-//        $auto_typ_id = $this->getCookieAuto();
-//        $res = ($auto_typ_id != "") ? "tool-status-hidden" : "";
-        return "";
-    }
-
-    /*
      * get summ basket
      * */
     public function countSummBasket()
