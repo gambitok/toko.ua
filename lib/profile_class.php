@@ -36,6 +36,8 @@ class ProfileClass extends ClientClass
         } else {
             $form = str_replace("{reg_logout}", "none", $form);
         }
+        $form = str_replace("{reg_login}", "", $form);
+        $form = str_replace("{reg_logout}", "", $form);
         return $form;
     }
 
@@ -106,7 +108,7 @@ class ProfileClass extends ClientClass
         $n = $dbt->num_rows($r);
         $counter = ($user_id > 0 && $n > 0) ? "<span class=\"span-red\">($n)</span>" : "";
         return "<li>
-            <a href=\"$prefix/news/\" class=\"pointer\">
+            <a href=\"$prefix/news/\">
                 <span class=\"fas fa-newspaper\"></span><span> {news_cap} $counter</span>
             </a>
         </li>";
@@ -320,16 +322,6 @@ class ProfileClass extends ClientClass
             $db->query("UPDATE `orders_new` SET `status_visible`=1 WHERE `id`='$order_id';");
         }
         return $status;
-    }
-
-    /*
-     * get dp status
-     * */
-    public function getDpStatus($dp_id)
-    {
-        $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `status_visible` FROM `orders_new` WHERE `dp_id`='$dp_id';");
-        return $db->result($r, 0, "status_visible");
     }
 
     /*
@@ -548,7 +540,7 @@ class ProfileClass extends ClientClass
 
                         if ($this->checkSelectStrDpBug($dp_id, $art_id) > 0 && $status_visible == 1) {
                             $db->query("UPDATE `orders_str_new` SET `status_visible`=1 WHERE `id`='$order_str_id';");
-                            $btn_bug = "<button class=\"btn-basket pointer\" onclick=\"closeOrderArtUpdate('$dp_id', '$art_id', '$order_str_id');\"><span class=\"fas fa-eye\"></span></button>";
+                            $btn_bug = "<button class=\"btn-basket\" onclick=\"closeOrderArtUpdate('$dp_id', '$art_id', '$order_str_id');\"><span class=\"fas fa-eye\"></span></button>";
                             $bg_bug = "bg-warning";
                         } else {
                             $btn_bug = "";

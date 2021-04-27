@@ -103,7 +103,7 @@ function showGarageForm() {
         }}, true);
     if ($("#cars_form-selected").length == 0) {
         $("#garage_404_select").html("<div class=\"spinner-border\"></div>");
-        JsHttpRequest.query(folder,{'w':'showCarsForm2'},
+        JsHttpRequest.query(folder,{'w':'showCarsGarageForm'},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 $("#garage_404_select").html(result.content[0]);
                 if (result.content[1] == 1) {
@@ -153,11 +153,6 @@ function deleteHistoryItem(history_id) {
             $("#myDropdown").html("");
             if (detectmob()) showArtSearch();
         }}, true);
-}
-
-function toggleBlock(block, slide) {
-    $("#" + slide).slideToggle("slow");
-    $("." + block).find("i").toggleClass("icon-rotate");
 }
 
 function toggleForm(slide) {

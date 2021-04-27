@@ -238,7 +238,12 @@ function setActiveCar() {
 }
 
 function showCarsForm() {
-    $("#CarsForm").modal("show");
+    let form = "cars";
+    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modals").append(result.content);
+            $("#CarsForm").modal("show");
+        }}, true);
     JsHttpRequest.query(folder,{'w':'showCarsForm'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#cars_block").html(result.content);

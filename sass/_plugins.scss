@@ -16,24 +16,8 @@
     width: auto;
 }
 
-.rotate_animation {
-    transition: .5s ease-in-out;
-}
-
-.rotate_icon {
-    transform: rotate(90deg);
-}
-
 .rotate_anime {
     transition: .5s ease-in-out;
-}
-
-.icon-rotate {
-    transform: rotate(180deg);
-}
-
-.tooltip-inner {
-    max-width: 350px;
 }
 
 .disabled {
@@ -661,13 +645,25 @@ table {
 }
 
 /*==== Bootstrap Carousel ====*/
+.carousel-item img {
+    display: block;
+    margin: 0 auto;
+    max-height: calc(100vh - 100px);
+    width: auto;
+}
+
 .carousel-caption {
     text-shadow: #000 0 0 4px;
 }
 
-.carousel-control-next:hover, .carousel-control-prev:hover {
-    background: #000;
-    color: #fff;
+.carousel-control-next, .carousel-control-prev {
+    .sr-only {
+        display: none;
+    }
+    &:hover {
+        background: #000;
+        color: #fff;
+    }
 }
 
 /*==== /Bootstrap Carousel ====*/
@@ -764,20 +760,21 @@ table {
 
 /*==== Cities List ====*/
 .city-inline {
-    padding-top: 15px;
     color: #000;
+    float: left;
     font-size: 12px;
+    padding-top: 15px;
     button {
-        color: #ee7f80;
-        border: none;
-        cursor: pointer;
         background: 0 0;
-        padding: 0;
-        line-height: 1;
+        border: none;
         border-bottom: 1px dashed #ee7f80;
+        color: #ee7f80;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
         &:hover {
-            color: #000;
             border-bottom: 1px dashed #000;
+            color: #000;
         }
     }
 }
@@ -792,4 +789,3 @@ table {
         transform: rotate(180deg);
     }
 }
-

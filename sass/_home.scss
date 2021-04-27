@@ -104,22 +104,16 @@
     }
     &-cars {
         box-shadow: 0 0 40px 0 rgba(0, 0, 0, .11);
-        //margin: 30px 0;
         position: relative;
         width: 100%;
     }
-    &-products {
-        box-shadow: 0 0 40px 0 rgba(0,0,0,.11);
-        margin: 30px 0;
-        padding: 30px;
-        width: 100%;
-    }
     &-catalog {
-        box-shadow: 0 0 40px 0 rgba(0,0,0,.11);
+        box-shadow: 0 0 40px 0 rgba(0, 0, 0, .11);
         margin: 30px 0;
         width: 100%;
     }
     &-seo {
+        margin-top: 15px;
         width: 100%;
         .form-toggle {
             label {
@@ -138,9 +132,9 @@
                     color: #fff;
                 }
                 a {
+                    color: white;
                     display: block;
                     padding: 10px;
-                    color: white;
                 }
             }
             input[type="checkbox"] {
@@ -152,63 +146,6 @@
                     & ~ div {
                         display: block;
                     }
-                }
-            }
-        }
-    }
-    &-rec {
-        &-text {
-            background: #fff;
-            list-style: none;
-            margin: 30px 0;
-            max-height: 120px;
-            overflow: hidden;
-            position: relative;
-            h2, h3 {
-                display: inline;
-                font-size: 15px;
-            }
-            li {
-                font-size: 15px;
-                list-style: none;
-                overflow-wrap: break-word;
-                text-align: justify;
-                text-indent: 30px;
-                word-wrap: break-word;
-            }
-            h2, u {
-                font-weight: 700;
-            }
-            a {
-                color: #39c;
-                font-weight: 700;
-                &:hover {
-                    text-decoration: underline;
-                }
-            }
-            &:after {
-                background: linear-gradient(180deg,rgba(243,243,243,0) 0,#fff 100%);
-                bottom: 0;
-                content: "";
-                height: 70px;
-                left: 0;
-                position: absolute;
-                width: 100%;
-            }
-            &.full {
-                max-height: unset;
-                &:after {
-                    content: unset;
-                }
-            }
-        }
-        &-button {
-            a {
-                cursor: pointer;
-                display: block;
-                float: right;
-                &:hover {
-                    text-decoration: underline;
                 }
             }
         }

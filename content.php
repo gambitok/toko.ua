@@ -137,7 +137,7 @@ if ($_REQUEST["w"] == "getCatalogueLink") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogueLink($_REQUEST["article_nr_search"]));
 }
 
-if ($_REQUEST["w"] == "show_catalogue_filter_all") {
+if ($_REQUEST["w"] == "getCatalogListFilter") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogListFilter($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));
 }
 
@@ -375,12 +375,8 @@ if ($_REQUEST["w"] == "showCarsForm") {
     $GLOBALS['_RESULT'] = array("content" => $prod->showCarsForm());
 }
 
-if ($_REQUEST["w"] == "showCarsForm2") {
-    $GLOBALS['_RESULT'] = array("content" => $prod->showCarsForm2());
-}
-
-if ($_REQUEST["w"] == "showCarsSelectedForm") {
-    $GLOBALS['_RESULT'] = array("content" => $prod->showCarsSelectedForm());
+if ($_REQUEST["w"] == "showCarsGarageForm") {
+    $GLOBALS['_RESULT'] = array("content" => $prod->showCarsGarageForm());
 }
 
 /*==== MENU ====*/

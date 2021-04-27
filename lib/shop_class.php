@@ -167,7 +167,7 @@ class ShopClass extends CatalogueClass
         $table_basket = str_replace("{total_style}", ($sum == $sum_total) ? "d-none" : "", $table_basket);
         $table_basket = str_replace("{location}", $location, $table_basket);
         $table_basket = str_replace("{location_fast}", $location_fast, $table_basket);
-        $table_basket = str_replace("{currency}", $showform->getCurrencyForm(4, 0, $cur), $table_basket);
+        $table_basket = str_replace("{currency}", $showform->getCurrencyForm($cur, 1), $table_basket);
         $table_basket = str_replace("{cur_cap}", $this->getSymbolExrate($cur), $table_basket);
         $table_basket = str_replace("{disabled}", $disabled, $table_basket);
         $table_basket = str_replace("{basket_proposed}", $this->getProposedArts(), $table_basket);

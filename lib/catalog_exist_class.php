@@ -413,15 +413,6 @@ class CatalogExistClass extends CatalogueClass
     /*======================================================================= PRODUCTS =*/
 
     /*
-     * show products init form
-     * */
-    public function getInitForm($group_id)
-    {
-        $result = $this->initPartsTable($group_id);
-        return "<div class='content'>$result</div>";
-    }
-
-    /*
      * check exist of group table
      * */
     public function checkTable($group_id)
@@ -670,8 +661,8 @@ class CatalogExistClass extends CatalogueClass
             $head_id = $this->getHeadExistID($group_id);
             $head_name = $this->getHeadExistName($head_id);
             $head_link= $this->getHeadExistLink($head_id);
-            $icon = "<i class='fa fa-chevron-right'></i>";
-            $list = "<a href='/'>{seo_shop_toko}</a> $icon <a href='/$this->catalog_exist_link'>{site_catalog}</a> $icon <a href='/$this->catalog_exist_link/$head_link'>$head_name</a> $icon $group_name";
+            $icon = "<i class=\"fa fa-chevron-right\"></i>";
+            $list = "<a href=\"/\">{seo_shop_toko}</a> $icon <a href=\"/$this->catalog_exist_link\">{site_catalog}</a> $icon <a href=\"/$this->catalog_exist_link/$head_link\">$head_name</a> $icon $group_name";
         }
         return $list;
     }
@@ -737,9 +728,9 @@ class CatalogExistClass extends CatalogueClass
         $list = "<div class=\"row\">
             <nav aria-label=\"Page navigation\">
                 <ul class=\"pagination\">
-                    <li class=\"page-item $disabled_pred\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$pred_page\"><i class='fa fa-chevron-left'></i> <span class='span-media'>{previous_cap}</span></a></li>
+                    <li class=\"page-item $disabled_pred\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$pred_page\"><i class=\"fa fa-chevron-left\"></i> <span class=\"span-media\">{previous_cap}</span></a></li>
                     $pagination
-                    <li class=\"page-item $disabled_next\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$next_page\"><span class='span-media'>{next_cap}</span> <i class='fa fa-chevron-right'></i></a></li>
+                    <li class=\"page-item $disabled_next\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$next_page\"><span class=\"span-media\">{next_cap}</span> <i class=\"fa fa-chevron-right\"></i></a></li>
                 </ul>
             </nav>
         </div>";
@@ -983,7 +974,7 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{form_car}", $this->getPartsCatalogueCars($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link), $form);
         $form = $this->replaceLang($form);
         $form = str_replace("{h1_text}", "<b>$filters_h1</b>", $form);
-        $form = str_replace("{vin_text}", "<a class='blue-a' onclick=\"$('#VinFormPhone').modal('show');\">{vin_order}</a>", $form);
+        $form = str_replace("{vin_text}", "<a class=\"blue-a\" onclick=\"$('#VinFormPhone').modal('show');\">{vin_order}</a>", $form);
         $catalog_text = "{in_catalog_strs}";
         $catalog_link = "https://toko.ua/cars/";
         if ($mfa_link != "") {
@@ -996,7 +987,7 @@ class CatalogExistClass extends CatalogueClass
                 $catalog_link .= "$model_link/";
             }
         }
-        $form = str_replace("{catlog_link}", "<a class='blue-a' href='$catalog_link'>$catalog_text</a>", $form);
+        $form = str_replace("{catlog_link}", "<a class=\"blue-a\" href=\"$catalog_link\">$catalog_text</a>", $form);
         return $form;
     }
 
@@ -1005,7 +996,6 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function showPartsCatalogueParams($group_id, $str_linka = "", $page = 1, $filters = [], $status_auto_type = 0, $mfa_link = "", $model_link = "")
     {
-        $search = new SearchClass();
         $automan = new AutoClass();
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
@@ -1049,7 +1039,7 @@ class CatalogExistClass extends CatalogueClass
         }
 
         $art_id_str = implode(",", array_unique($arts));
-        list($list) = $this->searchList($art_id_str, 1, 1, "", "", $status_auto, $mfa_link, $model_link);
+        list($list) = $this->searchList($art_id_str, 1, "", "", $status_auto, $mfa_link, $model_link);
 
         $count = $this->getPartsCount($group_id, $query);
         $filters_form = $this->getPartsFiltersForm($group_id, $filters, $where_mfa, $where_link_arts, $query, $mfa_link, $model_link);
@@ -1070,8 +1060,8 @@ class CatalogExistClass extends CatalogueClass
             if ($model_link != "") {
                 $model = $automan->getModLink($model_link);
             }
-            $translit = $search->getCarManufTranslit($mfa_id, $model);
-            $translit = "<span style='font-weight: 400;'>$translit</span>";
+            $translit = $automan->getCarManufTranslit($mfa_id, $model);
+            $translit = "<span style=\"font-weight: 400;\">$translit</span>";
         }
 
         $form = str_replace("{details_group_id}", $group_id, $form);
@@ -1260,13 +1250,12 @@ class CatalogExistClass extends CatalogueClass
             foreach ($arr as $param_id => $values) {
                 $param_name = $this->getGroupParamName($param_id);
                 if (!empty($values)) {
-                    $input = "<div class='hidden-list-search'>
-                        <input type='text' class='text-filter' onkeyup=\"textParamSearch('$param_id')\" data-attr='$param_id' placeholder='{search_by_name}'>
-                    </div>";
-                    $list_params .= "<div class='hidden-list'>
-                    <div class='hidden-list-title'>$param_name</div>
-                    $input
-                    <div class='hidden-list-content' data-attr='$param_id'>";
+                    $list_params .= "<div class=\"hidden-list\">
+                    <div class=\"hidden-list-title\">$param_name</div>
+                    <div class=\"hidden-list-search\">
+                        <input type=\"text\" class=\"text-filter\" onkeyup=\"textParamSearch('$param_id')\" data-attr=\"$param_id\" placeholder=\"{search_by_name}\">
+                    </div>
+                    <div class=\"hidden-list-content\" data-attr=\"$param_id\">";
                     $items = [];
                     foreach ($values as $value_id) {
                         $value_name = $this->getGroupValueName($value_id, $param_id);
@@ -1289,9 +1278,9 @@ class CatalogExistClass extends CatalogueClass
 
                     $arr_checked = []; $arr_value_name = []; $arr_count_arts = [];
                     foreach ($items as $key => $row) {
-                        $arr_checked[$key]  = $row['checked'];
-                        $arr_value_name[$key] = $row['value_name'];
-                        $arr_count_arts[$key] = $row['count_arts'];
+                        $arr_checked[$key]  = $row["checked"];
+                        $arr_value_name[$key] = $row["value_name"];
+                        $arr_count_arts[$key] = $row["count_arts"];
                     }
                     if ($param_id == 0) {
                         array_multisort($arr_checked, SORT_DESC, SORT_NUMERIC, $arr_value_name, SORT_ASC, SORT_STRING, $items);
@@ -1311,23 +1300,23 @@ class CatalogExistClass extends CatalogueClass
                                 $count_arts_label = "[+$count_arts]";
                             }
                         }
-                        $checked_label = "<i class='fas fa-square unchecked'></i>";
+                        $checked_label = "<i class=\"fas fa-square unchecked\"></i>";
                         if ($checked) {
-                            $checked_label = "<i class='fas fa-check-square checked'></i>";
+                            $checked_label = "<i class=\"fas fa-check-square checked\"></i>";
                             $count_arts_label = "";
                         }
-                        $list_params .= "<a href='$link' class='hidden-list-content__item'>
-                            <div class='hidden-list-content__item-left' data-param-value='$param_id'>$checked_label <span>$value_name</span></div> 
-                            <div class='hidden-list-content__item-right'>$count_arts_label</div>
+                        $list_params .= "<a href=\"$link\" class=\"hidden-list-content__item\">
+                            <div class=\"hidden-list-content__item-left\" data-param-value=\"$param_id\">$checked_label <span>$value_name</span></div> 
+                            <div class=\"hidden-list-content__item-right\">$count_arts_label</div>
                         </a>";
                     }
 
                     $bottom = "";
                     if (count($values) > $max_items) {
                         $more_count = count($values) - $max_items;
-                        $bottom = "<div class='hidden-list-more' onclick=\"toggleSideMenu(this);\" data-attr-more='$param_id'>
+                        $bottom = "<div class=\"hidden-list-more\" onclick=\"toggleSideMenu(this);\" data-attr-more=\"$param_id\">
                             <span>{more_cap} $more_count</span>
-                            <span class='none'>{hide_cap}</span>
+                            <span class=\"none\">{hide_cap}</span>
                         </div>";
                     }
                     $list_params .= "</div>
@@ -1451,7 +1440,6 @@ class CatalogExistClass extends CatalogueClass
         return $form;
     }
 
-
     /*
      * show cars form
      * */
@@ -1538,28 +1526,6 @@ class CatalogExistClass extends CatalogueClass
 
         return $form;
     }
-
-    /*
-     * get h1
-     * */
-//    public function getCatalogTitleH1($group_id, $mfa_link = "", $mod_link = "")
-//    {
-//        $automan = new AutoClass();
-//        $h1_text = "";
-//        if ($group_id > 0) {
-//            $group_name = $this->getGroupRowName($group_id);
-//            $h1_text .= "$group_name ";
-//        }
-//        if ($mfa_link != "") {
-//            $mfa_name = $automan->getMfaBrand($automan->getMfaLink($mfa_link));
-//            $h1_text .= "$mfa_name ";
-//        }
-//        if ($mod_link != "") {
-//            $mod_name = $automan->getModLink($mod_link);
-//            $h1_text .= "$mod_name ";
-//        }
-//        return $h1_text;
-//    }
 
     /*
      * get TYP list
@@ -1750,7 +1716,7 @@ class CatalogExistClass extends CatalogueClass
             $mfa_id = $values["mfa_id"];
             $mfa_link = $values["mfa_link"];
             if ($mfa_id_sel == "") {
-                $list .= "<div class=\"title\"><a href='https://toko.ua/$link/$mfa_link/'>$details_cap $mfa_brand</a></div>";
+                $list .= "<div class=\"title\"><a href=\"https://toko.ua/$link/$mfa_link/\">$details_cap $mfa_brand</a></div>";
             }
             $list .= "<ul class=\"list-inline\">";
             $r = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;");
@@ -1998,14 +1964,14 @@ class CatalogExistClass extends CatalogueClass
             WHERE t2gr.`GROUP_ID` = '$group_id' AND t2r.`STATUS` = 1;");
             $n = $db->num_rows($r);
             if ($n > 0) {
-                $list = "<div class='reviews-list-title'>{states_cap}</div><div class='reviews-list'>";
+                $list = "<div class=\"reviews-list-title\">{states_cap}</div><div class=\"reviews-list\">";
             }
             for ($i = 1; $i <= $n; $i++) {
                 $review_id = $db->result($r, $i - 1, "ID");
                 $review_title = $db->result($r, $i - 1, "TITLE$prefix");
                 $transcript = $this->formatUrlText($review_title);
                 $link = "$prefix/reviews/state/$review_id/$transcript";
-                $list .= "<div class='reviews-list__item'><a href='$link'><i class='fa fa-circle'></i> $review_title</a></div>";
+                $list .= "<div class=\"reviews-list__item\"><a href=\"$link\"><i class=\"fa fa-circle\"></i> $review_title</a></div>";
             }
             if ($n > 0) {
                 $list .= "</div>";
@@ -2055,7 +2021,7 @@ class CatalogExistClass extends CatalogueClass
         $head_title = $this->getHeadRowName($head_id);
         $form = $this->getHtmlForm("catalog_exist/cat_form");
         $form = str_replace("{cat_title}", $cat_title, $form);
-        $form = str_replace("{head_title}", "<a href='../'><i class='fa fa-chevron-left'></i> $head_title</a>", $form);
+        $form = str_replace("{head_title}", "<a href=\"../\"><i class=\"fa fa-chevron-left\"></i> $head_title</a>", $form);
         $form = str_replace("{cat_list}", $this->getGroupCatList($head_id, $cat_id), $form);
         return $form;
     }
@@ -2076,12 +2042,12 @@ class CatalogExistClass extends CatalogueClass
             foreach ($arr as $cat_id => $groups) {
                 $cat_name = $this->getCatRowName($cat_id);
                 $cat_link = $this->getCatRowLink($cat_id);
-                $list .= "<div><a href='./$cat_link'>$cat_name</a></div>";
-                $list .= "<ul class='list-inline'>";
+                $list .= "<div><a href=\"./$cat_link\">$cat_name</a></div>";
+                $list .= "<ul class=\"list-inline\">";
                 foreach ($groups as $group_id) {
                     $group_name = $this->getGroupRowName($group_id);
                     $group_link = $this->getGroupRowLink($group_id);
-                    $list .= "<li><a href='./$group_link'>$group_name</a></li>";
+                    $list .= "<li><a href=\"./$group_link\">$group_name</a></li>";
                 }
                 $list .= "</ul>";
             }
@@ -2096,12 +2062,12 @@ class CatalogExistClass extends CatalogueClass
         $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `CAT_ID`='$cat_id' GROUP BY `GROUP_ID`;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $list .= "<ul class='list-inline'>";
+            $list .= "<ul class=\"list-inline\">";
             for ($i = 1; $i <= $n; $i++) {
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
                 $group_name = $this->getGroupRowName($group_id);
                 $group_link = $this->getGroupRowLink($group_id);
-                $list .= "<li><a href='./$group_link'>$group_name</a></li>";
+                $list .= "<li><a href=\"./$group_link\">$group_name</a></li>";
             }
             $list .= "</ul>";
         }

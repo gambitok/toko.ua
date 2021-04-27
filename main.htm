@@ -173,8 +173,8 @@
 	<!-- Plugin Scripts -->
 	<script type="text/javascript" src="/js/library/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="/js/library/popper.min.js"></script>
-<!--	<script type="text/javascript" src="/js/library/bootstrap.min.js"></script>-->
-	<script type="text/javascript" src="/js/library/bootstrap-custom.min.js"></script>
+	<script type="text/javascript" src="/js/library/bootstrap.min.js"></script>
+<!--	<script type="text/javascript" src="/js/library/bootstrap-custom.min.js"></script>-->
 	<script type="text/javascript" src="/js/JsHttpRequest/JsHttpRequest.min.js"></script>
 
 </head>
@@ -189,7 +189,7 @@
 	<header>
 		{site_warning_message}
 
-		<div class="row header-top" id="header-top">
+		<div class="row header-top">
 			<div class="container">
 				<div class="row align-items-center">
 					<div class="col-4 contacts" id="region_select_tpoint">
@@ -199,7 +199,7 @@
 					<div class="col-8 authorization">
 						<ul>
 							<li>
-								<a href="{site_lang_prefix}/contacts/" class="pointer"><span class="fas fa-address-card"></span><span> {contacts_cap}</span></a>
+								<a href="{site_lang_prefix}/contacts/"><span class="fas fa-address-card"></span><span> {contacts_cap}</span></a>
 							</li>
 							{news_info}
 							{special_offers}
@@ -368,26 +368,10 @@
             </div>
         </div>
 
-		<div id="navigation" class="row header-nav">
-			<div class="container">
-				<nav class="row align-items-center">
-					<ul class="header-nav__ul">{catalog_range}</ul>
-				</nav>
-			</div>
-			<div id="navigation-hide" class="row header-nav-hide" style="top: 60px; width: 100%; left: 15px; display:none;">
-				<div class="col-12 content-nav">
-					<div class="container">
-						<div id="content-nav__content" class="content-nav__content tree-block">
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
+		{navigation_content}
 	</header>
 
 	<section class="row main">
-        <div id="metro" class="wdt100">{main_metro}</div>
 		<div id="catalogue" class="container pad0">
 			<div id="catalogue-breadcrumbs">{main_site_breadcrumbs}</div>
 			<div id="catalogue-main">{main_window}</div>
@@ -551,7 +535,7 @@
 	</div>
 
 	<!-- Modal Basket -->
-	<div class="modal fade" id="BasketForm" role="dialog" tabindex="-1" style="z-index: 9999999;">
+	<div class="modal fade" id="BasketForm" role="dialog" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -561,9 +545,7 @@
 				<div class="modal-body text-left">
 					<div class="container">
 						<div class="row">
-							<div id="basket_block" class="container" style="min-height: 375px;">
-
-							</div>
+							<div id="basket_block" class="container"></div>
 						</div>
 					</div>
 				</div>
@@ -571,28 +553,10 @@
 		</div>
 	</div>
 
-    <!-- Modal Cars -->
-    <div class="modal fade" id="CarsForm" role="dialog" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body text-left">
-                    <div id="cars_block">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <!-- Mobile Navigation -->
 <div class="navigations">
-	<nav id="menu" class="panel" role="navigation">
-        {site_mobile_panel}
-	</nav>
 	<nav id="menu-catalog" class="panel-filters" role="navigation">
 		<div class="container">
 			<div class="text-right">
@@ -629,15 +593,6 @@
 </body>
 
 </html>
-
-<!-- Plugin Scripts -->
-<script>
-	jQuery.event.special.touchstart = {
-		setup: function( _, ns, handle ) {
-			this.addEventListener("touchstart", handle, { passive: !ns.includes("noPreventDefault") });
-		}
-	};
-</script>
 
 <script type="text/javascript" src="/js/plugins/bigSlide.js"></script>
 <script type="text/javascript" src="/js/plugins/lazyload/lazyload.min.js"></script>

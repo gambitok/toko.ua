@@ -28,6 +28,7 @@ if ($path == "seoshield-client") {
 include_once(RDD . "/event/menu.php");
 
 // Main HEAD HTML
+$content = str_replace("{navigation_content}", $catalogue->getSiteNavigation(), $content);
 $content = str_replace("{footer_content}", getHtmlForm("main/footer"), $content);
 $content = str_replace("{anchor_contacts_content}", getHtmlForm("main/anchor-contacts"), $content);
 
@@ -63,7 +64,6 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') 
 $content = str_replace("{main_seo_text}", getSeoTextForm(), $content);
 $content = str_replace("{main_site_breadcrumbs}", printBreadcrumbs($path)[0], $content);
 $content = str_replace("{main_window}", "", $content);
-$content = str_replace("{main_metro}", "", $content);
 $content = str_replace("{meta_noindex}", '
     <meta name="robots" content="index, follow">
     <meta name="googlebot" content="index, follow">

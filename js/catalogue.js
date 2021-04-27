@@ -133,7 +133,7 @@ function catalogueFilter(order) {
     let price = $("#filter-price").val();
     let deliv = $("#filter-delivery").val();
 
-    JsHttpRequest.query(folder,{'w':'show_catalogue_filter_all', 'art':art, 'brand':brand, 'bb':bb, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
+    JsHttpRequest.query(folder,{'w':'getCatalogListFilter', 'art':art, 'brand':brand, 'bb':bb, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
         function (result, errors){ if (errors) {alert(errors);} if (result){
 
             $("#cat_search_main").html(result.content[0]);
@@ -218,7 +218,7 @@ function catalogueFilter(order) {
 }
 
 function getArticleApplModelForm(art_id_tcd, manufacture, a) {
-    $(".load_app").each(function () {
+    $(".info__applicability-checked").each(function () {
         $(this).removeClass("span-red");
     });
     $(a).addClass("span-red");

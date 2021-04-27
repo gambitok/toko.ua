@@ -411,7 +411,7 @@ class MenuClass extends CatalogueClass
         $address = $db->result($r, 0, "address");
         if ($n > 0) {
             $list = "<span><span class=\"fas fa-map-marker-alt\"></span> {choose_office}:</span>
-            <a class=\"pointer\" onClick='showRegionForm();'>
+            <a onClick='showRegionForm();'>
                 <span id=\"region_select\">
                     <span>$region ($address)</span>
                 </span>
@@ -496,7 +496,8 @@ class MenuClass extends CatalogueClass
         $language = $this->getLanguage();
         $r = $db->query("SELECT * FROM `new_lang`;");
         $n = $db->num_rows($r);
-        $list = "<form action=\"\" autocomplete=\"off\">";
+        $form = $this->getHtmlForm("bar/lang");
+        $list = "";
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "id");
             $abr = $db->result($r, $i - 1, "abr");
@@ -505,15 +506,15 @@ class MenuClass extends CatalogueClass
             $style = "";
             if ($language != "" && $id == $language) {
                 $ch = "checked='checked'";
-                $style = "style=\"text-decoration: underline;\"";
+                $style = "menu-bar-lang__item-checked";
             }
-            $list .= "<label class=\"pointer mar0 padr15\" $style itemprop=\"availableLanguage\" itemtype=\"http://schema.org/Language\" itemscope>
-                <input style=\"display:none;\" type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onclick=\"setSiteLang('$id')\"><span>$abr</span>
+            $list .= "<label class=\"menu-bar-lang__item $style\" itemprop=\"availableLanguage\" itemtype=\"http://schema.org/Language\" itemscope>
+                <input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onclick=\"setSiteLang('$id')\"><span>$abr</span>
                 <input itemprop=\"name\" type=\"hidden\" value=\"$value\">
             </label>";
         }
-        $list .= "</form>";
-        return $list;
+        $form = str_replace("{lang_list}", $list, $form);
+        return $form;
     }
 
     /*
@@ -672,25 +673,6 @@ class MenuClass extends CatalogueClass
     }
 
     /*
-     * show mobile navigation
-     * */
-    public function getMediaNavPanel()
-    {
-        $profile = new ProfileClass();
-        $form = $this->getHtmlForm("media/nav_panel");
-        $form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
-        $form = str_replace("{lang_select}", $this->getLanguageList(), $form);
-        if (!$profile->getProfileClientInfo()) {
-            $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
-            $form = str_replace("{region_select_phone}", "<li>" . $this->getRegionSelect() . "</li>", $form);
-        } else {
-            $form = str_replace("{region_select}", "", $form);
-            $form = str_replace("{region_select_phone}", "", $form);
-        }
-        return $form;
-    }
-
-    /*
      * show reviews form
      * */
     public function showReviews()
@@ -782,30 +764,6 @@ class MenuClass extends CatalogueClass
         $form = str_replace("{help_form}", $this->getHtmlForm("faq/help"), $form);
         return $form;
     }
-
-    /*
-    * show navigation row (with Details headers)
-    * */
-//    public function getDetailsListing()
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $language = new LangClass();
-//        $automan = new AutoClass();
-//        $prefix = $language->getLangPrefix();
-//        $lang_id = $this->getLanguage();
-//        $lang_cap = $language->getTexCapLanguage($lang_id);
-//        $r = $db->query("SELECT * FROM `T2_GROUP_TREE_HEAD` WHERE `STATUS`=1;");
-//        $n = $db->num_rows($r);
-//        $list = "";
-//        for ($i = 1; $i <= $n; $i++) {
-//            $head_id = $db->result($r, $i - 1, "HEAD_ID");
-//            $tex_text = $db->result($r, $i - 1, "TEX_$lang_cap");
-//            $head_link = $automan->getHeadNewDescr($head_id)["link"];
-//            $header = "<a href=\"https://toko.ua$prefix/catalog/$head_link/\">$tex_text</a>";
-//            $list .= "<li class=\"header-nav__li\" data-nav-id=\"$head_id\">$header</li>";
-//        }
-//        return $list;
-//    }
 
     /*
      * site warning message
@@ -910,7 +868,6 @@ class MenuClass extends CatalogueClass
         $shop = new ShopClass();
         $form = $this->getHtmlForm("bar/nav");
         $form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
-        $form = str_replace("{lang_select}", $this->getLanguageList(), $form);
         if (!$profile->getProfileClientInfo()) {
             $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
             $form = str_replace("{region_select_phone}", "<li>" . $this->getRegionSelect() . "</li>", $form);
@@ -932,7 +889,7 @@ class MenuClass extends CatalogueClass
         } else {
             $form = str_replace("{region_select}", "", $form);
         }
-        $form = str_replace("{menu_lang}", $this->getLanguageList(), $form);
+        $form = str_replace("{lang_select}", $this->getLanguageList(), $form);
         return $form;
     }
 

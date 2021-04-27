@@ -118,17 +118,14 @@
 					<label class="label-required">{location_cap}:</label>
 				</div>
 				<div class="col-lg-8 col-12 pad0">
-
 					<select id="user_city" title="{location_cap}" class="form-control" data-attr="select" oninput="getCityVal();" onchange="setCityVal();">
                         <option value="0">{not_chosen}</option>
                         {user_city_main_list}
 					</select>
-
                     <select style="display: none!important;" class="orders-block-row__input" name="user_city_np" id="user_city_np" data-attr="select" title="NovaPoshta">
                         <option value="0">{not_chosen}</option>
                     </select>
-
-					<div class="float-left city-inline">
+					<div class="city-inline">
 						<ul class="list-inline">
 							<li class="list-inline-item">{for_example}:</li>
 							<li class="list-inline-item"><button id="10108" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>

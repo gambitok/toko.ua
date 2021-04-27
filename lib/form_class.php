@@ -91,7 +91,7 @@ class FormClass extends CatalogueClass
                 $form = str_replace("{applicable_display_text}", "{is_applicable}", $form);
                 list($manufacture, $model, $model_id) = $auto->getCarInfo($auto_typ_id);
                 list($manufacture_cap, , $model_id_cap,) = $auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
-                $form = str_replace("{applicable_cap}", "<a href='https://toko.ua/catalog/'>$manufacture_cap $model_id_cap</a>", $form);
+                $form = str_replace("{applicable_cap}", "<a href=\"/\">$manufacture_cap $model_id_cap</a>", $form);
             }
         }
 
@@ -245,7 +245,7 @@ class FormClass extends CatalogueClass
     /*
      * show currency form
      * */
-    public function getCurrencyForm($type_filter, $template_id, $cur)
+    public function getCurrencyForm($cur, $type = 0)
     {
         $kours = new ExRateClass();
         $client = new ClientClass();
@@ -259,27 +259,11 @@ class FormClass extends CatalogueClass
         } else {
             $ch1 = "checked=\"checked\"";
         }
-        switch ($type_filter) {
-            case 1:
-            {
-                $jsFilter = "catalogueFilter();";
-                break;
-            }
-            case 2:
-            {
-                $jsFilter = "tecModelsFilter();";
-                break;
-            }
-            case 3:
-            {
-                $jsFilter = "catGroupFilter($template_id);";
-                break;
-            }
-            case 4:
-            {
-                $jsFilter = "showBasketForm();";
-                break;
-            }
+        if ($type == 0) {
+            $jsFilter = "catalogueFilter();";
+        }
+        if ($type == 1) {
+            $jsFilter = "showBasketForm();";
         }
         if ($cash_id == 2) {
             $cash_add = "<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"$jsFilter\"><label for=\"radio_usd\">$</label>";
@@ -529,7 +513,7 @@ class FormClass extends CatalogueClass
         $arr = [];
         if ($client->checkRetailClientCategory($this->getClient())) {
             $date_cur = date("Y-m-d");
-            $r = $db->query("SELECT * FROM `T2_CERTIFICATES` WHERE `brand_id`='$brand_id' AND `date_from`<='$date_cur' AND `date_to`>='$date_cur' AND `status`=1;");
+            $r = $db->query("SELECT `photo_link` FROM `T2_CERTIFICATES` WHERE `brand_id`='$brand_id' AND `date_from`<='$date_cur' AND `date_to`>='$date_cur' AND `status`=1;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $photo_link = $db->result($r, $i - 1, "photo_link");
@@ -573,12 +557,12 @@ class FormClass extends CatalogueClass
             if ($display == 1) {
                 $list .= "<div class=\"carousel-item $active\">
                     <a itemprop=\"url\" href=\"https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/\">
-                        <img itemprop=\"image\" class=\"d-block img-fluid lazy\" data-src=\"$link\" alt=\"Slide $i\">
+                        <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" alt=\"Slide $i\">
                     </a>
                 </div>";
             } else {
                 $list .= "<div class=\"carousel-item $active\">
-                    <img itemprop=\"image\" class=\"d-block img-fluid lazy\" data-src=\"$link\" alt=\"Slide $i\">
+                    <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" alt=\"Slide $i\">
                     <div class=\"carousel-caption\">{photo_card_cap} $i {of_cap} $count_pages</div>
                 </div>";
             }
@@ -606,7 +590,7 @@ class FormClass extends CatalogueClass
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\">
                         <div class=\"carousel-inner\" role=\"listbox\">
                             <div class=\"carousel-item active\">
-                                <img itemprop=\"image\" class=\"d-block img-fluid lazy\" data-src=\"https://toko.ua$nophoto\" alt=\"Slide 1\">
+                                <img itemprop=\"image\" class=\"lazy\" data-src=\"https://toko.ua$nophoto\" alt=\"Slide 1\">
                             </div>
                         </div>
                     </div>
@@ -747,7 +731,7 @@ class FormClass extends CatalogueClass
                 for ($i = 1; $i <= $n; $i++) {
                     $brand_id = $db->result($r, $i - 1, "MFA_ID");
                     $brand = $db->result($r, $i - 1, "MFA_BRAND");
-                    $list .= "<a class=\"padr15 load_app pointer\" onclick='getArticleApplModelForm(\"$art_id\",\"$brand_id\",this)'><i class=\"fas fa-car\"></i>$brand</a>";
+                    $list .= "<a class=\"info__applicability-checked\" onclick='getArticleApplModelForm(\"$art_id\",\"$brand_id\",this)'><i class=\"fas fa-car\"></i>$brand</a>";
                 }
             } else {
                 $list = $this->err1;
@@ -890,7 +874,7 @@ class FormClass extends CatalogueClass
                 $text = $db->result($r, $i - 1, "TEXT");
                 $value = $db->result($r, $i - 1, "VALUE");
                 $info .= "<tr>
-                    <td class='text-left bold'>$text</td> 
+                    <td class=\"text-left bold\">$text</td> 
                     <td class=\"text-right\">$value</td>
                 </tr>";
             }

@@ -66,7 +66,7 @@ class CatalogueClass
         $search_filters = $this->getHtmlForm("search/filters");
         $search_brands = $this->getHtmlForm("search/brands");
 
-        list($list, $list_brand, $filters) = $this->searchList($art_id_str, 1, 0, $article_nr_search, $brand_nr_search);
+        list($list, $list_brand, $filters) = $this->searchList($art_id_str, 0, $article_nr_search, $brand_nr_search);
 
         // if found something
         if (($list_brand) && ($filters)) {
@@ -90,12 +90,12 @@ class CatalogueClass
         $form = str_replace("{cur_value}", $cur, $form);
 
         //search main
-        $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $list, 1, $cur);
+        $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $list, $cur);
         $form = str_replace("{cat_search_main}", $search_main, $form);
 
         //search filters
         if (!empty($filters)) {
-            $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, [], 1, 0);
+            $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, []);
             $form = str_replace("{cat_search_filters}", $search_filters, $form);
         }
 
@@ -144,14 +144,14 @@ class CatalogueClass
         $exp_price = explode(",", $price_f);
         $exp_deliv = explode(",", $deliv_f);
 
-        list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($art_id_str, $article_nr_search, $brand_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand_nr_search, $order_value, 1);
+        list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($art_id_str, $article_nr_search, $brand_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand_nr_search, $order_value);
 
         $search_main = $this->getHtmlForm("search/main");
         $search_filters = $this->getHtmlForm("search/filters");
         $search_brands = $this->getHtmlForm("search/brands");
-        $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $list, 1, $cur);
+        $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $list, $cur);
         $search_main = $this->replaceLang($search_main);
-        $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value, 1, 0);
+        $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value);
         $search_filters = $this->replaceLang($search_filters);
         $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
         $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
@@ -171,7 +171,6 @@ class CatalogueClass
 
         $count_zero = $exist_search_number = 0;
         $exist_brand_link = $result = $list = "";
-        $colon = "col-lg-12 col-12";
         $mas = [];
 
         $form = $this->getHtmlForm("cat_search_list");
@@ -214,7 +213,7 @@ class CatalogueClass
                 $name = $mas[$i]["name"];
                 $photo_name = $showform->getShortArticlePhoto($mas[$i]["art_id"]);
                 $link = ($count == 0) ? "showAlertModal(\"{brand_no_offer} `$text/$brand_name`\",\"{sorry_cap}\");" : "location.href=\"https://toko.ua$prefix/$this->search_link/$search_number/$brand_link/\";";
-                $list .= "<tr class=\"pointer table-row\" onclick='$link'>
+                $list .= "<tr class=\"table-row pointer\" onclick='$link'>
                     <td class=\"minify\">
                         <img itemprop=\"image\" data-src=\"$photo_name\" class=\"lazy\" alt=\"Article\">
                     </td>
@@ -238,7 +237,6 @@ class CatalogueClass
         $search_form = str_replace("{currency}", "", $search_form);
         $search_form = str_replace("{products_view}", "", $search_form);
         $search_form = str_replace("{search_result}", $form_brand, $search_form);
-        $search_form = str_replace("{search_form_col}", $colon, $search_form);
         $form = str_replace("{search_filters}", "", $form);
         $form = str_replace("{search_form}", $search_form, $form);
 
@@ -248,180 +246,7 @@ class CatalogueClass
         return $form;
     }
 
-    /*
-     * Show Header Navigation
-     * */
-//    public function showHeadTemplate($head_id)
-//    {
-//        $head_id = $this->getUrlNumber($head_id);
-//        $automan = new AutoClass();
-//        $head_link = $automan->getHeadNewDescr($head_id)["link"];
-//        $list = $this->getGroupTreeStr($head_id);
-//        $footer = "<a href=\"https://toko.ua/catalog/$head_link\">{show_all_cap} <i class=\"fa fa-chevron-right\"></i></a>";
-//        $footer = $this->replaceLang($footer);
-//        return array($list, $footer);
-//    }
-
-    /*
-     * Show Header Navigation Item
-     * */
-//    public function getGroupTreeStr($head_id)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $automan = new AutoClass();
-//        $language = new LangClass();
-//        $lang_id = $this->getLanguage();
-//        $prefix = $this->getLangPrefix();
-//        $lang_cap = $language->getTexCapLanguage($lang_id);
-//        $arr = [];
-//        $list = "";
-//        $head_link = $automan->getHeadNewDescr($head_id)["link"];
-//        $r = $db->query("SELECT cs.*, cat.CAT_ID
-//        FROM `T2_GROUP_TREE_STR` cs
-//            LEFT OUTER JOIN `T2_GROUP_TREE_CATEGORY` cat ON cat.CAT_ID=cs.CAT_ID
-//		WHERE cs.HEAD_ID='$head_id' ORDER BY cat.POSITION ASC, cs.POSITION ASC;");
-//        $n = $db->num_rows($r);
-//        if ($n > 0) {
-//            for ($i = 1; $i <= $n; $i++) {
-//                $cat_id = $db->result($r, $i - 1, "CAT_ID");
-//                $text = $db->result($r, $i - 1, "TEX_$lang_cap");
-//                $image = $db->result($r, $i - 1, "IMAGES");
-//                $str_id = $db->result($r, $i - 1, "STR_ID");
-//                $str_link = $db->result($r, $i - 1, "TEX_LINK");
-//                $arr[$cat_id][$i] = compact("text", "image", "str_id", "str_link");
-//            }
-//            foreach ($arr as $key => $value) {
-//                list($cat_name, $cat_link) = $automan->getCatNewDescr($key);
-//                $list .= "<div class=\"tree-item\">";
-//                $list .= "<div class=\"tree-item-title\">
-//                    <a href=\"https://toko.ua$prefix/$this->catalog_link/$head_link/$cat_link/\">$cat_name</a>
-//                </div>";
-//                $list .= "<div class=\"tree-item-list\">";
-//                foreach ($value as $v) {
-//                    $tex = $v["text"];
-//                    $str_link = $v["str_link"];
-//                    $link = "https://toko.ua$prefix/$this->catalog_link/$str_link/";
-//                    $list .= "<div class=\"tree-item-list__element\">
-//                        <a href=\"$link\">$tex</a>
-//                    </div>";
-//                }
-//                $list .= "</div>";
-//                $list .= "</div>";
-//            }
-//        }
-//        if ($n == 0) {
-//            $list = "";
-//        }
-//        $list = $this->replaceLang($list);
-//        return $list;
-//    }
-
-    /*
-     * show tec models list
-     * catalog/maslyanyj-filtr/ + TYP_ID
-     * */
-//    public function techModelsList($typ_id, $str_id)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $client = new ClientClass();
-//        $automan = new AutoClass();
-//        $cur = $this->getCurrentExrate();
-//        $str_id = $this->getUrlNumber($str_id);
-//        list($manufacture, $model, $model_id) = $automan->getCarInfo($typ_id);
-//        $automan->setAutoData($manufacture, $model, $model_id, $typ_id, $str_id);
-//        $client->toggleProductView(1);
-//
-//        $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$typ_id' GROUP BY `ART_ID`;");
-//        $n = $db->num_rows($r);
-//        $t2_link_arts = [];
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id = $db->result($r, $i - 1, "ART_ID");
-//            $t2_link_arts[] = $art_id;
-//        }
-//        $t2_link_arts = implode(",", $t2_link_arts);
-//
-//        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE` WHERE `ART_ID` IN ($t2_link_arts) AND `STR_ID`=$str_id;");
-//        $n = $db->num_rows($r);
-//        $t2_tree_arts = [];
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id = $db->result($r, $i - 1, "ART_ID");
-//            $t2_tree_arts[] = $art_id;
-//        }
-//        $art_id_str = implode(",", $t2_tree_arts);
-//
-//        list($list, $list_brand, $filters) = $this->searchList($art_id_str, 2, 1);
-//
-//        $search_filters = $this->getHtmlForm("search/filters");
-//        $search_brands = $this->getHtmlForm("search/brands");
-//        $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, [], 2, 0);
-//        $search_filters = $this->replaceLang($search_filters);
-//        $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
-//        $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
-//        $search_brands = $this->replaceLang($search_brands);
-//
-//        return array($list, $search_brands, $search_filters);
-//    }
-
-    /*
-     * show tec models list filtred
-     * catalog/maslyanyj-filtr/ + TYP_ID
-     * */
-//    public function techModelsFilters($art, $brand, $brand_filter, $cur, $price_f, $deliv_f, $order_value)
-//    {
-//        $art = $this->getNameString($art);
-//        $brand = $this->getNameString($brand);
-//        $cur = $this->getUrlNumber($cur);
-//        $order_value = $this->getUrlNumber($order_value);
-//        $db = DbSingleton::getTokoDb();
-//        $automan = new AutoClass();
-//        setcookie("currency", $cur);
-//        session_start();
-//        $_SESSION["currency"] = $cur;
-//        $typ_id = $_SESSION["group"];
-//        $str_id = $_SESSION["str_id"];
-//
-//        $str_text = $automan->getStrNewDescr($str_id);
-//        if ($str_text == "") {
-//            $str_text = $automan->getStrDescr($str_id);
-//        }
-//
-//        $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `TYP_ID`='$typ_id' GROUP BY `ART_ID`;");
-//        $n = $db->num_rows($r);
-//        $t2_link_arts = [];
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id = $db->result($r, $i - 1, "ART_ID");
-//            $t2_link_arts[] = $art_id;
-//        }
-//        $t2_link_arts = implode(",", $t2_link_arts);
-//
-//        $r = $db->query("SELECT `ART_ID` FROM `T2_TREE` WHERE `ART_ID` IN ($t2_link_arts) AND `STR_ID`=$str_id;");
-//        $n = $db->num_rows($r);
-//        $t2_tree_arts = [];
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id = $db->result($r, $i - 1, "ART_ID");
-//            $t2_tree_arts[] = $art_id;
-//        }
-//        $t2_tree_arts = implode(",", $t2_tree_arts);
-//
-//        $brand_filter = json_decode($brand_filter);
-//        $brand_filter = implode(",", $brand_filter);
-//        $exp_price = explode(",", $price_f);
-//        $exp_deliv = explode(",", $deliv_f);
-//
-//        list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($t2_tree_arts, $art, $brand_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand, $order_value, 2);
-//
-//        $search_main = $this->getHtmlForm("search/main");
-//        $search_main = $this->getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id);
-//        $search_filters = $this->getHtmlForm("search/filters");
-//        $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value, 2, 0);
-//        $search_brands = $this->getHtmlForm("search/brands");
-//        $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
-//        $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
-//
-//        return array($this->replaceLang($search_main), $this->replaceLang($search_filters), $this->replaceLang($search_brands), $filters["max_price"]);
-//    }
-
-    public function getSearchMain($search_main, $article_nr_search, $brand_nr_search, $list, $type_filter, $cur)
+    public function getSearchMain($search_main, $article_nr_search, $brand_nr_search, $list, $cur)
     {
         $client = new ClientClass();
         $showform = new FormClass();
@@ -433,7 +258,7 @@ class CatalogueClass
         $radio_view = str_replace("{checked_table}", ($client->getProductView() == 0) ? "checked" : "", $radio_view);
         $radio_view = str_replace("{checked_cards}", ($client->getProductView() == 1) ? "checked" : "", $radio_view);
         $search_main = str_replace("{art}", $this->replaceLang($title), $search_main);
-        $search_main = str_replace("{currency}", $showform->getCurrencyForm($type_filter, 0, $cur), $search_main);
+        $search_main = str_replace("{currency}", $showform->getCurrencyForm($cur), $search_main);
         $search_main = str_replace("{products_view}", $radio_view, $search_main);
         $search_main = str_replace("{search_result}", $list, $search_main);
         return $search_main;
@@ -442,9 +267,8 @@ class CatalogueClass
     /*
      * get catalog search filter variables
      * */
-    public function getSearchFilters($search_filters, $filters, $cur, $current_value, $type_filter, $template_id)
+    public function getSearchFilters($search_filters, $filters, $cur, $current_value)
     {
-        $jsFilterNull = $jsFilterClear = $jsTextFilter = "";
         if (!empty($filters))
             if (empty($current_value)) {
                 $current_value = array();
@@ -453,22 +277,6 @@ class CatalogueClass
                 $current_value["min_dd"] = 0;
                 $current_value["max_dd"] = $filters["max_dd"];
             }
-        switch ($type_filter) {
-            case 1:
-            {
-                $jsFilter = "catalogueFilter();";
-                $jsFilterNull = "catalogueFilterNull();";
-                $jsTextFilter = "search";
-                $jsFilterClear = "location.reload(true);";
-                break;
-            }
-            default:
-            {
-                $jsFilter = "catalogueFilter();";
-                break;
-            }
-        }
-        $search_filters = str_replace("{sideblock_title}", "{filters_cap}", $search_filters);
         $search_filters = str_replace("{sideblock_max_price}", $filters["max_price"], $search_filters);
         $search_filters = str_replace("{sideblock_max_dd}", $filters["max_dd"], $search_filters);
         $search_filters = str_replace("{sideblock_max_price_val}", $current_value["max_price"], $search_filters);
@@ -476,66 +284,10 @@ class CatalogueClass
         $search_filters = str_replace("{sideblock_min_price_val}", $current_value["min_price"], $search_filters);
         $search_filters = str_replace("{sideblock_min_dd_val}", $current_value["min_dd"], $search_filters);
         $search_filters = str_replace("{cur_value}", $cur, $search_filters);
-        $search_filters = str_replace("{text_filter_js}", $jsTextFilter, $search_filters);
-        $search_filters = str_replace("{template_id}", $template_id, $search_filters);
-        $search_filters = str_replace("{catalogue_js_filter}", $jsFilter, $search_filters);
-        $search_filters = str_replace("{catalogue_js_filter_null}", $jsFilterNull, $search_filters);
-        $search_filters = str_replace("{catalogue_js_filter_clear}", $jsFilterClear, $search_filters);
+        $search_filters = str_replace("{catalogue_js_filter}", "catalogueFilter();", $search_filters);
         $search_filters = str_replace("{filters_col}", "col-lg-2 col-12 pad0", $search_filters);
         return $search_filters;
     }
-
-//    public function getSearchMainTree($search_main, $list, $str_text, $typ_id, $str_id)
-//    {
-//        $client = new ClientClass();
-//        $automan = new AutoClass();
-//        $cash_id = $client->getClientCurrency($this->getClient());
-//        $cur = $this->getCurrentExrate();
-//        $mfa_mod_typ_text = $automan->getCarDescription($typ_id);
-//        $ch1 = $ch2 = $ch3 = $cash_add = "";
-//
-//        $str_link = $automan->getStrNewLink($str_id);
-//        $h1_text = $this->getStaticH1("/catalog/$str_link/");
-//        if ($h1_text != "") {
-//            $str_text = $h1_text;
-//        }
-//
-//        if ($str_text == "") {
-//            $result = "<h1>{details_for} $mfa_mod_typ_text</h1>";
-//        } else {
-//            $result = "<h1>$str_text</h1>";
-//        }
-//
-//        if ($cur == 2) {
-//            $ch2 = "checked=\"checked\"";
-//        } elseif ($cur == 3) {
-//            $ch3 = "checked=\"checked\"";
-//        } else {
-//            $ch1 = "checked=\"checked\"";
-//        }
-//
-//        if ($cash_id == 2) {
-//            $cash_add = "<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"tecModelsFilter();\"><label for=\"radio_usd\">$</label>";
-//        }
-//        if ($cash_id == 3) {
-//            $cash_add = "<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"tecModelsFilter();\"><label for=\"radio_eur\">€</label>";
-//        }
-//
-//        if ($this->getUser() != 0) {
-//            $currency = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>$cash_add";
-//        } else {
-//            $currency = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"tecModelsFilter();\"><label for=\"radio_uah\">{uah_cap}</label>";
-//        }
-//
-//        $search_main = str_replace("{art}", $result, $search_main);
-//        $search_main = str_replace("{currency}", ($cash_id == 1 || $str_text == "") ? "" : $currency, $search_main);
-//        $radio_view = $this->getHtmlForm("products_view_radio");
-//        $radio_view = str_replace("{checked_table}", ($client->getProductView() == 0) ? "checked" : "", $radio_view);
-//        $radio_view = str_replace("{checked_cards}", ($client->getProductView() == 1) ? "checked" : "", $radio_view);
-//        $search_main = str_replace("{products_view}", $radio_view, $search_main);
-//        $search_main = str_replace("{search_result}", $list, $search_main);
-//        return $search_main;
-//    }
 
     /*
      * get Search Articles Count
@@ -555,16 +307,15 @@ class CatalogueClass
             array_push($art_ids, $art_id);
         }
         $art_id_str = implode(",", $art_ids);
-        return $this->searchList($art_id_str, 1, 0, $article_nr_search, $brand_id)[3];
+        return $this->searchList($art_id_str, 0, $article_nr_search, $brand_id)[3];
     }
 
     /*
      * show search result header
      * */
-    public function drawHeaderSearchList($type_filter, $view = 0, $order = "")
+    public function drawHeaderSearchList($view = 0, $order = "")
     {
         $sort1 = $sort2 = $sort3 = $sort4 = "fa-sort";
-        $storage_info = "{storage_full_info}";
         switch ($order) {
             case "dd":
                 $sort2 = "fa-sort-alpha-down";
@@ -580,29 +331,15 @@ class CatalogueClass
                 $sort1 = "fa-sort-alpha-down";
                 break;
         }
-        switch ($type_filter) {
-            case 2:
-                $jsFilter = "tecModelsFilter";
-                break;
-            case 3:
-                $jsFilter = "catGroupFilter";
-                break;
-            case 1:
-            default:
-                $jsFilter = "catalogueFilter";
-                break;
-        }
+        $jsFilter = "catalogueFilter";
         $form = $this->getHtmlForm("cat_search_header");
         $form = str_replace("{cat_js_filter}", $jsFilter, $form);
         $form = str_replace("{cat_sort_1}", $sort1, $form);
         $form = str_replace("{cat_sort_2}", $sort2, $form);
         $form = str_replace("{cat_sort_3}", $sort3, $form);
         $form = str_replace("{cat_sort_4}", $sort4, $form);
-        $form = str_replace("{cat_storage_info}", $storage_info, $form);
+        $form = str_replace("{cat_storage_info}", "{storage_full_info}", $form);
         $form = str_replace("{cat_product_view}", (!$view) ? "" : "none", $form);
-        if ($type_filter == 3) {
-            $form = "";
-        }
         return $form;
     }
 
@@ -774,7 +511,7 @@ class CatalogueClass
         return $list_brand;
     }
 
-    public function searchList($where_art_id_str, $type_filter = 1, $view = 0, $article_nr_search = "", $brand_nr_search = "", $status_auto = 0, $mfa_link = "", $model_link = "")
+    public function searchList($where_art_id_str, $view = 0, $article_nr_search = "", $brand_nr_search = "", $status_auto = 0, $mfa_link = "", $model_link = "")
     {
         $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
@@ -789,18 +526,21 @@ class CatalogueClass
         $temp_key = session_id();
         $filters = $mas = $brands = $brand_ids = [];
         $list_brand = "";
+        $art_id_search = 0;
         $filters["max_price"] = $filters["max_dd"] = $count = $main_brand = 0;
         $filters["min_price"] = 99999999;
 
-        $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
+        if ($article_nr_search != "") {
+            $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
+        }
 
-        list($error, $jsFilterModel, $list) = $this->getSearchMessages($type_filter);
+        list($error, $jsFilterModel, $list) = $this->getSearchMessages();
 
         if ($where_art_id_str != "") {
             $this->createTemporarySearchTable($temp_key);
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
             $n = $db->num_rows($r);
-            $list = $this->drawHeaderSearchList($type_filter, $view);
+            $list = $this->drawHeaderSearchList($view);
 
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
@@ -863,10 +603,8 @@ class CatalogueClass
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                                 $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `name`, `brand_id`, `brand`, `text`, `del`, `stock`, `price`, `dd`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
                                 VALUES ('$art_id', '$name', '$brand_id', '$brand', '$text', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
-                                if ($type_filter == 1) {
-                                    if ($art_id == $art_id_search) {
-                                        $main_brand = $brand_id;
-                                    }
+                                if ($art_id == $art_id_search) {
+                                    $main_brand = $brand_id;
                                 }
                                 if ($brand != "") {
                                     if ($stock > 0 && $price > 0) {
@@ -894,7 +632,7 @@ class CatalogueClass
                     $stock = $db->result($r, 0, "stock");
                     $price = $db->result($r, 0, "price");
                     if ($stock == 0 && $price == 0) {
-                        $list = $this->getHtmlForm("enothing_found");
+                        $list = $this->getHtmlForm("error/nothing_found");
                         $list = str_replace("{error_nothing_found}", $this->err1, $list);
                         return array($list, "", "", 0);
                     }
@@ -966,7 +704,7 @@ class CatalogueClass
         return array($list, $list_brand, $filters, $count, $brand_ids);
     }
 
-    public function searchListFilter($where_art_id_str, $article_nr_search, $brand_filter, $cur, $price_min, $price_max, $del_min, $del_max, $brand_nr_search, $order_value, $type_filter = 1)
+    public function searchListFilter($where_art_id_str, $article_nr_search, $brand_filter, $cur, $price_min, $price_max, $del_min, $del_max, $brand_nr_search, $order_value)
     {
         $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
@@ -982,7 +720,10 @@ class CatalogueClass
         $list_brand = "";
         $error = $this->replaceLang($this->getHtmlForm("error/404_tree"));
         $list = "$error";
-        $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
+        $art_id_search = 0;
+        if ($article_nr_search != "") {
+            $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
+        }
         $where_brands = $this->getFiltersSearch($brand_filter);
 
         if ($where_art_id_str != "") {
@@ -993,7 +734,7 @@ class CatalogueClass
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands);
             $n = $db->num_rows($r);
 
-            $list = $this->drawHeaderSearchList($type_filter, $view, $order_value);
+            $list = $this->drawHeaderSearchList($view, $order_value);
 
             if ($where_brands == "") {
                 $rs = $r;
@@ -1043,10 +784,8 @@ class CatalogueClass
 
                     if ($price != 0 || (($name == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
                         if ($stock > 0 || (($name == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
-                            if ($type_filter == 1) {
-                                if ($art_id == $art_id_search) {
-                                    $main_brand = $brand_id;
-                                }
+                            if ($art_id == $art_id_search) {
+                                $main_brand = $brand_id;
                             }
                             if ($stock > 0 && $price > 0) {
                                 if ($brand != "") {
@@ -1067,7 +806,7 @@ class CatalogueClass
             }
 
             // get filter brand list
-            $jsFilterModel = $this->getSearchMessages($type_filter)[1];
+            $jsFilterModel = $this->getSearchMessages()[1];
             $list_brand = $this->getListBrand($brands, $main_brand, $cur, $jsFilterModel, $brand_filter);
 
             if ($n > 0) {
@@ -1210,12 +949,12 @@ class CatalogueClass
 
         if ($where_art_id_str != "") {
             $this->createTemporarySearchTable($temp_key);
-            list($error) = $this->getSearchMessages(1);
+            list($error) = $this->getSearchMessages();
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
             $n = $db->num_rows($r);
 
-            $list = $this->drawHeaderSearchList(1, $view);
+            $list = $this->drawHeaderSearchList($view);
 
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
@@ -1682,7 +1421,6 @@ class CatalogueClass
         $form = str_replace("{product_price}", $price . " $kours_cap", $form);
         $form = str_replace("{product_true_price}", $price, $form);
         $form = str_replace("{product_kours_cap}", $kours_cap, $form);
-       // $form = str_replace("{product_availability}", "{in_availability}", $form);
 
         $form = str_replace("{product_action}", $action_form, $form);
         $form = str_replace("{product_action_count}", $action_count, $form);
@@ -1694,19 +1432,6 @@ class CatalogueClass
         $form = str_replace("{style_class}", $class, $form);
         $form = str_replace("{style_none}", $none, $form);
         $form = str_replace("{style_hide}", $hide, $form);
-
-//        if ($view) {
-//            $link = $ll;
-//            $search_number = $this->getArticleSearch($art_id);
-//            $brand_link = $this->getBrandLink($brand_id);
-//            $link = str_replace("{content_prefix}", $prefix, $link);
-//            $link = str_replace("{content_search_number}", $search_number, $link);
-//            $link = str_replace("{content_brand_link}", $brand_link, $link);
-//            $form = str_replace("{product_test_offers}", $link, $form);
-//        }
-//        else {
-//            $form = str_replace("{product_test_offers}", "", $form);
-//        }
 
         $flagData = $showform->getCountryFlag($brand_id);
         $form = str_replace("{country_display}", (!$flagData) ? "none" : "", $form);
@@ -2866,9 +2591,10 @@ class CatalogueClass
     /*
      * Tree List Headers
      * */
-    public function getCatalogRowList()
+    public function getSiteNavigation()
     {
         $db = DbSingleton::getTokoDb();
+        $form = $this->getHtmlForm("main/navigation");
         $list = "";
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
@@ -2880,7 +2606,8 @@ class CatalogueClass
                 <a rel=\"noopener\" href=\"/$this->catalog_link/$head_link\">$head_name</a>
             </li>";
         }
-        return $list;
+        $form = str_replace("{catalog_range}", $list, $form);
+        return $form;
     }
 
     /*

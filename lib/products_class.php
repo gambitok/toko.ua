@@ -373,7 +373,7 @@ class ProductsClass extends CatalogueClass
     }
 
     // Modal Cars Form
-    public function showCarsForm2()
+    public function showCarsGarageForm()
     {
         $form = $this->getCarsSearch();
         $auto_typ_id = $this->getCookieAuto();
@@ -382,12 +382,6 @@ class ProductsClass extends CatalogueClass
             $status = 1;
         }
         return array($form, $status);
-    }
-
-    // SELECTED CAR FORM
-    public function showCarsSelectedForm()
-    {
-        return $this->getCarsGarage();
     }
 
 }

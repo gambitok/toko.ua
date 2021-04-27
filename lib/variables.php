@@ -421,32 +421,12 @@ trait Variables
         return $name;
     }
 
-    public function getSearchMessages($type_filter)
+    public function getSearchMessages()
     {
-        $form_404 = $this->replaceLang($this->getHtmlForm("error/404_tree"));
-        switch ($type_filter) {
-            case 1:
-            {
-                $error = "<h5 class=\"error_message\">$this->err1</h5>";
-                $list = "";
-                $jsFilterModel = "catalogueFilter();";
-                break;
-            }
-            case 2:
-            {
-                $error = "$form_404";
-                $list = "";
-                $jsFilterModel = "tecModelsFilter();";
-                break;
-            }
-            default:
-            {
-                $error = "$form_404";
-                $list = "";
-                $jsFilterModel = "catalogueFilter();";
-                break;
-            }
-        }
+//        $form_404 = $this->replaceLang($this->getHtmlForm("error/404_tree"));
+        $error = "<h5 class=\"error_message\">$this->err1</h5>";
+        $list = "";
+        $jsFilterModel = "catalogueFilter();";
         return array($error, $jsFilterModel, $list);
     }
 

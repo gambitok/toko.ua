@@ -73,7 +73,6 @@ function getMoreTitle($path) {
     $automan = new AutoClass();
     $cat = new CatalogueClass();
     $menu = new MenuClass();
-    $search = new SearchClass();
 
     $linka = findLinks();
     $pretitle = "";
@@ -113,7 +112,7 @@ function getMoreTitle($path) {
         } else {
             list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
             list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-            $translit = $search->getCarManufTranslit($mfa_id, $model);
+            $translit = $automan->getCarManufTranslit($mfa_id, $model);
             if ($mfa_link != "") {
                 $mm = "$mfa_brand $model_text";
                 if ($translit != "") {
@@ -298,7 +297,7 @@ function getDescription($path) {
     $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
 
-    $page = $cat->getUrlNumber($_GET['page']);
+//    $page = $cat->getUrlNumber($_GET['page']);
 
     $description = ($path != "") ? "{seo_description} $prefix {seo_description2}" : "{seo_description} {seo_description2}";
 

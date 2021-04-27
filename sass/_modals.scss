@@ -147,6 +147,7 @@
 }
 
 #BasketForm {
+    z-index: 9999999;
     .modal-dialog {
         max-width: 1080px;
         padding-bottom: 30px;
@@ -196,6 +197,10 @@
 .info {
     &__applicability {
         margin: 15px 0;
+        &-checked {
+            padding-right: 15px;
+            cursor: pointer;
+        }
     }
     &__numbers {
         margin: 15px;

@@ -6,7 +6,7 @@ $mod_link = $catalogue->getUrlString($linka[2]);
 
 list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
 list($mfa_text, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-$translit = $search->getCarManufTranslit($mfa_id, $model);
+$translit = $automan->getCarManufTranslit($mfa_id, $model);
 
 $form = $catalogue->getHtmlForm("cars/form");
 
@@ -15,10 +15,7 @@ $title = ($mfa_text=="") ? "{spare_parts_catalog_cap}" : $catalogue->replaceLang
 $form = str_replace("{cars_list}", $prod->getCarsSearch($mfa_link, $mod_link), $form);
 $form = str_replace("{seo_content}", $automan->getSeoContent($title, $mfa_link, $mod_link), $form);
 
-//if ($mfa_text!="") $form = str_replace("{cars_listing}", $search->getSeoCarsLinking($mfa_link, $mod_link), $form);
-//$form = str_replace("{cars_listing}", "", $form);
-
 $content = str_replace("{main_window}", $form, $content);
 
 //??
-$content = str_replace("{main_seo_text_cars}", $search->getSeoCarsLinking($mfa_link, $mod_link), $content);
+$content = str_replace("{main_seo_text_cars}", $automan->getSeoCarsLinking($mfa_link, $mod_link), $content);
