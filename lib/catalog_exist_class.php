@@ -1853,6 +1853,7 @@ class CatalogExistClass extends CatalogueClass
         // filtry-masljanye/filters/kia/sportage/
         if (!empty($filters)) {
             $params = $this->getCheckedFilters($group_id, $filters);
+            //if brand
             if (array_key_exists(0, $params)) {
                 // 1 brand
                 if (count($params) == 1) {
@@ -1937,10 +1938,13 @@ class CatalogExistClass extends CatalogueClass
                     }
                 }
             }
+            // else
+            else {
+                $text .= $this->replaceLang("{seo_new_tilte_1}");
+            }
         }
 
-        $group_name = $this->getGroupRowName($group_id);
-        $text = str_replace("{grnm}", $group_name, $text);
+        $text = str_replace("{grnm}", $this->getGroupRowName($group_id), $text);
 
         $text = $this->replaceLang($text);
 
