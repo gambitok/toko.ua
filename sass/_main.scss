@@ -18,7 +18,6 @@ html {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    //font-family: "Open Sans", sans-serif;
     font-family: 'Roboto', sans-serif;
     letter-spacing: 0.5px;
 }
@@ -1759,20 +1758,25 @@ header {
 
 /*==== FOOTER ====*/
 .footer {
+    margin-top: 30px;
     &__socials {
         background: $site_main_primary;
         color: $white;
-        padding: 1% 0 .5%;
+        padding: 20px 0 15px;
         ul {
-            padding-top: 1%;
             li {
                 display: inline;
+            }
+        }
+        a {
+            &:hover {
+                text-decoration: none;
             }
         }
         img {
             background: rgba(54, 25, 25, .5);
             border-radius: 5px;
-            margin-right: 1%;
+            margin-right: 15px;
             padding: 5px;
             width: 30px;
             &:hover {
@@ -1788,7 +1792,6 @@ header {
         ul {
             li {
                 color: $site_dark_secondary;
-                font-size: 13px;
                 margin-bottom: 10px;
                 a {
                     color: $site_dark_secondary;
@@ -1801,11 +1804,11 @@ header {
             }
         }
         &-head {
+            font-size: 16px;
             ul {
                 list-style: none;
                 li {
                     color: $white;
-                    font-size: 14px;
                     margin-bottom: 10px;
                     a {
                         &:hover {
@@ -1818,7 +1821,7 @@ header {
         }
         &-column {
             border-left: 1px solid #ddd;
-            padding-left: 5%;
+            padding-left: 30px;
         }
     }
     &__cities {
@@ -1906,12 +1909,6 @@ header {
     }
 }
 
-.car_form-select_card {
-    background: $white;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, .25);
-    padding: 1.2em;
-}
-
 .t_mfa {
     column-count: 4;
     column-gap: 20px;
@@ -1960,7 +1957,7 @@ header {
     span {
         float: right;
     }
-    .t_model_id img {
+    img {
         height: 70px;
         max-width: 100%;
         width: auto;
@@ -1999,11 +1996,11 @@ header {
 .t_types {
     display: flex;
     flex-direction: row;
-    div {
-        flex: 1 1 auto;
-    }
     a {
         display: block;
+    }
+    div {
+        flex: 1 1 auto;
     }
     span {
         display: block;
@@ -2017,6 +2014,11 @@ header {
         padding: 0!important;
         text-transform: uppercase;
     }
+    img {
+        filter: none;
+        float: none;
+        width: auto;
+    }
     span {
         float: none;
         font-size: 11px;
@@ -2026,11 +2028,6 @@ header {
             font-size: 16px;
             font-weight: bold;
         }
-    }
-    img {
-        filter: none;
-        float: none;
-        width: auto;
     }
 }
 
