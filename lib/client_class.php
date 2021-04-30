@@ -3,6 +3,9 @@
 class ClientClass
 {
 
+    use Helper;
+    use Variables;
+
     public $status_user = 1;
     public $status_user_retail = 145;
     public $default_client_id = 26;
@@ -13,9 +16,6 @@ class ClientClass
     public $vin_len = 17;
     public $max_history_count = 10;
     public $default_lang_id = 1;
-
-    use Helper;
-    use Variables;
 
     /*
      * get client data
@@ -276,13 +276,6 @@ class ClientClass
         return true;
     }
 
-//    public function getClientCity($client_id) { $db = DbSingleton::getDbm();
-//        $client_id = $this->getUrlNumber($client_id);
-//        $r = $db->query("SELECT `city` FROM `A_CLIENTS` WHERE `id`='$client_id';");
-//        $city = $db->result($r, 0, "city");
-//        return $city;
-//    }
-
     /*
      * get client info
      * */
@@ -313,27 +306,8 @@ class ClientClass
         if ($user_id == 0) {
             $name = "{not_chosen}";
         }
-//        return array("phone" => $phone, "password" => $password, "email" => $email, "name" => $name, "type" => $type, "country" => $country, "region" => $region, "city" => $city);
         return compact("phone", "password", "email", "name", "type", "country", "region", "city");
     }
-
-//    public function getOrderInfo($client_id, $user_id) { $db = DbSingleton::getDbm();
-//        $r = $db->query("SELECT acu.name, acu.email, acu.phone, ac.city
-//        FROM `A_CLIENTS` ac
-//            LEFT OUTER JOIN `A_CLIENTS_USERS` acu ON (acu.client_id=ac.id)
-//        WHERE acu.id='$user_id' AND acu.client_id='$client_id' AND acu.status=$this->status_user LIMIT 1;"); $n = $db->num_rows($r);
-//        if ($n==0) {
-//            $r = $db->query("SELECT acu.name, acu.email, acu.phone, acu.city_id as city
-//            FROM `A_CLIENTS` ac
-//                LEFT OUTER JOIN `A_CLIENTS_USERS_RETAIL` acu ON (acu.client_id=ac.id)
-//            WHERE acu.id='$user_id' AND acu.client_id='$client_id' AND acu.status=$this->status_user_retail LIMIT 1;");
-//        }
-//        $phone = $db->result($r, 0, "phone");
-//        $email = $db->result($r, 0, "email");
-//        $name = $db->result($r, 0, "name");
-//        $city = $db->result($r, 0, "city");
-//        return array("phone"=>$phone, "email"=>$email, "name"=>$name, "city"=>$city);
-//    }
 
     /*
      * edit profile data
@@ -390,34 +364,6 @@ class ClientClass
         }
         return true;
     }
-
-//    public function regClientRetail($tpoint_id, $name, $phone, $city, $email, $category=0) { $db = DbSingleton::getDbm();
-//        if ($category == 0) $category = $this->default_client_category;
-//        $phone = $this->formatValidPhone($this->getUrlString($phone));
-//        $tpoint_id = $this->getUrlNumber($tpoint_id);
-//        $name = $this->getUrlString($name);
-//        $city = $this->getUrlString($city);
-//        $email = $this->getUrlString($email);
-//        $category = $this->getUrlString($category);
-//        $client_id = $this->getClientByTpoint($tpoint_id);
-//        $date = date("Y-m-d H:i:s");
-//        list($region, $state, $country) = $this->getLocationCity($city);
-//        if ($category == "") $category = $this->default_client_category;
-//        $pass = $this->randomPassword();
-//
-//        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone`='$phone' LIMIT 1;");
-//        $n = $db->num_rows($r);
-//        if ($n == 0) {
-//            $db->query("INSERT INTO `A_CLIENTS_USERS_RETAIL` (`name`, `email`, `phone`, `pass`, `country_id`, `state_id`, `region_id`, `city_id`, `client_id`, `data`, `status`, `client_category`)
-//            VALUES ('$name', '$email', '$phone', '$pass', '$country', '$state', '$region', '$city', $client_id, '$date', $this->status_user_retail, '$category');");
-//            $r = $db->query("SELECT MAX(`id`) as max_client FROM `A_CLIENTS_USERS_RETAIL`;");
-//            $max = intval($db->result($r, 0, "max_client"));
-//        } else {
-//            $max = intval($db->result($r, 0, "id"));
-//        }
-//
-//        return $max;
-//    }
 
     /*
      * save Retail client

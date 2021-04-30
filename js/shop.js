@@ -188,9 +188,9 @@ function checkAllBasket() {
     if (btn.prop("checked") === true) {
         checked_basket.each(function () {
             checkBasketItem($(this).attr("id"),$(this).attr("name"),this);
-            $(this).attr("checked","checked");
+            $(this).attr("checked", "checked");
         });
-        btn.attr("checked","checked");
+        btn.attr("checked", "checked");
     } else {
         checked_basket.each(function () {
             checkBasketItem($(this).attr("id"),$(this).attr("name"),this);

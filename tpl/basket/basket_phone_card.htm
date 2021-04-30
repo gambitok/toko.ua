@@ -26,7 +26,7 @@
     </div>
     <div class="row">
         <div class="col-4 basket-card-title">{count_cap}</div>
-        <div class="col-4 basket-card-content">
+        <div class="col-8 basket-card-content">
             <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
                     <button class="btn btn-sm btn-outline-secondary" onclick="updateCountBasket(0,{art_id},{storage_id},{stock},1);">-</button>
@@ -46,11 +46,11 @@
     </div>
     <div class="row">
         <div class="col-4 basket-card-title">{total_cap}</div>
-        <div class="col-7 basket-card-content">
+        <div class="col-5 basket-card-content">
             <span class="bold">{full_price} {cur_cap}</span>
         </div>
-        <div class="col-1 basket-card-close">
-            <label class="container_check" style="margin:0;float: right;">
+        <div class="col-3 basket-card-close">
+            <label class="container_check d-inline">
                 <input id="{art_id}" name="{storage_id}" type="checkbox" {checked} class="check-brand" onclick="checkBasketItem({art_id},{storage_id},this);">
                 <span class="checkmark"></span>
             </label>

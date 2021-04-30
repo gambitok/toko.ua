@@ -489,6 +489,7 @@ table {
 
 .checkmark {
     background-color: #eee;
+    border: 1px solid #ddd;
     height: 20px;
     width: 20px;
     position: absolute;
@@ -525,8 +526,8 @@ table {
     border: solid #fff;
     border-width: 0 3px 3px 0;
     height: 10px;
-    left: 6px;
-    top: 4px;
+    left: 5px;
+    top: 3px;
     transform: rotate(45deg);
     width: 8px;
 }
