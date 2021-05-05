@@ -11,7 +11,8 @@ if ($w == "modelfind") {
 $content = str_replace("{main_window}", $catalogue->getHtmlForm("main_form"), $content);
 
 // Поиск по автомобилю
-$content = str_replace("{catalogue_tab_search}", $prod->getCarsSearch(), $content);
+//$content = str_replace("{catalogue_tab_search}", $prod->getCarsSearch(), $content);
+$content = str_replace("{catalogue_tab_search}", $showform->drawLoader(), $content);
 
 // Баннер
 $content = str_replace("{catalogue_banner}", $showform->getCarsBanner(), $content);

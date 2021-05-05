@@ -256,13 +256,10 @@ function copyToClipboard(element, art_name) {
 /*
 * finish add car to garage
 * */
-function finishGarage(typ_id, str_link, group_link) {
+function finishGarage(typ_id, group_link) {
     setCookie('auto_typ_id', typ_id);
     addToGarage(typ_id);
     let add_link = "";
-    if (str_link != "") {
-        add_link = str_link;
-    }
     if (group_link != "") {
         add_link = group_link;
     }

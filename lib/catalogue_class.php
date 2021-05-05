@@ -2477,9 +2477,6 @@ class CatalogueClass
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $head_id = $db->result($r, $i - 1, "HEAD_ID");
-//                $bg = $db->result($r, $i - 1, "HEAD_COLOR");
-//                $color = ($bg == "") ? "#000" : "#fff";
-//                style=\"background: $bg; color: $color;\"
                 $head_name = $this->getHeadRowName($head_id);
                 $head_img = $this->getHeadRowImage($head_id);
                 $head_content = $this->getCatalogColListCat($head_id);
@@ -2589,6 +2586,73 @@ class CatalogueClass
     }
 
     /*
+    * Tree List Headers
+     * /cars/details
+    * */
+    public function getCatalogRow($mfa_link, $model_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $form = $this->getHtmlForm("cars/details");
+        $list = "";
+        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $head_id = $db->result($r, $i - 1, "HEAD_ID");
+            $head_name = $this->getHeadRowName($head_id);
+            $head_link = $this->getHeadRowLink($head_id);
+            $list_group = $this->getCatalogRowList($head_id, $mfa_link, $model_link);
+            $list .= "<div>
+                <a class=\"tree-title\" href=\"/$this->catalog_exist_link/$head_link/\">$head_name</a>
+                $list_group
+            </div>";
+        }
+        $form = str_replace("{details_list}", $list, $form);
+        return $form;
+    }
+
+    public function getCatalogRowList($head_id, $mfa_link, $model_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $arr = [];
+        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id' ORDER BY `COL` ASC, `ROW` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $cat_id = $db->result($r, $i - 1, "CAT_ID");
+            $col = $db->result($r, $i - 1, "COL");
+            $row = $db->result($r, $i - 1, "ROW");
+            $arr[$col][$row] = $cat_id;
+        }
+        list($max_col,) = $this->getMaxPosition($head_id);
+        if ($n > 0) {
+            $list = "<div class='tree-block'>";
+            foreach ($arr as $col_id => $rows) {
+                $list .= "<div class='tree-block__col' style='width: calc(100% / $max_col)'>";
+                foreach ($rows as $row_id => $cat_id) {
+                    $cat_name = $this->getCatRowName($cat_id);
+                    $group_list = $this->getTreeConsGroupList($head_id, $cat_id, $mfa_link, $model_link);
+                    $icon = "";
+                    if ($cat_id == 0) {
+                        $icon = "<i class='fa fa-circle' style='margin-right: 5px; color: #f44438'></i>";
+                    }
+                    $list .= "<div>
+                        <div class='tree-item'>
+                            <div class='tree-item-title'>
+                                $icon$cat_name
+                            </div>
+                            <div class='tree-item-list'>$group_list</div>
+                        </div>
+                    </div>";
+                }
+                $list .= "</div>";
+            }
+            $list .= "</div>";
+        }
+        return $list;
+    }
+
+
+    /*
      * Tree List Headers
      * */
     public function getSiteNavigation()
@@ -2663,7 +2727,7 @@ class CatalogueClass
     /*
      * Tree List Groups
      * */
-    public function getTreeConsGroupList($head_id, $cat_id)
+    public function getTreeConsGroupList($head_id, $cat_id, $mfa_link = "", $model_link = "")
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
@@ -2673,8 +2737,15 @@ class CatalogueClass
             $group_id = $db->result($r, $i - 1, "GROUP_ID");
             $group_name = $this->getGroupRowName($group_id);
             $group_link = $this->getGroupRowLink($group_id);
+            $link = "";
+            if ($mfa_link != "") {
+                $link .= "auto/$mfa_link/";
+                if ($model_link != "") {
+                    $link .= "$model_link/";
+                }
+            }
             $list .= "<div class=\"tree-item-list__element\">
-                <a href=\"/$this->catalog_exist_link/$group_link\">$group_name</a>
+                <a href=\"/$this->catalog_exist_link/$group_link/$link\">$group_name</a>
             </div>";
         }
         if ($cat_id == 0) {
@@ -2684,8 +2755,15 @@ class CatalogueClass
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
                 $group_name = $this->getGroupRowName($group_id);
                 $group_link = $this->getGroupRowLink($group_id);
+                $link = "";
+                if ($mfa_link != "") {
+                    $link .= "auto/$mfa_link/";
+                    if ($model_link != "") {
+                        $link .= "$model_link/";
+                    }
+                }
                 $list .= "<div class=\"tree-item-list__element\">
-                    <a href=\"/$this->catalog_exist_link/$group_link\">$group_name</a>
+                    <a href=\"/$this->catalog_exist_link/$group_link/$link\">$group_name</a>
                 </div>";
             }
         }

@@ -363,8 +363,12 @@ if ($_REQUEST["w"] == "showModalForm") {
 /*==== HOME CARS ====*/
 
 if ($_REQUEST["w"] == "getCarsSearchContent") {
-    list($list, $title, $nav, $tab, $skip) = $prod->getCarsSearchContent($_REQUEST["type"], $_REQUEST["attr"], $_REQUEST["str_id"], $_REQUEST["group_id"]);
+    list($list, $title, $nav, $tab, $skip) = $prod->getCarsSearchContent($_REQUEST["type"], $_REQUEST["attr"], $_REQUEST["group_id"]);
     $GLOBALS['_RESULT'] = array("list" => $list, "title" => $title, "nav" => $nav, "tab" => $tab, "skip" => $skip);
+}
+
+if ($_REQUEST["w"] == "getCarsSearch") {
+    $GLOBALS['_RESULT'] = array("content" => $prod->getCarsSearch($_REQUEST["mfa_link"], $_REQUEST["model_link"], $_REQUEST["group_id"]));
 }
 
 if ($_REQUEST["w"] == "clearCarsBlock") {

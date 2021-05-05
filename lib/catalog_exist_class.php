@@ -6,7 +6,7 @@ class CatalogExistClass extends CatalogueClass
     use Helper;
     use Variables;
 
-    public $products_on_page = 25;
+    public $products_on_page = 12;
     public $default_status_auto = 0;
 
     /*
@@ -541,14 +541,14 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show products catalog
      * */
-    public function showPartsForm($status = 0)
-    {
-        $form = $this->getHtmlForm("catalog_exist/form");
-        $list = $this->showGroupExistList($status);
-        $form = str_replace("{parts_name}", "{spare_parts_catalog_cap}", $form);
-        $form = str_replace("{parts_list}", $list, $form);
-        return $form;
-    }
+//    public function showPartsForm($status = 0)
+//    {
+//        $form = $this->getHtmlForm("catalog_exist/list_params");
+//        $list = $this->showGroupExistList($status);
+//        $form = str_replace("{parts_name}", "{spare_parts_catalog_cap}", $form);
+//        $form = str_replace("{parts_list}", $list, $form);
+//        return $form;
+//    }
 
     /*
      * get TREE HCG LIST
@@ -1047,7 +1047,7 @@ class CatalogExistClass extends CatalogueClass
         $pagination_form = $this->getPartsPaginationForm($count, $page);
         list($filters_h1, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $str_linka, $filters, $mfa_link, $model_link);
 
-        $form = $this->getHtmlForm("catalog_exist/list_params");
+        $form = $this->getHtmlForm("catalog_exist/form");
 
         if (empty($art_id_str)) {
             $form = $this->showPartsCatalogueError($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link, $filters_h1);
@@ -1065,6 +1065,8 @@ class CatalogExistClass extends CatalogueClass
         }
 
         $form = str_replace("{details_group_id}", $group_id, $form);
+        $form = str_replace("{mfa_link}", $mfa_link, $form);
+        $form = str_replace("{model_link}", $model_link, $form);
         $form = str_replace("{parts_name}", $group_text, $form);
         $form = str_replace("{parts_list}", $list, $form);
         $form = str_replace("{parts_h1}", "$filters_h1 $translit", $form);
@@ -1079,12 +1081,21 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{filters_count}", $filters_count, $form);
         $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);
 
-        $form = str_replace("{parts_cars}", $this->getPartsCatalogueCars($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link), $form);
+//        $form = str_replace("{parts_cars}", $this->getPartsCatalogueCars($group_id, $status_auto, $status_auto_type, $mfa_link, $model_link), $form);
+        $form = str_replace("{parts_cars}", $this->drawLoader(), $form);
         $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $filters, $status_auto, $status_auto_type), $form);
         $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $filters, $status_auto, $status_auto_type, $mfa_link, $model_link), $form);
         $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
 
         return array("form" => $form, "title" => $filters_title);
+    }
+
+    public function drawLoader()
+    {
+        $form = $this->getHtmlForm("cars/loader-gear");
+        $list = $this->getHtmlForm("loader");
+        $form = str_replace("{form_range}", $list, $form);
+        return $form;
     }
 
     /*
@@ -1453,10 +1464,10 @@ class CatalogExistClass extends CatalogueClass
                 if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 1)) {
                     $form = $products->getCarsGarage();
                 } else {
-                    $form = $products->getCarsSearch($mfa_link, $model_link, 0, $group_id);
+                    $form = $products->getCarsSearch($mfa_link, $model_link, $group_id);
                 }
             } else {
-                $form = $products->getCarsSearch($mfa_link, $model_link, 0, $group_id);
+                $form = $products->getCarsSearch($mfa_link, $model_link, $group_id);
             }
         }
         return $form;

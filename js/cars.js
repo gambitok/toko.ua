@@ -171,9 +171,8 @@ function toggleCarsNavigation(index, type, attr) {
 * update car content
 * */
 function getCarsSearchContent(type, attr) {
-    let str_id = $("#details_str_id").val();
     let group_id = $("#details_group_id").val();
-    JsHttpRequest.query(folder,{'w':'getCarsSearchContent', 'type':type, 'attr':attr, 'str_id':str_id, 'group_id':group_id},
+    JsHttpRequest.query(folder,{'w':'getCarsSearchContent', 'type':type, 'attr':attr, 'group_id':group_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             let tab = $("#" + result.tab);
             tab.html(result.list);
@@ -247,5 +246,12 @@ function showCarsForm() {
     JsHttpRequest.query(folder,{'w':'showCarsForm'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#cars_block").html(result.content);
+        }}, true);
+}
+
+function getCarsSearch(block, mfa_link = "", model_link = "", group_id = 0) {
+    JsHttpRequest.query(folder,{'w':'getCarsSearch', 'mfa_link':mfa_link, 'model_link':model_link, 'group_id':group_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#" + block).html(result.content);
         }}, true);
 }

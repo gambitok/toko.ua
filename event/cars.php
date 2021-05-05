@@ -10,7 +10,7 @@ $translit = $automan->getCarManufTranslit($mfa_id, $model);
 
 $form = $catalogue->getHtmlForm("cars/form");
 
-$title = ($mfa_text=="") ? "{spare_parts_catalog_cap}" : $catalogue->replaceLang("{details_on_cap} $mfa_text $model_text $translit");
+$title = ($mfa_text == "") ? "{spare_parts_catalog_cap}" : $catalogue->replaceLang("{details_on_cap} $mfa_text $model_text $translit");
 
 $form = str_replace("{cars_list}", $prod->getCarsSearch($mfa_link, $mod_link), $form);
 $form = str_replace("{seo_content}", $automan->getSeoContent($title, $mfa_link, $mod_link), $form);
@@ -18,4 +18,4 @@ $form = str_replace("{seo_content}", $automan->getSeoContent($title, $mfa_link, 
 $content = str_replace("{main_window}", $form, $content);
 
 //??
-$content = str_replace("{main_seo_text_cars}", $automan->getSeoCarsLinking($mfa_link, $mod_link), $content);
+//$content = str_replace("{main_seo_text_cars}", $automan->getSeoCarsLinking($mfa_link, $mod_link), $content);

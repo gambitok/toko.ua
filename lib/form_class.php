@@ -684,6 +684,14 @@ class FormClass extends CatalogueClass
         return $form;
     }
 
+    public function drawLoader()
+    {
+        $form = $this->getHtmlForm("cars/loader-gear");
+        $list = $this->getHtmlForm("loader");
+        $form = str_replace("{form_range}", $list, $form);
+        return $form;
+    }
+
     /*
      * show info form
      * */

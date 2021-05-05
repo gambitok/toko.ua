@@ -1,0 +1,42 @@
+<style>
+    .tree-title {
+        font-size: 20px;
+        color: black;
+        font-weight: bold;
+    }
+    .tree-item {
+        padding: 10px;
+    }
+    .tree-item-title {
+        color: #228b94;
+        font-size: 16px;
+        font-weight: 700;
+        display: block;
+        padding-bottom: 15px;
+    }
+    .tree-item-list__element a {
+        color: black;
+        font-size: 14px;
+        display: block;
+        padding-bottom: 10px;
+    }
+    .tree-block {
+        display: flex;
+        margin-top: 15px;
+    }
+    .tree-block__col {
+        padding: 0 15px;
+    }
+    .tree-block__col:not(:first-child):before {
+        content: '';
+        width: 1px;
+        display: block;
+        position: absolute;
+        background: silver;
+        height: 100%;
+    }
+</style>
+
+<div>
+    {details_list}
+</div>

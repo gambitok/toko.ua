@@ -1,155 +1,16 @@
-<link rel="stylesheet" href="/css/plugins/flags.min.css">
-
-<input type="hidden" id="details_group_id" value="{details_group_id}">
-<input type="hidden" id="status_auto" value="{status_auto}">
-<input type="hidden" id="status_mfa" value="{status_mfa}">
-
-<div class="container">
-    <div class="row cat-products">
-        <div class="col-12">
-            <div class="cat-products-bread">
-                {parts_breadcrumbs}
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <a href="https://toko.ua/catalog_exist/">Full list</a>
             </div>
-        </div>
-    </div>
-    <div class="row cat-products">
-        <div class="col-12">
-            <div class="cat-products-title">
-                <h1>{parts_h1}</h1>
+            <div class="col-6">
+                <a href="https://toko.ua/catalog_exist/cut">Cut list</a>
             </div>
-        </div>
-    </div>
-    <div class="row cat-products">
-        <div class="col-12">
-            <div class="cat-products-cars">
-                {parts_cars}
-            </div>
-        </div>
-    </div>
-    <div class="row cat-products">
-        <div class="col-12 col-lg-3 order-lg-0 order-1">
-            <div class="cat-products-filters" id="catalog-filters">
-                {parts_params_cars}
-                {parts_params}
-                {parts_states}
-            </div>
-        </div>
-        <div class="col-12 col-lg-9 order-lg-1 order-0">
-            <div class="row">
-                <div class="col-12">
-                    <div class="cat-products-count">
-                        <span>{parts_count}</span>
-                        {parts_filters}
-                    </div>
-                    <div class="cat-products-list">
-                        {parts_list}
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="cat-products-pagination">
-                        {parts_pagination}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row cat-products">
-        <div class="col-12">
-            {parts_seo}
-        </div>
-    </div>
-</div>
-
-<!-- Modal Cars -->
-<div class="modal fade" id="VinFormPhone" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="request">
-                    <div class="request-row request-row-mob" style="display: flex">
-                        <div class="request-row__image"><img src="/images/icons/faq/vin-icon.png" alt="Icon"></div>
-                        <div class="request-row__title">
-                            <span style="color: #0CA9EE;">{faq_request_title}</span><br>
-                            <span style="color: #36cd76;">{faq_request_title2}</span>
-                        </div>
-                    </div>
-                    <div class="request-row request-row-mob">
-                        <input id="req-phone" class="masked-phone" type="tel" placeholder="{phone_cap}">
-                    </div>
-                    <div class="request-row request-row-mob">
-                        <input id="req-vin" class="masked-vin" type="text" placeholder="{vin_cap}">
-                    </div>
-                    <div class="request-row request-row-mob">
-                        <textarea id="req-text" placeholder="{spare_parts_list}"></textarea>
-                    </div>
-                    <div class="request-row request-row-mob">
-                        <input type="submit" value="{send_seller}" onclick="setClientRequest2();">
-                    </div>
-                    <div class="request-row request-row-mob">
-                        <div class="request-row__text" style="text-align: left">
-                            <span>{faq_request_about}</span>
-                            <a onclick="$('#VinForm').modal('show');">{faq_request_about2} <span class="fa fa-info-circle"></span></a>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-12">
+                <h1>{parts_name}</h1>
+                {parts_list}
             </div>
         </div>
     </div>
 </div>
-
-<div id="fixed-nav-catalog" class="fixed-nav">
-    <div class="fixed-nav-item" onclick="showGarageForm();">
-        <div class="tool-status-contain">
-            <span id="tool-garage" class="tool-status {garage_style}">!</span>
-        </div>
-        <img class="fixed-nav-item__image" src="/images/icons/help/car.png" alt="img">
-        <span class="fixed-nav-item__text">{garage_cap_upper}</span>
-    </div>
-
-    <div class="fixed-nav-item" onclick="showPhoneForm();">
-        <img class="fixed-nav-item__image" src="/images/icons/help/help.png" alt="img">
-        <span class="fixed-nav-item__text">{call_cap}</span>
-    </div>
-
-    <div class="fixed-nav-item" onclick="showArtSearch();">
-        <img class="fixed-nav-item__image" src="/images/icons/help/search.png" alt="img">
-        <span class="fixed-nav-item__text">{search_cap}</span>
-    </div>
-
-    <div class="fixed-nav-item bar-catalog" onclick="setCatalogFilters();">
-        <div class="tool-status-contain">
-            <span class="tool-status {filters_style}">{filters_count}</span>
-        </div>
-        <img class="fixed-nav-item__image" src="/images/icons/help/filter.png" alt="img">
-        <span class="fixed-nav-item__text">{filter_cap}</span>
-    </div>
-
-    <div class="fixed-nav-item" onclick="showBasketMinForm();">
-        <div class="tool-status-contain">
-            <span id="tool-basket" class="tool-status {basket_style}">{basket_count}</span>
-        </div>
-        <img class="fixed-nav-item__image" src="/images/icons/help/basket.png" alt="img">
-        <span class="fixed-nav-item__text">{basket_cap}</span>
-    </div>
-</div>
-
-<script>
-    $(document).ready(function() {
-        $(".anchor-contacts").addClass("mob-non-display");
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        if ($("#status_auto").val() == "1") {
-            toggleCarsNavigation($("div[data-type='manuf']"));
-        }
-        if ($("#status_model").val() != "" && $("#status_mfa").val() != "") {
-            toggleCarsNavigation($("div[data-type='years']"));
-        } else {
-            if ($("#status_mfa").val() != "") {
-                toggleCarsNavigation($("div[data-type='model']"));
-            }
-        }
-    });
-</script>
