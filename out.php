@@ -41,6 +41,7 @@ $content = str_replace("{site_script_breadcrumbs}", printBreadcrumbs($path)[1], 
 $content = str_replace("{site_page_pagination}", "", $content);
 $content = str_replace("{site_lang_prefix}", $language->getLangPrefix(), $content);
 $content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
+$content = str_replace("{seo_footers_block}", "<!--footers_block-->", $content);
 
 // Main SEO BLOCK
 $seo_text = "<!--seo_text_start--><!--seo_text_end-->";
@@ -75,6 +76,7 @@ $linka = findLinks();
 $content = str_replace("{main_seo_products_content}", "", $content);
 
 $content = str_replace("{main_seo_text_cars}", "", $content);
+
 
 $content = getContent($content);
 $content = translateContent($content);

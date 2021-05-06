@@ -6,6 +6,39 @@ class ProductsClass extends CatalogueClass
     use Helper;
     use Variables;
 
+    public function getCarsSelectUser($mfa_link = "", $mod_link = "", $group_id = 0)
+    {
+        $automan = new AutoClass();
+        $auto_typ_id = $this->getCookieAuto();
+        if ($auto_typ_id > 0) {
+            $form = $this->getCarsGarage();
+        } else {
+            $form = $this->getHtmlForm("cars/cars");
+            if ($mfa_link != "") {
+                $mfa_id = $automan->getMfaLink($mfa_link);
+                $mfa_brand = $automan->getMfaBrand($mfa_id);
+                $list_model = $this->getCarsSearchContent("manuf", $mfa_id, $group_id)[0];
+                $form = str_replace("{cars_models}", $list_model, $form);
+                $form = str_replace("{selected_manuf}", $mfa_id, $form);
+                $form = str_replace("{cars_manufacturer}", $mfa_brand, $form);
+                if ($mod_link != "") {
+                    $model = $automan->getModLink($mod_link);
+                    $form = str_replace("{cars_years}", $this->getCarsSearchContent("model", $mfa_id . "_" . $model, $group_id)[0], $form);
+                    $form = str_replace("{selected_model}", $mfa_id . "_" . $model, $form);
+                    $form = str_replace("{cars_model}", $model, $form);
+                    $form = str_replace("{active_nav}", "years", $form);
+                }
+                $form = str_replace("{active_nav}", "model", $form);
+            }
+            $form = str_replace("{cars_manufactures}", $this->getCarsSearchContent()[0], $form);
+            $form = str_replace("{selected_manuf}", 0, $form);
+            $form = str_replace("{selected_model}", 0, $form);
+            $form = str_replace("{active_nav}", "", $form);
+            $form = $this->replaceLang($form);
+        }
+        return $form;
+    }
+
     public function getCarsSearch($mfa_link = "", $mod_link = "", $group_id = 0)
     {
         $automan = new AutoClass();

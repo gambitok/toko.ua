@@ -119,6 +119,9 @@ function showCarsNavigation(index, type, attr) {
     }
 }
 
+/*
+* applicable_onclick
+* */
 function toggleNavMob() {
     document.getElementById("scrollManuf").scrollIntoView();
     let checked_index = $(".cars-nav__item-checked")[0];
@@ -236,6 +239,10 @@ function setActiveCar() {
     }
 }
 
+/*
+* get car chose form
+* if car already chosen
+* */
 function showCarsForm() {
     let form = "cars";
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
@@ -249,6 +256,19 @@ function showCarsForm() {
         }}, true);
 }
 
+/*
+* get car chosen form or garage form
+* */
+function getCarsSelectUser(block, mfa_link = "", model_link = "", group_id = 0) {
+    JsHttpRequest.query(folder,{'w':'getCarsSelectUser', 'mfa_link':mfa_link, 'model_link':model_link, 'group_id':group_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#" + block).html(result.content);
+        }}, true);
+}
+
+/*
+* get car chose form
+* */
 function getCarsSearch(block, mfa_link = "", model_link = "", group_id = 0) {
     JsHttpRequest.query(folder,{'w':'getCarsSearch', 'mfa_link':mfa_link, 'model_link':model_link, 'group_id':group_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){

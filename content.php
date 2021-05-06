@@ -367,6 +367,10 @@ if ($_REQUEST["w"] == "getCarsSearchContent") {
     $GLOBALS['_RESULT'] = array("list" => $list, "title" => $title, "nav" => $nav, "tab" => $tab, "skip" => $skip);
 }
 
+if ($_REQUEST["w"] == "getCarsSelectUser") {
+    $GLOBALS['_RESULT'] = array("content" => $prod->getCarsSelectUser($_REQUEST["mfa_link"], $_REQUEST["model_link"], $_REQUEST["group_id"]));
+}
+
 if ($_REQUEST["w"] == "getCarsSearch") {
     $GLOBALS['_RESULT'] = array("content" => $prod->getCarsSearch($_REQUEST["mfa_link"], $_REQUEST["model_link"], $_REQUEST["group_id"]));
 }

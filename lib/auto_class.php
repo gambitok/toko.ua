@@ -611,10 +611,10 @@ class AutoClass extends CatalogueClass
         $model = $this->getModLink($mod_link);
         if ($model == "") {
 //            $form = str_replace("{seo_list}", $this->getAutoModList($mfa_id) . $this->getDetailsList("", "", $mfa_link, $mod_link), $form);
-            $form = str_replace("{seo_list}", $this->getAutoModList($mfa_id) . $catalogue->getCatalogRow($mfa_link, $mod_link), $form);
+            $form = str_replace("{seo_list}", $this->getAutoModList($mfa_id) . $catalogue->getCatalogColList($mfa_link, $mod_link), $form);
         } else {
 //            $form = str_replace("{seo_list}", $this->getDetailsList("", "", $mfa_link, $mod_link), $form);
-            $form = str_replace("{seo_list}", $catalogue->getCatalogRow($mfa_link, $mod_link), $form);
+            $form = str_replace("{seo_list}", $catalogue->getCatalogColList($mfa_link, $mod_link), $form);
         }
         $form = str_replace("{seo_header}", $title, $form);
         return $form;

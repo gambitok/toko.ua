@@ -1,6 +1,6 @@
 <div>
-    <div>
-        {form_car}
+    <div id="cat-products-cars">
+        {parts_cars}
     </div>
     <div class="content catalogue-error">
         <h1>{catalog_exist_error}</h1>
@@ -93,3 +93,10 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function() {
+        getCarsSelectUser("cat-products-cars", "{mfa_link}", "{model_link}");
+    });
+</script>

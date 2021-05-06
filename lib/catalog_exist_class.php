@@ -1076,7 +1076,6 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{parts_params}", $filters_form, $form);
         $form = str_replace("{parts_breadcrumbs}", $this->getPartsBreadcrumbsForm($group_id), $form);
         $form = str_replace("{status_auto}", $status_auto, $form);
-        $form = str_replace("{status_mfa}", $mfa_link, $form);
 
         $form = str_replace("{filters_count}", $filters_count, $form);
         $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);
@@ -2082,7 +2081,7 @@ class CatalogExistClass extends CatalogueClass
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
                 $group_name = $this->getGroupRowName($group_id);
                 $group_link = $this->getGroupRowLink($group_id);
-                $list .= "<li><a href=\"./$group_link\">$group_name</a></li>";
+                $list .= "<li><a href=\"../../$group_link\">$group_name</a></li>";
             }
             $list .= "</ul>";
         }

@@ -23,3 +23,4 @@ $content = str_replace("{select_auto_group}", $automan->getAutoMfaModelList(), $
 
 // Контакты
 $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
+
