@@ -2088,4 +2088,106 @@ class CatalogExistClass extends CatalogueClass
         return $list;
     }
 
+    /*
+     *
+     * 1. group + brand
+     * 2. group + filter
+     * 3. group + brand + filter
+     * 4. group + brand || filter + mfa
+     * 5. group + brand + filter + mfa
+     * */
+
+    public function getManufactureLink($mfa_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $mfa_link = "";
+        $r = $db->query("SELECT `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id AND `ACTIVE` = 1 LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $mfa_link = $db->result($r, 0, "MFA_BRAND_LINK");
+        }
+        return $mfa_link;
+    }
+
+    public function getSeoLinks()
+    {
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+
+        $links = [];
+        $groups = [];
+        $groups_params = [];
+        $groups_brands = [];
+        $link = "https://toko.ua/catalog/";
+
+        $r = $dbc->query("SELECT `group_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE 1 GROUP BY `group_id`, `brand_id`;");
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $dbc->result($r, $i - 1, "group_id");
+//            $group_link = $this->getGroupRowLink($group_id);
+            $brand_id = $dbc->result($r, $i - 1, "brand_id");
+//            $brand_link = $this->getBrandLink($brand_id);
+//            $result_link = $link . $group_link . "/brandy=" . $brand_link . "/";
+//            $links[] = compact("group_id", "result_link");
+            $groups[] = $group_id;
+            $groups_brands[$group_id] = $brand_id;
+        }
+
+        $groups = array_unique($groups);
+        foreach ($groups as $group_id) {
+            $params = [];
+            $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id' AND `STATUS`=1;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $param_id = $db->result($r, $i - 1, "PARAM_ID");
+                $params[] = $param_id;
+            }
+            if ($this->checkTableParams($group_id) > 0) {
+                $r = $dbc->query("SELECT * FROM `EX_TABLE_TREE_PARAMS_$group_id` WHERE 1;");
+                $n = $dbc->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    foreach ($params as $param_id) {
+                        $values = $dbc->result($r, $i - 1, "param_$param_id");
+                        $values = explode(",", $values);
+                        $groups_params[$group_id][$param_id] = $values;
+                    }
+                }
+            }
+        }
+
+        foreach ($groups_params as $group_id => $params) {
+            $group_link = $this->getGroupRowLink($group_id);
+            foreach ($params as $param_id => $values) {
+                $param_link = $this->getGroupParamLink($param_id);
+                foreach ($values as $value_id) {
+                    $value_link = $this->getGroupValueLink($value_id, $param_id);
+                    $result_link = $link . $group_link . "/$param_link=" . $value_link . "/";
+                    $links[] = compact("group_id", "result_link");
+                    foreach ($groups_brands as $brand_id) {
+                        $brand_link = $this->getBrandLink($brand_id);
+                        $result_link = $link . $group_link . "/brandy=" . $brand_link . ";$param_link=" . $value_link . "/";
+                        $links[] = compact("group_id", "result_link");
+                    }
+                }
+            }
+        }
+
+        foreach ($links as $values) {
+            $group_id = $values["group_id"];
+            if ($this->checkTableMfa($group_id) > 0) {
+                $r = $dbc->query("SELECT `mfa_id` FROM `EX_TABLE_TREE_MFA_$group_id` WHERE 1 GROUP BY `mfa_id`;");
+                $n = $dbc->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    $result_link = $values["result_link"];
+                    $mfa_id = $dbc->result($r, $i - 1, "mfa_id");
+                    $mfa_link = $this->getManufactureLink($mfa_id);
+                    $result_link .= $mfa_link . "/";
+                    $links[] = compact("group_id", "result_link");
+                }
+            }
+        }
+
+        return $links;
+    }
+
 }

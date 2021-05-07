@@ -1,6 +1,6 @@
 <?php
 
-$content = str_replace("{main_window}", $catalogue->getCatalogRow("", ""), $content);
+$content = str_replace("{main_window}", "", $content);
 
 
 
