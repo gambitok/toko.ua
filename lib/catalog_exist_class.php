@@ -2111,62 +2111,55 @@ class CatalogExistClass extends CatalogueClass
 
     public function getSeoLinks()
     {
-        $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
 
         $links = [];
-        $groups = [];
         $groups_params = [];
-        $groups_brands = [];
+//        $groups_brands = [];
         $link = "https://toko.ua/catalog/";
 
-        $r = $dbc->query("SELECT `group_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE 1 GROUP BY `group_id`, `brand_id`;");
-        $n = $dbc->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $group_id = $dbc->result($r, $i - 1, "group_id");
+//        $r = $dbc->query("SELECT `group_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE 1 GROUP BY `group_id`, `brand_id`;");
+//        $n = $dbc->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $group_id = $dbc->result($r, $i - 1, "group_id");
 //            $group_link = $this->getGroupRowLink($group_id);
-            $brand_id = $dbc->result($r, $i - 1, "brand_id");
+//            $brand_id = $dbc->result($r, $i - 1, "brand_id");
 //            $brand_link = $this->getBrandLink($brand_id);
 //            $result_link = $link . $group_link . "/brandy=" . $brand_link . "/";
 //            $links[] = compact("group_id", "result_link");
-            $groups[] = $group_id;
-            $groups_brands[$group_id] = $brand_id;
-        }
+//            $groups_brands[$group_id] = $brand_id;
+//        }
 
-        $groups = array_unique($groups);
-        foreach ($groups as $group_id) {
-            $params = [];
-            $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id' AND `STATUS`=1;");
-            $n = $db->num_rows($r);
-            for ($i = 1; $i <= $n; $i++) {
-                $param_id = $db->result($r, $i - 1, "PARAM_ID");
-                $params[] = $param_id;
-            }
-            if ($this->checkTableParams($group_id) > 0) {
-                $r = $dbc->query("SELECT * FROM `EX_TABLE_TREE_PARAMS_$group_id` WHERE 1;");
-                $n = $dbc->num_rows($r);
-                for ($i = 1; $i <= $n; $i++) {
-                    foreach ($params as $param_id) {
-                        $values = $dbc->result($r, $i - 1, "param_$param_id");
-                        $values = explode(",", $values);
-                        $groups_params[$group_id][$param_id] = $values;
-                    }
-                }
+        $r = $dbc->query("SELECT t2a.`GROUP_ID`, t2a.`PARAM_ID`, t2a.`VALUE_ID` 
+        FROM `EX_TABLE_TREE_AVAILABLE` ex
+            LEFT JOIN toko_dba.`T2_TREE_ARTS_PARAMS_VALUE_EXIST` t2a ON (t2a.`ART_ID` = ex.`art_id` AND t2a.`GROUP_ID` = ex.`group_id`)
+        WHERE 1
+        GROUP BY t2a.`GROUP_ID`, t2a.`PARAM_ID`, t2a.`VALUE_ID`;");
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $dbc->result($r, $i - 1, "GROUP_ID");
+            $param_id = $dbc->result($r, $i - 1, "PARAM_ID");
+            $value_id = $dbc->result($r, $i - 1, "VALUE_ID");
+            if (!in_array($value_id, $groups_params[$group_id][$param_id])) {
+                $groups_params[$group_id][$param_id][] = $value_id;
             }
         }
 
         foreach ($groups_params as $group_id => $params) {
+            $status_auto = $this->getGroupExistStatusAuto($group_id);
             $group_link = $this->getGroupRowLink($group_id);
             foreach ($params as $param_id => $values) {
                 $param_link = $this->getGroupParamLink($param_id);
                 foreach ($values as $value_id) {
                     $value_link = $this->getGroupValueLink($value_id, $param_id);
-                    $result_link = $link . $group_link . "/$param_link=" . $value_link . "/";
-                    $links[] = compact("group_id", "result_link");
-                    foreach ($groups_brands as $brand_id) {
-                        $brand_link = $this->getBrandLink($brand_id);
-                        $result_link = $link . $group_link . "/brandy=" . $brand_link . ";$param_link=" . $value_link . "/";
+                    if ($status_auto == 0 || $status_auto == 1) {
+                        $result_link = $link . $group_link . "/$param_link=" . $value_link . "/";
                         $links[] = compact("group_id", "result_link");
+//                        foreach ($groups_brands as $brand_id) {
+//                            $brand_link = $this->getBrandLink($brand_id);
+//                            $result_link = $link . $group_link . "/brandy=" . $brand_link . ";$param_link=" . $value_link . "/";
+//                            $links[] = compact("group_id", "result_link");
+//                        }
                     }
                 }
             }
