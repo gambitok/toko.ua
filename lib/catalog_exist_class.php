@@ -2025,7 +2025,7 @@ class CatalogExistClass extends CatalogueClass
         $head_title = $db->result($r, 0, "TEX_RU");
         $form = $this->getHtmlForm("catalog_exist/head_form");
         $form = str_replace("{head_title}", $head_title, $form);
-        $form = str_replace("{head_list}",  $this->getGroupHeadList($head_id), $form);
+        $form = str_replace("{head_list}",  $this->getCatalogColListCat($head_id), $form);
         return $form;
     }
 
@@ -2036,7 +2036,7 @@ class CatalogExistClass extends CatalogueClass
         $form = $this->getHtmlForm("catalog_exist/cat_form");
         $form = str_replace("{cat_title}", $cat_title, $form);
         $form = str_replace("{head_title}", "<a href=\"../\"><i class=\"fa fa-chevron-left\"></i> $head_title</a>", $form);
-        $form = str_replace("{cat_list}", $this->getGroupCatList($head_id, $cat_id), $form);
+        $form = str_replace("{cat_list}", $this->getCatalogColListGroup($head_id, $cat_id), $form);
         return $form;
     }
 
@@ -2112,75 +2112,114 @@ class CatalogExistClass extends CatalogueClass
     public function getSeoLinks()
     {
         $dbc = DbSingleton::getTokoCacheDb();
-
-        $links = [];
-        $groups_params = [];
-//        $groups_brands = [];
-        $link = "https://toko.ua/catalog/";
+        $count = 0;
 
 //        $r = $dbc->query("SELECT `group_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE 1 GROUP BY `group_id`, `brand_id`;");
 //        $n = $dbc->num_rows($r);
 //        for ($i = 1; $i <= $n; $i++) {
 //            $group_id = $dbc->result($r, $i - 1, "group_id");
-//            $group_link = $this->getGroupRowLink($group_id);
 //            $brand_id = $dbc->result($r, $i - 1, "brand_id");
-//            $brand_link = $this->getBrandLink($brand_id);
-//            $result_link = $link . $group_link . "/brandy=" . $brand_link . "/";
-//            $links[] = compact("group_id", "result_link");
-//            $groups_brands[$group_id] = $brand_id;
+//            $dbc->query("INSERT INTO `AAA_EXPORT_LINKS_BRANDS` (`GROUP_ID`, `BRAND_ID`) VALUES ('$group_id', '$brand_id');");
+//            $count++;
 //        }
 
-        $r = $dbc->query("SELECT t2a.`GROUP_ID`, t2a.`PARAM_ID`, t2a.`VALUE_ID` 
-        FROM `EX_TABLE_TREE_AVAILABLE` ex
-            LEFT JOIN toko_dba.`T2_TREE_ARTS_PARAMS_VALUE_EXIST` t2a ON (t2a.`ART_ID` = ex.`art_id` AND t2a.`GROUP_ID` = ex.`group_id`)
-        WHERE 1
-        GROUP BY t2a.`GROUP_ID`, t2a.`PARAM_ID`, t2a.`VALUE_ID`;");
+//        $r = $dbc->query("SELECT t2a.`GROUP_ID`, t2a.`PARAM_ID`, t2a.`VALUE_ID`
+//        FROM `EX_TABLE_TREE_AVAILABLE` ex
+//            LEFT JOIN toko_dba.`T2_TREE_ARTS_PARAMS_VALUE_EXIST` t2a ON (t2a.`ART_ID` = ex.`art_id` AND t2a.`GROUP_ID` = ex.`group_id`)
+//        WHERE 1
+//        GROUP BY t2a.`GROUP_ID`, t2a.`PARAM_ID`, t2a.`VALUE_ID`;");
+//        $n = $dbc->num_rows($r);
+//        $groups_params = [];
+//        for ($i = 1; $i <= $n; $i++) {
+//            $group_id = $dbc->result($r, $i - 1, "GROUP_ID");
+//            $param_id = $dbc->result($r, $i - 1, "PARAM_ID");
+//            $value_id = $dbc->result($r, $i - 1, "VALUE_ID");
+//            if (!in_array($value_id, $groups_params[$group_id][$param_id]) && $group_id > 0 && $param_id > 0 && $value_id > 0) {
+//                $groups_params[$group_id][$param_id][] = $value_id;
+//            }
+//        }
+//        foreach ($groups_params as $group_id => $params) {
+//            $status_auto = $this->getGroupExistStatusAuto($group_id);
+//            foreach ($params as $param_id => $values) {
+//                foreach ($values as $value_id) {
+//                    if ($status_auto == 0 || $status_auto == 1) {
+//                        $dbc->query("INSERT INTO `AAA_EXPORT_LINKS_PARAMS` (`GROUP_ID`, `PARAM_ID`, `VALUE_ID`) VALUES ('$group_id', '$param_id', '$value_id');");
+//                        $count++;
+//                    }
+//                }
+//            }
+//        }
+
+//        $r = $dbc->query("SELECT `GROUP_ID`, `PARAM_ID`, `VALUE_ID` FROM `AAA_EXPORT_LINKS_PARAMS` WHERE 1;");
+//        $n = $dbc->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $group_id = $dbc->result($r, $i - 1, "GROUP_ID");
+//            $param_id = $dbc->result($r, $i - 1, "PARAM_ID");
+//            $value_id = $dbc->result($r, $i - 1, "VALUE_ID");
+//            $rc = $dbc->query("SELECT * FROM `AAA_EXPORT_LINKS_BRANDS` WHERE `GROUP_ID` = '$group_id';");
+//            $nc = $dbc->num_rows($rc);
+//            for ($j = 1; $j <= $nc; $j++) {
+//                $brand_id = $dbc->result($rc, $j - 1, "BRAND_ID");
+//                $dbc->query("INSERT INTO `AAA_EXPORT_LINKS_PARAMS` (`GROUP_ID`, `BRAND_ID`, `PARAM_ID`, `VALUE_ID`) VALUES ('$group_id', '$brand_id', '$param_id', '$value_id');");
+//                $count++;
+//            }
+//        }
+
+        $link = "https://toko.ua/catalog/";
+
+//        $r = $dbc->query("SELECT `GROUP_ID`, `BRAND_ID` FROM `AAA_EXPORT_LINKS_BRANDS` GROUP BY `GROUP_ID`, `BRAND_ID`");
+//        $n = $dbc->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $group_id = $dbc->result($r, $i - 1, "GROUP_ID");
+//            $group_link = $this->getGroupRowLink($group_id);
+//            $brand_id = $dbc->result($r, $i - 1, "BRAND_ID");
+//            $brand_link = $this->getBrandLink($brand_id);
+//            if ($this->checkTableMfa($group_id) > 0) {
+//                $rc = $dbc->query("SELECT `mfa_id` FROM `EX_TABLE_TREE_MFA_$group_id` WHERE 1 GROUP BY `mfa_id`;");
+//                $nc = $dbc->num_rows($rc);
+//                for ($j = 1; $j <= $nc; $j++) {
+//                    $mfa_id = $dbc->result($rc, $j - 1, "mfa_id");
+//                    if ($mfa_id > 0) {
+//                        $mfa_link = $this->getManufactureLink($mfa_id);
+//                        $result_link = $link . $group_link . "/brandy=" . $brand_link . "/" . $mfa_link . "/";
+//                        $dbc->query("INSERT INTO `AAA_EXPORT_LINKS_MFA` (`LINK`) VALUES ('$result_link');");
+//                        $count++;
+//                    }
+//                }
+//            }
+//        }
+
+        $r = $dbc->query("SELECT `GROUP_ID`, `PARAM_ID`, `VALUE_ID`, `BRAND_ID` FROM `AAA_EXPORT_LINKS_PARAMS` GROUP BY `GROUP_ID`, `PARAM_ID`, `VALUE_ID`, `BRAND_ID`;");
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id = $dbc->result($r, $i - 1, "GROUP_ID");
-            $param_id = $dbc->result($r, $i - 1, "PARAM_ID");
-            $value_id = $dbc->result($r, $i - 1, "VALUE_ID");
-            if (!in_array($value_id, $groups_params[$group_id][$param_id])) {
-                $groups_params[$group_id][$param_id][] = $value_id;
-            }
-        }
-
-        foreach ($groups_params as $group_id => $params) {
-            $status_auto = $this->getGroupExistStatusAuto($group_id);
             $group_link = $this->getGroupRowLink($group_id);
-            foreach ($params as $param_id => $values) {
-                $param_link = $this->getGroupParamLink($param_id);
-                foreach ($values as $value_id) {
-                    $value_link = $this->getGroupValueLink($value_id, $param_id);
-                    if ($status_auto == 0 || $status_auto == 1) {
-                        $result_link = $link . $group_link . "/$param_link=" . $value_link . "/";
-                        $links[] = compact("group_id", "result_link");
-//                        foreach ($groups_brands as $brand_id) {
-//                            $brand_link = $this->getBrandLink($brand_id);
-//                            $result_link = $link . $group_link . "/brandy=" . $brand_link . ";$param_link=" . $value_link . "/";
-//                            $links[] = compact("group_id", "result_link");
-//                        }
+            $brand_id = $dbc->result($r, $i - 1, "BRAND_ID");
+            $param_id = $dbc->result($r, $i - 1, "PARAM_ID");
+            $param_link = $this->getGroupParamLink($param_id);
+            $value_id = $dbc->result($r, $i - 1, "VALUE_ID");
+            $value_link = $this->getGroupValueLink($value_id, $param_id);
+            if ($this->checkTableMfa($group_id) > 0) {
+                $rc = $dbc->query("SELECT `mfa_id` FROM `EX_TABLE_TREE_MFA_$group_id` WHERE 1 GROUP BY `mfa_id`;");
+                $nc = $dbc->num_rows($rc);
+                for ($j = 1; $j <= $nc; $j++) {
+                    $mfa_id = $dbc->result($rc, $j - 1, "mfa_id");
+                    if ($mfa_id > 0) {
+                        $mfa_link = $this->getManufactureLink($mfa_id);
+                        if ($brand_id == 0) {
+                            $result_link = $link . $group_link . "/$param_link=" . $value_link . "/" . $mfa_link . "/";
+                        } else {
+                            $brand_link = $this->getBrandLink($brand_id);
+                            $result_link = $link . $group_link . "/brandy=" . $brand_link . ";$param_link=" . $value_link . "/" . $mfa_link . "/";
+                        }
+                        $dbc->query("INSERT INTO `AAA_EXPORT_LINKS_MFA` (`LINK`) VALUES ('$result_link');");
+                        $count++;
                     }
                 }
             }
         }
 
-        foreach ($links as $values) {
-            $group_id = $values["group_id"];
-            if ($this->checkTableMfa($group_id) > 0) {
-                $r = $dbc->query("SELECT `mfa_id` FROM `EX_TABLE_TREE_MFA_$group_id` WHERE 1 GROUP BY `mfa_id`;");
-                $n = $dbc->num_rows($r);
-                for ($i = 1; $i <= $n; $i++) {
-                    $result_link = $values["result_link"];
-                    $mfa_id = $dbc->result($r, $i - 1, "mfa_id");
-                    $mfa_link = $this->getManufactureLink($mfa_id);
-                    $result_link .= $mfa_link . "/";
-                    $links[] = compact("group_id", "result_link");
-                }
-            }
-        }
-
-        return $links;
+        return $count;
     }
 
 }
