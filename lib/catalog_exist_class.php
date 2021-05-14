@@ -1780,14 +1780,23 @@ class CatalogExistClass extends CatalogueClass
                 }
                 // 1 brand + 1 param
                 if (count($params) == 2) {
+                    krsort($params);
                     foreach ($params as $param_id => $values) {
-                        foreach ($values as $value_id) {
-                            $value_name = $this->getGroupValueName($value_id, $param_id);
-                            $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
-                            if ($value_h1_name != "") {
-                                $group_text = $value_h1_name;
-                            } else {
-                                $group_text .= " $value_name";
+                        if ($param_id > 0) {
+                            foreach ($values as $value_id) {
+                                $value_name = $this->getGroupValueName($value_id, $param_id);
+                                $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
+                                if ($value_h1_name != "") {
+                                    $group_text = $value_h1_name;
+                                } else {
+                                    $group_text .= " $value_name";
+                                }
+                            }
+                        }
+                        if ($param_id == 0) {
+                            foreach ($values as $brand_id) {
+                                $brand_name = $this->getBrandName($brand_id);
+                                $group_text .= " $brand_name";
                             }
                         }
                     }
