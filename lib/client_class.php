@@ -53,7 +53,7 @@ class ClientClass
     public function getDefaultStorageID($tpoint_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `storage_id` FROM `T_POINT_STORAGE` WHERE `tpoint_id`='$tpoint_id' AND `default`=1 LIMIT 1;");
+        $r = $db->query("SELECT `storage_id` FROM `T_POINT_STORAGE` WHERE `tpoint_id` = $tpoint_id AND `default` = 1 LIMIT 1;");
         return $db->result($r, 0, "storage_id");
     }
 
@@ -64,7 +64,7 @@ class ClientClass
     {
         $db = DbSingleton::getDbm();
         $client_id = 0;
-        $r = $db->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `status`=$this->status_user LIMIT 1;");
+        $r = $db->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $client_id = $db->result($r, 0, "client_id");
@@ -199,7 +199,7 @@ class ClientClass
         setcookie("currency", $cash_id, time() + (86400 * 30), "/");
         setcookie("tpoint_id", $this->getTpoint($client_id), time() + (86400 * 30), "/");
         setcookie("auto_typ_id", $this->getClientAutoGarage($client_id, $user_id), time() + (86400 * 30), "/");
-        return true;
+        return $this->getSiteLink() . "profile/orders/";
     }
 
     /*
@@ -943,12 +943,12 @@ class ClientClass
             if ($k > $this->max_history_count) {
                 $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
                 $id = $db->result($r, 0, "id");
-                $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date', `article_nr_displ`='$article_nr_displ', `brand_id`='$brand_id', `art_id`='$art_id' WHERE `id`='$id';");
+                $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date', `article_nr_displ`='$article_nr_displ', `brand_id`='$brand_id', `art_id`='$art_id' WHERE `id` = $id;");
             } else {
-                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ`='$article_nr_displ' AND `brand_id`='$brand_id';");
+                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ` = '$article_nr_displ' AND `brand_id` = $brand_id;");
                 $n = $db->num_rows($r);
                 if ($n > 0) {
-                    $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date' WHERE $where AND `article_nr_displ`='$article_nr_displ' AND `brand_id`='$brand_id';");
+                    $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date' WHERE $where AND `article_nr_displ` = '$article_nr_displ' AND `brand_id` = $brand_id;");
                 } else {
                     $db->query("INSERT INTO `CLIENT_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `article_nr_displ`, `brand_id`, `data`, `art_id`) 
                     VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$article_nr_displ', '$brand_id', '$date', '$art_id');");

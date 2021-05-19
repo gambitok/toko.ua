@@ -22,7 +22,8 @@ class FormClass extends CatalogueClass
         $menu = new MenuClass();
         $form = $this->getHtmlForm("modals/$name");
         $form = $this->replaceLang($form);
-        $form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
+        //$form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
+        $form = str_replace("{site_main_link}", $this->getSiteLink(), $form);
         $form = str_replace("{region_list}", $menu->getRegionList(), $form);
         $form = str_replace("{region_list_phone}", $menu->getRegionListPhone(), $form);
         return $form;
@@ -59,7 +60,7 @@ class FormClass extends CatalogueClass
     {
         $brand_id = $this->getUrlNumber($brand_id);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_BRAND_LINK` WHERE `brand_id`='$brand_id' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `T2_BRAND_LINK` WHERE `brand_id` = $brand_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $info = $this->getHtmlForm("brand_form");
@@ -324,7 +325,7 @@ class FormClass extends CatalogueClass
         if ($city_id == "") {
             $city_id = 0;
         }
-        $where = ($city_like != "") ? "WHERE `CITY_NAME` LIKE '%$city_like%'" : "WHERE `CITY_ID` IN ($city_id,10108,13549,4074,22739)";
+        $where = ($city_like != "") ? "WHERE `CITY_NAME` LIKE '%$city_like%'" : "WHERE `CITY_ID` IN ($city_id, 10108, 13549, 4074, 22739)";
         $r = $db->query("SELECT * FROM `T2_CITY` t2c
             LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID=t2c.REGION_ID)
             LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID=t2r.STATE_ID)
@@ -348,7 +349,7 @@ class FormClass extends CatalogueClass
         $art_id = $this->getUrlNumber($art_id);
         $info = "";
         if (!isset(self::$infoTemplates[$art_id])) {
-            $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
+            $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID` = $art_id AND `LANG_ID` = 16 ORDER BY `SORT` ASC;");
             self::$infoTemplates[$art_id] = mysqli_fetch_all($r, MYSQLI_ASSOC);
         }
         if (self::$infoTemplates[$art_id]) {
@@ -364,7 +365,7 @@ class FormClass extends CatalogueClass
     public static function cacheInfoTemplates($where_art_id_str)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEXT`, `VALUE`, `ART_ID` FROM `T2_INFO` WHERE `ART_ID` IN ($where_art_id_str) AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
+        $r = $db->query("SELECT `TEXT`, `VALUE`, `ART_ID` FROM `T2_INFO` WHERE `ART_ID` IN ($where_art_id_str) AND `LANG_ID` = 16 ORDER BY `SORT` ASC;");
         $infoTemplates = mysqli_fetch_all($r, MYSQLI_ASSOC);
         foreach ($infoTemplates as $infoTemplate) {
             self::$infoTemplates[$infoTemplate['ART_ID']][] = $infoTemplate;
@@ -377,7 +378,6 @@ class FormClass extends CatalogueClass
     public function showHistoryForm()
     {
         $client = new ClientClass();
-        $prefix = $this->getLangPrefix();
         $list = $client->getClientHistory();
         $result = "";
         for ($i = 0; $i < count($list); $i++) {
@@ -385,7 +385,7 @@ class FormClass extends CatalogueClass
             $article_nr_displ = $list[$i]["article_nr_displ"];
             $brand = $list[$i]["brand"];
             $brand_link = $list[$i]["brand_link"];
-            $result .= "<li>$col. <a href=\"https://toko.ua$prefix/$this->search_link/$article_nr_displ/$brand_link/\">$article_nr_displ ($brand)</a></li>";
+            $result .= "<li>$col. <a href=\"" . $this->getSiteLink() . "$this->search_link/$article_nr_displ/$brand_link/\">$article_nr_displ ($brand)</a></li>";
         }
         !empty($list) ?: $result .= "<p>{empty_history}</p>";
         $form = $this->getHtmlForm("menu/history_block");
@@ -400,7 +400,6 @@ class FormClass extends CatalogueClass
     {
         $client = new ClientClass();
         $cat = new CatalogueClass();
-        $prefix = $this->getLangPrefix();
         $list = $client->getClientHistory();
         $list_history = "";
         for ($i = 0; $i < count($list); $i++) {
@@ -411,7 +410,7 @@ class FormClass extends CatalogueClass
             $brand_link = $list[$i]["brand_link"];
             $history_form = $this->getHtmlForm("history/card");
             $history_form = str_replace("{history_id}", $id, $history_form);
-            $history_form = str_replace("{history_link}", "https://toko.ua$prefix/$this->search_link/$format_article/$brand_link/", $history_form);
+            $history_form = str_replace("{history_link}", "" . $this->getSiteLink() . "$this->search_link/$format_article/$brand_link/", $history_form);
             $history_form = str_replace("{history_brand}", $brand, $history_form);
             $history_form = str_replace("{history_article}", $article_nr_displ, $history_form);
             $list_history .= $history_form;
@@ -437,9 +436,9 @@ class FormClass extends CatalogueClass
             $cookie = $this->getSessionID();
             $client_id = $this->getClient();
             $user_id = $this->getUser();
-            $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id`='$client_id' AND `client_user_id`='$user_id'";
+            $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
         } else {
-            $where = "`id`='$history_id'";
+            $where = "`id` = $history_id";
         }
         $db->query("DELETE FROM `CLIENT_HISTORY` WHERE $where;");
         return true;
@@ -449,7 +448,7 @@ class FormClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $photo_name = "";
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;");
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
@@ -464,7 +463,7 @@ class FormClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $photo_name = "";
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;");
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
@@ -477,7 +476,7 @@ class FormClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $photo_name = "";
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;");
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
@@ -490,7 +489,7 @@ class FormClass extends CatalogueClass
     {
         if (!isset(self::$articlePhotos[$art_id])) {
             $db = DbSingleton::getTokoDb();
-            $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;");
+            $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
             self::$articlePhotos[$art_id] = mysqli_fetch_all($r, MYSQLI_ASSOC);
         }
         return self::$articlePhotos[$art_id];
@@ -513,7 +512,7 @@ class FormClass extends CatalogueClass
         $arr = [];
         if ($client->checkRetailClientCategory($this->getClient())) {
             $date_cur = date("Y-m-d");
-            $r = $db->query("SELECT `photo_link` FROM `T2_CERTIFICATES` WHERE `brand_id`='$brand_id' AND `date_from`<='$date_cur' AND `date_to`>='$date_cur' AND `status`=1;");
+            $r = $db->query("SELECT `photo_link` FROM `T2_CERTIFICATES` WHERE `brand_id` = $brand_id AND `date_from` <= '$date_cur' AND `date_to` >= '$date_cur' AND `status` = 1;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $photo_link = $db->result($r, $i - 1, "photo_link");
@@ -528,7 +527,6 @@ class FormClass extends CatalogueClass
     {
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
-        $prefix = $this->getLangPrefix();
         $nophoto = $this->noPhoto;
         $list = "";
         $article_name = $this->getArticleSearch($art_id);
@@ -538,7 +536,7 @@ class FormClass extends CatalogueClass
         $format_brand = $this->getFormatBrand($brand_name);
         $arr = [];
 
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;");
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
@@ -556,7 +554,7 @@ class FormClass extends CatalogueClass
             $active = ($i == 1) ? "active" : "";
             if ($display == 1) {
                 $list .= "<div class=\"carousel-item $active\">
-                    <a itemprop=\"url\" href=\"https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/\">
+                    <a itemprop=\"url\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/\">
                         <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" alt=\"Slide $i\">
                     </a>
                 </div>";
@@ -611,7 +609,7 @@ class FormClass extends CatalogueClass
         $nophoto = $this->noPhoto;
         $list = "";
 
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID`='$art_id' AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;");
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
@@ -718,7 +716,7 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $art_id = $this->getUrlNumber($art_id);
         $typ_id_str = $list = "";
-        $r = $db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID`='$art_id';");
+        $r = $db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $typ_id = $db->result($r, $i - 1, "TYP_ID");
@@ -733,7 +731,8 @@ class FormClass extends CatalogueClass
                 INNER JOIN `T_models` tm ON tm.MOD_ID=tt.TYP_MOD_ID 
                 INNER JOIN `T_manufacturers` man ON man.MFA_ID=tm.MOD_MFA_ID 
             WHERE tt.TYP_ID IN ($typ_id_str) AND tt.ACTIVE=1 
-            GROUP BY man.MFA_ID ORDER BY man.MFA_BRAND ASC;");
+            GROUP BY man.MFA_ID 
+            ORDER BY man.MFA_BRAND ASC;");
             $n = $db->num_rows($r);
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
@@ -758,7 +757,7 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "<div class=\"search__appl-tcd\">";
         $typ_id_str = "";
-        $r = $db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID`='$art_id';");
+        $r = $db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $typ_id = $db->result($r, $i - 1, "TYP_ID");
@@ -772,7 +771,8 @@ class FormClass extends CatalogueClass
             INNER JOIN `T_models` tm ON tm.MOD_ID=tt.TYP_MOD_ID 
             INNER JOIN `T_manufacturers` man ON man.MFA_ID=tm.MOD_MFA_ID
         WHERE tt.TYP_ID IN ($typ_id_str) AND tm.MOD_MFA_ID='$mfa' AND tt.ACTIVE=1 
-        GROUP BY tt.TYP_ID ORDER BY tm.Model ASC;");
+        GROUP BY tt.TYP_ID 
+        ORDER BY tm.Model ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $typ_id = $db->result($r, $i - 1, "TYP_ID");
@@ -820,8 +820,9 @@ class FormClass extends CatalogueClass
             INNER JOIN `T_types` tt ON tt.TYP_ID=tl.TYP_ID 
             INNER JOIN `T_models` tm ON tm.MOD_ID=tt.TYP_MOD_ID 
             INNER JOIN `T_manufacturers` man ON man.MFA_ID=tm.MOD_MFA_ID
-        WHERE tl.ART_ID='$art_id' AND tt.TYP_ID='$typ_id' AND tt.ACTIVE=1 
-        GROUP BY tm.MOD_ID ORDER BY tt.TYP_TEXT ASC;");
+        WHERE tl.ART_ID = $art_id AND tt.TYP_ID='$typ_id' AND tt.ACTIVE=1 
+        GROUP BY tm.MOD_ID 
+        ORDER BY tt.TYP_TEXT ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $TYP_TEXT = $db->result($r, $i - 1, "TYP_TEXT");
@@ -863,15 +864,14 @@ class FormClass extends CatalogueClass
 
     public function getArticleInfoForm($art_id, $display = 0, $type = 0)
     {
-        $db = DbSingleton::getTokoDb();
         $art_id = $this->getUrlNumber($art_id);
+        $db = DbSingleton::getTokoDb();
         $info = "";
-        $prefix = $this->getLangPrefix();
         $article_name = $this->getArticleSearch($art_id);
         $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
         $format_name = $this->getFormatAticle($article_name);
         $format_brand = $this->getFormatBrand($brand_name);
-        $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID`='$art_id' AND `LANG_ID`='16' ORDER BY `SORT` ASC;");
+        $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID` = $art_id AND `LANG_ID` = 16 ORDER BY `SORT` ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $class = (!$display) ? "info__table" : "info__table_min";
@@ -888,7 +888,7 @@ class FormClass extends CatalogueClass
             }
             $info .= "</table>";
             $type ?: ($n <= 5) ?: $info .= "<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
-                <a class='search__more' href='https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/'>
+                <a class=\"search__more\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/\">
                     {more_read}
                 </a>    
             </p>";
@@ -909,7 +909,7 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $indicators = $items = "";
         $k = 0;
-        $r = $db->query("SELECT * FROM `banner` WHERE `STATUS`=1 ORDER BY `POSITION` ASC;");
+        $r = $db->query("SELECT `TITLE`, `TEXT`, `IMAGE` FROM `banner` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $title = $db->result($r, $i - 1, "TITLE");
@@ -944,8 +944,7 @@ class FormClass extends CatalogueClass
     public function showHomeCars()
     {
         $db = DbSingleton::getTokoDb();
-        $prefix = $this->getLangPrefix();
-        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `POSITION` DESC LIMIT 0,25;");
+        $r = $db->query("SELECT `MFA_BRAND`, `MFA_BRAND_LINK`, `LOGO_SVG` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `POSITION` DESC LIMIT 0,25;");
         $n = $db->num_rows($r);
         $arr = [];
         for ($i = 1; $i <= $n; $i++) {
@@ -961,10 +960,10 @@ class FormClass extends CatalogueClass
             $mfa_link = $value["mfa_link"];
             $mfa_image = $value["mfa_image"];
             $form_list = $this->getHtmlForm("menu/seo_details_card");
-            $form_list = str_replace("{prefix}", $prefix, $form_list);
             $form_list = str_replace("{mfa_brand}", $mfa_brand, $form_list);
             $form_list = str_replace("{mfa_image}", $mfa_image, $form_list);
-            $form_list = str_replace("{mfa_link}", $mfa_link, $form_list);
+            $form_list = str_replace("{page_mfa_link}", $this->getSiteLink() . "$this->cars_link/$mfa_link/", $form_list);
+
             $list .= $form_list;
         }
         $form = $this->getHtmlForm("menu/seo_details");

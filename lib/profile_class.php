@@ -6,9 +6,9 @@ class ProfileClass extends ClientClass
     use Helper;
     use Variables;
 
-    public $page_signin = "/signin";
-    public $page_profile = "/profile/orders/";
-    public $page_registration = "/registration";
+    public $page_signin = "signin/";
+    public $page_profile = "profile/orders/";
+    public $page_registration = "registration/";
 
     /*
      * get profile left navigation
@@ -20,7 +20,7 @@ class ProfileClass extends ClientClass
         $name = $client->getClientInfo($client_id, $user_id)["name"];
         ($user_id == 0)
             ? $info = false
-            : $info = "{hello_cap}, <a href=\"$this->page_profile\">" . $name . "</a>";
+            : $info = "{hello_cap}, <a href=\"" . $this->getSiteLink() . "$this->page_profile\">" . $name . "</a>";
         return $info;
     }
 
@@ -30,7 +30,7 @@ class ProfileClass extends ClientClass
     public function getProfileInfo()
     {
         $form = $this->getHtmlForm("menu/profile_nav");
-        $form = str_replace("{reg_link}", $this->page_registration, $form);
+        $form = str_replace("{reg_link}", $this->getSiteLink() . $this->page_registration, $form);
         if ($this->getUser() == 0) {
             $form = str_replace("{reg_login}", "none", $form);
         } else {
@@ -47,12 +47,11 @@ class ProfileClass extends ClientClass
     public function getSpecialOffers()
     {
         $db = DbSingleton::getDbm();
-        $prefix = $this->getLangPrefix();
         $user_id = $this->getUser();
         $client_id = $this->getClient();
         $categories = [];
 
-        $r = $db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$client_id';");
+        $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $category_id = $db->result($r, $i - 1, "client_category");
@@ -62,24 +61,24 @@ class ProfileClass extends ClientClass
 
         $r = $db->query("SELECT acl.* FROM `ACTION_CLIENTS_LIST` acl 
             LEFT OUTER JOIN `ACTION_CLIENTS` ac ON (ac.id=acl.action_id)
-        WHERE acl.client_id='$client_id' AND ac.status=1;");
+        WHERE acl.client_id = $client_id AND ac.status = 1;");
         $n1 = $db->num_rows($r);
 
         $r = $db->query("SELECT acc.* FROM `ACTION_CLIENTS_CATEGORY` acc 
             LEFT OUTER JOIN `ACTION_CLIENTS` ac ON (ac.id=acc.action_id)
-        WHERE acc.category_id IN ($categories) AND ac.status=1;");
+        WHERE acc.category_id IN ($categories) AND ac.status = 1;");
         $n2 = $db->num_rows($r);
 
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
+        $r = $db->query("SELECT `update_actions` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
         $update_actions = $db->result($r, 0, "update_actions");
 
-        $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `timestamp`>'$update_actions 00:00:00' AND `status`=1;");
+        $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `timestamp` > '$update_actions 00:00:00' AND `status` = 1;");
         $n = $db->num_rows($r);
 
         $counter = ($n > 0) ? "<span class=\"span-red\">($n)</span>" : "";
         if ($user_id > 0 && ($n1 > 0 || $n2 > 0)) {
             $info = "<li>
-                <a href=\"$prefix/special_offers/\">
+                <a href=\"" . $this->getSiteLink() . "special_offers/\">
                     <span class=\"fas fa-box-open\"></span> <span>{special_offers_cap} $counter</span>
                 </a>
             </li>";
@@ -96,19 +95,18 @@ class ProfileClass extends ClientClass
     {
         $db = DbSingleton::getDbm();
         $dbt = DbSingleton::getTokoDb();
-        $prefix = $this->getLangPrefix();
         $user_id = $this->getUser();
-        $lang = $this->getLanguage();
-        if ($lang != 1) {
-            $lang = 5;
+        $language_id = $this->getLanguage();
+        if ($language_id != 1) {
+            $language_id = 5;
         }
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
+        $r = $db->query("SELECT `update_news` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
         $update_news = $db->result($r, 0, "update_news");
-        $r = $dbt->query("SELECT * FROM `news` WHERE `data`>'$update_news' AND `lang_id`='$lang' AND `status`=1;");
+        $r = $dbt->query("SELECT * FROM `news` WHERE `data` > '$update_news' AND `lang_id` = $language_id AND `status` = 1;");
         $n = $dbt->num_rows($r);
         $counter = ($user_id > 0 && $n > 0) ? "<span class=\"span-red\">($n)</span>" : "";
         return "<li>
-            <a href=\"$prefix/news/\">
+            <a href=\"" . $this->getSiteLink() . "news/\">
                 <span class=\"fas fa-newspaper\"></span><span> {news_cap} $counter</span>
             </a>
         </li>";
@@ -120,8 +118,8 @@ class ProfileClass extends ClientClass
     public function getProfileInfoMobile()
     {
         $info = ($this->getUser() == 0)
-            ? "<a href=\"$this->page_signin\">{authorization}</a>"
-            : "<a href=\"$this->page_profile\">{profile}</a>";
+            ? "<a href=\"" . $this->getSiteLink() . "$this->page_signin\">{authorization}</a>"
+            : "<a href=\"" . $this->getSiteLink() . "$this->page_profile\">{profile}</a>";
         $info = $this->replaceLang($info);
         return $info;
     }
@@ -147,7 +145,7 @@ class ProfileClass extends ClientClass
     public function getClientBonus($client_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id';");
+        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID` = $client_id;");
         $n = $db->num_rows($r);
         return ($n > 0);
     }
@@ -158,7 +156,7 @@ class ProfileClass extends ClientClass
     public function showClientBonus($client_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id`='$client_id';");
+        $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id` = $client_id;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $summ = $db->result($r, 0, "bonus_balance");
@@ -196,16 +194,18 @@ class ProfileClass extends ClientClass
 
     public function checkDpStrExist($dp_id)
     {
+        $dp_id = $this->getUrlNumber($dp_id);
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id`='$dp_id';");
+        $r = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id` = $dp_id;");
         $n = $db->num_rows($r);
         return ($n > 0);
     }
 
     public function checkDpBug($dp_id)
     {
+        $dp_id = $this->getUrlNumber($dp_id);
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id`='$dp_id';");
+        $r = $db->query("SELECT `amount_bug` FROM `J_DP_STR` WHERE `dp_id` = $dp_id;");
         $n = $db->num_rows($r);
         $k = 0;
         for ($i = 1; $i <= $n; $i++) {
@@ -219,10 +219,11 @@ class ProfileClass extends ClientClass
 
     public function checkSelectDpBug($dp_id)
     {
+        $dp_id = $this->getUrlNumber($dp_id);
         $db = DbSingleton::getDbm();
         $select_arr = [];
         $k = 0;
-        $r = $db->query("SELECT * FROM `J_SELECT` WHERE `parrent_doc_id`='$dp_id';");
+        $r = $db->query("SELECT `id` FROM `J_SELECT` WHERE `parrent_doc_id` = $dp_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $select_id = $db->result($r, $i - 1, "id");
@@ -230,7 +231,7 @@ class ProfileClass extends ClientClass
         }
         $select_str = implode(",", $select_arr);
         if (!empty($select_arr)) {
-            $r = $db->query("SELECT * FROM `J_SELECT_STR` WHERE `select_id` IN ('$select_str') AND `status`=0;");
+            $r = $db->query("SELECT `amount_bug` FROM `J_SELECT_STR` WHERE `select_id` IN ('$select_str') AND `status` = 0;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $amount_bug = $db->result($r, $i - 1, "amount_bug");
@@ -244,10 +245,12 @@ class ProfileClass extends ClientClass
 
     public function checkSelectStrDpBug($dp_id, $art_id)
     {
+        $dp_id = $this->getUrlNumber($dp_id);
+        $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getDbm();
         $select_arr = [];
         $k = 0;
-        $r = $db->query("SELECT * FROM `J_SELECT` WHERE `parrent_doc_id`='$dp_id';");
+        $r = $db->query("SELECT `id` FROM `J_SELECT` WHERE `parrent_doc_id` = $dp_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $select_id = $db->result($r, $i - 1, "id");
@@ -255,7 +258,7 @@ class ProfileClass extends ClientClass
         }
         $select_str = implode(",", $select_arr);
         if (!empty($select_arr)) {
-            $r = $db->query("SELECT * FROM `J_SELECT_STR` WHERE `select_id` IN ('$select_str') AND `art_id`='$art_id';");
+            $r = $db->query("SELECT `amount_bug` FROM `J_SELECT_STR` WHERE `select_id` IN ('$select_str') AND `art_id` = $art_id;");
             for ($i = 1; $i <= $n; $i++) {
                 $amount_bug = $db->result($r, $i - 1, "amount_bug");
                 if ($amount_bug > 0) $k++;
@@ -272,7 +275,7 @@ class ProfileClass extends ClientClass
         $db = DbSingleton::getDbm();
         $select_arr = [];
         $list = "";
-        $r = $db->query("SELECT * FROM `J_SELECT` WHERE `parrent_doc_id`='$dp_id';");
+        $r = $db->query("SELECT `id` FROM `J_SELECT` WHERE `parrent_doc_id` = $dp_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $select_id = $db->result($r, $i - 1, "id");
@@ -280,13 +283,13 @@ class ProfileClass extends ClientClass
         }
         $select_str = implode(",", $select_arr);
         if (!empty($select_arr)) {
-            $r = $db->query("SELECT * FROM `J_SELECT_STR` WHERE `select_id` IN ('$select_str') AND `art_id`='$art_id';");
+            $r = $db->query("SELECT `amount`, `amount_bug`, `amount_collect` FROM `J_SELECT_STR` WHERE `select_id` IN ('$select_str') AND `art_id` = $art_id;");
             $amount = intval($db->result($r, 0, "amount"));
             $amount_bug = intval($db->result($r, 0, "amount_bug"));
             $amount_collect = intval($db->result($r, 0, "amount_collect"));
             $storage_select_string = "";
             if ($amount_bug > 0) {
-                $r = $db->query("SELECT * FROM `J_SELECT_STR_BUG` WHERE `select_id` IN ('$select_str') AND `art_id`='$art_id';");
+                $r = $db->query("SELECT `storage_select_bug`, `amount_bug` FROM `J_SELECT_STR_BUG` WHERE `select_id` IN ('$select_str') AND `art_id` = $art_id;");
                 $n = $db->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
                     $storage_select_bug = $db->result($r, $i - 1, "storage_select_bug");
@@ -313,13 +316,13 @@ class ProfileClass extends ClientClass
     {
         $order_str_id = $this->getUrlNumber($order_str_id);
         $db = DbSingleton::getDbm();
-        $db->query("UPDATE `orders_str_new` SET `status_visible`=0 WHERE `id`='$order_str_id';");
-        $r = $db->query("SELECT `order_id` FROM `orders_str_new` WHERE `id`='$order_str_id' LIMIT 1;");
+        $db->query("UPDATE `orders_str_new` SET `status_visible` = 0 WHERE `id` = $order_str_id;");
+        $r = $db->query("SELECT `order_id` FROM `orders_str_new` WHERE `id` = $order_str_id LIMIT 1;");
         $order_id = $db->result($r, 0, "order_id");
-        $r = $db->query("SELECT MAX(`status_visible`) as maxim FROM `orders_str_new` WHERE `order_id`='$order_id';");
+        $r = $db->query("SELECT MAX(`status_visible`) as maxim FROM `orders_str_new` WHERE `order_id` = $order_id;");
         $status = $db->result($r, 0, "maxim");
         if ($status == 0) {
-            $db->query("UPDATE `orders_new` SET `status_visible`=1 WHERE `id`='$order_id';");
+            $db->query("UPDATE `orders_new` SET `status_visible` = 1 WHERE `id` = $order_id;");
         }
         return $status;
     }
@@ -330,7 +333,7 @@ class ProfileClass extends ClientClass
     public function checkOrderUser($order_id, $user_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT COUNT(`id`) as kilk FROM `orders_new` WHERE `id`='$order_id' AND `client_user_id`='$user_id';");
+        $r = $db->query("SELECT COUNT(`id`) as kilk FROM `orders_new` WHERE `id` = $order_id AND `client_user_id` = $user_id;");
         return $db->result($r, 0, "kilk");
     }
 
@@ -342,7 +345,7 @@ class ProfileClass extends ClientClass
         $db = DbSingleton::getDbm();
         $user_id = $this->getUser();
         $dp_arr = [];
-        $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE `client_user_id`='$user_id' AND `dp_id`!=0;");
+        $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE `client_user_id` = $user_id AND `dp_id` > 0;");
         $nn = $db->num_rows($rr);
         for ($ii = 1; $ii <= $nn; $ii++) {
             $dp_id = $db->result($rr, $ii - 1, "dp_id");
@@ -365,11 +368,11 @@ class ProfileClass extends ClientClass
         $client = new ClientClass();
         $form = $this->getHtmlForm("profile/profile_orders");
         $user_id = $this->getUser();
-        $where = "`client_user_id`='$user_id'";
+        $where = "`client_user_id` = $user_id";
         $k = $summ = 0;
         $list = "";
 
-        $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE $where AND `dp_id`!=0;");
+        $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE $where AND `dp_id` > 0;");
         $nn = $db->num_rows($rr);
         for ($ii = 1; $ii <= $nn; $ii++) {
             $dp_id = $db->result($rr, $ii - 1, "dp_id");
@@ -377,10 +380,11 @@ class ProfileClass extends ClientClass
             $prefix = $id = $name = $date = $city_name = $delivery_type = $payment_type = $price_summ = $cash_name = $status_type = $bg_bug = "";
 
             for ($j = 0; $j < count($dp_arr); $j++) {
-                $dp_value = $dp_arr[$j];
-                $r = $db->query("SELECT dp.*, si.summ as summ_sale FROM `J_DP` dp 
+                $dp_value = intval($dp_arr[$j]);
+                $r = $db->query("SELECT dp.*, si.summ as summ_sale 
+                FROM `J_DP` dp 
                     LEFT OUTER JOIN `J_SALE_INVOICE` si on si.dp_id=dp.id
-                WHERE dp.id='$dp_value';");
+                WHERE dp.id = $dp_value;");
 
                 if ($this->checkDpStrExist($dp_value)) {
                     $id .= $db->result($r, 0, "id") . ",";
@@ -432,7 +436,7 @@ class ProfileClass extends ClientClass
             }
         }
 
-        $r2 = $db->query("SELECT * FROM `orders_new` WHERE $where AND `dp_id`=0 AND `status`=1;");
+        $r2 = $db->query("SELECT * FROM `orders_new` WHERE $where AND `dp_id` = 0 AND `status` = 1;");
         $n2 = $db->num_rows($r2);
         for ($i = 1; $i <= $n2; $i++) {
             $id = $db->result($r2, $i - 1, "id");
@@ -449,7 +453,7 @@ class ProfileClass extends ClientClass
             $payment_type = $this->getManualName($payment);
             $status_type = "{order_in_queue}";
             $cash_name = $kours->getKoursCaption($cash_id);
-            $list .= "<tr class='pointer' onclick='showProfileOrdersArts(\"\",\"$id\")'>
+            $list .= "<tr class=\"pointer\" onclick='showProfileOrdersArts(\"\",\"$id\")'>
                 <td>{order_cap} #$id</td>
                 <td>$name</td>
                 <td>$date</td>
@@ -514,7 +518,8 @@ class ProfileClass extends ClientClass
                     $rstr = $db->query("SELECT dp.*, ord.order_id, ord.id as order_str_id 
                     FROM `orders_str_new` ord
                         LEFT OUTER JOIN `J_DP_STR` dp on dp.id=ord.dp_str_id
-                    $where_dp GROUP BY dp.art_id;");
+                    $where_dp 
+                    GROUP BY dp.art_id;");
                     $nstr = $db->num_rows($rstr);
 
                     if ($nstr == 0) {
@@ -522,10 +527,9 @@ class ProfileClass extends ClientClass
                         $nstr = $db->num_rows($rstr);
                         $nedp = true;
                     }
-
                     for ($j = 1; $j <= $nstr; $j++) {
                         $order_id = $db->result($rstr, $j - 1, "order_id");
-                        $order_str_id = $db->result($rstr, $j - 1, "order_str_id");
+                        $order_str_id = $db->result($rstr, $j - 1, "order_str_id") + 0;
                         $article_nr_displ = $db->result($rstr, $j - 1, "article_nr_displ");
                         $art_id = $db->result($rstr, $j - 1, "art_id");
                         $brand_id = $db->result($rstr, $j - 1, "brand_id");
@@ -539,7 +543,7 @@ class ProfileClass extends ClientClass
                         $status_visible = $db->result($rstr, $j - 1, "status_visible");
 
                         if ($this->checkSelectStrDpBug($dp_id, $art_id) > 0 && $status_visible == 1) {
-                            $db->query("UPDATE `orders_str_new` SET `status_visible`=1 WHERE `id`='$order_str_id';");
+                            $db->query("UPDATE `orders_str_new` SET `status_visible`=1 WHERE `id` = $order_str_id;");
                             $btn_bug = "<button class=\"btn-basket\" onclick=\"closeOrderArtUpdate('$dp_id', '$art_id', '$order_str_id');\"><span class=\"fas fa-eye\"></span></button>";
                             $bg_bug = "bg-warning";
                         } else {
@@ -583,7 +587,7 @@ class ProfileClass extends ClientClass
         // Site orders arts
         if ($dp_check == "") {
             $where_order = ($order_check != "") ? "AND `id`='$order_check'" : "";
-            $r = $db->query("SELECT * FROM `orders_new` WHERE `client_user_id`='$user_id' AND `dp_id`=0 AND `status`=1 $where_order;");
+            $r = $db->query("SELECT `id`, `cash_id` FROM `orders_new` WHERE `client_user_id` = $user_id AND `dp_id` = 0 AND `status` = 1 $where_order;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $order_id = $db->result($r, $i - 1, "id");
@@ -641,7 +645,8 @@ class ProfileClass extends ClientClass
         FROM `B_CLIENT_BALANS_JOURNAL` b 
 			LEFT OUTER JOIN `CASH` mc on mc.id=b.cash_id 
 			LEFT OUTER JOIN `CASH` pmc on pmc.id=b.pay_cash_id 
-        WHERE b.client_id='$client_id' AND b.data>='$data_from 00:00:00' AND b.data<='$data_to 23:59:59' ORDER BY b.id ASC;");
+        WHERE b.client_id = $client_id AND b.data >= '$data_from 00:00:00' AND b.data <= '$data_to 23:59:59' 
+        ORDER BY b.id ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -700,7 +705,7 @@ class ProfileClass extends ClientClass
             $list = "<tr><td class=\"text-center\" colspan=\"9\">" . $this->err1 . "</td></tr></table>";
         }
         if ($n == 0) {
-            $r = $db->query("SELECT * FROM `B_CLIENT_BALANS_JOURNAL` WHERE `client_id`='$client_id' ORDER BY `data` DESC LIMIT 1;");
+            $r = $db->query("SELECT `balans_after` FROM `B_CLIENT_BALANS_JOURNAL` WHERE `client_id` = $client_id ORDER BY `data` DESC LIMIT 1;");
             $balans_after = $db->result($r, 0, "balans_after");
             $saldo_end = round($balans_after, 2);
         }
@@ -733,12 +738,12 @@ class ProfileClass extends ClientClass
         return $form;
     }
 
-    public function getClientBalansPeriodStart($client_id, $cash_id, $data_from, $recursion)
+    public function getClientBalansPeriodStart($client_id, $cash_id_sel, $data_from, $recursion)
     {
         $db = DbSingleton::getDbm();
         $saldo_start = 0;
         $saldo_data_start = $data_from;
-        $r = $db->query("SELECT * FROM `B_CLIENT_BALANS_PERIOD` WHERE `client_id`='$client_id' AND `data_start`='" . date("Y-m-01", strtotime($data_from)) . "' LIMIT 1;");
+        $r = $db->query("SELECT `saldo_start`, `cash_id`, `data_start` FROM `B_CLIENT_BALANS_PERIOD` WHERE `client_id` = $client_id AND `data_start` = '" . date("Y-m-01", strtotime($data_from)) . "' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 1) {
             $saldo_start = $db->result($r, 0, "saldo_start");
@@ -746,19 +751,20 @@ class ProfileClass extends ClientClass
             $saldo_data_start = $db->result($r, 0, "data_start");
         }
         if ($n == 0) {
-            $recursion += 1;
+            $recursion++;
             if ($recursion < 12) {
                 $data_from = date("Y-m-01", strtotime("$data_from -1 month"));
-                list($saldo_start, , $saldo_data_start) = $this->getClientBalansPeriodStart($client_id, $cash_id, $data_from, $recursion);
+                list($saldo_start, , $saldo_data_start) = $this->getClientBalansPeriodStart($client_id, $cash_id_sel, $data_from, $recursion);
             } else {
                 $data_main_start = date("Y-m-01", strtotime("$data_from"));
                 $db->query("INSERT INTO `B_CLIENT_BALANS_PERIOD` (`client_id`,`cash_id`,`saldo_start`,`data_start`,`active`) 
-                VALUES ('$client_id','$cash_id','0','$data_main_start','1');");
+                VALUES ('$client_id','$cash_id_sel','0','$data_main_start','1');");
                 $data_plus_month = date("Y-m-d", strtotime("$data_main_start +1 month"));
                 $data_from = date("Y-m-01", strtotime("$data_plus_month"));
                 $recursion -= 2;
-                list($saldo_start, , $saldo_data_start) = $this->getClientBalansPeriodStart($client_id, $cash_id, $data_from, $recursion);
+                list($saldo_start, , $saldo_data_start) = $this->getClientBalansPeriodStart($client_id, $cash_id_sel, $data_from, $recursion);
             }
+            $cash_id = $cash_id_sel;
         }
         return array($saldo_start, $cash_id, $saldo_data_start);
     }
@@ -773,7 +779,7 @@ class ProfileClass extends ClientClass
         $date = date("Y-m-d H:i:s");
         $date_format = date("Y-m-d_H-i-s");
         $filename = "TOKO_GROUP_price-list_" . $user_id . "_" . $date_format . ".csv";
-        $r = $db->query("SELECT `status` FROM `cron_task_prices` WHERE `user_id`='$user_id' AND `status`=1;");
+        $r = $db->query("SELECT `status` FROM `cron_task_prices` WHERE `user_id` = $user_id AND `status` = 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             return "forming...";
@@ -819,7 +825,7 @@ class ProfileClass extends ClientClass
         $disable = "disabled";
         $visible = "style=\"display:none;\"";
         $history_form = "";
-        $r = $db->query("SELECT * FROM `cron_task_prices` WHERE `user_id`='$user_id' and `status`=1;");
+        $r = $db->query("SELECT * FROM `cron_task_prices` WHERE `user_id` = $user_id AND `status` = 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
             $disable = "";
@@ -832,7 +838,7 @@ class ProfileClass extends ClientClass
         } else {
             $list = "";
         }
-        $r = $db->query("SELECT * FROM `cron_task_prices` WHERE `user_id`='$user_id' ORDER BY `date` DESC;");
+        $r = $db->query("SELECT `filename`, `date`, `date_end`, `status` FROM `cron_task_prices` WHERE `user_id` = $user_id ORDER BY `date` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $table = "";
@@ -869,17 +875,7 @@ class ProfileClass extends ClientClass
      * */
     public function getStatusProfilePrice($status)
     {
-        switch ($status) {
-            case 1:
-                $text = "{status_on}";
-                break;
-            case 2:
-                $text = "{status_off}";
-                break;
-            default:
-                $text = "";
-                break;
-        }
+        $text = ($status == 2) ? "{status_off}" : "{status_on}";
         $text = $this->replaceLang($text);
         return $text;
     }
@@ -904,7 +900,7 @@ class ProfileClass extends ClientClass
     {
         $db = DbSingleton::getDbm();
         $options = "";
-        $r = $db->query("SELECT * FROM `T_POINT` WHERE `status`=1 ORDER BY `full_name` ASC;");
+        $r = $db->query("SELECT `id`, `full_name`, `address` FROM `T_POINT` WHERE `status` = 1 ORDER BY `full_name` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "id");

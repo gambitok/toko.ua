@@ -16,10 +16,9 @@ class LangClass
     public function getLanguageData()
     {
         $cookie_lang_id = $this->getUrlNumber($_COOKIE["lang_id"]);
-        if ($cookie_lang_id != "") {
+        if (!empty($cookie_lang_id)) {
             $_SESSION["lang_id"] = $cookie_lang_id;
         }
-
         $session_lang_id = $this->getUrlNumber($_SESSION["lang_id"]);
         if (empty($session_lang_id)) {
             $_SESSION["lang_id"] = $this->default_lang_id;
@@ -46,27 +45,12 @@ class LangClass
     }
 
     /*
-     * get language caption smaller
-     * */
-    public function getTexCapLanguage($lang_id)
-    {
-        $cap = "RU";
-        if ($lang_id == 2) {
-            $cap = "UA";
-        }
-        if ($lang_id == 3) {
-            $cap = "EN";
-        }
-        return $cap;
-    }
-
-    /*
      * get language caption
      * */
     public function getLangCap($lang_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `new_lang` WHERE `id`='$lang_id' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `new_lang` WHERE `id` = $lang_id LIMIT 1;");
         return $db->result($r, 0, "abr");
     }
 
@@ -77,7 +61,7 @@ class LangClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT * FROM `new_lang`;");
+        $r = $db->query("SELECT * FROM `new_lang` WHERE 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $lang_id = $db->result($r, $i - 1, "id");
@@ -91,16 +75,26 @@ class LangClass
     /*
      * get language site prefix
      * */
-    public function getLangPrefix()
-    {
-        session_start();
-        $lang = $this->getLanguageData();
+//    public function getLangPrefix()
+//    {
+//        $lang = $this->getLanguageData();
+//        $pre = "";
+//        if ($lang == 2) {
+//            $pre = "/uk";
+//        }
+//        if ($lang == 3) {
+//            $pre = "/en";
+//        }
+//        return $pre;
+//    }
+
+    public function getLangIDPrefix($lang_id) {
         $pre = "";
-        if ($lang == 2) {
-            $pre = "/uk";
+        if ($lang_id == 2) {
+            $pre = "uk/";
         }
-        if ($lang == 3) {
-            $pre = "/en";
+        if ($lang_id == 3) {
+            $pre = "en/";
         }
         return $pre;
     }
@@ -123,7 +117,7 @@ class LangClass
     public function setSiteLang($lang_id)
     {
         $this->setLangID($lang_id);
-        return $this->getLangPrefix();
+        return "https://toko.ua/" . $this->getLangIDPrefix($lang_id);
     }
 
     /*
@@ -138,7 +132,7 @@ class LangClass
             $r = $db->query("SELECT l.caption, lw.variable 
             FROM `new_lang_wdv` l
                 LEFT OUTER JOIN `new_lang_wd` lw ON lw.id=l.wd
-            WHERE l.lang_id='$lang';");
+            WHERE l.lang_id = $lang;");
             $result = mysqli_fetch_all($r, MYSQLI_ASSOC);
             self::$langNames = array_column($result, 'caption', 'variable');
         }
@@ -158,7 +152,6 @@ class LangClass
         foreach (self::$langVariables as $langVariable) {
             $cont = str_replace("{" . $langVariable . "}", $this->getLanguageName($langVariable), $cont);
         }
-        $cont = str_replace("{prefix}", $this->getLangPrefix(), $cont);
         return $cont;
     }
 

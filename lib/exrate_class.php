@@ -34,13 +34,13 @@ class ExRateClass
         $db = DbSingleton::getDbm();
         if ($val == "dollar") {
             if ($this->usdRate === null) {
-                $r = $db->query("SELECT `kours_value` FROM `J_KOURS` WHERE `cash_id`=2 AND `in_use`=1 LIMIT 1;");
+                $r = $db->query("SELECT `kours_value` FROM `J_KOURS` WHERE `cash_id` = 2 AND `in_use` = 1 LIMIT 1;");
                 $this->usdRate = number_format($db->result($r, 0, "kours_value"), 2, '.', '');
             }
             return $this->usdRate;
         } elseif ($val == "euro") {
             if ($this->euroRate === null) {
-                $r = $db->query("SELECT `kours_value` FROM `J_KOURS` WHERE `cash_id`=3 AND `in_use`=1 LIMIT 1;");
+                $r = $db->query("SELECT `kours_value` FROM `J_KOURS` WHERE `cash_id` = 3 AND `in_use` = 1 LIMIT 1;");
                 $this->euroRate = number_format($db->result($r, 0, "kours_value"), 2, '.', '');
             }
             return $this->euroRate;
@@ -110,7 +110,7 @@ class ExRateClass
     public function getKoursCaption($cur)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `abr` FROM `CASH` WHERE `id`='$cur' LIMIT 1;");
+        $r = $db->query("SELECT `abr` FROM `CASH` WHERE `id` = $cur LIMIT 1;");
         $n = $db->num_rows($r);
         return ($n > 0) ? $db->result($r, 0, "abr") : "{uah_cap}";
     }
@@ -122,7 +122,7 @@ class ExRateClass
     public function getKoursCaptionLang($cur)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `abr2` FROM `CASH` WHERE `id`='$cur' LIMIT 1;");
+        $r = $db->query("SELECT `abr2` FROM `CASH` WHERE `id` = $cur LIMIT 1;");
         $n = $db->num_rows($r);
         return ($n > 0) ? $db->result($r, 0, "abr2") : "{uah_cap}";
     }

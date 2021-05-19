@@ -9,9 +9,13 @@ class CatalogueClass
     public $products_link = "products";
     public $catalog_link = "catalog";
     public $search_link = "search";
+    public $article_link = "article";
+    public $order_link = "order";
+    public $news_link = "news";
+    public $reviews_link = "reviews";
+    public $cars_link = "cars";
     public $faq_card_count = 2;
     public $faq_socials_card_count = 4;
-    public $catalog_exist_link = "catalog";
 
     /*
      * get catalog search form
@@ -22,7 +26,7 @@ class CatalogueClass
         $article_search = "";
         $brand_id = 0;
         $article_nr_search = $this->getUrlString($article_nr_search);
-        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_nr_search' GROUP BY `BRAND_ID`;");
+        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search' GROUP BY `BRAND_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $article_search = $db->result($r, $i - 1, "SEARCH_NUMBER");
@@ -52,8 +56,9 @@ class CatalogueClass
         $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
-        WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
-        GROUP BY t2c.`ART_ID` ORDER BY t2n.NAME ASC;");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
+        GROUP BY t2c.`ART_ID` 
+        ORDER BY t2n.NAME ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -126,7 +131,7 @@ class CatalogueClass
         $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
-        WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
         ORDER BY t2n.NAME ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -167,7 +172,6 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $showform = new FormClass();
-        $prefix = $this->getLangPrefix();
 
         $count_zero = $exist_search_number = 0;
         $exist_brand_link = $result = $list = "";
@@ -181,7 +185,7 @@ class CatalogueClass
         FROM `T2_CROSS` t2c 
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID=t2c.BRAND_ID) 	
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID=t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER='$article_search' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) 
+        WHERE t2c.SEARCH_NUMBER = '$article_search' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) 
         GROUP BY t2c.BRAND_ID;");
         $n = $db->num_rows($r);
         if ($article_search != "") {
@@ -212,7 +216,7 @@ class CatalogueClass
                 $count = $mas[$i]["count"];
                 $name = $mas[$i]["name"];
                 $photo_name = $showform->getShortArticlePhoto($mas[$i]["art_id"]);
-                $link = ($count == 0) ? "showAlertModal(\"{brand_no_offer} `$text/$brand_name`\",\"{sorry_cap}\");" : "location.href=\"https://toko.ua$prefix/$this->search_link/$search_number/$brand_link/\";";
+                $link = ($count == 0) ? "showAlertModal(\"{brand_no_offer} `$text/$brand_name`\",\"{sorry_cap}\");" : "location.href=\"" . $this->getSiteLink() . "$this->search_link/$search_number/$brand_link/\";";
                 $list .= "<tr class=\"table-row pointer\" onclick='$link'>
                     <td class=\"minify\">
                         <img itemprop=\"image\" data-src=\"$photo_name\" class=\"lazy\" alt=\"Article\">
@@ -241,7 +245,7 @@ class CatalogueClass
         $form = str_replace("{search_form}", $search_form, $form);
 
         if ($count_zero == ($n - 1)) {
-            header("Location: https://toko.ua$prefix/$this->search_link/$exist_search_number/$exist_brand_link/");
+            header("Location: " . $this->getSiteLink() . "$this->search_link/$exist_search_number/$exist_brand_link/");
         }
         return $form;
     }
@@ -254,9 +258,10 @@ class CatalogueClass
         $title = $this->getHtmlForm("catalog/title");
         $title = str_replace("{article_nr_displ}", $article_nr_displ, $title);
         $title = str_replace("{brand_name}", $this->getBrandName($brand_nr_search), $title);
+        $view = $client->getProductView();
         $radio_view = $this->getHtmlForm("products_view_radio");
-        $radio_view = str_replace("{checked_table}", ($client->getProductView() == 0) ? "checked" : "", $radio_view);
-        $radio_view = str_replace("{checked_cards}", ($client->getProductView() == 1) ? "checked" : "", $radio_view);
+        $radio_view = str_replace("{checked_table}", ($view == 0) ? "checked" : "", $radio_view);
+        $radio_view = str_replace("{checked_cards}", ($view == 1) ? "checked" : "", $radio_view);
         $search_main = str_replace("{art}", $this->replaceLang($title), $search_main);
         $search_main = str_replace("{currency}", $showform->getCurrencyForm($cur), $search_main);
         $search_main = str_replace("{products_view}", $radio_view, $search_main);
@@ -269,7 +274,7 @@ class CatalogueClass
      * */
     public function getSearchFilters($search_filters, $filters, $cur, $current_value)
     {
-        if (!empty($filters))
+        if (!empty($filters)) {
             if (empty($current_value)) {
                 $current_value = array();
                 $current_value["min_price"] = 0;
@@ -277,6 +282,7 @@ class CatalogueClass
                 $current_value["min_dd"] = 0;
                 $current_value["max_dd"] = $filters["max_dd"];
             }
+        }
         $search_filters = str_replace("{sideblock_max_price}", $filters["max_price"], $search_filters);
         $search_filters = str_replace("{sideblock_max_dd}", $filters["max_dd"], $search_filters);
         $search_filters = str_replace("{sideblock_max_price_val}", $current_value["max_price"], $search_filters);
@@ -297,10 +303,11 @@ class CatalogueClass
         $db = DbSingleton::getTokoDb();
         $art_ids = [];
         $brand_id = $this->getUrlNumber($brand_id);
-        $r = $db->query("SELECT t2c.ART_ID FROM `T2_CROSS` t2c
+        $r = $db->query("SELECT t2c.ART_ID 
+        FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
-        WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_id AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END);");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_id AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END);");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -374,7 +381,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         if ($article_nr_search != "") {
-            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH`='$article_nr_search' AND `BRAND_ID`=$brand_nr_search LIMIT 1;");
+            $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` = '$article_nr_search' AND `BRAND_ID` = $brand_nr_search LIMIT 1;");
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $art_id = $db->result($r, 0, "ART_ID");
@@ -418,8 +425,9 @@ class CatalogueClass
         $db = DbSingleton::getTokoDb();
         $arts = [];
         $art_id_arr = [];
-        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` 
-        WHERE `ART_ID`='$art_id' AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND` IN (3,4) AND `RELATION`=1) OR (`KIND` IN (3,4) AND `RELATION`=2)) 
+        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` 
+        FROM `T2_CROSS` 
+        WHERE `ART_ID` = $art_id AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND` IN (3,4) AND `RELATION`=1) OR (`KIND` IN (3,4) AND `RELATION`=2)) 
         GROUP BY `SEARCH_NUMBER` LIMIT 0,10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -430,7 +438,9 @@ class CatalogueClass
         foreach ($arts as $art) {
             $article_search = $art["search_number"];
             $brand_id = $art["brand_id"];
-            $r = $db->query("SELECT `ART_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER`='$article_search' AND `BRAND_ID`=$brand_id AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND`=0 AND `RELATION`=0));");
+            $r = $db->query("SELECT `ART_ID` 
+            FROM `T2_CROSS` 
+            WHERE `SEARCH_NUMBER` = '$article_search' AND `BRAND_ID` = $brand_id AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND`=0 AND `RELATION`=0));");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $cross_art_id = $db->result($r, $i - 1, "ART_ID");
@@ -932,12 +942,13 @@ class CatalogueClass
         $brand_nr_search = $this->getArticleBrand($art_id_search);
 
         $arts = [];
-        $r = $db->query("SELECT t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2c.BRAND_ID, t2c.DISPLAY_NR, t2c.ART_ID, t2c.KIND, t2c.RELATION 
+        $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
-        WHERE t2c.SEARCH_NUMBER='$article_nr_search' AND t2c.BRAND_ID=$brand_nr_search AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
-        GROUP BY t2c.`ART_ID` ORDER BY t2n.NAME ASC;");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
+        GROUP BY t2c.`ART_ID` 
+        ORDER BY t2n.NAME ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -950,12 +961,10 @@ class CatalogueClass
         if ($where_art_id_str != "") {
             $this->createTemporarySearchTable($temp_key);
             list($error) = $this->getSearchMessages();
+            $list = $this->drawHeaderSearchList($view);
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
             $n = $db->num_rows($r);
-
-            $list = $this->drawHeaderSearchList($view);
-
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -1094,7 +1103,7 @@ class CatalogueClass
         $r = $db->query("SELECT tpdt.delivery_days, tpdt.week_day, tpdt.time_from_del, tpdt.time_to_del, tpdt.storage_id 
         FROM `T_POINT_DELIVERY_TIME` tpdt
             JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.STORAGE_ID=tpdt.storage_id
-        WHERE t2asc.ART_ID IN ($where_art_id_str) AND tpdt.status='1' AND tpdt.tpoint_id='$tpoint_id' AND tpdt.week_day='$week_day' AND tpdt.time_from<='$cur_time' AND tpdt.time_to>='$cur_time' 
+        WHERE t2asc.ART_ID IN ($where_art_id_str) AND tpdt.status = '1' AND tpdt.tpoint_id = '$tpoint_id' AND tpdt.week_day = '$week_day' AND tpdt.time_from <= '$cur_time' AND tpdt.time_to >= '$cur_time' 
         ORDER BY tpdt.delivery_days ASC;");
         $delivers = mysqli_fetch_all($r, MYSQLI_ASSOC);
         $array = [];
@@ -1123,7 +1132,7 @@ class CatalogueClass
         FROM `T2_ARTICLES` t2a 
             LEFT OUTER JOIN `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id=t2a.ART_ID)
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID)
-        WHERE t2a.ART_ID IN ($where_art_id_str) AND t2apr.in_use='1';";
+        WHERE t2a.ART_ID IN ($where_art_id_str) AND t2apr.in_use = '1';";
         $r = mysqli_fetch_all($dbt->query($query), MYSQLI_ASSOC);
         $prices = [];
         foreach ($r as $row) {
@@ -1226,7 +1235,7 @@ class CatalogueClass
     public function checkOriginalEquipment($art_id, $search_number)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `SEARCH_NUMBER` FROM `T2_CROSS` WHERE `ART_ID`='$art_id' AND `KIND` LIKE '3' AND `RELATION`=0;");
+        $r = $db->query("SELECT `SEARCH_NUMBER` FROM `T2_CROSS` WHERE `ART_ID` = $art_id AND `KIND` = 3 AND `RELATION` = 0;");
         $n = $db->num_rows($r);
         $nom = 0;
         for ($i = 1; $i <= $n; $i++) {
@@ -1245,7 +1254,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_CROSS` 
-        WHERE `ART_ID`='$art_id' AND `SEARCH_NUMBER` LIKE '$article_nr_search' AND `KIND` IN (3,4) AND `RELATION`=$relation_id;");
+        WHERE `ART_ID` = $art_id AND `SEARCH_NUMBER` LIKE '$article_nr_search' AND `KIND` IN (3,4) AND `RELATION` = $relation_id;");
         $n = $db->result($r, 0, `count_arts`);
         return ($n > 0);
     }
@@ -1256,7 +1265,7 @@ class CatalogueClass
     public function getBrandType($brand_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `KIND` FROM `T2_BRANDS` WHERE `BRAND_ID`=$brand_id LIMIT 1;");
+        $r = $db->query("SELECT `KIND` FROM `T2_BRANDS` WHERE `BRAND_ID` = $brand_id LIMIT 1;");
         $kind = $db->result($r, 0, "KIND");
         return ($kind == 3);
     }
@@ -1310,7 +1319,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getDbm();
         if ($suppl_id > 0) {
-            $r = $db->query("SELECT `visible` FROM `A_CLIENTS_STORAGE` WHERE `client_id`='$suppl_id' AND `id`='$storage_id' LIMIT 1;");
+            $r = $db->query("SELECT `visible` FROM `A_CLIENTS_STORAGE` WHERE `client_id` = $suppl_id AND `id` = $storage_id LIMIT 1;");
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $visible = $db->result($r, 0, "visible");
@@ -1332,10 +1341,10 @@ class CatalogueClass
         $client = new ClientClass();
         $shop = new ShopClass();
         $automan = new AutoClass();
-        $prefix = $this->getLangPrefix();
         $cur = $this->getCurrentExrate();
         $kours_cap = $this->getSymbolExrate($cur);
         $format_name = $this->getFormatAticle($article_name);
+        $format_brand_name = $this->getFormatBrand($brand_name);
         $return_days_alt = $return_days_img = "";
         if ($suppl_id > 0) {
             if ($stock != 0) {
@@ -1379,9 +1388,9 @@ class CatalogueClass
         $form = str_replace("{product_name}", $article_name, $form);
         $form = str_replace("{product_brand}", $brand_name, $form);
         $form = str_replace("{product_format_name}", $format_name, $form);
-        $form = str_replace("{product_lang_prefix}", $prefix, $form);
+        $form = str_replace("{product_format_brand}", $format_brand_name, $form);
+        $form = str_replace("{page_product_link}", $this->getSiteLink() . "$this->article_link/$format_name/$format_brand_name/$art_id/", $form);
         $form = str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
-        $form = str_replace("{product_format_brand}", $this->getFormatBrand($brand_name), $form);
         $product_text = ($text == "") ? "{details_name_cap}" : $text;
         $format_product_text = ($text == "") ? "{details_name_cap}" : $this->formatArticleName($text);
         $mfa_text = "";
@@ -1441,7 +1450,6 @@ class CatalogueClass
         $form = str_replace("{index_type}", $this->getIndexTypeImage($art_id, $article_nr_search, $article_name, $format_name, $brand_id, $brand_nr_search), $form);
         $form = str_replace("{count_users}", $client->getUsersCount(), $form);
         $form = str_replace("{data_today}", date("Y-m-d"), $form);
-        $form = str_replace("{prefix_url}", $prefix, $form);
         $form = str_replace("{tpoint_full_name}", ($suppl_id == 0) ? $client->getArticleStorageTPoint($storage_id) : "", $form);
 
         $form = str_replace("{product_info}", $showform->getArticleInfoForm($art_id, 1), $form);
@@ -1536,7 +1544,7 @@ class CatalogueClass
         $client_id = $this->getClient();
         $categories = $actions = [];
 
-        $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id`='$client_id';");
+        $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $category_id = $db->result($r, $i - 1, "client_category");
@@ -1544,17 +1552,17 @@ class CatalogueClass
         }
         $categories = implode(",", $categories);
 
-        $r = $db->query("SELECT `id` FROM `ACTION_CLIENTS` WHERE `art_id`='$art_id' AND `status`=1;");
+        $r = $db->query("SELECT `id` FROM `ACTION_CLIENTS` WHERE `art_id` = $art_id AND `status` = 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $action_id = $db->result($r, $i - 1, "id");
-            $r2 = $db->query("SELECT * FROM `ACTION_CLIENTS_LIST` WHERE `action_id`='$action_id' AND `client_id`='$client_id';");
+            $r2 = $db->query("SELECT * FROM `ACTION_CLIENTS_LIST` WHERE `action_id` = $action_id AND `client_id` = $client_id;");
             $n2 = $db->num_rows($r2);
             if ($n2 > 0) {
                 array_push($actions, $action_id);
             }
             if ($categories != "") {
-                $r3 = $db->query("SELECT * FROM `ACTION_CLIENTS_CATEGORY` WHERE `action_id`='$action_id' AND `category_id` IN ($categories);");
+                $r3 = $db->query("SELECT * FROM `ACTION_CLIENTS_CATEGORY` WHERE `action_id` = $action_id AND `category_id` IN ($categories);");
                 $n3 = $db->num_rows($r3);
                 if ($n3 > 0) {
                     array_push($actions, $action_id);
@@ -1566,7 +1574,7 @@ class CatalogueClass
         if ($actions == "") {
             return false;
         } else {
-            $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `id` IN ($actions) AND `status`=1 LIMIT 1;");
+            $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `id` IN ($actions) AND `status` = 1 LIMIT 1;");
             $action_id = $db->result($r, 0, "id");
             $amount = $db->result($r, 0, "amount");
             $max_amount = $db->result($r, 0, "max_amount");
@@ -1589,13 +1597,13 @@ class CatalogueClass
         $dbt = DbSingleton::getTokoDb();
         $data_today = date("Y-m-d");
         $all_amount = 0;
-        $r = $dbt->query("SELECT `AMOUNT` FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID`='$art_id';");
+        $r = $dbt->query("SELECT `AMOUNT` FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID` = $art_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $amount = $db->result($r, $i - 1, "AMOUNT");
             $all_amount += $amount;
         }
-        $r = $db->query("SELECT `amount` FROM `J_DP_STR` WHERE `art_id`='$art_id' AND `status_dps`='93';");
+        $r = $db->query("SELECT `amount` FROM `J_DP_STR` WHERE `art_id` = $art_id AND `status_dps` = '93';");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $amount = $db->result($r, $i - 1, "amount");
@@ -1613,22 +1621,22 @@ class CatalogueClass
         $client = new ClientClass();
         $cash_id = 2;
 
-        $r = $dbt->query("SELECT * FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id`='$art_id' AND `in_use`=1 ORDER BY `data_update` DESC LIMIT 1;");
+        $r = $dbt->query("SELECT `cash_id` FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 ORDER BY `data_update` DESC LIMIT 1;");
         $n = $dbt->num_rows($r);
         if ($n > 0) {
             $cash_id = $dbt->result($r, 0, "cash_id");
         }
 
+        $price = 0;
         list($price_lvl, $margin_price_lvl) = $this->getDpClientPriceLevels($client_id);
         $markup_min = $client->getClientMarkupMin($client_id);
         $query = "SELECT t2apr.price_$price_lvl, t2apr.minMarkup, t2aps.OPER_PRICE
         FROM `T2_ARTICLES` t2a 
             LEFT OUTER JOIN `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id=t2a.ART_ID)
             LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID=t2a.ART_ID)
-        WHERE t2a.ART_ID='$art_id' AND t2apr.in_use='1' LIMIT 1;";
+        WHERE t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;";
         $r = $dbt->query($query);
         $n = $dbt->num_rows($r);
-        $price = 0;
         if ($n == 1) {
             $price = $dbt->result($r, 0, "price_" . $price_lvl);
             $minMarkup = $dbt->result($r, 0, "minMarkup");
@@ -1685,7 +1693,7 @@ class CatalogueClass
         FROM `T2_ARTICLES` t2a 
             LEFT OUTER JOIN `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id=t2a.ART_ID)
             LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID=t2a.ART_ID)
-        WHERE t2a.ART_ID='$art_id' AND t2apr.in_use='1' LIMIT 1;";
+        WHERE t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;";
         $r = $dbt->query($query);
         $n = $dbt->num_rows($r);
         if ($n == 1) {
@@ -1740,7 +1748,7 @@ class CatalogueClass
         $query = "SELECT t2si.price_usd 
         FROM `T2_ARTICLES` t2a 
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
-        WHERE t2a.ART_ID='$art_id' AND t2si.suppl_id='$suppl_id' LIMIT 1;";
+        WHERE t2a.ART_ID = $art_id AND t2si.suppl_id = $suppl_id LIMIT 1;";
         $r = $dbt->query($query);
         $n = $dbt->num_rows($r);
         if ($n == 1) {
@@ -1780,7 +1788,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getDbm();
         $price_lvl = $margin_price_lvl = $price_suppl_lvl = $margin_price_suppl_lvl = $client_vat = 0;
-        $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 1) {
             $price_lvl = $db->result($r, 0, "price_lvl");
@@ -1798,7 +1806,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getDbm();
         $price_in_vat = $show_in_vat = $price_add_vat = 0;
-        $query = "SELECT * FROM `A_CLIENTS_VAT_CONDITIONS` WHERE `client_id`='$suppl_id' LIMIT 1;";
+        $query = "SELECT `price_in_vat`, `show_in_vat`, `price_add_vat` FROM `A_CLIENTS_VAT_CONDITIONS` WHERE `client_id` = $suppl_id LIMIT 1;";
         $r = $db->query($query);
         $n = $db->num_rows($r);
         if ($n == 1) {
@@ -1815,8 +1823,8 @@ class CatalogueClass
         $margin = $delivery = $margin2 = 0;
         $query = "SELECT `margin`, `delivery`, `margin2` 
         FROM `T_POINT_SUPPL_FM` 
-        WHERE `tpoint_id`='$tpoint_id' AND `suppl_id`='$suppl_id' AND `suppl_storage_id`='$suppl_storage_id' AND `price_from`<='$price_suppl' 
-        AND `price_to`>='$price_suppl' AND `price_rating_id`='$price_suppl_lvl' LIMIT 1;";
+        WHERE `tpoint_id` = '$tpoint_id' AND `suppl_id` = '$suppl_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `price_from` <= '$price_suppl' 
+        AND `price_to` >= '$price_suppl' AND `price_rating_id` = '$price_suppl_lvl' LIMIT 1;";
         $r = $db->query($query);
         $n = $db->num_rows($r);
         if ($n == 1) {
@@ -1836,8 +1844,8 @@ class CatalogueClass
         $info = $short_info = "";
         $r = $db->query("SELECT `delivery_days`, `time_from_del`, `time_to_del` 
         FROM `T_POINT_DELIVERY_TIME`
-        WHERE `status`='1' AND `tpoint_id`='$tpoint_id' AND `storage_id`='$storage_id' AND `week_day`='$week_day' AND `time_from`<='$cur_time' 
-        AND `time_to`>='$cur_time' ORDER BY `delivery_days` ASC LIMIT 1;");
+        WHERE `status` = '1' AND `tpoint_id` = '$tpoint_id' AND `storage_id` = '$storage_id' AND `week_day` = '$week_day' AND `time_from` <= '$cur_time' AND `time_to` >= '$cur_time' 
+        ORDER BY `delivery_days` ASC LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 1) {
             $delivery_days = $db->result($r, 0, "delivery_days");
@@ -1885,11 +1893,10 @@ class CatalogueClass
     public function getOriginalNumbers($art_id)
     {
         $db = DbSingleton::getTokoDb();
-        $prefix = $this->getLangPrefix();
         $r = $db->query("SELECT t2c.DISPLAY_NR, t2b.BRAND_NAME 
         FROM `T2_CROSS` t2c
-            LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
-        WHERE t2c.KIND='3' AND t2c.RELATION='0' AND t2c.ART_ID='$art_id';");
+            LEFT JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2c.BRAND_ID
+        WHERE t2c.KIND = 3 AND t2c.RELATION = 0 AND t2c.ART_ID = $art_id;");
         $n = $db->num_rows($r);
         $arr = [];
         if ($n > 0) {
@@ -1910,7 +1917,7 @@ class CatalogueClass
                 <div class=\"col-9 info__numbers-row-article\">";
                 foreach ($values as $value) {
                     $format_value = str_replace(str_split('.,+-\/:*?"<>| '), "", $value);
-                    $list .= "<a target=\"_blank\" href=\"https://toko.ua$prefix/$this->search_link/$format_value/\">$value</a>";
+                    $list .= "<a target=\"_blank\" href=\"" . $this->getSiteLink() . "$this->search_link/$format_value/\">$value</a>";
                     $i++;
                     if ($i <= count($values)) {
                         $list .= ", ";
@@ -1985,10 +1992,9 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
             LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
             LEFT OUTER JOIN `T2_BARCODES` t2br ON t2br.ART_ID=t2a.ART_ID
-        WHERE t2as.AMOUNT!=0 AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END)
+        WHERE t2as.AMOUNT != 0 AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
         GROUP BY t2a.ARTICLE_NR_DISPL;");
         $n = $db->num_rows($r);
-
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $article_nr_displ = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
@@ -2005,7 +2011,7 @@ class CatalogueClass
             $price = $this->getArticlePriceClient($art_id, $client_id, $cur);
             $price = str_replace(".", ",", "$price");
 
-            $rs = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES_NOT_EXPORT` WHERE `ART_ID`='$art_id' LIMIT 1;");
+            $rs = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES_NOT_EXPORT` WHERE `ART_ID` = $art_id LIMIT 1;");
             $ns = $db->result($rs, 0, "count_arts");
             if ($ns == 0) {
                 $list[$i] = [$i, "$article_nr_displ", "$brand", "$name", "$price", "$cur_cap", "$info", "$barcode"];
@@ -2029,13 +2035,13 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $cash_id = 2;
-        $r = $db->query("SELECT * FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id`='$art_id' AND `in_use`=1 LIMIT 1;");
+        $r = $db->query("SELECT * FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $cash_id = $db->result($r, 0, "cash_id");
         }
         if ($cash_id == 0 || $cash_id == "0") {
-            $db->query("UPDATE `T2_ARTICLES_PRICE_RATING` SET `cash_id`=2 WHERE `art_id`='$art_id' AND `in_use`=1 LIMIT 1;");
+            $db->query("UPDATE `T2_ARTICLES_PRICE_RATING` SET `cash_id`=2 WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
             $cash_id = 2;
         }
         return $cash_id;
@@ -2237,7 +2243,7 @@ class CatalogueClass
                                     <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\"><span class=\"span-grey\">{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
                                 </div>";
                             } else {
-                                $ll[$i] = "<a href='https://toko.ua{content_prefix}/$this->search_link/{content_search_number}/{content_brand_link}/'>{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> <i class=\"fa fa-chevron-right\"></i></a>";
+                                $ll[$i] = "<a href=\"" . $this->getSiteLink() . "$this->search_link/{content_search_number}/{content_brand_link}/\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> <i class=\"fa fa-chevron-right\"></i></a>";
                             }
                             $hide[$i] = "none";
                             $class[$i] = "$art_id-hide";
@@ -2255,7 +2261,7 @@ class CatalogueClass
                                 <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\"><span class=\"span-grey\">{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
                             </div>";
                         } else {
-                            $ll[$i] = "<a href='https://toko.ua{content_prefix}/$this->search_link/{content_search_number}/{content_brand_link}/'>{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> <i class=\"fa fa-chevron-right\"></i></a>";
+                            $ll[$i] = "<a href=\"" . $this->getSiteLink() . "$this->search_link/{content_search_number}/{content_brand_link}/\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> <i class=\"fa fa-chevron-right\"></i></a>";
                         }
                         $hide[$i] = "none";
                         $class[$i] = "$art_id-hide";
@@ -2369,31 +2375,34 @@ class CatalogueClass
     public function getHeadRowName($head_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_RU` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
-        return $db->result($r, 0, "TEX_RU");
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT `TEX_$postfix` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID` = $head_id LIMIT 1;");
+        return $db->result($r, 0, "TEX_$postfix");
     }
 
     public function getHeadRowLink($head_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID` = $head_id LIMIT 1;");
         return $db->result($r, 0, "TEX_LINK");
     }
 
     public function getHeadRowImage($head_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `IMAGES` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        $r = $db->query("SELECT `IMAGES` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID` = $head_id LIMIT 1;");
         return $db->result($r, 0, "IMAGES");
     }
 
     public function getCatRowName($cat_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID`='$cat_id' LIMIT 1;");
-        $name = $db->result($r, 0, "TEX_RU");
         if ($cat_id == 0) {
             $name = $this->replaceLang("{popular_goods_cap}");
+        } else {
+            $postfix = $this->getLangPostfix($this->getLanguage());
+            $r = $db->query("SELECT `TEX_$postfix` FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID` = $cat_id LIMIT 1;");
+            $name = $db->result($r, 0, "TEX_$postfix");
         }
         return $name;
     }
@@ -2401,17 +2410,18 @@ class CatalogueClass
     public function getCatRowLink($cat_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID`='$cat_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID` = $cat_id LIMIT 1;");
         return $db->result($r, 0, "TEX_LINK");
     }
 
     public function getGroupRowName($group_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_RU`, `H1_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
-        $h1 = $db->result($r, 0, "H1_RU");
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT `TEX_$postfix`, `H1_$postfix` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
+        $h1 = $db->result($r, 0, "H1_$postfix");
         if ($h1 == "") {
-            $text = $db->result($r, 0, "TEX_RU");
+            $text = $db->result($r, 0, "TEX_$postfix");
         } else {
             $text = $h1;
         }
@@ -2421,21 +2431,23 @@ class CatalogueClass
     public function getGroupRowText($group_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
-        return $db->result($r, 0, "TEX_RU");
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT `TEX_$postfix` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
+        return $db->result($r, 0, "TEX_$postfix");
     }
 
     public function getGroupRowLink($group_id)
     {
+        $group_id = $this->getUrlNumber($group_id);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
         return $db->result($r, 0, "TEX_LINK");
     }
 
     public function getGroupRowImage($group_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `IMAGES` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        $r = $db->query("SELECT `IMAGES` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
         return $db->result($r, 0, "IMAGES");
     }
 
@@ -2443,7 +2455,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $cats = [];
-        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' GROUP BY `CAT_ID`;");
+        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id GROUP BY `CAT_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = $db->result($r, $i - 1, "CAT_ID");
@@ -2459,7 +2471,7 @@ class CatalogueClass
     public function getMaxPosition($head_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT MAX(`COL`) as max_col, MAX(`ROW`) as max_row FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id';");
+        $r = $db->query("SELECT MAX(`COL`) as max_col, MAX(`ROW`) as max_row FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id;");
         $max_col = $db->result($r, 0, "max_col") + 1;
         $max_row = $db->result($r, 0, "max_row") + 1;
         return array($max_col, $max_row);
@@ -2472,7 +2484,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT `HEAD_ID`, `HEAD_COLOR` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -2516,7 +2528,7 @@ class CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "";
         $head_link = $this->getHeadRowLink($head_id);
-        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id' ORDER BY `COL` ASC, `ROW` ASC;");
+        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id ORDER BY `COL` ASC, `ROW` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = $db->result($r, $i - 1, "CAT_ID");
@@ -2529,7 +2541,7 @@ class CatalogueClass
             }
             $list .= "<div class=\"tree-cat__item\">
                 <div class=\"tree-cat__item-title\">
-                    <a href=\"/$this->catalog_exist_link/$head_link/$cat_link\">$icon $cat_name</a>
+                    <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link\">$icon $cat_name</a>
                 </div>
                 <div class=\"tree-group\">
                     $group_list    
@@ -2550,7 +2562,7 @@ class CatalogueClass
         $r = $db->query("SELECT t2hcg.`GROUP_ID` 
         FROM `T2_TREE_HCG_EXIST` t2hcg
             LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON t2g.GROUP_ID = t2hcg.GROUP_ID
-        WHERE t2hcg.`HEAD_ID`='$head_id' AND t2hcg.`CAT_ID`='$cat_id' AND t2g.`STATUS`=1;");
+        WHERE t2hcg.`HEAD_ID` = $head_id AND t2hcg.`CAT_ID` = $cat_id AND t2g.`STATUS` = 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id = $db->result($r, $i - 1, "GROUP_ID");
@@ -2560,7 +2572,7 @@ class CatalogueClass
             $groups[] = compact("group_name", "group_link", "group_image");
         }
         if ($cat_id == 0) {
-            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `POPULAR`=1;");
+            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `POPULAR` = 1;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
@@ -2581,7 +2593,7 @@ class CatalogueClass
                     $link .= "$model_link/";
                 }
             }
-            $list .= "<a href=\"/$this->catalog_exist_link/$group_link/$link\" class=\"tree-group__item\">
+            $list .= "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$link\" class=\"tree-group__item\">
                 <div class=\"tree-group__item-image\">
                     <img data-src=\"/images/tree-group/$group_image\" class=\"lazy\" alt=\"$group_name\">
                 </div>
@@ -2592,72 +2604,6 @@ class CatalogueClass
         }
         return $list;
     }
-
-    /*
-    * Tree List Headers
-     * /cars/details
-    * */
-//    public function getCatalogRow($mfa_link, $model_link)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $form = $this->getHtmlForm("cars/details");
-//        $list = "";
-//        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $head_id = $db->result($r, $i - 1, "HEAD_ID");
-//            $head_name = $this->getHeadRowName($head_id);
-//            $head_link = $this->getHeadRowLink($head_id);
-//            $list_group = $this->getCatalogRowList($head_id, $mfa_link, $model_link);
-//            $list .= "<div>
-//                <a class=\"tree-title\" href=\"/$this->catalog_exist_link/$head_link/\">$head_name</a>
-//                $list_group
-//            </div>";
-//        }
-//        $form = str_replace("{details_list}", $list, $form);
-//        return $form;
-//    }
-
-//    public function getCatalogRowList($head_id, $mfa_link, $model_link)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $list = "";
-//        $arr = [];
-//        $r = $db->query("SELECT * FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id' ORDER BY `COL` ASC, `ROW` ASC;");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $cat_id = $db->result($r, $i - 1, "CAT_ID");
-//            $col = $db->result($r, $i - 1, "COL");
-//            $row = $db->result($r, $i - 1, "ROW");
-//            $arr[$col][$row] = $cat_id;
-//        }
-//        list($max_col,) = $this->getMaxPosition($head_id);
-//        if ($n > 0) {
-//            $list = "<div class='tree-block'>";
-//            foreach ($arr as $col_id => $rows) {
-//                $list .= "<div class='tree-block__col' style='width: calc(100% / $max_col)'>";
-//                foreach ($rows as $row_id => $cat_id) {
-//                    $cat_name = $this->getCatRowName($cat_id);
-//                    $group_list = $this->getTreeConsGroupList($head_id, $cat_id, $mfa_link, $model_link);
-//                    $icon = "";
-//                    if ($cat_id == 0) {
-//                        $icon = "<i class='fa fa-circle' style='margin-right: 5px; color: #f44438'></i>";
-//                    }
-//                    $list .= "<div>
-//                        <div class='tree-item'>
-//                            <div class='tree-item-title'>
-//                                $icon$cat_name
-//                            </div>
-//                            <div class='tree-item-list'>$group_list</div>
-//                        </div>
-//                    </div>";
-//                }
-//                $list .= "</div>";
-//            }
-//            $list .= "</div>";
-//        }
-//        return $list;
-//    }
 
     /*
      * Tree List Headers
@@ -2674,7 +2620,7 @@ class CatalogueClass
             $head_name = $this->getHeadRowName($head_id);
             $head_link = $this->getHeadRowLink($head_id);
             $list .= "<li class=\"header-nav__li\" data-nav-id=\"$head_id\">
-                <a rel=\"noopener\" href=\"/$this->catalog_link/$head_link\">$head_name</a>
+                <a rel=\"noopener\" href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/\">$head_name</a>
             </li>";
         }
         $form = str_replace("{catalog_range}", $list, $form);
@@ -2690,7 +2636,7 @@ class CatalogueClass
         $form = $this->getHtmlForm("catalog_menu/list");
         $list = "";
         $arr = [];
-        $r = $db->query("SELECT `CAT_ID`, `COL`, `ROW` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID`='$head_id' ORDER BY `COL` ASC, `ROW` ASC;");
+        $r = $db->query("SELECT `CAT_ID`, `COL`, `ROW` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id ORDER BY `COL` ASC, `ROW` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = $db->result($r, $i - 1, "CAT_ID");
@@ -2708,10 +2654,10 @@ class CatalogueClass
                     $group_list = $this->getTreeConsGroupList($head_id, $cat_id);
                     $head_link = $this->getHeadRowLink($head_id);
                     $cat_link = $this->getCatRowLink($cat_id);
-                    $href = "/$this->catalog_link/$head_link/$cat_link";
+                    $href = $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/";
                     $icon = "";
                     if ($cat_id == 0) {
-                        $href = "/";
+                        $href = $this->getSiteLink();
                         $icon = "<i class=\"fa fa-circle\" style=\"margin-right: 5px; color: #f44438;\"></i>";
                     }
                     $list .= "<div>
@@ -2738,7 +2684,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `CAT_ID`='$cat_id';");
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `CAT_ID` = $cat_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id = $db->result($r, $i - 1, "GROUP_ID");
@@ -2752,11 +2698,11 @@ class CatalogueClass
                 }
             }
             $list .= "<div class=\"tree-item-list__element\">
-                <a href=\"/$this->catalog_exist_link/$group_link/$link\">$group_name</a>
+                <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$link\">$group_name</a>
             </div>";
         }
         if ($cat_id == 0) {
-            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `POPULAR`=1;");
+            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `POPULAR` = 1;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
@@ -2770,7 +2716,7 @@ class CatalogueClass
                     }
                 }
                 $list .= "<div class=\"tree-item-list__element\">
-                    <a href=\"/$this->catalog_exist_link/$group_link/$link\">$group_name</a>
+                    <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$link\">$group_name</a>
                 </div>";
             }
         }

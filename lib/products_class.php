@@ -123,12 +123,12 @@ class ProductsClass extends CatalogueClass
         $automan = new AutoClass();
         $n = 0;
         $list = $title = $nav = $tab = "";
-        $group_link = $automan->getGroupRowLink($group_id);
+        $group_link = $this->getSiteLink() . $this->catalog_link . $automan->getGroupRowLink($group_id);
         $skip = 0;
 
         // MANUFACTURE
         if ($type == "") {
-            $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND` FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_BRAND`;");
+            $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_BRAND`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $mfa_id = $db->result($r, $i - 1, "MFA_ID");
@@ -143,7 +143,7 @@ class ProductsClass extends CatalogueClass
         // MODEL
         if ($type == "manuf") {
             $mfa_id = $value;
-            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' AND `ACTIVE`=1 GROUP BY `Model`;");
+            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID` = '$mfa_id' AND `ACTIVE` = 1 GROUP BY `Model`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
@@ -161,7 +161,8 @@ class ProductsClass extends CatalogueClass
             $n = 1;
             $r = $db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
                 CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
-            FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id';");
+            FROM `T_models` 
+            WHERE `Model` = '$model' AND `MOD_MFA_ID` = '$mfa_id';");
             $date_start = $db->result($r, 0, "min_year");
             $date_end = $db->result($r, 0, "max_year");
             $list .= $this->getYearsForm($date_start, $date_end, $mfa_id, $model);
@@ -177,13 +178,13 @@ class ProductsClass extends CatalogueClass
                 ((`MOD_PCON_END`>=" . $year . "00 AND `MOD_PCON_END`<=" . $year . "12)
                 OR (`MOD_PCON_START`<=" . $year . "12 AND `MOD_PCON_END`>=" . $year . "00)
                 OR (`MOD_PCON_START`<=" . $year . "12 AND `MOD_PCON_END`=0))";
-            $r = $db->query("SELECT * FROM `T_models` WHERE `Model`='$model' AND `MOD_MFA_ID`='$mfa_id' AND `ACTIVE`=1 $where;");
+            $r = $db->query("SELECT * FROM `T_models` WHERE `Model` = '$model' AND `MOD_MFA_ID` = '$mfa_id' AND `ACTIVE` = 1 $where;");
             $n = $db->num_rows($r);
             if ($n == 1) {
                 $skip = $db->result($r, 0, "MOD_ID");
             }
             for ($i = 1; $i <= $n; $i++) {
-                $mod_id = $db->result($r, $i - 1, "MOD_ID");
+                $mod_id = $db->result($r, $i - 1, "MOD_ID") + 0;
                 $tex_text = $db->result($r, $i - 1, "TEX_TEXT");
                 $image = $db->result($r, $i - 1, "Car_pict");
                 list($body_name, $body_path) = $this->getBodyCarImage($mod_id);
@@ -222,7 +223,9 @@ class ProductsClass extends CatalogueClass
         if ($type == "bodyc") {
             $mod_id = $value;
             $r = $db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` FROM `T_types` 
-            WHERE `TYP_MOD_ID`='$mod_id' AND `ACTIVE`=1 GROUP BY `VOLUME_CM`, `FUEL_ID` ORDER BY `VOLUME_CM`, `FUEL_ID`;");
+            WHERE `TYP_MOD_ID` = '$mod_id' AND `ACTIVE` = 1 
+            GROUP BY `VOLUME_CM`, `FUEL_ID` 
+            ORDER BY `VOLUME_CM`, `FUEL_ID`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $typ_id = $db->result($r, $i - 1, "TYP_ID");
@@ -242,7 +245,9 @@ class ProductsClass extends CatalogueClass
         // MODIFICATION
         if ($type == "engin") {
             list($mod_id, $volume_cm, $fuel_id) = explode("_", $value);
-            $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' AND `VOLUME_CM`='$volume_cm' AND `FUEL_ID`='$fuel_id' AND `ACTIVE`=1 ORDER BY `TYP_HP_FROM`;");
+            $r = $db->query("SELECT * FROM `T_types` 
+            WHERE `TYP_MOD_ID` = '$mod_id' AND `VOLUME_CM` = '$volume_cm' AND `FUEL_ID` = '$fuel_id' AND `ACTIVE` = 1 
+            ORDER BY `TYP_HP_FROM`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $typ_id = $db->result($r, $i - 1, "TYP_ID");
@@ -299,9 +304,9 @@ class ProductsClass extends CatalogueClass
     public function getBodyCarImage($mod_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `BODY_ID` FROM `T_types` WHERE `TYP_MOD_ID`='$mod_id' LIMIT 1;");
-        $body_id = $db->result($r, 0, "BODY_ID");
-        $r = $db->query("SELECT `LOGO`, `TYPE_BODY` FROM `T_types_body_car` WHERE `BODY_ID`='$body_id' AND `LANG_ID`=16 LIMIT 1;");
+        $r = $db->query("SELECT `BODY_ID` FROM `T_types` WHERE `TYP_MOD_ID` = $mod_id LIMIT 1;");
+        $body_id = $db->result($r, 0, "BODY_ID") + 0;
+        $r = $db->query("SELECT `LOGO`, `TYPE_BODY` FROM `T_types_body_car` WHERE `BODY_ID` = $body_id AND `LANG_ID` = 16 LIMIT 1;");
         $image = $db->result($r, 0, "LOGO");
         $name = $db->result($r, 0, "TYPE_BODY");
         $path = "https://toko.ua/uploads/images/body-types/$image";
@@ -311,14 +316,14 @@ class ProductsClass extends CatalogueClass
     public function getModIdText($mod_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T_models` WHERE `MOD_ID`='$mod_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = '$mod_id' LIMIT 1;");
         return $db->result($r, 0, "TEX_TEXT");
     }
 
     public function getTypIdText($typ_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T_types` WHERE `TYP_ID`='$typ_id' LIMIT 1;");
+        $r = $db->query("SELECT `TYP_TEXT` FROM `T_types` WHERE `TYP_ID` = '$typ_id' LIMIT 1;");
         return $db->result($r, 0, "TYP_TEXT");
     }
 

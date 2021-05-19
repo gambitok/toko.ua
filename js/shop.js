@@ -271,7 +271,8 @@ function showFastOrder() {
     let phone = $("#input_phone2").val();
     JsHttpRequest.query(folder,{'w':'finish_fast_order', 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.href = "https://toko.ua/order/?order_id=" + result.content[0] + "&user_id=" + result.content[1] + "&user_status=" + result.content[2];
+            //location.href = "https://toko.ua/order/?order_id=" + result.content[0] + "&user_id=" + result.content[1] + "&user_status=" + result.content[2];
+            location.href = result.content[3];
         }}, true);
 }
 

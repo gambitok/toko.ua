@@ -38,7 +38,6 @@ function getContent($content) {
     $content = str_replace("{basket_style}", $shop->countBasket()[1], $content);
     $content = str_replace("{garage_style}", "", $content);
     $content = str_replace("{garage_status}", $automan->getGarageAutoCount()[0], $content);
-//    $content = str_replace("{garage_style}", $automan->getGarageAutoCount()[1], $content);
     $content = str_replace("{basket_summ}", $shop->countSummBasket(), $content);
     $content = str_replace("{profile_mobile}", $profile->getProfileInfoMobile(), $content);
     $content = str_replace("{list_social}", "<ul>" . getPhpContent("/tpl/menu/social_icons.php") . "</ul>", $content);
@@ -164,8 +163,6 @@ function getMoreTitle($path) {
 function printBreadcrumbs($path) {
     $cat = new CatalogueClass();
     $menu = new MenuClass();
-    $language = new LangClass();
-    $prefix = $language->getLangPrefix();
     $bread = findLinks();
     $section = $path;
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -173,13 +170,13 @@ function printBreadcrumbs($path) {
         $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
     }
 
-    $a_home = "<a href=\"https://toko.ua$prefix/\" title=\"{seo_site_toko}\">{seo_shop_toko}</a>";
-    $a_section = "<a href=\"https://toko.ua$prefix/$section/\">{site_$section}</a>";
+    $a_home = "<a href=\"" . $cat->getSiteLink() . "\" title=\"{seo_site_toko}\">{seo_shop_toko}</a>";
+    $a_section = "<a href=\"" . $cat->getSiteLink() . "$section/\">{site_$section}</a>";
     $h_section = "{site_$section}";
 
     $list = "";
     $b_arr = [];
-    $b_arr[1] = ["name" => "{seo_site_toko}", "item" => "https://toko.ua$prefix/"];
+    $b_arr[1] = ["name" => "{seo_site_toko}", "item" => $cat->getSiteLink()];
 
     switch ($section) {
         case "search" : {
@@ -191,14 +188,14 @@ function printBreadcrumbs($path) {
         case "article" : {
             $art_id = $cat->getUrlNumber($bread[3]);
             $info = $cat->getArticleText($art_id);
-            $back = "<a href=\"https://toko.ua$prefix/catalog/\">{site_catalog}</a>";
+            $back = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/\">{site_catalog}</a>";
             $pretitle = "$a_home > $back > $info";
-            $b_arr[2] = ["name" => "{site_catalog}", "item" => "https://toko.ua$prefix/catalog/"];
+            $b_arr[2] = ["name" => "{site_catalog}", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/"];
             $b_arr[3] = ["name" => "$info", "item" => "$actual_link"];
             break;
         }
         case "news" : {
-            $b_arr[2] = ["name" => "$h_section", "item" => "https://toko.ua$prefix/news/"];
+            $b_arr[2] = ["name" => "$h_section", "item" => "" . $cat->getSiteLink() . "news/"];
             if ($cat->getUrlString($bread[1]) == "state") {
                 $state_link = $cat->getUrlString($bread[2]);
                 $state_name = $menu->getNewsStateTitle($state_link);
@@ -211,7 +208,7 @@ function printBreadcrumbs($path) {
             break;
         }
         case "reviews" : {
-            $b_arr[2] = ["name" => "$h_section", "item" => "https://toko.ua$prefix/reviews/"];
+            $b_arr[2] = ["name" => "$h_section", "item" => "" . $cat->getSiteLink() . "reviews/"];
             if ($cat->getUrlString($bread[1]) == "state") {
                 $state_link = $cat->getUrlString($bread[2]);
                 $state_name = $menu->getReviewStateTitle($state_link);
@@ -291,16 +288,10 @@ function getHtmlForm($name) {
 function getDescription($path) {
     $language = new LangClass();
     $cat = new CatalogueClass();
-//    $search = new SearchClass();
-//    $automan = new AutoClass();
     $linka = findLinks();
     $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
-
-//    $page = $cat->getUrlNumber($_GET['page']);
-
     $description = ($path != "") ? "{seo_description} $prefix {seo_description2}" : "{seo_description} {seo_description2}";
-
     if ($path == "article") {
         $art_id = $linka[3];
         $article_nr_search = $cat->getArticleDispl($art_id);
@@ -312,70 +303,6 @@ function getDescription($path) {
         $description = "$art_name $brand_name $article_nr_search - {seo_description_article}";
         $description = ltrim($description, " ");
     }
-//    if ($path == "catalog") {
-//        $pager = "";
-//        if ($page !== NULL && $page > 0) {
-//            $pager = "- {pager_cap}".$page;
-//        }
-//
-//        $result = explode($linka[0]."/", $_SERVER["REQUEST_URI"], 2);
-//        $link = ltrim($result[1]);
-//        $arr = explode("/", $link);
-//        $str_link = "";
-//        $mfa_link = "";
-//        $mod_link = "";
-//        if (!empty($arr[0])) $str_link = $arr[0]; $filters = "";
-//        if (!empty($arr[3])) ((strpos($arr[3], "=") !== false)) ? $filters = $arr[3] : $filters = "";
-//        if (!empty($arr[2])) ((strpos($arr[2], "=") !== false)) ? $filters = $arr[2] : $mod_link = $arr[2];
-//        if (!empty($arr[1])) ((strpos($arr[1], "=") !== false)) ? $filters = $arr[1] : $mfa_link = $arr[1];
-//
-//        $filters_cap = "";
-//        if ($filters != "") {
-//            $brand_ids = $search->getActiveFilters($filters);
-//            foreach ($brand_ids[0] as $brand_id) {
-//                $brand_name = $search->getBrandName($brand_id);
-//                $filters_cap .= " $brand_name,";
-//            }
-//        }
-//        $filters_cap = rtrim($filters_cap, ",");
-//        $filters_cap = ltrim($filters_cap, " ");
-//        $str_id = $automan->getStrNewLinkStr($str_link);
-//        $str_text = $automan->getStrNewDescr($str_id);
-//
-//        if ($str_id == "") {
-//            $head_id = $automan->getHeadNewLinkStr($str_link);
-//            $head_text = $automan->getHeadNewDescr($head_id)["text"];
-//            $cat_text = $linka[2];
-//            if ($cat_text == "") {
-//                $h1 = "$head_text";
-//            } else {
-//                $cat_id = $automan->getCatNewLinkStr($head_id, $cat_text);
-//                list($cat_text) = $automan->getCatNewDescr($cat_id);
-//                $h1 = "$cat_text";
-//            }
-//        } else {
-//            list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-//            list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-//            $translit = $search->getCarManufTranslit($mfa_id, $model);
-//            if ($mfa_link != "") {
-//                $mm = "{for_cap} $mfa_brand $model_text";
-//                if ($translit != "") {
-//                    $mm .= " $translit";
-//                }
-//            } else {
-//                $mm = "";
-//            }
-//            $h1 = "$str_text";
-//            ($mm == "") ?: $h1 .= " $mm";
-//            ($filters_cap == "") ?: $h1 .= ": $filters_cap";
-//            ($pager == "") ?: $h1 .= " $pager";
-//
-//        }
-//        $description = "$h1 - {seo_description_catalog1}, $h1 {seo_description_catalog2}";
-//        if ($str_link == "") {
-//            $description = "{seo_description} {seo_description2}";
-//        }
-//    }
     if ($path == "catalog") {
         $description = "{seo_description} {seo_description2}";
     }
@@ -449,7 +376,7 @@ function getPath() {
 function findPath() {
     $language = new LangClass();
     $language->setLangID(1);
-	$link = "https://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
+	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
     if (substr($link, -1) != "/") {
         $link .= "/";
     }
@@ -540,22 +467,26 @@ function getSeoTextForm()
     $str_linka = $linka;
     unset($str_linka[0]);
     $str_linka = implode("/", $str_linka);
+    $catalogue = new CatalogueClass();
+    $postfix = $catalogue->getLangPostfix($catalogue->getLanguage());
     if ($router == "") {
-        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER`='/' LIMIT 1;";
+        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER` = '/' LIMIT 1;";
     }
     if ($router == "cars") {
         $link = $str_linka;
-        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER`='cars' AND `LINK`='$link' LIMIT 1;";
+        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'cars' AND `LINK` = '$link' LIMIT 1;";
     }
     if ($router == "catalog") {
         $link = $str_linka;
-        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER`='catalog' AND `LINK`='$link' LIMIT 1;";
+        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'catalog' AND `LINK` = '$link' LIMIT 1;";
     }
     $r = $db->query($query);
     $n = $db->num_rows($r);
     if ($n > 0) {
-        $text = $db->result($r, 0, "CONTENT_RU");
-        $form = getSeoText($text);
+        $text = $db->result($r, 0, "CONTENT_$postfix");
+        if ($text != "") {
+            $form = getSeoText($text);
+        }
     }
     return $form;
 }

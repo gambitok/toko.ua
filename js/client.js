@@ -1,8 +1,11 @@
 
+/*
+* change Site Langugage
+* */
 function setSiteLang(id) {
     JsHttpRequest.query(folder,{'w':'setSiteLang', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.href = "https://toko.ua/" + result.content;
+            location.href = result.content;
         }}, true);
 }
 

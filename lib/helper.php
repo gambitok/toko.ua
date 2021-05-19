@@ -116,39 +116,59 @@ trait Helper
         return $cont;
     }
 
+    public function getSiteLink()
+    {
+        $link = "https://toko.ua/";
+        $language = new LangClass();
+        $postfix = $language->getLangIDPrefix($this->getLanguage());
+        $link .= $postfix;
+        return $link;
+    }
+
     public function getLanguage()
     {
         $language = new LangClass();
         return $language->getLanguageData();
     }
 
-    public function getLangPrefix()
-    {
-        $lang = $this->getLanguage();
-        $pre = "";
-        if ($lang == 1) {
-            $pre = "";
+//    public function getLangPrefix()
+//    {
+//        $lang = $this->getLanguage();
+//        $pre = "";
+//        if ($lang == 1) {
+//            $pre = "";
+//        }
+//        if ($lang == 2) {
+//            $pre = "/uk";
+//        }
+//        if ($lang == 3) {
+//            $pre = "/en";
+//        }
+//        return $pre;
+//    }
+
+    public function getLangPostfix($lang_id) {
+        $postfix = "RU";
+        if ($lang_id == 2) {
+            $postfix = "UA";
         }
-        if ($lang == 2) {
-            $pre = "/uk";
+        if ($lang_id == 3) {
+            $postfix = "EN";
         }
-        if ($lang == 3) {
-            $pre = "/en";
-        }
-        return $pre;
+        return $postfix;
     }
 
     public function getManualName($key)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `id`='$key';");
+        $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `id` = $key;");
         return $db->result($r, 0, "mcaption");
     }
 
     public function getManualNameCaption($key, $mid)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `key`='$key' AND `mid`='$mid' LIMIT 1;");
+        $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `key` = $key AND `mid` = $mid LIMIT 1;");
         return $db->result($r, 0, "mcaption");
     }
 
@@ -157,11 +177,11 @@ trait Helper
         $db = DbSingleton::getDbm();
         $lang_id = $this->getLanguage();
         $options = "";
-        $r = $db->query("SELECT `id` FROM `manual` WHERE `key`='$key' ORDER BY mid ASC;");
+        $r = $db->query("SELECT `id` FROM `manual` WHERE `key` = $key ORDER BY `mid` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "id");
-            $rs = $db->query("SELECT `caption` FROM `A_CUSTOMERS_CATEGORIES` WHERE `manual_id`='$id' AND `lang_id`='$lang_id' LIMIT 1;");
+            $rs = $db->query("SELECT `caption` FROM `A_CUSTOMERS_CATEGORIES` WHERE `manual_id` = $id AND `lang_id` = $lang_id LIMIT 1;");
             $caption = $db->result($rs, 0, "caption");
             if ($caption == "") {
                 $caption = $db->result($r, $i - 1, "mcaption");
@@ -295,7 +315,7 @@ trait Helper
     public function checkPhoto($ref)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT COUNT(`ART_ID`) as col FROM `T2_PHOTOS` WHERE `ART_ID`='$ref' AND `ACTIVE`=1;");
+        $r = $db->query("SELECT COUNT(`ART_ID`) as col FROM `T2_PHOTOS` WHERE `ART_ID` = $ref AND `ACTIVE` = 1;");
         $n = intval($db->result($r, 0, "col"));
         return ($n > 0);
     }
@@ -341,8 +361,9 @@ trait Helper
      * */
     public function checkT2Link($typ_id, $art_id)
     {
+        $typ_id = $this->getUrlNumber($typ_id);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `ART_ID`='$art_id' AND `TYP_ID`='$typ_id' LIMIT 1;");
+        $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id AND `TYP_ID` = $typ_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
             return false;
@@ -354,7 +375,7 @@ trait Helper
     public function getCatalogRedirectLink($link, $mfa_link = "", $model_link = "")
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_CATALOG_REDIRECT` WHERE `LINK_FROM` LIKE '%$link%' LIMIT 1;");
+        $r = $db->query("SELECT `LINK_TO` FROM `T2_CATALOG_REDIRECT` WHERE `LINK_FROM` LIKE '%$link%' LIMIT 1;");
         $n = $db->num_rows($r);
         $status = 0;
         $redirect_link = "";

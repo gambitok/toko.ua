@@ -16,7 +16,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $head_id = 0;
-        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $head_id = $db->result($r, 0, "HEAD_ID");
@@ -26,11 +26,12 @@ class CatalogExistClass extends CatalogueClass
     public function getHeadExistName($head_id)
     {
         $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
         $head_name = 0;
-        $r = $db->query("SELECT `TEX_RU` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEX_$postfix` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID` = $head_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $head_name = $db->result($r, 0, "TEX_RU");
+            $head_name = $db->result($r, 0, "TEX_$postfix");
         }
         return $head_name;
     }
@@ -38,7 +39,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $head_link = 0;
-        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID`='$head_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID` = $head_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $head_link = $db->result($r, 0, "TEX_LINK");
@@ -53,7 +54,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $group_id = 0;
-        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP_EXIST` WHERE `TEX_LINK`='$group_link' LIMIT 1;");
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP_EXIST` WHERE `TEX_LINK` = '$group_link' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $group_id = $db->result($r, 0, "GROUP_ID");
@@ -64,7 +65,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $status_auto = $this->default_status_auto;
-        $r = $db->query("SELECT `STATUS_AUTO` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID`='$group_id' LIMIT 1;");
+        $r = $db->query("SELECT `STATUS_AUTO` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $status_auto = $db->result($r, 0, "STATUS_AUTO");
@@ -79,7 +80,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $param_id = "";
-        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id' AND `PARAM_LINK`='$param_link' LIMIT 1;");
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID` = $group_id AND `PARAM_LINK` = '$param_link' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $param_id = $db->result($r, 0, "PARAM_ID");
@@ -93,7 +94,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $param_name = "";
-        $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
+        $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` = $param_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $param_name = $db->result($r, 0, "PARAM_NAME");
@@ -107,7 +108,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $param_name = "";
-        $r = $db->query("SELECT `PARAM_LINK` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID`='$param_id' LIMIT 1;");
+        $r = $db->query("SELECT `PARAM_LINK` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` = $param_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $param_name = $db->result($r, 0, "PARAM_LINK");
@@ -125,13 +126,13 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $value_id = "";
-        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID`='$group_id' AND `PARAM_ID`='$param_id' AND `VALUE_LINK`='$value_link' LIMIT 1;");
+        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `PARAM_ID` = $param_id AND `VALUE_LINK` = '$value_link' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $value_id = $db->result($r, 0, "VALUE_ID");
         }
         if ($param_id == 0) {
-            $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE `BRAND_LINK`='$value_link' LIMIT 1;");
+            $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE `BRAND_LINK` = '$value_link' LIMIT 1;");
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $value_id = $db->result($r, 0, "BRAND_ID");
@@ -143,7 +144,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $value_name = "";
-        $r = $db->query("SELECT `VALUE_NAME` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
+        $r = $db->query("SELECT `VALUE_NAME` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $value_name = $db->result($r, 0, "VALUE_NAME");
@@ -157,7 +158,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $value_name = "";
-        $r = $db->query("SELECT `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
+        $r = $db->query("SELECT `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $value_name = $db->result($r, 0, "VALUE_LINK");
@@ -170,11 +171,12 @@ class CatalogExistClass extends CatalogueClass
     public function getGroupValueH1($value_id, $param_id = 0)
     {
         $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
         $value_h1 = "";
-        $r = $db->query("SELECT `VALUE_H1_RU` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
+        $r = $db->query("SELECT `VALUE_H1_$postfix` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $value_h1 = $db->result($r, 0, "VALUE_H1_RU");
+            $value_h1 = $db->result($r, 0, "VALUE_H1_$postfix");
         }
         if ($param_id == 0) {
             $value_h1 = "";
@@ -222,11 +224,11 @@ class CatalogExistClass extends CatalogueClass
         $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
 
         if ($this->checkTableParams($group_id) > 0) {
-            $dbc->query("UPDATE `$table_params` SET `status`=0 WHERE 1;");
+            $dbc->query("UPDATE `$table_params` SET `status` = 0 WHERE 1;");
         }
 
         $params_str = ""; $params = [];
-        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID`='$group_id' AND `STATUS`=1;");
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID` = $group_id AND `STATUS` = 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $param_id = $db->result($r, $i - 1, "PARAM_ID");
@@ -285,7 +287,7 @@ class CatalogExistClass extends CatalogueClass
         }
 
         foreach ($products as $art_id => $params) {
-            $r = $dbc->query("SELECT `brand_id` FROM `$table` WHERE `art_id`='$art_id' LIMIT 1;");
+            $r = $dbc->query("SELECT `brand_id` FROM `$table` WHERE `art_id` = $art_id LIMIT 1;");
             $brand_id = $dbc->result($r, 0, "brand_id");
             $products[$art_id][0] = $brand_id;
         }
@@ -313,20 +315,20 @@ class CatalogExistClass extends CatalogueClass
             $params_column = rtrim($params_column, ","); if ($params_column != "") $params_column = ", " . $params_column;
             $set_column = rtrim($set_column, ","); if ($set_column != "") $set_column = ", " . $set_column;
 
-            $r = $dbc->query("SELECT * FROM `$table_params` WHERE `art_id`='$art_id' LIMIT 1;");
+            $r = $dbc->query("SELECT * FROM `$table_params` WHERE `art_id` = $art_id LIMIT 1;");
             $n = $dbc->num_rows($r);
             if ($n == 0) {
                 $dbc->query("INSERT INTO `$table_params` (`art_id`, `brand_id`, `status` $params_column) VALUES ('$art_id', '$brand_id', 1 $params_values);");
                 $count_add++;
             } else {
-                $dbc->query("UPDATE `$table_params` SET `status`=1 $set_column WHERE `art_id`='$art_id' LIMIT 1;");
+                $dbc->query("UPDATE `$table_params` SET `status`=1 $set_column WHERE `art_id` = $art_id LIMIT 1;");
                 $count_upd++;
             }
         }
 
-        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table_params` WHERE `status`=0;");
+        $r = $dbc->query("SELECT COUNT(*) as count_nulls FROM `$table_params` WHERE `status` = 0;");
         $count_del = $dbc->result($r, 0, "count_nulls") + 0;
-        $dbc->query("DELETE FROM `$table_params` WHERE `status`=0;");
+        $dbc->query("DELETE FROM `$table_params` WHERE `status` = 0;");
 
         $dbc->query("ALTER TABLE `$table_params` ADD INDEX `art_id` (`art_id`);");
 
@@ -514,13 +516,13 @@ class CatalogExistClass extends CatalogueClass
         foreach ($arts as $art_id => $mfas) {
             foreach ($mfas as $mfa_id => $models) {
                 foreach ($models as $model) {
-                    $r = $dbc->query("SELECT COUNT(`art_id`) as count_art FROM `$table_mfa` WHERE `art_id`='$art_id' AND `mfa_id`='$mfa_id' AND `model`='$model';");
+                    $r = $dbc->query("SELECT COUNT(`art_id`) as count_art FROM `$table_mfa` WHERE `art_id` = $art_id AND `mfa_id` = $mfa_id AND `model` = '$model';");
                     $n = $dbc->result($r, 0, "count_art") + 0;
                     if ($n == 0) {
                         $dbc->query("INSERT INTO `$table_mfa` (`art_id`, `mfa_id`, `model`, `status`) VALUES ('$art_id', '$mfa_id', '$model', 1);");
                         $count_add++;
                     } else {
-                        $dbc->query("UPDATE `$table_mfa` SET `status`=1 WHERE `art_id`='$art_id';");
+                        $dbc->query("UPDATE `$table_mfa` SET `status`=1 WHERE `art_id` = $art_id;");
                         $count_upd++;
                     }
                 }
@@ -584,69 +586,69 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show TREE HCG LIST
      * */
-    public function showGroupExistList($status)
-    {
-        $list = "";
-        $arr = $this->getGroupExistList($status);
-        $list .= "<ul class='list-inline'>";
-        foreach ($arr as $head_id => $cats) {
-            $head_name = $this->getHeadRowName($head_id);
-            $list .= "<li style='font-weight: bold; font-size: 20px; color: black;'>$head_name</li><li><ul class='list-inline' style='margin-bottom: 30px;'>";
-            foreach ($cats as $cat_id => $groups) {
-                $cat_name = $this->getCatRowName($cat_id);
-                $list .= "<li style='font-weight: bold; font-size: 18px; color: #0000ff;'>$cat_name</li><li><ul style='margin-bottom: 10px;'>";
-                foreach ($groups as $group_id) {
-                    $group_name = $this->getGroupRowName($group_id);
-                    $group_link = $this->getGroupRowLink($group_id);
-                    $check = $this->checkTable($group_id);
-                    if ($check > 0) {
-                        $check_form = "<span class='span-red'><i class='fa fa-edit'></i> UPDATE</span>";
-                        $col = "($check)";
-                    } else {
-                        $check_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
-                        $col = "";
-                    }
-                    $check_mfa = $this->checkTableMfa($group_id);
-                    if ($check_mfa > 0) {
-                        $check_mfa_form = "<span class='span-red'><i class='fa fa-edit'></i> UPDATE</span>";
-                        $col_mfa = "($check_mfa)";
-                    } else {
-                        $check_mfa_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
-                        $col_mfa = "";
-                    }
-                    $check_params = $this->checkTableParams($group_id);
-                    if ($check_params > 0) {
-                        $check_params_form = "<span class='span-red'><i class='fa fa-edit'></i> UPDATE</span>";
-                        $col_params = "($check_params)";
-                    } else {
-                        $check_params_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
-                        $col_params = "";
-                    }
-                    $list .= "<li style='display:flex; justify-content: space-between;'>
-                        <div style='width: 40%;'>
-                            $group_name
-                        </div>
-                        <div style='width: 20%; text-align: right;'>
-                            <a href='/$this->catalog_exist_link/init/$group_link/'>$check_form</a>   
-                            <a href='/$this->catalog_exist_link/show/$group_link/'>ZAPCHASTI $col</a>  
-                        </div>
-                        <div style='width: 20%; text-align: right;'>
-                            <a href='/$this->catalog_exist_link/init_mfa/$group_link/'>$check_mfa_form</a>
-                            <a href='/$this->catalog_exist_link/show_mfa/$group_link/'>MACHINU $col_mfa</a>
-                        </div>
-                        <div style='width: 20%; text-align: right;'>
-                            <a href='/$this->catalog_exist_link/init_params/$group_link/'>$check_params_form</a>
-                            <a href='/$this->catalog_exist_link/show_params/$group_link/'>PARAMS $col_params</a>
-                        </div>
-                    </li>";
-                }
-                $list .= "</ul></li>";
-            }
-            $list .= "</ul></li>";
-        }
-        $list .= "</ul>";
-        return $list;
-    }
+//    public function showGroupExistList($status)
+//    {
+//        $list = "";
+//        $arr = $this->getGroupExistList($status);
+//        $list .= "<ul class='list-inline'>";
+//        foreach ($arr as $head_id => $cats) {
+//            $head_name = $this->getHeadRowName($head_id);
+//            $list .= "<li style='font-weight: bold; font-size: 20px; color: black;'>$head_name</li><li><ul class='list-inline' style='margin-bottom: 30px;'>";
+//            foreach ($cats as $cat_id => $groups) {
+//                $cat_name = $this->getCatRowName($cat_id);
+//                $list .= "<li style='font-weight: bold; font-size: 18px; color: #0000ff;'>$cat_name</li><li><ul style='margin-bottom: 10px;'>";
+//                foreach ($groups as $group_id) {
+//                    $group_name = $this->getGroupRowName($group_id);
+//                    $group_link = $this->getGroupRowLink($group_id);
+//                    $check = $this->checkTable($group_id);
+//                    if ($check > 0) {
+//                        $check_form = "<span class='span-red'><i class='fa fa-edit'></i> UPDATE</span>";
+//                        $col = "($check)";
+//                    } else {
+//                        $check_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
+//                        $col = "";
+//                    }
+//                    $check_mfa = $this->checkTableMfa($group_id);
+//                    if ($check_mfa > 0) {
+//                        $check_mfa_form = "<span class='span-red'><i class='fa fa-edit'></i> UPDATE</span>";
+//                        $col_mfa = "($check_mfa)";
+//                    } else {
+//                        $check_mfa_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
+//                        $col_mfa = "";
+//                    }
+//                    $check_params = $this->checkTableParams($group_id);
+//                    if ($check_params > 0) {
+//                        $check_params_form = "<span class='span-red'><i class='fa fa-edit'></i> UPDATE</span>";
+//                        $col_params = "($check_params)";
+//                    } else {
+//                        $check_params_form = "<span class='span-grey'><i class='fa fa-download'></i> CREATE</span>";
+//                        $col_params = "";
+//                    }
+//                    $list .= "<li style='display:flex; justify-content: space-between;'>
+//                        <div style='width: 40%;'>
+//                            $group_name
+//                        </div>
+//                        <div style='width: 20%; text-align: right;'>
+//                            <a href='/$this->catalog_exist_link/init/$group_link/'>$check_form</a>
+//                            <a href='/$this->catalog_exist_link/show/$group_link/'>ZAPCHASTI $col</a>
+//                        </div>
+//                        <div style='width: 20%; text-align: right;'>
+//                            <a href='/$this->catalog_exist_link/init_mfa/$group_link/'>$check_mfa_form</a>
+//                            <a href='/$this->catalog_exist_link/show_mfa/$group_link/'>MACHINU $col_mfa</a>
+//                        </div>
+//                        <div style='width: 20%; text-align: right;'>
+//                            <a href='/$this->catalog_exist_link/init_params/$group_link/'>$check_params_form</a>
+//                            <a href='/$this->catalog_exist_link/show_params/$group_link/'>PARAMS $col_params</a>
+//                        </div>
+//                    </li>";
+//                }
+//                $list .= "</ul></li>";
+//            }
+//            $list .= "</ul></li>";
+//        }
+//        $list .= "</ul>";
+//        return $list;
+//    }
 
     /*======================================================================= FINAL CATALOG =*/
 
@@ -660,9 +662,9 @@ class CatalogExistClass extends CatalogueClass
             $group_name = $this->getGroupRowName($group_id);
             $head_id = $this->getHeadExistID($group_id);
             $head_name = $this->getHeadExistName($head_id);
-            $head_link= $this->getHeadExistLink($head_id);
+            $head_link = $this->getHeadExistLink($head_id);
             $icon = "<i class=\"fa fa-chevron-right\"></i>";
-            $list = "<a href=\"/\">{seo_shop_toko}</a> $icon <a href=\"/$this->catalog_exist_link\">{site_catalog}</a> $icon <a href=\"/$this->catalog_exist_link/$head_link\">$head_name</a> $icon $group_name";
+            $list = "<a href=\"" . $this->getSiteLink() . "\">{seo_shop_toko}</a> $icon <a href=\"" . $this->getSiteLink() . "$this->catalog_link\">{site_catalog}</a> $icon <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link\">$head_name</a> $icon $group_name";
         }
         return $list;
     }
@@ -976,7 +978,7 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{h1_text}", "<b>$filters_h1</b>", $form);
         $form = str_replace("{vin_text}", "<a class=\"blue-a\" onclick=\"$('#VinFormPhone').modal('show');\">{vin_order}</a>", $form);
         $catalog_text = "{in_catalog_strs}";
-        $catalog_link = "https://toko.ua/cars/";
+        $catalog_link = $this->getSiteLink() . "cars/";
         if ($mfa_link != "") {
             $mfa_name = $automan->getMfaBrand($automan->getMfaLink($mfa_link));
             $catalog_text .= " {on_cap} $mfa_name";
@@ -1030,6 +1032,7 @@ class CatalogExistClass extends CatalogueClass
             WHERE 1 $where $where_mfa $where_link_arts
             GROUP BY t.art_id";
         }
+
         $query_limit = "$query $limit ;";
         $r = $dbc->query($query_limit);
         $n = $dbc->num_rows($r);
@@ -1123,7 +1126,7 @@ class CatalogExistClass extends CatalogueClass
                 if ($model_link != "") {
                     $auto_link .= "$model_link/";
                 }
-                $filters_btn = "<a class=\"btn btn-sm btn-filter\" href=\"/$this->catalog_exist_link/$group_link/$auto_link\">{filter_cap_empty} <i class='fa fa-times'></i></a>" . $filters_btn;
+                $filters_btn = "<a class=\"btn btn-sm btn-filter\" href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$auto_link\">{filter_cap_empty} <i class='fa fa-times'></i></a>" . $filters_btn;
             }
         }
         $filters_h1 = $this->getCatalogH1($group_id, $filters, $mfa_link, $model_link);
@@ -1386,7 +1389,7 @@ class CatalogExistClass extends CatalogueClass
         $link = rtrim($link, ";");
 
         $group_link = $this->getGroupRowLink($group_id);
-        $list = "https://toko.ua/$this->catalog_exist_link/";
+        $list = $this->getSiteLink() . "$this->catalog_link/";
         if ($group_id > 0) {
             $list .= "$group_link/";
             if ($link != "") {
@@ -1585,9 +1588,8 @@ class CatalogExistClass extends CatalogueClass
     public function getGroupCarModIDList($group_id, $mfa_id_sel = 0, $model = "")
     {
         $db = DbSingleton::getTokoDb();
-        $prefix = $this->getLangPrefix();
         $list = "";
-        $link = "$this->catalog_exist_link";
+        $link = "$this->catalog_link";
         $details_cap = "{all_type_models}";
         if ($group_id != "") {
             $group_name = $this->getGroupRowName($group_id);
@@ -1624,7 +1626,7 @@ class CatalogExistClass extends CatalogueClass
                 if ($d_end == 0) {
                     $d_end = "{cur_time}";
                 }
-                $list .= "<a class=\"seo-li seo-li-id\" href=\"https://toko.ua$prefix/$link/$mfa_link/$mod_link/$mod_id_link/\">
+                $list .= "<a class=\"seo-li seo-li-id\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/$mod_id_link/\">
                     <div class=\"row mar0\">
                         <div class=\"col-4 pad0\"><img src=\"https://toko.ua/uploads/images/models/$image\" alt=\"$text\" title=\"$text\"></div>
                         <div class=\"col-8\"><span>$mfa_brand $text ($d_start - $d_end)</span></div>
@@ -1644,9 +1646,8 @@ class CatalogExistClass extends CatalogueClass
     public function getGroupCarModList($group_id, $mfa_id_sel = 0)
     {
         $db = DbSingleton::getTokoDb();
-        $prefix = $this->getLangPrefix();
 
-        $link = "$this->catalog_exist_link";
+        $link = "$this->catalog_link";
         if ($group_id != "") {
             $group_name = $this->getGroupRowName($group_id);
             $group_link = $this->getGroupRowLink($group_id);
@@ -1659,7 +1660,7 @@ class CatalogExistClass extends CatalogueClass
 
         $where = ($mfa_id_sel != "") ? "AND `MFA_ID`='$mfa_id_sel'" : "";
         $list = "<ul>";
-        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 $where ORDER BY `MFA_BRAND`;");
+        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE` = 1 $where ORDER BY `MFA_BRAND`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $mfa_id = $db->result($r, $i - 1, "MFA_ID");
@@ -1667,18 +1668,18 @@ class CatalogExistClass extends CatalogueClass
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
 
             if ($mfa_id_sel == "") {
-                $list .= "<li class=\"title\"><span class=\"bold\"><a href=\"https://toko.ua$prefix/$link/$mfa_link/\">$details_cap $mfa_brand</a></span>";
+                $list .= "<li class=\"title\"><span class=\"bold\"><a href=\"" . $this->getSiteLink() . "$link/$mfa_link/\">$details_cap $mfa_brand</a></span>";
             } else {
                 $list = "<span class=\"title-b\">$details_cap $mfa_brand</span>";
             }
             $list .= "<div class=\"seo_details\"><div class=\"seo-ul\">";
 
-            $r2 = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;");
+            $r2 = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID` = '$mfa_id' GROUP BY `Model`;");
             $n2 = $db->num_rows($r2);
             for ($i2 = 1; $i2 <= $n2; $i2++) {
                 $mod = $db->result($r2, $i2 - 1, "Model");
                 $mod_link = $db->result($r2, $i2 - 1, "Model_Link");
-                $list .= "<a class=\"seo-li\" href=\"https://toko.ua$prefix/$link/$mfa_link/$mod_link/\">
+                $list .= "<a class=\"seo-li\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/\">
                     <span>$mfa_brand $mod</span>
                 </a>";
             }
@@ -1699,7 +1700,7 @@ class CatalogExistClass extends CatalogueClass
         $auto = new AutoClass();
         $details_cap = "{details_on_cap}";
         $title = "";
-        $link = "$this->catalog_exist_link";
+        $link = "$this->catalog_link";
         $where = ($mfa_id_sel != "") ? " AND `MFA_ID`='$mfa_id_sel'" : "";
         if ($group_id != "") {
             $group_name = $this->getGroupRowName($group_id);
@@ -1716,7 +1717,7 @@ class CatalogExistClass extends CatalogueClass
         }
         $list = "<div class=\"seo_auto\">$title";
         $mas = [];
-        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE`=1 $where ORDER BY `MFA_BRAND` ASC;");
+        $r = $db->query("SELECT * FROM `T_manufacturers` WHERE `ACTIVE` = 1 $where ORDER BY `MFA_BRAND` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $mfa_id = $db->result($r, $i - 1, "MFA_ID");
@@ -1728,15 +1729,15 @@ class CatalogExistClass extends CatalogueClass
             $mfa_id = $values["mfa_id"];
             $mfa_link = $values["mfa_link"];
             if ($mfa_id_sel == "") {
-                $list .= "<div class=\"title\"><a href=\"https://toko.ua/$link/$mfa_link/\">$details_cap $mfa_brand</a></div>";
+                $list .= "<div class=\"title\"><a href=\"" . $this->getSiteLink() . "$link/$mfa_link/\">$details_cap $mfa_brand</a></div>";
             }
             $list .= "<ul class=\"list-inline\">";
-            $r = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' GROUP BY `Model`;");
+            $r = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = '$mfa_id' GROUP BY `Model`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
                 $model_link = $db->result($r, $i - 1, "Model_Link");
-                $list .= "<li><a href=\"https://toko.ua/$link/$mfa_link/$model_link/\">$mfa_brand $model</a></li>";
+                $list .= "<li><a href=\"" . $this->getSiteLink() . "$link/$mfa_link/$model_link/\">$mfa_brand $model</a></li>";
             }
             $list .= "</ul>";
         }
@@ -1828,13 +1829,14 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function getCatalogTitleCache($str_linka)
     {
-        $db = DbSingleton::getTokoDb();
         $str_linka = $this->getUrlString($str_linka);
+        $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
         $title = "";
-        $r = $db->query("SELECT * FROM `T2_TITLES` WHERE `ROUTER`='$this->catalog_link' AND `LINK`='$str_linka' LIMIT 1;");
+        $r = $db->query("SELECT `TITLE_$postfix` FROM `T2_TITLES` WHERE `ROUTER` = '$this->catalog_link' AND `LINK` = '$str_linka' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $title = $db->result($r, 0, "TITLE_RU");
+            $title = $db->result($r, 0, "TITLE_$postfix");
         }
         return $title;
     }
@@ -1958,15 +1960,12 @@ class CatalogExistClass extends CatalogueClass
                         }
                     }
                 }
-            }
-            // else
-            else {
+            } else {
                 $text .= $this->replaceLang("{seo_new_tilte_1}");
             }
         }
 
         $text = str_replace("{grnm}", $this->getGroupRowName($group_id), $text);
-
         $text = $this->replaceLang($text);
 
         return $text;
@@ -1974,28 +1973,21 @@ class CatalogExistClass extends CatalogueClass
 
     public function getPartsCatalogueStates($group_id) {
         $db = DbSingleton::getTokoDb();
-        $lang_id = $this->getLanguage();
-        $prefix = "";
-        if ($lang_id == 2) {
-            $prefix = "_UA";
-        }
-        if ($lang_id == 3) {
-            $prefix = "_EN";
-        }
+        $postfix = $this->getLangPostfix($this->getLanguage());
         $list = "";
         if ($group_id > 0) {
-            $r = $db->query("SELECT t2r.`ID`, t2r.`TITLE$prefix` FROM `T2_GROUP_REVIEW` t2gr 
+            $r = $db->query("SELECT t2r.`ID`, t2r.`TITLE_$postfix` FROM `T2_GROUP_REVIEW` t2gr 
                 LEFT JOIN `T2_REVIEWS` t2r ON t2r.`ID` = t2gr.`REVIEW_ID`
-            WHERE t2gr.`GROUP_ID` = '$group_id' AND t2r.`STATUS` = 1;");
+            WHERE t2gr.`GROUP_ID` = $group_id AND t2r.`STATUS` = 1;");
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $list = "<div class=\"reviews-list-title\">{states_cap}</div><div class=\"reviews-list\">";
             }
             for ($i = 1; $i <= $n; $i++) {
                 $review_id = $db->result($r, $i - 1, "ID");
-                $review_title = $db->result($r, $i - 1, "TITLE$prefix");
+                $review_title = $db->result($r, $i - 1, "TITLE_$postfix");
                 $transcript = $this->formatUrlText($review_title);
-                $link = "$prefix/reviews/state/$review_id/$transcript";
+                $link = "/reviews/state/$review_id/$transcript";
                 $list .= "<div class=\"reviews-list__item\"><a href=\"$link\"><i class=\"fa fa-circle\"></i> $review_title</a></div>";
             }
             if ($n > 0) {
@@ -2009,7 +2001,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $head_id = 0;
-        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HEAD_EXIST` WHERE `TEX_LINK`='$head_link' LIMIT 1;");
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HEAD_EXIST` WHERE `TEX_LINK` = '$head_link' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $head_id = $db->result($r, 0, "HEAD_ID");
@@ -2021,7 +2013,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $cat_id = 0;
-        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CAT_EXIST` WHERE `TEX_LINK`='$cat_link' LIMIT 1;");
+        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CAT_EXIST` WHERE `TEX_LINK` = '$cat_link' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $cat_id = $db->result($r, 0, "CAT_ID");
@@ -2032,8 +2024,9 @@ class CatalogExistClass extends CatalogueClass
     public function showGroupHeadForm($head_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_RU`, `IMAGES` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS`=1 AND `HEAD_ID`='$head_id' LIMIT 1;");
-        $head_title = $db->result($r, 0, "TEX_RU");
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT `TEX_$postfix`, `IMAGES` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1 AND `HEAD_ID` = $head_id LIMIT 1;");
+        $head_title = $db->result($r, 0, "TEX_$postfix");
         $form = $this->getHtmlForm("catalog_exist/head_form");
         $form = str_replace("{head_title}", $head_title, $form);
         $form = str_replace("{head_list}",  $this->getCatalogColListCat($head_id), $form);
@@ -2056,7 +2049,7 @@ class CatalogExistClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "";
         $arr = [];
-        $r = $db->query("SELECT `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' GROUP BY `CAT_ID`, `GROUP_ID`;");
+        $r = $db->query("SELECT `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id GROUP BY `CAT_ID`, `GROUP_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = $db->result($r, $i - 1, "CAT_ID");
@@ -2084,7 +2077,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID`='$head_id' AND `CAT_ID`='$cat_id' GROUP BY `GROUP_ID`;");
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `CAT_ID` = $cat_id GROUP BY `GROUP_ID`;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $list .= "<ul class=\"list-inline\">";
@@ -2107,7 +2100,6 @@ class CatalogExistClass extends CatalogueClass
      * 4. group + brand || filter + mfa
      * 5. group + brand + filter + mfa
      * */
-
     public function getManufactureLink($mfa_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -2123,11 +2115,12 @@ class CatalogExistClass extends CatalogueClass
     public function getValueH1($value_id, $param_id = 0)
     {
         $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
         $value_h1 = "";
-        $r = $db->query("SELECT `VALUE_H1_RU` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID`='$value_id' LIMIT 1;");
+        $r = $db->query("SELECT `VALUE_H1_$postfix` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $value_h1 = $db->result($r, 0, "VALUE_H1_RU");
+            $value_h1 = $db->result($r, 0, "VALUE_H1_$postfix");
         }
         if ($param_id == 0) {
             $value_h1 = "";
@@ -2135,10 +2128,22 @@ class CatalogExistClass extends CatalogueClass
         return $value_h1;
     }
 
+    public function checkGroupParamExist($group_id, $param_id, $value_id, $brand_id) {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $where_brand = "";
+        if ($brand_id > 0) {
+            $where_brand = "AND `brand_id` = $brand_id";
+        }
+        $r = $dbc->query("SELECT COUNT(`art_id`) as count_arts FROM `EX_TABLE_TREE_PARAMS_$group_id` 
+        WHERE (`param_$param_id` = '$value_id' OR `param_$param_id` LIKE '%,$value_id%' OR `param_$param_id` LIKE '%$value_id,%') $where_brand;");
+        $n = $dbc->result($r, 0, "count_arts") + 0;
+        return ($n > 0);
+    }
+
     public function getSeoLinks()
     {
-        $dbc = DbSingleton::getTokoCacheDb();
-        $count = 0;
+//        $dbc = DbSingleton::getTokoCacheDb();
+//        $count = 0;
 
 //        $r = $dbc->query("SELECT `group_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE 1 GROUP BY `group_id`, `brand_id`;");
 //        $n = $dbc->num_rows($r);
@@ -2192,7 +2197,7 @@ class CatalogExistClass extends CatalogueClass
 //            }
 //        }
 
-        $link = "https://toko.ua/catalog/";
+//        $link = "https://toko.ua/catalog/";
 
 //        $r = $dbc->query("SELECT `GROUP_ID`, `BRAND_ID` FROM `AAA_EXPORT_LINKS_BRANDS` GROUP BY `GROUP_ID`, `BRAND_ID`");
 //        $n = $dbc->num_rows($r);
@@ -2259,20 +2264,7 @@ class CatalogExistClass extends CatalogueClass
 //                }
 //            }
 //        }
-
-        return $count;
-    }
-
-    public function checkGroupParamExist($group_id, $param_id, $value_id, $brand_id) {
-        $dbc = DbSingleton::getTokoCacheDb();
-        $where_brand = "";
-        if ($brand_id > 0) {
-            $where_brand = "AND `brand_id` = $brand_id";
-        }
-        $r = $dbc->query("SELECT COUNT(`art_id`) as count_arts FROM `EX_TABLE_TREE_PARAMS_$group_id` 
-        WHERE (`param_$param_id` = '$value_id' OR `param_$param_id` LIKE '%,$value_id%' OR `param_$param_id` LIKE '%$value_id,%') $where_brand;");
-        $n = $dbc->result($r, 0, "count_arts") + 0;
-        return ($n > 0);
+        return 0;
     }
 
 }

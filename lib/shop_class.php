@@ -25,7 +25,6 @@ class ShopClass extends CatalogueClass
         $client_id = $this->getClient();
         $tpoint_id = $this->getTpointID();
         $where = $client->getClientWhere();
-        $prefix = $this->getLangPrefix();
         if ($cur == null || $cur == "NaN") {
             $cur = 1;
         }
@@ -82,7 +81,7 @@ class ShopClass extends CatalogueClass
                 $format_name = $this->getFormatAticle($art_name);
                 $format_brand = $this->getFormatAticle($brand_name);
 
-                $location = "location.href='https://toko.ua$prefix/order/';";
+                $location = "location.href='" . $this->getSiteLink() . "$this->order_link/';";
                 $location_fast = "finishFastOrder('input_phone2');";
 
                 $flagData = $showform->getCountryFlag($brand_id);
@@ -117,7 +116,7 @@ class ShopClass extends CatalogueClass
                 $brow = str_replace("{full_price}", $full_price, $brow);
                 $brow = str_replace("{disabled}", $disabled, $brow);
                 $brow = str_replace("{checked}", $checked, $brow);
-                $brow = str_replace("{link}", "https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/", $brow);
+                $brow = str_replace("{link}", $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/", $brow);
                 $brow = str_replace("{flag}", $flag, $brow);
                 $brow = str_replace("{country_name}", $country_name, $brow);
                 $brow = str_replace("{amount_field}", "count_" . $art_id . "_" . $storage_id, $brow);
@@ -145,7 +144,7 @@ class ShopClass extends CatalogueClass
                 $bprow = str_replace("{full_price}", $full_price, $bprow);
                 $bprow = str_replace("{disabled}", $disabled, $bprow);
                 $bprow = str_replace("{checked}", $checked, $bprow);
-                $bprow = str_replace("{link}", "https://toko.ua$prefix/article/$format_name/$format_brand/$art_id/", $bprow);
+                $bprow = str_replace("{link}", $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/", $bprow);
                 $bprow = str_replace("{flag}", $flag, $bprow);
                 $bprow = str_replace("{country_name}", $country_name, $bprow);
                 $bprow = str_replace("{amount_field}", "count_" . $art_id . "_" . $storage_id, $bprow);
@@ -245,7 +244,7 @@ class ShopClass extends CatalogueClass
         $list = "";
         $arts = $this->getBasketArts();
         $where_arts = ($arts != "") ? " AND `ART_ID` NOT IN ($arts)" : "";
-        $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS`=1 $where_arts;");
+        $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS` = 1 $where_arts;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -268,31 +267,23 @@ class ShopClass extends CatalogueClass
         $showform = new FormClass();
         $article = $showform->getArticleInfo($art_id);
         $article_nr_displ = $article["article_nr_displ"];
-        $brand_id = $article["brand_id"];
         $brand_name = $article["brand_name"];
         $article_name = $article["text"];
-        $stock = $article["stock"];
         $price = $article["price"];
         $basket = $article["basket"];
         $currency = $article["currency"];
         $img = $showform->getArticleActivePhoto($art_id);
-        $prefix = $this->getLangPrefix();
         $format_name = $this->getFormatAticle($article_nr_displ);
         $format_brand = $this->getFormatBrand($brand_name);
         $form = $this->getHtmlForm("orders/proposed_card");
-        $form = str_replace("{art_id}", $art_id, $form);
-        $form = str_replace("{brand_id}", $brand_id, $form);
-        $form = str_replace("{real_stock}", $stock, $form);
         $form = str_replace("{basket}", $basket, $form);
         $form = str_replace("{article_nr_displ}", $article_nr_displ, $form);
         $form = str_replace("{name}", $article_name, $form);
         $form = str_replace("{brand_name}", $brand_name, $form);
         $form = str_replace("{price}", $price, $form);
         $form = str_replace("{image}", $img, $form);
-        $form = str_replace("{prefix}", $prefix, $form);
-        $form = str_replace("{format_name}", $format_name, $form);
-        $form = str_replace("{format_brand}", $format_brand, $form);
         $form = str_replace("{currency}", $currency, $form);
+        $form = str_replace("{page_proposed_link}", $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/", $form);
         return $form;
     }
 
@@ -319,7 +310,7 @@ class ShopClass extends CatalogueClass
         $old_amount = $status_action = 0;
         $art_name = $this->getArticleDispl($art_id);
 
-        $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
+        $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where LIMIT 1;");
         $n = $db->num_rows($r);
         $price = $this->getArticlePrice($art_id);
         if ($suppl_id != 0) {
@@ -347,7 +338,7 @@ class ShopClass extends CatalogueClass
         $delivery_short_info = $this->replaceLang($delivery_short_info);
 
         if ($n > 0) {
-            $r2 = $db->query("SELECT `amount` FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
+            $r2 = $db->query("SELECT `amount` FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where LIMIT 1;");
             $cur_stock = $db->result($r2, 0, "amount");
             if ($stock < ($cur_stock + $amount)) {
                 $amount = $stock;
@@ -355,7 +346,7 @@ class ShopClass extends CatalogueClass
                 $old_amount = intval($db->result($r, 0, "amount"));
                 $amount += $old_amount;
             }
-            $db->query("UPDATE `basket` SET `amount`='$amount', `status_action`='$status_action' WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
+            $db->query("UPDATE `basket` SET `amount`='$amount', `status_action`='$status_action' WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where LIMIT 1;");
         } else {
             $db->query("INSERT INTO `basket` (`art_id`, `brand_id`, `amount`, `price`, `stock`, `delivery`, `client_id`, `cookie_id`, `date_create`, `storage_id`, `delivery_info`, `suppl_id`,`status_action`,`status`) 
             VALUES ('$art_id', '$brand_id', '$amount', $price, '$stock', '$delivery_days', '$user_id', '$cookie', '$date_time', '$storage_id', '$delivery_short_info', '$suppl_id', '$status_action', '0');");
@@ -373,7 +364,7 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
-        $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where LIMIT 1;");
+        $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where LIMIT 1;");
         $n = $db->num_rows($r);
         return ($n > 0) ? $db->result($r, 0, "amount") : 0;
     }
@@ -388,7 +379,7 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
-        $db->query("DELETE FROM `basket` WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
+        $db->query("DELETE FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where;");
         return true;
     }
 
@@ -400,7 +391,7 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
-        $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;");
+        $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked` = 1;");
         $n = $db->num_rows($r);
         return ($n > 0);
     }
@@ -416,7 +407,7 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
-        $db->query("UPDATE `basket` SET `status_checked`=$status WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
+        $db->query("UPDATE `basket` SET `status_checked`=$status WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where;");
         return true;
     }
 
@@ -439,7 +430,7 @@ class ShopClass extends CatalogueClass
                 $status_action = $action_id;
             }
         }
-        $db->query("UPDATE `basket` SET `amount`='$amount', `status_action`='$status_action' WHERE `art_id`='$art_id' AND `storage_id`='$storage_id' AND $where;");
+        $db->query("UPDATE `basket` SET `amount` = '$amount', `status_action`='$status_action' WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where;");
         return true;
     }
 
@@ -451,11 +442,16 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
-        $r = $db->query("SELECT * FROM `basket` WHERE $where;");
-        $n = $db->num_rows($r);
-        $list = ($n > 0) ? $n : "";
-        $style = ($list == "") ? "tool-status-hidden" : "";
-        return array($list, $style);
+        $r = $db->query("SELECT COUNT(`id`) as count_basket FROM `basket` WHERE $where;");
+        $count = $db->result($r, 0, "count_basket");
+        if ($count == 0) {
+            $label = "";
+            $style = "tool-status-hidden";
+        } else {
+            $label = $count;
+            $style = "";
+        }
+        return array($label, $style);
     }
 
     /*
@@ -468,7 +464,7 @@ class ShopClass extends CatalogueClass
         $exrate = new ExRateClass();
         $where = $client->getClientWhere();
         $summary = 0;
-        $r = $db->query("SELECT * FROM `basket` WHERE $where;");
+        $r = $db->query("SELECT `price`, `amount` FROM `basket` WHERE $where;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -516,7 +512,7 @@ class ShopClass extends CatalogueClass
                     $order_sum += $full_price;
                 }
                 for ($i = 1; $i <= $n; $i++) {
-                    $id = $dbt->result($r, $i - 1, "id");
+                    $id = $dbt->result($r, $i - 1, "id") + 0;
                     $price = $dbt->result($r, $i - 1, "price");
                     $price = $exrate->getKoursPrice($price, $cur);
                     if ($cur == 1) {
@@ -526,7 +522,7 @@ class ShopClass extends CatalogueClass
                     $discount = abs($discountData["discount"]);
                     $real_discount = abs($discountData["real_discount"]);
                     $this->updateBonusClient($discount);
-                    $dbt->query("UPDATE `basket` SET `price`='$price', `discount`='$real_discount' WHERE `id`='$id';");
+                    $dbt->query("UPDATE `basket` SET `price` = '$price', `discount` = '$real_discount' WHERE `id` = $id;");
                 }
             }
         }
@@ -540,7 +536,7 @@ class ShopClass extends CatalogueClass
     {
         $db = DbSingleton::getDbm();
         $client_id = $this->getClient();
-        $db->query("UPDATE A_CLIENTS SET `bonus_balance`=`bonus_balance` - $discount WHERE `id`='$client_id' LIMIT 1;");
+        $db->query("UPDATE A_CLIENTS SET `bonus_balance` = `bonus_balance` - $discount WHERE `id` = $client_id LIMIT 1;");
         return true;
     }
 
@@ -555,10 +551,10 @@ class ShopClass extends CatalogueClass
         $client = new ClientClass();
         $sum = 0;
         $where = $client->getClientWhere();
-        $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;");
+        $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked` = 1;");
         $n = $dbt->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $id = $dbt->result($r, $i - 1, "id");
+            $id = $dbt->result($r, $i - 1, "id") + 0;
             $art_id = $dbt->result($r, $i - 1, "art_id");
             $brand_id = $dbt->result($r, $i - 1, "brand_id");
             $amount = $dbt->result($r, $i - 1, "amount");
@@ -573,7 +569,7 @@ class ShopClass extends CatalogueClass
             $max = intval($db->result($rmax, 0, "max_order_str")) + 1;
             $db->query("INSERT INTO `orders_str_new` (`id`, `order_id`, `suppl_id`, `storage_id`, `art_id`, `brand_id`, `amount`, `price`, `summ`, `discount`, `status_action`) 
             VALUES ('$max', '$order_id', '$suppl_id', '$storage_id', '$art_id', '$brand_id', '$amount', $price, '$full_price', '$discount', '$status_action');");
-            $dbt->query("DELETE FROM `basket` WHERE `id`='$id';");
+            $dbt->query("DELETE FROM `basket` WHERE `id` = $id;");
         }
         if ($order_id > 0 && $n > 0) {
             $delivery_sum = $this->setDeliveryIndex($order_id);
@@ -588,14 +584,14 @@ class ShopClass extends CatalogueClass
     public function setDeliveryIndex($order_id)
     {
         $db = DbSingleton::getDbm();
+        $price = 0;
         $client = new ClientClass();
-        $r = $db->query("SELECT * FROM `orders_new` WHERE `ID`='$order_id' LIMIT 1;");
-        $order_info_id = $db->result($r, 0, "order_info_id");
+        $r = $db->query("SELECT `order_info_id`, `tpoint_id`, `client_id` FROM `orders_new` WHERE `ID` = $order_id LIMIT 1;");
+        $order_info_id = $db->result($r, 0, "order_info_id") + 0;
         $tpoint_id = $db->result($r, 0, "tpoint_id");
         $client_id = $db->result($r, 0, "client_id");
-        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `ID`='$order_info_id' LIMIT 1;");
+        $r = $db->query("SELECT `DELIVERY_ID` FROM `ORDERS_CLIENT_INFO` WHERE `ID` = $order_info_id LIMIT 1;");
         $delivery_id = $db->result($r, 0, "DELIVERY_ID");
-        $price = 0;
         if (in_array($delivery_id, [4, 5]) && ($client->checkRetailClientCategory($client_id))) {
             list($art_id, $brand_id, $storage_id, $price) = $this->getDeliveryIndex($delivery_id, $tpoint_id);
             $rmax = $db->query("SELECT MAX(`id`) AS max_order_str FROM `orders_str_new`;");
@@ -636,7 +632,7 @@ class ShopClass extends CatalogueClass
     public function getOrderSumm($order_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `price_summ` FROM `orders_new` WHERE `id`='$order_id' LIMIT 1;");
+        $r = $db->query("SELECT `price_summ` FROM `orders_new` WHERE `id` = $order_id LIMIT 1;");
         $n = $db->num_rows($r);
         return ($n > 0) ? $db->result($r, 0, "price_summ") : 0;
     }
@@ -654,11 +650,10 @@ class ShopClass extends CatalogueClass
             $user_id = $this->getUser();
         }
         $client_id = $client->getClientByUser($user_id);
-
         $list = "";
         $status = $info_id = $id = 0;
         if ($user_id > 0) {
-            $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID`='$client_id' AND `USER_ID`='$user_id' AND `CITY_ID`='$city_id' AND `STATUS`=1;");
+            $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID` = $client_id AND `USER_ID` = $user_id AND `CITY_ID` = $city_id AND `STATUS` = 1;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $id = $db->result($r, $i - 1, "ID");
@@ -709,15 +704,14 @@ class ShopClass extends CatalogueClass
             $form = $this->getHtmlForm("orders/done_retail");
         }
 
+        $userData = $client->getClientInfo($client->getClientByUser($user_id), $user_id);
+
         $form = str_replace("{order_id}", $order_id, $form);
         $form = str_replace("{order_user_id}", $user_id, $form);
-
-        $userData = $client->getClientInfo($client->getClientByUser($user_id), $user_id);
         $form = str_replace("{user_phone}", $userData["phone"], $form);
         $form = str_replace("{user_name}", $userData["name"], $form);
         $form = str_replace("{user_email}", $userData["email"], $form);
         $form = str_replace("{user_pass}", $userData["password"], $form);
-
         $form = $this->replaceLang($form);
 
         return $form;
@@ -750,7 +744,6 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{basket_range}", $this->getBasketOrder(), $form);
         $form = str_replace("{order_user_status}", $status, $form);
         $form = str_replace("{user_name_disable}", ($user_id > 0) ? "disabled" : "", $form);
-        $form = str_replace("{user_phone_disable}", ($user_id > 0) ? "disabled" : "", $form);
         $form = $this->replaceLang($form);
         return $form;
     }
@@ -765,7 +758,7 @@ class ShopClass extends CatalogueClass
         $form = $this->getHtmlForm("orders/delivery");
         $form = str_replace("{tpoint_address}", $client->getTpointAddress($client->getTpointUser($this->getClient())), $form);
         $form = str_replace("{express_delivery_list}", $this->getDeliveryExpressList(), $form);
-        $r = $db->query("SELECT * FROM `T2_DELIVERY`;");
+        $r = $db->query("SELECT `ID`, `TEXT`, `TYPE`, `STATUS` FROM `T2_DELIVERY` WHERE 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "ID");
@@ -794,7 +787,7 @@ class ShopClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("orders/payment");
-        $r = $db->query("SELECT * FROM `T2_PAYMENT`;");
+        $r = $db->query("SELECT `ID`, `TEXT`, `STATUS` FROM `T2_PAYMENT` WHERE 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "ID");
@@ -816,7 +809,7 @@ class ShopClass extends CatalogueClass
         $delivery_id = $this->getUrlNumber($delivery_id);
         $city_id = $this->getUrlNumber($city_id);
         $result = 0;
-        $r = $db->query("SELECT * FROM `orders_valid_delivery` WHERE `DELIVERY_ID`='$delivery_id' LIMIT 1;");
+        $r = $db->query("SELECT `VALID_TYPE_MAIN`, `VALID_TYPE_OTHER` FROM `orders_valid_delivery` WHERE `DELIVERY_ID` = $delivery_id LIMIT 1;");
         $valid_main = $db->result($r, 0, "VALID_TYPE_MAIN");
         $valid_other = $db->result($r, 0, "VALID_TYPE_OTHER");
         if (in_array($city_id, [10108, 24861])) { // MAIN CITTIES
@@ -840,7 +833,7 @@ class ShopClass extends CatalogueClass
         $result = 0;
         $del_types_1 = [1, 2, 3];
         $del_types_2 = [4, 5, 6];
-        $r = $db->query("SELECT `VALID_TYPE` FROM `orders_valid_payment` WHERE `PAYMENT_ID`='$payment_id' LIMIT 1;");
+        $r = $db->query("SELECT `VALID_TYPE` FROM `orders_valid_payment` WHERE `PAYMENT_ID` = $payment_id LIMIT 1;");
         $valid = $db->result($r, 0, "VALID_TYPE");
         if ($valid == 0) {
             $result = 1;
@@ -888,7 +881,7 @@ class ShopClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT `ID`, `TEXT` FROM `T2_DELIVERY_EXPRESS` ORDER BY `ID` ASC;");
+        $r = $db->query("SELECT `ID`, `TEXT` FROM `T2_DELIVERY_EXPRESS` WHERE 1 ORDER BY `ID` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "ID");
@@ -990,7 +983,9 @@ class ShopClass extends CatalogueClass
         $cash_id = intval($client->getClientCurrency($client_id));
         // CREATE ORDER
         $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0, 0);
-        return array($order_id, $user_id, $user_status);
+
+        $order_link = $this->getSiteLink() . "order/?order_id=$order_id&user_id=$user_id&user_status=$user_status/";
+        return array($order_id, $user_id, $user_status, $order_link);
     }
 
     /*
@@ -1062,7 +1057,7 @@ class ShopClass extends CatalogueClass
             $this->updateOrderBasket();
         }
         $order_sum = $this->finishOrderBasket($order_id);
-        $db->query("UPDATE `orders_new` SET `price_summ`='$order_sum' WHERE `id`='$order_id' LIMIT 1;");
+        $db->query("UPDATE `orders_new` SET `price_summ` = '$order_sum' WHERE `id` = $order_id LIMIT 1;");
         return $order_id;
     }
 
@@ -1078,9 +1073,9 @@ class ShopClass extends CatalogueClass
         $pass = $this->getNameString($pass);
         $db = DbSingleton::getDbm();
         $client = new ClientClass();
-        $db->query("UPDATE `A_CLIENTS_USERS` SET `name`='$name', `email`='$email', `pass`='$pass' WHERE `id`='$user_id' LIMIT 1;");
+        $db->query("UPDATE `A_CLIENTS_USERS` SET `name` = '$name', `email` = '$email', `pass` = '$pass' WHERE `id` = $user_id LIMIT 1;");
         $client->loginOrderClient($user_id);
-        return true;
+        return $this->getSiteLink() . "profile/orders/";
     }
 
     /*
@@ -1104,7 +1099,7 @@ class ShopClass extends CatalogueClass
         if ($porch == "undefined") $porch = "";
         if ($express_info == "undefined") $express_info = "";
 
-        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID`=$client_id AND `USER_ID`=$user_id AND `CITY_ID`=$city_id AND `DELIVERY_ID`=$delivery_id AND `PAYMENT_ID`=$payment_id AND `DEL_STREET`='$street' AND `DEL_HOUSE`='$house' AND `DEL_PORCH`='$porch' AND `DEL_DEPARTMENT`='$department' AND `DEL_EXPRESS`=$express AND `DEL_EXPRESS_INFO`='$express_info' LIMIT 1;");
+        $r = $db->query("SELECT `ID` FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID` = $client_id AND `USER_ID` = $user_id AND `CITY_ID` = $city_id AND `DELIVERY_ID` = $delivery_id AND `PAYMENT_ID` = $payment_id AND `DEL_STREET` = '$street' AND `DEL_HOUSE` = '$house' AND `DEL_PORCH` = '$porch' AND `DEL_DEPARTMENT` = '$department' AND `DEL_EXPRESS` = $express AND `DEL_EXPRESS_INFO` = '$express_info' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
             $r = $db->query("SELECT MAX(`ID`) as maxim FROM `ORDERS_CLIENT_INFO`;");
@@ -1166,7 +1161,7 @@ class ShopClass extends CatalogueClass
     public function getDeliveryCaption($delivery_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEXT` FROM `T2_DELIVERY` WHERE `ID`='$delivery_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEXT` FROM `T2_DELIVERY` WHERE `ID` = $delivery_id LIMIT 1;");
         $text = $db->result($r, 0, "TEXT");
         $text = $this->replaceLang($text);
         return $text;
@@ -1178,7 +1173,7 @@ class ShopClass extends CatalogueClass
     public function getPaymentCaption($payment_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEXT` FROM `T2_PAYMENT` WHERE `ID`='$payment_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEXT` FROM `T2_PAYMENT` WHERE `ID` = $payment_id LIMIT 1;");
         $text = $db->result($r, 0, "TEXT");
         $text = $this->replaceLang($text);
         return $text;
@@ -1191,7 +1186,7 @@ class ShopClass extends CatalogueClass
     {
         $id = $this->getUrlNumber($id);
         $db = DbSingleton::getDbm();
-        $db->query("UPDATE `ORDERS_CLIENT_INFO` SET `STATUS`=0 WHERE `ID`='$id';");
+        $db->query("UPDATE `ORDERS_CLIENT_INFO` SET `STATUS` = 0 WHERE `ID` = $id;");
         return true;
     }
 
@@ -1202,7 +1197,7 @@ class ShopClass extends CatalogueClass
     {
         $id = $this->getUrlNumber($id);
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `ID`='$id' AND `STATUS`=1;");
+        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `ID` = $id AND `STATUS` = 1;");
         $city_id = $db->result($r, 0, "CITY_ID");
         $delivery_id = $db->result($r, 0, "DELIVERY_ID");
         $payment_id = $db->result($r, 0, "PAYMENT_ID");
@@ -1369,7 +1364,7 @@ class ShopClass extends CatalogueClass
     public function getBonusSumm($client_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
+        $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id` = $client_id LIMIT 1;");
         return $db->result($r, 0, "bonus_balance");
     }
 
@@ -1449,7 +1444,7 @@ class ShopClass extends CatalogueClass
         // max promegut
         $max_prom = $order_sum * ($procent / 100);
         // max vosmojnoe
-        if ($max_prom <= $bonus_summ) $max_discount = $max_prom; else $max_discount = $bonus_summ;
+        $max_discount = ($max_prom <= $bonus_summ) ? $max_prom : $bonus_summ;
         // discount procent
         $price_procent = round($price / $order_sum * 100);
         // discount price
@@ -1477,7 +1472,7 @@ class ShopClass extends CatalogueClass
         $cur_cap = $this->getSymbolExrate($cur);
         $list = "";
         $sum_total = $bonus_total = $order_sum = 0;
-        $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1 ORDER BY `date_create` DESC;");
+        $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked` = 1 ORDER BY `date_create` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -1546,7 +1541,7 @@ class ShopClass extends CatalogueClass
     {
         $delivery_express = $this->getUrlNumber($delivery_express);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEXT_TYPE` FROM `T2_DELIVERY_EXPRESS` WHERE `ID`='$delivery_express' LIMIT 1;");
+        $r = $db->query("SELECT `TEXT_TYPE` FROM `T2_DELIVERY_EXPRESS` WHERE `ID` = $delivery_express LIMIT 1;");
         $text_type = $db->result($r, 0, "TEXT_TYPE");
         $text_type = $this->replaceLang($text_type);
         return $text_type . ":";
@@ -1557,6 +1552,7 @@ class ShopClass extends CatalogueClass
      * */
     public function getCitiesMainSelect($user_city = 0)
     {
+        $user_city = $this->getUrlNumber($user_city);
         $db = DbSingleton::getTokoDb();
         $lang_id = $this->getLanguage();
         $postfix = $where_user_city = $list = "";
@@ -1564,9 +1560,9 @@ class ShopClass extends CatalogueClass
             $postfix = "_RU";
         }
         if ($user_city > 0) {
-            $where_user_city = "OR `CITY_ID`='$user_city'";
+            $where_user_city = "OR `CITY_ID` = $user_city";
         }
-        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `REGION_NAME`='' $where_user_city ORDER BY `CITY_NAME$postfix` ASC;");
+        $r = $db->query("SELECT `CITY_ID`, `CITY_NAME_CLEAR$postfix` FROM `T2_LOCATION` WHERE `REGION_NAME` = '' $where_user_city ORDER BY `CITY_NAME$postfix` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $city_id = $db->result($r, $i - 1, "CITY_ID");
@@ -1611,10 +1607,10 @@ class ShopClass extends CatalogueClass
         $city_id = $this->getUrlNumber($city_id);
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_ID`='$city_id' LIMIT 1;");
+        $r = $db->query("SELECT `CITY_NAME_CLEAR`, `NEWPOST_AREA` FROM `T2_LOCATION` WHERE `CITY_ID` = $city_id LIMIT 1;");
         $city_name = $db->result($r, 0, "CITY_NAME_CLEAR");
         $state_name = $db->result($r, 0, "NEWPOST_AREA");
-        $r = $db->query("SELECT * FROM `T2_CITY_NOVA` WHERE `CITY_NAME` LIKE \"$city_name%\" AND `AREA_NAME` LIKE \"$state_name%\";");
+        $r = $db->query("SELECT `CITY_REF`, `CITY_NAME`, `AREA_NAME` FROM `T2_CITY_NOVA` WHERE `CITY_NAME` LIKE \"$city_name%\" AND `AREA_NAME` LIKE \"$state_name%\";");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $ref = $db->result($r, $i - 1, "CITY_REF");

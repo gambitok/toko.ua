@@ -592,7 +592,7 @@ function saveOrderClient() {
     let pass = $("#user_pass").val();
     JsHttpRequest.query(folder,{'w':'saveOrderClient', 'user_id':user_id, 'name':name, 'email':email, 'pass':pass},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            location.href = "https://toko.ua/profile/orders/";
+            location.href = result.content;
         }}, true);
 }
 
@@ -600,7 +600,7 @@ function loginOrderClient() {
     let user_id = $("#order_user_id").val();
     JsHttpRequest.query(folder,{'w':'loginOrderClient', 'user_id':user_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            location.href = "https://toko.ua/profile/orders/";
+            location.href = result.content;
         }}, true);
 }
 

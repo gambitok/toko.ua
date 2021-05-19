@@ -12,7 +12,7 @@
             <h2 id="brand{product_i}" class="search__brand">{product_brand}</h2>
             <span class="flag-search tooltips {country_display}" data-toggle="tooltip" data-placement="bottom" title="{brand_manuf}: {country_name}"><span class="flag flag-{flag_image}"></span></span><br>
             <span id="{art_id}" data-title="{art_cap}">
-                <a itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/">
+                <a itemprop="url" href="{page_product_link}">
                     <h3 itemprop="name" id="{product_i}" class="search__art">{product_name}</h3>
                     <input type="hidden" value="{product_name}">
 
@@ -47,7 +47,7 @@
         <div class="tables__info">
             <a class="{photo_display}" onClick="showPhotoGallery({art_id});"><i class="fas fa-camera show_basket tooltips" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<img width='250' src='{photo_src}' alt='ArticleImage'>"></i></a>
             <a onClick='showInfoForm({art_id});'><i class="fas fa-info-circle show_basket tooltips" data-toggle="tooltip" data-placement="bottom" data-html="true" title="{product_info}"></i></a>
-            <a class="tables__analog {analog_display}" href="https://toko.ua{product_lang_prefix}/search/{product_format_name}/{product_brand_link}"><i id="analog{product_i}" class="fas show_basket tooltips" data-toggle="tooltip" data-placement="bottom" title="{analogs_cap}">A</i></a>
+            <a class="tables__analog {analog_display}" href="{page_product_link}"><i id="analog{product_i}" class="fas show_basket tooltips" data-toggle="tooltip" data-placement="bottom" title="{analogs_cap}">A</i></a>
         </div>
     </div>
 
@@ -62,7 +62,7 @@
         <span class="tooltips" data-toggle="tooltip" data-placement="bottom" title="{tpoint_full_name}">{product_stock} {amount_abbr}.</span><br>
         {instock}
         <div itemprop="offers" itemtype="http://schema.org/AggregateOffer" itemscope class="dnone">
-            <meta itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/" />
+            <meta itemprop="url" href="{page_product_link}" />
             <meta itemprop="availability" content="https://schema.org/InStock" />
             <meta itemprop="priceCurrency" content="{product_kours_cap}" />
             <meta itemprop="itemCondition" content="https://schema.org/UsedCondition" />
@@ -81,7 +81,7 @@
             <div class="col-8">
                 <div itemprop="offers" itemtype="https://schema.org/Offer" itemscope class="buy-price-group tables__price" data-title="{price_cap}">
 
-                    <link itemprop="url" href="https://toko.ua{product_lang_prefix}/article/{product_format_name}/{product_format_brand}/{art_id}/" />
+                    <link itemprop="url" href="{page_product_link}" />
                     <meta itemprop="availability" content="https://schema.org/InStock" />
                     <meta itemprop="priceCurrency" content="USD" />
                     <meta itemprop="itemCondition" content="https://schema.org/UsedCondition" />

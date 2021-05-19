@@ -32,6 +32,7 @@ $content = str_replace("{navigation_content}", $catalogue->getSiteNavigation(), 
 $content = str_replace("{footer_content}", getHtmlForm("main/footer"), $content);
 $content = str_replace("{anchor_contacts_content}", getHtmlForm("main/anchor-contacts"), $content);
 
+$content = str_replace("{site_main_link}", $catalogue->getSiteLink(), $content);
 $content = str_replace("{site_lang_html}", getSiteLang(), $content);
 $content = str_replace("{site_google_conversation}", "", $content);
 $content = str_replace("{site_title}", getTitle($path), $content);
@@ -39,7 +40,6 @@ $content = str_replace("{site_description}", getDescription($path), $content);
 $content = str_replace("{site_keywords}", getKeywords($path), $content);
 $content = str_replace("{site_script_breadcrumbs}", printBreadcrumbs($path)[1], $content);
 $content = str_replace("{site_page_pagination}", "", $content);
-$content = str_replace("{site_lang_prefix}", $language->getLangPrefix(), $content);
 $content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
 $content = str_replace("{seo_footers_block}", "<!--footers_block-->", $content);
 

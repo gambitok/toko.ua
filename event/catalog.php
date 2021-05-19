@@ -8,6 +8,7 @@ $router = $catalogue->getUrlString($linka[1]);
 $router_2 = $catalogue->getUrlString($linka[2]);
 $router_3 = $catalogue->getUrlString($linka[3]);
 $router_4 = $catalogue->getUrlString($linka[4]);
+$page = $catalogue->getUrlNumber($_GET["page"]);
 
 $path_from = $site_name . "/" . $router . "/";
 if ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
@@ -39,7 +40,6 @@ if (!empty($group_id)) {
     }
     $mfa_link = $router_3;
     $model_link = $router_4;
-    $page = $catalogue->getUrlNumber($_GET['page']);
     ($page != NULL) ?: $page = 1;
     $status_auto_type = $catalogue->getUrlNumber($_COOKIE['status_auto_type']);
     ($status_auto_type != NULL) ?: $status_auto_type = 0;
