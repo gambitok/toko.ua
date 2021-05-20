@@ -22,7 +22,6 @@ class FormClass extends CatalogueClass
         $menu = new MenuClass();
         $form = $this->getHtmlForm("modals/$name");
         $form = $this->replaceLang($form);
-        //$form = str_replace("{site_lang_prefix}", $this->getLangPrefix(), $form);
         $form = str_replace("{site_main_link}", $this->getSiteLink(), $form);
         $form = str_replace("{region_list}", $menu->getRegionList(), $form);
         $form = str_replace("{region_list_phone}", $menu->getRegionListPhone(), $form);
@@ -60,7 +59,7 @@ class FormClass extends CatalogueClass
     {
         $brand_id = $this->getUrlNumber($brand_id);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_BRAND_LINK` WHERE `brand_id` = $brand_id LIMIT 1;");
+        $r = $db->query("SELECT `name`, `descr`, `link`, `logo_name` FROM `T2_BRAND_LINK` WHERE `brand_id` = $brand_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $info = $this->getHtmlForm("brand_form");
@@ -160,6 +159,7 @@ class FormClass extends CatalogueClass
         $cur_cap = $kours->getKoursCaption($cur);
         $art_id = str_replace("'", "", $art_id);
 
+        $arr = [];
         $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
         FROM `T2_ARTICLES` t2a
             LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
@@ -175,8 +175,6 @@ class FormClass extends CatalogueClass
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
         WHERE t2a.ART_ID IN ($art_id) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0)
         GROUP BY t2a.ART_ID, t2si.client_storage_id;");
-
-        $arr = [];
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $article_nr_displ = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
@@ -300,9 +298,10 @@ class FormClass extends CatalogueClass
         } else {
             $where = "WHERE `CITY_ID` IN ($city_id, 10108, 13549, 4074, 22739)";
         }
-        $r = $db->query("SELECT * FROM `T2_CITY` t2c
-            LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID=t2c.REGION_ID)
-            LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID=t2r.STATE_ID)
+        $r = $db->query("SELECT t2c.CITY_ID, t2c.CITY_NAME, t2r.REGION_NAME, t2s.STATE_NAME  
+        FROM `T2_CITY` t2c
+            LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID = t2c.REGION_ID)
+            LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID = t2r.STATE_ID)
         $where;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -326,9 +325,10 @@ class FormClass extends CatalogueClass
             $city_id = 0;
         }
         $where = ($city_like != "") ? "WHERE `CITY_NAME` LIKE '%$city_like%'" : "WHERE `CITY_ID` IN ($city_id, 10108, 13549, 4074, 22739)";
-        $r = $db->query("SELECT * FROM `T2_CITY` t2c
-            LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID=t2c.REGION_ID)
-            LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID=t2r.STATE_ID)
+        $r = $db->query("SELECT t2c.CITY_ID, t2c.CITY_NAME, t2r.REGION_NAME, t2s.STATE_NAME 
+        FROM `T2_CITY` t2c
+            LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID = t2c.REGION_ID)
+            LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID = t2r.STATE_ID)
         $where;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -616,7 +616,7 @@ class FormClass extends CatalogueClass
             $active = ($i == 1) ? "active" : "";
             $page_cap = "<div class=\"carousel-caption\">{page_cap} $i {of_cap} $n</div>";
             $list .= "<div class=\"carousel-item $active\">
-                <div class=\"search__photo\" style='height: 400px'>
+                <div class=\"search__photo\" style=\"height: 400px\">
                     <img class=\"lazy\" itemprop=\"image\" data-src=\"$this->uploads_link/$photo_name\" alt=\"$article_info #$i\" title=\"$article_info #$i\">
                 </div>
                 $page_cap
@@ -625,7 +625,7 @@ class FormClass extends CatalogueClass
         if ($n == 0) {
             $gallery = "<div class=\"row\">
                 <div class=\"col-12\">
-                    <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\" style='border: 1px solid #e9e9e9;border-radius: .25em;'>
+                    <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\" style=\"border: 1px solid #e9e9e9; border-radius: .25em;\">
                         <div class=\"carousel-inner\" role=\"listbox\">
                             <div class=\"carousel-item active\">
                                 <div class=\"search__photo\">
@@ -713,35 +713,24 @@ class FormClass extends CatalogueClass
      * */
     public function getArticleApplForm($art_id)
     {
-        $db = DbSingleton::getTokoDb();
         $art_id = $this->getUrlNumber($art_id);
-        $typ_id_str = $list = "";
-        $r = $db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id;");
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT man.MFA_ID, man.MFA_BRAND 
+        FROM `T_types` tt 
+            INNER JOIN `T_models` tm ON (tm.MOD_ID = tt.TYP_MOD_ID) 
+            INNER JOIN `T_manufacturers` man ON (man.MFA_ID = tm.MOD_MFA_ID) 
+        WHERE tt.TYP_ID IN (
+            SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id
+        ) AND tt.ACTIVE = 1 
+        GROUP BY man.MFA_ID 
+        ORDER BY man.MFA_BRAND ASC;");
         $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $typ_id = $db->result($r, $i - 1, "TYP_ID");
-            $typ_id_str .= "$typ_id";
-            if ($i < $n) {
-                $typ_id_str .= ",";
-            }
-        }
-        if ($typ_id_str != "") {
-            $r = $db->query("SELECT man.MFA_ID, man.MFA_BRAND 
-            FROM `T_types` tt 
-                INNER JOIN `T_models` tm ON tm.MOD_ID=tt.TYP_MOD_ID 
-                INNER JOIN `T_manufacturers` man ON man.MFA_ID=tm.MOD_MFA_ID 
-            WHERE tt.TYP_ID IN ($typ_id_str) AND tt.ACTIVE=1 
-            GROUP BY man.MFA_ID 
-            ORDER BY man.MFA_BRAND ASC;");
-            $n = $db->num_rows($r);
-            if ($n > 0) {
-                for ($i = 1; $i <= $n; $i++) {
-                    $brand_id = $db->result($r, $i - 1, "MFA_ID");
-                    $brand = $db->result($r, $i - 1, "MFA_BRAND");
-                    $list .= "<a class=\"info__applicability-checked\" onclick='getArticleApplModelForm(\"$art_id\",\"$brand_id\",this)'><i class=\"fas fa-car\"></i>$brand</a>";
-                }
-            } else {
-                $list = $this->err1;
+        if ($n > 0) {
+            for ($i = 1; $i <= $n; $i++) {
+                $brand_id = $db->result($r, $i - 1, "MFA_ID");
+                $brand = $db->result($r, $i - 1, "MFA_BRAND");
+                $list .= "<a class=\"info__applicability-checked\" onclick='getArticleApplModelForm(\"$art_id\", \"$brand_id\", this)'><i class=\"fas fa-car\"></i>$brand</a>";
             }
         } else {
             $list = $this->err1;
@@ -750,27 +739,21 @@ class FormClass extends CatalogueClass
     }
 
     // применяемость на машину
-    public function getArticleApplModelForm($art_id, $mfa)
+    public function getArticleApplModelForm($art_id, $mfa_id)
     {
         $art_id = $this->getUrlNumber($art_id);
-        $mfa = $this->getUrlNumber($mfa);
+        $mfa_id = $this->getUrlNumber($mfa_id);
         $db = DbSingleton::getTokoDb();
         $list = "<div class=\"search__appl-tcd\">";
-        $typ_id_str = "";
-        $r = $db->query("SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $typ_id = $db->result($r, $i - 1, "TYP_ID");
-            $typ_id_str .= "$typ_id";
-            if ($i < $n) {
-                $typ_id_str .= ",";
-            }
-        }
-        $r = $db->query("SELECT tt.*, tm.TEX_TEXT, tm.MOD_ID, tm.MOD_PCON_START, tm.MOD_PCON_END 
+        $r = $db->query("SELECT tt.TYP_ID, tt.TYP_MMT_TEXT, 
+        CASE WHEN tt.TYP_PCON_START = 0 THEN '-' ELSE tt.TYP_PCON_START END AS TYP_PCON_START,
+        CASE WHEN tt.TYP_PCON_END = 0 THEN '-' ELSE tt.TYP_PCON_END END AS TYP_PCON_END
         FROM `T_types` tt 
-            INNER JOIN `T_models` tm ON tm.MOD_ID=tt.TYP_MOD_ID 
-            INNER JOIN `T_manufacturers` man ON man.MFA_ID=tm.MOD_MFA_ID
-        WHERE tt.TYP_ID IN ($typ_id_str) AND tm.MOD_MFA_ID='$mfa' AND tt.ACTIVE=1 
+            INNER JOIN `T_models` tm ON (tm.MOD_ID = tt.TYP_MOD_ID)
+            INNER JOIN `T_manufacturers` man ON (man.MFA_ID = tm.MOD_MFA_ID)
+        WHERE tt.TYP_ID IN (
+            SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id
+        ) AND tm.MOD_MFA_ID = $mfa_id AND tt.ACTIVE = 1 
         GROUP BY tt.TYP_ID 
         ORDER BY tm.Model ASC;");
         $n = $db->num_rows($r);
@@ -778,15 +761,9 @@ class FormClass extends CatalogueClass
             $typ_id = $db->result($r, $i - 1, "TYP_ID");
             $model = $db->result($r, $i - 1, "TYP_MMT_TEXT");
             $d_start = $db->result($r, $i - 1, "TYP_PCON_START");
-            if ($d_start == 0) {
-                $d_start = "-";
-            }
+            $d_end = $db->result($r, $i - 1, "TYP_PCON_END");
             if (strlen($d_start) == 6) {
                 $d_start = substr($d_start, 0, 4) . "." . substr($d_start, 4, 2);
-            }
-            $d_end = $db->result($r, $i - 1, "TYP_PCON_END");
-            if ($d_end == 0) {
-                $d_end = "-";
             }
             if (strlen($d_end) == 6) {
                 $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
@@ -795,7 +772,7 @@ class FormClass extends CatalogueClass
                 $d_end = "{cur_time}";
             }
             $list .= "<li class=\"list-inline\">
-                <a onclick=\"getArticleApplModelInfoForm('$art_id','$typ_id')\" id=\"mm_car$typ_id\">$model ($d_start-$d_end)</a> 
+                <a onclick=\"getArticleApplModelInfoForm('$art_id', '$typ_id')\">$model ($d_start-$d_end)</a> 
                 <div id=\"AMI$typ_id\"></div>
             </li>";
         }
@@ -815,12 +792,14 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $automan = new AutoClass();
         $list = "";
-        $r = $db->query("SELECT tt.*, man.MFA_ID, tm.Model, tm.MOD_ID
+        $r = $db->query("SELECT tt.TYP_TEXT, tt.FUEL_ID, tt.TYP_KW_FROM, tt.TYP_HP_FROM, tt.TYP_CCM, tt.ENG_Cod, 
+       	CASE WHEN tt.TYP_PCON_START = 0 THEN '' ELSE tt.TYP_PCON_START END AS TYP_PCON_START,
+        CASE WHEN tt.TYP_PCON_END = 0 THEN '' ELSE tt.TYP_PCON_END END AS TYP_PCON_END
         FROM `T2_LINKS` tl 
-            INNER JOIN `T_types` tt ON tt.TYP_ID=tl.TYP_ID 
-            INNER JOIN `T_models` tm ON tm.MOD_ID=tt.TYP_MOD_ID 
-            INNER JOIN `T_manufacturers` man ON man.MFA_ID=tm.MOD_MFA_ID
-        WHERE tl.ART_ID = $art_id AND tt.TYP_ID='$typ_id' AND tt.ACTIVE=1 
+            INNER JOIN `T_types` tt ON (tt.TYP_ID = tl.TYP_ID) 
+            INNER JOIN `T_models` tm ON (tm.MOD_ID = tt.TYP_MOD_ID) 
+            INNER JOIN `T_manufacturers` man ON (man.MFA_ID = tm.MOD_MFA_ID)
+        WHERE tl.ART_ID = $art_id AND tt.TYP_ID = $typ_id AND tt.ACTIVE = 1 
         GROUP BY tm.MOD_ID 
         ORDER BY tt.TYP_TEXT ASC;");
         $n = $db->num_rows($r);
@@ -829,24 +808,18 @@ class FormClass extends CatalogueClass
             $fuel = $db->result($r, $i - 1, "FUEL_ID");
             $fuel_name = $automan->getFuelName($fuel);
             $start = $db->result($r, $i - 1, "TYP_PCON_START");
-            if ($start == 0) {
-                $start = "";
-            }
-            if (strlen($start) == 6) {
-                $start = substr($start, 0, 4) . "." . substr($start, 4, 2);
-            }
             $end = $db->result($r, $i - 1, "TYP_PCON_END");
-            if ($end == 0) {
-                $end = "";
-            }
-            if (strlen($end) == 6) {
-                $end = substr($end, 0, 4) . "." . substr($end, 4, 2);
-            }
             $TYP_KW_FROM = $db->result($r, $i - 1, "TYP_KW_FROM");
             $TYP_HP_FROM = $db->result($r, $i - 1, "TYP_HP_FROM");
             $TYP_CCM = $db->result($r, $i - 1, "TYP_CCM");
             $ENG_Cod = $db->result($r, $i - 1, "ENG_Cod");
-            $list .= "<tr class=\"pointer\" href=\"/catalog\" style=\"font-size: .8em;\">
+            if (strlen($start) == 6) {
+                $start = substr($start, 0, 4) . "." . substr($start, 4, 2);
+            }
+            if (strlen($end) == 6) {
+                $end = substr($end, 0, 4) . "." . substr($end, 4, 2);
+            }
+            $list .= "<tr class=\"pointer\" href=\"" . $this->getSiteLink() . "$this->catalog_link/\" style=\"font-size: .8em;\">
                 <td>$fuel_name</td>
                 <td>$TYP_TEXT</td>
                 <td>$start - $end</td>
@@ -856,7 +829,7 @@ class FormClass extends CatalogueClass
             </tr>";
         }
         $form = $this->getHtmlForm("cat_modif_group_form");
-        $form = str_replace("{list}", $list, $form);
+        $form = str_replace("{cat_modif_list}", $list, $form);
         $form = "<div>$form</div>";
         $form = $this->replaceLang($form);
         return $form;
@@ -894,7 +867,7 @@ class FormClass extends CatalogueClass
             </p>";
             (!$display) ?: $info = "<div style='padding: 10px;'>$info</div>";
         } else {
-            (!$display) ? $info = "{info_cap}" : $info = "";
+            $info = (!$display) ? "{info_cap}" : "";
         }
         $info = str_replace('"', "", $info);
         $info = $this->replaceLang($info);
@@ -907,16 +880,17 @@ class FormClass extends CatalogueClass
     public function getCarsBanner()
     {
         $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
         $indicators = $items = "";
         $k = 0;
-        $r = $db->query("SELECT `TITLE`, `TEXT`, `IMAGE` FROM `banner` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
+        $r = $db->query("SELECT `TITLE_$postfix`, `TEXT_$postfix`, `IMAGE` FROM `T2_BANNERS` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $title = $db->result($r, $i - 1, "TITLE");
-            $text = $db->result($r, $i - 1, "TEXT");
+            $title = $db->result($r, $i - 1, "TITLE_$postfix");
+            $text = $db->result($r, $i - 1, "TEXT_$postfix");
             $image = $db->result($r, $i - 1, "IMAGE");
             $class = ($k == 0) ? "active" : "";
-            $indicators .= "<li data-target=\"#carouselBanner\" data-slide-to=\"$k\" class=\"$class\"></li>";
+            $indicators .= "<li class=\"$class\" data-target=\"#carouselBanner\" data-slide-to=\"$k\"></li>";
             $items .= "<div class=\"carousel-item $class\">" . $this->getCarsBannerItem($title, $text, "/images/banners/" . $image) . "</div>";
             $k++;
         }

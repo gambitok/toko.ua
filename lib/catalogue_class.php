@@ -1158,7 +1158,7 @@ class CatalogueClass
         $result = [];
         $r = $db->query("SELECT `delivery_days`, `week_day`, `time_from_del`, `time_to_del`, `suppl_storage_id`, `suppl_id` 
         FROM `T_POINT_SUPPL_DELIVERY_TIME` 
-        WHERE `status`='1' AND `tpoint_id`='$tpoint_id' AND `week_day`='$week_day' AND `time_from`<='$cur_time' AND `time_to`>='$cur_time';");
+        WHERE `status` = '1' AND `tpoint_id` = '$tpoint_id' AND `week_day` = '$week_day' AND `time_from` <= '$cur_time' AND `time_to` >= '$cur_time';");
         $deliveryTimes = mysqli_fetch_all($r, MYSQLI_ASSOC);
         foreach ($deliveryTimes as $deliveryTime) {
             $time_from_del = substr($deliveryTime["time_from_del"], 0, -3);
@@ -1193,7 +1193,7 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
             LEFT OUTER JOIN {$db->getDbName()}.A_CLIENTS_VAT_CONDITIONS acvc ON acvc.client_id = t2si.suppl_id
             LEFT OUTER JOIN `T_POINT_SUPPL_FM` tpsf ON (tpsf.suppl_id = t2si.suppl_id AND tpsf.suppl_storage_id = t2si.client_storage_id)
-        WHERE t2a.ART_ID IN ($where_art_id_str) AND t2si.status=1 AND tpsf.tpoint_id=$tpoint AND tpsf.price_rating_id='$price_suppl_lvl' AND tpsf.price_from<=t2si.price_usd AND tpsf.price_to>=t2si.price_usd;";
+        WHERE t2a.ART_ID IN ($where_art_id_str) AND t2si.status = 1 AND tpsf.tpoint_id = $tpoint AND tpsf.price_rating_id = '$price_suppl_lvl' AND tpsf.price_from <= t2si.price_usd AND tpsf.price_to >= t2si.price_usd;";
         $r = $dbt->query($query);
         $supplPrices = mysqli_fetch_all($r, MYSQLI_ASSOC);
         $prices = [];
@@ -1574,7 +1574,7 @@ class CatalogueClass
         if ($actions == "") {
             return false;
         } else {
-            $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `id` IN ($actions) AND `status` = 1 LIMIT 1;");
+            $r = $db->query("SELECT `id`, `amount`, `max_amount`, `price`, `data` FROM `ACTION_CLIENTS` WHERE `id` IN ($actions) AND `status` = 1 LIMIT 1;");
             $action_id = $db->result($r, 0, "id");
             $amount = $db->result($r, 0, "amount");
             $max_amount = $db->result($r, 0, "max_amount");
@@ -2035,7 +2035,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $cash_id = 2;
-        $r = $db->query("SELECT * FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
+        $r = $db->query("SELECT `cash_id` FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $cash_id = $db->result($r, 0, "cash_id");

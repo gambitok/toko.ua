@@ -1599,10 +1599,10 @@ class CatalogExistClass extends CatalogueClass
             $details_cap .= " {on_cap}";
         }
 
-        $r = $db->query("SELECT mf.*, md.Model, md.Model_Link 
+        $r = $db->query("SELECT mf.MFA_BRAND_LINK, mf.MFA_BRAND, md.Model_Link 
         FROM `T_manufacturers` mf
-            LEFT JOIN `T_models` md ON md.MOD_MFA_ID=mf.MFA_ID
-        WHERE mf.`MFA_ID`='$mfa_id_sel' AND md.`Model`='$model' 
+            LEFT JOIN `T_models` md ON (md.MOD_MFA_ID = mf.MFA_ID)
+        WHERE mf.`MFA_ID` = $mfa_id_sel AND md.`Model` = '$model' 
         GROUP BY md.`Model`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1613,7 +1613,10 @@ class CatalogExistClass extends CatalogueClass
             $list .= "<span class=\"title-b\">$details_cap $mfa_brand $model</span>";
             $list .= "<div class=\"seo_details\"><div class=\"seo-ul\">";
 
-            $r2 = $db->query("SELECT * FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id_sel' AND `Model`='$model' ORDER BY `MOD_PCON_START`;");
+            $r2 = $db->query("SELECT `TEX_TEXT_link`, `TEX_TEXT`, `Car_pict`, `MOD_PCON_START`, `MOD_PCON_END` 
+            FROM `T_models` 
+            WHERE `MOD_MFA_ID` = $mfa_id_sel AND `Model` = '$model' 
+            ORDER BY `MOD_PCON_START`;");
             $n2 = $db->num_rows($r2);
             for ($i2 = 1; $i2 <= $n2; $i2++) {
                 $mod_id_link = $db->result($r2, $i2 - 1, "TEX_TEXT_link");
@@ -1820,7 +1823,6 @@ class CatalogExistClass extends CatalogueClass
                 }
             }
         }
-
         return "$group_text $car_text";
     }
 

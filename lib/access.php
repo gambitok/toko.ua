@@ -406,13 +406,28 @@ function findPath() {
 	return $res;
 }
 
-function findUrl() {
+function findUrl()
+{
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 	$link = parse_url($link);
     return $link["path"];
 }
 
-function findLinks() {
+function findLanguage()
+{
+    $postfix = "";
+    $link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+    if (strpos($link, "uk") !== false) {
+        $postfix = "uk";
+    }
+    if (strpos($link, "en") !== false) {
+        $postfix = "en";
+    }
+    return $postfix;
+}
+
+function findLinks()
+{
     $language = new LangClass();
     $language->setLangID(1);
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];

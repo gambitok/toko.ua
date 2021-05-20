@@ -5,3 +5,9 @@ if ($client->checkUnRegClient()) {
 } else {
     require_once("profile.php");
 }
+
+$content = str_replace("{meta_noindex}", '
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+    <meta name="yandex" content="noindex">
+', $content);

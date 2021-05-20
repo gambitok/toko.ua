@@ -196,7 +196,7 @@ if ($_REQUEST["w"] == "getMenuBar") {
 /*==== MODALS ====*/
 
 if ($_REQUEST["w"] == "getArticleApplModelForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplModelForm($_REQUEST["art_id_tcd"], $_REQUEST["manufacture"]));
+    $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplModelForm($_REQUEST["art_id"], $_REQUEST["mfa_id"]));
 }
 
 if ($_REQUEST["w"] == "getArticleApplModelInfoForm") {

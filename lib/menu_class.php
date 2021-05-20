@@ -24,7 +24,7 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $state_id = $this->getUrlNumber($state_id);
-        $r = $db->query("SELECT `caption` FROM `news` WHERE `id`='$state_id' LIMIT 1;");
+        $r = $db->query("SELECT `caption` FROM `news` WHERE `id` = $state_id LIMIT 1;");
         $title = $db->result($r, 0, "caption");
         $title = str_replace(str_split('.+\/:*?"<>|!?'), "", $title);
         if ($title == "") {
@@ -108,7 +108,7 @@ class MenuClass extends CatalogueClass
         if ($language_id != 1) {
             $language_id = 5;
         }
-        $r = $db->query("SELECT `caption`, `desc`, `data` FROM `news` WHERE `id`='$state_id';");
+        $r = $db->query("SELECT `caption`, `desc`, `data` FROM `news` WHERE `id` = $state_id;");
         $title = $db->result($r, 0, "caption");
         if ($title == "") {
             $title = $this->replaceLang("{news_one_cap}" . "-$state_id");
@@ -149,17 +149,16 @@ class MenuClass extends CatalogueClass
     {
         $template_id = $this->getUrlNumber($template_id);
         $update_actions = $this->getNameString($update_actions);
-
         $db = DbSingleton::getDbm();
         $kours = new ExRateClass();
         $showform = new FormClass();
         $client_id = $this->getClient();
         $err1 = $this->err1;
-        $categories = $group_arts = [];
-        $where_arts = "";
+        $group_arts = [];
         $status_new = 0;
         $cur_data = date("Y-m-d");
 
+        $where_arts = "";
         if ($template_id != "" && $template_id != "0") {
             $arts = $this->getGoodsGroupArts($template_id);
             if ($arts != "") {
@@ -167,19 +166,13 @@ class MenuClass extends CatalogueClass
             }
         }
 
-        $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id;");
-        $nom = $db->num_rows($r);
-        for ($i = 1; $i <= $nom; $i++) {
-            $category_id = $db->result($r, $i - 1, "client_category");
-            array_push($categories, $category_id);
-        }
-        $categories = implode(",", $categories);
-
         $r = $db->query("SELECT ac.* 
         FROM `ACTION_CLIENTS` ac
             LEFT JOIN `ACTION_CLIENTS_LIST` acl ON (acl.action_id=ac.id)
             LEFT JOIN `ACTION_CLIENTS_CATEGORY` acc ON (acc.action_id=ac.id)
-        WHERE (acl.client_id = $client_id OR acc.category_id IN ($categories)) $where_arts AND ac.data >= '$cur_data';");
+        WHERE (acl.client_id = $client_id OR acc.category_id IN (
+            SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id
+        )) $where_arts AND ac.data >= '$cur_data';");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $list = "<div class=\"row\">";
@@ -201,18 +194,7 @@ class MenuClass extends CatalogueClass
                         $status_new = 1;
                     }
                 }
-                $arr[$i] =
-                    [
-                        "status_new" => $status_new,
-                        "art_id" => $art_id,
-                        "article_nr_displ" => $article_nr_displ,
-                        "amount" => $amount,
-                        "max_amount" => $max_amount,
-                        "timestamp" => $timestamp,
-                        "data" => $data,
-                        "status" => $status,
-                        "discount" => $discount
-                    ];
+                $arr[$i] = compact("status_new", "art_id", "article_nr_displ", "amount", "max_amount", "timestamp", "data", "status", "discount");
             }
 
             $far_status = $far_article = [];
@@ -232,10 +214,10 @@ class MenuClass extends CatalogueClass
                 $status = $arr[$i]["status"];
                 $status_new = $arr[$i]["status_new"];
                 $discount = $arr[$i]["discount"];
-                array_push($group_arts, $art_id);
+
+                $group_arts[] = $art_id;
                 $name = $this->getArticleName($art_id);
                 $article_nr_search = $this->getArticleSearch($art_id);
-
                 $brand_id = $this->getArticleBrand($art_id);
                 $brand_name = $this->getBrandName($brand_id);
                 $brand_link = $this->getBrandLink($brand_id);
@@ -302,14 +284,14 @@ class MenuClass extends CatalogueClass
         $where_arts = ($arts != "") ? "WHERE t2gg.ART_ID IN ($arts)" : "";
         $r = $db->query("SELECT gg.ID, gg.NAME 
         FROM `GOODS_GROUP` gg 
-            LEFT OUTER JOIN `T2_GOODS_GROUP` t2gg ON (t2gg.GOODS_GROUP_ID=gg.ID)
+            LEFT OUTER JOIN `T2_GOODS_GROUP` t2gg ON (t2gg.GOODS_GROUP_ID = gg.ID)
         $where_arts 
         GROUP BY t2gg.GOODS_GROUP_ID;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "ID");
             $name = $db->result($r, $i - 1, "NAME");
-            $list .= "<option value=\"$id\">$name</option>s";
+            $list .= "<option value=\"$id\">$name</option>";
         }
         return $list;
     }
@@ -325,7 +307,7 @@ class MenuClass extends CatalogueClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
-            array_push($arts, $art_id);
+            $arts[] = $art_id;
         }
         $arts = implode(",", $arts);
         return $arts;
@@ -369,25 +351,28 @@ class MenuClass extends CatalogueClass
     public function getRegionListPhone()
     {
         $db = DbSingleton::getDbm();
+        $list =  "";
         $tpoint_id = $this->getTpointID();
         $language_id = $this->getLanguage();
         $r = $db->query("SELECT t2.id, t2a.full_name
         FROM `T_POINT` t2
-            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
+            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id = t2.id)
         WHERE t2.status = 1 AND t2a.lang_id = $language_id 
         ORDER BY t2.position DESC, t2a.full_name ASC;");
         $n = $db->num_rows($r);
-        $list = "<form action=\"\" autocomplete=\"off\">";
-        $ch = "";
-        for ($i = 1; $i <= $n; $i++) {
-            $id = $db->result($r, $i - 1, "id");
-            $region = $db->result($r, $i - 1, "full_name");
-            ($tpoint_id == "") ?: ($ch = ($id == $tpoint_id) ? "checked='checked'" : "");
-            $list .= "<label class=\"container_radio-phone\">$region<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
-                <span class=\"radiomark-phone\"></span>
-            </label>";
+        if ($n > 0) {
+            $list = "<form action=\"\" autocomplete=\"off\">";
+            $ch = "";
+            for ($i = 1; $i <= $n; $i++) {
+                $id = $db->result($r, $i - 1, "id");
+                $region = $db->result($r, $i - 1, "full_name");
+                ($tpoint_id == "") ?: ($ch = ($id == $tpoint_id) ? "checked='checked'" : "");
+                $list .= "<label class=\"container_radio-phone\">$region<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
+                    <span class=\"radiomark-phone\"></span>
+                </label>";
+            }
+            $list .= "</form>";
         }
-        $list .= "</form>";
         return $list;
     }
 
@@ -403,7 +388,7 @@ class MenuClass extends CatalogueClass
         $list = "";
         $r = $db->query("SELECT t2a.full_name, t2a.address 
         FROM `T_POINT` t2
-            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
+            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id = t2.id)
         WHERE t2.id = $tpoint_id AND t2a.lang_id = $language_id 
         ORDER BY t2.position DESC, t2a.full_name ASC;");
         $n = $db->num_rows($r);
@@ -411,7 +396,7 @@ class MenuClass extends CatalogueClass
         $address = $db->result($r, 0, "address");
         if ($n > 0) {
             $list = "<span><span class=\"fas fa-map-marker-alt\"></span> {choose_office}:</span>
-            <a onClick='showRegionForm();'>
+            <a onClick=\"showRegionForm();\">
                 <span id=\"region_select\">
                     <span>$region ($address)</span>
                 </span>
@@ -429,7 +414,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $language_id = $this->getLanguage();
         $list = "";
-        $r = $db->query("SELECT * FROM `contacts_new` WHERE `lang_id` = $language_id AND `status` = 1;");
+        $r = $db->query("SELECT `title`, `address`, `schedule`, `phone` FROM `contacts_new` WHERE `lang_id` = $language_id AND `status` = 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -493,11 +478,10 @@ class MenuClass extends CatalogueClass
     public function getLanguageList()
     {
         $db = DbSingleton::getTokoDb();
+        $list = "";
         $language_id = $this->getLanguage();
         $r = $db->query("SELECT `id`, `abr`, `value` FROM `new_lang` WHERE 1;");
         $n = $db->num_rows($r);
-        $form = $this->getHtmlForm("bar/lang");
-        $list = "";
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "id");
             $abr = $db->result($r, $i - 1, "abr");
@@ -513,6 +497,7 @@ class MenuClass extends CatalogueClass
                 <input itemprop=\"name\" type=\"hidden\" value=\"$value\">
             </label>";
         }
+        $form = $this->getHtmlForm("bar/lang");
         $form = str_replace("{lang_list}", $list, $form);
         return $form;
     }
@@ -547,7 +532,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list_phone = $list_email = $list_address = "";
         // PHONE
-        $r = $db->query("SELECT * FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 1;");
+        $r = $db->query("SELECT `text`, `icon`, `link` FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $text = $db->result($r, $i - 1, "text");
@@ -561,7 +546,7 @@ class MenuClass extends CatalogueClass
             </li>";
         }
         // EMAIL
-        $r = $db->query("SELECT * FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 2;");
+        $r = $db->query("SELECT `text`, `icon`, `link` FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 2;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $text = $db->result($r, $i - 1, "text");
@@ -575,25 +560,23 @@ class MenuClass extends CatalogueClass
             </li>";
         }
         // ADDRESS
-        $r = $db->query("SELECT * FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 3;");
+        $r = $db->query("SELECT `text`, `text_short`, `icon`, `link` FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 3;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $list_address .= "<div itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\"><ul>";
-        }
-        for ($i = 1; $i <= $n; $i++) {
-            $text = $db->result($r, $i - 1, "text");
-            $text_short = $db->result($r, $i - 1, "text_short");
-            $icon = $db->result($r, $i - 1, "icon");
-            $link = $db->result($r, $i - 1, "link");
-            $list_address .= "<li>
-                <a href=\"$link\">
-                    <span class=\"fas $icon\"></span>
-                    <span itemprop=\"addressLocality\">$text_short</span>
-                    <span itemprop=\"streetAddress\">$text</span>
-                </a>
-            </li>";
-        }
-        if ($n > 0) {
+            for ($i = 1; $i <= $n; $i++) {
+                $text = $db->result($r, $i - 1, "text");
+                $text_short = $db->result($r, $i - 1, "text_short");
+                $icon = $db->result($r, $i - 1, "icon");
+                $link = $db->result($r, $i - 1, "link");
+                $list_address .= "<li>
+                    <a href=\"$link\">
+                        <span class=\"fas $icon\"></span>
+                        <span itemprop=\"addressLocality\">$text_short</span>
+                        <span itemprop=\"streetAddress\">$text</span>
+                    </a>
+                </li>";
+            }
             $list_address .= "</ul></div>";
         }
         $form = $this->getHtmlForm("menu/contacts_bottom");
@@ -637,7 +620,7 @@ class MenuClass extends CatalogueClass
         $type = $db->result($r, 0, "type");
         $size = $db->result($r, 0, "size");
         if ($n > 0) {
-            $db->query("DELETE FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE 'cookie_id' = '$cookie_id';");
+            $db->query("DELETE FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id` = '$cookie_id';");
         }
         if (in_array($type, $format_arr) && $size <= $max_bytes) {
             $db->query("INSERT INTO `J_SUPPLIERS_COOPERATION` (`company`,`name`,`phone`,`email`,`city_id`,`commentary`,`file_id`,`status`) 
@@ -679,7 +662,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
         $list = "";
-        $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `STATUS`=1 ORDER BY `data` DESC;");
+        $r = $db->query("SELECT `ID`, `DATA`, `IMG`, `TITLE_$postfix` FROM `T2_REVIEWS` WHERE `STATUS` = 1 ORDER BY `data` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -707,7 +690,7 @@ class MenuClass extends CatalogueClass
         $state_id = $this->getUrlNumber($state_id);
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
-        $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID` = $state_id;");
+        $r = $db->query("SELECT `DATA`, `TITLE_$postfix`, `TEXT_$postfix` FROM `T2_REVIEWS` WHERE `ID` = $state_id;");
         $list = $this->getHtmlForm("reviews/card_range");
         $list = str_replace("{review_date}", $db->result($r, 0, "DATA"), $list);
         $list = str_replace("{review_title}", $db->result($r, 0, "TITLE_$postfix"), $list);

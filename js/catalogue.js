@@ -217,12 +217,12 @@ function catalogueFilter(order) {
         }}, true);
 }
 
-function getArticleApplModelForm(art_id_tcd, manufacture, a) {
+function getArticleApplModelForm(art_id, mfa_id, a) {
     $(".info__applicability-checked").each(function () {
         $(this).removeClass("span-red");
     });
     $(a).addClass("span-red");
-    JsHttpRequest.query(folder,{ 'w': 'getArticleApplModelForm', 'art_id_tcd':art_id_tcd, 'manufacture':manufacture},
+    JsHttpRequest.query(folder,{ 'w': 'getArticleApplModelForm', 'art_id':art_id, 'mfa_id':mfa_id},
         function (result, errors){ if (errors) {} if (result){
             $("#info2_more").html(result.content);
             $("#info3_more").html(result.content);
