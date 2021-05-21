@@ -1,7 +1,5 @@
 <?php
 
-$bonus = 1;
-
 $phone = $client->formatValidPhone($_POST['bonus_phone']);
 
 if ($phone == "") {
@@ -13,7 +11,7 @@ if ($phone == "") {
         $client_id = $clientData["client_id"];
         // check if roznica
         if ($client->checkRetailClientCategory($client_id)) {
-            if (!$client->checkClientBonus($client_id, $bonus)) {
+            if (!$client->checkClientBonus($client_id, 1)) {
                 // ALL OK
                 $client->validatePhone($phone);
                 $content = str_replace("{main_window}", $menu->showScanPhoneForm($phone), $content);

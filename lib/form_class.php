@@ -436,7 +436,7 @@ class FormClass extends CatalogueClass
             $cookie = $this->getSessionID();
             $client_id = $this->getClient();
             $user_id = $this->getUser();
-            $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
+            $where = ($user_id == 0) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
         } else {
             $where = "`id` = $history_id";
         }
@@ -481,7 +481,7 @@ class FormClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
         }
-        $photo_name = ($photo_name == "") ? $this->noPhoto : "$this->uploads_link/" . $photo_name;
+        $photo_name = ($photo_name == "") ? $this->noPhoto : "$this->uploads_link/$photo_name";
         return $photo_name;
     }
 
@@ -498,7 +498,7 @@ class FormClass extends CatalogueClass
     public static function cacheArticlesPhotos($where_art_id_str)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID` IN ($where_art_id_str) AND `ACTIVE`=1 ORDER BY `PHOTO_NAME` ASC;");
+        $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID` IN ($where_art_id_str) AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
         $photos = mysqli_fetch_all($r, MYSQLI_ASSOC);
         foreach ($photos as $photo) {
             self::$articlePhotos[$photo['ART_ID']][] = $photo;

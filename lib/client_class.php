@@ -78,10 +78,10 @@ class ClientClass
     public function getClientName($user_id, $client_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `name` FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `client_id`='$client_id' AND `status`=$this->status_user LIMIT 1;");
+        $r = $db->query("SELECT `name` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id AND `client_id` = $client_id AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
-            $r = $db->query("SELECT `name` FROM `A_CLIENTS_USERS_RETAIL` WHERE `id`='$user_id' AND `client_id`='$client_id' AND `status`=$this->status_user_retail LIMIT 1;");
+            $r = $db->query("SELECT `name` FROM `A_CLIENTS_USERS_RETAIL` WHERE `id` = $user_id AND `client_id` = $client_id AND `status` = $this->status_user_retail LIMIT 1;");
         }
         return $db->result($r, 0, "name");
     }
@@ -93,7 +93,7 @@ class ClientClass
     {
         $user_id = $this->getUser();
         $cookie_id = $this->getSessionID();
-        return ($user_id == 0) ? "`cookie_id`='$cookie_id' AND `client_id`='0'" : "`client_id`='$user_id'";
+        return ($user_id == 0) ? "`cookie_id` = '$cookie_id' AND `client_id` = 0" : "`client_id` = $user_id";
     }
 
     /*
@@ -103,7 +103,7 @@ class ClientClass
     {
         $db = DbSingleton::getDbm();
         list($client_id, $user_id) = $this->getClientData();
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `client_id`='$client_id' AND `status`=$this->status_user LIMIT 1;");
+        $r = $db->query("SELECT `price_status` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id AND `client_id` = $client_id AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         $price_status = $db->result($r, 0, "price_status");
         return ($n == 0 || $price_status == 0) ? false : true;
@@ -116,7 +116,7 @@ class ClientClass
     {
         $db = DbSingleton::getDbm();
         list($client_id, $user_id) = $this->getClientData();
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' AND `client_id`='$client_id' AND `status`=$this->status_user LIMIT 1;");
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id` = $user_id AND `client_id` = $client_id AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         return ($n == 0) ? false : true;
     }
@@ -137,8 +137,8 @@ class ClientClass
     {
         $db = DbSingleton::getTokoDb();
         $typ_id = "";
-        $where = "`client_id`='$client_id' AND `user_id`='$user_id'";
-        $r = $db->query("SELECT * FROM `AUTO_GARAGE` WHERE $where AND `status`=1 LIMIT 1;");
+        $where = "`client_id` = $client_id AND `user_id` = $user_id";
+        $r = $db->query("SELECT `typ_id` FROM `AUTO_GARAGE` WHERE $where AND `status` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $typ_id = $db->result($r, 0, "typ_id");
@@ -187,7 +187,7 @@ class ClientClass
     {
         $user_id = $this->getUrlNumber($user_id);
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
+        $r = $db->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
         $client_id = $db->result($r, 0, "client_id");
         $cash_id = $this->getClientCurrency($client_id);
         $_SESSION["user_id"] = $user_id;
@@ -211,11 +211,11 @@ class ClientClass
         $password = $this->getUrlString($password);
         $db = DbSingleton::getDbm();
 
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `pass`='$password' AND `phone` IN ($phone_list) AND `status`=$this->status_user LIMIT 1;");
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `pass` = '$password' AND `phone` IN ($phone_list) AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         $n2 = 0;
         if ($n == 0) {
-            $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `pass`='$password' AND `phone` IN ($phone_list) AND `status`=$this->status_user_retail LIMIT 1;");
+            $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `pass` = '$password' AND `phone` IN ($phone_list) AND `status` = $this->status_user_retail LIMIT 1;");
             $n2 = $db->num_rows($r);
         }
 
@@ -267,10 +267,10 @@ class ClientClass
         $db = DbSingleton::getTokoDb();
         $user_id = $this->getUser();
         $cookie = $this->getSessionID();
-        $r = $db->query("SELECT * FROM `basket` WHERE `cookie_id`='$cookie' AND `client_id`=0;");
+        $r = $db->query("SELECT * FROM `basket` WHERE `cookie_id` = '$cookie' AND `client_id` = 0;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $db->query("UPDATE `basket` SET `client_id`='$user_id' WHERE `cookie_id`='$cookie' AND `client_id`=0;");
+            $db->query("UPDATE `basket` SET `client_id` = $user_id WHERE `cookie_id` = '$cookie' AND `client_id` = 0;");
             // need to add group with amount
         }
         return true;
@@ -285,13 +285,13 @@ class ClientClass
         $r = $db->query("SELECT acu.name as user_name, acu.email as user_email, acu.phone as user_phone, acu.pass, acu.client_id, acu.status as user_status, ac.* 
         FROM `A_CLIENTS` ac
             LEFT OUTER JOIN `A_CLIENTS_USERS` acu ON (acu.client_id=ac.id)
-        WHERE acu.id='$user_id' AND acu.client_id='$client_id' AND acu.status=$this->status_user LIMIT 1;");
+        WHERE acu.id = $user_id AND acu.client_id = $client_id AND acu.status = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
             $r = $db->query("SELECT acu.name as user_name, acu.email as user_email, acu.phone as user_phone, acu.pass, acu.status as user_status, acu.client_category, acu.client_id, ac.* 
             FROM `A_CLIENTS` ac
                 LEFT OUTER JOIN `A_CLIENTS_USERS_RETAIL` acu ON (acu.client_id=ac.id)
-            WHERE acu.id='$user_id' AND acu.client_id='$client_id' AND acu.status=$this->status_user_retail LIMIT 1;");
+            WHERE acu.id = $user_id AND acu.client_id = $client_id AND acu.status = $this->status_user_retail LIMIT 1;");
         }
         $phone = $db->result($r, 0, "user_phone");
         $password = $db->result($r, 0, "pass");
@@ -321,8 +321,8 @@ class ClientClass
         $email = $this->getUrlString($email);
         $name = $this->getUrlString($name);
         list($client_id, $user_id) = $this->getClientData();
-        $db->query("UPDATE `A_CLIENTS_USERS` SET `phone`='$phone', `pass`='$pass', `email`='$email', `name`='$name' WHERE `id`='$user_id' AND `client_id`='$client_id';");
-        $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `phone`='$phone', `pass`='$pass', `email`='$email', `name`='$name' WHERE `id`='$user_id' AND `client_id`='$client_id';");
+        $db->query("UPDATE `A_CLIENTS_USERS` SET `phone` = '$phone', `pass` = '$pass', `email` = '$email', `name` = '$name' WHERE `id` = $user_id AND `client_id` = $client_id;");
+        $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `phone` = '$phone', `pass` = '$pass', `email` = '$email', `name` = '$name' WHERE `id` = $user_id AND `client_id` = $client_id;");
         return true;
     }
 
@@ -340,7 +340,7 @@ class ClientClass
         $city_id = $this->getUrlNumber($city_id);
         $tpoint_id = $this->getUrlNumber($tpoint_id);
         $mailing = $this->getUrlNumber($mailing);
-        $mailing ? $mailing = 1 : $mailing = 0;
+        $mailing = ($mailing) ? 1 : 0;
         $client_id = $this->getClientByTpoint($tpoint_id);
         $date = date("Y-m-d H:i:s");
         list($region, $state, $country) = $this->getLocationCity($city_id);
@@ -353,13 +353,13 @@ class ClientClass
             $this->addRetailClient($client_id, $phone, $name, $city_id, $email, $pass, $this->default_client_category);
         } else {
             // REGISTRATION AS RETAIL
-            $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone`='$phone' LIMIT 1;");
+            $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone` = '$phone' LIMIT 1;");
             $n = $db->num_rows($r);
             if ($n == 0) {
                 $db->query("INSERT INTO `A_CLIENTS_USERS_RETAIL` (`name`, `email`, `phone`, `pass`, `client_id`, `client_category`, `data`, `country_id`, `state_id`, `region_id`, `city_id`, `mailing`, `status`) 
                 VALUES ('$name', '$email', '$phone', '$pass', $client_id, '$client_category', '$date', $country, $state, $region, $city_id, $mailing, $this->status_user_retail);");
             } else {
-                $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `pass`='$pass', `email`='$email', `name`='$name' WHERE `phone`='$phone' LIMIT 1;");
+                $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `pass` = '$pass', `email` = '$email', `name` = '$name' WHERE `phone` = '$phone' LIMIT 1;");
             }
         }
         return true;
@@ -368,24 +368,24 @@ class ClientClass
     /*
      * save Retail client
      * */
-    public function saveClientRetail($client, $pass, $order_id, $name, $phone, $email)
+    public function saveClientRetail($client_id_sel, $pass, $order_id, $name, $phone, $email)
     {
         $db = DbSingleton::getDbm();
         $phone = $this->getUrlString($phone);
         $phone = $this->formatValidPhone($phone);
-        $client = $this->getUrlNumber($client);
+        $client_id_sel = $this->getUrlNumber($client_id_sel);
         $pass = $this->getUrlString($pass);
         $order_id = $this->getUrlNumber($order_id);
         $name = $this->getUrlString($name);
         $email = $this->getUrlString($email);
         ($pass != "") ?: $pass = $this->randomPassword();
-        $update_phone = ($phone != "") ? ", `phone`='$phone'" : "";
-        $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `pass`='$pass', `name`='$name' $update_phone, `email`='$email' WHERE `id`=$client;");
-        $r = $db->query("SELECT `phone`, `pass`, `client_id` FROM `A_CLIENTS_USERS_RETAIL` WHERE `id`='$client';");
+        $update_phone = ($phone != "") ? ", `phone` = '$phone'" : "";
+        $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `pass` = '$pass', `name` = '$name' $update_phone, `email` = '$email' WHERE `id` = $client_id_sel;");
+        $r = $db->query("SELECT `phone`, `pass`, `client_id` FROM `A_CLIENTS_USERS_RETAIL` WHERE `id` = $client_id_sel;");
         $login = $db->result($r, 0, "phone");
         $password = $db->result($r, 0, "pass");
         $client_id = $db->result($r, 0, "client_id");
-        $db->query("UPDATE `orders_new` SET `client_id`='$client_id', `client_user_id`='$client' WHERE `id`=$order_id;");
+        $db->query("UPDATE `orders_new` SET `client_id` = $client_id, `client_user_id` = $client_id_sel WHERE `id` = $order_id;");
         return array($login, $password);
     }
 
@@ -395,7 +395,7 @@ class ClientClass
     public function getClientByTpoint($tpoint_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `client_id` FROM `T_POINT_CLIENTS_RETAIL` WHERE `tpoint_id`='$tpoint_id' AND `status`=1;");
+        $r = $db->query("SELECT `client_id` FROM `T_POINT_CLIENTS_RETAIL` WHERE `tpoint_id` = $tpoint_id AND `status` = 1;");
         return $db->result($r, 0, "client_id");
     }
 
@@ -405,7 +405,7 @@ class ClientClass
     public function getClientCurrency($client_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `cash_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;");
+        $r = $db->query("SELECT `cash_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id LIMIT 1;");
         $n = $db->num_rows($r);
         $cash_id = $db->result($r, 0, "cash_id");
         if ($n == 0) {
@@ -437,7 +437,7 @@ class ClientClass
         if ($client_id == 0) {
             $client_id = $this->getClientData()[0];
         }
-        $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id';");
+        $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id;");
         $tpoint_id = $db->result($r, 0, "tpoint_id");
         if ($tpoint_id == "" || $tpoint_id == 0) {
             $tpoint_id = $this->default_tpoint;
@@ -451,7 +451,7 @@ class ClientClass
     public function getTpointUser($client_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id';");
+        $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id;");
         $tpoint_id = $db->result($r, 0, "tpoint_id");
         if ($tpoint_id == "" || $tpoint_id == 0) {
             $tpoint_id = $this->default_tpoint;
@@ -474,9 +474,9 @@ class ClientClass
     public function getArticleStorageTPoint($storage_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `tpoint_id` FROM `T_POINT_STORAGE` WHERE `storage_id`='$storage_id' LIMIT 1;");
+        $r = $db->query("SELECT `tpoint_id` FROM `T_POINT_STORAGE` WHERE `storage_id` = $storage_id LIMIT 1;");
         $tpoint_id = $db->result($r, 0, "tpoint_id");
-        $r = $db->query("SELECT `full_name` FROM `T_POINT` WHERE `id`='$tpoint_id' LIMIT 1;");
+        $r = $db->query("SELECT `full_name` FROM `T_POINT` WHERE `id` = $tpoint_id LIMIT 1;");
         return $db->result($r, 0, "full_name");
     }
 
@@ -490,7 +490,7 @@ class ClientClass
         $phone = $this->formatValidPhone($phone);
         $type = $this->getUrlNumber($type);
 
-        $r = $db->query("SELECT `client_id`, `phone`, `pass` FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
+        $r = $db->query("SELECT `client_id`, `phone`, `pass` FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
 
         $client_id = $db->result($r, 0, "client_id");
@@ -523,15 +523,11 @@ class ClientClass
      * */
     public function checkRegistration($phone)
     {
-        $db = DbSingleton::getDbm();
         $phone = $this->formatValidPhone($phone);
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
+        $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return ($n > 0);
     }
 
     /*
@@ -544,7 +540,7 @@ class ClientClass
         $db = DbSingleton::getTokoDb();
         $result = false;
         $code = substr($phone, 0, 3);
-        $r = $db->query("SELECT * FROM `mobile_operators` WHERE `OPERATOR_CODE`='$code' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `mobile_operators` WHERE `OPERATOR_CODE` = '$code' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $result = true;
@@ -565,7 +561,7 @@ class ClientClass
     {
         $db = DbSingleton::getTokoDb();
         $storage_local = $storage_remote = [];
-        $r = $db->query("SELECT `storage_id`, `local` FROM `T_POINT_STORAGE` WHERE `tpoint_id`='$tpoint_id' AND `status`=1;");
+        $r = $db->query("SELECT `storage_id`, `local` FROM `T_POINT_STORAGE` WHERE `tpoint_id` = $tpoint_id AND `status` = 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $storage_id = $db->result($r, $i - 1, "storage_id");
@@ -581,11 +577,11 @@ class ClientClass
      * select all tpoints except the specified one
      * Table: toko_dba.`T_POINT`
     */
-    public function getOtherTpoints($tpoint_id)
+    public function getOtherTpoints($tpoint_id_sel)
     {
         $db = DbSingleton::getTokoDb();
         $tpoint_array = [];
-        $r = $db->query("SELECT `id` FROM `T_POINT` WHERE `status`=1 ORDER BY CASE WHEN `id`='$tpoint_id' THEN 0 ELSE 1 END;");
+        $r = $db->query("SELECT `id` FROM `T_POINT` WHERE `status` = 1 ORDER BY CASE WHEN `id` = $tpoint_id_sel THEN 0 ELSE 1 END;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $tpoint_id = $db->result($r, $i - 1, "id");
@@ -601,7 +597,7 @@ class ClientClass
     public function getTPointAddress($tpoint_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `address` FROM `T_POINT` WHERE `id`='$tpoint_id' AND `status`=1 LIMIT 1;");
+        $r = $db->query("SELECT `address` FROM `T_POINT` WHERE `id` = $tpoint_id AND `status` = 1 LIMIT 1;");
         return $db->result($r, 0, "address");
     }
 
@@ -612,7 +608,7 @@ class ClientClass
     public function getTPointCity($tpoint_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `city` FROM `T_POINT` WHERE `id`='$tpoint_id' AND `status`=1 LIMIT 1;");
+        $r = $db->query("SELECT `city` FROM `T_POINT` WHERE `id` = $tpoint_id AND `status` = 1 LIMIT 1;");
         $city_id = $db->result($r, 0, "city");
         return $this->getCityName($city_id);
     }
@@ -624,7 +620,7 @@ class ClientClass
     public function getStorageAddress($storage_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `address` FROM `STORAGE` WHERE `id`='$storage_id' AND `status`=1 LIMIT 1;");
+        $r = $db->query("SELECT `address` FROM `STORAGE` WHERE `id` = $storage_id AND `status` = 1 LIMIT 1;");
         return $db->result($r, 0, "address");
     }
 
@@ -635,7 +631,7 @@ class ClientClass
     public function getStorageCity($storage_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `city` FROM `STORAGE` WHERE `id`='$storage_id' AND `status`=1 LIMIT 1;");
+        $r = $db->query("SELECT `city` FROM `STORAGE` WHERE `id` = $storage_id AND `status` = 1 LIMIT 1;");
         $city_id = $db->result($r, 0, "city");
         return $this->getCityName($city_id);
     }
@@ -651,10 +647,10 @@ class ClientClass
         if ($city_id > 0) {
             $r = $db->query("SELECT t2r.REGION_ID, t2s.STATE_ID, t2ct.COUNTRY_ID 
             FROM `T2_CITY` t2c
-                LEFT OUTER JOIN `T2_REGION` t2r on t2r.REGION_ID=t2c.REGION_ID 
-                LEFT OUTER JOIN `T2_STATE` t2s on t2s.STATE_ID=t2r.STATE_ID 
-                LEFT OUTER JOIN `T2_COUNTRIES` t2ct on t2ct.COUNTRY_ID=t2s.COUNTRY_ID 
-            WHERE t2c.CITY_ID='$city_id';");
+                LEFT OUTER JOIN `T2_REGION` t2r ON (t2r.REGION_ID = t2c.REGION_ID) 
+                LEFT OUTER JOIN `T2_STATE` t2s ON (t2s.STATE_ID = t2r.STATE_ID)
+                LEFT OUTER JOIN `T2_COUNTRIES` t2ct ON (t2ct.COUNTRY_ID = t2s.COUNTRY_ID) 
+            WHERE t2c.CITY_ID = $city_id;");
             $region_id = $db->result($r, 0, "REGION_ID");
             $state_id = $db->result($r, 0, "STATE_ID");
             $country_id = $db->result($r, 0, "COUNTRY_ID");
@@ -672,10 +668,10 @@ class ClientClass
         $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getDbm();
         $dbt = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' AND `status`=$this->status_user LIMIT 1;");
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
-            $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone`='$phone' AND `status`=$this->status_user_retail LIMIT 1;");
+            $r = $db->query("SELECT * FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone` = '$phone' AND `status` = $this->status_user_retail LIMIT 1;");
         }
         $password = $db->result($r, 0, "pass");
         $message = "Vash login: $phone, vash parol: $password. Spasibo, chto Vy s nami! (www.toko.ua)";
@@ -708,10 +704,10 @@ class ClientClass
         $phone = $this->formatValidPhone($phone);
         $password = $this->getNameString($password);
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `phone_validation` WHERE `phone`='$phone' AND `password`='$password' AND `status`=0;");
+        $r = $db->query("SELECT * FROM `phone_validation` WHERE `phone` = '$phone' AND `password` = '$password' AND `status` = 0;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $db->query("UPDATE `phone_validation` SET `status`=1 WHERE `phone`='$phone' AND `password`='$password' AND `status`=0;");
+            $db->query("UPDATE `phone_validation` SET `status` = 1 WHERE `phone` = '$phone' AND `password` = '$password' AND `status` = 0;");
         }
         return ($n > 0);
     }
@@ -761,7 +757,7 @@ class ClientClass
     public function moveClientsConditionsRetail($tpoint_client_id, $client_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$tpoint_client_id' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $tpoint_client_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 1) {
             $cash_id = $db->result($r, 0, "cash_id");
@@ -790,7 +786,7 @@ class ClientClass
     public function checkRetailClientCategory($client_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
+        $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id LIMIT 1;");
         $client_category = $db->result($r, 0, "client_category");
         return ($client_category == $this->default_client_category);
     }
@@ -801,7 +797,7 @@ class ClientClass
     public function getUsersCount()
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `status`=1;");
+        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `status` = 1;");
         return $db->num_rows($r);
     }
 
@@ -845,15 +841,7 @@ class ClientClass
     {
         $db = DbSingleton::getDbm();
         $user_id = $this->getUser();
-        $categories = [];
-        $r = $db->query("SELECT `category_id` FROM `ACTION_CLIENTS_CATEGORY`;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $category_id = $db->result($r, $i - 1, "category_id");
-            array_push($categories, $category_id);
-        }
-        $categories = implode(",", $categories);
-        $r = $db->query("SELECT * FROM `A_CLIENTS` WHERE `id`='$user_id' AND `client_category` IN ($categories);");
+        $r = $db->query("SELECT * FROM `A_CLIENTS` WHERE `id` = $user_id AND `client_category` IN (SELECT `category_id` FROM `ACTION_CLIENTS_CATEGORY` WHERE 1);");
         $n = $db->num_rows($r);
         setcookie("action_status", "1", time() + (86400 * 30), "/");
         return $n;
@@ -867,7 +855,7 @@ class ClientClass
     {
         $db = DbSingleton::getDbm();
         if ($client_id > 0) {
-            $r = $db->query("SELECT `rounding_price` FROM `A_CLIENTS` WHERE `id`='$client_id';");
+            $r = $db->query("SELECT `rounding_price` FROM `A_CLIENTS` WHERE `id` = $client_id;");
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $rounding_price = $db->result($r, 0, "rounding_price");
@@ -892,7 +880,7 @@ class ClientClass
         $db = DbSingleton::getDbm();
         $user_id = $client_id = 0;
         $status = false;
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' LIMIT 1;");
+        $r = $db->query("SELECT `id`, `client_id` FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $user_id = $db->result($r, 0, "id");
@@ -917,7 +905,7 @@ class ClientClass
         $user_id = $this->getUser();
         $phone = "";
         if ($user_id > 0) {
-            $r = $db->query("SELECT `phone` FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
+            $r = $db->query("SELECT `phone` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
             $phone = $db->result($r, 0, "phone");
         }
         return $phone;
@@ -936,19 +924,19 @@ class ClientClass
         $client_id = $this->getClient();
         $user_id = $this->getUser();
         $art_id = $this->getArtID($article_nr_displ);
-        if ($brand_id > 0 && is_numeric($brand_id)) {
-            $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id`='$client_id' AND `client_user_id`='$user_id'";
+        if ($brand_id > 0) {
+            $where = ($user_id == 0) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
             $r = $db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;");
             $k = $db->result($r, 0, "kilk");
             if ($k > $this->max_history_count) {
                 $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
                 $id = $db->result($r, 0, "id");
-                $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date', `article_nr_displ`='$article_nr_displ', `brand_id`='$brand_id', `art_id`='$art_id' WHERE `id` = $id;");
+                $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date', `article_nr_displ` = '$article_nr_displ', `brand_id` = $brand_id, `art_id` = $art_id WHERE `id` = $id;");
             } else {
                 $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ` = '$article_nr_displ' AND `brand_id` = $brand_id;");
                 $n = $db->num_rows($r);
                 if ($n > 0) {
-                    $db->query("UPDATE `CLIENT_HISTORY` SET `data`='$date' WHERE $where AND `article_nr_displ` = '$article_nr_displ' AND `brand_id` = $brand_id;");
+                    $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date' WHERE $where AND `article_nr_displ` = '$article_nr_displ' AND `brand_id` = $brand_id;");
                 } else {
                     $db->query("INSERT INTO `CLIENT_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `article_nr_displ`, `brand_id`, `data`, `art_id`) 
                     VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$article_nr_displ', '$brand_id', '$date', '$art_id');");
@@ -971,8 +959,8 @@ class ClientClass
             $cookie = 0;
         }
         list($client_id, $user_id) = $this->getClientData();
-        $where = ($user_id == 0) ? "`cookie_id`='$cookie'" : "`client_id`='$client_id' AND `client_user_id`='$user_id'";
-        $r = $db->query("SELECT * FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;");
+        $where = ($user_id == 0) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
+        $r = $db->query("SELECT `id`, `article_nr_displ`, `brand_id` FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "id");
@@ -980,14 +968,14 @@ class ClientClass
             $brand_id = $db->result($r, $i - 1, "brand_id");
             $brand_link = $this->getBrandLink($brand_id);
             $art_name = strtoupper($art_name);
-            $brand = $this->getBrandName($brand_id);
-            if ($brand != "") {
+            $brand_name = $this->getBrandName($brand_id);
+            if ($brand_name != "") {
                 $history[$col] =
                     [
                         "id" => $id,
                         "article_nr_displ" => $art_name,
                         "brand_id" => $brand_id,
-                        "brand" => $brand,
+                        "brand" => $brand_name,
                         "brand_link" => $brand_link
                     ];
                 $col++;
@@ -1001,18 +989,19 @@ class ClientClass
      * */
     public function dropClient($client_id)
     {
+        $client_id = $this->getUrlNumber($client_id);
         $db = DbSingleton::getDbm();
-        $db->query("DELETE FROM `A_CLIENTS` WHERE `id`='$client_id' LIMIT 1;");
-        $db->query("DELETE FROM `A_CLIENTS_USERS` WHERE `client_id`='$client_id' LIMIT 1;");
-        $db->query("DELETE FROM `A_CLIENTS_CATEGORY` WHERE `client_id`='$client_id' LIMIT 1;");
-        $db->query("DELETE FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;");
+        $db->query("DELETE FROM `A_CLIENTS` WHERE `id` = $client_id LIMIT 1;");
+        $db->query("DELETE FROM `A_CLIENTS_USERS` WHERE `client_id` = $client_id LIMIT 1;");
+        $db->query("DELETE FROM `A_CLIENTS_CATEGORY` WHERE `client_id` = $client_id LIMIT 1;");
+        $db->query("DELETE FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id LIMIT 1;");
         return "deleted client: #$client_id";
     }
 
     public function getClientMarkupMin($client_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `markup_min` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id`='$client_id' LIMIT 1;");
+        $r = $db->query("SELECT `markup_min` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id LIMIT 1;");
         return $db->result($r, 0, "markup_min");
     }
 
@@ -1022,11 +1011,11 @@ class ClientClass
     public function getClientUserData($user_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id`='$user_id' LIMIT 1;");
+        $r = $db->query("SELECT `name`, `phone`, `email` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
         $user_name = $db->result($r, 0, "name");
         $user_phone = $db->result($r, 0, "phone");
         $user_email = $db->result($r, 0, "email");
-        $r = $db->query("SELECT * FROM `ORDERS_CLIENT_INFO` WHERE `USER_ID`='$user_id' ORDER BY `ID` DESC LIMIT 1;");
+        $r = $db->query("SELECT `CITY_ID` FROM `ORDERS_CLIENT_INFO` WHERE `USER_ID` = $user_id ORDER BY `ID` DESC LIMIT 1;");
         $n = $db->num_rows($r);
         $user_city = 0;
         if ($n > 0) {
@@ -1060,7 +1049,7 @@ class ClientClass
     public function getClientUserbyPhone($phone)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `id`, `client_id` FROM `A_CLIENTS_USERS` WHERE `phone`='$phone' LIMIT 1;");
+        $r = $db->query("SELECT `id`, `client_id` FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' LIMIT 1;");
         $user_id = $db->result($r, 0, "id");
         $client_id = $db->result($r, 0, "client_id");
         return array("user_id" => $user_id, "client_id" => $client_id);
@@ -1073,7 +1062,7 @@ class ClientClass
     {
         $db = DbSingleton::getDbm();
         $status = false;
-        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID` = $client_id AND `BONUS_ID` = $bonus LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $status = true;
@@ -1088,10 +1077,10 @@ class ClientClass
     public function addClientBonus($client_id, $bonus = 1)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID`='$client_id' AND `BONUS_ID`='$bonus' LIMIT 1;");
+        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID` = $client_id AND `BONUS_ID` = $bonus LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
-            $db->query("INSERT INTO `T2_BONUS_CLIENT` (`CLIENT_ID`, `BONUS_ID`) VALUES ('$client_id', '$bonus');");
+            $db->query("INSERT INTO `T2_BONUS_CLIENT` (`CLIENT_ID`, `BONUS_ID`) VALUES ($client_id, $bonus);");
         }
         return true;
     }
@@ -1102,11 +1091,11 @@ class ClientClass
     public function setClientBonus($client_id, $bonus = 1)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `SUMM` FROM `T2_BONUS` WHERE `ID`='$bonus' LIMIT 1;");
+        $r = $db->query("SELECT `SUMM` FROM `T2_BONUS` WHERE `ID` = $bonus LIMIT 1;");
         $n = $db->num_rows($r);
         $sum = $db->result($r, 0, "SUMM");
         if ($n > 0) {
-            $db->query("UPDATE `A_CLIENTS` SET `bonus_balance` = `bonus_balance` + $sum WHERE `id`='$client_id' LIMIT 1;");
+            $db->query("UPDATE `A_CLIENTS` SET `bonus_balance` = `bonus_balance` + $sum WHERE `id` = $client_id LIMIT 1;");
         }
         return $sum;
     }

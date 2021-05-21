@@ -142,8 +142,8 @@ class ProductsClass extends CatalogueClass
 
         // MODEL
         if ($type == "manuf") {
-            $mfa_id = $value;
-            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID` = '$mfa_id' AND `ACTIVE` = 1 GROUP BY `Model`;");
+            $mfa_id = $this->getUrlNumber($value);
+            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
@@ -158,11 +158,13 @@ class ProductsClass extends CatalogueClass
         // YEAR
         if ($type == "model") {
             list($mfa_id, $model) = explode("_", $value);
+            $mfa_id = $this->getUrlNumber($mfa_id);
+            $model = $this->getUrlString($model);
             $n = 1;
             $r = $db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
                 CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
             FROM `T_models` 
-            WHERE `Model` = '$model' AND `MOD_MFA_ID` = '$mfa_id';");
+            WHERE `Model` = '$model' AND `MOD_MFA_ID` = $mfa_id;");
             $date_start = $db->result($r, 0, "min_year");
             $date_end = $db->result($r, 0, "max_year");
             $list .= $this->getYearsForm($date_start, $date_end, $mfa_id, $model);
@@ -174,11 +176,18 @@ class ProductsClass extends CatalogueClass
         // BODY (MODEL_ID)
         if ($type == "years") {
             list($mfa_id, $model, $year) = explode("_", $value);
+            $mfa_id = $this->getUrlNumber($mfa_id);
+            $model = $this->getUrlString($model);
+            $year = $this->getUrlNumber($year);
             $where = "AND 
                 ((`MOD_PCON_END`>=" . $year . "00 AND `MOD_PCON_END`<=" . $year . "12)
                 OR (`MOD_PCON_START`<=" . $year . "12 AND `MOD_PCON_END`>=" . $year . "00)
                 OR (`MOD_PCON_START`<=" . $year . "12 AND `MOD_PCON_END`=0))";
-            $r = $db->query("SELECT * FROM `T_models` WHERE `Model` = '$model' AND `MOD_MFA_ID` = '$mfa_id' AND `ACTIVE` = 1 $where;");
+            $r = $db->query("SELECT `MOD_ID`, `TEX_TEXT`, `Car_pict`,
+            CASE WHEN MOD_PCON_START = 0 THEN '' ELSE MOD_PCON_START END AS MOD_PCON_START,
+            CASE WHEN MOD_PCON_END = 0 THEN '{cur_time_min}' ELSE MOD_PCON_END END AS MOD_PCON_END 
+            FROM `T_models` 
+            WHERE `Model` = '$model' AND `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 $where;");
             $n = $db->num_rows($r);
             if ($n == 1) {
                 $skip = $db->result($r, 0, "MOD_ID");
@@ -192,9 +201,6 @@ class ProductsClass extends CatalogueClass
                 $d_start = substr($d_start, 0, 4);
                 $d_end = $db->result($r, $i - 1, "MOD_PCON_END");
                 $d_end = substr($d_end, 0, 4);
-                if ($d_end == 0) {
-                    $d_end = "{cur_time}";
-                }
                 $list .= "<div data-url=\"bodyc/$mod_id\" class=\"cars-tab__block-item cars-tab__block-item-body\" onclick=\"toggleCarsTab(this)\">
                 <div class=\"bodyc\">
                     <div class=\"bodyc-head\">
@@ -221,9 +227,10 @@ class ProductsClass extends CatalogueClass
 
         // ENGINE
         if ($type == "bodyc") {
-            $mod_id = $value;
-            $r = $db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` FROM `T_types` 
-            WHERE `TYP_MOD_ID` = '$mod_id' AND `ACTIVE` = 1 
+            $mod_id = $this->getUrlNumber($value);
+            $r = $db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` 
+            FROM `T_types` 
+            WHERE `TYP_MOD_ID` = $mod_id AND `ACTIVE` = 1 
             GROUP BY `VOLUME_CM`, `FUEL_ID` 
             ORDER BY `VOLUME_CM`, `FUEL_ID`;");
             $n = $db->num_rows($r);
@@ -245,8 +252,14 @@ class ProductsClass extends CatalogueClass
         // MODIFICATION
         if ($type == "engin") {
             list($mod_id, $volume_cm, $fuel_id) = explode("_", $value);
-            $r = $db->query("SELECT * FROM `T_types` 
-            WHERE `TYP_MOD_ID` = '$mod_id' AND `VOLUME_CM` = '$volume_cm' AND `FUEL_ID` = '$fuel_id' AND `ACTIVE` = 1 
+            $mod_id = $this->getUrlNumber($mod_id);
+            $volume_cm = $this->getUrlString($volume_cm);
+            $fuel_id = $this->getUrlNumber($fuel_id);
+            $r = $db->query("SELECT `TYP_ID`, `TYP_TEXT`, `TYP_KW_FROM`, `TYP_HP_FROM`, `ENG_Cod`,
+            CASE WHEN TYP_PCON_START = 0 THEN '' ELSE TYP_PCON_START END AS TYP_PCON_START,
+            CASE WHEN TYP_PCON_END = 0 THEN '{cur_time_min}' ELSE TYP_PCON_END END AS TYP_PCON_END 
+            FROM `T_types` 
+            WHERE `TYP_MOD_ID` = $mod_id AND `VOLUME_CM` = '$volume_cm' AND `FUEL_ID` = $fuel_id AND `ACTIVE` = 1 
             ORDER BY `TYP_HP_FROM`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
@@ -255,20 +268,14 @@ class ProductsClass extends CatalogueClass
                 $kw_from = $db->result($r, $i - 1, "TYP_KW_FROM");
                 $hp_from = $db->result($r, $i - 1, "TYP_HP_FROM");
                 $d_start = $db->result($r, $i - 1, "TYP_PCON_START");
-                if ($d_start == 0) {
-                    $d_start = "";
-                }
+                $d_end = $db->result($r, $i - 1, "TYP_PCON_END");
+                $eng_cod = $db->result($r, $i - 1, "ENG_Cod");
                 if (strlen($d_start) == 6) {
                     $d_start = substr($d_start, 0, 4) . "." . substr($d_start, 4, 2);
-                }
-                $d_end = $db->result($r, $i - 1, "TYP_PCON_END");
-                if ($d_end == 0) {
-                    $d_end = "{cur_time_min}";
                 }
                 if (strlen($d_end) == 6) {
                     $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
                 }
-                $eng_cod = $db->result($r, $i - 1, "ENG_Cod");
                 $onclick = "finishGarage('$typ_id', '$group_link')";
                 $list .= "<div class=\"cars-tab__block-item cars-tab__block-item-modif\"><a onclick=\"$onclick\">
                 <b>$typ_text</b> 
@@ -316,14 +323,14 @@ class ProductsClass extends CatalogueClass
     public function getModIdText($mod_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = '$mod_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = $mod_id LIMIT 1;");
         return $db->result($r, 0, "TEX_TEXT");
     }
 
     public function getTypIdText($typ_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TYP_TEXT` FROM `T_types` WHERE `TYP_ID` = '$typ_id' LIMIT 1;");
+        $r = $db->query("SELECT `TYP_TEXT` FROM `T_types` WHERE `TYP_ID` = $typ_id LIMIT 1;");
         return $db->result($r, 0, "TYP_TEXT");
     }
 

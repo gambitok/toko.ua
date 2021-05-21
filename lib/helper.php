@@ -168,7 +168,7 @@ trait Helper
     public function getManualNameCaption($key, $mid)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `key` = $key AND `mid` = $mid LIMIT 1;");
+        $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `key` = '$key' AND `mid` = $mid LIMIT 1;");
         return $db->result($r, 0, "mcaption");
     }
 
@@ -177,7 +177,7 @@ trait Helper
         $db = DbSingleton::getDbm();
         $lang_id = $this->getLanguage();
         $options = "";
-        $r = $db->query("SELECT `id` FROM `manual` WHERE `key` = $key ORDER BY `mid` ASC;");
+        $r = $db->query("SELECT `id` FROM `manual` WHERE `key` = '$key' ORDER BY `mid` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "id");

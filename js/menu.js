@@ -17,7 +17,7 @@ function showUploadForm() {
 function showAlertModal(message, title, status, callback) {
     JsHttpRequest.query(folder,{ 'w': 'changeLangAlert', 'message':message, 'title':title },
         function (result, errors){ if (errors) {} if (result){
-            $("#choose_message").html("<span>"+result.content[0]+"</span>");
+            $("#choose_message").html("<span>" + result.content[0] + "</span>");
             if (result.content[1] === "" || result.content[1] === undefined) {
                 $("#choose_title").html("");
             } else {
@@ -33,7 +33,7 @@ function showAlertModal(message, title, status, callback) {
                 $("#alert-modal-header").addClass("bg-info");
             }
             if (typeof callback !== "undefined") {
-                $('#alert_btn_ok').click(function(){callback();});
+                $("#alert_btn_ok").click(function(){callback();});
             }
             $("#AlertForm").modal("toggle");
         }}, true);
@@ -79,7 +79,7 @@ function validatePhone(callback) {
                 callback();
                 $("#ValidateForm").modal("hide");
             } else {
-                $("#validate_label").css("display","block");
+                $("#validate_label").css("display", "block");
             }
         }}, true);
 }
@@ -87,10 +87,10 @@ function validatePhone(callback) {
 function togglePass(a) {
     if($(a).attr("checked") !== "checked") {
         $(a).attr("checked","checked");
-        $("#reg_password").attr("type","password");
+        $("#reg_password").attr("type", "password");
     } else {
         $(a).removeAttr("checked");
-        $("#reg_password").attr("type","text");
+        $("#reg_password").attr("type", "text");
     }
 }
 
@@ -200,14 +200,14 @@ function saveSellForm() {
 
     if ((company !== "") && (phone !== "") && (name !== "") && (city_id !== undefined)) {
         if (file_id === "" || file_id === undefined) {
-            showAlertModal("{upload_file_first}!","{error_cap}",0);
+            showAlertModal("{upload_file_first}!", "{error_cap}", 0);
         } else {
             JsHttpRequest.query(folder,{'w':'saveSellerForm', 'company':company, 'name':name, 'phone':phone, 'email':email, 'city_id':city_id, 'comment':comment},
                 function (result, errors){ if (errors) {alert(errors);} if (result){
-                    if (result.content!==true) {
-                        showAlertModal("{bad_file}","{error_cap}",0);
+                    if (result.content !== true) {
+                        showAlertModal("{bad_file}", "{error_cap}", 0);
                     } else {
-                        showAlertModal("{message_sell}","{data_saved}",1, goHome);
+                        showAlertModal("{message_sell}", "{data_saved}", 1, goHome);
                     }
                 }}, true);
         }

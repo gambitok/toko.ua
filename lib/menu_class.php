@@ -648,7 +648,7 @@ class MenuClass extends CatalogueClass
     public function getGarageLink()
     {
         $automan = new AutoClass();
-        $garage_count = $automan->getGarageAutoCount()[0];
+        $garage_count = $automan->getGarageAutoCount();
         return ($garage_count == "")
             ? "href=\"" . $this->getSiteLink() . "$this->catalog_link/auto/\""
             : "onclick=\"showGarageForm();\"";

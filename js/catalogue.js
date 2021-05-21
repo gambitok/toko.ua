@@ -259,10 +259,6 @@ function copyToClipboard(element, art_name) {
 function finishGarage(typ_id, group_link) {
     setCookie('auto_typ_id', typ_id);
     addToGarage(typ_id);
-    // let add_link = "";
-    // if (group_link != "") {
-    //     add_link = group_link;
-    // }
     location.href = group_link;
 }
 
@@ -315,7 +311,7 @@ function showGarageStatus() {
             if (result.content[0] !== "") {
                 status1.addClass("show");
                 status1.removeClass("none");
-                status1.html(result.content[0]);
+                status1.html(result.content);
             } else {
                 status1.addClass("none");
                 status1.removeClass("show");
@@ -392,9 +388,9 @@ function toggleProductView(ds) {
             if (type_search === "1") {
                 catalogueFilter();
             }
-            if (type_search === "2") {
-                tecModelsFilter();
-            }
+            // if (type_search === "2") {
+            //     tecModelsFilter();
+            // }
         }}, true);
 }
 

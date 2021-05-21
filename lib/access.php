@@ -31,30 +31,23 @@ function getContent($content) {
     if (strpos($actual_link,"?") !== false) {
         $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
     }
-    $content = str_replace("{info_row}", "", $content);
     $content = str_replace("{canonical_link}", $actual_link, $content);
     $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
     $content = str_replace("{basket_count}", $shop->countBasket()[0], $content);
     $content = str_replace("{basket_style}", $shop->countBasket()[1], $content);
     $content = str_replace("{garage_style}", "", $content);
-    $content = str_replace("{garage_status}", $automan->getGarageAutoCount()[0], $content);
+    $content = str_replace("{garage_status}", $automan->getGarageAutoCount(), $content);
     $content = str_replace("{basket_summ}", $shop->countSummBasket(), $content);
     $content = str_replace("{profile_mobile}", $profile->getProfileInfoMobile(), $content);
     $content = str_replace("{list_social}", "<ul>" . getPhpContent("/tpl/menu/social_icons.php") . "</ul>", $content);
-    $content = str_replace("{info}", "", $content);
     $content = str_replace("{info_title}", "", $content);
-    $content = str_replace("{info2}", "", $content);
-    $content = str_replace("{info3}", "", $content);
-    $content = str_replace("{info2_more}", "", $content);
-    $content = str_replace("{brand_info}", "", $content);
-    $content = str_replace("{art_info}", "", $content);
     $content = str_replace("{lang_list}", "", $content);
     $content = str_replace("<h1></h1>", "<h1>" . getTitle(getPath()) . "</h1>", $content);
     return $content;
 }
 
 function checkLangVariable($variable) { $db = DbSingleton::getTokoDb();
-    $r = $db->query("SELECT * FROM `new_lang_wd` WHERE `variable`='$variable' LIMIT 1;");
+    $r = $db->query("SELECT * FROM `new_lang_wd` WHERE `variable` = '$variable' LIMIT 1;");
     $n = $db->num_rows($r);
     return ($n > 0);
 }
@@ -322,9 +315,14 @@ function getKeywords($path) {
     return $keywords;
 }
 
-function getSiteLang() {
+function getSiteLang($lang_id_sel = 0) {
     $language = new LangClass();
-    $lang_id = $language->getLanguageData();
+    //$lang_id = $language->getLanguageData();
+    if ($lang_id_sel == 0) {
+        $lang_id = $language->getLanguage();
+    } else {
+        $lang_id = $lang_id_sel;
+    }
     $lang_html = "ru";
     if ($lang_id == 1) {
         $lang_html = "ru";
@@ -374,8 +372,8 @@ function getPath() {
 }
 
 function findPath() {
-    $language = new LangClass();
-    $language->setLangID(1);
+//    $language = new LangClass();
+//    $language->setLangID(1);
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
     if (substr($link, -1) != "/") {
         $link .= "/";
@@ -387,12 +385,12 @@ function findPath() {
         $path = substr($url, 0, $pos + 1);
         $cur_path = substr($path, 0, -1);
         if ($cur_path == "uk" || $cur_path == "en") {
-            if ($cur_path == "uk") {
-                $language->setLangID(2);
-            }
-            if ($cur_path == "en") {
-                $language->setLangID(3);
-            }
+//            if ($cur_path == "uk") {
+//                $language->setLangID(2);
+//            }
+//            if ($cur_path == "en") {
+//                $language->setLangID(3);
+//            }
             $url = str_replace_first($path, "", $url);
             $pos = strpos($url, "/");
             $path = substr($url, 0, $pos);
@@ -426,10 +424,21 @@ function findLanguage()
     return $postfix;
 }
 
+function findLanguageID($postfix) {
+    $language_id = 1;
+    if ($postfix == "uk") {
+        $language_id = 2;
+    }
+    if ($postfix == "en") {
+        $language_id = 3;
+    }
+    return $language_id;
+}
+
 function findLinks()
 {
-    $language = new LangClass();
-    $language->setLangID(1);
+//    $language = new LangClass();
+//    $language->setLangID(1);
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 	if (substr($link, -1) != "/") {
 	    $link .= "/";
@@ -445,12 +454,12 @@ function findLinks()
             $durl = str_replace_first($path, "", $durl);
             $cur_path = substr($path, 0, -1);
             if ($cur_path == "uk" || $cur_path == "en") {
-                if ($cur_path == "uk") {
-                    $language->setLangID(2);
-                }
-                if ($cur_path == "en") {
-                    $language->setLangID(3);
-                }
+//                if ($cur_path == "uk") {
+//                    $language->setLangID(2);
+//                }
+//                if ($cur_path == "en") {
+//                    $language->setLangID(3);
+//                }
                 $i = 0;
             } else {
                 $linka[$i] = $cur_path;
@@ -485,15 +494,15 @@ function getSeoTextForm()
     $catalogue = new CatalogueClass();
     $postfix = $catalogue->getLangPostfix($catalogue->getLanguage());
     if ($router == "") {
-        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER` = '/' LIMIT 1;";
+        $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = '/' LIMIT 1;";
     }
     if ($router == "cars") {
         $link = $str_linka;
-        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'cars' AND `LINK` = '$link' LIMIT 1;";
+        $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'cars' AND `LINK` = '$link' LIMIT 1;";
     }
     if ($router == "catalog") {
         $link = $str_linka;
-        $query = "SELECT * FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'catalog' AND `LINK` = '$link' LIMIT 1;";
+        $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'catalog' AND `LINK` = '$link' LIMIT 1;";
     }
     $r = $db->query($query);
     $n = $db->num_rows($r);

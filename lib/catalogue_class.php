@@ -44,18 +44,18 @@ class CatalogueClass
      * */
     public function getCatalogList($article_nr_search, $brand_nr_search)
     {
+        $article_nr_search = $this->getUrlString($article_nr_search);
+        $brand_nr_search = $this->getUrlNumber($brand_nr_search);
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $client->insertHistory($article_nr_search, $brand_nr_search);
         $client->toggleProductView(0);
         $cur = $this->getCurrentExrate();
-        $article_nr_search = $this->getUrlString($article_nr_search);
-        $brand_nr_search = $this->getUrlNumber($brand_nr_search);
 
         $art_ids = [];
         $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
-            LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
+            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
         WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
         GROUP BY t2c.`ART_ID` 
         ORDER BY t2n.NAME ASC;");
@@ -130,7 +130,7 @@ class CatalogueClass
         $art_ids = [];
         $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
-            LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2c.ART_ID
+            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
         WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
         ORDER BY t2n.NAME ASC;");
         $n = $db->num_rows($r);
@@ -183,8 +183,8 @@ class CatalogueClass
 
         $r = $db->query("SELECT t2c.ART_ID, t2c.BRAND_ID, t2c.SEARCH_NUMBER, t2c.DISPLAY_NR, t2c.KIND, t2c.RELATION, t2b.BRAND_NAME, t2b.BRAND_LINK, IFNULL(t2n.NAME,'') as NAME 
         FROM `T2_CROSS` t2c 
-            LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID=t2c.BRAND_ID) 	
-            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID=t2c.ART_ID)
+            LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID) 	
+            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
         WHERE t2c.SEARCH_NUMBER = '$article_search' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) 
         GROUP BY t2c.BRAND_ID;");
         $n = $db->num_rows($r);

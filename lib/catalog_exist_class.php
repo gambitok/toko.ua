@@ -124,6 +124,9 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function getGroupValueID($group_id, $param_id, $value_link)
     {
+        $group_id = $this->getUrlNumber($group_id);
+        $param_id = $this->getUrlNumber($param_id);
+        $value_link = $this->getUrlString($value_link);
         $db = DbSingleton::getTokoDb();
         $value_id = "";
         $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `PARAM_ID` = $param_id AND `VALUE_LINK` = '$value_link' LIMIT 1;");
@@ -142,6 +145,7 @@ class CatalogExistClass extends CatalogueClass
     }
     public function getGroupValueName($value_id, $param_id = 0)
     {
+        $value_id = $this->getUrlNumber($value_id);
         $db = DbSingleton::getTokoDb();
         $value_name = "";
         $r = $db->query("SELECT `VALUE_NAME` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
@@ -156,6 +160,7 @@ class CatalogExistClass extends CatalogueClass
     }
     public function getGroupValueLink($value_id, $param_id = 0)
     {
+        $value_id = $this->getUrlNumber($value_id);
         $db = DbSingleton::getTokoDb();
         $value_name = "";
         $r = $db->query("SELECT `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
@@ -170,6 +175,7 @@ class CatalogExistClass extends CatalogueClass
     }
     public function getGroupValueH1($value_id, $param_id = 0)
     {
+        $value_id = $this->getUrlNumber($value_id);
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
         $value_h1 = "";
@@ -1978,7 +1984,8 @@ class CatalogExistClass extends CatalogueClass
         $postfix = $this->getLangPostfix($this->getLanguage());
         $list = "";
         if ($group_id > 0) {
-            $r = $db->query("SELECT t2r.`ID`, t2r.`TITLE_$postfix` FROM `T2_GROUP_REVIEW` t2gr 
+            $r = $db->query("SELECT t2r.`ID`, t2r.`TITLE_$postfix` 
+            FROM `T2_GROUP_REVIEW` t2gr 
                 LEFT JOIN `T2_REVIEWS` t2r ON t2r.`ID` = t2gr.`REVIEW_ID`
             WHERE t2gr.`GROUP_ID` = $group_id AND t2r.`STATUS` = 1;");
             $n = $db->num_rows($r);
@@ -1989,7 +1996,7 @@ class CatalogExistClass extends CatalogueClass
                 $review_id = $db->result($r, $i - 1, "ID");
                 $review_title = $db->result($r, $i - 1, "TITLE_$postfix");
                 $transcript = $this->formatUrlText($review_title);
-                $link = "/reviews/state/$review_id/$transcript";
+                $link = "/reviews/state/$review_id/$transcript/";
                 $list .= "<div class=\"reviews-list__item\"><a href=\"$link\"><i class=\"fa fa-circle\"></i> $review_title</a></div>";
             }
             if ($n > 0) {
@@ -2071,25 +2078,6 @@ class CatalogExistClass extends CatalogueClass
                 }
                 $list .= "</ul>";
             }
-        }
-        return $list;
-    }
-
-    public function getGroupCatList($head_id, $cat_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $list = "";
-        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `CAT_ID` = $cat_id GROUP BY `GROUP_ID`;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $list .= "<ul class=\"list-inline\">";
-            for ($i = 1; $i <= $n; $i++) {
-                $group_id = $db->result($r, $i - 1, "GROUP_ID");
-                $group_name = $this->getGroupRowName($group_id);
-                $group_link = $this->getGroupRowLink($group_id);
-                $list .= "<li><a href=\"../../$group_link\">$group_name</a></li>";
-            }
-            $list .= "</ul>";
         }
         return $list;
     }

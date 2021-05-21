@@ -15,16 +15,29 @@ class LangClass
      * */
     public function getLanguageData()
     {
-        $cookie_lang_id = $this->getUrlNumber($_COOKIE["lang_id"]);
-        if (!empty($cookie_lang_id)) {
-            $_SESSION["lang_id"] = $cookie_lang_id;
-        }
-        $session_lang_id = $this->getUrlNumber($_SESSION["lang_id"]);
-        if (empty($session_lang_id)) {
-            $_SESSION["lang_id"] = $this->default_lang_id;
+//        $cookie_lang_id = $this->getUrlNumber($_COOKIE["lang_id"]);
+//        if (!empty($cookie_lang_id)) {
+//            $_SESSION["lang_id"] = $cookie_lang_id;
+//        }
+//        $session_lang_id = $this->getUrlNumber($_SESSION["lang_id"]);
+//        if (empty($session_lang_id)) {
+//            $_SESSION["lang_id"] = $this->default_lang_id;
+//        }
+        $lang_id = $this->getUrlNumber($_SESSION["lang_id"]);
+        if (empty($lang_id)) {
+            $lang_id = $this->getUrlNumber($_COOKIE["lang_id"]);
+            if (empty($lang_id)) {
+                $lang_id = $this->default_lang_id;
+                $_SESSION["lang_id"] = $lang_id;
+                $_COOKIE["lang_id"] = $lang_id;
+            } else {
+                $_SESSION["lang_id"] = $lang_id;
+            }
+        } else {
+            $_COOKIE["lang_id"] = $lang_id;
         }
 
-        return $_SESSION["lang_id"];
+        return $lang_id;
     }
 
     /*

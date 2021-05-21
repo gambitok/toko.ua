@@ -1,5 +1,12 @@
 <?php
 
+$lang_postfix = findLanguage();
+$language_id = 1;
+if ($lang_postfix != "") {
+    $language_id = findLanguageID($lang_postfix);
+    $language->setLangID($language_id);
+}
+
 $theme_htm = RDD . "/main.htm";
 if (file_exists("$theme_htm")) {
     $content = file_get_contents($theme_htm);
@@ -12,15 +19,17 @@ if ($path == "seoshield-client") {
     $content = "";
 } elseif ($path == "" || $path == "/") {
     include_once RDD . "/event/main.php";
-} elseif ($path == "/uk/" || $path == "/en/") {
-    if ($path == "uk") {
-        $language->setLangID(2);
-    }
-    if ($path == "en") {
-        $language->setLangID(3);
-    }
+}
+elseif ($path == "/uk/" || $path == "/en/") {
+//    if ($path == "uk") {
+//        $language->setLangID(2);
+//    }
+//    if ($path == "en") {
+//        $language->setLangID(3);
+//    }
     include_once RDD . "/event/main.php";
-} elseif (file_exists(RDD . "/event/$path.php")) {
+}
+elseif (file_exists(RDD . "/event/$path.php")) {
     include_once RDD . "/event/$path.php";
 } else {
     include RDD . "/event/404.php";

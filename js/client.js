@@ -115,13 +115,13 @@ function saveRegistrationForm() {
             function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content !== false) {
                 let text = "{user_already_logged}!<br>{client_login}: " + result.content[0];
-                showAlertModal(text,"{error_cap}", 0, showLoginForm);
+                showAlertModal(text, "{error_cap}", 0, showLoginForm);
             } else {
                 showValidateModal(phone, validatePhone, saveRegistration);
             }
         }}, true);
     } else {
-        showAlertModal("{input_all_data}!","{error_cap}",0);
+        showAlertModal("{input_all_data}!", "{error_cap}", 0);
     }
 }
 
@@ -162,7 +162,7 @@ function signInForm() {
     let login = $("#userlogin2").val();
     let password = $("#userpassword2").val();
     if (login === "" || password === "") {
-        showAlertModal("{input_all_data}!","{error_cap}",0);
+        showAlertModal("{input_all_data}!", "{error_cap}", 0);
     } else {
         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
             function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -183,7 +183,11 @@ function loginFormParams() {
     } else {
         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-                if (result.content===false) showAlertModal("{user_not_logged}!","{error_cap}",0); else location.href="/profile/";
+                if (result.content===false) {
+                    showAlertModal("{user_not_logged}!","{error_cap}",0);
+                } else {
+                    location.href = "/profile/";
+                }
             }}, true);
     }
 }
@@ -191,7 +195,7 @@ function loginFormParams() {
 function logoutForm() {
     JsHttpRequest.query(folder,{'w':'logoutClient'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.href="/";
+            location.href = "/";
         }}, true);
 }
 
