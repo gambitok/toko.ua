@@ -1,0 +1,43 @@
+<div class="content">
+    <h1>INIT</h1>
+    <div class="row">
+        <div class="col-12">
+            <label for="select_groups">Groups</label>
+            <select id="select_groups" onchange="getGroupsListValues();">
+                <option value="0">-не вибрано-</option>
+                {select_groups}
+            </select>
+            <label for="select_values">Values</label>
+            <select id="select_values">
+                <option value="0">-не вибрано-</option>
+                {select_values}
+            </select>
+            <button class="btn btn-primary" onclick="getGroupsLinks();">Go</button>
+            <div id="select_form">
+                ###
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function getGroupsListValues() {
+        let group_id = $("#select_groups option:selected").val();
+        JsHttpRequest.query(folder,{'w':'getGroupsListValues', 'group_id':group_id},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                $("#select_values").html(result.content);
+            }}, true);
+    }
+
+    function getGroupsLinks() {
+        let group_id = $("#select_groups option:selected").val();
+        let param_id = $("#select_groups option:selected").attr("data-value-param");
+        let value_id = $("#select_values option:selected").val();
+        JsHttpRequest.query(folder,{'w':'getGroupsLinks', 'group_id':group_id, 'param_id':param_id, 'value_id':value_id},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                $("#select_form").html(result.content);
+            }}, true);
+    }
+
+</script>

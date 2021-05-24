@@ -74,6 +74,14 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') 
 $content = str_replace("{main_seo_text}", getSeoTextForm(), $content);
 $content = str_replace("{main_site_breadcrumbs}", printBreadcrumbs($path)[0], $content);
 $content = str_replace("{main_window}", "", $content);
+$lang_postfix = findLanguage();
+if ($lang_postfix != "") {
+    $content = str_replace("{meta_noindex}", '
+        <meta name="robots" content="noindex">
+        <meta name="googlebot" content="noindex">
+        <meta name="yandex" content="noindex">
+    ', $content);
+}
 $content = str_replace("{meta_noindex}", '
     <meta name="robots" content="index, follow">
     <meta name="googlebot" content="index, follow">

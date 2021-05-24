@@ -2541,7 +2541,7 @@ class CatalogueClass
             }
             $list .= "<div class=\"tree-cat__item\">
                 <div class=\"tree-cat__item-title\">
-                    <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link\">$icon $cat_name</a>
+                    <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$icon $cat_name</a>
                 </div>
                 <div class=\"tree-group\">
                     $group_list    
@@ -2561,7 +2561,7 @@ class CatalogueClass
         $groups = [];
         $r = $db->query("SELECT t2hcg.`GROUP_ID` 
         FROM `T2_TREE_HCG_EXIST` t2hcg
-            LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON t2g.GROUP_ID = t2hcg.GROUP_ID
+            LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON (t2g.GROUP_ID = t2hcg.GROUP_ID)
         WHERE t2hcg.`HEAD_ID` = $head_id AND t2hcg.`CAT_ID` = $cat_id AND t2g.`STATUS` = 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -2721,6 +2721,102 @@ class CatalogueClass
             }
         }
         return $list;
+    }
+
+    public function getGroupsList()
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT `GROUP_ID`, `TEX_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $db->result($r, $i - 1, "GROUP_ID");
+            $group_name = $db->result($r, $i - 1, "TEX_RU");
+            $list .= "<option value='$group_id'>$group_name</option>";
+        }
+        return $list;
+    }
+
+    public function getGroupsListValues($group_id = 0)
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT `VALUE_ID`, `VALUE_NAME`, `PARAM_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $value_id = $db->result($r, $i - 1, "VALUE_ID");
+            $param_id = $db->result($r, $i - 1, "PARAM_ID");
+            $value_name = $db->result($r, $i - 1, "VALUE_NAME");
+            $list .= "<option value='$value_id' data-value-param='$param_id'>$value_name</option>";
+        }
+        return $list;
+    }
+
+    public function getGroupsLinks($group_id = 0, $param_id = 0, $value_id = 0)
+    {
+        $group_link = $this->getGroupRowLink($group_id);
+        $list = ""; $count = 0; $seo_status = 0;
+        $dbc = DbSingleton::getTokoCacheDb();
+        if ($group_id > 0) {
+            $list = "<table class='table'>";
+            $list .= "<tr>
+                <td>#</td>
+                <td>link</td>
+                <td>count<td>
+                <td>seo<td>
+            </tr>";
+            if ($value_id == 0) {
+                $r = $dbc->query("SELECT `mfa_id`, `model` FROM `EX_TABLE_TREE_MFA_$group_id` WHERE 1;");
+                $n = $dbc->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    $mfa_id = $dbc->result($r, $i - 1, "mfa_id");
+                    $model = $dbc->result($r, $i - 1, "model");
+                    $mfa_link = $this->getManufactureLink($mfa_id);
+                    $model_link = $this->getModelLink($model);
+                    $link = "https://toko.ua/catalog/$group_link/auto/$mfa_link/$model_link/";
+
+                    $list .= "<tr>
+                        <td>$link</td>
+                        <td>$count</td>
+                        <td>$seo_status</td>
+                    </tr>";
+                }
+            } else {
+                $r = $dbc->query("SELECT * FROM `EX_TABLE_TREE_PARAMS_$group_id` 
+                WHERE (`param_$param_id` = '$value_id' OR `param_$param_id` LIKE '%,$value_id%' OR `param_$param_id` LIKE '%$value_id,%');");
+                $n = $dbc->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+
+                }
+            }
+
+            $list .= "</table>";
+        }
+        return $list;
+    }
+
+    public function getManufactureLink($mfa_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $mfa_link = "";
+        $r = $db->query("SELECT `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id AND `ACTIVE` = 1 LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $mfa_link = $db->result($r, 0, "MFA_BRAND_LINK");
+        }
+        return $mfa_link;
+    }
+
+    public function getModelLink($model)
+    {
+        $db = DbSingleton::getTokoDb();
+        $model_link = "";
+        $r = $db->query("SELECT `Model_Link` FROM `T_models` WHERE `Model` = '$model' AND `ACTIVE` = 1 LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $model_link = $db->result($r, 0, "Model_Link");
+        }
+        return $model_link;
     }
 
 }

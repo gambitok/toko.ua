@@ -12,14 +12,5 @@ if (!is_numeric($art_id)) {
     $content = str_replace("{main_window}", $showform->showArticle($art_id), $content);
 }
 
-$lang_postfix = findLanguage();
-if ($lang_postfix != "") {
-    $content = str_replace("{meta_noindex}", '
-        <meta name="robots" content="noindex">
-        <meta name="googlebot" content="noindex">
-        <meta name="yandex" content="noindex">
-    ', $content);
-}
-
 
 

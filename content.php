@@ -393,3 +393,12 @@ if ($_REQUEST["w"] == "getHeaderContent") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->getHeaderContent($_REQUEST["head_id"]));
 }
 
+
+if ($_REQUEST["w"] == "getGroupsListValues") {
+    $GLOBALS['_RESULT'] = array("content" => $catalog->getGroupsListValues($_REQUEST["group_id"]));
+}
+
+if ($_REQUEST["w"] == "getGroupsLinks") {
+    $GLOBALS['_RESULT'] = array("content" => $catalog->getGroupsLinks($_REQUEST["group_id"],$_REQUEST["param_id"],$_REQUEST["value_id"]));
+}
+

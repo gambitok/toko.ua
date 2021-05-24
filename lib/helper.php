@@ -361,6 +361,7 @@ trait Helper
      * */
     public function checkT2Link($typ_id, $art_id)
     {
+        $art_id = $this->getUrlNumber($art_id);
         $typ_id = $this->getUrlNumber($typ_id);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id AND `TYP_ID` = $typ_id LIMIT 1;");

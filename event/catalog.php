@@ -34,6 +34,7 @@ if ($router == "") {
  * */
 $group_id = $catalog_exist->getGroupExistId($router);
 if (!empty($group_id)) {
+    $group_id = $catalog_exist->getUrlNumber($group_id);
     $filters = $router_2;
     if ($filters == "auto") {
         $filters = [];
@@ -41,7 +42,7 @@ if (!empty($group_id)) {
     $mfa_link = $router_3;
     $model_link = $router_4;
     ($page != NULL) ?: $page = 1;
-    $status_auto_type = $catalogue->getUrlNumber($_COOKIE['status_auto_type']);
+    $status_auto_type = $catalogue->getUrlNumber($_COOKIE["status_auto_type"]);
     ($status_auto_type != NULL) ?: $status_auto_type = 0;
     $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $str_linka, $page, $filters, $status_auto_type, $mfa_link, $model_link);
     $content = str_replace("{main_window}", $catalog_form["form"], $content);

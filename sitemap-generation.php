@@ -16,6 +16,20 @@ $link = "https://toko.ua/";
 $db = DbSingleton::getTokoDb();
 $xmlWriter = new XMLWriter();
 $xmlWriter->openMemory();
+$max_tags_count = 15000;
+$doc_nom = 0;
+$doc_nom_params = 0;
+
+$mask = "sitemap-manufactures-*.*";
+array_map('unlink', glob($mask));
+$mask = "sitemap-manufactures-params-*.*";
+array_map('unlink', glob($mask));
+unlink("sitemap.xml");
+unlink("sitemap-pages.xml");
+unlink("sitemap-cars.xml");
+unlink("sitemap-categories.xml");
+unlink("sitemap-categories-params.xml");
+
 
 /*
  * INIT `sitemap-manufactures`
@@ -26,27 +40,27 @@ $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9
 $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
 $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
 
-$col = 0; $doc_nom = 0;
-$r2 = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS`=1;");
+$col = 0;
+$r2 = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1;");
 $n2 = $db->num_rows($r2);
 for ($j = 1; $j <= $n2; $j++) {
     $tex_link = $db->result($r2, $j - 1, "TEX_LINK");
 
-    $r1 = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE`=1 ORDER BY `MFA_ID` ASC;");
+    $r1 = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID` ASC;");
     $n1 = $db->num_rows($r1);
     for ($l = 1; $l <= $n1; $l++) {
-        $mfa_id = $db->result($r1, $l - 1, "MFA_ID");
+        $mfa_id = $db->result($r1, $l - 1, "MFA_ID") + 0;
         $mfa_link = $db->result($r1, $l - 1, "MFA_BRAND_LINK");
 
         $xmlWriter->setIndent(2);
         $xmlWriter->startElement('url');
-        $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/$mfa_link/");
+        $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/");
         $xmlWriter->writeElement('changefreq', 'weekly');
         $xmlWriter->writeElement('priority', '0.9');
         $xmlWriter->endElement();
         $col++;
 
-        if (($col % 15000) == 0) {
+        if (($col % $max_tags_count) == 0) {
             $xmlWriter->endElement();
             $doc_nom++;
             file_put_contents("sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
@@ -56,20 +70,20 @@ for ($j = 1; $j <= $n2; $j++) {
             $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
         }
 
-        $r = $db->query("SELECT `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID`='$mfa_id' AND `ACTIVE`=1 GROUP BY `Model` ORDER BY `Model` ASC;");
+        $r = $db->query("SELECT `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model` ORDER BY `Model` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $model_link = $db->result($r, $i - 1, "Model_Link");
 
             $xmlWriter->setIndent(2);
             $xmlWriter->startElement('url');
-            $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/$mfa_link/$model_link/");
+            $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/$model_link/");
             $xmlWriter->writeElement('changefreq', 'weekly');
             $xmlWriter->writeElement('priority', '0.9');
             $xmlWriter->endElement();
             $col++;
 
-            if (($col % 15000) == 0) {
+            if (($col % $max_tags_count) == 0) {
                 $xmlWriter->endElement();
                 $doc_nom++;
                 file_put_contents("sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
@@ -96,7 +110,7 @@ $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9
 $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
 $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
 
-$r2 = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS`=1;");
+$r2 = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1;");
 $n2 = $db->num_rows($r2);
 for ($j = 1; $j <= $n2; $j++) {
     $tex_link = $db->result($r2, $j - 1, "TEX_LINK");
@@ -113,6 +127,161 @@ file_put_contents("sitemap-categories.xml", $xmlWriter->flush(true), FILE_APPEND
 $xmlWriter->endDocument();
 
 /*
+ * INIT `sitemap-categories-params`
+ * */
+$xmlWriter->startDocument('1.0', 'UTF-8');
+$xmlWriter->startElement('urlset');
+$xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+$xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+$xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+$r2 = $db->query("SELECT `GROUP_ID`, `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1;");
+$n2 = $db->num_rows($r2);
+for ($j = 1; $j <= $n2; $j++) {
+    $group_id = $db->result($r2, $j - 1, "GROUP_ID");
+    $group_link = $db->result($r2, $j - 1, "TEX_LINK");
+    $r3 = $db->query("SELECT tv.`VALUE_ID`, tv.`PARAM_ID`, tv.`VALUE_LINK`, tp.`PARAM_LINK`
+    FROM `T2_TREE_VALUE_EXIST` tv
+        LEFT JOIN `T2_TREE_PARAMS_EXIST` tp ON (tp.`PARAM_ID` = tv.`PARAM_ID`)
+    WHERE tv.`GROUP_ID` = $group_id AND tv.`SITEMAP_STATUS` = 1;");
+    $n3 = $db->num_rows($r3);
+    for ($l = 1; $l <= $n3; $l++) {
+        $value_id = $db->result($r3, $l - 1, "VALUE_ID");
+        $value_link = $db->result($r3, $l - 1, "VALUE_LINK");
+        $param_id = $db->result($r3, $l - 1, "PARAM_ID");
+        $param_link = $db->result($r3, $l - 1, "PARAM_LINK");
+        $xmlWriter->setIndent(2);
+        $xmlWriter->startElement('url');
+        $xmlWriter->writeElement('loc', $link . "catalog/$group_link/$param_link=$value_link/");
+        $xmlWriter->writeElement('changefreq', 'weekly');
+        $xmlWriter->writeElement('priority', '1');
+        $xmlWriter->endElement();
+    }
+}
+
+$xmlWriter->endElement();
+file_put_contents("sitemap-categories-params.xml", $xmlWriter->flush(true), FILE_APPEND);
+$xmlWriter->endDocument();
+
+/*
+ * INIT `sitemap-categories-params-manufactures`
+ * */
+$xmlWriter->startDocument('1.0', 'UTF-8');
+$xmlWriter->startElement('urlset');
+$xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+$xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+$xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+$col = 0;
+$r2 = $db->query("SELECT `GROUP_ID`, `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1;");
+$n2 = $db->num_rows($r2);
+for ($j = 1; $j <= $n2; $j++) {
+    $group_id = $db->result($r2, $j - 1, "GROUP_ID");
+    $group_link = $db->result($r2, $j - 1, "TEX_LINK");
+    $r3 = $db->query("SELECT tv.`VALUE_ID`, tv.`PARAM_ID`, tv.`VALUE_LINK`, tp.`PARAM_LINK`
+    FROM `T2_TREE_VALUE_EXIST` tv
+        LEFT JOIN `T2_TREE_PARAMS_EXIST` tp ON (tp.`PARAM_ID` = tv.`PARAM_ID`)
+    WHERE tv.`GROUP_ID` = $group_id AND tv.`SITEMAP_STATUS` = 1;");
+    $n3 = $db->num_rows($r3);
+    for ($l = 1; $l <= $n3; $l++) {
+        $value_id = $db->result($r3, $l - 1, "VALUE_ID");
+        $value_link = $db->result($r3, $l - 1, "VALUE_LINK");
+        $param_id = $db->result($r3, $l - 1, "PARAM_ID");
+        $param_link = $db->result($r3, $l - 1, "PARAM_LINK");
+
+        $r1 = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID` ASC;");
+        $n1 = $db->num_rows($r1);
+        for ($l1 = 1; $l1 <= $n1; $l1++) {
+            $mfa_id = $db->result($r1, $l1 - 1, "MFA_ID") + 0;
+            $mfa_link = $db->result($r1, $l1 - 1, "MFA_BRAND_LINK");
+            $xmlWriter->setIndent(2);
+            $xmlWriter->startElement('url');
+            $xmlWriter->writeElement('loc', $link . "catalog/$group_link/$param_link=$value_link/$mfa_link/");
+            $xmlWriter->writeElement('changefreq', 'weekly');
+            $xmlWriter->writeElement('priority', '1');
+            $xmlWriter->endElement();
+            $col++;
+
+            if (($col % $max_tags_count) == 0) {
+                $xmlWriter->endElement();
+                $doc_nom_params++;
+                file_put_contents("sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+                $xmlWriter->startElement('urlset');
+                $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+                $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+                $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+            }
+
+            $r = $db->query("SELECT `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model` ORDER BY `Model` ASC;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $model_link = $db->result($r, $i - 1, "Model_Link");
+                $xmlWriter->setIndent(2);
+                $xmlWriter->startElement('url');
+                $xmlWriter->writeElement('loc', $link . "catalog/$group_link/$param_link=$value_link/$mfa_link/$model_link/");
+                $xmlWriter->writeElement('changefreq', 'weekly');
+                $xmlWriter->writeElement('priority', '1');
+                $xmlWriter->endElement();
+                $col++;
+
+                if (($col % $max_tags_count) == 0) {
+                    $xmlWriter->endElement();
+                    $doc_nom_params++;
+                    file_put_contents("sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+                    $xmlWriter->startElement('urlset');
+                    $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+                    $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+                    $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+                }
+            }
+        }
+
+    }
+}
+
+$xmlWriter->endElement();
+$doc_nom_params++;
+file_put_contents("sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+$xmlWriter->endDocument();
+
+/*
+ * INIT `sitemap-cars`
+ * */
+$xmlWriter->startDocument('1.0', 'UTF-8');
+$xmlWriter->startElement('urlset');
+$xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+$xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+$xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+$r1 = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID` ASC;");
+$n1 = $db->num_rows($r1);
+for ($l = 1; $l <= $n1; $l++) {
+    $mfa_id = $db->result($r1, $l - 1, "MFA_ID") + 0;
+    $mfa_link = $db->result($r1, $l - 1, "MFA_BRAND_LINK");
+    $xmlWriter->setIndent(2);
+    $xmlWriter->startElement('url');
+    $xmlWriter->writeElement('loc', "https://toko.ua/cars/$mfa_link/");
+    $xmlWriter->writeElement('changefreq', 'weekly');
+    $xmlWriter->writeElement('priority', '0.9');
+    $xmlWriter->endElement();
+    $r = $db->query("SELECT `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model` ORDER BY `Model` ASC;");
+    $n = $db->num_rows($r);
+    for ($i = 1; $i <= $n; $i++) {
+        $model_link = $db->result($r, $i - 1, "Model_Link");
+        $xmlWriter->setIndent(2);
+        $xmlWriter->startElement('url');
+        $xmlWriter->writeElement('loc', "https://toko.ua/cars/$mfa_link/$model_link/");
+        $xmlWriter->writeElement('changefreq', 'weekly');
+        $xmlWriter->writeElement('priority', '0.9');
+        $xmlWriter->endElement();
+    }
+}
+
+$xmlWriter->endElement();
+file_put_contents("sitemap-cars.xml", $xmlWriter->flush(true), FILE_APPEND);
+$xmlWriter->endDocument();
+
+/*
  * INIT `pages`
  * */
 $xmlWriter->startDocument('1.0', 'UTF-8');
@@ -121,20 +290,20 @@ $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9
 $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
 $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
 
-// MAIN PAGE
+// ==> MAIN PAGE
 $xmlWriter->startElement('url');
 $xmlWriter->writeElement('loc', $link);
 $xmlWriter->writeElement('changefreq', 'weekly');
 $xmlWriter->writeElement('priority', '1');
 $xmlWriter->endElement();
 
-// MODULES
+// == > MODULES
 $r = $db->query("SELECT `MODULE` FROM `T2_MODULES` WHERE `STATUS` = 1;");
 $n = $db->num_rows($r);
 for ($i = 1; $i <= $n; $i++) {
     $module = $db->result($r, $i - 1, "MODULE");
     $xmlWriter->startElement('url');
-    $xmlWriter->writeElement('loc', $link . $module);
+    $xmlWriter->writeElement('loc', $link . $module . "/");
     $xmlWriter->writeElement('changefreq', 'weekly');
     $xmlWriter->writeElement('priority', '0.9');
     $xmlWriter->endElement();
@@ -156,12 +325,26 @@ $xmlWriter->writeElement('loc', "https://toko.ua/sitemap-pages.xml");
 $xmlWriter->endElement();
 
 $xmlWriter->startElement('sitemap');
+$xmlWriter->writeElement('loc', "https://toko.ua/sitemap-cars.xml");
+$xmlWriter->endElement();
+
+$xmlWriter->startElement('sitemap');
 $xmlWriter->writeElement('loc', "https://toko.ua/sitemap-categories.xml");
+$xmlWriter->endElement();
+
+$xmlWriter->startElement('sitemap');
+$xmlWriter->writeElement('loc', "https://toko.ua/sitemap-categories-params.xml");
 $xmlWriter->endElement();
 
 for ($i = 1; $i <= $doc_nom; $i++) {
     $xmlWriter->startElement('sitemap');
     $xmlWriter->writeElement('loc', "https://toko.ua/sitemap-manufactures-$i.xml");
+    $xmlWriter->endElement();
+}
+
+for ($i = 1; $i <= $doc_nom_params; $i++) {
+    $xmlWriter->startElement('sitemap');
+    $xmlWriter->writeElement('loc', "https://toko.ua/sitemap-manufactures-params-$i.xml");
     $xmlWriter->endElement();
 }
 

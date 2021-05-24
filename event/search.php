@@ -16,3 +16,9 @@ if ($article_nr_search == "") {
         $content = str_replace("{search}", $catalogue->getCatalogList($article_nr_search, $brand_id), $content);
     }
 }
+
+$content = str_replace("{meta_noindex}", '
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+    <meta name="yandex" content="noindex">
+', $content);
