@@ -28,10 +28,13 @@ function getContent($content) {
     $profile = new ProfileClass();
     $automan = new AutoClass();
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $actual_full_link = "<link rel=\"canonical\" href=\"$actual_link\"/>";
     if (strpos($actual_link,"?") !== false) {
-        $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
+//        $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
+        $actual_full_link = "";
     }
     $content = str_replace("{canonical_link}", $actual_link, $content);
+    $content = str_replace("{canonical_full_link}", $actual_full_link, $content);
     $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
     $content = str_replace("{basket_count}", $shop->countBasket()[0], $content);
     $content = str_replace("{basket_style}", $shop->countBasket()[1], $content);
@@ -415,10 +418,10 @@ function findLanguage()
 {
     $postfix = "";
     $link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-    if (strpos($link, "uk") !== false) {
+    if (strpos($link, "/uk/") !== false) {
         $postfix = "uk";
     }
-    if (strpos($link, "en") !== false) {
+    if (strpos($link, "/en/") !== false) {
         $postfix = "en";
     }
     return $postfix;
@@ -492,6 +495,7 @@ function getSeoTextForm()
     unset($str_linka[0]);
     $str_linka = implode("/", $str_linka);
     $catalogue = new CatalogueClass();
+    $page = $catalogue->getUrlNumber($_GET["page"]);
     $postfix = $catalogue->getLangPostfix($catalogue->getLanguage());
     if ($router == "") {
         $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = '/' LIMIT 1;";
@@ -507,9 +511,11 @@ function getSeoTextForm()
     $r = $db->query($query);
     $n = $db->num_rows($r);
     if ($n > 0) {
-        $text = $db->result($r, 0, "CONTENT_$postfix");
-        if ($text != "") {
-            $form = getSeoText($text);
+        if ($page <= 1) {
+            $text = $db->result($r, 0, "CONTENT_$postfix");
+            if ($text != "") {
+                $form = getSeoText($text);
+            }
         }
     }
     return $form;
