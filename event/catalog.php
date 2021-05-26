@@ -35,7 +35,7 @@ if ($router == "") {
 $group_id = $catalog_exist->getGroupExistId($router);
 if (!empty($group_id)) {
     $group_id = $catalog_exist->getUrlNumber($group_id);
-    $filters = $router_2;
+    $filters = $linka[2];
     if ($filters == "auto") {
         $filters = [];
     }

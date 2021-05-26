@@ -613,7 +613,7 @@ class AutoClass extends CatalogueClass
             }
             $list .= "<div class=\"seo_details\"><div class=\"seo-ul\">";
 
-            $r2 = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id GROUP BY `Model`;");
+            $r2 = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model`;");
             $n2 = $db->num_rows($r2);
             for ($i2 = 1; $i2 <= $n2; $i2++) {
                 $mod = $db->result($r2, $i2 - 1, "Model");

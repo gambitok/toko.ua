@@ -80,11 +80,11 @@
 				{
 					"@type": "OpeningHoursSpecification",
 					"dayOfWeek": [
-						"Понеділок",
-						"Вівторок",
-						"Середа",
-						"Четвер",
-						"П'ятниця"
+						"{week_monday}",
+						"{week_tuesday}",
+						"{week_wednesday}",
+						"{week_thursday}",
+						"{week_friday}"
 					],
 					"opens": "09:00",
 					"closes": "18:00"
@@ -92,7 +92,7 @@
 				{
 					"@type": "OpeningHoursSpecification",
 					"dayOfWeek": [
-						"Субота"
+						"{week_saturday}"
 					],
 					"opens": "9:00",
 					"closes": "15:00"
@@ -106,15 +106,15 @@
 			"address": [
 				{
 					"@type": "PostalAddress",
-					"streetAddress": "Проспект миру, 7",
-					"addressLocality": "Хмельницький",
-					"addressCountry": "Україна"
+					"streetAddress": "{address_khm}, 7",
+					"addressLocality": "{city_khm}",
+					"addressCountry": "{country_ua}"
 				},
 				{
 					"@type": "PostalAddress",
-					"streetAddress": "Пост-Волинська, 94/1",
-					"addressLocality": "Київ",
-					"addressCountry": "Україна"
+					"streetAddress": "{address_kiev}, 94/1",
+					"addressLocality": "{city_kiev}",
+					"addressCountry": "{country_ua}"
 				}
 			]
 		}
