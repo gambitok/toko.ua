@@ -10,7 +10,7 @@ $content = str_replace("{news_info}", $profile->getNewsInfo(), $content);
 //$content = str_replace("{catalog_range}", $menu->getCatalogRowList(), $content);
 
 $content = str_replace("{current_language}", $language->getLangCap($catalogue->getLanguage()), $content);
-$content = str_replace("{language_dropdown}", $language->getLanguageSelectList($catalogue->getLanguage()), $content);
+$content = str_replace("{menu_language}", $language->getLanguageMenuList($catalogue->getLanguage()), $content);
 $content = str_replace("{garage_link}", $menu->getGarageLink(), $content);
 $content = str_replace("{site_menu_bar}", $menu->getMenuBar(), $content);
 

@@ -1,0 +1,153 @@
+/*==== NEWS STATE ====*/
+.news-state {
+    h1 {
+        font-size: 20px;
+    }
+    h2 {
+        color: #999;
+        font-size: 13px;
+    }
+    ul {
+        list-style: none;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%!important;
+    }
+    img {
+        border: 1px solid #8c8c8c;
+        box-shadow: 6px 6px 10px 0 rgba(0, 0, 0, .1);
+        display: block;
+        margin: 0 auto;
+        max-width: 500px;
+        padding: 10px;
+        width: 50%;
+    }
+}
+
+/*==== /NEWS STATE ====*/
+
+/*==== NEWS LIST ====*/
+.news-block {
+    h2 {
+        font-size: 20px;
+        padding: 15px 0;
+    }
+    h3 {
+        font-size: 15px;
+        font-weight: normal;
+    }
+    &__item {
+        background: #fff;
+        border-bottom: 1px solid #eee;
+        box-shadow: 0 1px 10px #ccc;
+        margin: 0 15px 15px 0;
+        padding: 15px;
+        width: 100%;
+        a {
+            color: #000;
+            font-size: 13px;
+        }
+        h4 {
+            color: #999;
+            font-size: 13px;
+            font-weight: normal;
+        }
+        h5 {
+            color: #4d82cb;
+            font-weight: normal;
+            margin-top: 3%;
+            text-transform: uppercase;
+        }
+        img {
+            border: 1px solid #8c8c8c;
+            box-shadow: 6px 6px 10px 0 rgba(0, 0, 0, .1);
+            padding: 10px;
+            width: 100%;
+        }
+        p {
+            font-size: 16px;
+            margin: 0;
+        }
+    }
+}
+
+/*==== /NEWS LIST ====*/
+
+/*==== REVIEWS ====*/
+.reviews {
+    &-title {
+        color: #000;
+        font-size: 30px;
+        font-weight: 700;
+        margin-bottom: 30px;
+    }
+    &-block {
+        display: flex;
+        flex-wrap: wrap;
+        &-item {
+            box-shadow: 0 2px 8px grey;
+            margin: 10px;
+            padding: 15px;
+            width: calc(33.33% - 20px);
+            &__title {
+                font-size: 20px;
+                font-weight: bold;
+                h1 {
+                    font-size: 30px;
+                    font-weight: 700;
+                    margin-bottom: 15px;
+                    text-align: center;
+                }
+            }
+            &__image {
+                img {
+                    display: block;
+                    margin: 15px auto;
+                    max-width: 100%;
+                }
+            }
+            &__text {
+                font-size: 16px;
+                font-weight: 400;
+                a, a:not([href]):not([tabindex]) {
+                    color: #55bae6;
+                }
+                ol, ul {
+                    margin-left: 30px;
+                }
+            }
+            &__date {
+                color: #999;
+                font-size: 13px;
+                font-weight: 400;
+            }
+            &__link {
+                a {
+                    color: #000;
+                    font-size: 16px;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*==== /REVIEWS ====*/
+
+/*==== PHONE ====*/
+@media (max-width:992px) {
+    .news-block,
+    .news-block img,
+    .news-block__item {
+        max-width: 100%;
+    }
+
+    .news-block__item .overflow {
+        width: 100%;
+    }
+}
+
+/*==== /PHONE ====*/

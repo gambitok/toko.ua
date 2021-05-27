@@ -70,36 +70,21 @@ class LangClass
     /*
      * get language select list
      * */
-    public function getLanguageSelectList($sel_id)
+    public function getLanguageMenuList($sel_id)
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT * FROM `new_lang` WHERE 1;");
+        $r = $db->query("SELECT `id`, `abr` FROM `new_lang` WHERE 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $lang_id = $db->result($r, $i - 1, "id");
             $lang_abr = $db->result($r, $i - 1, "abr");
-            $active = ($lang_id == $sel_id) ? "active" : "";
-            $list .= "<a class=\"dropdown-item $active\" onclick=\"setSiteLang('$lang_id');\">$lang_abr</a>";
+            $active = ($lang_id == $sel_id) ? "menu-language__item-active" : "";
+            $postfix = $this->getLangIDPrefix($lang_id);
+            $list .= "<div class=\"menu-language__item $active\"><a href=\"https://toko.ua/$postfix\">$lang_abr</a></div>";
         }
         return $list;
     }
-
-    /*
-     * get language site prefix
-     * */
-//    public function getLangPrefix()
-//    {
-//        $lang = $this->getLanguageData();
-//        $pre = "";
-//        if ($lang == 2) {
-//            $pre = "/uk";
-//        }
-//        if ($lang == 3) {
-//            $pre = "/en";
-//        }
-//        return $pre;
-//    }
 
     public function getLangIDPrefix($lang_id) {
         $pre = "";

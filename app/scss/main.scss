@@ -1,0 +1,38 @@
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 992px) {
+  body,
+  html {
+    height: auto;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+@import "plugins/normalize";
+@import "plugins/modals";
+
+@import "layout/header";
+@import "layout/base";
+@import "layout/footer";
+
+@import "pages/home";
+@import "pages/catalog";
+@import "pages/cars";
+@import "pages/profile";
+@import "pages/shop";
+@import "pages/news";
+
+@import "layout/media";
+

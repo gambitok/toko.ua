@@ -5,12 +5,13 @@ $article_search = $catalogue->getUrlString($linka[1]);
 $brand_name = $catalogue->getUrlString($linka[2]);
 $art_id = $catalogue->getUrlNumber($linka[3]);
 
-if (!is_numeric($art_id)) {
-    $new_art_id = preg_replace('/[^0-9]+/', '', $art_id);
-    header("Location: /article/$article_search/$brand_name/$new_art_id/", TRUE, 301);
-} else {
+if ($catalogue->checkArticleExist($art_id)) {
     $content = str_replace("{main_window}", $showform->showArticle($art_id), $content);
+} else {
+    header("HTTP/1.0 404 Not Found");
+    $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404"), $content);
 }
+
 
 
 

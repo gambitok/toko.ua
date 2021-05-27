@@ -123,7 +123,7 @@ class ProductsClass extends CatalogueClass
         $automan = new AutoClass();
         $n = 0;
         $list = $title = $nav = $tab = "";
-        $group_link = $this->getSiteLink() . $this->catalog_link . $automan->getGroupRowLink($group_id);
+        $group_link = $this->getSiteLink() . "$this->catalog_link/" . $automan->getGroupRowLink($group_id) . "/";
         $skip = 0;
 
         // MANUFACTURE

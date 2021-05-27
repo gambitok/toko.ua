@@ -1,0 +1,65 @@
+/*==== PROFILE ====*/
+.profile {
+  margin: 0; }
+  .profile__main {
+    padding: 0; }
+    .profile__main-form {
+      height: 100%;
+      min-height: 500px; }
+  .profile__side {
+    padding: 0 15px 0 0; }
+
+.profile-account .row {
+  border-top: 1px dashed #ddd;
+  margin: 0;
+  padding: 15px; }
+
+.profile-account input, .profile-account select {
+  display: inline; }
+
+.profile-account input[type=submit] {
+  float: right;
+  width: 25%; }
+
+.signin-form {
+  color: #000;
+  display: block;
+  margin: 0 auto;
+  width: 45%; }
+
+/*==== /PROFILE ====*/
+/*==== REGISTRATION ====*/
+.registration input {
+  display: inline; }
+
+.registration input[type=submit] {
+  float: right;
+  width: 25%; }
+
+.registration .row {
+  border-bottom: 1px dashed #ddd;
+  padding: 15px; }
+
+.label-required:before {
+  color: red;
+  content: ' *'; }
+
+/*==== PAD ====*/
+@media (min-width: 992px) and (max-width: 1200px) {
+  .signin-form {
+    width: 100%; } }
+
+/*==== /PAD ====*/
+/*==== PHONE ====*/
+@media (max-width: 992px) {
+  .signin-form {
+    width: 100%; }
+  .profile-form {
+    padding: 20px 30px; }
+  .profile-account input, .profile-account select {
+    width: 100% !important; }
+  .profile-side {
+    margin-bottom: 15px;
+    padding: 0; } }
+
+/*==== /PHONE ====*/

@@ -1948,86 +1948,6 @@ class CatalogueClass
     }
 
     /*
-     * export price list for client
-     * */
-    public function getPriceList($user_id = null)
-    {
-        $db = DbSingleton::getTokoDb();
-        $client = new ClientClass();
-        $kours = new ExRateClass();
-        $client_id = $client->getClientByUser($user_id);
-        $tpoint_user_id = $client->getTpointUser($client_id);
-        $cur = $client->getClientCurrency($client_id);
-        $cur_cap = $kours->getKoursCaption($cur);
-        $list = $storages = [];
-        $filials_list = ["#", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "{barcode_cap}"];
-
-        $tpoints = $client->getOtherTpoints($tpoint_user_id);
-        foreach ($tpoints as $tpoint) {
-            list($storage_local_alien, $storage_remote_alien) = $client->getStorageByTpoint($tpoint);
-            $storage_cap = ($tpoint == $tpoint_user_id) ? "{your_affiliate} -" : "";
-
-            $city_local = $client->getTPointCity($tpoint);
-            $city_remote = $client->getStorageCity($storage_remote_alien);
-
-            $address_local = $client->getTPointAddress($tpoint);
-            $address_remote = $client->getStorageAddress($storage_remote_alien);
-
-            if ($storage_local_alien != "") {
-                array_push($filials_list, "$storage_cap $city_local ($address_local) ({local_storage})");
-                array_push($storages, $storage_local_alien);
-            }
-            if ($storage_remote_alien != "") {
-                array_push($filials_list, "$storage_cap $city_remote ($address_remote) ({remote_storage})");
-                array_push($storages, $storage_remote_alien);
-            }
-        }
-
-        $list[0] = $filials_list;
-        $list[0] = $this->replaceLang($list[0]);
-
-        $r = $db->query("SELECT t2as.ART_ID, t2as.STORAGE_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2br.BARCODE 
-        FROM `T2_ARTICLES_STRORAGE` t2as
-            LEFT OUTER JOIN `T2_ARTICLES` t2a ON t2a.ART_ID=t2as.ART_ID
-            LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-            LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-            LEFT OUTER JOIN `T2_BARCODES` t2br ON t2br.ART_ID=t2a.ART_ID
-        WHERE t2as.AMOUNT != 0 AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
-        GROUP BY t2a.ARTICLE_NR_DISPL;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id = $db->result($r, $i - 1, "ART_ID");
-            $article_nr_displ = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
-            $brand = $db->result($r, $i - 1, "BRAND_NAME");
-            $name = $db->result($r, $i - 1, "NAME");
-            $info = $db->result($r, $i - 1, "INFO");
-            $barcode = $db->result($r, $i - 1, "BARCODE");
-            $info = trim($info, " ");
-            $info = trim($info, "\n");
-            $info = trim($info, "\r");
-            $info = str_replace("\n", "", $info);
-            $info = str_replace("\r", "", $info);
-
-            $price = $this->getArticlePriceClient($art_id, $client_id, $cur);
-            $price = str_replace(".", ",", "$price");
-
-            $rs = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES_NOT_EXPORT` WHERE `ART_ID` = $art_id LIMIT 1;");
-            $ns = $db->result($rs, 0, "count_arts");
-            if ($ns == 0) {
-                $list[$i] = [$i, "$article_nr_displ", "$brand", "$name", "$price", "$cur_cap", "$info", "$barcode"];
-                foreach ($storages as $storage) {
-                    $stock = $this->getStockStorage($art_id, $storage);
-                    if ($stock > 10) {
-                        $stock = ">10";
-                    }
-                    array_push($list[$i], $stock);
-                }
-            }
-        }
-        return $list;
-    }
-
-    /*
      * Get article default cash
      * table toko_dba.T2_ARTICLES_PRICE_RATING
      * */
@@ -2924,6 +2844,128 @@ class CatalogueClass
             $value_name = $db->result($r, 0, "VALUE_LINK");
         }
         return $value_name;
+    }
+
+    /*
+     * export price list for client
+     * */
+    public function getPriceList($user_id = null)
+    {
+        $db = DbSingleton::getTokoDb();
+        $client = new ClientClass();
+        $kours = new ExRateClass();
+        $client_id = $client->getClientByUser($user_id);
+        $tpoint_user_id = $client->getTpointUser($client_id);
+        $cur = $client->getClientCurrency($client_id);
+        $cur_cap = $kours->getKoursCaption($cur);
+        $list = $storages = [];
+        $filials_list = ["#", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "{barcode_cap}"];
+
+        $tpoints = $client->getOtherTpoints($tpoint_user_id);
+        foreach ($tpoints as $tpoint) {
+            list($storage_local_alien, $storage_remote_alien) = $client->getStorageByTpoint($tpoint);
+            $storage_cap = ($tpoint == $tpoint_user_id) ? "{your_affiliate} -" : "";
+
+            $city_local = $client->getTPointCity($tpoint);
+            $city_remote = $client->getStorageCity($storage_remote_alien);
+
+            $address_local = $client->getTPointAddress($tpoint);
+            $address_remote = $client->getStorageAddress($storage_remote_alien);
+
+            if ($storage_local_alien != "") {
+                array_push($filials_list, "$storage_cap $city_local ($address_local) ({local_storage})");
+                array_push($storages, $storage_local_alien);
+            }
+            if ($storage_remote_alien != "") {
+                array_push($filials_list, "$storage_cap $city_remote ($address_remote) ({remote_storage})");
+                array_push($storages, $storage_remote_alien);
+            }
+        }
+
+        $list[0] = $filials_list;
+        $list[0] = $this->replaceLang($list[0]);
+
+        $r = $db->query("SELECT t2as.ART_ID, t2as.STORAGE_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2br.BARCODE 
+        FROM `T2_ARTICLES_STRORAGE` t2as
+            LEFT OUTER JOIN `T2_ARTICLES` t2a ON t2a.ART_ID=t2as.ART_ID
+            LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
+            LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
+            LEFT OUTER JOIN `T2_BARCODES` t2br ON t2br.ART_ID=t2a.ART_ID
+        WHERE t2as.AMOUNT != 0 AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
+        GROUP BY t2a.ARTICLE_NR_DISPL;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
+            $article_nr_displ = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+            $brand = $db->result($r, $i - 1, "BRAND_NAME");
+            $name = $db->result($r, $i - 1, "NAME");
+            $info = $db->result($r, $i - 1, "INFO");
+            $barcode = $db->result($r, $i - 1, "BARCODE");
+            $info = trim($info, " ");
+            $info = trim($info, "\n");
+            $info = trim($info, "\r");
+            $info = str_replace("\n", "", $info);
+            $info = str_replace("\r", "", $info);
+
+            $price = $this->getArticlePriceClient($art_id, $client_id, $cur);
+            $price = str_replace(".", ",", "$price");
+
+            $rs = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES_NOT_EXPORT` WHERE `ART_ID` = $art_id LIMIT 1;");
+            $ns = $db->result($rs, 0, "count_arts");
+            if ($ns == 0) {
+                $list[$i] = [$i, "$article_nr_displ", "$brand", "$name", "$price", "$cur_cap", "$info", "$barcode"];
+                foreach ($storages as $storage) {
+                    $stock = $this->getStockStorage($art_id, $storage);
+                    if ($stock > 10) {
+                        $stock = ">10";
+                    }
+                    array_push($list[$i], $stock);
+                }
+            }
+        }
+        return $list;
+    }
+
+    /*
+     * download prices
+     * */
+    public function downloadPrices()
+    {
+        $db = DbSingleton::getTokoDb();
+        $dbm = DbSingleton::getDbm();
+
+        $r = $dbm->query("SELECT `user_id`, `date`, `filename` FROM `cron_task_prices` WHERE `status`=1;");
+        $n = $dbm->num_rows($r);
+        if ($n > 0) {
+            for ($i = 1; $i <= $n; $i++) {
+                $user = $db->result($r, $i - 1, "user_id");
+                $filename = $user . "/" . $dbm->result($r, $i - 1, "filename");
+
+                $csv = "";
+                $list = $this->getPriceList();
+                foreach ($list as $record) {
+                    foreach ($record as $rec) {
+                        $csv .= $rec . ';';
+                    }
+                    $csv .= "\n";
+                }
+
+                if (!file_exists(RDD . "/uploads/$user")) {
+                    mkdir(RDD . "/uploads/$user", 0777, true);
+                } elseif (file_exists(RDD . "/uploads/$user/")) {
+                    foreach (glob(RDD . "/uploads/$user/*") as $file) {
+                        unlink($file);
+                    }
+                }
+
+                $csv_handler = fopen(RDD . "/uploads/$filename", 'w') or die("Can't create file");
+                fwrite($csv_handler, $csv);
+                fclose($csv_handler);
+                $date_end = date("Y-m-d H:i:s");
+                $dbm->query("UPDATE `cron_task_prices` SET `status` = 2, `date_end` = '$date_end' WHERE `user_id` = '$user' AND `status` = 1;");
+            }
+        }
+        return true;
     }
 
 }

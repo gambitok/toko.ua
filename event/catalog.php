@@ -27,39 +27,59 @@ $str_linka = implode("/", $str_linka);
  * */
 if ($router == "") {
     $content = str_replace("{main_window}", $catalogue->getCatalogColList(), $content);
-}
+} else {
+    /*
+     * Catalog with Group
+     * */
+    $group_id = $catalog_exist->getGroupExistId($router);
+    if (!empty($group_id)) {
+        $group_id = $catalog_exist->getUrlNumber($group_id);
+        $filters = $linka[2];
+        if ($filters == "auto") {
+            $filters = [];
+        }
+        $mfa_link = $router_3;
+        $model_link = $router_4;
 
-/*
- * Catalog with Group
- * */
-$group_id = $catalog_exist->getGroupExistId($router);
-if (!empty($group_id)) {
-    $group_id = $catalog_exist->getUrlNumber($group_id);
-    $filters = $linka[2];
-    if ($filters == "auto") {
-        $filters = [];
+        if ($mfa_link != "") {
+            $mfa_id = $automan->getMfaLink($mfa_link);
+            if ($mfa_id == 0) {
+                header("HTTP/1.0 404 Not Found");
+                $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404"), $content);
+            }
+            if ($model_link != "") {
+                $model = $automan->getModLink($model_link);
+                if ($model == "") {
+                    header("HTTP/1.0 404 Not Found");
+                    $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404"), $content);
+                }
+            }
+        }
+
+        ($page != NULL) ?: $page = 1;
+        $status_auto_type = $catalogue->getUrlNumber($_COOKIE["status_auto_type"]);
+        ($status_auto_type != NULL) ?: $status_auto_type = 0;
+        $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $str_linka, $page, $filters, $status_auto_type, $mfa_link, $model_link);
+        $content = str_replace("{main_window}", $catalog_form["form"], $content);
+        $content = str_replace("{site_title}", $catalog_form["title"], $content);
     }
-    $mfa_link = $router_3;
-    $model_link = $router_4;
-    ($page != NULL) ?: $page = 1;
-    $status_auto_type = $catalogue->getUrlNumber($_COOKIE["status_auto_type"]);
-    ($status_auto_type != NULL) ?: $status_auto_type = 0;
-    $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $str_linka, $page, $filters, $status_auto_type, $mfa_link, $model_link);
-    $content = str_replace("{main_window}", $catalog_form["form"], $content);
-    $content = str_replace("{site_title}", $catalog_form["title"], $content);
-}
 
-/*
- * Catalog with Header or Category
- * */
-$head_id = $catalog_exist->getGroupHeadExistId($router);
-if (!empty($head_id)) {
-    $cat_id = $catalog_exist->getGroupCatExistId($router_2);
-    if (empty($cat_id)) {
-        $catalog_form = $catalog_exist->showGroupHeadForm($head_id);
-    } else {
-        $catalog_form = $catalog_exist->showGroupCatForm($head_id, $cat_id);
+    /*
+     * Catalog with Header or Category
+     * */
+    $head_id = $catalog_exist->getGroupHeadExistId($router);
+    if (!empty($head_id)) {
+        $cat_id = $catalog_exist->getGroupCatExistId($router_2);
+        if (empty($cat_id)) {
+            $catalog_form = $catalog_exist->showGroupHeadForm($head_id);
+        } else {
+            $catalog_form = $catalog_exist->showGroupCatForm($head_id, $cat_id);
+        }
+        $content = str_replace("{main_window}", $catalog_form, $content);
     }
-    $content = str_replace("{main_window}", $catalog_form, $content);
-}
 
+    if (empty($head_id) && empty($group_id)) {
+        header("HTTP/1.0 404 Not Found");
+        $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404"), $content);
+    }
+}

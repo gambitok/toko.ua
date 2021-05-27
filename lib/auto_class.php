@@ -161,7 +161,7 @@ class AutoClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' LIMIT 1;");
-        return $db->result($r, 0, "MFA_ID");
+        return intval($db->result($r, 0, "MFA_ID"));
     }
 
     /*

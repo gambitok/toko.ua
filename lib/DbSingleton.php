@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/mysql_class.php';
-//require_once __DIR__ . '/mysql_class_toko.php';
 
 class DbSingleton
 {

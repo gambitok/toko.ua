@@ -30,7 +30,7 @@ function getContent($content) {
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $actual_full_link = "<link rel=\"canonical\" href=\"$actual_link\"/>";
     if (strpos($actual_link,"?") !== false) {
-//        $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
+        // $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
         $actual_full_link = "";
     }
     $content = str_replace("{canonical_link}", $actual_link, $content);

@@ -1,11 +1,11 @@
 <?php
 
 $lang_postfix = findLanguage();
-$language_id = 1;
-if ($lang_postfix != "") {
-    $language_id = findLanguageID($lang_postfix);
-    $language->setLangID($language_id);
-}
+//$language_id = 1;
+//if ($lang_postfix != "") {
+$language_id = findLanguageID($lang_postfix);
+$language->setLangID($language_id);
+//}
 
 $theme_htm = RDD . "/main.htm";
 if (file_exists("$theme_htm")) {

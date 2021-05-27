@@ -131,22 +131,6 @@ trait Helper
         return $language->getLanguageData();
     }
 
-//    public function getLangPrefix()
-//    {
-//        $lang = $this->getLanguage();
-//        $pre = "";
-//        if ($lang == 1) {
-//            $pre = "";
-//        }
-//        if ($lang == 2) {
-//            $pre = "/uk";
-//        }
-//        if ($lang == 3) {
-//            $pre = "/en";
-//        }
-//        return $pre;
-//    }
-
     public function getLangPostfix($lang_id) {
         $postfix = "RU";
         if ($lang_id == 2) {
@@ -418,6 +402,15 @@ trait Helper
             $status = 1;
         }
         return $status;
+    }
+
+    public function checkArticleExist($art_id)
+    {
+        $art_id = $this->getUrlNumber($art_id);
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1");
+        $n = $db->num_rows($r);
+        return ($n > 0);
     }
 
 }
