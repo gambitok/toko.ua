@@ -414,6 +414,21 @@ function findUrl()
     return $link["path"];
 }
 
+function findNoIndex()
+{
+    $link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+
+    $result = 0;
+    $arr = ["?utm_", "?sort=", "?gclid=", "?UAH", "?RUR", "?WMZ", "?USD"];
+    foreach ($arr as $findme) {
+        $pos = strripos($link, $findme);
+        if ($pos !== false) {
+            $result++;
+        }
+    }
+    return ($result > 0);
+}
+
 function findLanguage()
 {
     $postfix = "";

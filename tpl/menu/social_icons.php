@@ -8,7 +8,7 @@ $social_array=[
 $dist = "/images/";
 foreach ($social_array as $key => $value): ?>
     <li>
-        <a rel="noopener" itemprop="sameAs" target="_blank" href="<?php echo($value["link"])?>">
+        <a rel="nofollow" itemprop="sameAs" target="_blank" href="<?php echo($value["link"])?>">
             <img
                 src="<?php echo $dist?>social/<?php echo($value["img"])?>"
                 alt="<?php echo($value["name"])?>"

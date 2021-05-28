@@ -1,11 +1,6 @@
 <?php
 
-$lang_postfix = findLanguage();
-//$language_id = 1;
-//if ($lang_postfix != "") {
-$language_id = findLanguageID($lang_postfix);
-$language->setLangID($language_id);
-//}
+$language->setLangID(findLanguageID(findLanguage()));
 
 $theme_htm = RDD . "/main.htm";
 if (file_exists("$theme_htm")) {
@@ -19,17 +14,9 @@ if ($path == "seoshield-client") {
     $content = "";
 } elseif ($path == "" || $path == "/") {
     include_once RDD . "/event/main.php";
-}
-elseif ($path == "/uk/" || $path == "/en/") {
-//    if ($path == "uk") {
-//        $language->setLangID(2);
-//    }
-//    if ($path == "en") {
-//        $language->setLangID(3);
-//    }
+} elseif ($path == "/uk/" || $path == "/en/") {
     include_once RDD . "/event/main.php";
-}
-elseif (file_exists(RDD . "/event/$path.php")) {
+} elseif (file_exists(RDD . "/event/$path.php")) {
     include_once RDD . "/event/$path.php";
 } else {
     include RDD . "/event/404.php";
@@ -77,9 +64,17 @@ $content = str_replace("{main_window}", "", $content);
 $lang_postfix = findLanguage();
 if ($lang_postfix != "") {
     $content = str_replace("{meta_noindex}", '
-        <meta name="robots" content="noindex">
-        <meta name="googlebot" content="noindex">
-        <meta name="yandex" content="noindex">
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="googlebot" content="noindex, nofollow">
+        <meta name="yandex" content="noindex, nofollow">
+    ', $content);
+}
+$no_index = findNoIndex();
+if ($no_index) {
+    $content = str_replace("{meta_noindex}", '
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="googlebot" content="noindex, nofollow">
+        <meta name="yandex" content="noindex, nofollow">
     ', $content);
 }
 $content = str_replace("{meta_noindex}", '
@@ -93,7 +88,6 @@ $linka = findLinks();
 $content = str_replace("{main_seo_products_content}", "", $content);
 
 $content = str_replace("{main_seo_text_cars}", "", $content);
-
 
 $content = getContent($content);
 $content = translateContent($content);

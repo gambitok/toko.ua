@@ -945,4 +945,57 @@ class FormClass extends CatalogueClass
         return $form;
     }
 
+    public function showSitemap()
+    {
+        $db = DbSingleton::getTokoDb();
+        $site_link = $this->getSiteLink();
+        $list = "";
+        $list .= "<a href=\"$site_link\">{site_main}</a>";
+
+        $arr = [];
+
+        $r = $db->query("SELECT thcg.`HEAD_ID`, thcg.`CAT_ID`, thcg.`GROUP_ID` 
+        FROM `T2_TREE_HCG_EXIST` thcg
+            LEFT JOIN `T2_TREE_HEAD_EXIST` th ON th.`HEAD_ID` = thcg.`HEAD_ID`
+            LEFT JOIN `T2_TREE_CAT_EXIST` tc ON tc.`CAT_ID` = thcg.`CAT_ID`
+            LEFT JOIN `T2_TREE_GROUP_EXIST` tg ON tg.`GROUP_ID` = thcg.`GROUP_ID`
+        WHERE th.`STATUS` = 1 AND tc.`STATUS` = 1 AND tg.`STATUS` = 1
+        ORDER BY thcg.`POPULAR` DESC, thcg.`HEAD_ID`, thcg.`CAT_ID`, thcg.`GROUP_ID`;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $head_id = $db->result($r, $i - 1, "HEAD_ID");
+            $cat_id = $db->result($r, $i - 1, "CAT_ID");
+            $group_id = $db->result($r, $i - 1, "GROUP_ID");
+            $arr[$head_id][$cat_id][] = $group_id;
+        }
+
+        $list .= "<ul>";
+        foreach ($arr as $head_id => $cats) {
+            $head_name = $this->getHeadRowName($head_id);
+            $head_link = $this->getHeadRowLink($head_id);
+            $list .= "<li><a href=\"$site_link$head_link/\">$head_name</a>";
+            $list .= "<ul>";
+            foreach ($cats as $cat_id => $groups) {
+                $cat_name = $this->getCatRowName($cat_id);
+                $cat_link = $this->getCatRowLink($cat_id);
+                $list .= "<li><a href=\"$site_link$head_link/$cat_link/\">$cat_name</a>";
+                $list .= "<ul>";
+                foreach ($groups as $group_id) {
+                    $group_name = $this->getGroupRowName($group_id);
+                    $group_link = $this->getGroupRowLink($group_id);
+                    $list .= "<li><a href=\"$site_link$group_link/\">$group_name</a></li>";
+                }
+                $list .= "</ul>";
+                $list .= "</li>";
+            }
+            $list .= "</ul>";
+            $list .= "</li>";
+        }
+        $list .= "</ul>";
+
+        $form = $this->getHtmlForm("menu/sitemap");
+        $form = str_replace("{sitemap_list}", $list, $form);
+        return $form;
+    }
+
 }

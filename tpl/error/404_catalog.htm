@@ -1,32 +1,38 @@
 <div>
-    <div id="cat-products-cars">
-        {parts_cars}
-    </div>
     <div class="content catalogue-error">
-        <h1>{catalog_exist_error}</h1>
+        <h1 class="catalogue-error-title">{seo_404_catalog_title}</h1>
+        <h2 class="catalogue-error-descr">{seo_404_catalog_descr}</h2>
         <div class="row">
-            <div class="col-lg-3 col-12 order-lg-0 order-1 catalogue-error__image">
-                <img src="/images/sad_car.png" alt="404">
-            </div>
-            <div class="col-lg-9 col-12 order-lg-1 order-0">
-                <div>
-                    <p>{catalog_exist_error_1}</p>
-                    <p>{catalog_exist_error_2}</p>
-                    <p>{catalog_exist_error_3}</p>
+            <div class="col-lg-9 col-12">
+                <div class="catalogue-error-user">
+                    <div class="catalogue-error-user__item">
+                        <p class="catalogue-error-user__item-title">
+                            1. {seo_404_links}:
+                        </p>
+                        <ul class="catalogue-error-user__item-list">
+                            <li>{seo_404_links_catalog} <a href="{site_main_link}catalog/" class="blue-a">{in_catalog_strs}</a></li>
+                            <li>{seo_404_links_vin} <a class="blue-a" onclick="$('#VinFormPhone').modal('show');">{vin_order}</a></li>
+                        </ul>
+                    </div>
+                    <div class="catalogue-error-user__item">
+                        <p class="catalogue-error-user__item-title">
+                            2. {tree_404_call_us}:
+                        </p>
+                    </div>
                 </div>
                 <div class="catalogue-error__contacts">
                     <div>
                         <ul class="modal-help-row-phones">
                             <li>
-                                <img data-src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
+                                <img src="/images/no_photo.png" data-src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
                                 <a href="tel:0970803060">(097) <b>080 30 60</b></a>
                             </li>
                             <li>
-                                <img data-src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
+                                <img src="/images/no_photo.png" data-src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
                                 <a href="tel:0500803060">(050) <b>080 30 60</b></a>
                             </li>
                             <li>
-                                <img data-src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
+                                <img src="/images/no_photo.png" data-src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
                                 <a href="tel:0930803060">(093) <b>080 30 60</b></a>
                             </li>
                         </ul>
@@ -49,9 +55,9 @@
                         </a>
                     </div>
                 </div>
-                <div>
-                    <p>{catalog_exist_error_4}</p>
-                </div>
+            </div>
+            <div class="col-lg-3 col-12 catalogue-error__image">
+                <img src="/images/sad_car.png" alt="404">
             </div>
         </div>
     </div>
@@ -62,26 +68,26 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="request">
-                    <div class="request-row request-row-mob" style="display: flex">
+                    <div class="request-row" style="display: flex">
                         <div class="request-row__image"><img src="/images/icons/faq/vin-icon.png" alt="Icon"></div>
                         <div class="request-row__title">
                             <span style="color: #0CA9EE;">{faq_request_title}</span><br>
                             <span style="color: #36cd76;">{faq_request_title2}</span>
                         </div>
                     </div>
-                    <div class="request-row request-row-mob">
+                    <div class="request-row">
                         <input id="req-phone" class="masked-phone" type="tel" placeholder="{phone_cap}">
                     </div>
-                    <div class="request-row request-row-mob">
+                    <div class="request-row">
                         <input id="req-vin" class="masked-vin" type="text" placeholder="{vin_cap}">
                     </div>
-                    <div class="request-row request-row-mob">
+                    <div class="request-row">
                         <textarea id="req-text" placeholder="{spare_parts_list}"></textarea>
                     </div>
-                    <div class="request-row request-row-mob">
+                    <div class="request-row">
                         <input type="submit" value="{send_seller}" onclick="setClientRequest2();">
                     </div>
-                    <div class="request-row request-row-mob">
+                    <div class="request-row">
                         <div class="request-row__text" style="text-align: left">
                             <span>{faq_request_about}</span>
                             <a onclick="$('#VinForm').modal('show');">{faq_request_about2} <span class="fa fa-info-circle"></span></a>
@@ -92,10 +98,3 @@
         </div>
     </div>
 </div>
-
-
-<script>
-    $(document).ready(function() {
-        getCarsSelectUser("cat-products-cars", "{mfa_link}", "{model_link}");
-    });
-</script>

@@ -399,21 +399,20 @@ class CatalogueClass
             $r = $db->query("
             SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT as AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
             FROM `T2_ARTICLES` t2a
-                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON t2asc.ART_ID=t2a.ART_ID
-            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2asc.AMOUNT!=NULL OR t2asc.AMOUNT!=0) $where_brands 
+                LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
+                LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
+                LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
+            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) AND (t2asc.AMOUNT != NULL OR t2asc.AMOUNT != 0) $where_brands 
             GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
             UNION ALL
             SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2si.stock_suppl as AMOUNT, t2si.client_storage_id as storage_id, t2si.suppl_id, t2si.return_delay
             FROM `T2_ARTICLES` t2a
-                LEFT OUTER JOIN `T2_BRANDS` t2b ON t2b.BRAND_ID=t2a.BRAND_ID
-                LEFT OUTER JOIN `T2_NAMES` t2n ON t2n.ART_ID=t2a.ART_ID
-                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
-            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE`='1' AND (CASE WHEN t2n.LANG_ID!=NULL THEN t2n.LANG_ID=16 ELSE TRUE END) AND (t2si.stock_suppl!=NULL OR t2si.stock_suppl!=0) $where_brands 
+                LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
+                LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
+                LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
+            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) AND (t2si.stock_suppl != NULL OR t2si.stock_suppl != 0) $where_brands 
             GROUP BY t2a.ART_ID, t2si.client_storage_id;");
         }
-
         return $r;
     }
 
@@ -427,7 +426,7 @@ class CatalogueClass
         $art_id_arr = [];
         $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` 
         FROM `T2_CROSS` 
-        WHERE `ART_ID` = $art_id AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND` IN (3,4) AND `RELATION`=1) OR (`KIND` IN (3,4) AND `RELATION`=2)) 
+        WHERE `ART_ID` = $art_id AND ((`KIND` = 3 AND `RELATION` = 0) OR (`KIND` IN (3, 4) AND `RELATION` = 1) OR (`KIND` IN (3, 4) AND `RELATION` = 2)) 
         GROUP BY `SEARCH_NUMBER` LIMIT 0,10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -440,7 +439,7 @@ class CatalogueClass
             $brand_id = $art["brand_id"];
             $r = $db->query("SELECT `ART_ID` 
             FROM `T2_CROSS` 
-            WHERE `SEARCH_NUMBER` = '$article_search' AND `BRAND_ID` = $brand_id AND ((`KIND`=3 AND `RELATION`=0) OR (`KIND`=0 AND `RELATION`=0));");
+            WHERE `SEARCH_NUMBER` = '$article_search' AND `BRAND_ID` = $brand_id AND ((`KIND` = 3 AND `RELATION` = 0) OR (`KIND` = 0 AND `RELATION` = 0));");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $cross_art_id = $db->result($r, $i - 1, "ART_ID");
@@ -521,7 +520,7 @@ class CatalogueClass
         return $list_brand;
     }
 
-    public function searchList($where_art_id_str, $view = 0, $article_nr_search = "", $brand_nr_search = "", $status_auto = 0, $mfa_link = "", $model_link = "")
+    public function searchList($where_art_id_str, $view = 0, $article_nr_search = "", $brand_nr_search = "", $mfa_id = 0, $model = "", $status_auto = 0)
     {
         $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
@@ -696,7 +695,7 @@ class CatalogueClass
                 $other_storages = $this->showOtherStorages($mas, $cur, $view);
 
                 // show search list
-                $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, 0, $status_auto, $mfa_link, $model_link);
+                $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, 0, $status_auto, $mfa_id, $model);
             }
 
             $count = count($mas);
@@ -1334,7 +1333,7 @@ class CatalogueClass
     /*
      * Show SEARCH Line OR Card
      * */
-    public function printSearchList($id, $art_id, $article_name, $brand_id, $brand_name, $text, $delivery_info, $stock, $price, $article_nr_search, $ll, $class, $hide, $border, $none, $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto = 0, $mfa_link = "", $model_link = "")
+    public function printSearchList($id, $art_id, $article_name, $brand_id, $brand_name, $text, $delivery_info, $stock, $price, $article_nr_search, $ll, $class, $hide, $border, $none, $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto = 0, $mfa_id = 0, $model = "")
     {
         $showform = new FormClass();
         $kours = new ExRateClass();
@@ -1395,12 +1394,10 @@ class CatalogueClass
         $format_product_text = ($text == "") ? "{details_name_cap}" : $this->formatArticleName($text);
         $mfa_text = "";
         if ($status_auto == 0) {
-            if ($mfa_link != "") {
-                $mfa_id = $automan->getMfaLink($mfa_link);
+            if ($mfa_id > 0) {
                 $mfa_name = $automan->getMfaBrand($mfa_id);
                 $mfa_text .= " {on_cap} $mfa_name";
-                if ($model_link != "") {
-                    $model = $automan->getModLink($model_link);
+                if ($model != "") {
                     $mfa_text .= " $model";
                 }
             }
@@ -2218,7 +2215,7 @@ class CatalogueClass
      * show search list
      * $status_auto - 0,1,2
      * */
-    public function outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, $saleout = 0, $status_auto = 0, $mfa_link = "", $model_link = "")
+    public function outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view, $saleout = 0, $status_auto = 0, $mfa_id = 0, $model = "")
     {
         $ll = $other_storages["content"];
         $class = $other_storages["class"];
@@ -2274,7 +2271,7 @@ class CatalogueClass
                             $list .= $faq_socials_form;
                         }
                     }
-                    $list .= $this->printSearchList($i, $art_id, $name, $brand_id, $brand, $text, $delivery_info, $stock, $price, $article_nr_search, $ll[$i], $class[$i], $hide[$i], $border[$i], $none[$i], $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto, $mfa_link, $model_link);
+                    $list .= $this->printSearchList($i, $art_id, $name, $brand_id, $brand, $text, $delivery_info, $stock, $price, $article_nr_search, $ll[$i], $class[$i], $hide[$i], $border[$i], $none[$i], $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view, $status_auto, $mfa_id, $model);
                     $i++;
                 }
             }

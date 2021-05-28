@@ -692,13 +692,23 @@ class MenuClass extends CatalogueClass
         $postfix = $this->getLangPostfix($this->getLanguage());
         $r = $db->query("SELECT `DATA`, `TITLE_$postfix`, `TEXT_$postfix` FROM `T2_REVIEWS` WHERE `ID` = $state_id;");
         $list = $this->getHtmlForm("reviews/card_range");
-        $list = str_replace("{review_date}", $db->result($r, 0, "DATA"), $list);
-        $list = str_replace("{review_title}", $db->result($r, 0, "TITLE_$postfix"), $list);
-        $list = str_replace("{review_text}", $db->result($r, 0, "TEXT_$postfix"), $list);
+        $date = $db->result($r, 0, "DATA");
+        $title = $db->result($r, 0, "TITLE_$postfix");
+        $text = $db->result($r, 0, "TEXT_$postfix");
+        $list = str_replace("{review_date}", $date, $list);
+        $list = str_replace("{review_title}", $this->replaceTextTags($title), $list);
+        $list = str_replace("{review_text}", $this->replaceTextTags($text), $list);
         $form = $this->getHtmlForm("reviews/card");
         $form = str_replace("{state_id}", $state_id, $form);
         $form = str_replace("{state_info}", ($state_id > 0) ? $list : "<h1>$this->err1</h1>", $form);
         return $form;
+    }
+    
+    public function replaceTextTags($text)
+    {
+        $text = str_replace("<h1>", "", $text);
+        $text = str_replace("</h1>", "", $text);
+        return $text;
     }
 
     /*

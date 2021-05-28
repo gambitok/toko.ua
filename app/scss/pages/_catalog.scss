@@ -834,9 +834,36 @@
 }
 
 .catalogue-error {
+    &-title {
+        font-size: 2rem;
+        text-transform: uppercase;
+    }
+    &-descr {
+        color: #ccc;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+    }
     .blue-a {
         color: #0ca9ee;
         font-weight: bold;
+    }
+    &-user {
+        &__item {
+            &-title {
+                padding: 15px 0;
+                text-transform: uppercase;
+            }
+            &-list {
+                padding: 15px 0;
+                list-style: none;
+                li {
+                    content: "-";
+                    position: relative;
+                    left: -5px;
+                    margin-left: 30px;
+                }
+            }
+        }
     }
     &__image {
         img {
