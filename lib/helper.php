@@ -357,6 +357,46 @@ trait Helper
         }
     }
 
+    /*
+     * $linka[0]
+     * $linka[1]
+     * $linka[2]
+     * $linka[3]
+     * $linka[4]
+     * */
+//    public function getCatalogOldRedirectLink($linka)
+//    {
+//        $automan = new AutoClass();
+//        $catalog_exist = new CatalogExistClass();
+//        $site_name = $linka[0];
+//        $group_link = $linka[1];
+//        $mfa_link = $linka[2];
+//        $model_link = $linka[3];
+//        $status = 0;
+//
+//        $redirect_link = $site_name . "/" . $group_link . "/";
+//
+//        $group_id = $catalog_exist->getGroupExistId($group_link);
+//
+//        if ($group_id > 0 && $mfa_link != "auto" && $mfa_link != "") {
+//            $mfa_id = $automan->getMfaLink($mfa_link);
+//
+//            if ($mfa_id > 0) {
+//                $status = 1;
+//
+//                $redirect_link .= "auto/" . $mfa_link . "/";
+//
+//                if ($model_link != "") {
+//
+//                    $redirect_link .= $model_link . "/";
+//                }
+//
+//            }
+//        }
+//
+//        return array("status" => $status, "redirect_link" => $redirect_link);
+//    }
+
     public function getCatalogRedirectLink($link, $mfa_link = "", $model_link = "")
     {
         $db = DbSingleton::getTokoDb();
@@ -408,8 +448,8 @@ trait Helper
     {
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1");
-        $n = $db->num_rows($r);
+        $r = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1");
+        $n = $db->result($r, 0, "count_arts");
         return ($n > 0);
     }
 

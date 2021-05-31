@@ -657,7 +657,7 @@ class CatalogExistClass extends CatalogueClass
             $head_name = $this->getHeadExistName($head_id);
             $head_link = $this->getHeadExistLink($head_id);
             $icon = "<i class=\"fa fa-chevron-right\"></i>";
-            $list = "<a href=\"" . $this->getSiteLink() . "\">{seo_shop_toko}</a> $icon <a href=\"" . $this->getSiteLink() . "$this->catalog_link\">{site_catalog}</a> $icon <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link\">$head_name</a> $icon $group_name";
+            $list = "<a href=\"" . $this->getSiteLink() . "\">{seo_shop_toko}</a> $icon <a href=\"" . $this->getSiteLink() . "$this->catalog_link/\">{site_catalog}</a> $icon <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/\">$head_name</a> $icon $group_name";
         }
         return $list;
     }
