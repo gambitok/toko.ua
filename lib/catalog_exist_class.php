@@ -692,7 +692,7 @@ class CatalogExistClass extends CatalogueClass
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$pages_count\">$pages_count</a></li>";
             }
 
-            if ($page > $max_count) {
+            elseif ($page > $max_count) {
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=1\">1</a></li>";
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"#\">...</a></li>";
                 for ($i = $max_count; $i <= $pages_count; $i++) {
@@ -701,7 +701,7 @@ class CatalogExistClass extends CatalogueClass
                 }
             }
 
-            if ($page >= $min_count && $page <= $max_count) {
+            elseif ($page >= $min_count && $page <= $max_count) {
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=1\">1</a></li>";
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"#\">...</a></li>";
 
@@ -1072,7 +1072,7 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{parts_h1}", "$filters_h1 $translit $pager", $form);
         $form = str_replace("{parts_count}", "{unselect_cap} $count " . $this->getGoodsCap($count), $form);
         $form = str_replace("{parts_filters}", "$filters_btn", $form);
-        $form = str_replace("{parts_pagination}", $pagination_form, $form);
+        $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
         $form = str_replace("{parts_params}", $filters_form, $form);
         $form = str_replace("{parts_breadcrumbs}", $this->getPartsBreadcrumbsForm($group_id), $form);
         $form = str_replace("{status_auto}", $status_auto, $form);

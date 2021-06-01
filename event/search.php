@@ -18,7 +18,7 @@ if ($article_nr_search == "") {
 }
 
 $content = str_replace("{meta_noindex}", '
-    <meta name="robots" content="noindex">
-    <meta name="googlebot" content="noindex">
-    <meta name="yandex" content="noindex">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="yandex" content="noindex, nofollow">
 ', $content);

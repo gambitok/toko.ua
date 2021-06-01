@@ -16,14 +16,12 @@ $page = $catalogue->getUrlNumber($_GET["page"]);
 
 $path_from = $site_name . "/" . $router . "/";
 
-//if ($catalogue->getCatalogOldRedirectLink($linka)["status"]) {
-//    $redirect_status = 1;
-//    $redirect_type = 301;
-//    $redirect_link = $catalogue->getCatalogOldRedirectLink($linka)["redirect_link"];
-//}
-//
-//else
-if ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
+if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
+    $redirect_status = 1;
+    $redirect_type = 301;
+    $redirect_link = $catalogue->getCatalogOldRedirectLink($linka)["redirect_link"];
+}
+elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $mfa_link = $router_2;
     $model_link = $router_3;
     $path_to = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
@@ -78,10 +76,10 @@ if ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                 list($count_brands, $count_params) = $catalog_exist->getCatalogParamsCount($group_id, $filters);
                 if ($count_brands > 1 || $count_params > 1) {
                     $content = str_replace("{meta_noindex}", '
-                    <meta name="robots" content="noindex, nofollow">
-                    <meta name="googlebot" content="noindex, nofollow">
-                    <meta name="yandex" content="noindex, nofollow">
-                ', $content);
+                        <meta name="robots" content="noindex, nofollow">
+                        <meta name="googlebot" content="noindex, nofollow">
+                        <meta name="yandex" content="noindex, nofollow">
+                    ', $content);
                 }
             }
 
@@ -96,8 +94,7 @@ if ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
 
             if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
                 $max_page = $catalog_form["pages_count"];
-                $path_to = $catalog_exist->getSiteLink() . $path_from . "/?page=$max_page";
-                //header("Location: $path_to", TRUE, 301);
+                $path_to = $catalog_exist->getSiteLink() . ltrim(findUrl(), "/") . "?page=$max_page";
                 $redirect_status = 1;
                 $redirect_type = 301;
                 $redirect_link = "$path_to";
@@ -122,14 +119,12 @@ if ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
         }
 
         if (empty($head_id) && empty($group_id)) {
-            //header("HTTP/1.0 404 Not Found");
             $redirect_status = 1;
             $redirect_type = 404;
             $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
         }
     }
 }
-
 
 if ($redirect_status) {
     if ($redirect_type == 404) {

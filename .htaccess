@@ -33,11 +33,12 @@ RewriteRule ^ %1/%2 [R=301,L,NE]
 
 # redirect https://toko.ua/catalog/shrus?page=0 => https://toko.ua/catalog/shrus
 RewriteCond %{QUERY_STRING} /?page=0
-RewriteRule ^ %{REQUEST_URI}? [L,R=301]
+RewriteRule ^index\.php$ https://www.localhost:8080/ [R=301,L]
 
 # redirect https://toko.ua/catalog/shrus?page=1 => https://toko.ua/catalog/shrus
+#^ %{REQUEST_URI}? [L,R=301]
 RewriteCond %{QUERY_STRING} /?page=1
-RewriteRule ^ %{REQUEST_URI}? [L,R=301]
+RewriteRule ^index\.php$ https://www.localhost:8080/ [R=301,L]
 
 # add slash in end
 RewriteEngine On

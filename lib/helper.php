@@ -357,48 +357,50 @@ trait Helper
         }
     }
 
-    /*
-     * $linka[0]
-     * $linka[1]
-     * $linka[2]
-     * $linka[3]
-     * $linka[4]
-     * */
-//    public function getCatalogOldRedirectLink($linka)
-//    {
-//        $automan = new AutoClass();
-//        $catalog_exist = new CatalogExistClass();
-//        $site_name = $linka[0];
-//        $group_link = $linka[1];
-//        $mfa_link = $linka[2];
-//        $model_link = $linka[3];
-//        $status = 0;
-//
-//        $redirect_link = $site_name . "/" . $group_link . "/";
-//
-//        $group_id = $catalog_exist->getGroupExistId($group_link);
-//
-//        if ($group_id > 0 && $mfa_link != "auto" && $mfa_link != "") {
-//            $mfa_id = $automan->getMfaLink($mfa_link);
-//
-//            if ($mfa_id > 0) {
-//                $status = 1;
-//
-//                $redirect_link .= "auto/" . $mfa_link . "/";
-//
-//                if ($model_link != "") {
-//
-//                    $redirect_link .= $model_link . "/";
-//                }
-//
-//            }
-//        }
-//
-//        return array("status" => $status, "redirect_link" => $redirect_link);
-//    }
+    public function getCatalogOldRedirectLink($linka)
+    {
+        $automan = new AutoClass();
+        $catalog_exist = new CatalogExistClass();
+
+        $status = 0;
+
+        $redirect_link = $this->getSiteLink() . $linka[0] . "/" . $linka[1] . "/";
+
+        $group_id = $catalog_exist->getGroupExistId($linka[1]);
+
+        if ($group_id > 0 && $linka[2] != "auto" && strpos($linka[2], "brandy=") === false && $linka[2] != "") {
+            // 1 - mfa link
+            $mfa_id = $automan->getMfaLink($linka[2]);
+            if ($mfa_id > 0) {
+                $status = 1;
+                $redirect_link .= "auto/" . $linka[2] . "/";
+                if ($linka[3] != "") {
+                    $redirect_link .= $linka[3] . "/";
+                }
+            }
+            // 2 - filter link (brands)
+            if (strpos($linka[2], "brandy=") !== false) {
+                $status = 2;
+                $redirect_link .= $linka[2] . "/";
+                $mfa_id = $automan->getMfaLink($linka[3]);
+                if ($mfa_id > 0) {
+                    $status = 3;
+                    $redirect_link .= $linka[3] . "/";
+                    if ($linka[4] != "") {
+                        $redirect_link .= $linka[4] . "/";
+                    }
+                }
+            }
+        }
+
+        $redirect_link = rtrim($redirect_link, '/') . '/';
+
+        return array("status" => $status, "redirect_link" => $redirect_link);
+    }
 
     public function getCatalogRedirectLink($link, $mfa_link = "", $model_link = "")
     {
+        $automan = new AutoClass();
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `LINK_TO` FROM `T2_CATALOG_REDIRECT` WHERE `LINK_FROM` LIKE '%$link%' LIMIT 1;");
         $n = $db->num_rows($r);
@@ -407,20 +409,26 @@ trait Helper
         if ($n > 0) {
             $status = 1;
             $redirect_link = $db->result($r, 0, "LINK_TO");
+            $redirect_link = str_replace("https://toko.ua/", $this->getSiteLink(), $redirect_link);
             if (substr($redirect_link, -1) != "/") {
                 $redirect_link .= "/";
             }
         }
 
-        if ($mfa_link != "") {
-            if (!$this->checkCatalogRedirectFilters($redirect_link)) {
-                $redirect_link .= "auto/";
-            }
-            $redirect_link .= "$mfa_link/";
-            if ($model_link != "") {
-                $redirect_link .= "$model_link";
+        $mfa_id = $automan->getMfaLink($mfa_link);
+        if ($mfa_id > 0) {
+            if ($mfa_link != "") {
+                if (!$this->checkCatalogRedirectFilters($redirect_link)) {
+                    $redirect_link .= "auto/";
+                }
+                $redirect_link .= "$mfa_link/";
+                if ($model_link != "") {
+                    $redirect_link .= "$model_link";
+                }
             }
         }
+
+        $redirect_link = rtrim($redirect_link, '/') . '/';
 
         return array("status" => $status, "redirect_link" => $redirect_link);
     }
