@@ -141,8 +141,7 @@ class FormClass extends CatalogueClass
         $form = str_replace("{applicable_cap}", "", $form);
         $form = str_replace("{flag_visible}", "dnone", $form);
 
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -285,18 +284,18 @@ class FormClass extends CatalogueClass
     /*
      * get city form
      * */
-    public function showCityForm($city_like, $city_id = "")
+    public function showCityForm($city_like, $city_id_sel = "")
     {
         $db = DbSingleton::getDbm();
         $city_like = $this->getNameString($city_like);
         $mas = [];
-        if ($city_id == "") {
-            $city_id = 0;
+        if ($city_id_sel == "") {
+            $city_id_sel = 0;
         }
         if ($city_like != "") {
             $where = "WHERE `CITY_NAME` LIKE '%$city_like%'";
         } else {
-            $where = "WHERE `CITY_ID` IN ($city_id, 10108, 13549, 4074, 22739)";
+            $where = "WHERE `CITY_ID` IN ($city_id_sel, 10108, 13549, 4074, 22739)";
         }
         $r = $db->query("SELECT t2c.CITY_ID, t2c.CITY_NAME, t2r.REGION_NAME, t2s.STATE_NAME  
         FROM `T2_CITY` t2c
@@ -305,62 +304,62 @@ class FormClass extends CatalogueClass
         $where;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $id = $db->result($r, $i - 1, "CITY_ID");
+            $city_id = $db->result($r, $i - 1, "CITY_ID");
             $city = $db->result($r, $i - 1, "CITY_NAME");
             $region = $db->result($r, $i - 1, "REGION_NAME");
             $state = $db->result($r, $i - 1, "STATE_NAME");
             $location = ($region == "") ? "$city" : "$city - $region - $state";
-            $selected = ($id == $city_id);
-            $mas[$i] = ["id" => $id, "value" => $location, "selected" => $selected];
+            $selected = ($city_id == $city_id_sel);
+            $mas[$i] = ["id" => $city_id, "value" => $location, "selected" => $selected];
         }
         return $mas;
     }
 
-    public function showCityFormSelected($city_like, $city_id)
-    {
-        $db = DbSingleton::getDbm();
-        $list = "";
-        $city_like = $this->getNameString($city_like);
-        if ($city_id == "") {
-            $city_id = 0;
-        }
-        $where = ($city_like != "") ? "WHERE `CITY_NAME` LIKE '%$city_like%'" : "WHERE `CITY_ID` IN ($city_id, 10108, 13549, 4074, 22739)";
-        $r = $db->query("SELECT t2c.CITY_ID, t2c.CITY_NAME, t2r.REGION_NAME, t2s.STATE_NAME 
-        FROM `T2_CITY` t2c
-            LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID = t2c.REGION_ID)
-            LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID = t2r.STATE_ID)
-        $where;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $id = $db->result($r, $i - 1, "CITY_ID");
-            $city = $db->result($r, $i - 1, "CITY_NAME");
-            $region = $db->result($r, $i - 1, "REGION_NAME");
-            $state = $db->result($r, $i - 1, "STATE_NAME");
-            $location = ($region == "") ? "$city" : "$city - $region - $state";
-            $checked = ($id == $city_id) ? "selected=\"selected\"" : "";
-            $list .= "<option value=\"$id\" $checked>$location</option>";
-        }
-        return $list;
-    }
+//    public function showCityFormSelected($city_like, $city_id)
+//    {
+//        $db = DbSingleton::getDbm();
+//        $list = "";
+//        $city_like = $this->getNameString($city_like);
+//        if ($city_id == "") {
+//            $city_id = 0;
+//        }
+//        $where = ($city_like != "") ? "WHERE `CITY_NAME` LIKE '%$city_like%'" : "WHERE `CITY_ID` IN ($city_id, 10108, 13549, 4074, 22739)";
+//        $r = $db->query("SELECT t2c.CITY_ID, t2c.CITY_NAME, t2r.REGION_NAME, t2s.STATE_NAME
+//        FROM `T2_CITY` t2c
+//            LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID = t2c.REGION_ID)
+//            LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID = t2r.STATE_ID)
+//        $where;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $id = $db->result($r, $i - 1, "CITY_ID");
+//            $city = $db->result($r, $i - 1, "CITY_NAME");
+//            $region = $db->result($r, $i - 1, "REGION_NAME");
+//            $state = $db->result($r, $i - 1, "STATE_NAME");
+//            $location = ($region == "") ? "$city" : "$city - $region - $state";
+//            $checked = ($id == $city_id) ? "selected=\"selected\"" : "";
+//            $list .= "<option value=\"$id\" $checked>$location</option>";
+//        }
+//        return $list;
+//    }
 
-    public function showInfoTemplate($art_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $art_id = $this->getUrlNumber($art_id);
-        $info = "";
-        if (!isset(self::$infoTemplates[$art_id])) {
-            $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID` = $art_id AND `LANG_ID` = 16 ORDER BY `SORT` ASC;");
-            self::$infoTemplates[$art_id] = mysqli_fetch_all($r, MYSQLI_ASSOC);
-        }
-        if (self::$infoTemplates[$art_id]) {
-            $info = "<ul class=\"inline-list\">";
-            foreach (self::$infoTemplates[$art_id] as $infoTemplate) {
-                $info .= "<li><span class=\"bold\">{$infoTemplate['TEXT']}</span>: {$infoTemplate['VALUE']}</li>";
-            }
-            $info .= "</ul>";
-        }
-        return $info;
-    }
+//    public function showInfoTemplate($art_id)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $art_id = $this->getUrlNumber($art_id);
+//        $info = "";
+//        if (!isset(self::$infoTemplates[$art_id])) {
+//            $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID` = $art_id AND `LANG_ID` = 16 ORDER BY `SORT` ASC;");
+//            self::$infoTemplates[$art_id] = mysqli_fetch_all($r, MYSQLI_ASSOC);
+//        }
+//        if (self::$infoTemplates[$art_id]) {
+//            $info = "<ul class=\"inline-list\">";
+//            foreach (self::$infoTemplates[$art_id] as $infoTemplate) {
+//                $info .= "<li><span class=\"bold\">{$infoTemplate['TEXT']}</span>: {$infoTemplate['VALUE']}</li>";
+//            }
+//            $info .= "</ul>";
+//        }
+//        return $info;
+//    }
 
     public static function cacheInfoTemplates($where_art_id_str)
     {
@@ -421,8 +420,7 @@ class FormClass extends CatalogueClass
         if (count($list) == 0) {
             $form = "";
         }
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -485,15 +483,15 @@ class FormClass extends CatalogueClass
         return $photo_name;
     }
 
-    public function getArticlePhotos($art_id)
-    {
-        if (!isset(self::$articlePhotos[$art_id])) {
-            $db = DbSingleton::getTokoDb();
-            $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
-            self::$articlePhotos[$art_id] = mysqli_fetch_all($r, MYSQLI_ASSOC);
-        }
-        return self::$articlePhotos[$art_id];
-    }
+//    public function getArticlePhotos($art_id)
+//    {
+//        if (!isset(self::$articlePhotos[$art_id])) {
+//            $db = DbSingleton::getTokoDb();
+//            $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
+//            self::$articlePhotos[$art_id] = mysqli_fetch_all($r, MYSQLI_ASSOC);
+//        }
+//        return self::$articlePhotos[$art_id];
+//    }
 
     public static function cacheArticlesPhotos($where_art_id_str)
     {
@@ -595,8 +593,7 @@ class FormClass extends CatalogueClass
                 </div>
             </div>";
         }
-        $info = $this->replaceLang($info);
-        return $info;
+        return $this->replaceLang($info);
     }
 
     public function showArticlePhotoGallery($art_id)
@@ -678,8 +675,7 @@ class FormClass extends CatalogueClass
             <div class=\"tab-pane fade\" id=\"nav-3\" role=\"tabpanel\" aria-labelledby=\"nav-3-tab\">$originals</div>
         </div>";
 
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     public function drawLoader()
@@ -831,8 +827,7 @@ class FormClass extends CatalogueClass
         $form = $this->getHtmlForm("cat_modif_group_form");
         $form = str_replace("{cat_modif_list}", $list, $form);
         $form = "<div>$form</div>";
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     public function getArticleInfoForm($art_id, $display = 0, $type = 0)
@@ -870,8 +865,7 @@ class FormClass extends CatalogueClass
             $info = (!$display) ? "{info_cap}" : "";
         }
         $info = str_replace('"', "", $info);
-        $info = $this->replaceLang($info);
-        return $info;
+        return $this->replaceLang($info);
     }
 
     /*
@@ -949,8 +943,7 @@ class FormClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $site_link = $this->getSiteLink();
-        $list = "";
-        $list .= "<a href=\"$site_link\">{site_main}</a>";
+        $list = "<a href=\"$site_link\">{site_main}</a>";
 
         $arr = [];
 

@@ -6,7 +6,6 @@ class CatalogueClass
     use Helper;
     use Variables;
 
-    public $products_link = "products";
     public $catalog_link = "catalog";
     public $search_link = "search";
     public $article_link = "article";

@@ -63,8 +63,7 @@ class ProductsClass extends CatalogueClass
         $form = str_replace("{selected_manuf}", 0, $form);
         $form = str_replace("{selected_model}", 0, $form);
         $form = str_replace("{active_nav}", "", $form);
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     public function getYearsForm($date_start, $date_end, $mfa_id, $model)
@@ -405,8 +404,7 @@ class ProductsClass extends CatalogueClass
         $form = str_replace("{models_img}", $models_img, $form);
         $form = str_replace("{garage_button}", (($auto_typ_id != "") ? (!($automan->checkUserGarage($auto_typ_id)) ? "btn-img-disabled" : "") : ""), $form);
         $form = str_replace("{typ_id}", $auto_typ_id, $form);
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     // Modal Cars Form

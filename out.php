@@ -31,6 +31,7 @@ $content = str_replace("{anchor_contacts_content}", getHtmlForm("main/anchor-con
 $content = str_replace("{site_main_link}", $catalogue->getSiteLink(), $content);
 $content = str_replace("{site_lang_html}", getSiteLang(), $content);
 $content = str_replace("{site_google_conversation}", "", $content);
+$content = str_replace("{meta_social_tag}", "", $content);
 $content = str_replace("{site_title}", getTitle($path), $content);
 $content = str_replace("{site_description}", getDescription($path), $content);
 $content = str_replace("{site_keywords}", getKeywords($path), $content);

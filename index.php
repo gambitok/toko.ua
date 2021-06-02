@@ -20,7 +20,7 @@ require_once (RDD . "/lib/menu_class.php");                   //site`s menu
 require_once (RDD . "/lib/shop_class.php");                   //market operations
 require_once (RDD . "/lib/client_class.php");                 //user configuration
 require_once (RDD . "/lib/profile_class.php");                //user configuration (profile form)
-require_once (RDD . "/lib/lang_class.php");                   //multilanguage
+require_once (RDD . "/lib/lang_class.php");                   //multilingual
 require_once (RDD . "/lib/exrate_class.php");                 //exchange rate
 require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");   //ajax requests
 require_once (RDD . "/lib/class.phpmailer.php");
@@ -50,5 +50,6 @@ setCookies();
 //comment this for access all ips
 //if (in_array($_SERVER['REMOTE_ADDR'], getAccess()))
 require_once (RDD . "/out.php");
+
 
 

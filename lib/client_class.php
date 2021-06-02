@@ -48,7 +48,7 @@ class ClientClass
     }
 
     /*
-     * get default storage from tpoint_id
+     * get default storage from t_point_id
      * */
     public function getDefaultStorageID($tpoint_id)
     {
@@ -106,7 +106,7 @@ class ClientClass
         $r = $db->query("SELECT `price_status` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id AND `client_id` = $client_id AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         $price_status = $db->result($r, 0, "price_status");
-        return ($n == 0 || $price_status == 0) ? false : true;
+        return !(($n == 0 || $price_status == 0));
     }
 
     /*
@@ -118,7 +118,7 @@ class ClientClass
         list($client_id, $user_id) = $this->getClientData();
         $r = $db->query("SELECT * FROM `A_CLIENTS_USERS` WHERE `id` = $user_id AND `client_id` = $client_id AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
-        return ($n == 0) ? false : true;
+        return !(($n == 0));
     }
 
     /*
@@ -176,8 +176,7 @@ class ClientClass
     {
         $phone = str_replace(str_split("()+- "), "", $phone);
         $phone = substr($phone, -10);
-        $phone = $this->getUrlNumber($phone);
-        return $phone;
+        return $this->getUrlNumber($phone);
     }
 
     /*
@@ -186,9 +185,9 @@ class ClientClass
     public function loginOrderClient($user_id)
     {
         $user_id = $this->getUrlNumber($user_id);
-        $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
-        $client_id = $db->result($r, 0, "client_id");
+        $dbm = DbSingleton::getDbm();
+        $r = $dbm->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
+        $client_id = $dbm->result($r, 0, "client_id");
         $cash_id = $this->getClientCurrency($client_id);
         $_SESSION["user_id"] = $user_id;
         $_SESSION["client_id"] = $client_id;
@@ -368,26 +367,26 @@ class ClientClass
     /*
      * save Retail client
      * */
-    public function saveClientRetail($client_id_sel, $pass, $order_id, $name, $phone, $email)
-    {
-        $db = DbSingleton::getDbm();
-        $phone = $this->getUrlString($phone);
-        $phone = $this->formatValidPhone($phone);
-        $client_id_sel = $this->getUrlNumber($client_id_sel);
-        $pass = $this->getUrlString($pass);
-        $order_id = $this->getUrlNumber($order_id);
-        $name = $this->getUrlString($name);
-        $email = $this->getUrlString($email);
-        ($pass != "") ?: $pass = $this->randomPassword();
-        $update_phone = ($phone != "") ? ", `phone` = '$phone'" : "";
-        $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `pass` = '$pass', `name` = '$name' $update_phone, `email` = '$email' WHERE `id` = $client_id_sel;");
-        $r = $db->query("SELECT `phone`, `pass`, `client_id` FROM `A_CLIENTS_USERS_RETAIL` WHERE `id` = $client_id_sel;");
-        $login = $db->result($r, 0, "phone");
-        $password = $db->result($r, 0, "pass");
-        $client_id = $db->result($r, 0, "client_id");
-        $db->query("UPDATE `orders_new` SET `client_id` = $client_id, `client_user_id` = $client_id_sel WHERE `id` = $order_id;");
-        return array($login, $password);
-    }
+//    public function saveClientRetail($client_id_sel, $pass, $order_id, $name, $phone, $email)
+//    {
+//        $db = DbSingleton::getDbm();
+//        $phone = $this->getUrlString($phone);
+//        $phone = $this->formatValidPhone($phone);
+//        $client_id_sel = $this->getUrlNumber($client_id_sel);
+//        $pass = $this->getUrlString($pass);
+//        $order_id = $this->getUrlNumber($order_id);
+//        $name = $this->getUrlString($name);
+//        $email = $this->getUrlString($email);
+//        ($pass != "") ?: $pass = $this->randomPassword();
+//        $update_phone = ($phone != "") ? ", `phone` = '$phone'" : "";
+//        $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `pass` = '$pass', `name` = '$name' $update_phone, `email` = '$email' WHERE `id` = $client_id_sel;");
+//        $r = $db->query("SELECT `phone`, `pass`, `client_id` FROM `A_CLIENTS_USERS_RETAIL` WHERE `id` = $client_id_sel;");
+//        $login = $db->result($r, 0, "phone");
+//        $password = $db->result($r, 0, "pass");
+//        $client_id = $db->result($r, 0, "client_id");
+//        $db->query("UPDATE `orders_new` SET `client_id` = $client_id, `client_user_id` = $client_id_sel WHERE `id` = $order_id;");
+//        return array($login, $password);
+//    }
 
     /*
      * get client from tpoint

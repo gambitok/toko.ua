@@ -10,17 +10,17 @@ function setCookies() {
     return true;
 }
 
-function getAccess() {
-    $db = DbSingleton::getTokoDb();
-    $list_ip = array();
-    $r = $db->query("SELECT `ip` FROM `ip_access`;");
-    $n = $db->num_rows($r);
-    for ($i = 1; $i <= $n; $i++) {
-        $ip = $db->result($r, $i - 1, "ip");
-        array_push($list_ip, $ip);
-    }
-    return $list_ip;
-}
+//function getAccess() {
+//    $db = DbSingleton::getTokoDb();
+//    $list_ip = array();
+//    $r = $db->query("SELECT `ip` FROM `ip_access`;");
+//    $n = $db->num_rows($r);
+//    for ($i = 1; $i <= $n; $i++) {
+//        $ip = $db->result($r, $i - 1, "ip");
+//        array_push($list_ip, $ip);
+//    }
+//    return $list_ip;
+//}
 
 function getContent($content) {
     $menu = new MenuClass();
@@ -60,8 +60,7 @@ function getTitle($path) {
     $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
     $title = ($path != "") ? "$prefix" : "{site_title}";
-    $title = $language->replaceLangData($title);
-    return $title;
+    return $language->replaceLangData($title);
 }
 
 function getMoreTitle($path) {
@@ -396,10 +395,8 @@ function findPath() {
 //            }
             $url = str_replace_first($path, "", $url);
             $pos = strpos($url, "/");
-            $path = substr($url, 0, $pos);
-        } else {
-            $path = substr($url, 0, $pos);
         }
+        $path = substr($url, 0, $pos);
         $res = ($path != null) ? $path : $url;
     } else {
         $res = "";

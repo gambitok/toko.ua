@@ -7,23 +7,23 @@ class AutoClass extends CatalogueClass
     use Variables;
 
     /*
-     * Get selected Car text Translit
+     * get text translate of selected car
      * */
     public function getCarManufTranslit($mfa_id, $model = "")
     {
         $mfa_id = $this->getUrlNumber($mfa_id);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_BRAND_TRANSLIT` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
-        $mfa_translit = $db->result($r, 0, "MFA_BRAND_TRANSLIT");
+        $mfa_translate = $db->result($r, 0, "MFA_BRAND_TRANSLIT");
         $text = "";
-        if ($mfa_translit != "") {
-            $text = "($mfa_translit)";
+        if ($mfa_translate != "") {
+            $text = "($mfa_translate)";
         }
         if ($model != "") {
             $r = $db->query("SELECT `Model_TRANSLIT` FROM `T_models` WHERE `Model` = '$model' AND `Model_TRANSLIT` != '' LIMIT 1;");
-            $model_translit = $db->result($r, 0, "Model_TRANSLIT");
-            if ($model_translit != "") {
-                $text = "($mfa_translit $model_translit)";
+            $model_translate = $db->result($r, 0, "Model_TRANSLIT");
+            if ($model_translate != "") {
+                $text = "($mfa_translate $model_translate)";
             }
         }
         return $text;
@@ -179,28 +179,28 @@ class AutoClass extends CatalogueClass
      * get car model_id name
      * from ID
      * */
-    public function getModIdLink($mod_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = $mod_id LIMIT 1;");
-        return $db->result($r, 0, "TEX_TEXT");
-    }
+//    public function getModIdLink($mod_id)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = $mod_id LIMIT 1;");
+//        return $db->result($r, 0, "TEX_TEXT");
+//    }
 
     /*
      * get car model_id name & id
      * from LINK
      * */
-    public function getAutoModelIdLink($model_id_link)
-    {
-        $db = DbSingleton::getTokoDb();
-        $text = $model_id = "";
-        if ($model_id_link != "") {
-            $r = $db->query("SELECT `MOD_ID`, `TEX_TEXT` FROM `T_models` WHERE `TEX_TEXT_link` = '$model_id_link' LIMIT 1;");
-            $model_id = $db->result($r, 0, "MOD_ID");
-            $text = $db->result($r, 0, "TEX_TEXT");
-        }
-        return array("text" => $text, "model_id" => $model_id);
-    }
+//    public function getAutoModelIdLink($model_id_link)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $text = $model_id = "";
+//        if ($model_id_link != "") {
+//            $r = $db->query("SELECT `MOD_ID`, `TEX_TEXT` FROM `T_models` WHERE `TEX_TEXT_link` = '$model_id_link' LIMIT 1;");
+//            $model_id = $db->result($r, 0, "MOD_ID");
+//            $text = $db->result($r, 0, "TEX_TEXT");
+//        }
+//        return array("text" => $text, "model_id" => $model_id);
+//    }
 
     /*
      * get car mfa, model, model_id images
@@ -228,16 +228,16 @@ class AutoClass extends CatalogueClass
         return array("mfa_image" => $mfa_image, "model_image" => $model_image, "model_id_image" => $model_id_image);
     }
 
-    public function getStrNewDescr($str_id)
-    {
-        $str_id = $this->getUrlNumber($str_id);
-        $db = DbSingleton::getTokoDb();
-        $lang_id = $this->getLanguage();
-        $prefix = $this->getLangPostfix($lang_id);
-        $r = $db->query("SELECT `TEX_$prefix` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID` = $str_id AND `STR_ID` > 0 LIMIT 1;");
-        $n = $db->num_rows($r);
-        return ($n > 0) ? $db->result($r, 0, "TEX_$prefix") : "";
-    }
+//    public function getStrNewDescr($str_id)
+//    {
+//        $str_id = $this->getUrlNumber($str_id);
+//        $db = DbSingleton::getTokoDb();
+//        $lang_id = $this->getLanguage();
+//        $prefix = $this->getLangPostfix($lang_id);
+//        $r = $db->query("SELECT `TEX_$prefix` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID` = $str_id AND `STR_ID` > 0 LIMIT 1;");
+//        $n = $db->num_rows($r);
+//        return ($n > 0) ? $db->result($r, 0, "TEX_$prefix") : "";
+//    }
 
     /*
      * Get GROUP text info
@@ -299,8 +299,7 @@ class AutoClass extends CatalogueClass
         } else {
             $auto_form = "{choose_auto_first}";
         }
-        $auto_form = $this->replaceLang($auto_form);
-        return $auto_form;
+        return $this->replaceLang($auto_form);
     }
 
     /*
@@ -406,8 +405,7 @@ class AutoClass extends CatalogueClass
         if ($n == 0) {
             $form = $this->getHtmlForm("error/404_garage");
         }
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -491,10 +489,11 @@ class AutoClass extends CatalogueClass
         $user_id = $this->getUser();
         $client_id = $this->getClient();
         $where = ($user_id == 0) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
-        $r = $db->query("SELECT `id`, `typ_id` FROM `AUTO_HISTORY`
+        $r = $db->query("SELECT `id`, `typ_id`, `timestamp` FROM `AUTO_HISTORY`
         WHERE $where 
         GROUP BY `typ_id` 
-        ORDER BY `timestamp` DESC LIMIT 10;");
+        ORDER BY `timestamp` DESC 
+        LIMIT 10;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $list = "";
@@ -519,8 +518,7 @@ class AutoClass extends CatalogueClass
         }
         $form = $this->getHtmlForm("garage/garage_history");
         $form = str_replace("{garage_history_list}", $list, $form);
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -608,8 +606,7 @@ class AutoClass extends CatalogueClass
             if ($mfa_id_sel == "") {
                 $list .= "<li class=\"title\"><span class=\"bold\"><a href=\"" . $this->getSiteLink() . "cars/$mfa_link/\">{details_on_cap} $mfa_brand</a></span>";
             } else {
-                $list = "";
-                $list .= "<span class=\"title-b\">{details_on_cap} $mfa_brand</span>";
+                $list = "<span class=\"title-b\">{details_on_cap} $mfa_brand</span>";
             }
             $list .= "<div class=\"seo_details\"><div class=\"seo-ul\">";
 

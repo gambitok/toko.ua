@@ -79,14 +79,14 @@ trait Helper
 
     public function getCurrentExrate()
     {
-        $kours = new ExRateClass();
-        return $kours->getCurrentKours();
+        $exchange_rate = new ExRateClass();
+        return $exchange_rate->getCurrentKours();
     }
 
     public function getSymbolExrate($cur)
     {
-        $kours = new ExRateClass();
-        return $kours->getKoursSymbol($cur);
+        $exchange_rate = new ExRateClass();
+        return $exchange_rate->getKoursSymbol($cur);
     }
 
     public function getClient()
@@ -112,8 +112,7 @@ trait Helper
     public function replaceLang($cont)
     {
         $language = new LangClass();
-        $cont = $language->replaceLangData($cont);
-        return $cont;
+        return $language->replaceLangData($cont);
     }
 
     public function getSiteLink()
@@ -245,52 +244,52 @@ trait Helper
      * */
     public function getOfferCap($i)
     {
-        $cap1 = "{offer_cap}";
-        $cap2 = "{offer_pair_cap}";
-        $cap3 = "{offer_tenths_cap}";
-        $cap = "";
+        $caption_1 = "{offer_cap}";
+        $caption_2 = "{offer_pair_cap}";
+        $caption_3 = "{offer_tenths_cap}";
+        $caption = "";
         $mas1 = [1];
         $mas2 = [2, 3, 4];
         $mas3 = [0, 5, 6, 7, 8, 9];
         $mas4 = [11, 12, 13, 14, 15, 16, 17, 18, 19];
         $mod = $i % 10;
         if (in_array($mod, $mas1)) {
-            $cap = $cap1;
+            $caption = $caption_1;
         }
         if (in_array($mod, $mas2)) {
-            $cap = $cap2;
+            $caption = $caption_2;
         }
         if (in_array($mod, $mas3) || in_array($i, $mas4)) {
-            $cap = $cap3;
+            $caption = $caption_3;
         }
-        $cap = $this->replaceLang($cap);
-        return $cap;
+        $caption = $this->replaceLang($caption);
+        return $caption;
     }
     /*
      * get text offer variables
      * */
     public function getGoodsCap($i)
     {
-        $cap1 = "{goods_cap}";
-        $cap2 = "{goods_pair_cap}";
-        $cap3 = "{goods_tenths_cap}";
-        $cap = "";
+        $caption_1 = "{goods_cap}";
+        $caption_2 = "{goods_pair_cap}";
+        $caption_3 = "{goods_tenths_cap}";
+        $caption = "";
         $mas1 = [1];
         $mas2 = [2, 3, 4];
         $mas3 = [0, 5, 6, 7, 8, 9];
         $mas4 = [11, 12, 13, 14, 15, 16, 17, 18, 19];
         $mod = $i % 10;
         if (in_array($mod, $mas1)) {
-            $cap = $cap1;
+            $caption = $caption_1;
         }
         if (in_array($mod, $mas2)) {
-            $cap = $cap2;
+            $caption = $caption_2;
         }
         if (in_array($mod, $mas3) || in_array($i, $mas4)) {
-            $cap = $cap3;
+            $caption = $caption_3;
         }
-        $cap = $this->replaceLang($cap);
-        return $cap;
+        $caption = $this->replaceLang($caption);
+        return $caption;
     }
 
     /*
@@ -322,23 +321,23 @@ trait Helper
      * Associate arrays
      * array_1 + array2
      * */
-    public function mergeArray($arr1, $arr2)
-    {
-        $data = [];
-        foreach ($arr1 as $key => $value) {
-            if (empty($data[$key])) {
-                $data[$key] = [];
-            }
-            $data[$key] = $value;
-        }
-        foreach ($arr2 as $key => $value) {
-            if (empty($data[$key])) {
-                $data[$key] = [];
-            }
-            $data[$key] = array_unique(array_merge($data[$key], $value));
-        }
-        return $data;
-    }
+//    public function mergeArray($arr1, $arr2)
+//    {
+//        $data = [];
+//        foreach ($arr1 as $key => $value) {
+//            if (empty($data[$key])) {
+//                $data[$key] = [];
+//            }
+//            $data[$key] = $value;
+//        }
+//        foreach ($arr2 as $key => $value) {
+//            if (empty($data[$key])) {
+//                $data[$key] = [];
+//            }
+//            $data[$key] = array_unique(array_merge($data[$key], $value));
+//        }
+//        return $data;
+//    }
 
     /*
      * check art_id in typ_id

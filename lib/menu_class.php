@@ -314,7 +314,7 @@ class MenuClass extends CatalogueClass
     }
 
     /*
-     * GET Tpoint Modal Form
+     * GET T point Modal Form
      * */
     public function getRegionList()
     {
@@ -377,7 +377,7 @@ class MenuClass extends CatalogueClass
     }
 
     /*
-     * GET Tpoint Form
+     * GET T point Form
      * (choose office)
      * */
     public function getRegionSelect()
@@ -583,8 +583,7 @@ class MenuClass extends CatalogueClass
         $form = str_replace("{list_phone}", $list_phone, $form);
         $form = str_replace("{list_email}", $list_email, $form);
         $form = str_replace("{list_address}", $list_address, $form);
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -762,8 +761,7 @@ class MenuClass extends CatalogueClass
                 </div>";
             }
         }
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -833,8 +831,7 @@ class MenuClass extends CatalogueClass
 
         $form = $this->getHtmlForm("bar/form");
         $form = str_replace("{bar_list}", $list, $form);
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*

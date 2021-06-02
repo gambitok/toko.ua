@@ -50,7 +50,7 @@ class ExRateClass
     }
 
     /*
-     * get exrate price
+     * get exchange rate price
      * from price & currency_id
      * */
     public function getKoursPrice($price, $cur)
@@ -68,7 +68,7 @@ class ExRateClass
     }
 
     /*
-     * get exrate price from usa
+     * get exchange rate price from usa
      * from price & currency_id
      * */
     public function getKoursFromUSA($price, $cur)
@@ -86,7 +86,7 @@ class ExRateClass
     }
 
     /*
-     * get exrate price from usd
+     * get exchange rate price from usd
      * from price & currency_id
      * */
     public function getKoursFromUAH($price, $cur)
@@ -104,7 +104,7 @@ class ExRateClass
     }
 
     /*
-     * get exrate caption
+     * get exchange rate caption
      * from currency_id
      * */
     public function getKoursCaption($cur)
@@ -116,7 +116,7 @@ class ExRateClass
     }
 
     /*
-     * get exrate caption lang
+     * get exchange rate caption lang
      * from currency_id
      * */
     public function getKoursCaptionLang($cur)
@@ -128,7 +128,7 @@ class ExRateClass
     }
 
     /*
-     * get exrate symbol
+     * get exchange rate symbol
      * from currency_id
      * */
     public function getKoursSymbol($cur)
