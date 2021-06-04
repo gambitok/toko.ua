@@ -11,7 +11,3 @@ if ($catalogue->checkArticleExist($art_id)) {
     header("HTTP/1.0 404 Not Found");
     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404"), $content);
 }
-
-
-
-

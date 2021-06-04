@@ -1014,7 +1014,7 @@ class CatalogExistClass extends CatalogueClass
 
         $max_pages_count = ceil($count / $this->products_on_page);
 
-        return array("form" => $form, "title" => $filters_title, "pages_count" => $max_pages_count);
+        return array("form" => $form, "title" => $filters_title, "h1" => $filters_h1, "pages_count" => $max_pages_count);
     }
 
     public function drawLoader()
@@ -2074,6 +2074,18 @@ class CatalogExistClass extends CatalogueClass
             }
         }
         return array($count_brands, $count_params);
+    }
+
+    public function getCatalogMetaTags($group_id, $h1_text)
+    {
+        $group_link = $this->getGroupRowLink($group_id);
+        $url_text = $this->getSiteLink() . $this->catalog_link . "/" . $group_link . "/";
+        $img_text = "https://toko.ua/images/tree-group/" . $this->getGroupRowImage($group_id);
+        $form = $this->getHtmlForm("article/social");
+        $form = str_replace("{h1_meta_tag}", $h1_text, $form);
+        $form = str_replace("{url_meta_tag}", $url_text, $form);
+        $form = str_replace("{main_image_cap}", $img_text, $form);
+        return $form;
     }
 
 }

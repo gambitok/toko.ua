@@ -963,16 +963,16 @@ class ClientClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "id");
-            $art_name = $db->result($r, $i - 1, "article_nr_displ");
+            $article_nr_displ = $db->result($r, $i - 1, "article_nr_displ");
             $brand_id = $db->result($r, $i - 1, "brand_id");
             $brand_link = $this->getBrandLink($brand_id);
-            $art_name = strtoupper($art_name);
+            $article_nr_displ = strtoupper($article_nr_displ);
             $brand_name = $this->getBrandName($brand_id);
             if ($brand_name != "") {
                 $history[$col] =
                     [
                         "id" => $id,
-                        "article_nr_displ" => $art_name,
+                        "article_nr_displ" => $article_nr_displ,
                         "brand_id" => $brand_id,
                         "brand" => $brand_name,
                         "brand_link" => $brand_link
@@ -1060,13 +1060,9 @@ class ClientClass
     public function checkClientBonus($client_id, $bonus = 1)
     {
         $db = DbSingleton::getDbm();
-        $status = false;
         $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID` = $client_id AND `BONUS_ID` = $bonus LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n > 0) {
-            $status = true;
-        }
-        return $status;
+        return ($n > 0);
     }
 
     /*

@@ -25,7 +25,6 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $mfa_link = $router_2;
     $model_link = $router_3;
     $path_to = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
-    // header("Location: $path_to", TRUE, 301);
     $redirect_status = 1;
     $redirect_type = 301;
     $redirect_link = "$path_to";
@@ -45,6 +44,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
         $group_id = $catalog_exist->getGroupExistId($router);
         if (!empty($group_id)) {
             $group_id = $catalog_exist->getUrlNumber($group_id);
+
             $filters = $linka[2];
             if ($filters == "auto") {
                 $filters = [];
@@ -56,7 +56,6 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             if ($mfa_link != "") {
                 $mfa_id = $automan->getMfaLink($mfa_link);
                 if ($mfa_id == 0) {
-                    //header("HTTP/1.0 404 Not Found");
                     $redirect_status = 1;
                     $redirect_type = 404;
                     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
@@ -64,7 +63,6 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                 if ($model_link != "") {
                     $model = $automan->getModLink($model_link);
                     if ($model == "") {
-                        //header("HTTP/1.0 404 Not Found");
                         $redirect_status = 1;
                         $redirect_type = 404;
                         $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
@@ -102,6 +100,8 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
 
             $content = str_replace("{main_window}", $catalog_form["form"], $content);
             $content = str_replace("{site_title}", $catalog_form["title"], $content);
+
+            $content = str_replace("{meta_social_tag}", $catalog_exist->getCatalogMetaTags($group_id, $catalog_form["h1"]), $content);
         }
 
         /*
@@ -118,6 +118,9 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             $content = str_replace("{main_window}", $catalog_form, $content);
         }
 
+        /*
+         * No Head and No Group
+         * */
         if (empty($head_id) && empty($group_id)) {
             $redirect_status = 1;
             $redirect_type = 404;

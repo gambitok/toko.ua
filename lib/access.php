@@ -55,6 +55,19 @@ function checkLangVariable($variable) { $db = DbSingleton::getTokoDb();
     return ($n > 0);
 }
 
+function getMetaTag()
+{
+    $form = '
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="{site_title}" />
+	<meta property="og:url" content="{canonical_link}" />
+	<meta property="og:description" content="{site_description}" />
+	<meta property="og:image" content="/favicon.png" />
+	<meta property="og:site_name" content="{internet_shop} toko.ua" />
+	';
+    return $form;
+}
+
 function getTitle($path) {
     $language = new LangClass();
     $path = str_replace("/", "", $path);

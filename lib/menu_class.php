@@ -695,18 +695,47 @@ class MenuClass extends CatalogueClass
         $title = $db->result($r, 0, "TITLE_$postfix");
         $text = $db->result($r, 0, "TEXT_$postfix");
         $list = str_replace("{review_date}", $date, $list);
-        $list = str_replace("{review_title}", $this->replaceTextTags($title), $list);
-        $list = str_replace("{review_text}", $this->replaceTextTags($text), $list);
+        $list = str_replace("{review_title}", $this->replaceTextTags($title, ""), $list);
+        $list = str_replace("{review_text}", $this->replaceTextTags($text, $title), $list);
         $form = $this->getHtmlForm("reviews/card");
         $form = str_replace("{state_id}", $state_id, $form);
         $form = str_replace("{state_info}", ($state_id > 0) ? $list : "<h1>$this->err1</h1>", $form);
         return $form;
     }
     
-    public function replaceTextTags($text)
+    public function replaceTextTags($text, $h1_text = "")
     {
         $text = str_replace("<h1>", "", $text);
         $text = str_replace("</h1>", "", $text);
+
+        if ($h1_text != "") {
+            $imgs = [];
+
+            $text_end = $text;
+            for ($i = 0; $i <= strlen($text); $i++) {
+                $pos_start = strpos($text_end, "<img", $i);
+                if ($text_end == substr($text_end, $pos_start)) {
+                    break;
+                }
+                $text_end = substr($text_end, $pos_start);
+                $pos_end = (strpos($text_end, ">", 0)) + 1;
+                $text_img = substr($text_end, 0, $pos_end);
+                $imgs[] = $text_img;
+            }
+
+            $count = 0;
+            foreach ($imgs as $img) {
+                if (strpos($img, "alt") === false) {
+                    $count++;
+                    $formate_img = str_replace("<img ", "<img alt='$h1_text - {photo_cap} $count' title='$h1_text - {photo_cap} $count'", $img);
+                    $formate_img = $this->replaceLang($formate_img);
+                } else {
+                    $formate_img = $img;
+                }
+                $text = str_replace("$img", "$formate_img", $text);
+            }
+        }
+
         return $text;
     }
 
