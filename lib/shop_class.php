@@ -658,15 +658,15 @@ class ShopClass extends CatalogueClass
             for ($i = 1; $i <= $n; $i++) {
                 $id = $db->result($r, $i - 1, "ID");
                 $delivery_id = $db->result($r, $i - 1, "DELIVERY_ID");
-                $delivery_text = $this->getDeliveryCaption($delivery_id);
                 $payment_id = $db->result($r, $i - 1, "PAYMENT_ID");
-                $payment_text = $this->getPaymentCaption($payment_id);
                 $street = $db->result($r, $i - 1, "DEL_STREET");
                 $house = $db->result($r, $i - 1, "DEL_HOUSE");
                 $porch = $db->result($r, $i - 1, "DEL_PORCH");
                 $department_text = $db->result($r, $i - 1, "DEL_DEPARTMENT_TEXT");
                 $express = $db->result($r, $i - 1, "DEL_EXPRESS");
                 $express_info = $db->result($r, $i - 1, "DEL_EXPRESS_INFO");
+                $delivery_text = $this->getDeliveryCaption($delivery_id);
+                $payment_text = $this->getPaymentCaption($payment_id);
                 $delivery_info = $this->getDeliveryInfoCaption($delivery_id, $street, $house, $porch, $department_text, $express, $express_info);
                 if ($delivery_info != "") {
                     $delivery_info = "($delivery_info)";
@@ -1624,10 +1624,10 @@ class ShopClass extends CatalogueClass
     /*
      * get NP city department
      * */
-    public function setCityDepartments($city_ref)
+    public function setCityDepartments($city_ref, $department_ref)
     {
         $city_ref = $this->getNameString($city_ref);
-        $list_np = $this->getNovaPoshtaWarehousesSelect($city_ref);
+        $list_np = $this->getNovaPoshtaWarehousesSelect($city_ref, $department_ref);
         $list_up = "<option value=\"0\">{not_chosen}</option>";
         return array($list_np, $list_up);
     }
@@ -1635,7 +1635,7 @@ class ShopClass extends CatalogueClass
     /*
      * get NP departments
      * */
-    public function getNovaPoshtaWarehousesSelect($ref)
+    public function getNovaPoshtaWarehousesSelect($ref, $department_ref)
     {
         $list = "<option value=\"0\">{not_chosen}</option>";
         $list = $this->replaceLang($list);
@@ -1644,7 +1644,12 @@ class ShopClass extends CatalogueClass
         foreach ($arr as $val) {
             $name = iconv("UTF-8", "windows-1251", $val["Description"]);
             $war_ref = $val["Ref"];
-            $list .= "<option value=\"$war_ref\">$name</option>";
+            if ($war_ref == $department_ref) {
+                $sel = "selected";
+            } else {
+                $sel = "";
+            }
+            $list .= "<option value=\"$war_ref\" $sel>$name</option>";
         }
         return $list;
     }

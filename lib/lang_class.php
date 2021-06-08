@@ -63,7 +63,7 @@ class LangClass
     public function getLangCap($lang_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `new_lang` WHERE `id` = $lang_id LIMIT 1;");
+        $r = $db->query("SELECT `abr` FROM `new_lang` WHERE `id` = $lang_id LIMIT 1;");
         return $db->result($r, 0, "abr");
     }
 
@@ -129,7 +129,7 @@ class LangClass
         if (self::$langNames === null) {
             $r = $db->query("SELECT l.caption, lw.variable 
             FROM `new_lang_wdv` l
-                LEFT OUTER JOIN `new_lang_wd` lw ON lw.id=l.wd
+                LEFT OUTER JOIN `new_lang_wd` lw ON (lw.id = l.wd)
             WHERE l.lang_id = $lang;");
             $result = mysqli_fetch_all($r, MYSQLI_ASSOC);
             self::$langNames = array_column($result, 'caption', 'variable');

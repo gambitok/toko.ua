@@ -61,11 +61,17 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
                 }
                 if ($model_link != "") {
-                    $model = $automan->getModLink($model_link);
-                    if ($model == "") {
+                    if ($model_link == "rav4") {
                         $redirect_status = 1;
-                        $redirect_type = 404;
-                        $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                        $redirect_type = 301;
+                        $redirect_link = $catalog_exist->getSiteLink() . $catalog_exist->catalog_link . "/$router/" . $linka[2] . "/$router_3/rav-4/";
+                    } else {
+                        $model = $automan->getModLink($model_link);
+                        if ($model == "") {
+                            $redirect_status = 1;
+                            $redirect_type = 404;
+                            $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                        }
                     }
                 }
             }
