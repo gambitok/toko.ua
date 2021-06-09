@@ -87,6 +87,14 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                 }
             }
 
+            if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
+                $max_page = $catalog_form["pages_count"];
+                $path_to = $catalog_exist->getSiteLink() . ltrim(findUrl(), "/") . "?page=$max_page";
+                $redirect_status = 1;
+                $redirect_type = 301;
+                $redirect_link = "$path_to";
+            }
+
             ($page != NULL) ?: $page = 1;
 
             $status_auto = $catalog_exist->getGroupExistStatusAuto($group_id);
@@ -95,14 +103,6 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             ($status_auto_type != NULL) ?: $status_auto_type = 0;
 
             $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $mfa_id, $model, $status_auto, $status_auto_type, $str_linka);
-
-            if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
-                $max_page = $catalog_form["pages_count"];
-                $path_to = $catalog_exist->getSiteLink() . ltrim(findUrl(), "/") . "?page=$max_page";
-                $redirect_status = 1;
-                $redirect_type = 301;
-                $redirect_link = "$path_to";
-            }
 
             $content = str_replace("{main_window}", $catalog_form["form"], $content);
             $content = str_replace("{site_title}", $catalog_form["title"], $content);

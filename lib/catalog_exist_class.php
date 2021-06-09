@@ -617,46 +617,56 @@ class CatalogExistClass extends CatalogueClass
             if ($page < $min_count) {
                 for ($i = 1; $i <= $min_count; $i++) {
                     $active = ($i == $page) ? "active" : "";
-                    $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$i\">$i</a></li>";
+                    $link = ($i > 1) ? "?page=$i" : ".";
+                    $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$i</a></li>";
                 }
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"#\">...</a></li>";
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$pages_count\">$pages_count</a></li>";
+                $link = ($pages_count > 1) ? "?page=$pages_count" : ".";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$pages_count</a></li>";
             }
 
             elseif ($page > $max_count) {
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=1\">1</a></li>";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"\">1</a></li>";
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"#\">...</a></li>";
                 for ($i = $max_count; $i <= $pages_count; $i++) {
                     $active = ($i == $page) ? "active" : "";
-                    $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$i\">$i</a></li>";
+                    $link = ($i > 1) ? "?page=$i" : ".";
+                    $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$i</a></li>";
                 }
             }
 
             elseif ($page >= $min_count && $page <= $max_count) {
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=1\">1</a></li>";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"\">1</a></li>";
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"#\">...</a></li>";
 
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$pred_page\">$pred_page</a></li>";
-                $pagination .= "<li class=\"page-item active\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$page\">$page</a></li>";
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$next_page\">$next_page</a></li>";
+                $link = ($pred_page > 1) ? "?page=$pred_page" : ".";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$pred_page</a></li>";
+                $link = ($page > 1) ? "?page=$page" : ".";
+                $pagination .= "<li class=\"page-item active\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$page</a></li>";
+                $link = ($next_page > 1) ? "?page=$next_page" : ".";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$next_page</a></li>";
 
                 $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"#\">...</a></li>";
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$pages_count\">$pages_count</a></li>";
+                $link = ($pages_count > 1) ? "?page=$pages_count" : ".";
+                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$pages_count</a></li>";
             }
 
         } else {
             for ($i = 1; $i <= $pages_count; $i++) {
                 $active = ($i == $page) ? "active" : "";
-                $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$i\">$i</a></li>";
+                $link = ($i > 1) ? "?page=$i" : ".";
+                $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$i</a></li>";
             }
         }
 
+        $link_pred = ($pred_page > 1) ? "?page=$pred_page" : ".";
+        $link_next = ($next_page > 1) ? "?page=$next_page" : ".";
         $list = "<div class=\"row\">
             <nav aria-label=\"Page navigation\">
                 <ul class=\"pagination\">
-                    <li class=\"page-item $disabled_pred\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$pred_page\"><i class=\"fa fa-chevron-left\"></i> <span class=\"span-media\">{previous_cap}</span></a></li>
+                    <li class=\"page-item $disabled_pred\"><a class=\"page-link\" rel=\"noopener\" href=\"$link_pred\"><i class=\"fa fa-chevron-left\"></i> <span class=\"span-media\">{previous_cap}</span></a></li>
                     $pagination
-                    <li class=\"page-item $disabled_next\"><a class=\"page-link\" rel=\"noopener\" href=\"?page=$next_page\"><span class=\"span-media\">{next_cap}</span> <i class=\"fa fa-chevron-right\"></i></a></li>
+                    <li class=\"page-item $disabled_next\"><a class=\"page-link\" rel=\"noopener\" href=\"$link_next\"><span class=\"span-media\">{next_cap}</span> <i class=\"fa fa-chevron-right\"></i></a></li>
                 </ul>
             </nav>
         </div>";
