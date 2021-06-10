@@ -785,6 +785,7 @@ class ClientClass
     public function checkRetailClientCategory($client_id)
     {
         $db = DbSingleton::getDbm();
+        $client_id = $this->getUrlNumber($client_id);
         $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id LIMIT 1;");
         $client_category = $db->result($r, 0, "client_category");
         return ($client_category == $this->default_client_category);
