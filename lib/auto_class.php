@@ -489,7 +489,8 @@ class AutoClass extends CatalogueClass
         $user_id = $this->getUser();
         $client_id = $this->getClient();
         $where = ($user_id == 0) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
-        $r = $db->query("SELECT `id`, `typ_id`, `timestamp` FROM `AUTO_HISTORY`
+        $r = $db->query("SELECT `id`, `typ_id`, `timestamp` 
+        FROM `AUTO_HISTORY`
         WHERE $where 
         GROUP BY `typ_id` 
         ORDER BY `timestamp` DESC 

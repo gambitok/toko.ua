@@ -1,6 +1,7 @@
 <?php
 
-function setCookies() {
+function setCookies()
+{
     session_start();
     $catalogue = new CatalogueClass();
     $ses = session_id();
@@ -10,19 +11,8 @@ function setCookies() {
     return true;
 }
 
-//function getAccess() {
-//    $db = DbSingleton::getTokoDb();
-//    $list_ip = array();
-//    $r = $db->query("SELECT `ip` FROM `ip_access`;");
-//    $n = $db->num_rows($r);
-//    for ($i = 1; $i <= $n; $i++) {
-//        $ip = $db->result($r, $i - 1, "ip");
-//        array_push($list_ip, $ip);
-//    }
-//    return $list_ip;
-//}
-
-function getContent($content) {
+function getContent($content)
+{
     $menu = new MenuClass();
     $shop = new ShopClass();
     $profile = new ProfileClass();
@@ -30,7 +20,6 @@ function getContent($content) {
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $actual_full_link = "<link rel=\"canonical\" href=\"$actual_link\"/>";
     if (strpos($actual_link,"?") !== false) {
-        // $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
         $actual_full_link = "";
     }
     $content = str_replace("{canonical_link}", $actual_link, $content);
@@ -49,7 +38,9 @@ function getContent($content) {
     return $content;
 }
 
-function checkLangVariable($variable) { $db = DbSingleton::getTokoDb();
+function checkLangVariable($variable)
+{
+    $db = DbSingleton::getTokoDb();
     $r = $db->query("SELECT * FROM `new_lang_wd` WHERE `variable` = '$variable' LIMIT 1;");
     $n = $db->num_rows($r);
     return ($n > 0);
@@ -68,7 +59,8 @@ function getMetaTag()
     return $form;
 }
 
-function getTitle($path) {
+function getTitle($path)
+{
     $language = new LangClass();
     $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
@@ -76,7 +68,8 @@ function getTitle($path) {
     return $language->replaceLangData($title);
 }
 
-function getMoreTitle($path) {
+function getMoreTitle($path)
+{
     $automan = new AutoClass();
     $cat = new CatalogueClass();
     $menu = new MenuClass();
@@ -168,7 +161,8 @@ function getMoreTitle($path) {
     return $pretitle;
 }
 
-function printBreadcrumbs($path) {
+function printBreadcrumbs($path)
+{
     $cat = new CatalogueClass();
     $menu = new MenuClass();
     $bread = findLinks();
@@ -283,7 +277,8 @@ function printBreadcrumbs($path) {
     return array($form, $script);
 }
 
-function getHtmlForm($name) {
+function getHtmlForm($name)
+{
     $form = "";
     $form_htm = RDD . "/tpl/$name.htm";
     if (file_exists("$form_htm")) {
@@ -293,7 +288,8 @@ function getHtmlForm($name) {
     return $form;
 }
 
-function getDescription($path) {
+function getDescription($path)
+{
     $language = new LangClass();
     $cat = new CatalogueClass();
     $linka = findLinks();
@@ -319,7 +315,8 @@ function getDescription($path) {
     return $description;
 }
 
-function getKeywords($path) {
+function getKeywords($path)
+{
     $language = new LangClass();
     $cat = new CatalogueClass();
     $path = str_replace("/", "", $path);
@@ -330,9 +327,9 @@ function getKeywords($path) {
     return $keywords;
 }
 
-function getSiteLang($lang_id_sel = 0) {
+function getSiteLang($lang_id_sel = 0)
+{
     $language = new LangClass();
-    //$lang_id = $language->getLanguageData();
     if ($lang_id_sel == 0) {
         $lang_id = $language->getLanguage();
     } else {
@@ -351,7 +348,8 @@ function getSiteLang($lang_id_sel = 0) {
     return $lang_html;
 }
 
-function getPhpContent($file) {
+function getPhpContent($file)
+{
     ob_start();
     $file = RDD . $file;
     if (file_exists($file)) {
@@ -364,7 +362,9 @@ function getPhpContent($file) {
     return $contents;
 }
 
-function translateContent($content) { $db = DbSingleton::getTokoDb();
+function translateContent($content)
+{
+    $db = DbSingleton::getTokoDb();
     $language = new LangClass();
     $r = $db->query("SELECT `variable` FROM `new_lang_wd`;");
     $n = $db->num_rows($r);
@@ -377,7 +377,8 @@ function translateContent($content) { $db = DbSingleton::getTokoDb();
     return $content;
 }
 
-function getPath() {
+function getPath()
+{
     $url = findUrl();
     $path = findPath();
     if ($path == "") {
@@ -386,9 +387,8 @@ function getPath() {
     return $path;
 }
 
-function findPath() {
-//    $language = new LangClass();
-//    $language->setLangID(1);
+function findPath()
+{
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
     if (substr($link, -1) != "/") {
         $link .= "/";
@@ -400,12 +400,6 @@ function findPath() {
         $path = substr($url, 0, $pos + 1);
         $cur_path = substr($path, 0, -1);
         if ($cur_path == "uk" || $cur_path == "en") {
-//            if ($cur_path == "uk") {
-//                $language->setLangID(2);
-//            }
-//            if ($cur_path == "en") {
-//                $language->setLangID(3);
-//            }
             $url = str_replace_first($path, "", $url);
             $pos = strpos($url, "/");
         }
@@ -452,7 +446,8 @@ function findLanguage()
     return $postfix;
 }
 
-function findLanguageID($postfix) {
+function findLanguageID($postfix)
+{
     $language_id = 1;
     if ($postfix == "uk") {
         $language_id = 2;
@@ -465,8 +460,6 @@ function findLanguageID($postfix) {
 
 function findLinks()
 {
-//    $language = new LangClass();
-//    $language->setLangID(1);
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 	if (substr($link, -1) != "/") {
 	    $link .= "/";
@@ -482,12 +475,6 @@ function findLinks()
             $durl = str_replace_first($path, "", $durl);
             $cur_path = substr($path, 0, -1);
             if ($cur_path == "uk" || $cur_path == "en") {
-//                if ($cur_path == "uk") {
-//                    $language->setLangID(2);
-//                }
-//                if ($cur_path == "en") {
-//                    $language->setLangID(3);
-//                }
                 $i = 0;
             } else {
                 $linka[$i] = $cur_path;
@@ -498,12 +485,14 @@ function findLinks()
 	return $linka;
 }
 
-function str_replace_first($from, $to, $content) {
+function str_replace_first($from, $to, $content)
+{
     $from = "/" . preg_quote($from, "/") . "/";
     return preg_replace($from, $to, $content, 1);
 }
 
-function getSeoText($seo_text) {
+function getSeoText($seo_text)
+{
     $form = getHtmlForm("menu/seo_text");
     $form = str_replace("{seo_text}", $seo_text, $form);
     return $form;

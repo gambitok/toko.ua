@@ -13,7 +13,8 @@ trait Helper
     /*
      * get cookie `session_id`
      * */
-    public function getSessionID() {
+    public function getSessionID()
+    {
         return $this->getUrlString($_COOKIE["session_id"]);
     }
 
@@ -130,7 +131,8 @@ trait Helper
         return $language->getLanguageData();
     }
 
-    public function getLangPostfix($lang_id) {
+    public function getLangPostfix($lang_id)
+    {
         $postfix = "RU";
         if ($lang_id == 2) {
             $postfix = "UA";
