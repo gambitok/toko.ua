@@ -188,16 +188,7 @@ class ClientClass
         $dbm = DbSingleton::getDbm();
         $r = $dbm->query("SELECT `client_id` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
         $client_id = $dbm->result($r, 0, "client_id");
-        $cash_id = $this->getClientCurrency($client_id);
-        $_SESSION["user_id"] = $user_id;
-        $_SESSION["client_id"] = $client_id;
-        $_SESSION["currency"] = $cash_id;
-        $_SESSION["tpoint_id"] = $this->getTpoint($client_id);
-        setcookie("client_id", $client_id, time() + (86400 * 30), "/");
-        setcookie("user_id", $user_id, time() + (86400 * 30), "/");
-        setcookie("currency", $cash_id, time() + (86400 * 30), "/");
-        setcookie("tpoint_id", $this->getTpoint($client_id), time() + (86400 * 30), "/");
-        setcookie("auto_typ_id", $this->getClientAutoGarage($client_id, $user_id), time() + (86400 * 30), "/");
+        $this->setSessionUserData($client_id, $user_id);
         return $this->getSiteLink() . "profile/orders/";
     }
 
@@ -219,9 +210,18 @@ class ClientClass
         }
 
         $user_id = ($n == 0 && $n2 == 0) ? false : $db->result($r, 0, "id");
-        $client_id = $db->result($r, 0, "client_id");
-        $cash_id = $this->getClientCurrency($client_id);
 
+        $client_id = $db->result($r, 0, "client_id");
+        $this->setSessionUserData($client_id, $user_id);
+
+        $this->moveFromBasketToClient();
+
+        return $user_id;
+    }
+
+    public function setSessionUserData($client_id, $user_id)
+    {
+        $cash_id = $this->getClientCurrency($client_id);
         $_SESSION["user_id"] = $user_id;
         $_SESSION["client_id"] = $client_id;
         $_SESSION["currency"] = $cash_id;
@@ -231,9 +231,7 @@ class ClientClass
         setcookie("currency", $cash_id, time() + (86400 * 30), "/");
         setcookie("tpoint_id", $this->getTpoint($client_id), time() + (86400 * 30), "/");
         setcookie("auto_typ_id", $this->getClientAutoGarage($client_id, $user_id), time() + (86400 * 30), "/");
-        $this->moveFromBasketToClient();
-
-        return $user_id;
+        return true;
     }
 
     /*

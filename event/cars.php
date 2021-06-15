@@ -17,5 +17,7 @@ $form = str_replace("{seo_content}", $automan->getSeoContent($title, $mfa_link, 
 
 $content = str_replace("{main_window}", $form, $content);
 
+$content = str_replace("{meta_social_tag}", $automan->getCarsMetaTags($mfa_link, $mod_link, $title), $content);
+
 //??
 //$content = str_replace("{main_seo_text_cars}", $automan->getSeoCarsLinking($mfa_link, $mod_link), $content);

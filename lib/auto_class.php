@@ -176,37 +176,10 @@ class AutoClass extends CatalogueClass
     }
 
     /*
-     * get car model_id name
-     * from ID
-     * */
-//    public function getModIdLink($mod_id)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = $mod_id LIMIT 1;");
-//        return $db->result($r, 0, "TEX_TEXT");
-//    }
-
-    /*
-     * get car model_id name & id
-     * from LINK
-     * */
-//    public function getAutoModelIdLink($model_id_link)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $text = $model_id = "";
-//        if ($model_id_link != "") {
-//            $r = $db->query("SELECT `MOD_ID`, `TEX_TEXT` FROM `T_models` WHERE `TEX_TEXT_link` = '$model_id_link' LIMIT 1;");
-//            $model_id = $db->result($r, 0, "MOD_ID");
-//            $text = $db->result($r, 0, "TEX_TEXT");
-//        }
-//        return array("text" => $text, "model_id" => $model_id);
-//    }
-
-    /*
      * get car mfa, model, model_id images
      * from ID
      * */
-    public function getAutoIMG($mfa_id, $model, $model_id)
+    public function getAutoIMG($mfa_id, $model, $model_id = 0)
     {
         $mfa_id = $this->getUrlNumber($mfa_id);
         $model = $this->getUrlString($model);
@@ -218,7 +191,7 @@ class AutoClass extends CatalogueClass
             $mfa_image = $db->result($r, 0, "LOGO");
         }
         if ($model != "") {
-            $r = $db->query("SELECT `Car_pict` FROM `T_models` WHERE `Model` = '$model' LIMIT 1;");
+            $r = $db->query("SELECT `Car_pict` FROM `T_models` WHERE `Model` = '$model' ORDER BY `Active_pict` DESC LIMIT 1;");
             $model_image = $db->result($r, 0, "Car_pict");
         }
         if ($model_id > 0) {
@@ -227,17 +200,6 @@ class AutoClass extends CatalogueClass
         }
         return array("mfa_image" => $mfa_image, "model_image" => $model_image, "model_id_image" => $model_id_image);
     }
-
-//    public function getStrNewDescr($str_id)
-//    {
-//        $str_id = $this->getUrlNumber($str_id);
-//        $db = DbSingleton::getTokoDb();
-//        $lang_id = $this->getLanguage();
-//        $prefix = $this->getLangPostfix($lang_id);
-//        $r = $db->query("SELECT `TEX_$prefix` FROM `T2_GROUP_TREE_STR` WHERE `STR_ID` = $str_id AND `STR_ID` > 0 LIMIT 1;");
-//        $n = $db->num_rows($r);
-//        return ($n > 0) ? $db->result($r, 0, "TEX_$prefix") : "";
-//    }
 
     /*
      * Get GROUP text info
@@ -309,11 +271,8 @@ class AutoClass extends CatalogueClass
     {
         $auto_id = $this->getUrlNumber($auto_id);
         $db = DbSingleton::getTokoDb();
-        $client_id = $this->getClient();
-        $user_id = $this->getUser();
-        $cookie = $this->getSessionID();
-        $where = ($user_id == 0) ? "`client_id` = $client_id AND `cookie_id` = '$cookie'" : "`client_id` = $client_id AND `user_id` = $user_id";
-        $r = $db->query("SELECT `id`, `typ_id` FROM `AUTO_GARAGE` WHERE $where;");
+        $query = $this->getAutoGarageData();
+        $r = $db->query($query);
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -356,6 +315,15 @@ class AutoClass extends CatalogueClass
         }
     }
 
+    public function getAutoGarageData()
+    {
+        $client_id = $this->getClient();
+        $user_id = $this->getUser();
+        $cookie = $this->getSessionID();
+        $where = ($user_id == 0) ? "`client_id` = $client_id AND `cookie_id` = '$cookie'" : "`client_id` = $client_id AND `user_id` = $user_id";
+        return "SELECT `id`, `typ_id` FROM `AUTO_GARAGE` WHERE $where;";
+    }
+
     /*
      * show garage form
      * */
@@ -364,11 +332,8 @@ class AutoClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("garage/garage");
         $list = $auto_form = "";
-        $client_id = $this->getClient();
-        $user_id = $this->getUser();
-        $cookie = $this->getSessionID();
-        $where = ($user_id == 0) ? "`client_id` = $client_id AND `cookie_id` = '$cookie'" : "`client_id` = $client_id AND `user_id` = $user_id";
-        $r = $db->query("SELECT `id`, `typ_id` FROM `AUTO_GARAGE` WHERE $where;");
+        $query = $this->getAutoGarageData();
+        $r = $db->query($query);
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -397,7 +362,7 @@ class AutoClass extends CatalogueClass
                     </div>
                 </li>";
             }
-            $auto_form = $this->getChosenAutoGarage($client_id, $user_id);
+            $auto_form = $this->getChosenAutoGarage($this->getClient(), $this->getUser());
         }
         $form = str_replace("{garage_list}", $list, $form);
         $form = str_replace("{auto_form}", $auto_form, $form);
@@ -626,6 +591,31 @@ class AutoClass extends CatalogueClass
             $list .= "</ul>";
         }
         return $list;
+    }
+
+    public function getCarsMetaTags($mfa_link, $model_link, $h1_text)
+    {
+        $mfa_id = $this->getMfaLink($mfa_link);
+        $model = $this->getModLink($model_link);
+
+        $url_text = $this->getSiteLink() . $this->cars_link . "/";
+        $car_pict = "";
+        $imgData = $this->getAutoIMG($mfa_id, $model);
+        if ($mfa_link != "") {
+            $url_text .= "$mfa_link/";
+            $car_pict = $imgData["mfa_image"];
+            $car_pict = "https://toko.ua/uploads/images/manufacturers/$car_pict";
+            if ($model_link != "") {
+                $url_text .= "$model_link/";
+                $car_pict = $imgData["model_image"];
+                $car_pict = "https://toko.ua/uploads/images/models/$car_pict";
+            }
+        }
+        $form = $this->getHtmlForm("article/social");
+        $form = str_replace("{h1_meta_tag}", $h1_text, $form);
+        $form = str_replace("{url_meta_tag}", $url_text, $form);
+        $form = str_replace("{main_image_cap}", $car_pict, $form);
+        return $form;
     }
 
 }

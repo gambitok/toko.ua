@@ -97,10 +97,7 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    /*
-     * show news state form
-     * */
-    public function showNewsState($state_id)
+    public function getNewsData($state_id)
     {
         $state_id = $this->getUrlNumber($state_id);
         $db = DbSingleton::getTokoDb();
@@ -115,17 +112,38 @@ class MenuClass extends CatalogueClass
         }
         $text = $db->result($r, 0, "desc");
         $date = $db->result($r, 0, "data");
-        $img_file = $this->getNewsImage($state_id);
-        $img = ($img_file != "") ? "<p><img itemprop=\"image\" src=\"/uploads/images/news/$language_id/$state_id/$img_file\" alt=\"state\"></p>" : "";
+        $img_file = "/uploads/images/news/$language_id/$state_id/" . $this->getNewsImage($state_id);
+        $img = ($img_file != "") ? "<p><img itemprop=\"image\" src=\"$img_file\" alt=\"state\"></p>" : "";
+        $format_title = $this->formatUrlText($title);
+        $url = $this->getSiteLink() . "$this->news_link/state/$state_id/$format_title/";
+        return compact("title", "date", "img_file", "img", "text", "url");
+    }
+
+    /*
+     * show news state form
+     * */
+    public function showNewsState($state_id)
+    {
+        $newsData = $this->getNewsData($state_id);
         $list = "<div class=\"news-state\">
-            <h1>$title</h1>
-            <h2>$date</h2>
-            $img
-            <div itemprop=\"description\">$text</div>
+            <h1>" . $newsData['title'] . "</h1>
+            <h2>" . $newsData['date'] . "</h2>
+            " . $newsData['img'] . "
+            <div itemprop=\"description\">" . $newsData['text'] . "</div>
         </div>";
         $form = $this->getHtmlForm("news/card");
         $form = str_replace("{state_id}", $state_id, $form);
         $form = str_replace("{state_info}", ($state_id > 0) ? $list : "<h1>$this->err1</h1>", $form);
+        return $form;
+    }
+
+    public function getNewsMetaTags($state_id)
+    {
+        $newsData = $this->getNewsData($state_id);
+        $form = $this->getHtmlForm("article/social");
+        $form = str_replace("{h1_meta_tag}", $newsData["title"], $form);
+        $form = str_replace("{url_meta_tag}", $newsData["url"], $form);
+        $form = str_replace("{main_image_cap}", $newsData["img_file"], $form);
         return $form;
     }
 
@@ -681,25 +699,43 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    /*
-     * show reviews state form
-     * */
-    public function getReviewsState($state_id)
+    public function getReviewsData($state_id)
     {
         $state_id = $this->getUrlNumber($state_id);
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
         $r = $db->query("SELECT `DATA`, `TITLE_$postfix`, `TEXT_$postfix` FROM `T2_REVIEWS` WHERE `ID` = $state_id;");
-        $list = $this->getHtmlForm("reviews/card_range");
         $date = $db->result($r, 0, "DATA");
         $title = $db->result($r, 0, "TITLE_$postfix");
         $text = $db->result($r, 0, "TEXT_$postfix");
-        $list = str_replace("{review_date}", $date, $list);
-        $list = str_replace("{review_title}", $this->replaceTextTags($title, ""), $list);
-        $list = str_replace("{review_text}", $this->replaceTextTags($text, $title), $list);
+        $format_title = $this->formatUrlText($title);
+        $url = $this->getSiteLink() . "$this->reviews_link/state/$state_id/$format_title/";
+        return compact("title", "text", "date", "url");
+    }
+
+    /*
+     * show reviews state form
+     * */
+    public function getReviewsState($state_id)
+    {
+        $reviewsData = $this->getReviewsData($state_id);
+        $list = $this->getHtmlForm("reviews/card_range");
+        $list = str_replace("{review_date}", $reviewsData["date"], $list);
+        $list = str_replace("{review_title}", $this->replaceTextTags($reviewsData["title"], ""), $list);
+        $list = str_replace("{review_text}", $this->replaceTextTags($reviewsData["text"], $reviewsData["title"]), $list);
         $form = $this->getHtmlForm("reviews/card");
         $form = str_replace("{state_id}", $state_id, $form);
         $form = str_replace("{state_info}", ($state_id > 0) ? $list : "<h1>$this->err1</h1>", $form);
+        return $form;
+    }
+
+    public function getReviewsMetaTags($state_id)
+    {
+        $reviewsData = $this->getReviewsData($state_id);
+        $form = $this->getHtmlForm("article/social");
+        $form = str_replace("{h1_meta_tag}", $reviewsData["title"], $form);
+        $form = str_replace("{url_meta_tag}", $reviewsData["url"], $form);
+        $form = str_replace("{main_image_cap}", "", $form);
         return $form;
     }
     
