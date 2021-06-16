@@ -784,6 +784,14 @@ class MenuClass extends CatalogueClass
     }
 
     /*
+     * show scan form (Bonus)
+     * */
+    public function showFineForm()
+    {
+        return $this->getHtmlForm("menu/fine");
+    }
+
+    /*
      * show scan form (Bonus) Validate
      * */
     public function showScanPhoneForm($phone)

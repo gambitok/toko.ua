@@ -320,6 +320,8 @@ class ProfileClass extends ClientClass
      * */
     public function checkOrderUser($order_id, $user_id)
     {
+        $order_id = $this->getUrlNumber($order_id);
+        $user_id = $this->getUrlNumber($user_id);
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT COUNT(`id`) as kilk FROM `orders_new` WHERE `id` = $order_id AND `client_user_id` = $user_id;");
         return $db->result($r, 0, "kilk");
