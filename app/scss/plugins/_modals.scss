@@ -1,3 +1,33 @@
+#ViberForm {
+    background-color: #fff;
+    .modal-header {
+        button {
+            color: #000;
+        }
+    }
+}
+
+.contact-form-viber {
+    background: #fff;
+    &__item {
+        border-left: 1px solid #7d6ed5;
+        &-title {
+            font-size: 16px;
+        }
+        &-text {
+            font-size: 14px;
+        }
+        &-image {
+            display: block;
+            margin: 0 auto;
+        }
+        &-button {
+            background: #7d6ed5;
+            color: #fff;
+        }
+    }
+}
+
 #PhoneArticle {
     background-color: #fff;
     .modal-header {

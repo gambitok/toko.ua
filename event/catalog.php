@@ -106,6 +106,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
 
             $content = str_replace("{main_window}", $catalog_form["form"], $content);
             $content = str_replace("{site_title}", $catalog_form["title"], $content);
+            $content = str_replace("{site_description}", $catalog_form["description"], $content);
 
             $content = str_replace("{meta_social_tag}", $catalog_exist->getCatalogMetaTags($group_id, $catalog_form["h1"]), $content);
         }

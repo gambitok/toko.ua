@@ -661,6 +661,25 @@ class CatalogExistClass extends CatalogueClass
     }
 
     /*
+     * get params/brands where for catalog filters
+     * */
+    public function getParamsWhere($where, $param_id, $values)
+    {
+        $param_name = ($param_id == 0) ? "t.`brand_id`" : "tp.`param_$param_id`";
+        if (!empty($values)) {
+            $where .= " AND (";
+            $count = 0;
+            foreach ($values as $value_id) {
+                $count++;
+                $separator = ($count > 1) ? "OR" : "";
+                $where .= " $separator ($param_name = '$value_id' OR $param_name LIKE '%,$value_id%' OR $param_name LIKE '%$value_id,%')";
+            }
+            $where .= ") ";
+        }
+        return $where;
+    }
+
+    /*
      * get filter where
      * */
     public function getFiltersWhere($group_id, $filters)
@@ -668,17 +687,7 @@ class CatalogExistClass extends CatalogueClass
         $params = $this->getCheckedFilters($group_id, $filters);
         $where = "";
         foreach ($params as $param_id => $values) {
-            $param_name = ($param_id == 0) ? "t.`brand_id`" : "tp.`param_$param_id`";
-            if (!empty($values)) {
-                $where .= " AND (";
-                $count = 0 ;
-                foreach ($values as $value_id) {
-                    $count++;
-                    $separator = ($count > 1) ? "OR" : "";
-                    $where .= " $separator ($param_name = '$value_id' OR $param_name LIKE '%,$value_id%' OR $param_name LIKE '%$value_id,%')";
-                }
-                $where .= ") ";
-            }
+            $where = $this->getParamsWhere($where, $param_id, $values);
         }
         return $where;
     }
@@ -692,17 +701,7 @@ class CatalogExistClass extends CatalogueClass
         $where = "";
         foreach ($params as $param_id => $values) {
             if ($sel_param_id != $param_id) {
-                $param_name = ($param_id == 0) ? "t.`brand_id`" : "tp.`param_$param_id`";
-                if (!empty($values)) {
-                    $where .= " AND (";
-                    $count = 0 ;
-                    foreach ($values as $value_id) {
-                        $count++;
-                        $separator = ($count > 1) ? "OR" : "";
-                        $where .= " $separator ($param_name = '$value_id' OR $param_name LIKE '%,$value_id%' OR $param_name LIKE '%$value_id,%')";
-                    }
-                    $where .= ") ";
-                }
+                $where = $this->getParamsWhere($where, $param_id, $values);
             }
         }
         return $where;
@@ -774,17 +773,7 @@ class CatalogExistClass extends CatalogueClass
             $params[$sel_param_id][] = $sel_value_id;
             $where = "";
             foreach ($params as $param_id => $values) {
-                $param_name = ($param_id == 0) ? "t.`brand_id`" : "tp.`param_$param_id`";
-                if (!empty($values)) {
-                    $where .= " AND (";
-                    $count = 0 ;
-                    foreach ($values as $value_id) {
-                        $count++;
-                        $separator = ($count > 1) ? "OR" : "";
-                        $where .= " $separator ($param_name = '$value_id' OR $param_name LIKE '%,$value_id%' OR $param_name LIKE '%$value_id,%')";
-                    }
-                    $where .= ") ";
-                }
+                $where = $this->getParamsWhere($where, $param_id, $values);
             }
 
             if ($where_mfa == "") {
@@ -951,7 +940,10 @@ class CatalogExistClass extends CatalogueClass
 
         $max_pages_count = ceil($count / $this->products_on_page);
 
-        return array("form" => $form, "title" => $filters_title, "h1" => $filters_h1, "pages_count" => $max_pages_count);
+        $description = $this->replaceLang("{site_description_catalog}");
+        $description = str_replace("{h1_caption}", $filters_h1, $description);
+
+        return array("form" => $form, "title" => $filters_title, "h1" => $filters_h1, "pages_count" => $max_pages_count, "description" => $description);
     }
 
     public function drawLoader()

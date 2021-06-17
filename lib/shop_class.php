@@ -361,6 +361,8 @@ class ShopClass extends CatalogueClass
      * */
     public function getBasketArticleAmount($art_id, $storage_id)
     {
+        $art_id = $this->getUrlNumber($art_id);
+        $storage_id = $this->getUrlNumber($storage_id);
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
@@ -498,7 +500,7 @@ class ShopClass extends CatalogueClass
         $order_sum = 0;
 
         if ($bonus_summ > 0) {
-            $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked`=1;");
+            $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked` = 1;");
             $n = $dbt->num_rows($r);
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {

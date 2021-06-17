@@ -470,9 +470,10 @@ class ClientClass
      * */
     public function getArticleStorageTPoint($storage_id)
     {
+        $storage_id = $this->getUrlNumber($storage_id);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `tpoint_id` FROM `T_POINT_STORAGE` WHERE `storage_id` = $storage_id LIMIT 1;");
-        $tpoint_id = $db->result($r, 0, "tpoint_id");
+        $tpoint_id = $db->result($r, 0, "tpoint_id") + 0;
         $r = $db->query("SELECT `full_name` FROM `T_POINT` WHERE `id` = $tpoint_id LIMIT 1;");
         return $db->result($r, 0, "full_name");
     }
