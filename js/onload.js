@@ -42,6 +42,14 @@ $("body").click(function(e) {
     }
 });
 
+function showViberForm() {
+    $("#ViberForm").modal("show");
+}
+
+function showTelegramForm() {
+    $("#TelegramForm").modal("show");
+}
+
 function detectmob() {
     if (navigator.userAgent.match(/Android/i)
         || navigator.userAgent.match(/webOS/i)

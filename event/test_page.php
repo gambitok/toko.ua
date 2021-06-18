@@ -9,7 +9,6 @@ for ($i = 1; $i <= $n; $i++) {
 }
 var_dump($result);
 
-
 $content = str_replace("{main_window}", "", $content);
 
 

@@ -7,20 +7,22 @@ $(document).ready(function() {
             let header = $("#catalogue-main");
             let top = header.offset().top;
             let sticky = top - 64;
+            let catalogue_auto_form = $("#catalogue-auto");
+            let toggle_active_nav = $("#toggle_active_nav");
 
             if (window.pageYOffset >= top) {
                 $("#myBackdrop").addClass("sticky-backdrop-active");
-                if (!$("#catalogue-auto").hasClass("sticky")) {
+                if (!catalogue_auto_form.hasClass("sticky")) {
                     $( "#myHeader" ).animate({width:'toggle'},1000);
                 }
-                $("#catalogue-auto").addClass("sticky");
+                catalogue_auto_form.addClass("sticky");
 
             } else {
-                $("#catalogue-auto").removeClass("sticky");
+                catalogue_auto_form.removeClass("sticky");
                 $("#myBackdrop").removeClass("sticky-backdrop-active");
                 $("#myHeader").hide();
             }
-            if ($("#toggle_active_nav").val() == 0) {
+            if (toggle_active_nav.val() == 0) {
                 if (window.pageYOffset >= sticky) {
                     hideCarsNavigation(checked_index);
                 } else {
@@ -30,7 +32,7 @@ $(document).ready(function() {
                 if (window.pageYOffset >= sticky) {
                     //
                 } else {
-                    $("#toggle_active_nav").val(0);
+                    toggle_active_nav.val(0);
                 }
             }
         });

@@ -163,8 +163,7 @@
         fbq('init', '473891079984386');
         fbq('track', 'PageView');
 	</script>
-	<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=473891079984386&ev=PageView&noscript=1"/></noscript>
-
+	<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=473891079984386&ev=PageView&noscript=1" alt=""/></noscript>
 
 	<!-- Plugin Scripts -->
 	<script type="text/javascript" src="/js/library/jquery-3.3.1.min.js"></script>
@@ -386,41 +385,84 @@
 
 <div id="modals" class="modals">
 
-	<!-- Modal Info -->
-	<div class="modal fade" id="ViberForm" role="dialog" tabindex="-1">
+	<!-- Viber Modal -->
+	<div class="modal fade contact-form contact-form--purple" id="ViberForm" role="dialog" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<button type="button" data-dismiss="modal">&times;</button>
 				</div>
 				<div class="modal-body">
-					<div class="contact-form-viber">
-						<div class="contact-form-viber__item">
-							<div class="contact-form-viber__item-title">
+					<div class="contact-form-social">
+						<div class="contact-form-social__item">
+							<div class="contact-form-social__item-title">
 								<span>{contact_viber_pc_title}</span>
 							</div>
-							<div class="contact-form-viber__item-image">
-								<img data-src="/images/contacts/viber/viber_pc.png" src="/images/no_photo.png" alt="viber">
+							<div class="contact-form-social__item-image contact-form-social__item-image-max">
+								<img class="lazy" data-src="/images/contacts/viber/viber_pc.png" src="/images/no_photo.png" alt="viber">
 							</div>
-							<div class="contact-form-viber__item-text">
+							<div class="contact-form-social__item-text">
 								<span>{contact_viber_pc_text}</span>
 							</div>
-							<div class="contact-form-viber__item-button">
-								<button>{contact_viber_pc_open}</button>
+							<div class="contact-form-social__item-button">
+								<a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank">{contact_viber_pc_open}</a>
 							</div>
 						</div>
-						<div class="contact-form-viber__item">
-							<div class="contact-form-viber__item-title">
+						<div class="contact-form-social__item">
+							<div class="contact-form-social__item-title">
 								<span>{contact_viber_phone_title}</span>
 							</div>
-							<div class="contact-form-viber__item-image">
-								<img data-src="/images/contacts/viber/viber_phone.png" src="/images/no_photo.png" alt="viber">
+							<div class="contact-form-social__item-image contact-form-social__item-image-max">
+								<img class="lazy" data-src="/images/contacts/viber/viber_phone.png" src="/images/no_photo.png" alt="viber">
 							</div>
-							<div class="contact-form-viber__item-text">
+							<div class="contact-form-social__item-text">
 								<span>{contact_viber_phone_text}</span>
 							</div>
-							<div class="contact-form-viber__item-image">
-								<img data-src="/images/contacts/viber/viber_qrcode.png" src="/images/no_photo.png" alt="viber">
+							<div class="contact-form-social__item-image contact-form-social__item-image-min">
+								<img class="lazy" data-src="/images/contacts/viber/viber_qrcode.png" src="/images/no_photo.png" alt="viber">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Telegram Modal -->
+	<div class="modal fade contact-form contact-form--blue" id="TelegramForm" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="contact-form-social">
+						<div class="contact-form-social__item">
+							<div class="contact-form-social__item-title">
+								<span>{contact_telegram_pc_title}</span>
+							</div>
+							<div class="contact-form-social__item-image contact-form-social__item-image-max">
+								<img class="lazy" data-src="/images/contacts/telegram/telegram_pc.png" src="/images/no_photo.png" alt="telegram">
+							</div>
+							<div class="contact-form-social__item-text">
+								<span>{contact_telegram_pc_text}</span>
+							</div>
+							<div class="contact-form-social__item-button">
+								<a href="https://t.me/tokoua_bot" rel="noopener" target="_blank">{contact_telegram_pc_open}</a>
+							</div>
+						</div>
+						<div class="contact-form-social__item">
+							<div class="contact-form-social__item-title">
+								<span>{contact_telegram_phone_title}</span>
+							</div>
+							<div class="contact-form-social__item-image contact-form-social__item-image-max">
+								<img class="lazy" data-src="/images/contacts/telegram/telegram_phone.png" src="/images/no_photo.png" alt="telegram">
+							</div>
+							<div class="contact-form-social__item-text">
+								<span>{contact_telegram_phone_text}</span>
+							</div>
+							<div class="contact-form-social__item-image contact-form-social__item-image-min">
+								<img class="lazy" data-src="/images/contacts/telegram/telegram_qrcode.png" src="/images/no_photo.png" alt="telegram">
 							</div>
 						</div>
 					</div>

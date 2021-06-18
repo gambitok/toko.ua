@@ -1,13 +1,13 @@
 header {
-    width: 100%;
     color: #a9a9a9;
+    width: 100%;
 }
 
 .header-top {
     background: #f1f1f1;
+    border-bottom: 1px solid #ced4da;
     color: #606975;
     padding: 0;
-    border-bottom: 1px solid #ced4da;
     a, a:not([href]):not([tabindex]) {
         color: #606975;
         &:hover {
@@ -204,32 +204,32 @@ header {
 .header-phone {
     display: none;
     &-nav {
-        padding: 10px 15px;
         border-bottom: 1px solid #ccc;
+        padding: 10px 15px;
         &__logo {
             a {
-                width: 100%;
-                padding: 0;
                 display: block;
+                padding: 0;
+                width: 100%;
             }
             img {
                 width: 100%;
             }
         }
         &__list {
-            margin: 0;
             display: flex;
             flex-wrap: nowrap;
             justify-content: space-around;
             list-style: none;
+            margin: 0;
             &-link {
-                cursor: pointer;
                 display: block;
+                cursor: pointer;
                 img {
-                    width: 30px;
                     display: block;
-                    margin: 0 auto;
                     height: 30px;
+                    margin: 0 auto;
+                    width: 30px;
                 }
             }
             .basket_status {
@@ -238,19 +238,19 @@ header {
         }
     }
     &-search {
+        background: #f1f1f1;
         border-bottom: 1px solid #ccc;
         padding: 10px 15px;
-        background: #f1f1f1;
         button {
             background: #fff;
             border: 1px solid #0c5460;
-            color: #ccc;
             border-radius: .25em;
+            color: #ccc;
             text-align: left;
             i {
+                color: #0c5460;
                 float: right;
                 line-height: 24px;
-                color: #0c5460;
             }
         }
     }
@@ -289,15 +289,15 @@ header {
         a {
             color: #606975;
             font-size: 18px;
+            &:hover {
+                background-color: inherit;
+                color: inherit;
+            }
         }
         label {
             color: #606975;
             font-size: 18px;
             margin: 0;
-        }
-        a:hover {
-            background-color: inherit;
-            color: inherit;
         }
     }
 }
@@ -402,4 +402,3 @@ header {
         }
     }
 }
-

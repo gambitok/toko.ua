@@ -836,6 +836,7 @@ class CatalogExistClass extends CatalogueClass
         $automan = new AutoClass();
         $form = $this->getHtmlForm("catalog_exist/error");
         $form = str_replace("{form_car}", $this->getPartsCatalogueCars($group_id, $mfa_id, $model, $status_auto, $status_auto_type), $form);
+        $form = $this->replaceLang($form);
         $form = str_replace("{h1_text}", "<b>$filters_h1</b>", $form);
         $form = str_replace("{vin_text}", "<a class=\"blue-a\" onclick=\"$('#VinFormPhone').modal('show');\">{vin_order}</a>", $form);
         $catalog_text = "{in_catalog_strs}";

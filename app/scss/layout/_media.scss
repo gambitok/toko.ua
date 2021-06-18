@@ -96,7 +96,7 @@
         }
     }
 
-    .article-card:hover>.article-card-hidden {
+    .article-card:hover > .article-card-hidden {
         display: none;
     }
 
@@ -536,38 +536,39 @@
     .garage-drop-block__list .garage-row__buttons {
         text-align: left;
     }
-    .garage-user {
-        height: auto;
-        .btn-arrow {
-            display: block;
-        }
-        #toggle_btn {
-            display: none;
-        }
-        &-select {
-            padding-right: 15px;
-        }
-        &__title {
-            margin-right: 0;
-            &:after {
-                content: none;
-            }
-        }
-        &__nav {
-            flex-wrap: wrap;
-            justify-content: center;
-            .btn-img {
-                margin-bottom: 15px;
-            }
-            button {
-                margin-bottom: 10px;
-                margin-left: 10px;
-            }
-        }
-        &__image {
-            display: none;
-        }
-    }
+
+    //.garage-user {
+    //    height: auto;
+    //    .btn-arrow {
+    //        display: block;
+    //    }
+    //    #toggle_btn {
+    //        display: none;
+    //    }
+    //    &-select {
+    //        padding-right: 15px;
+    //    }
+    //    &__title {
+    //        margin-right: 0;
+    //        &:after {
+    //            content: none;
+    //        }
+    //    }
+    //    &__nav {
+    //        flex-wrap: wrap;
+    //        justify-content: center;
+    //        .btn-img {
+    //            margin-bottom: 15px;
+    //        }
+    //        button {
+    //            margin-bottom: 10px;
+    //            margin-left: 10px;
+    //        }
+    //    }
+    //    &__image {
+    //        display: none;
+    //    }
+    //}
 
     .tree-block {
         &-title {

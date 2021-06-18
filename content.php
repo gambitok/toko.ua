@@ -59,7 +59,7 @@ if ($_REQUEST["w"] == "showBasketMinForm") {
 }
 
 if ($_REQUEST["w"] == "setCityDepartments") {
-    $GLOBALS['_RESULT'] = array("content" => $shop->setCityDepartments($_REQUEST["city_ref"],$_REQUEST["department_ref"]));
+    $GLOBALS['_RESULT'] = array("content" => $shop->setCityDepartments($_REQUEST["city_ref"], $_REQUEST["department_ref"]));
 }
 
 if ($_REQUEST["w"] == "getOrderDeliveryBlock") {

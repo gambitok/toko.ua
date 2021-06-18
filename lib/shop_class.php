@@ -1626,7 +1626,7 @@ class ShopClass extends CatalogueClass
     /*
      * get NP city department
      * */
-    public function setCityDepartments($city_ref, $department_ref)
+    public function setCityDepartments($city_ref, $department_ref = "")
     {
         $city_ref = $this->getNameString($city_ref);
         $list_np = $this->getNovaPoshtaWarehousesSelect($city_ref, $department_ref);

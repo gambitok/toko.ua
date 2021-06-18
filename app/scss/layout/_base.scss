@@ -3,9 +3,9 @@
 }
 
 .sticky {
-    position: fixed;
     left: 0;
     margin: 0!important;
+    position: fixed;
     top: 0;
     width: 100%;
     z-index: 100;
@@ -46,12 +46,12 @@
 }
 
 .backdrop {
+    background: rgba(0,0,0,0.7);
     position: fixed;
     left: -100%;
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.7);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 100;
@@ -76,8 +76,8 @@
         padding-left: 30px;
     }
     ol > li {
-        margin-top: 15px;
         font-weight: bold;
+        margin-top: 15px;
     }
     ul > li {
         display: inline;
@@ -117,8 +117,8 @@
         &__item {
             display: list-item;
             list-style: square;
-            margin-top: 10px;
             margin-left: 30px;
+            margin-top: 10px;
             &-link {
                 color: #228b94;
                 display: block;
@@ -170,8 +170,8 @@
     &-tab {
         width: 100%;
         input[type='checkbox'] {
-            position: absolute;
             opacity: 0;
+            position: absolute;
             z-index: -1;
         }
         label {
@@ -260,8 +260,8 @@
             }
         }
         &__title {
-            font-weight: bold;
             font-size: 14px;
+            font-weight: bold;
             margin-left: 10px;
             text-align: right;
             width: 100%;
@@ -286,14 +286,14 @@
 
 .reviews-list {
     &-title {
+        color: #606975;
         display: block;
         font-weight: 700;
-        color: #606975;
         text-transform: uppercase;
     }
     &__item {
-        font-size: 14px;
         color: #606975;
+        font-size: 14px;
         margin-top: 5px;
         a {
             color: #606975;
@@ -321,8 +321,8 @@
         color: #606975;
         font-size: 1.5em;
         font-weight: 400;
-        margin: 20px 0 10px;
         line-height: 21px;
+        margin: 20px 0 10px;
     }
     ul {
         padding-left: 2em;
@@ -342,15 +342,15 @@
     }
     button {
         background: transparent;
+        border: none;
         color: #606975;
         cursor: pointer;
-        margin-top: 1em;
         float: right;
         font-size: 14px;
+        margin-top: 1em;
         text-align: right;
-        text-transform: uppercase;
-        border: none;
         text-decoration: underline;
+        text-transform: uppercase;
     }
 }
 
