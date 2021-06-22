@@ -15,12 +15,12 @@ header {
         }
     }
     .contacts {
-        padding: 0;
         font-size: 14px;
-        position: relative;
         overflow: hidden;
-        white-space: nowrap;
+        padding: 0;
+        position: relative;
         text-overflow: ellipsis;
+        white-space: nowrap;
         a:hover {
             color: #000;
             text-decoration: none;
@@ -28,11 +28,11 @@ header {
         }
     }
     .menu-language {
+        align-items: baseline;
         display: flex;
         flex-wrap: nowrap;
         font-size: 14px;
         justify-content: space-around;
-        align-items: baseline;
         width: 100px;
         &__item {
             font-size: 14px;
@@ -44,11 +44,9 @@ header {
         }
     }
     .authorization {
-        .dropdown-toggle {
-            background: #f1f1f1;
-            border: unset;
-            color: #606975;
-            font-size: 14px;
+        &-counter {
+            color: #f44336!important;
+            font-weight: 700!important;
         }
         ul {
             margin: 0;
@@ -185,16 +183,16 @@ header {
                     width: 100%;
                 }
                 &__status {
-                    font-size: 12px;
-                    text-transform: uppercase;
                     background: #f44336;
                     border: 1px solid #f44336;
                     border-radius: 30px;
                     color: #fff;
-                    width: 20px;
+                    font-size: 12px;
                     height: 20px;
                     line-height: 20px;
                     text-align: center;
+                    text-transform: uppercase;
+                    width: 20px;
                 }
             }
         }
@@ -263,29 +261,6 @@ header {
             margin: 0;
             width: 100%;
         }
-        .dropdown-menu {
-            width: 100%;
-            .dropdown-item {
-                padding: 5px 10px;
-                width: 100%;
-                &:hover {
-                    background: #ced4da;
-                }
-            }
-        }
-        img {
-            height: 20px;
-            width: 20px;
-            margin-right: 5px;
-            position: relative;
-            top: -4px;
-        }
-        input {
-            border: none;
-            background: transparent;
-            color: #606975;
-            font-size: 14px;
-        }
         a {
             color: #606975;
             font-size: 18px;
@@ -293,6 +268,19 @@ header {
                 background-color: inherit;
                 color: inherit;
             }
+        }
+        img {
+            height: 20px;
+            margin-right: 5px;
+            position: relative;
+            top: -4px;
+            width: 20px;
+        }
+        input {
+            border: none;
+            background: transparent;
+            color: #606975;
+            font-size: 14px;
         }
         label {
             color: #606975;
@@ -315,12 +303,6 @@ header {
             width: 100%;
         }
     }
-    &-text {
-        span {
-            color: #606975;
-            font-size: 20px;
-        }
-    }
     &-phone {
         ul {
             list-style: none;
@@ -341,6 +323,12 @@ header {
                     width: 30px;
                 }
             }
+        }
+    }
+    &-text {
+        span {
+            color: #606975;
+            font-size: 20px;
         }
     }
 }
@@ -373,16 +361,16 @@ header {
                     }
                 }
             }
+            button {
+                width: 50px;
+            }
             i {
                 float: unset;
-                width: auto;
                 font-size: 13px;
+                width: auto;
             }
             span {
                 padding: 0;
-            }
-            button {
-                width: 50px;
             }
         }
         &__select   {

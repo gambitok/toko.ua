@@ -1646,7 +1646,9 @@ class CatalogExistClass extends CatalogueClass
                 }
             }
         }
-        return "$group_text $car_text";
+        $title = "$group_text $car_text";
+        $title = rtrim($title, " ");
+        return $title;
     }
 
     /*

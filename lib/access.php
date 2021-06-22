@@ -48,7 +48,7 @@ function checkLangVariable($variable)
 
 function getMetaTag()
 {
-    $form = '
+    return '
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="{site_title}" />
 	<meta property="og:url" content="{canonical_link}" />
@@ -56,7 +56,6 @@ function getMetaTag()
 	<meta property="og:image" content="/favicon.png" />
 	<meta property="og:site_name" content="{internet_shop} toko.ua" />
 	';
-    return $form;
 }
 
 function getTitle($path)
@@ -164,6 +163,7 @@ function getMoreTitle($path)
 function printBreadcrumbs($path)
 {
     $cat = new CatalogueClass();
+    $cat_ex = new CatalogExistClass();
     $menu = new MenuClass();
     $bread = findLinks();
     $section = $path;
@@ -188,10 +188,37 @@ function printBreadcrumbs($path)
             break;
         }
         case "article" : {
+            $icon = "<i class=\"fa fa-chevron-right\"></i>";
             $art_id = $cat->getUrlNumber($bread[3]);
-            $info = $cat->getArticleText($art_id);
             $back = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/\">{site_catalog}</a>";
-            $pretitle = "$a_home > $back > $info";
+            $pretitle = "$a_home $icon $back";
+
+            $group_id = $cat->getArticleGroupExist($art_id);
+            if ($group_id > 0) {
+                $head_id = $cat_ex->getHeadExistID($group_id);
+                $head_name = $cat_ex->getHeadExistName($head_id);
+                $head_link = $cat_ex->getHeadExistLink($head_id);
+
+                $info_head = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/$head_link/\">$head_name</a>";
+                $pretitle .= " $icon $info_head";
+
+                $group_name = $cat->getGroupRowName($group_id);
+                $group_link = $cat->getGroupRowLink($group_id);
+
+                $info_group = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/$group_link/\">$group_name</a>";
+                $pretitle .= " $icon $info_group";
+
+                $brand_id = $cat->getArticleBrand($art_id);
+                $brand_name = $cat->getBrandName($brand_id);
+                $brand_link = $cat->getBrandLink($brand_id);
+
+                $info_group_brand = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/$group_link/brandy=$brand_link/\">$group_name $brand_name</a>";
+                $pretitle .= " $icon $info_group_brand";
+            }
+
+            $info = $cat->getArticleText($art_id);
+            $pretitle .= " $icon $info";
+
             $b_arr[2] = ["name" => "{site_catalog}", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/"];
             $b_arr[3] = ["name" => "$info", "item" => "$actual_link"];
             break;

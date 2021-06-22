@@ -35,7 +35,9 @@ $content = str_replace("{meta_social_tag}", getMetaTag(), $content);
 $content = str_replace("{site_title}", getTitle($path), $content);
 $content = str_replace("{site_description}", getDescription($path), $content);
 $content = str_replace("{site_keywords}", getKeywords($path), $content);
-$content = str_replace("{site_script_breadcrumbs}", printBreadcrumbs($path)[1], $content);
+$breadData = printBreadcrumbs($path);
+$content = str_replace("{site_script_breadcrumbs}", $breadData[1], $content);
+$content = str_replace("{main_site_breadcrumbs}", $breadData[0], $content);
 $content = str_replace("{site_page_pagination}", "", $content);
 $content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
 $content = str_replace("{seo_footers_block}", "<!--footers_block-->", $content);
@@ -60,7 +62,6 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') 
 // Main HTML
 //$content = str_replace("{main_seo_text}", ($seo_text == "" || $seo_text == "<!--seo_text_start--><!--seo_text_end-->") ? "" : getSeoText($seo_text), $content);
 $content = str_replace("{main_seo_text}", getSeoTextForm(), $content);
-$content = str_replace("{main_site_breadcrumbs}", printBreadcrumbs($path)[0], $content);
 $content = str_replace("{main_window}", "", $content);
 $lang_postfix = findLanguage();
 if ($lang_postfix != "") {

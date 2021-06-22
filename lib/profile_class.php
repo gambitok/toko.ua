@@ -77,7 +77,7 @@ class ProfileClass extends ClientClass
         $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `timestamp` > '$update_actions 00:00:00' AND `status` = 1;");
         $n = $db->num_rows($r);
 
-        $counter = ($n > 0) ? "<span class=\"span-red\">($n)</span>" : "";
+        $counter = ($n > 0) ? "<span class=\"authorization-counter\">($n)</span>" : "";
         if ($user_id > 0 && ($n1 > 0 || $n2 > 0)) {
             $info = "<li>
                 <a href=\"" . $this->getSiteLink() . "special_offers/\">
@@ -104,9 +104,9 @@ class ProfileClass extends ClientClass
         }
         $r = $db->query("SELECT `update_news` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
         $update_news = $db->result($r, 0, "update_news");
-        $r = $dbt->query("SELECT * FROM `news` WHERE `data` > '$update_news' AND `lang_id` = $language_id AND `status` = 1;");
-        $n = $dbt->num_rows($r);
-        $counter = ($user_id > 0 && $n > 0) ? "<span class=\"span-red\">($n)</span>" : "";
+        $r = $dbt->query("SELECT COUNT(`id`) as count_ids FROM `news` WHERE `data` > '$update_news' AND `lang_id` = $language_id AND `status` = 1;");
+        $n = $dbt->result($r, 0, "count_ids");
+        $counter = ($user_id > 0 && $n > 0) ? "<span class=\"authorization-counter\">($n)</span>" : "";
         return "<li>
             <a href=\"" . $this->getSiteLink() . "news/\">
                 <span class=\"fas fa-newspaper\"></span><span> {news_cap} $counter</span>

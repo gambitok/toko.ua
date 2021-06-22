@@ -102,6 +102,19 @@ trait Variables
         return "$article_name $brand_name $article_nr_displ";
     }
 
+    public function getArticleGroupExist($art_id)
+    {
+        $art_id = $this->getUrlNumber($art_id);
+        $db = DbSingleton::getTokoDb();
+        $group_id = 0;
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `ART_ID` = $art_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $group_id = $db->result($r, 0, "GROUP_ID");
+        }
+        return $group_id;
+    }
+
     /*
      * ART_ID => BARCODE
      * */

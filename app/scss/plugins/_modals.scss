@@ -116,6 +116,7 @@ $colors: (
             &__item {
                 border: unset;
                 margin: 0;
+                padding: 15px;
                 width: 100%;
                 &:not(:first-child) {
                     border-left: unset!important;
@@ -126,6 +127,11 @@ $colors: (
                         img {
                             height: 150px;
                         }
+                    }
+                }
+                &-button {
+                    a {
+                        width: 100%;
                     }
                 }
             }
@@ -160,10 +166,13 @@ $colors: (
         list-style: none;
     }
     &-title {
-        font-size: 14px;
+        //font-size: 14px;
+        //font-weight: bold;
+        //text-align: center;
+        //margin-bottom: 30px;
+        color:#000;
+        font-size: 13px;
         font-weight: bold;
-        text-align: center;
-        margin-bottom: 30px;
     }
     &-row {
         margin-top: 30px;
