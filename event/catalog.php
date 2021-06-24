@@ -20,8 +20,7 @@ if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
     $redirect_status = 1;
     $redirect_type = 301;
     $redirect_link = $catalogue->getCatalogOldRedirectLink($linka)["redirect_link"];
-}
-elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
+} elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $mfa_link = $router_2;
     $model_link = $router_3;
     $path_to = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
@@ -107,7 +106,6 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             $content = str_replace("{main_window}", $catalog_form["form"], $content);
             $content = str_replace("{site_title}", $catalog_form["title"], $content);
             $content = str_replace("{site_description}", $catalog_form["description"], $content);
-
             $content = str_replace("{meta_social_tag}", $catalog_exist->getCatalogMetaTags($group_id, $catalog_form["h1"]), $content);
         }
 
@@ -144,5 +142,3 @@ if ($redirect_status) {
         header("Location: $redirect_link", TRUE, 301);
     }
 }
-
-

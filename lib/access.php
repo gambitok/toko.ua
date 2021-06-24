@@ -193,6 +193,8 @@ function printBreadcrumbs($path)
             $back = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/\">{site_catalog}</a>";
             $pretitle = "$a_home $icon $back";
 
+            $b_arr[2] = ["name" => "{site_catalog}", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/"];
+
             $group_id = $cat->getArticleGroupExist($art_id);
             if ($group_id > 0) {
                 $head_id = $cat_ex->getHeadExistID($group_id);
@@ -201,12 +203,14 @@ function printBreadcrumbs($path)
 
                 $info_head = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/$head_link/\">$head_name</a>";
                 $pretitle .= " $icon $info_head";
+                $b_arr[] = ["name" => "$head_name", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/$head_link/"];
 
                 $group_name = $cat->getGroupRowName($group_id);
                 $group_link = $cat->getGroupRowLink($group_id);
 
                 $info_group = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/$group_link/\">$group_name</a>";
                 $pretitle .= " $icon $info_group";
+                $b_arr[] = ["name" => "$group_name", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/$group_link/"];
 
                 $brand_id = $cat->getArticleBrand($art_id);
                 $brand_name = $cat->getBrandName($brand_id);
@@ -214,13 +218,12 @@ function printBreadcrumbs($path)
 
                 $info_group_brand = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/$group_link/brandy=$brand_link/\">$group_name $brand_name</a>";
                 $pretitle .= " $icon $info_group_brand";
+                $b_arr[] = ["name" => "$group_name $brand_name", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/$group_link/brandy=$brand_link/"];
             }
 
             $info = $cat->getArticleText($art_id);
             $pretitle .= " $icon $info";
-
-            $b_arr[2] = ["name" => "{site_catalog}", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/"];
-            $b_arr[3] = ["name" => "$info", "item" => "$actual_link"];
+            $b_arr[] = ["name" => "$info", "item" => "$actual_link"];
             break;
         }
         case "news" : {

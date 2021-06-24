@@ -39,7 +39,7 @@ class FormClass extends CatalogueClass
         if (self::$flags === null) {
             $r = $db->query("SELECT t2c.ALFA2, t2b.BRAND_ID, t2c.COUNTRY_NAME 
             FROM `T2_BRANDS` t2b
-                LEFT JOIN `T2_COUNTRIES` t2c on (t2c.COUNTRY_ID=t2b.COUNTRY_ID)");
+                LEFT JOIN `T2_COUNTRIES` t2c ON (t2c.COUNTRY_ID = t2b.COUNTRY_ID)");
             self::$flags = array_column(mysqli_fetch_all($r, MYSQLI_ASSOC), null, 'BRAND_ID');
         }
         $flag = self::$flags[$brand_id]["ALFA2"];
@@ -77,7 +77,7 @@ class FormClass extends CatalogueClass
     /*
      * show article form
      * */
-    public function showArticle($art_id)
+    public function getArticleForm($art_id)
     {
         $art_id = $this->getUrlNumber($art_id);
         $auto = new AutoClass();
@@ -99,7 +99,7 @@ class FormClass extends CatalogueClass
         $article_nr_displ = $articleData["article_nr_displ"];
         $brand_id = $articleData["brand_id"];
         $brand_name = $articleData["brand_name"];
-        $article_name = $articleData["text"];
+        $article_name = $articleData["article_name"];
 
         if ($client->checkRetailClientCategory($this->getClient()) && $this->getCookieAuto() != "") {
             $article_nr_displ = $this->getSecretString($article_nr_displ);
@@ -141,7 +141,49 @@ class FormClass extends CatalogueClass
         $form = str_replace("{applicable_cap}", "", $form);
         $form = str_replace("{flag_visible}", "dnone", $form);
 
-        return $this->replaceLang($form);
+        $form = $this->replaceLang($form);
+
+        $breadcrumbs = $this->getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id);
+
+        return compact("form", "breadcrumbs");
+    }
+
+    public function getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id)
+    {
+        $catalog = new CatalogueClass();
+        $catalog_exist = new CatalogExistClass();
+        $arr = [];
+
+        $arr[] = ["name" => "{seo_site_toko}", "link" => $catalog->getSiteLink()];
+        $arr[] = ["name" => "{site_catalog}", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/"];
+
+        $group_id = $catalog->getArticleGroupExist($art_id);
+        if ($group_id > 0) {
+            $head_id = $catalog_exist->getHeadExistID($group_id);
+            $head_name = $catalog_exist->getHeadExistName($head_id);
+            $head_link = $catalog_exist->getHeadExistLink($head_id);
+
+            $arr[] = ["name" => "$head_name", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$head_link/"];
+
+            $group_name = $catalog->getGroupRowName($group_id);
+            $group_link = $catalog->getGroupRowLink($group_id);
+
+            $arr[] = ["name" => "$group_name", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$group_link/"];
+
+            $brand_name = $catalog->getBrandName($brand_id);
+            $brand_link = $catalog->getBrandLink($brand_id);
+
+            $arr[] = ["name" => "$group_name $brand_name", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$group_link/brandy=$brand_link/"];
+        }
+
+        $article_text = $catalog->getArticleText($art_id);
+
+        $format_article_search = $this->getFormatAticle($article_nr_displ);
+        $format_brand_name = $this->getFormatBrand($this->getBrandName($brand_id));
+
+        $arr[] = ["name" => "$article_text", "link" => $catalog->getSiteLink() . "$catalog->article_link/$format_article_search/$format_brand_name/$art_id/"];
+
+        return $arr;
     }
 
     /*
@@ -156,7 +198,6 @@ class FormClass extends CatalogueClass
         $tpoint = $this->getTpointID();
         $cur = $this->getCurrentExrate();
         $cur_cap = $kours->getKoursCaption($cur);
-        $art_id = str_replace("'", "", $art_id);
 
         $arr = [];
         $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
@@ -179,7 +220,7 @@ class FormClass extends CatalogueClass
             $article_nr_displ = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
             $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
-            $text = $db->result($r, $i - 1, "NAME");
+            $article_name = $db->result($r, $i - 1, "NAME");
             $suppl_id = $db->result($r, $i - 1, "suppl_id");
             $stock = intval($db->result($r, $i - 1, "AMOUNT"));
             $storage_id = $db->result($r, $i - 1, "storage_id");
@@ -210,7 +251,7 @@ class FormClass extends CatalogueClass
 
             $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
 
-            $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "text", "stock", "delivery_short_info", "price", "cur_cap", "delivery_days", "basket");
+            $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "stock", "delivery_short_info", "price", "cur_cap", "delivery_days", "basket");
         }
 
         $arr = $this->multiSort($arr, "delivery_days", "price");
@@ -218,7 +259,7 @@ class FormClass extends CatalogueClass
         $article_nr_displ = $arr[0]["article_nr_displ"];
         $brand_id = $arr[0]["brand_id"];
         $brand_name = $arr[0]["brand_name"];
-        $text = $arr[0]["text"];
+        $article_name = $arr[0]["article_name"];
         $stock = $arr[0]["stock"];
         $delivery_short_info = $arr[0]["delivery_short_info"];
         $price = $arr[0]["price"];
@@ -230,7 +271,7 @@ class FormClass extends CatalogueClass
             "article_nr_displ" => $article_nr_displ,
             "brand_id" => $brand_id,
             "brand_name" => $brand_name,
-            "text" => $text,
+            "article_name" => $article_name,
             "stock" => $stock,
             "delivery" => $delivery_short_info,
             "price" => $price,
@@ -314,52 +355,6 @@ class FormClass extends CatalogueClass
         }
         return $mas;
     }
-
-//    public function showCityFormSelected($city_like, $city_id)
-//    {
-//        $db = DbSingleton::getDbm();
-//        $list = "";
-//        $city_like = $this->getNameString($city_like);
-//        if ($city_id == "") {
-//            $city_id = 0;
-//        }
-//        $where = ($city_like != "") ? "WHERE `CITY_NAME` LIKE '%$city_like%'" : "WHERE `CITY_ID` IN ($city_id, 10108, 13549, 4074, 22739)";
-//        $r = $db->query("SELECT t2c.CITY_ID, t2c.CITY_NAME, t2r.REGION_NAME, t2s.STATE_NAME
-//        FROM `T2_CITY` t2c
-//            LEFT JOIN `T2_REGION` t2r ON (t2r.REGION_ID = t2c.REGION_ID)
-//            LEFT JOIN `T2_STATE` t2s ON (t2s.STATE_ID = t2r.STATE_ID)
-//        $where;");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $id = $db->result($r, $i - 1, "CITY_ID");
-//            $city = $db->result($r, $i - 1, "CITY_NAME");
-//            $region = $db->result($r, $i - 1, "REGION_NAME");
-//            $state = $db->result($r, $i - 1, "STATE_NAME");
-//            $location = ($region == "") ? "$city" : "$city - $region - $state";
-//            $checked = ($id == $city_id) ? "selected=\"selected\"" : "";
-//            $list .= "<option value=\"$id\" $checked>$location</option>";
-//        }
-//        return $list;
-//    }
-
-//    public function showInfoTemplate($art_id)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $art_id = $this->getUrlNumber($art_id);
-//        $info = "";
-//        if (!isset(self::$infoTemplates[$art_id])) {
-//            $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID` = $art_id AND `LANG_ID` = 16 ORDER BY `SORT` ASC;");
-//            self::$infoTemplates[$art_id] = mysqli_fetch_all($r, MYSQLI_ASSOC);
-//        }
-//        if (self::$infoTemplates[$art_id]) {
-//            $info = "<ul class=\"inline-list\">";
-//            foreach (self::$infoTemplates[$art_id] as $infoTemplate) {
-//                $info .= "<li><span class=\"bold\">{$infoTemplate['TEXT']}</span>: {$infoTemplate['VALUE']}</li>";
-//            }
-//            $info .= "</ul>";
-//        }
-//        return $info;
-//    }
 
     public static function cacheInfoTemplates($where_art_id_str)
     {
@@ -482,16 +477,6 @@ class FormClass extends CatalogueClass
         $photo_name = ($photo_name == "") ? $this->noPhoto : "$this->uploads_link/$photo_name";
         return $photo_name;
     }
-
-//    public function getArticlePhotos($art_id)
-//    {
-//        if (!isset(self::$articlePhotos[$art_id])) {
-//            $db = DbSingleton::getTokoDb();
-//            $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
-//            self::$articlePhotos[$art_id] = mysqli_fetch_all($r, MYSQLI_ASSOC);
-//        }
-//        return self::$articlePhotos[$art_id];
-//    }
 
     public static function cacheArticlesPhotos($where_art_id_str)
     {
@@ -636,7 +621,7 @@ class FormClass extends CatalogueClass
         } else {
             $gallery = "<div class=\"row\">
                 <div class=\"col-12\">
-                    <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\" style='border: 1px solid #e9e9e9;border-radius: .25em;'>
+                    <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\" style=\"border: 1px solid #e9e9e9; border-radius: .25em;\">
                         <div class=\"carousel-inner\" role=\"listbox\">$list</div>
                         <a class=\"carousel-control-prev\" href=\"#carouselGalleryControls\" role=\"button\" data-slide=\"prev\">
                             <span class=\"carousel-control-prev-icon\" aria-hidden=\"true\"></span>
@@ -653,7 +638,7 @@ class FormClass extends CatalogueClass
 
         $info = $this->getArticleInfoForm($art_id, 1, 1);
         if ($info != "") {
-            $info = "<div style='border:1px solid #e9e9e9; border-radius:.25em; padding:10px;'>$info</div>";
+            $info = "<div style=\"border: 1px solid #e9e9e9; border-radius: .25em; padding: 10px;\">$info</div>";
         }
         $applicability = $this->getArticleApplForm($art_id);
         $originals = $this->getOriginalNumbers($art_id);
@@ -949,9 +934,9 @@ class FormClass extends CatalogueClass
 
         $r = $db->query("SELECT thcg.`HEAD_ID`, thcg.`CAT_ID`, thcg.`GROUP_ID` 
         FROM `T2_TREE_HCG_EXIST` thcg
-            LEFT JOIN `T2_TREE_HEAD_EXIST` th ON th.`HEAD_ID` = thcg.`HEAD_ID`
-            LEFT JOIN `T2_TREE_CAT_EXIST` tc ON tc.`CAT_ID` = thcg.`CAT_ID`
-            LEFT JOIN `T2_TREE_GROUP_EXIST` tg ON tg.`GROUP_ID` = thcg.`GROUP_ID`
+            LEFT JOIN `T2_TREE_HEAD_EXIST` th ON (th.`HEAD_ID` = thcg.`HEAD_ID`)
+            LEFT JOIN `T2_TREE_CAT_EXIST` tc ON (tc.`CAT_ID` = thcg.`CAT_ID`)
+            LEFT JOIN `T2_TREE_GROUP_EXIST` tg ON (tg.`GROUP_ID` = thcg.`GROUP_ID`)
         WHERE th.`STATUS` = 1 AND tc.`STATUS` = 1 AND tg.`STATUS` = 1
         ORDER BY thcg.`POPULAR` DESC, thcg.`HEAD_ID`, thcg.`CAT_ID`, thcg.`GROUP_ID`;");
         $n = $db->num_rows($r);

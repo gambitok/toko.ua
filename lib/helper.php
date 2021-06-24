@@ -320,28 +320,6 @@ trait Helper
     }
 
     /*
-     * Associate arrays
-     * array_1 + array2
-     * */
-//    public function mergeArray($arr1, $arr2)
-//    {
-//        $data = [];
-//        foreach ($arr1 as $key => $value) {
-//            if (empty($data[$key])) {
-//                $data[$key] = [];
-//            }
-//            $data[$key] = $value;
-//        }
-//        foreach ($arr2 as $key => $value) {
-//            if (empty($data[$key])) {
-//                $data[$key] = [];
-//            }
-//            $data[$key] = array_unique(array_merge($data[$key], $value));
-//        }
-//        return $data;
-//    }
-
-    /*
      * check art_id in typ_id
      * */
     public function checkT2Link($typ_id, $art_id)
@@ -457,9 +435,50 @@ trait Helper
     {
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1");
+        $r = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
         $n = $db->result($r, 0, "count_arts");
         return ($n > 0);
+    }
+
+    public function getBreadCrumbForm($breads)
+    {
+        $form = "";
+        $script = "";
+        if (!empty($breads)) {
+            $key = 0;
+            $list = "";
+            $script_list = "";
+            $icon = "<i class=\"fa fa-chevron-right\"></i>";
+            foreach ($breads as $bread) {
+                $key++;
+                $name = $bread["name"];
+                $link = $bread["link"];
+
+                if ($key != count($breads)) {
+                    $list .= "
+                    <span typeof=\"v:Breadcrumb\">
+                        <a href=\"$link\" rel=\"v:url\" property=\"v:title\">$name</a>$icon
+                    </span>";
+                } else {
+                    $list .= "$name";
+                }
+
+                $script_list .= "
+                {
+                    \"@type\": \"ListItem\",
+                    \"position\": $key,
+                    \"name\": \"$name\",
+                    \"item\": \"$link\"
+                },";
+            }
+
+            $form = getHtmlForm("menu/breadcrumbs");
+            $form = str_replace("{bread_text}", $list, $form);
+
+            $script = getHtmlForm("menu/breadcrumbs_script");
+            $script = str_replace("{bread_text}", $script_list, $script);
+        }
+        return compact("form", "script");
     }
 
 }

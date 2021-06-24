@@ -268,7 +268,7 @@ class ShopClass extends CatalogueClass
         $article = $showform->getArticleInfo($art_id);
         $article_nr_displ = $article["article_nr_displ"];
         $brand_name = $article["brand_name"];
-        $article_name = $article["text"];
+        $article_name = $article["article_name"];
         $price = $article["price"];
         $basket = $article["basket"];
         $currency = $article["currency"];
@@ -432,7 +432,7 @@ class ShopClass extends CatalogueClass
                 $status_action = $action_id;
             }
         }
-        $db->query("UPDATE `basket` SET `amount` = '$amount', `status_action`='$status_action' WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where;");
+        $db->query("UPDATE `basket` SET `amount` = '$amount', `status_action` = '$status_action' WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where;");
         return true;
     }
 
@@ -1655,33 +1655,4 @@ class ShopClass extends CatalogueClass
         }
         return $list;
     }
-
-//    public function getCitiesNP() {
-//        $np = new \LisDev\Delivery\NovaPoshtaApi2('4a18892255b3c9a8e7ef4813c790e75f');
-//        $arr = $np->getCities()['data'];
-//        foreach ($arr as $val) {
-//            $name = iconv("UTF-8", "windows-1251", $val["Description"]);
-//            $ref = $val["Ref"];
-//            $area_ref = $val["Area"];
-//            $area_name = $this->getAreaName($area_ref);
-//            $this->setNova2(0, $name, $ref, $area_name, $area_ref);
-//        }
-//        return count($arr);
-//    }
-
-//    public function setNova2($city_id, $city_name, $city_ref, $area_name, $area_ref)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $db->query("INSERT INTO `T2_CITY_NOVA_2` (`CITY_ID`, `CITY_NAME`, `CITY_REF`, `AREA_NAME`, `AREA_REF`)
-//        VALUES ('$city_id', \"$city_name\", '$city_ref', \"$area_name\", '$area_ref');");
-//        return true;
-//    }
-
-//    public function getAreaName($ref)
-//    {
-//        $np = new NovaPoshtaApi2('4a18892255b3c9a8e7ef4813c790e75f');
-//        $val = $np->getWarehouses($ref)['data'][0];
-//        return iconv("UTF-8", "windows-1251", $val["Description"]);
-//    }
-
 }
