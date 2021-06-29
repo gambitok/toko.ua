@@ -916,28 +916,29 @@ class CatalogExistClass extends CatalogueClass
             $pager = $this->replaceLang($pager);
         }
 
-        $form = $this->getHtmlForm("catalog_exist/form");
         if (empty($art_id_str)) {
             $form = $this->showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $filters_h1);
+        } else {
+            $form = $this->getHtmlForm("catalog_exist/form");
+            $form = str_replace("{details_group_id}", $group_id, $form);
+            $form = str_replace("{mfa_link}", $this->getManufactureLink($mfa_id), $form);
+            $form = str_replace("{model_link}", $this->getModelLink($model), $form);
+            $form = str_replace("{parts_name}", $group_text, $form);
+            $form = str_replace("{parts_list}", $list, $form);
+            $form = str_replace("{parts_h1}", "$filters_h1 $translit $pager", $form);
+            $form = str_replace("{parts_count}", "{unselect_cap} $count " . $this->getGoodsCap($count), $form);
+            $form = str_replace("{parts_filters}", "$filters_btn", $form);
+            $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
+            $form = str_replace("{parts_params}", $filters_form, $form);
+            $form = str_replace("{parts_breadcrumbs}", $this->getPartsBreadcrumbsForm($group_id), $form);
+            $form = str_replace("{status_auto}", $status_auto, $form);
+            $form = str_replace("{filters_count}", $filters_count, $form);
+            $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);
+            $form = str_replace("{parts_cars}", $this->drawLoader(), $form);
+            $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $filters, $status_auto, $status_auto_type), $form);
+            $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $filters, $mfa_id, $model, $status_auto, $status_auto_type), $form);
+            $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
         }
-        $form = str_replace("{details_group_id}", $group_id, $form);
-        $form = str_replace("{mfa_link}", $this->getManufactureLink($mfa_id), $form);
-        $form = str_replace("{model_link}", $this->getModelLink($model), $form);
-        $form = str_replace("{parts_name}", $group_text, $form);
-        $form = str_replace("{parts_list}", $list, $form);
-        $form = str_replace("{parts_h1}", "$filters_h1 $translit $pager", $form);
-        $form = str_replace("{parts_count}", "{unselect_cap} $count " . $this->getGoodsCap($count), $form);
-        $form = str_replace("{parts_filters}", "$filters_btn", $form);
-        $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
-        $form = str_replace("{parts_params}", $filters_form, $form);
-        $form = str_replace("{parts_breadcrumbs}", $this->getPartsBreadcrumbsForm($group_id), $form);
-        $form = str_replace("{status_auto}", $status_auto, $form);
-        $form = str_replace("{filters_count}", $filters_count, $form);
-        $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);
-        $form = str_replace("{parts_cars}", $this->drawLoader(), $form);
-        $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $filters, $status_auto, $status_auto_type), $form);
-        $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $filters, $mfa_id, $model, $status_auto, $status_auto_type), $form);
-        $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
 
         $max_pages_count = ceil($count / $this->products_on_page);
 
@@ -1370,6 +1371,41 @@ class CatalogExistClass extends CatalogueClass
     }
 
     /*
+     * show catalog seo filters form
+     * */
+    public function getCatalogSeoFiltersForm($group_id, $filters)
+    {
+        $list = "";
+        $params = $this->getCheckedFilters($group_id, $filters);
+
+        // 1) два зажатих фільтра
+        if (count($params) == 2) {
+            // 1 бренд + 1 парам
+            if (array_key_exists(0, $params)) {
+                $list .= "2 filtra: 1 brand, 1 param";
+            }
+            // 2 параметра
+            else {
+                $list .= "2 filtra: 2 param";
+            }
+        }
+
+        // 2) один зажатий фільтра
+        if (count($params) == 1) {
+            // 1 бренд
+            if (array_key_exists(0, $params)) {
+                $list .= "1 filtr: 1 brand";
+            }
+            // 1 параметр
+            else {
+                $list .= "1 filtr: 1 param";
+            }
+        }
+        $list = "";
+        return $list;
+    }
+
+    /*
      * show products seo form
      * */
     public function getPartsCatalogueSeo($group_id, $page = 1, $filters = [], $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0)
@@ -1379,6 +1415,10 @@ class CatalogExistClass extends CatalogueClass
         if ($page <= 1) {
             $typ_id = $this->getCookieAuto();
             if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 0)) {
+                // SEO filters
+                if ($typ_id == "" || ($status_auto == 1 && $status_auto_type == 0)) {
+                    $form = str_replace("{seo_filters}", $this->getCatalogSeoFiltersForm($group_id, $filters), $form);
+                }
                 // SEO details
                 if ($typ_id == "" || ($status_auto == 1 && $status_auto_type == 0)) {
                     if ($mfa_id > 0) {
@@ -1399,6 +1439,7 @@ class CatalogExistClass extends CatalogueClass
                 }
             }
         }
+        $form = str_replace("{seo_filters}", "", $form);
         $form = str_replace("{seo_auto}", "", $form);
         $form = str_replace("{seo_popular}", "", $form);
         $form = str_replace("{seo_style}", "none", $form);

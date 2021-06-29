@@ -471,6 +471,7 @@ trait Helper
                     \"item\": \"$link\"
                 },";
             }
+            $script_list = rtrim($script_list, ",");
 
             $form = getHtmlForm("menu/breadcrumbs");
             $form = str_replace("{bread_text}", $list, $form);
