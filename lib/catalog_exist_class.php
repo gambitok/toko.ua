@@ -899,7 +899,6 @@ class CatalogExistClass extends CatalogueClass
         list($list) = $this->searchList($art_id_str, 1, "", "", $mfa_id, $model, $status_auto);
 
         $count = $this->getPartsCount($group_id, $query);
-        $filters_form = $this->getPartsFiltersForm($group_id, $filters, $mfa_id, $model, $where_mfa, $where_link_arts, $query);
 
         $pagination_form = $this->getPartsPaginationForm($count, $page);
         list($filters_h1, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $page, $filters, $mfa_id, $model, $str_link);
@@ -929,7 +928,7 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_count}", "{unselect_cap} $count " . $this->getGoodsCap($count), $form);
             $form = str_replace("{parts_filters}", "$filters_btn", $form);
             $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
-            $form = str_replace("{parts_params}", $filters_form, $form);
+            $form = str_replace("{parts_params}", $this->getPartsFiltersForm($group_id, $filters, $mfa_id, $model, $where_mfa, $where_link_arts, $query), $form);
             $form = str_replace("{parts_breadcrumbs}", $this->getPartsBreadcrumbsForm($group_id), $form);
             $form = str_replace("{status_auto}", $status_auto, $form);
             $form = str_replace("{filters_count}", $filters_count, $form);
@@ -1002,6 +1001,192 @@ class CatalogExistClass extends CatalogueClass
 
         return array($filters_h1, $filters_title, $filters_btn, $count_values);
     }
+
+    public function getPartsFiltersForm2($group_id, $filters = [])
+    {
+        $group_name = $this->getGroupRowName($group_id);
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+        $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
+        $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
+
+        $count_arts_full = $this->getPartsCount($group_id);
+
+        $params_check = $this->getCheckedFilters($group_id, $filters);
+
+        $exist_params = $this->getExistedParams($group_id);
+
+        $params = [];
+        $checked_params_keys = [];
+        $unchecked_params_keys = [];
+
+        if (empty($filters)) {
+            $r = $dbc->query("SELECT tp.*, t.brand_id as brand_cur_id 
+            FROM `$table` t
+                LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
+                LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+            WHERE 1 
+            GROUP BY t.art_id ;");
+            $n = $dbc->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $brand_id = $dbc->result($r, $i - 1, "brand_cur_id");
+                $params[0][] = $brand_id;
+                foreach($exist_params as $param_id) {
+                    $value_str = $dbc->result($r, $i - 1, "param_$param_id");
+                    if (!empty($value_str)) {
+                        foreach (explode(",", $value_str) as $item) {
+                            $params[$param_id][] = $item;
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            $checked_params_keys = array_keys($params_check);
+            $existed_params_keys = array_values($exist_params);
+            $existed_params_keys[] = 0;
+            $unchecked_params_keys = array_diff($existed_params_keys, $checked_params_keys);
+
+            foreach ($checked_params_keys as $param_id) {
+                $where = $this->getFiltersWhereSelected($group_id, $filters, $param_id);
+                $value_arr = [];
+                $r = $dbc->query("SELECT tp.*, t.brand_id as brand_cur_id 
+                FROM `$table` t
+                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
+                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+                WHERE 1 $where
+                GROUP BY t.art_id ;");
+                $n = $dbc->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    if ($param_id == 0) {
+                        $value_str = $dbc->result($r, $i - 1, "brand_cur_id");
+                    } else {
+                        $value_str = $dbc->result($r, $i - 1, "param_$param_id");
+                    }
+                    if (!empty($value_str)) {
+                        foreach (explode(",", $value_str) as $item) {
+                            $value_arr[] = $item;
+                        }
+                    }
+                }
+                $params[$param_id] = $value_arr;
+            }
+
+            foreach ($unchecked_params_keys as $param_id) {
+                $where = $this->getFiltersWhere($group_id, $filters);
+                $value_arr = [];
+                $r = $dbc->query("SELECT tp.*, t.brand_id as brand_cur_id 
+                FROM `$table` t
+                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
+                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+                WHERE 1 $where 
+                GROUP BY t.art_id ;");
+                $n = $dbc->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    if ($param_id == 0) {
+                        $value_str = $dbc->result($r, $i - 1, "brand_cur_id");
+                    } else {
+                        $value_str = $dbc->result($r, $i - 1, "param_$param_id");
+                    }
+                    if (!empty($value_str)) {
+                        foreach (explode(",", $value_str) as $item) {
+                            $value_arr[] = $item;
+                        }
+                    }
+                }
+                $params[$param_id] = $value_arr;
+            }
+
+        }
+
+        foreach ($params as $param_id => $values) {
+            $params[$param_id] = array_unique($values);
+        }
+
+        if (!empty($params)) {
+            // error page key '' and 0 error
+            $keys = array_keys($params);
+            foreach ($keys as $key_id => $key) {
+                if ($key == "") {
+                    $keys[$key_id] = 0;
+                }
+            }
+            $keys = implode(",", $keys);
+
+            $param_ids = [];
+            $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` IN ($keys) ORDER BY `POSITION` ASC;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $param_id = $db->result($r, $i - 1, "PARAM_ID");
+                $param_ids[] = $param_id;
+            }
+            $arr = [];
+            $arr[0] = $params[0];
+            foreach ($param_ids as $param_id) {
+                $arr[$param_id] = $params[$param_id];
+            }
+        }
+
+        $list_params = "";
+        if (!empty($arr)) {
+            foreach ($arr as $param_id => $values) {
+                $param_name = $this->getGroupParamName($param_id);
+                if (!empty($values)) {
+                    $list_params .= "<br>{seo_catalog_filters_cap_1} $group_name {seo_catalog_filters_cap_2} <b>$param_name</b>: ";
+                    $items = [];
+                    foreach ($values as $value_id) {
+                        $value_name = $this->getGroupValueName($value_id, $param_id);
+                        $link = $this->getPartsFilterLinks($group_id, $filters, $param_id, $value_id);
+                        $checked = (in_array($value_id, $params_check[$param_id]));
+                        $count_arts = 0;
+                        if (!empty($filters)) {
+                            if (in_array($param_id, $checked_params_keys)) {
+                                $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id, "", "");
+                                $count_arts = $count_arts - $count_arts_full;
+                            }
+                            if (in_array($param_id, $unchecked_params_keys)) {
+                                $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id, "", "");
+                            }
+                        } else {
+                            $count_arts = $this->getPartsCountWill($group_id, $filters, $param_id, $value_id, "", "");
+                        }
+                        $items[$value_id] = compact("value_name", "link", "checked", "count_arts");
+                    }
+
+                    $arr_checked = [];
+                    $arr_value_name = [];
+                    $arr_count_arts = [];
+                    foreach ($items as $key => $row) {
+                        $arr_checked[$key]  = $row["checked"];
+                        $arr_value_name[$key] = $row["value_name"];
+                        $arr_count_arts[$key] = $row["count_arts"];
+                    }
+                    if ($param_id == 0) {
+                        array_multisort($arr_checked, SORT_DESC, SORT_NUMERIC, $arr_value_name, SORT_ASC, SORT_STRING, $items);
+                    } else {
+                        array_multisort($arr_checked, SORT_DESC, SORT_NUMERIC, $arr_count_arts, SORT_DESC, SORT_NUMERIC, $items);
+                    }
+
+                    foreach ($items as $item) {
+                        $value_name = $item["value_name"];
+                        $link = $item["link"];
+                        $checked = $item["checked"];
+                        if (!$checked) {
+                            $list_params .= "<a href=\"$link\">
+                                $value_name
+                            </a>, ";
+                        }
+                    }
+                    $list_params = rtrim($list_params, ", ");
+                    $list_params = rtrim($list_params, ",");
+                }
+            }
+        }
+
+        return $this->replaceLang($list_params);
+    }
+
 
     /*
      * show filter form
@@ -1378,30 +1563,32 @@ class CatalogExistClass extends CatalogueClass
         $list = "";
         $params = $this->getCheckedFilters($group_id, $filters);
 
-        // 1) два зажатих фільтра
-        if (count($params) == 2) {
-            // 1 бренд + 1 парам
-            if (array_key_exists(0, $params)) {
-                $list .= "2 filtra: 1 brand, 1 param";
-            }
-            // 2 параметра
-            else {
-                $list .= "2 filtra: 2 param";
-            }
-        }
+//        // 1) два зажатих фільтра
+//        if (count($params) == 2) {
+//            // 1 бренд + 1 парам
+//            if (array_key_exists(0, $params)) {
+//                $list .= "2 filtra: 1 brand, 1 param";
+//            }
+//            // 2 параметра
+//            else {
+//                $list .= "2 filtra: 2 param";
+//            }
+//        }
 
         // 2) один зажатий фільтра
         if (count($params) == 1) {
-            // 1 бренд
-            if (array_key_exists(0, $params)) {
-                $list .= "1 filtr: 1 brand";
-            }
-            // 1 параметр
-            else {
-                $list .= "1 filtr: 1 param";
-            }
+//            // 1 бренд
+//            if (array_key_exists(0, $params)) {
+//                $list .= "1 filtr: 1 brand";
+//            }
+//            // 1 параметр
+//            else {
+//                $list .= "1 filtr: 1 param";
+//            }
+
+            $list = $this->getPartsFiltersForm2($group_id, $filters);
         }
-        $list = "";
+
         return $list;
     }
 
