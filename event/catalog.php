@@ -76,8 +76,8 @@ if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
             }
 
             if (!empty($filters)) {
-                list($count_brands, $count_params) = $catalog_exist->getCatalogParamsCount($group_id, $filters);
-                if ($count_brands > 1 || $count_params > 1) {
+                list($count_brands, $count_params, $jopa) = $catalog_exist->getCatalogParamsCount($group_id, $filters);
+                if ($jopa > 0) {
                     $content = str_replace("{meta_noindex}", '
                         <meta name="robots" content="noindex, nofollow">
                         <meta name="googlebot" content="noindex, nofollow">
