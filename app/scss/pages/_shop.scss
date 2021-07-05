@@ -13,9 +13,11 @@
     &-table {
         display: block;
         &-thead {
+            align-items: center;
             font-size: 14px;
         }
         &-tbody {
+            align-items: center;
             background: #fff;
             min-height: 50px;
             .input-group {

@@ -202,6 +202,7 @@ header {
 .header-phone {
     display: none;
     &-nav {
+        align-items: center!important;
         border-bottom: 1px solid #ccc;
         padding: 10px 15px;
         &__logo {
@@ -245,10 +246,12 @@ header {
             border-radius: .25em;
             color: #ccc;
             text-align: left;
-            i {
+            height: 40px;
+            width: 100%;
+            padding: 5px 10px;
+            i, span {
                 color: #0c5460;
                 float: right;
-                line-height: 24px;
             }
         }
     }
@@ -263,19 +266,21 @@ header {
         }
         a {
             color: #606975;
-            font-size: 18px;
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
             &:hover {
                 background-color: inherit;
                 color: inherit;
             }
         }
-        img {
-            height: 20px;
-            margin-right: 5px;
-            position: relative;
-            top: -4px;
-            width: 20px;
-        }
+        //img {
+        //    height: 20px;
+        //    margin-right: 5px;
+        //    position: relative;
+        //    top: -4px;
+        //    width: 20px;
+        //}
         input {
             border: none;
             background: transparent;
@@ -291,6 +296,7 @@ header {
 }
 
 .header-order {
+    align-items: center;
     padding: 30px 0;
     .header-phone-drop {
         background: #fff;

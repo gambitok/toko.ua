@@ -76,8 +76,11 @@ class MenuClass extends CatalogueClass
                 $short_desc = $db->result($r, $i - 1, "short_desc");
                 $date = $db->result($r, $i - 1, "data");
                 $img_file = $this->getNewsImage($state_id);
+//                $img = ($img_file != "")
+//                    ? "<img itemprop=\"image\" src=\"/thumb.php?image=news/$language_id/$state_id/$img_file&size=280\" alt=\"image\">"
+//                    : "";
                 $img = ($img_file != "")
-                    ? "<img itemprop=\"image\" src=\"/thumb.php?image=news/$language_id/$state_id/$img_file&size=280\" alt=\"image\">"
+                    ? "<img itemprop=\"image\" class=\"lazy\" data-src=\"https://toko.ua/uploads/images/news/$language_id/$state_id/$img_file\" src=\"https://toko.ua/images/no_photo.png\" alt=\"image\">"
                     : "";
                 $list .= "<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"row news-block__item\">
                     <div class=\"col-8\">
@@ -342,7 +345,7 @@ class MenuClass extends CatalogueClass
         $language_id = $this->getLanguage();
         $r = $db->query("SELECT t2.id, t2a.full_name, t2a.address 
         FROM `T_POINT` t2
-            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id=t2.id)
+            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id = t2.id)
         WHERE t2.status = 1 AND t2a.lang_id = $language_id 
         ORDER BY t2.position DESC, t2a.full_name ASC;");
         $n = $db->num_rows($r);
@@ -395,7 +398,7 @@ class MenuClass extends CatalogueClass
     }
 
     /*
-     * GET T point Form
+     * GET TPoint Form
      * (choose office)
      * */
     public function getRegionSelect()
@@ -410,9 +413,9 @@ class MenuClass extends CatalogueClass
         WHERE t2.id = $tpoint_id AND t2a.lang_id = $language_id 
         ORDER BY t2.position DESC, t2a.full_name ASC;");
         $n = $db->num_rows($r);
-        $region = $db->result($r, 0, "full_name");
-        $address = $db->result($r, 0, "address");
         if ($n > 0) {
+            $region = $db->result($r, 0, "full_name");
+            $address = $db->result($r, 0, "address");
             $list = "<span><span class=\"fas fa-map-marker-alt\"></span> {choose_office}:</span>
             <a onClick=\"showRegionForm();\">
                 <span id=\"region_select\">
@@ -776,22 +779,6 @@ class MenuClass extends CatalogueClass
     }
 
     /*
-     * show scan form (Bonus)
-     * */
-    public function showScanForm()
-    {
-        return $this->getHtmlForm("bonus/scan");
-    }
-
-    /*
-     * show scan form (Bonus)
-     * */
-    public function showFineForm()
-    {
-        return $this->getHtmlForm("menu/fine");
-    }
-
-    /*
      * show scan form (Bonus) Validate
      * */
     public function showScanPhoneForm($phone)
@@ -915,14 +902,14 @@ class MenuClass extends CatalogueClass
         $profile = new ProfileClass();
         $shop = new ShopClass();
         $form = $this->getHtmlForm("bar/nav");
+//        if (!$profile->getProfileClientInfo()) {
+//            $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
+//            $form = str_replace("{region_select_phone}", "<li>" . $this->getRegionSelect() . "</li>", $form);
+//        } else {
+//            $form = str_replace("{region_select}", "", $form);
+//            $form = str_replace("{region_select_phone}", "", $form);
+//        }
         $form = str_replace("{site_main_link}", $this->getSiteLink(), $form);
-        if (!$profile->getProfileClientInfo()) {
-            $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
-            $form = str_replace("{region_select_phone}", "<li>" . $this->getRegionSelect() . "</li>", $form);
-        } else {
-            $form = str_replace("{region_select}", "", $form);
-            $form = str_replace("{region_select_phone}", "", $form);
-        }
         $form = str_replace("{profile_mobile}", $profile->getProfileInfoMobile(), $form);
         $form = str_replace("{basket_summ}", $shop->countSummBasket(), $form);
         return $form;

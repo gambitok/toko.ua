@@ -879,12 +879,12 @@ class ProfileClass extends ClientClass
         $form = str_replace("{type_form}", $menu->showTypeForm(), $form);
         $form = str_replace("{region_form}", $menu->getRegionForm(), $form);
         $form = str_replace("{category_options}", $this->getManualOptions("customers_categories"), $form);
-        $form = str_replace("{tpoint_options}", $this->getRegionSelect(), $form);
+        $form = str_replace("{tpoint_options}", $this->getRegionSelectProfile(), $form);
         $form = str_replace("{user_city_main_list}", $shop->getCitiesMainSelect(), $form);
         return $form;
     }
 
-    public function getRegionSelect()
+    public function getRegionSelectProfile()
     {
         $db = DbSingleton::getDbm();
         $options = "";

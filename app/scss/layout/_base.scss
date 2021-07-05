@@ -250,8 +250,10 @@
             }
         }
         &__image {
+            height: 40px;
             width: 50px;
             img {
+                height: 40px;
                 width: 50px;
             }
             &-socials {
@@ -627,6 +629,8 @@
         padding: 0;
         white-space: nowrap;
         word-wrap: break-word;
+        height: 30px;
+        display: block;
         a {
             color: #ccc;
             &:hover {

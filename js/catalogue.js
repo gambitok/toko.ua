@@ -66,18 +66,18 @@ function artSearch(input_name) {
 function selectRegion(id) {
     JsHttpRequest.query(folder,{'w':'setTpoint', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            selectRegionText(result.content);
-            $("#RegionForm").modal("hide");
+            // selectRegionText(result.content);
+            // $("#RegionForm").modal("hide");
             location.reload(true);
         }}, true);
 }
 
-function selectRegionText(id) {
-    JsHttpRequest.query(folder,{'w':'getRegionSelect', 'id':id},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#region_select_tpoint").html(result.content);
-        }}, true);
-}
+// function selectRegionText(id) {
+//     JsHttpRequest.query(folder,{'w':'getRegionSelect', 'id':id},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//             $("#region_select_tpoint").html(result.content);
+//         }}, true);
+// }
 
 // Modal `Brands`
 function showBrandForm(brand) {

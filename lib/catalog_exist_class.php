@@ -516,30 +516,29 @@ class CatalogExistClass extends CatalogueClass
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
     }
 
-    /*
-     * show breadcrumb form
-     * */
-    public function getPartsBreadcrumbsForm($group_id, $filters, $filters_h1)
+    public function getCatalogBreadCrumb($group_id, $filters, $filters_h1, $source_link)
     {
-        $list = "";
+        $arr = [];
+
+        $arr[] = ["name" => "{seo_site_toko}", "link" => $this->getSiteLink()];
+        $arr[] = ["name" => "{site_catalog}", "link" => $this->getSiteLink() . "$this->catalog_link/"];
+
         if ($group_id > 0) {
-            $group_name = $this->getGroupRowName($group_id);
             $head_id = $this->getHeadExistID($group_id);
             $head_name = $this->getHeadExistName($head_id);
             $head_link = $this->getHeadExistLink($head_id);
+
+            $arr[] = ["name" => "$head_name", "link" => $this->getSiteLink() . "$this->catalog_link/$head_link/"];
+
+            $group_name = $this->getGroupRowName($group_id);
             $group_link = $this->getGroupRowLink($group_id);
-            $icon = "<i class=\"fa fa-chevron-right\"></i>";
 
-            $list = "<a href=\"" . $this->getSiteLink() . "\">{seo_shop_toko}</a> 
-                $icon <a href=\"" . $this->getSiteLink() . "$this->catalog_link/\">{site_catalog}</a> 
-                $icon <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/\">$head_name</a> 
-                ";
+            $arr[] = ["name" => "$group_name", "link" => $this->getSiteLink() . "$this->catalog_link/$group_link/"];
 
-            $ebala = "";
             $params = $this->getCheckedFilters($group_id, $filters);
             if (!empty($filters)) {
-                $ebala .= "$icon <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/\">$group_name</a> ";
                 if (count($params) > 1) {
+                    $arr2 = [];
                     foreach ($params as $param_id => $values) {
                         if (count($values) == 1) {
                             if ($param_id == 0) {
@@ -548,22 +547,28 @@ class CatalogExistClass extends CatalogueClass
                                     $brand_name = $this->getBrandName($value_id);
                                     $brand_link = $this->getBrandName($value_id);
                                 }
-                                $ebala .= "$icon <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/brandy=$brand_link/\">$group_name $brand_name</a>";
+                                $arr2[] = ["name" => "$group_name $brand_name", "link" => $this->getSiteLink() . "$this->catalog_link/$group_link/brandy=$brand_link/"];
                             }
                         } else {
-                            $ebala = "";
+                            $arr2 = [];
                             break;
                         }
                     }
+                    $arr = array_merge($arr, $arr2);
                 }
+
+                $arr[] = ["name" => "$filters_h1", "link" => "$source_link"];
             }
 
-            $list .= $ebala;
-
-            $list .= "$icon $filters_h1";
         }
-        return $list;
+
+        return $arr;
     }
+
+    /*
+     * show breadcrumb form
+     * */
+    //s
 
     /*
      * show pagination form
@@ -891,7 +896,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show catalog form
      * */
-    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0, $str_link = "")
+    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0, $str_link = "", $source_link = "")
     {
         $automan = new AutoClass();
         $dbc = DbSingleton::getTokoCacheDb();
@@ -947,6 +952,7 @@ class CatalogExistClass extends CatalogueClass
             $pager = $this->replaceLang($pager);
         }
 
+        $breadcrumbs_script = "";
         if (empty($art_id_str)) {
             $form = $this->showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $filters_h1);
         } else {
@@ -961,7 +967,10 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_filters}", "$filters_btn", $form);
             $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
             $form = str_replace("{parts_params}", $this->getPartsFiltersForm($group_id, $filters, $mfa_id, $model, $where_mfa, $where_link_arts, $query), $form);
-            $form = str_replace("{parts_breadcrumbs}", $this->getPartsBreadcrumbsForm($group_id, $filters, $filters_h1), $form);
+//            $breadcrumbsData = $this->getPartsBreadcrumbsForm($group_id, $filters, $filters_h1);
+            $breadcrumbsData = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $filters, $filters_h1, $source_link));
+            $breadcrumbs_script = $breadcrumbsData["script"];
+            $form = str_replace("{parts_breadcrumbs}", $breadcrumbsData["form"], $form);
             $form = str_replace("{status_auto}", $status_auto, $form);
             $form = str_replace("{filters_count}", $filters_count, $form);
             $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);
@@ -977,7 +986,7 @@ class CatalogExistClass extends CatalogueClass
         $description = str_replace("{h1_caption}", $filters_h1, $description);
         $description = str_replace("{h1_caption_parrent}", $this->getGroupRowName($group_id), $description);
 
-        return array("form" => $form, "title" => $filters_title, "h1" => $filters_h1, "pages_count" => $max_pages_count, "description" => $description);
+        return array("form" => $form, "title" => $filters_title, "h1" => $filters_h1, "pages_count" => $max_pages_count, "description" => $description, "script" => $breadcrumbs_script);
     }
 
     public function drawLoader()
@@ -2122,7 +2131,7 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function getCatalogParamsCount($group_id, $filters)
     {
-        $count_brands = $count_params = 0; $jopa = 0;
+        $count_brands = $count_params = 0; $count_values = 0;
         $params_check = $this->getCheckedFilters($group_id, $filters);
         foreach ($params_check as $param_id => $values) {
             if ($param_id == 0) {
@@ -2131,7 +2140,7 @@ class CatalogExistClass extends CatalogueClass
                 $count_params += count($values);
             }
             if (count($values) > 1) {
-                $jopa++;
+                $count_values++;
             }
         }
         if ($count_brands > 1) {
@@ -2140,7 +2149,7 @@ class CatalogExistClass extends CatalogueClass
         if ($count_params > 1) {
             $count_params = 1;
         }
-        return array($count_brands, $count_params, $jopa);
+        return array($count_brands, $count_params, $count_values);
     }
 
     /*

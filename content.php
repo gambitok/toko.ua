@@ -185,8 +185,12 @@ if ($_REQUEST["w"] == "getSellerImage") {
     $GLOBALS['_RESULT'] = array("content" => $menu->getSellerImage());
 }
 
-if ($_REQUEST["w"] == "getRegionSelect") {
-    $GLOBALS['_RESULT'] = array("content" => $menu->getRegionSelect());
+//if ($_REQUEST["w"] == "getRegionSelect") {
+//    $GLOBALS['_RESULT'] = array("content" => $menu->getRegionSelect());
+//}
+
+if ($_REQUEST["w"] == "setTpoint") {
+    $GLOBALS['_RESULT'] = array("content" => $client->setTpoint($_REQUEST["id"]));
 }
 
 if ($_REQUEST["w"] == "getMenuBar") {
@@ -224,10 +228,6 @@ if ($_REQUEST["w"] == "deleteHistoryItem") {
 }
 
 /*==== CLIENT ====*/
-
-if ($_REQUEST["w"] == "setTpoint") {
-    $GLOBALS['_RESULT'] = array("content" => $client->setTpoint($_REQUEST["id"]));
-}
 
 if ($_REQUEST["w"] == "loginClient") {
     $GLOBALS['_RESULT'] = array("content" => $client->loginClient($_REQUEST["login"], $_REQUEST["password"]));

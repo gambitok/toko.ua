@@ -47,6 +47,7 @@
         overflow: hidden;
     }
     &__price {
+        align-items: center;
         text-align: right;
     }
     &__buy {
@@ -155,6 +156,7 @@
 }
 
 .tables__title {
+    align-items: center;
     background: #f7f7f7;
     border: 3px solid #e1e7ec;
     border-bottom: none;
@@ -257,8 +259,8 @@
     img {
         display: block;
         margin: 0 auto;
-        max-height: 100%;
-        max-width: 100%
+        height: 100%;
+        width: 100%;
     }
 }
 
@@ -366,10 +368,8 @@
     position: relative;
     top: -2px;
     &-card {
-        display: block;
         position: absolute;
         right: 15px;
-        text-align: right;
         span {
             box-shadow: 1px 2px 4px grey;
         }

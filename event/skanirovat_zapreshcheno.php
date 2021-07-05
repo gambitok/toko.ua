@@ -3,7 +3,7 @@
 $phone = $client->formatValidPhone($_POST['bonus_phone']);
 
 if ($phone == "") {
-        $content = str_replace("{main_window}", $menu->showScanForm(), $content);
+        $content = str_replace("{main_window}", $menu->getHtmlForm("bonus/scan"), $content);
 } else {
     // check if reg//
     if ($client->checkRegistration($phone)) {

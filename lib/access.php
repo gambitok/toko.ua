@@ -163,9 +163,11 @@ function getMoreTitle($path)
 function printBreadcrumbs($path)
 {
     $cat = new CatalogueClass();
-    $cat_ex = new CatalogExistClass();
     $menu = new MenuClass();
     $bread = findLinks();
+
+    $icon = "<i class=\"fa fa-chevron-right\"></i>";
+
     $section = $path;
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     if (strpos($actual_link,"?") !== false) {
@@ -184,46 +186,7 @@ function printBreadcrumbs($path)
         case "search" : {
             $article_nr_search = $cat->getUrlString($bread[1]);
             $info = $article_nr_search;
-            $pretitle = "$a_home > {search_cap} > {search_results} $info";
-            break;
-        }
-        case "article" : {
-            $icon = "<i class=\"fa fa-chevron-right\"></i>";
-            $art_id = $cat->getUrlNumber($bread[3]);
-            $back = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/\">{site_catalog}</a>";
-            $pretitle = "$a_home $icon $back";
-
-            $b_arr[2] = ["name" => "{site_catalog}", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/"];
-
-            $group_id = $cat->getArticleGroupExist($art_id);
-            if ($group_id > 0) {
-                $head_id = $cat_ex->getHeadExistID($group_id);
-                $head_name = $cat_ex->getHeadExistName($head_id);
-                $head_link = $cat_ex->getHeadExistLink($head_id);
-
-                $info_head = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/$head_link/\">$head_name</a>";
-                $pretitle .= " $icon $info_head";
-                $b_arr[] = ["name" => "$head_name", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/$head_link/"];
-
-                $group_name = $cat->getGroupRowName($group_id);
-                $group_link = $cat->getGroupRowLink($group_id);
-
-                $info_group = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/$group_link/\">$group_name</a>";
-                $pretitle .= " $icon $info_group";
-                $b_arr[] = ["name" => "$group_name", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/$group_link/"];
-
-                $brand_id = $cat->getArticleBrand($art_id);
-                $brand_name = $cat->getBrandName($brand_id);
-                $brand_link = $cat->getBrandLink($brand_id);
-
-                $info_group_brand = "<a href=\"" . $cat->getSiteLink() . "$cat->catalog_link/$group_link/brandy=$brand_link/\">$group_name $brand_name</a>";
-                $pretitle .= " $icon $info_group_brand";
-                $b_arr[] = ["name" => "$group_name $brand_name", "item" => "" . $cat->getSiteLink() . "$cat->catalog_link/$group_link/brandy=$brand_link/"];
-            }
-
-            $info = $cat->getArticleText($art_id);
-            $pretitle .= " $icon $info";
-            $b_arr[] = ["name" => "$info", "item" => "$actual_link"];
+            $pretitle = "$a_home $icon {search_cap} $icon {search_results} $info";
             break;
         }
         case "news" : {
@@ -231,12 +194,12 @@ function printBreadcrumbs($path)
             if ($cat->getUrlString($bread[1]) == "state") {
                 $state_link = $cat->getUrlString($bread[2]);
                 $state_name = $menu->getNewsStateTitle($state_link);
-                $info = "$a_section > " . $state_name;
+                $info = "$a_section $icon " . $state_name;
                 $b_arr[3] = ["name" => $state_name, "item" => "$actual_link"];
             } else {
                 $info = "$h_section";
             }
-            $pretitle = "$a_home > $info";
+            $pretitle = "$a_home $icon $info";
             break;
         }
         case "reviews" : {
@@ -244,12 +207,12 @@ function printBreadcrumbs($path)
             if ($cat->getUrlString($bread[1]) == "state") {
                 $state_link = $cat->getUrlString($bread[2]);
                 $state_name = $menu->getReviewStateTitle($state_link);
-                $info = "$a_section > " . $state_name;
+                $info = "$a_section $icon " . $state_name;
                 $b_arr[3] = ["name" => $state_name, "item" => "$actual_link"];
             } else {
                 $info = "$h_section";
             }
-            $pretitle = "$a_home > $info";
+            $pretitle = "$a_home $icon $info";
             break;
         }
         case "contacts" :
@@ -260,7 +223,7 @@ function printBreadcrumbs($path)
         case "special_offers" :
         case "basket" :
         case "order" : {
-            $pretitle = "$a_home > $h_section";
+            $pretitle = "$a_home $icon $h_section";
             $b_arr[2] = ["name" => "$h_section", "item" => "$actual_link"];
             break;
         }
