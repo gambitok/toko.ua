@@ -69,7 +69,7 @@ function saveProfileForm() {
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content !== false) {
                     let text = "{user_already_logged}!<br>{phone_cap}: " + result.content[0];
-                    showAlertModal(text,"{error_cap}",0);
+                    showAlertModal(text, "{error_cap}", 0);
                 } else {
                     saveProfile();
                 }
@@ -184,7 +184,7 @@ function loginFormParams() {
         JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content===false) {
-                    showAlertModal("{user_not_logged}!","{error_cap}",0);
+                    showAlertModal("{user_not_logged}!", "{error_cap}", 0);
                 } else {
                     location.href = "/profile/";
                 }
@@ -206,7 +206,7 @@ function saveProfile() {
     let name = $("#reg_name").val();
     JsHttpRequest.query(folder,{'w':'saveProfile', 'phone':phone, 'pass':pass, 'email':email, 'name':name},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            showNotify("{done_cap}:","{data_saved}!","success");
+            showNotify("{done_cap}:", "{data_saved}!", "success");
             showProfileAccount();
         }}, true);
 }
@@ -267,7 +267,7 @@ function recoverPassword() {
                 recoverPasswordNext();
             } else {
                 let text = "{user_not_logged}!";
-                showAlertModal(text,"{error_cap}",0);
+                showAlertModal(text, "{error_cap}", 0);
             }
         }
     });

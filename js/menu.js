@@ -1,3 +1,4 @@
+
 // DROPZONE FILE UPLOAD
 function showUploadForm() {
     let myDropzone = new Dropzone("#myDropzone",{ dictDefaultMessage: "Press to choose file!" });

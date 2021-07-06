@@ -4,7 +4,7 @@ function goHome() {
 }
 
 function stayInOrder() {
-    showNotify("{error_cap}!","{basket_empty}!","danger");
+    showNotify("{error_cap}!", "{basket_empty}!", "danger");
 }
 
 function showNotify(title, text, type_text) {
@@ -29,8 +29,8 @@ function showNotify(title, text, type_text) {
 
 function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
     let count_id = $("#count_" + id);
-    let basket_count_id = $("#basket_count_" + id);
     let count = count_id.val();
+
     // for single product
     if (id == 'one') {
         count = 1;
@@ -41,7 +41,6 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
         while (parseInt(secret) > parseInt(stock)) {
             secret = prompt("Выбранное количество продукта превышает доступное количество!", 1);
             if (parseInt(secret) === 0) {
-                // count_id.val(stock);
                 count_id.val(1);
                 showNotify("{error_cap}!", "{wrong_count_cap}!", "danger");
                 return;
@@ -57,41 +56,32 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
         }
         count_id.val(secret);
         count = secret;
-
         if (secret !== 0 && secret !== "") {
-            JsHttpRequest.query(folder,{'w':'moveToBasket', 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
-                function (result, errors){ if (errors) {alert(errors);} if (result){
-                    let old_count = parseInt(result["old_amount"]);
-                    let art_name = result["art_name"];
-                    let all_count = old_count + parseInt(count);
-                    let message = count + " {amount_abbr}. ";
-                    let message_all = "";
-                    if (old_count > 0) {
-                        message_all = "<br><b>{total_basket_cap}:</b> " + all_count + " {amount_abbr}.";
-                    }
-                    showNotify("{done_cap}:", "{art_cap} '" + art_name + "' - " + message + " {added_to_basket}!" + message_all, "success");
-                    showBasketStatus();
-                    showBasketForm();
-                    basket_count_id.html(result["basket_count"]);
-                }}, true);
+            moveToBasket(id, art_id, brand_id, count, stock, storage_id, suppl_id);
         }
-    } else {
-        JsHttpRequest.query(folder,{'w':'moveToBasket', 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
-            function (result, errors){ if (errors) {alert(errors);} if (result){
-                let old_count = parseInt(result["old_amount"]);
-                let art_name = result["art_name"];
-                let all_count = old_count + parseInt(count);
-                let message = count + " {amount_abbr}. ";
-                let message_all = "";
-                if (old_count > 0) {
-                    message_all = "<br><b>{total_basket_cap}:</b> " + all_count + " {amount_abbr}.";
-                }
-                showNotify("{done_cap}:", "{art_cap} '" + art_name + "' - " + message + " {added_to_basket}!" + message_all, "success");
-                showBasketStatus();
-                showBasketForm();
-                basket_count_id.html(result["basket_count"]);
-            }}, true);
     }
+    else {
+        moveToBasket(id, art_id, brand_id, count, stock, storage_id, suppl_id);
+    }
+}
+
+function moveToBasket(id, art_id, brand_id, count, stock, storage_id, suppl_id) {
+    let basket_count_id = $("#basket_count_" + id);
+    JsHttpRequest.query(folder,{'w':'moveToBasket', 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            let old_count = parseInt(result["old_amount"]);
+            let art_name = result["art_name"];
+            let all_count = old_count + parseInt(count);
+            let message = count + " {amount_abbr}. ";
+            let message_all = "";
+            if (old_count > 0) {
+                message_all = "<br><b>{total_basket_cap}:</b> " + all_count + " {amount_abbr}.";
+            }
+            showNotify("{done_cap}:", "{art_cap} '" + art_name + "' - " + message + " {added_to_basket}!" + message_all, "success");
+            showBasketStatus();
+            showBasketForm();
+            basket_count_id.html(result["basket_count"]);
+        }}, true);
 }
 
 function showBasketMinForm() {
@@ -218,12 +208,12 @@ function showBasketStatus() {
     JsHttpRequest.query(folder,{'w':'updateBasketStatus'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content[0] !== "") {
-                status1.addClass("show"); status1.removeClass("none"); status1.removeClass("tool-status-hidden"); status1.html(result.content[0]);
-                status3.addClass("show"); status3.removeClass("none"); status3.html(result.content[0]);
-                status5.removeClass("tool-status-hidden"); status5.text(result.content[0]);
+                status1.addClass("show").removeClass("none").removeClass("tool-status-hidden").html(result.content[0]);
+                status3.addClass("show").removeClass("none").html(result.content[0]);
+                status5.removeClass("tool-status-hidden").text(result.content[0]);
             } else {
-                status1.addClass("none"); status1.removeClass("show");
-                status3.addClass("none"); status3.removeClass("show");
+                status1.addClass("none").removeClass("show");
+                status3.addClass("none").removeClass("show");
                 status5.addClass("tool-status-hidden");
             }
         }}, true);
@@ -271,8 +261,7 @@ function showFastOrder() {
     let phone = $("#input_phone2").val();
     JsHttpRequest.query(folder,{'w':'finish_fast_order', 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            //location.href = "https://toko.ua/order/?order_id=" + result.content[0] + "&user_id=" + result.content[1] + "&user_status=" + result.content[2];
-            location.href = result.content[3];
+            location.href = result.content;
         }}, true);
 }
 
@@ -301,15 +290,9 @@ function validateForm(name, type) {
         variable = $("#select2-select_" + name + "-container").text();
     }
     if (variable === "") {
-        valid.removeClass("accept");
-        valid.addClass("non_accept");
-        valid.removeClass("fa-check-circle");
-        valid.addClass("fa-times-circle");
+        valid.removeClass("accept").addClass("non_accept").removeClass("fa-check-circle").addClass("fa-times-circle");
     } else {
-        valid.removeClass("non_accept");
-        valid.addClass("accept");
-        valid.removeClass("fa-times-circle");
-        valid.addClass("fa-check-circle");
+        valid.removeClass("non_accept").addClass("accept").removeClass("fa-times-circle").addClass("fa-check-circle");
     }
     return variable;
 }
@@ -320,16 +303,10 @@ function validationInput(name) {
     let max_count = 16;
     let count = $("#" + id).val().replace(/[_-]/g, '').length;
     if (max_count === count) {
-        valid.removeClass("non_accept");
-        valid.addClass("accept");
-        valid.removeClass("fa-times-circle");
-        valid.addClass("fa-check-circle");
+        valid.removeClass("non_accept").addClass("accept").removeClass("fa-times-circle").addClass("fa-check-circle");
         return true;
     } else {
-        valid.removeClass("accept");
-        valid.addClass("non_accept");
-        valid.removeClass("fa-check-circle");
-        valid.addClass("fa-times-circle");
+        valid.removeClass("accept").addClass("non_accept").removeClass("fa-check-circle").addClass("fa-times-circle");
         return false;
     }
 }

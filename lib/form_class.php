@@ -774,8 +774,8 @@ class FormClass extends CatalogueClass
         $automan = new AutoClass();
         $list = "";
         $r = $db->query("SELECT tt.TYP_TEXT, tt.FUEL_ID, tt.TYP_KW_FROM, tt.TYP_HP_FROM, tt.TYP_CCM, tt.ENG_Cod, 
-       	CASE WHEN tt.TYP_PCON_START = 0 THEN '' ELSE tt.TYP_PCON_START END AS TYP_PCON_START,
-        CASE WHEN tt.TYP_PCON_END = 0 THEN '' ELSE tt.TYP_PCON_END END AS TYP_PCON_END
+            CASE WHEN tt.TYP_PCON_START = 0 THEN '' ELSE tt.TYP_PCON_START END AS TYP_PCON_START,
+            CASE WHEN tt.TYP_PCON_END = 0 THEN '' ELSE tt.TYP_PCON_END END AS TYP_PCON_END
         FROM `T2_LINKS` tl 
             INNER JOIN `T_types` tt ON (tt.TYP_ID = tl.TYP_ID) 
             INNER JOIN `T_models` tm ON (tm.MOD_ID = tt.TYP_MOD_ID) 

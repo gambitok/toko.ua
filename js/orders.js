@@ -327,11 +327,9 @@ function validInfoFields() {
             let name = $(this).val();
             if (name === "" || !(name.includes(" "))) {
                 valid++;
-                $(this).addClass("not-valid");
-                $(this).removeClass("accept-valid");
+                $(this).addClass("not-valid").removeClass("accept-valid");
             } else {
-                $(this).addClass("accept-valid");
-                $(this).removeClass("not-valid");
+                $(this).addClass("accept-valid").removeClass("not-valid");
             }
         }
         // INPUT PHONE FIELD
@@ -339,11 +337,9 @@ function validInfoFields() {
             let phone = getPhone($(this).val());
             if (phone.length !== 12) {
                 valid++;
-                $(this).addClass("not-valid");
-                $(this).removeClass("accept-valid");
+                $(this).addClass("not-valid").removeClass("accept-valid");
             } else {
-                $(this).addClass("accept-valid");
-                $(this).removeClass("not-valid");
+                $(this).addClass("accept-valid").removeClass("not-valid");
             }
         }
         // SELECT FIELD
@@ -355,11 +351,9 @@ function validInfoFields() {
             }
             if (data_id === "0") {
                 valid++;
-                $(this).next(".select2-container").find(".select2-selection--single").addClass("not-valid");
-                $(this).next(".select2-container").find(".select2-selection--single").removeClass("accept-valid");
+                $(this).next(".select2-container").find(".select2-selection--single").addClass("not-valid").removeClass("accept-valid");
             } else {
-                $(this).next(".select2-container").find(".select2-selection--single").addClass("accept-valid");
-                $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid");
+                $(this).next(".select2-container").find(".select2-selection--single").addClass("accept-valid").removeClass("not-valid");
             }
         }
     });
@@ -379,7 +373,6 @@ function validInfoFields() {
                     } else {
                         valid_field.each(function() {
                             $(this).removeClass("not-valid accept-valid");
-                            // $(this).prop("disabled", true);
                             $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid accept-valid");
                         });
                         $("#valid_button").addClass("none");
@@ -516,8 +509,7 @@ function setClientOrderInfo(id) {
             }
 
             $("#user_recipient_name").val(recipient_name);
-            $("#user_recipient_phone").val(recipient_phone);
-            $("#user_recipient_phone").mask("+38(999) 999-99-99", {
+            $("#user_recipient_phone").val(recipient_phone).mask("+38(999) 999-99-99", {
                 placeholder:"+38(___) ___-__-__",
                 autoclear: false,
                 alias: "numeric"

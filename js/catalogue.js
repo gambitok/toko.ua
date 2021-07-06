@@ -66,18 +66,9 @@ function artSearch(input_name) {
 function selectRegion(id) {
     JsHttpRequest.query(folder,{'w':'setTpoint', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            // selectRegionText(result.content);
-            // $("#RegionForm").modal("hide");
             location.reload(true);
         }}, true);
 }
-
-// function selectRegionText(id) {
-//     JsHttpRequest.query(folder,{'w':'getRegionSelect', 'id':id},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             $("#region_select_tpoint").html(result.content);
-//         }}, true);
-// }
 
 // Modal `Brands`
 function showBrandForm(brand) {
@@ -309,12 +300,9 @@ function showGarageStatus() {
     JsHttpRequest.query(folder,{'w':'updateGarageStatus'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content[0] !== "") {
-                status1.addClass("show");
-                status1.removeClass("none");
-                status1.html(result.content);
+                status1.addClass("show").removeClass("none").html(result.content);
             } else {
-                status1.addClass("none");
-                status1.removeClass("show");
+                status1.addClass("none").removeClass("show");
             }
         }}, true);
 }
@@ -388,9 +376,6 @@ function toggleProductView(ds) {
             if (type_search === "1") {
                 catalogueFilter();
             }
-            // if (type_search === "2") {
-            //     tecModelsFilter();
-            // }
         }}, true);
 }
 

@@ -358,8 +358,8 @@ class MenuClass extends CatalogueClass
                 $address = $db->result($r, $i - 1, "address");
                 ($tpoint_id == "") ?: ($ch = ($id == $tpoint_id) ? "checked='checked'" : "");
                 $list .= "<label class=\"container_radio\"> $region ($address)<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
-                <span class=\"radiomark\"></span>
-            </label>";
+                    <span class=\"radiomark\"></span>
+                </label>";
             }
             $list .= "</form>";
         }

@@ -2,7 +2,7 @@ $('.modal').on('shown.bs.modal', function () {
     new LazyLoad({ elements_selector: ".lazy" });
 })
 
-var folder = '/content.php';
+const folder = '/content.php';
 
 // MAIN NAVIGATION
 $(".header-main").mouseover(function() {
@@ -21,9 +21,9 @@ $(".backdrop").mouseover(function() {
     closeHideNavigation();
 });
 
-var timer;
+let timer;
 $('.header-nav__li').on({'mouseover': function () {
-        var self = this;
+        let self = this;
         timer = setTimeout(function () {
             showHideNavigation($(self).attr("data-nav-id"));
         }, 500);
@@ -34,9 +34,9 @@ $('.header-nav__li').on({'mouseover': function () {
 });
 
 $("body").click(function(e) {
-    if ($(e.target).attr('id') == 'search_art'
-        || $(e.target).attr('class') == 'search-nav'
-        || $(e.target).attr('class') == 'search-nav__item'
+    if ($(e.target).attr('id') === 'search_art'
+        || $(e.target).attr('class') === 'search-nav'
+        || $(e.target).attr('class') === 'search-nav__item'
     ) { return true; } else {
         dropHistoryHide();
     }
@@ -51,23 +51,19 @@ function showTelegramForm() {
 }
 
 function detectmob() {
-    if (navigator.userAgent.match(/Android/i)
+    return !!(navigator.userAgent.match(/Android/i)
         || navigator.userAgent.match(/webOS/i)
         || navigator.userAgent.match(/iPhone/i)
         || navigator.userAgent.match(/iPad/i)
         || navigator.userAgent.match(/iPod/i)
         || navigator.userAgent.match(/BlackBerry/i)
-        || navigator.userAgent.match(/Windows Phone/i)) {
-        return true;
-    } else {
-        return false;
-    }
+        || navigator.userAgent.match(/Windows Phone/i));
 }
 
 function getCookie(cname) {
-    var name = cname + "=";
+    let name = cname + "=";
     var ca = document.cookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
+    for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
         while (c.charAt(0) == ' ') {
             c = c.substring(1);
@@ -85,7 +81,7 @@ function setCookie(name, value, props) {
     var exp = props.expires;
 
     if (typeof exp == "number" && exp) {
-        var d = new Date();
+        let d = new Date();
         d.setTime(d.getTime() + exp*1000);
         exp = props.expires = d
     }
@@ -127,18 +123,7 @@ $(document).ready(function() {
     new LazyLoad({ elements_selector: ".lazy" });
 
     // Only numbers for buying
-    $(".show_count").keydown(function (e) {
-        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-            (e.keyCode === 67 && (e.ctrlKey === true || e.metaKey === true)) ||
-            (e.keyCode === 88 && (e.ctrlKey === true || e.metaKey === true)) ||
-            (e.keyCode >= 35 && e.keyCode <= 39)) {
-            return;
-        }
-        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-            e.preventDefault();
-        }
-    });
+    loadInputNumber();
 
     // Main Banner
     $(".carousel").carousel({
@@ -147,8 +132,8 @@ $(document).ready(function() {
 
     // Ancor link (for scrolling top)
     $(".ancor__link a").click(function() {
-        var elementClick = $(this).attr("href");
-        var destination = $(elementClick).offset().top;
+        let elementClick = $(this).attr("href");
+        let destination = $(elementClick).offset().top;
         jQuery("html:not(:animated),body:not(:animated)").animate({
             scrollTop: destination
         }, 800);
@@ -156,7 +141,7 @@ $(document).ready(function() {
     });
 
     // Catalog Filters
-    var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
+    let input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
     if (input_price.length) {
         input_price.slider();
         input_price.on("slide", function(e) {
@@ -241,16 +226,14 @@ $(document).ready(function() {
         menu: ('#bar-menu')
     });
 
-    if(detectmob()) {
+    if (detectmob()) {
         setCatalogFilters();
     }
 
     $("[autofocus]").on("focus", function() {
         if (this.setSelectionRange) {
-            var len = this.value.length * 2;
+            let len = this.value.length * 2;
             this.setSelectionRange(len, len);
-        } else {
-            this.value = this.value;
         }
         this.scrollTop = 999999;
     }).focus();
