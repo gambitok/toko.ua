@@ -566,11 +566,6 @@ class CatalogExistClass extends CatalogueClass
     }
 
     /*
-     * show breadcrumb form
-     * */
-    //s
-
-    /*
      * show pagination form
      * */
     public function getPartsPaginationForm($n, $page)
@@ -967,7 +962,6 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_filters}", "$filters_btn", $form);
             $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
             $form = str_replace("{parts_params}", $this->getPartsFiltersForm($group_id, $filters, $mfa_id, $model, $where_mfa, $where_link_arts, $query), $form);
-//            $breadcrumbsData = $this->getPartsBreadcrumbsForm($group_id, $filters, $filters_h1);
             $breadcrumbsData = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $filters, $filters_h1, $source_link));
             $breadcrumbs_script = $breadcrumbsData["script"];
             $form = str_replace("{parts_breadcrumbs}", $breadcrumbsData["form"], $form);
@@ -1093,17 +1087,7 @@ class CatalogExistClass extends CatalogueClass
             foreach ($checked_params_keys as $param_id) {
                 $where = $this->getFiltersWhereSelected($group_id, $filters, $param_id);
                 $value_arr = $this->getFiltersParamValues($group_id, $param_id, $where, $where_mfa, $where_link_arts);
-//                if ($value_status) {
-//                    foreach ($value_arr as $val_id => $value_id) {
-//                        if (!in_array($value_id, $params_check[$param_id])) {
-//                            unset($value_arr[$val_id]);
-//                        }
-//                    }
-//                    $params[$param_id] = $value_arr;
-//                } else {
-//                    $params[$param_id] = $value_arr;
-//                }
-                 $params[$param_id] = $value_arr;
+                $params[$param_id] = $value_arr;
             }
 
             foreach ($unchecked_params_keys as $param_id) {
@@ -1457,8 +1441,6 @@ class CatalogExistClass extends CatalogueClass
         return $list;
     }
 
-    /*======================================================================= STATUS AUTO =*/
-
     /*
      * show param cars form
      * */
@@ -1520,8 +1502,7 @@ class CatalogExistClass extends CatalogueClass
                 $form = $products->getCarsSearch($mfa_link, $model_link, $group_id);
             }
         }
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -1548,15 +1529,15 @@ class CatalogExistClass extends CatalogueClass
     {
         $list = "";
         $params = $this->getCheckedFilters($group_id, $filters);
-//        if (count($params) == 2) {
-//            $filters_1 = explode(";", $filters)[0];
-//            $filters_h1 = $this->getCatalogH1($group_id, $filters_1);
-//            $list = $this->getPartsFiltersForm2($group_id, $filters_1, $filters_h1);
-//
-//            $filters_2 = explode(";", $filters)[1];
-//            $filters_h1 = $this->getCatalogH1($group_id, $filters_2);
-//            $list .= $this->getPartsFiltersForm2($group_id, $filters_2, $filters_h1);
-//        }
+        if (count($params) == 2) {
+            $filters_1 = explode(";", $filters)[0];
+            $filters_h1 = $this->getCatalogH1($group_id, $filters_1);
+            $list = $this->getPartsFiltersForm2($group_id, $filters_1, $filters_h1);
+
+            $filters_2 = explode(";", $filters)[1];
+            $filters_h1 = $this->getCatalogH1($group_id, $filters_2);
+            $list .= $this->getPartsFiltersForm2($group_id, $filters_2, $filters_h1);
+        }
         if (count($params) == 1) {
             $sel_param_id = array_keys($params)[0];
             $filters_h1 = $this->getCatalogH1($group_id, $filters);
@@ -1577,7 +1558,9 @@ class CatalogExistClass extends CatalogueClass
             if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 0)) {
                 // SEO filters
                 if ($typ_id == "" || ($status_auto == 1 && $status_auto_type == 0)) {
-                    $form = str_replace("{seo_filters}", $this->getCatalogSeoFiltersForm($group_id, $filters), $form);
+                    $list_filters = $this->getCatalogSeoFiltersForm($group_id, $filters);
+                    $form = str_replace("{seo_filters}", $list_filters, $form);
+                    $form = str_replace("{seo_filters_style}", ($list_filters == "") ? "none" : "", $form);
                 }
                 // SEO details
                 if ($typ_id == "" || ($status_auto == 1 && $status_auto_type == 0)) {
@@ -1603,6 +1586,7 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{seo_auto}", "", $form);
         $form = str_replace("{seo_popular}", "", $form);
         $form = str_replace("{seo_style}", "none", $form);
+        $form = str_replace("{seo_filters_style}", "none", $form);
         return $this->replaceLang($form);
     }
 
@@ -1796,7 +1780,7 @@ class CatalogExistClass extends CatalogueClass
 
         if (!empty($filters)) {
             $params = $this->getCheckedFilters($group_id, $filters);
-            // poxuy na brand
+            // brand or not
             // >2 param
             if (count($params) > 1) {
                 $group_text = $this->getGroupRowName($group_id);
@@ -1979,7 +1963,6 @@ class CatalogExistClass extends CatalogueClass
                         $mfa_name = $automan->getMfaBrand($mfa_id);
                         $text = str_replace("{mfnm}", $mfa_name, $text);
                     }
-//                    $value_h1_text = "";
                     $text = str_replace("{brnm}", $brand_name, $text);
                     foreach ($params as $param_id => $values) {
                         foreach ($values as $value_id) {
@@ -1989,19 +1972,7 @@ class CatalogExistClass extends CatalogueClass
                                     $text = str_replace("{grnm}", $value_h1_name, $text);
                                 }
                             }
-//                            if (count($values) > 1) {
-//                                if ($param_id == 0) {
-//                                    $value_name = $this->getBrandName($value_id);
-//                                } else {
-//                                    $value_name = $this->getGroupValueName($value_id, $param_id);
-//                                }
-//                                $value_h1_text .= " $value_name";
-//                            }
                         }
-//                        if (count($values) > 1) {
-//                            $value_h1_name = $this->getGroupRowName($group_id);
-//                            $text = str_replace("{grnm}", $value_h1_name.$value_h1_text, $text);
-//                        }
                     }
                 }
             }
@@ -2024,7 +1995,8 @@ class CatalogExistClass extends CatalogueClass
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     $text .= $this->replaceLang("{seo_new_tilte_3}");
                     $mfa_name = $automan->getMfaBrand($mfa_id);
                     $text = str_replace("{mfnm}", $mfa_name, $text);
