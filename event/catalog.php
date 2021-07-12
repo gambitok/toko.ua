@@ -22,14 +22,16 @@ if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
     $redirect_status = 1;
     $redirect_type = 301;
     $redirect_link = $catalogue->getCatalogOldRedirectLink($linka)["redirect_link"];
-} elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
+}
+elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $mfa_link = $router_2;
     $model_link = $router_3;
     $path_to = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
     $redirect_status = 1;
     $redirect_type = 301;
     $redirect_link = "$path_to";
-} else {
+}
+else {
     $str_linka = $linka;
     unset($str_linka[0]);
     $str_linka = implode("/", $str_linka);
@@ -38,7 +40,8 @@ if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
      * */
     if ($router == "") {
         $content = str_replace("{main_window}", $catalogue->getCatalogColList(), $content);
-    } else {
+    }
+    else {
         /*
          * Catalog with Group
          * */
@@ -66,7 +69,8 @@ if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
                         $redirect_status = 1;
                         $redirect_type = 301;
                         $redirect_link = $catalog_exist->getSiteLink() . $catalog_exist->catalog_link . "/$router/" . $linka[2] . "/$router_3/rav-4/";
-                    } else {
+                    }
+                    else {
                         $model = $automan->getModLink($model_link);
                         if ($model == "") {
                             $redirect_status = 1;
@@ -77,8 +81,10 @@ if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
                 }
             }
 
+            $params = [];
             if (!empty($filters)) {
-                list($count_brands, $count_params, $count_values) = $catalog_exist->getCatalogParamsCount($group_id, $filters);
+                $params = $catalog_exist->getCheckedFilters($group_id, $filters);
+                list($count_brands, $count_params, $count_values) = $catalog_exist->getCatalogParamsCount($params);
                 if ($count_values > 0) {
                     $content = str_replace("{meta_noindex}", '
                         <meta name="robots" content="noindex, nofollow">
@@ -95,7 +101,7 @@ if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
             $status_auto_type = $catalogue->getUrlNumber($_COOKIE["status_auto_type"]);
             ($status_auto_type != NULL) ?: $status_auto_type = 0;
 
-            $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $mfa_id, $model, $status_auto, $status_auto_type, $str_linka, $source_link);
+            $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $status_auto, $status_auto_type, $str_linka, $source_link);
 
             if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
                 $max_page = $catalog_form["pages_count"];
@@ -110,6 +116,8 @@ if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
             $content = str_replace("{site_description}", $catalog_form["description"], $content);
             $content = str_replace("{meta_social_tag}", $catalog_exist->getCatalogMetaTags($group_id, $catalog_form["h1"]), $content);
             $content = str_replace("{site_script_breadcrumbs}", $catalog_form["script"], $content);
+
+            //  $content = str_replace("{site_console}", $catalog_exist->getSiteConsole($catalog_form["time"]), $content);
         }
 
         /*
@@ -120,7 +128,8 @@ if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
             $cat_id = $catalog_exist->getGroupCatExistId($router_2);
             if (empty($cat_id)) {
                 $catalog_form = $catalog_exist->showGroupHeadForm($head_id);
-            } else {
+            }
+            else {
                 $catalog_form = $catalog_exist->showGroupCatForm($head_id, $cat_id);
             }
             $content = str_replace("{main_window}", $catalog_form, $content);

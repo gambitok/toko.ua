@@ -448,7 +448,8 @@ trait Helper
             $key = 0;
             $list = "";
             $script_list = "";
-            $icon = "<i class=\"fa fa-chevron-right\"></i>";
+            //$icon = "<i class=\"fa fa-chevron-right\"></i>";
+            $icon = "<span> > </span>";
             foreach ($breads as $bread) {
                 $key++;
                 $name = $bread["name"];
@@ -456,9 +457,9 @@ trait Helper
 
                 if ($key != count($breads)) {
                     $list .= "
-                    <span typeof=\"v:Breadcrumb\">
+                    <li class=\"cat-products-bread__item\" typeof=\"v:Breadcrumb\">
                         <a href=\"$link\" rel=\"v:url\" property=\"v:title\">$name</a>$icon
-                    </span>";
+                    </li>";
                 } else {
                     $list .= "$name";
                 }

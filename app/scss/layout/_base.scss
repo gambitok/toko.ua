@@ -631,15 +631,18 @@
         word-wrap: break-word;
         height: 30px;
         display: block;
-        a {
-            color: #ccc;
-            &:hover {
-                color: #606975;
+        &__item {
+            display: inline;
+            a {
+                color: #ccc;
+                &:hover {
+                    color: #606975;
+                }
             }
-        }
-        i {
-            color: #ddd;
-            margin: 0 10px;
+            i, span {
+                color: #ddd;
+                margin: 0 10px;
+            }
         }
     }
     &-cars {

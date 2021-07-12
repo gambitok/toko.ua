@@ -41,6 +41,7 @@ $content = str_replace("{main_site_breadcrumbs}", $breadData[0], $content);
 $content = str_replace("{site_page_pagination}", "", $content);
 $content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
 $content = str_replace("{seo_footers_block}", "<!--footers_block-->", $content);
+$content = str_replace("{site_console}", "", $content);
 
 // Main SEO BLOCK
 $seo_text = "<!--seo_text_start--><!--seo_text_end-->";

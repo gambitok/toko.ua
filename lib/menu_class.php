@@ -76,9 +76,6 @@ class MenuClass extends CatalogueClass
                 $short_desc = $db->result($r, $i - 1, "short_desc");
                 $date = $db->result($r, $i - 1, "data");
                 $img_file = $this->getNewsImage($state_id);
-//                $img = ($img_file != "")
-//                    ? "<img itemprop=\"image\" src=\"/thumb.php?image=news/$language_id/$state_id/$img_file&size=280\" alt=\"image\">"
-//                    : "";
                 $img = ($img_file != "")
                     ? "<img itemprop=\"image\" class=\"lazy\" data-src=\"https://toko.ua/uploads/images/news/$language_id/$state_id/$img_file\" src=\"https://toko.ua/images/no_photo.png\" alt=\"image\">"
                     : "";
@@ -643,8 +640,7 @@ class MenuClass extends CatalogueClass
             $db->query("DELETE FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id` = '$cookie_id';");
         }
         if (in_array($type, $format_arr) && $size <= $max_bytes) {
-            $db->query("INSERT INTO `J_SUPPLIERS_COOPERATION` (`company`,`name`,`phone`,`email`,`city_id`,`commentary`,`file_id`,`status`) 
-            VALUES ('$company','$name','$phone','$email','$city_id','$comment','$file_name',166);");
+            $db->query("INSERT INTO `J_SUPPLIERS_COOPERATION` (`company`, `name`, `phone`, `email`, `city_id`, `commentary`, `file_id`, `status`) VALUES ('$company', '$name', '$phone', '$email', '$city_id', '$comment', '$file_name', 166);");
             return true;
         } else {
             return array($type, $size);
