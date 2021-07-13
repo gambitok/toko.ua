@@ -50,8 +50,8 @@ class ShopClass extends CatalogueClass
                 $date_create = $db->result($r, $i - 1, "date_create");
                 $status = $db->result($r, $i - 1, "status");
                 $status_checked = $db->result($r, $i - 1, "status_checked");
-
                 $price = $db->result($r, $i - 1, "price");
+
                 // PRICE
                 $price = $exrate->getKoursPrice($price, $cur);
                 if ($cur == 1) {
@@ -401,7 +401,7 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
-        $db->query("UPDATE `basket` SET `status_checked`=$status WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where;");
+        $db->query("UPDATE `basket` SET `status_checked` = $status WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where;");
         return true;
     }
 
@@ -419,7 +419,7 @@ class ShopClass extends CatalogueClass
         $status_action = 0;
         if (!($this->checkActionPrice($art_id))) {
         } else {
-            list($action_id, $action_amount,) = $this->checkActionPrice($art_id);
+            list($action_id, $action_amount) = $this->checkActionPrice($art_id);
             if ($amount >= $action_amount) {
                 $status_action = $action_id;
             }
@@ -897,9 +897,6 @@ class ShopClass extends CatalogueClass
         $delivery_express = $delivery_type["delivery_express"];
         $delivery_express_department = $delivery_type["delivery_express_department"];
 
-        $department_text = $department;
-        $delivery_express_text = $this->getDepartmentExpressName($delivery_express);
-
         if ($porch != "") {
             $porch = ", {entrance_cap} $porch";
         }
@@ -907,23 +904,14 @@ class ShopClass extends CatalogueClass
             $delivery_type_text .= "<div>{address_cap}: {street_cap} $street, {house_cap} $house $porch</div>";
         }
         if ($department != "undefined" && $department != "0") {
-            $delivery_type_text .= "<div>{department_cap}: $department_text</div>";
+            $delivery_type_text .= "<div>{department_cap}: $department</div>";
         }
         if ($delivery_express != "undefined") {
+            $delivery_express_text = $this->getDepartmentExpressName($delivery_express);
             $delivery_type_text .= "<div>{delivery_type_7}: $delivery_express_text</div>";
         }
         if ($delivery_express_department != "undefined") {
             $delivery_type_text .= "<div>{department_cap}: $delivery_express_department</div>";
-        }
-
-        $city_text = $this->getCityName($city);
-        $delivery_text = $this->getDeliveryName($delivery);
-        $payment_text = $this->getPaymentName($payment);
-        if ($email == "") {
-            $email = "{absent_cap}";
-        }
-        if ($comment == "") {
-            $comment = "{absent_cap}";
         }
 
         if ($delivery == 1) {
@@ -934,12 +922,12 @@ class ShopClass extends CatalogueClass
         $form = $this->getHtmlForm("orders/confirm");
         $form = str_replace("{order_name}", $name, $form);
         $form = str_replace("{order_phone}", $phone, $form);
-        $form = str_replace("{order_city}", $city_text, $form);
-        $form = str_replace("{order_delivery}", $delivery_text, $form);
+        $form = str_replace("{order_city}", $this->getCityName($city), $form);
+        $form = str_replace("{order_delivery}", $this->getDeliveryName($delivery), $form);
         $form = str_replace("{order_delivery_type}", $delivery_type_text, $form);
-        $form = str_replace("{order_payment}", $payment_text, $form);
-        $form = str_replace("{order_email}", $email, $form);
-        $form = str_replace("{order_comment}", $comment, $form);
+        $form = str_replace("{order_payment}", $this->getPaymentName($payment), $form);
+        $form = str_replace("{order_email}", ($email == "") ? "{absent_cap}" : $email, $form);
+        $form = str_replace("{order_comment}", ($comment == "") ? "{absent_cap}" : $comment, $form);
         $form = $this->replaceLang($form);
 
         return $form;
@@ -1488,21 +1476,21 @@ class ShopClass extends CatalogueClass
             for ($i = 1; $i <= $n; $i++) {
                 $art_id = $db->result($r, $i - 1, "art_id");
                 $brand_id = $db->result($r, $i - 1, "brand_id");
-                $art_name = $this->getArticleDispl($art_id);
-                $brand_name = $this->getBrandName($brand_id);
-                $text = $this->getArticleName($art_id);
                 $price = $db->result($r, $i - 1, "price");
+                $amount = $db->result($r, $i - 1, "amount");
+                $article_nr_displ = $this->getArticleDispl($art_id);
+                $brand_name = $this->getBrandName($brand_id);
+                $article_name = $this->getArticleName($art_id);
                 $price = $exrate->getKoursPrice($price, $cur);
                 if ($cur == 1) {
                     $price = $client->getClientPriceRounding($client_id, $price);
                 }
-                $amount = $db->result($r, $i - 1, "amount");
                 $full_price = $price * $amount;
                 if ($cur == 1) {
                     $full_price = $client->getClientPriceRounding($client_id, $full_price);
                 }
                 $sum_total += $full_price;
-                $name = "$text $brand_name ($art_name)";
+                $name = "$article_name $brand_name ($article_nr_displ)";
                 $img = $showform->getArticleActivePhoto($art_id);
                 $price_cap = "$full_price $cur_cap";
                 if ($bonus_status) {
@@ -1653,4 +1641,5 @@ class ShopClass extends CatalogueClass
         }
         return $list;
     }
+
 }

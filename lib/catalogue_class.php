@@ -452,7 +452,7 @@ class CatalogueClass
     /*
      * get brand list form
      * */
-    public function getListBrand($brands, $main_brand, $cur, $jsFilterModel, $brand_filter)
+    public function getListBrand($brands, $main_brand, $cur, $jsFilterModel, $brand_filter = [])
     {
         $list_brand = $checked = $main_brand_class = "";
         $unique_brands = $brand_array = array();
@@ -491,9 +491,7 @@ class CatalogueClass
             if ($brand_filter != "") {
                 $brand_array = explode(",", $brand_filter);
                 $checked = (in_array($brand_id, $brand_array)) ? "checked=\"checked\"" : "";
-            }
-
-            if ($brand_filter == "") {
+            } else {
                 $checked = (in_array($main_brand, $brand_array)) ? "checked=\"checked\"" : "";
             }
 
@@ -673,7 +671,7 @@ class CatalogueClass
                 $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$temp_key`;");
 
                 // get filter brand list
-                $list_brand = $this->getListBrand($brands, $main_brand, $cur, $jsFilterModel, []);
+                $list_brand = $this->getListBrand($brands, $main_brand, $cur, $jsFilterModel);
 
                 // delete empty stocks and prices
                 $mas = $this->deleteEmptyPosition($mas);
@@ -704,11 +702,9 @@ class CatalogueClass
 
             $count = count($mas);
             if ($count < 1) {
-                $list = "$error";
-                unset($list_brand);
+                $list = $error;
                 $list_brand = "";
-                unset($filters);
-                $filters = array();
+                $filters = [];
                 $filters["max_price"] = 0;
                 $filters["max_dd"] = 0;
             }
@@ -1692,8 +1688,8 @@ class CatalogueClass
         list($price_lvl, $margin_price_lvl) = $this->getDpClientPriceLevels($client_id);
         $query = "SELECT t2apr.price_$price_lvl, t2apr.cash_id, t2apr.minMarkup, t2aps.OPER_PRICE
         FROM `T2_ARTICLES` t2a 
-            LEFT OUTER JOIN `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id=t2a.ART_ID)
-            LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID=t2a.ART_ID)
+            LEFT OUTER JOIN `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id = t2a.ART_ID)
+            LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID = t2a.ART_ID)
         WHERE t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;";
         $r = $dbt->query($query);
         $n = $dbt->num_rows($r);
@@ -1748,7 +1744,7 @@ class CatalogueClass
         list(, , $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat) = $this->getDpClientPriceLevels($client_id);
         $query = "SELECT t2si.price_usd 
         FROM `T2_ARTICLES` t2a 
-            LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id=t2a.ART_ID AND t2si.status=1)
+            LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
         WHERE t2a.ART_ID = $art_id AND t2si.suppl_id = $suppl_id LIMIT 1;";
         $r = $dbt->query($query);
         $n = $dbt->num_rows($r);
@@ -1962,7 +1958,7 @@ class CatalogueClass
             $cash_id = $db->result($r, 0, "cash_id");
         }
         if ($cash_id == 0 || $cash_id == "0") {
-            $db->query("UPDATE `T2_ARTICLES_PRICE_RATING` SET `cash_id`=2 WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
+            $db->query("UPDATE `T2_ARTICLES_PRICE_RATING` SET `cash_id` = 2 WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
             $cash_id = 2;
         }
         return $cash_id;
@@ -2022,7 +2018,8 @@ class CatalogueClass
                     if ($count_suggest > 1) {
                         if ($val["stock"] == 0) {
                             unset($mas[$mas_key][$key]);
-                        } elseif ($val["price"] == 0) {
+                        }
+                        elseif ($val["price"] == 0) {
                             unset($mas[$mas_key][$key]);
                         }
                     }
@@ -2340,13 +2337,9 @@ class CatalogueClass
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
         $r = $db->query("SELECT `TEX_$postfix`, `H1_$postfix` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
-        $h1 = $db->result($r, 0, "H1_$postfix");
-        if ($h1 == "") {
-            $text_txt = $db->result($r, 0, "TEX_$postfix");
-        } else {
-            $text_txt = $h1;
-        }
-        return $text_txt;
+        return ($db->result($r, 0, "H1_$postfix") == "")
+            ? $db->result($r, 0, "TEX_$postfix")
+            : $db->result($r, 0, "H1_$postfix");
     }
 
     public function getGroupRowText($group_id)
@@ -2392,10 +2385,8 @@ class CatalogueClass
     public function getMaxPosition($head_id)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT MAX(`COL`) as max_col, MAX(`ROW`) as max_row FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id;");
-        $max_col = $db->result($r, 0, "max_col") + 1;
-        $max_row = $db->result($r, 0, "max_row") + 1;
-        return array($max_col, $max_row);
+        $r = $db->query("SELECT MAX(`COL`) as max_col FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id;");
+        return $db->result($r, 0, "max_col") + 1;
     }
 
     /*
@@ -2565,7 +2556,7 @@ class CatalogueClass
             $row = $db->result($r, $i - 1, "ROW");
             $arr[$col][$row] = $cat_id;
         }
-        list($max_col) = $this->getMaxPosition($head_id);
+        $max_col = $this->getMaxPosition($head_id);
         if ($n > 0) {
             $list = "<div class=\"tree-block\">";
             foreach ($arr as $col_id => $rows) {
@@ -2644,6 +2635,7 @@ class CatalogueClass
         return $list;
     }
 
+    // get catalog links
     public function getGroupsList()
     {
         $db = DbSingleton::getTokoDb();
@@ -2653,11 +2645,12 @@ class CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $group_id = $db->result($r, $i - 1, "GROUP_ID");
             $group_name = $db->result($r, $i - 1, "TEX_RU");
-            $list .= "<option value='$group_id'>$group_name</option>";
+            $list .= "<option value=\"$group_id\">$group_name</option>";
         }
         return $list;
     }
 
+    // get catalog links VALUES
     public function getGroupsListValues($group_id = 0)
     {
         $db = DbSingleton::getTokoDb();
@@ -2668,7 +2661,7 @@ class CatalogueClass
             $value_id = $db->result($r, $i - 1, "VALUE_ID");
             $param_id = $db->result($r, $i - 1, "PARAM_ID");
             $value_name = $db->result($r, $i - 1, "VALUE_NAME");
-            $list .= "<option value='$value_id' data-value-param='$param_id'>$value_name</option>";
+            $list .= "<option value=\"$value_id\" data-value-param=\"$param_id\">$value_name</option>";
         }
         return $list;
     }
@@ -2696,7 +2689,7 @@ class CatalogueClass
                 <th>seo</th>
             </tr></thead><tbody>";
             if ($value_id == 0) {
-                $r = $dbc->query("SELECT `mfa_id`, `model`, COUNT(`art_id`) as count_arts  FROM `EX_TABLE_TREE_MFA_$group_id` WHERE 1 GROUP BY `mfa_id`, `model`;;");
+                $r = $dbc->query("SELECT `mfa_id`, `model`, COUNT(`art_id`) as count_arts  FROM `EX_TABLE_TREE_MFA_$group_id` WHERE 1 GROUP BY `mfa_id`, `model`;");
                 $n = $dbc->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
                     $mfa_id = $dbc->result($r, $i - 1, "mfa_id");
@@ -2850,7 +2843,7 @@ class CatalogueClass
     /*
      * export price list for client
      * */
-    public function getPriceList($user_id = null)
+    public function getPriceList($user_id = 0)
     {
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
@@ -2953,7 +2946,8 @@ class CatalogueClass
 
                 if (!file_exists(RDD . "/uploads/$user")) {
                     mkdir(RDD . "/uploads/$user", 0777, true);
-                } elseif (file_exists(RDD . "/uploads/$user/")) {
+                }
+                elseif (file_exists(RDD . "/uploads/$user/")) {
                     foreach (glob(RDD . "/uploads/$user/*") as $file) {
                         unlink($file);
                     }
@@ -2979,9 +2973,4 @@ function myBrandCmp($a, $b) {
 function cmpPrice($a, $b) {
     if (floatval($a["price"]) == floatval($b["price"])) return 0;
     return floatval($a["price"]) > floatval($b["price"]) ? 1 : -1;
-}
-
-function cmpChecked($a, $b) {
-    if ($a["checked"] == $b["checked"]) return 0;
-    return $a["checked"] > $b["checked"] ? 1 : -1;
 }

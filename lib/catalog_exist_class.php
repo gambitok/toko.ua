@@ -233,7 +233,8 @@ class CatalogExistClass extends CatalogueClass
             $dbc->query("UPDATE `$table_params` SET `status` = 0 WHERE 1;");
         }
 
-        $params_str = ""; $params = [];
+        $params = [];
+        $params_str = "";
         $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID` = $group_id AND `STATUS` = 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -316,9 +317,18 @@ class CatalogExistClass extends CatalogueClass
                     $set_column .= "`param_$param_id`='" . implode(",", $params_arr) . "',";
                 }
             }
-            $params_values = rtrim($params_values, ","); if ($params_values != "") $params_values = ", " . $params_values;
-            $params_column = rtrim($params_column, ","); if ($params_column != "") $params_column = ", " . $params_column;
-            $set_column = rtrim($set_column, ","); if ($set_column != "") $set_column = ", " . $set_column;
+            $params_values = rtrim($params_values, ",");
+            $params_column = rtrim($params_column, ",");
+            $set_column = rtrim($set_column, ",");
+            if ($params_values != "") {
+                $params_values = ", " . $params_values;
+            }
+            if ($params_column != "") {
+                $params_column = ", " . $params_column;
+            }
+            if ($set_column != "") {
+                $set_column = ", " . $set_column;
+            }
 
             $r = $dbc->query("SELECT * FROM `$table_params` WHERE `art_id` = $art_id LIMIT 1;");
             $n = $dbc->num_rows($r);
@@ -555,13 +565,20 @@ class CatalogExistClass extends CatalogueClass
                     }
                     $arr = array_merge($arr, $arr2);
                 }
-
                 $arr[] = ["name" => "$filters_h1", "link" => "$source_link"];
             }
-
         }
 
         return $arr;
+    }
+
+    public function getPaginRow($text, $link, $class = "")
+    {
+        $form = "<li class=\"page-item {pagin_class}\"><a class=\"page-link\" rel=\"noopener\" href=\"{pagin_link}\">{pagin_text}</a></li>";
+        $form = str_replace("{pagin_text}", $text, $form);
+        $form = str_replace("{pagin_link}", $link, $form);
+        $form = str_replace("{pagin_class}", $class, $form);
+        return $form;
     }
 
     /*
@@ -580,8 +597,6 @@ class CatalogExistClass extends CatalogueClass
         $max_count = $pages_count - $min_count + 1;
         $pred_page = $page - 1;
         $next_page = $page + 1;
-        $disabled_pred = ($page == 1) ? "disabled" : "";
-        $disabled_next = ($page == $pages_count) ? "disabled" :"";
 
         if ($pages_count > $min_count) {
 
@@ -589,57 +604,53 @@ class CatalogExistClass extends CatalogueClass
                 for ($i = 1; $i <= $min_count; $i++) {
                     $active = ($i == $page) ? "active" : "";
                     $link = ($i > 1) ? "?page=$i" : ".";
-                    $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$i</a></li>";
+                    $pagination .= $this->getPaginRow($i, $link, $active);
                 }
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"#\">...</a></li>";
+                $pagination .= $this->getPaginRow("...", "#");
                 $link = ($pages_count > 1) ? "?page=$pages_count" : ".";
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$pages_count</a></li>";
+                $pagination .= $this->getPaginRow($pages_count, $link);
             }
 
             elseif ($page > $max_count) {
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"./\">1</a></li>";
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"#\">...</a></li>";
+                $pagination .= $this->getPaginRow("1", "./");
+                $pagination .= $this->getPaginRow("...", "#");
                 for ($i = $max_count; $i <= $pages_count; $i++) {
                     $active = ($i == $page) ? "active" : "";
                     $link = ($i > 1) ? "?page=$i" : ".";
-                    $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$i</a></li>";
+                    $pagination .= $this->getPaginRow($i, $link, $active);
                 }
             }
 
             elseif ($page >= $min_count && $page <= $max_count) {
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"./\">1</a></li>";
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"#\">...</a></li>";
-                $link = ($pred_page > 1) ? "?page=$pred_page" : ".";
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$pred_page</a></li>";
-                $link = ($page > 1) ? "?page=$page" : ".";
-                $pagination .= "<li class=\"page-item active\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$page</a></li>";
-                $link = ($next_page > 1) ? "?page=$next_page" : ".";
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$next_page</a></li>";
+                $pagination .= $this->getPaginRow("1", "./");
+                $pagination .= $this->getPaginRow("...", "#");
 
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"#\">...</a></li>";
+                $link = ($pred_page > 1) ? "?page=$pred_page" : ".";
+                $pagination .= $this->getPaginRow($pred_page, $link);
+                $link = ($page > 1) ? "?page=$page" : ".";
+                $pagination .= $this->getPaginRow($page, $link, "active");
+                $link = ($next_page > 1) ? "?page=$next_page" : ".";
+                $pagination .= $this->getPaginRow($next_page, $link);
+
+                $pagination .= $this->getPaginRow("...", "#");
                 $link = ($pages_count > 1) ? "?page=$pages_count" : ".";
-                $pagination .= "<li class=\"page-item\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$pages_count</a></li>";
+                $pagination .= $this->getPaginRow($pages_count, $link);
             }
 
         } else {
             for ($i = 1; $i <= $pages_count; $i++) {
                 $active = ($i == $page) ? "active" : "";
                 $link = ($i > 1) ? "?page=$i" : ".";
-                $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$i</a></li>";
+                $pagination .= $this->getPaginRow($i, $link, $active);
             }
         }
 
-        $link_pred = ($pred_page > 1) ? "?page=$pred_page" : ".";
-        $link_next = ($next_page > 1) ? "?page=$next_page" : ".";
-        $list = "<div class=\"row\">
-            <nav aria-label=\"Page navigation\">
-                <ul class=\"pagination\">
-                    <li class=\"page-item $disabled_pred\"><a class=\"page-link\" rel=\"noopener\" href=\"$link_pred\"><i class=\"fa fa-chevron-left\"></i> <span class=\"span-media\">{previous_cap}</span></a></li>
-                    $pagination
-                    <li class=\"page-item $disabled_next\"><a class=\"page-link\" rel=\"noopener\" href=\"$link_next\"><span class=\"span-media\">{next_cap}</span> <i class=\"fa fa-chevron-right\"></i></a></li>
-                </ul>
-            </nav>
-        </div>";
+        $list = $this->getHtmlForm("catalog_exist/pagination");
+        $list = str_replace("{pagination_range}", $pagination, $list);
+        $list = str_replace("{pred_disabled_class}", ($page == 1) ? "disabled" : "", $list);
+        $list = str_replace("{next_disabled_class}", ($page == $pages_count) ? "disabled" : "", $list);
+        $list = str_replace("{link_pred}", ($pred_page > 1) ? "?page=$pred_page" : ".", $list);
+        $list = str_replace("{link_next}", ($next_page > 1) ? "?page=$next_page" : ".", $list);
 
         if ($pages_count == 1) {
             $list = "";
@@ -656,8 +667,7 @@ class CatalogExistClass extends CatalogueClass
         $params = [];
         if (!empty($filters)) {
             $params_arr = explode(";", $filters);
-            foreach ($params_arr as $params_item)
-            {
+            foreach ($params_arr as $params_item) {
                 $params_item_str = explode("=", $params_item);
                 $param_link = $params_item_str[0];
                 $params_item_values = $params_item_str[1];
@@ -749,7 +759,7 @@ class CatalogExistClass extends CatalogueClass
         $nc = $dbc->num_rows($r);
         if ($nc > 0) {
             if (empty($params)) {
-                $r = $dbc->query("SELECT COUNT(t.`art_id`) as count_arts FROM `$table` t WHERE 1 $where_link_arts;");
+                $r = $dbc->query("SELECT COUNT(t.`art_id`) as count_arts FROM `$table` t WHERE 1 $where_link_arts ;");
             } else {
                 $where = $this->getFiltersWhere($params);
                 $r = $dbc->query("SELECT SUM(ex.col_arts) as count_arts FROM (
@@ -836,10 +846,10 @@ class CatalogExistClass extends CatalogueClass
         if ($mfa_id > 0) {
             if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 1)) {
                 if ($mfa_id > 0) {
-                    $where_mfa .= " AND tm.`mfa_id`=$mfa_id";
+                    $where_mfa .= " AND tm.`mfa_id` = $mfa_id";
                 }
                 if ($model != "") {
-                    $where_mfa .= " AND tm.`model`='$model'";
+                    $where_mfa .= " AND tm.`model` = '$model'";
                 }
             }
         }
@@ -889,7 +899,6 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0, $str_link = "", $source_link = "")
     {
-        $time = 0;
         $automan = new AutoClass();
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
@@ -931,7 +940,7 @@ class CatalogExistClass extends CatalogueClass
 
         $pagination_form = $this->getPartsPaginationForm($count, $page);
 
-        list($filters_h1, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $page, $params, $mfa_id, $model, $str_link);
+        list($h1_text, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $page, $params, $mfa_id, $model, $str_link);
 
         $translit = "";
         if ($mfa_id > 0) {
@@ -947,25 +956,22 @@ class CatalogExistClass extends CatalogueClass
 
         $breadcrumbs_script = "";
         if (empty($art_id_str)) {
-            $form = $this->showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $filters_h1);
-        }
-        else {
-
+            $form = $this->showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $h1_text);
+        } else {
             $form = $this->getHtmlForm("catalog_exist/form");
             $form = str_replace("{details_group_id}", $group_id, $form);
             $form = str_replace("{mfa_link}", $this->getManufactureLink($mfa_id), $form);
             $form = str_replace("{model_link}", $this->getModelLink($model), $form);
             $form = str_replace("{parts_name}", $group_text, $form);
             $form = str_replace("{parts_list}", $list, $form);
-            $form = str_replace("{parts_h1}", "$filters_h1 $translit $pager", $form);
+            $form = str_replace("{parts_h1}", "$h1_text $translit $pager", $form);
             $form = str_replace("{parts_count}", "{unselect_cap} $count " . $this->getGoodsCap($count), $form);
             $form = str_replace("{parts_filters}", "$filters_btn", $form);
             $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
             $filterData = $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $where_mfa, $where_link_arts, $query);
             $form = str_replace("{parts_params}", $filterData["form"], $form);
-            $time = $filterData["time"];
 
-            $breadcrumbsData = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $filters_h1, $source_link));
+            $breadcrumbsData = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $h1_text, $source_link));
             $breadcrumbs_script = $breadcrumbsData["script"];
             $form = str_replace("{parts_breadcrumbs}", $breadcrumbsData["form"], $form);
             $form = str_replace("{status_auto}", $status_auto, $form);
@@ -973,17 +979,17 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);
             $form = str_replace("{parts_cars}", $this->drawLoader(), $form);
             $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $params, $status_auto, $status_auto_type), $form);
-            $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $params, $mfa_id, $model, $status_auto, $status_auto_type), $form);
+            $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $params, $h1_text, $mfa_id, $model, $status_auto, $status_auto_type), $form);
             $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
         }
 
         $max_pages_count = ceil($count / $this->products_on_page);
 
         $description = $this->replaceLang("{site_description_catalog}");
-        $description = str_replace("{h1_caption}", $filters_h1, $description);
+        $description = str_replace("{h1_caption}", $h1_text, $description);
         $description = str_replace("{h1_caption_parrent}", $this->getGroupRowName($group_id), $description);
 
-        return array("form" => $form, "title" => $filters_title, "h1" => $filters_h1, "pages_count" => $max_pages_count, "description" => $description, "script" => $breadcrumbs_script, "time" => $time);
+        return array("form" => $form, "title" => $filters_title, "h1" => $h1_text, "pages_count" => $max_pages_count, "description" => $description, "script" => $breadcrumbs_script);
     }
 
     public function drawLoader()
@@ -1025,11 +1031,12 @@ class CatalogExistClass extends CatalogueClass
                 $filters_btn = "<a class=\"btn btn-sm btn-filter\" href=\"" . $this->getSiteLink() . "$car_link\">{filter_cap_empty} <i class=\"fa fa-times\"></i></a>" . $filters_btn;
             }
         }
-        $filters_h1 = $this->getCatalogH1($group_id, $params, $mfa_id, $model);
+
+        $h1_text = $this->getCatalogH1($group_id, $params, $mfa_id, $model);
 
         $filters_title = $this->getCatalogTitleCache($str_link);
         if ($filters_title == "") {
-            $filters_title = $this->getCatalogTitle($group_id, $params, $mfa_id, $model);
+            $filters_title = $this->getCatalogTitle($group_id, $params, $h1_text, $mfa_id, $model);
         }
 
         if ($page > 1) {
@@ -1037,7 +1044,7 @@ class CatalogExistClass extends CatalogueClass
             $filters_title = $this->replaceLang($filters_title);
         }
 
-        return array($filters_h1, $filters_title, $filters_btn, $count_values);
+        return array($h1_text, $filters_title, $filters_btn, $count_values);
     }
 
     /*
@@ -1077,8 +1084,7 @@ class CatalogExistClass extends CatalogueClass
                     }
                 }
             }
-        }
-        else {
+        } else {
             $checked_params_keys = array_keys($params_check);
             $existed_params_keys = array_values($exist_params);
             $existed_params_keys[] = 0;
@@ -1134,8 +1140,8 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function getPartsFiltersForm($group_id, $params = [], $mfa_id = 0, $model = "", $where_mfa = "", $where_link_arts = "", $query = "")
     {
-
-        $start = microtime(true); $time = 0;
+        $time = 0;
+        $start = microtime(true);
         $count_arts_full = $this->getPartsCount($group_id, $query);
 
         $paramData = $this->getPartsFiltersArr($group_id, $params, $where_mfa, $where_link_arts);
@@ -1236,44 +1242,42 @@ class CatalogExistClass extends CatalogueClass
         return array("form" => $this->replaceLang($form), "time" => $time);
     }
 
-//    public function getPartsFiltersForm2($group_id, $filters = [], $filters_h1 = "", $sel_param_id = "")
-//    {
-//        $params = $this->getCheckedFilters($group_id, $filters);
-//
-//        $paramData = $this->getPartsFiltersArr($group_id, $params, "", "");
-//        $arr = $paramData["arr"];
-//        $count_params = 0;
-//
-//        $list_params = "";
-//        if (!empty($arr)) {
-//            foreach ($arr as $param_id => $values) {
-//                // except select param
-//                if ($sel_param_id === "" || ($sel_param_id !== "" && $sel_param_id != $param_id)) {
-//                    if (!empty($values)) {
-//                        $count_params++;
-//                        $param_name = $this->getGroupParamName($param_id);
-//                        if ($count_params == 1) {
-//                            $list_params .= "<span>{seo_catalog_filters_cap_1} $filters_h1 {seo_catalog_filters_cap_2} $param_name: ";
-//                        } else {
-//                            $list_params .= "<span>$filters_h1 $param_name: ";
-//                        }
-//                        foreach ($values as $value_id) {
-//                            $value_name = $this->getGroupValueName($value_id, $param_id);
-//                            $link = $this->getPartsFilterLinks2($group_id, $filters, $param_id, $value_id, 0, "");
-//                            $checked = (in_array($value_id, $params[$param_id]));
-//                            if (!$checked) {
-//                                $list_params .= "<a href=\"$link\">$value_name</a>, ";
-//                            }
-//                        }
-//                        $list_params = rtrim($list_params, ", ");
-//                        $list_params .= ". </span><br>";
-//                    }
-//                }
-//            }
-//        }
-//
-//        return $this->replaceLang($list_params);
-//    }
+    public function getPartsFiltersForm2($group_id, $params = [], $filters_h1 = "", $sel_param_id = "")
+    {
+        $paramData = $this->getPartsFiltersArr($group_id, $params, "", "");
+        $arr = $paramData["arr"];
+        $count_params = 0;
+
+        $list_params = "";
+        if (!empty($arr)) {
+            foreach ($arr as $param_id => $values) {
+                // except select param
+                if ($sel_param_id === "" || ($sel_param_id !== "" && $sel_param_id != $param_id)) {
+                    if (!empty($values)) {
+                        $count_params++;
+                        $param_name = $this->getGroupParamName($param_id);
+                        if ($count_params == 1) {
+                            $list_params .= "<span>{seo_catalog_filters_cap_1} $filters_h1 {seo_catalog_filters_cap_2} $param_name: ";
+                        } else {
+                            $list_params .= "<span>$filters_h1 $param_name: ";
+                        }
+                        foreach ($values as $value_id) {
+                            $value_name = $this->getGroupValueName($value_id, $param_id);
+                            $link = $this->getPartsFilterLinks($group_id, $params, $param_id, $value_id, 0, "");
+                            $checked = (in_array($value_id, $params[$param_id]));
+                            if (!$checked) {
+                                $list_params .= "<a href=\"$link\">$value_name</a>, ";
+                            }
+                        }
+                        $list_params = rtrim($list_params, ", ");
+                        $list_params .= ". </span><br>";
+                    }
+                }
+            }
+        }
+
+        return $this->replaceLang($list_params);
+    }
 
     /*
      * get values
@@ -1313,74 +1317,6 @@ class CatalogExistClass extends CatalogueClass
     /*
      * get catalog link
      * */
-//    public function getPartsFilterLinks2($group_id, $filters_link, $param_id, $value_id, $mfa_id = 0, $model = "")
-//    {
-//        $filters = $this->getCheckedFilters($group_id, $filters_link);
-//        $link = "";
-//
-//        if (!empty($filters)) {
-//            $unset = 0;
-//            foreach ($filters as $param => $values) {
-//                foreach ($values as $key => $value) {
-//                    if ($param == $param_id && $value == $value_id) {
-//                        $unset++;
-//                        unset($filters[$param_id][$key]);
-//                        if (empty($filters[$param])) {
-//                            unset($filters[$param]);
-//                        }
-//                    } elseif (!in_array($value_id, $filters[$param_id]) && $unset == 0) {
-//                        $filters[$param_id][] = $value_id;
-//                    }
-//                }
-//            }
-//        } else {
-//            $filters[$param_id][] = $value_id;
-//        }
-//
-//        ksort($filters);
-//
-//        foreach ($filters as $param => $values) {
-//            $param_link = $this->getGroupParamLink($param);
-//            if (!empty($values)) {
-//                $link .= "$param_link=";
-//                foreach ($values as $value) {
-//                    $value_link = $this->getGroupValueLink($value, $param);
-//                    $link .= "$value_link,";
-//                }
-//                $link = rtrim($link, ",");
-//                $link .= ";";
-//            }
-//            $link = rtrim($link, ",");
-//        }
-//        $link = rtrim($link, ";");
-//
-//        $group_link = $this->getGroupRowLink($group_id);
-//        $list = $this->getSiteLink() . "$this->catalog_link/";
-//        if ($group_id > 0) {
-//            $list .= "$group_link/";
-//            if ($link != "") {
-//                $list .= "$link/";
-//            } elseif ($mfa_id > 0) {
-//                $list .= "auto/";
-//            } else {
-//                $list .= "";
-//            }
-//            if ($mfa_id > 0) {
-//                $mfa_link = $this->getManufactureLink($mfa_id);
-//                $list .= "$mfa_link/";
-//            }
-//            if ($model != "") {
-//                $model_link = $this->getModelLink($model);
-//                $list .= "$model_link/";
-//            }
-//        }
-//
-//        return $list;
-//    }
-
-    /*
-     * get catalog link
-     * */
     public function getPartsFilterLinks($group_id, $params, $param_id, $value_id, $mfa_id = 0, $model = "")
     {
         $link = "";
@@ -1395,7 +1331,8 @@ class CatalogExistClass extends CatalogueClass
                         if (empty($params[$param])) {
                             unset($params[$param]);
                         }
-                    } elseif (!in_array($value_id, $params[$param_id]) && $unset == 0) {
+                    }
+                    elseif (!in_array($value_id, $params[$param_id]) && $unset == 0) {
                         $params[$param_id][] = $value_id;
                     }
                 }
@@ -1529,31 +1466,32 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show catalog seo filters form
      * */
-//    public function getCatalogSeoFiltersForm($group_id, $params)
-//    {
-//        $list = "";
-//        $params = $this->getCheckedFilters($group_id, $filters);
-//        if (count($params) == 2) {
-//            $filters_1 = explode(";", $filters)[0];
-//            $filters_h1 = $this->getCatalogH1($group_id, $filters_1);
-//            $list = $this->getPartsFiltersForm2($group_id, $filters_1, $filters_h1);
-//
-//            $filters_2 = explode(";", $filters)[1];
-//            $filters_h1 = $this->getCatalogH1($group_id, $filters_2);
-//            $list .= $this->getPartsFiltersForm2($group_id, $filters_2, $filters_h1);
-//        }
-//        if (count($params) == 1) {
-//            $sel_param_id = array_keys($params)[0];
-//            $filters_h1 = $this->getCatalogH1($group_id, $filters);
-//            $list = $this->getPartsFiltersForm2($group_id, $filters, $filters_h1, $sel_param_id);
-//        }
-//        return $list;
-//    }
+    public function getCatalogSeoFiltersForm($group_id, $params)
+    {
+        $list = "";
+        if (count($params) == 2) {
+            $param_id_1 = array_keys($params)[0];
+            $params_1[$param_id_1] = $params[$param_id_1];
+            $filters_h1_1 = $this->getCatalogH1($group_id, $params_1);
+            $list = $this->getPartsFiltersForm2($group_id, $params_1, $filters_h1_1);
+
+            $param_id_2 = array_keys($params)[0];
+            $params_2[$param_id_1] = $params[$param_id_2];
+            $filters_h1_2 = $this->getCatalogH1($group_id, $params_2);
+            $list .= $this->getPartsFiltersForm2($group_id, $params_2, $filters_h1_2);
+        }
+        if (count($params) == 1) {
+            $sel_param_id = array_keys($params)[0];
+            $filters_h1 = $this->getCatalogH1($group_id, $params);
+            $list = $this->getPartsFiltersForm2($group_id, $params, $filters_h1, $sel_param_id);
+        }
+        return $list;
+    }
 
     /*
      * show products seo form
      * */
-    public function getPartsCatalogueSeo($group_id, $page = 1, $params = [], $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0)
+    public function getPartsCatalogueSeo($group_id, $page = 1, $params = [], $h1_text = "", $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0)
     {
         $menu = new MenuClass();
         $form = $this->getHtmlForm("catalog_exist/seo");
@@ -1561,11 +1499,11 @@ class CatalogExistClass extends CatalogueClass
             $typ_id = $this->getCookieAuto();
             if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 0)) {
                 // SEO filters
-//                if ($typ_id == "" || ($status_auto == 1 && $status_auto_type == 0)) {
-//                    $list_filters = $this->getCatalogSeoFiltersForm($group_id, $params);
-//                    $form = str_replace("{seo_filters}", $list_filters, $form);
-//                    $form = str_replace("{seo_filters_style}", ($list_filters == "") ? "none" : "", $form);
-//                }
+                if ($typ_id == "" || ($status_auto == 1 && $status_auto_type == 0)) {
+                    $list_filters = $this->getCatalogSeoFiltersForm($group_id, $params);
+                    $form = str_replace("{seo_filters}", $list_filters, $form);
+                    $form = str_replace("{seo_filters_style}", ($list_filters == "") ? "none" : "", $form);
+                }
                 // SEO details
                 if ($typ_id == "" || ($status_auto == 1 && $status_auto_type == 0)) {
                     if ($mfa_id > 0) {
@@ -1581,7 +1519,6 @@ class CatalogExistClass extends CatalogueClass
                 }
                 // SEO popular request
                 if ($typ_id == "" || ($status_auto == 1 && $status_auto_type == 0)) {
-                    $h1_text = $this->getCatalogH1($group_id, $params, $mfa_id, $model);
                     $form = str_replace("{seo_popular}", $menu->getCatalogFaqForm($h1_text), $form);
                 }
             }
@@ -1668,8 +1605,7 @@ class CatalogExistClass extends CatalogueClass
             $group_name = $this->getGroupRowName($group_id);
             $group_link = $this->getGroupRowLink($group_id);
             $link .= "/$group_link/auto";
-            $details_cap = $group_name;
-            $details_cap .= " {on_cap}";
+            $details_cap = $group_name . " {on_cap}";
         } else {
             $details_cap = "{details_on_cap}";
         }
@@ -1902,11 +1838,10 @@ class CatalogExistClass extends CatalogueClass
     /*
      * catalog title
      * */
-    public function getCatalogTitle($group_id, $params = [], $mfa_id = 0, $model = "")
+    public function getCatalogTitle($group_id, $params = [], $h1_text = "", $mfa_id = 0, $model = "")
     {
         $automan = new AutoClass();
-        $h1 = $this->getCatalogH1($group_id, $params, $mfa_id, $model);
-        $text = "$h1 | ";
+        $text = "$h1_text | ";
         $brand_name = "";
 
         // 1
@@ -1916,11 +1851,11 @@ class CatalogExistClass extends CatalogueClass
         }
 
         // 1.1
-//        $filters_count = count(explode(";", $filters));
-//        if ($mfa_id == 0 && $model == "" && $filters_count > 2) {
-//            $text = "$h1 | ";
-//            $text .= $this->replaceLang("{seo_new_tilte_1}");
-//        }
+        $filters_count = count($params);
+        if ($mfa_id == 0 && $model == "" && $filters_count > 2) {
+            $text = "$h1_text | ";
+            $text .= $this->replaceLang("{seo_new_tilte_1}");
+        }
 
         // 2
         // group_name/auto/mfa/
@@ -1997,8 +1932,7 @@ class CatalogExistClass extends CatalogueClass
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     $text .= $this->replaceLang("{seo_new_tilte_3}");
                     $mfa_name = $automan->getMfaBrand($mfa_id);
                     $text = str_replace("{mfnm}", $mfa_name, $text);
@@ -2013,9 +1947,8 @@ class CatalogExistClass extends CatalogueClass
                         }
                     }
                 }
-            }
-            else {
-                $text = "$h1 | ";
+            } else {
+                $text = "$h1_text | ";
                 $text .= $this->replaceLang("{seo_new_tilte_1}");
             }
         }
