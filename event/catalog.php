@@ -40,8 +40,7 @@ else {
      * */
     if ($router == "") {
         $content = str_replace("{main_window}", $catalogue->getCatalogColList(), $content);
-    }
-    else {
+    } else {
         /*
          * Catalog with Group
          * */
@@ -56,7 +55,8 @@ else {
             $mfa_link = $router_3;
             $model_link = $router_4;
 
-            $mfa_id = 0; $model = "";
+            $mfa_id = 0;
+            $model = "";
             if ($mfa_link != "") {
                 $mfa_id = $automan->getMfaLink($mfa_link);
                 if ($mfa_id == 0) {
@@ -69,8 +69,7 @@ else {
                         $redirect_status = 1;
                         $redirect_type = 301;
                         $redirect_link = $catalog_exist->getSiteLink() . $catalog_exist->catalog_link . "/$router/" . $linka[2] . "/$router_3/rav-4/";
-                    }
-                    else {
+                    } else {
                         $model = $automan->getModLink($model_link);
                         if ($model == "") {
                             $redirect_status = 1;

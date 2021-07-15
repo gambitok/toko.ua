@@ -957,6 +957,8 @@ class CatalogExistClass extends CatalogueClass
         $breadcrumbs_script = "";
         if (empty($art_id_str)) {
             $form = $this->showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $h1_text);
+            $form = str_replace("{mfa_link}", $this->getManufactureLink($mfa_id), $form);
+            $form = str_replace("{model_link}", $this->getModelLink($model), $form);
         } else {
             $form = $this->getHtmlForm("catalog_exist/form");
             $form = str_replace("{details_group_id}", $group_id, $form);
