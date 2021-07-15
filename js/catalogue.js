@@ -35,6 +35,7 @@ function showPhoneForm() {
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modals").append(result.content);
             $("#HelpForm2").modal("show");
+            new LazyLoad({ elements_selector: ".lazy" });
         }}, true);
 }
 

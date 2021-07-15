@@ -4,67 +4,63 @@
 
         <div class="article-card-main">
 
-            <div class="row">
-                <div class="col-12">
-                    <a itemprop="url" href="{page_product_link}">
-                        <div class="search__photo">
-                            <div class="flag-search-card tooltips {country_display}" data-toggle="tooltip" data-placement="bottom" title="{brand_manuf}: {country_name}"><span class="flag flag-{flag_image}"></span></div>
-                            <img class="lazy" data-src="{product_image}" alt="{product_title}" title="{product_title}" src="/images/no_photo.png">
-                        </div>
-                    </a>
-                </div>
+            <div>
+                <a itemprop="url" href="{page_product_link}">
+                    <div class="search__photo">
+                        <div class="flag-search-card tooltips {country_display}" data-toggle="tooltip" data-placement="bottom" title="{brand_manuf}: {country_name}"><span class="flag flag-{flag_image}"></span></div>
+                        <img class="lazy" data-src="{product_image}" alt="{product_title}" title="{product_title}" src="/images/no_photo.png">
+                    </div>
+                </a>
             </div>
 
-            <div class="row">
-                <div class="col-12">
-                    <a class="search__link" itemprop="url" href="{page_product_link}">
-                        <span class="search__brand">{product_brand}</span>
-                        <span class="search__name" title="{product_text}">{format_product_text}</span>
-                        <span class="search__art">{product_name}</span>
-                    </a>
-                </div>
+            <div>
+                <a class="search__link" itemprop="url" href="{page_product_link}">
+                    <span class="search__brand">{product_brand}</span>
+                    <span class="search__name" title="{product_text}">{format_product_text}</span>
+                    <span class="search__art">{product_name}</span>
+                </a>
             </div>
 
-            <div class="row {soldout_row_status} article-card__price">
-                <div class="col-12">
-                    <div class="search__soldout">{sold_out_cap}</div>
-                </div>
+            <div class="{soldout_row_status} article-card__price">
+                <div class="search__soldout">{sold_out_cap}</div>
             </div>
 
-            <div class="row">
-                <div class="col-6">
+            <div style="display: flex;">
+                <div style="width: 50%;">
                     <div style="line-height: 42px;">
                         <span class="search__name">{price_cap}: </span>
                         <span class="search__true_price">{product_true_price}</span>
                         <span class="search__name">{product_kours_cap}</span>
                     </div>
                 </div>
-                <div class="col-6">
+                <div style="width: 50%;">
                     <input type="hidden" value="1" id="count_{product_i}">
                     <button class="btn-group btn btn-md btn-info btn-buy {product_button}" onclick="moveBasket({product_i},'{art_id}','{brand_id}','{product_real_stock}','{product_storage_id}',{product_suppl_id});">{buy_cap}</button>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="tables__delivery applicable {applicable_display}" onclick="{applicable_onclick}">
-                        <span>{applicable_display_text}</span>
-                    </div>
+            <div>
+                <div class="tables__delivery applicable {applicable_display}" onclick="{applicable_onclick}">
+                    <span>{applicable_display_text}</span>
                 </div>
             </div>
 
-            <div class="row {price_row_status} article-card__info">
-                <div class="col-12 {product_button}">
-                    <span class="search__name-stock">{in_stock}</span> <span>{product_stock} {amount_abbr}.</span>
-                </div>
-                <div class="col-12 {product_delivery_class} {product_button}">
-                    <span class="search__name">{storage_info}</span> {product_delivery_short_info}
+            <div class="{price_row_status}">
+                <div class="article-card__info">
+                    <div class="{product_button}">
+                        <span class="search__name-stock">{in_stock}</span> <span>{product_stock} {amount_abbr}.</span>
+                    </div>
+                    <div class="{product_delivery_class} {product_button}">
+                        <span class="search__name">{storage_info}</span> {product_delivery_short_info}
+                    </div>
                 </div>
             </div>
 
         </div>
 
-        <div class="article-card-hidden">{product_info}</div>
+        <div class="article-card-hidden">
+            {product_info}
+        </div>
         <!--product_in_listingEX-->
 
     </div>

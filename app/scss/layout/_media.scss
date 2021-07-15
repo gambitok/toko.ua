@@ -287,8 +287,13 @@
         }
     }
 
-    .seo_auto ul.list-inline {
-        column-count: 2;
+    //.seo_auto ul.list-inline {
+    //    column-count: 2;
+    //}
+
+    .seo-auto-list__item {
+        margin: 10px;
+        width: calc(50% - 20px);
     }
 
     .basket {

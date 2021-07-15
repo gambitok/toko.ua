@@ -74,12 +74,12 @@ class AutoClass extends CatalogueClass
      * */
     public function getAutoDescr($mfa_id, $model = "", $model_id = 0, $typ_id = 0)
     {
-        $db = DbSingleton::getTokoDb();
-        $mfa_text = $model_text = $model_id_text = $typ_text = "";
         $mfa_id = $this->getUrlNumber($mfa_id);
         $model = $this->getUrlString($model);
         $model_id = $this->getUrlNumber($model_id);
         $typ_id = $this->getUrlNumber($typ_id);
+        $db = DbSingleton::getTokoDb();
+        $mfa_text = $model_text = $model_id_text = $typ_text = "";
         if ($mfa_id > 0) {
             $r = $db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
             $mfa_text = $db->result($r, 0, "MFA_BRAND");
@@ -527,6 +527,9 @@ class AutoClass extends CatalogueClass
         return $form;
     }
 
+    /*
+     * get MAIN PAGE cars list
+     * */
     public function getAutoMfaModelList()
     {
         $db = DbSingleton::getTokoDb();
@@ -537,45 +540,62 @@ class AutoClass extends CatalogueClass
             $mfa_id = $db->result($r, $i - 1, "MFA_ID");
             $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
-            $mas[$mfa_brand] = ["mfa_id" => $mfa_id, "mfa_link" => $mfa_link];
+            $mas[$mfa_brand] = compact("mfa_id", "mfa_link");
         }
-        $list = "<div class=\"seo_auto\">";
+
+        $list = "";
         foreach ($mas as $mfa_brand => $values) {
             $mfa_id = $values["mfa_id"];
             $mfa_link = $values["mfa_link"];
-            $list .= "<div class=\"title\"><a href=\"" . $this->getSiteLink() . "cars/$mfa_link/\">{details_on_cap} $mfa_brand</a></div>";
-            $list .= "<ul class=\"list-inline\">";
+            $list .= "<div class=\"seo-auto-list-title\">
+                <a href=\"" . $this->getSiteLink() . "cars/$mfa_link/\">{details_on_cap} $mfa_brand</a>
+            </div>";
+
+            $list .= "<div class=\"seo-auto-list\">";
             $r = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id GROUP BY `Model`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
                 $model_link = $db->result($r, $i - 1, "Model_Link");
-                $list .= "<li><a href=\"" . $this->getSiteLink() . "cars/$mfa_link/$model_link/\">$mfa_brand $model</a></li>";
+                $list .= "<div class=\"seo-auto-list__item\">
+                    <a href=\"" . $this->getSiteLink() . "cars/$mfa_link/$model_link/\">$mfa_brand $model</a>
+                </div>";
             }
-            $list .= "</ul>";
+            $list .= "</div>";
         }
-        $list .= "</div>";
-        return $list;
+
+        $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
+        $form = str_replace("{seo_auto_title}", "", $form);
+        $form = str_replace("{seo_auto_list}", $list, $form);
+
+        return $form;
     }
 
+    /*
+     * get CARS seo list
+     * */
     public function getAutoModList($mfa_id_sel = "")
     {
         $db = DbSingleton::getTokoDb();
+
+        $list = "";
         $where = ($mfa_id_sel != "") ? "AND `MFA_ID` = $mfa_id_sel" : "";
-        $list = "<ul>";
         $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 $where ORDER BY `MFA_BRAND`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $mfa_id = $db->result($r, $i - 1, "MFA_ID") + 0;
             $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
-            if ($mfa_id_sel == "") {
-                $list .= "<li class=\"title\"><span class=\"bold\"><a href=\"" . $this->getSiteLink() . "cars/$mfa_link/\">{details_on_cap} $mfa_brand</a></span>";
-            } else {
-                $list = "<span class=\"title-b\">{details_on_cap} $mfa_brand</span>";
-            }
-            $list .= "<div class=\"seo_details\"><div class=\"seo-ul\">";
 
+            if ($mfa_id_sel == "") {
+                $list .= "<div class=\"seo-auto-list-title\">
+                    <a href=\"" . $this->getSiteLink() . "cars/$mfa_link/\">{details_on_cap} $mfa_brand</a>
+                </div>";
+            } else {
+                $list = "<div class=\"seo-auto-list-title\">{details_on_cap} $mfa_brand</div>";
+            }
+
+            $list .= "<div class=\"seo-auto-list seo_details\"><div class=\"seo-ul\">";
             $r2 = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model`;");
             $n2 = $db->num_rows($r2);
             for ($i2 = 1; $i2 <= $n2; $i2++) {
@@ -587,12 +607,17 @@ class AutoClass extends CatalogueClass
             }
             $list .= "</div></div>";
         }
-        if ($mfa_id_sel != "") {
-            $list .= "</ul>";
-        }
-        return $list;
+
+        $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
+        $form = str_replace("{seo_auto_title}", "", $form);
+        $form = str_replace("{seo_auto_list}", $list, $form);
+
+        return $form;
     }
 
+    /*
+     * get CARS seo meta tags
+     * */
     public function getCarsMetaTags($mfa_link, $model_link, $h1_text)
     {
         $mfa_id = $this->getMfaLink($mfa_link);

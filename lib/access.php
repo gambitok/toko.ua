@@ -166,7 +166,8 @@ function printBreadcrumbs($path)
     $menu = new MenuClass();
     $bread = findLinks();
 
-    $icon = "<i class=\"fa fa-chevron-right\"></i>";
+//    $icon = "<i class=\"fa fa-chevron-right\"></i>";
+    $icon = "<span> > </span>";
 
     $section = $path;
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -174,8 +175,8 @@ function printBreadcrumbs($path)
         $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
     }
 
-    $a_home = "<a href=\"" . $cat->getSiteLink() . "\" title=\"{seo_site_toko}\">{seo_shop_toko}</a>";
-    $a_section = "<a href=\"" . $cat->getSiteLink() . "$section/\">{site_$section}</a>";
+    $a_home = "<li class=\"cat-products-bread__item\"><a href=\"" . $cat->getSiteLink() . "\" title=\"{seo_site_toko}\">{seo_shop_toko}</a></li>";
+    $a_section = "<li class=\"cat-products-bread__item\"><a href=\"" . $cat->getSiteLink() . "$section/\">{site_$section}</a></li>";
     $h_section = "{site_$section}";
 
     $list = "";

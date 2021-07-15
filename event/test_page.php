@@ -10,6 +10,7 @@
 //var_dump($result);
 //
 //$content = str_replace("{main_window}", "", $content);
+phpinfo();
 
 
 
