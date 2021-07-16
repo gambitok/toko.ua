@@ -8,11 +8,12 @@ list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
 list($mfa_text, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
 $translit = $automan->getCarManufTranslit($mfa_id, $model);
 
-$form = $catalogue->getHtmlForm("cars/form");
-
 $title = ($mfa_text == "") ? "{spare_parts_catalog_cap}" : $catalogue->replaceLang("{details_on_cap} $mfa_text $model_text $translit");
 
-$form = str_replace("{cars_list}", $prod->getCarsSearch($mfa_link, $mod_link), $form);
+$form = $catalogue->getHtmlForm("cars/form");
+$form = str_replace("{cars_list}", $showform->drawLoader(), $form);
+$form = str_replace("{mfa_link}", $mfa_link, $form);
+$form = str_replace("{model_link}", $mod_link, $form);
 $form = str_replace("{seo_content}", $automan->getSeoContent($title, $mfa_link, $mod_link), $form);
 
 $content = str_replace("{main_window}", $form, $content);

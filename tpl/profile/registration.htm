@@ -20,16 +20,12 @@
     .accept-valid {
         border: 1px solid limegreen!important;
     }
-    .btn-valid {
-        background: limegreen;
-        color: white;
-    }
     .select2-selection__rendered {
         line-height: 46px !important;
     }
     .select2-container .select2-selection--single {
+		border: 1px solid #dadada;
         height: 46px;
-        border: 1px solid #dadada;
     }
     .select2-selection__arrow {
         height: 46px !important;
@@ -37,119 +33,128 @@
 </style>
 
 <div class="content">
+
+	<h1>{registration}</h1>
+
 	<div class="container">
 		<div class="registration">
 
-			<div class="row align-items-center">
-				<div class="col-lg-12 col-12 pad0">
-					<h1>{registration}</h1>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4 col-12 pad0">
-					<label class="label-required">{name_surname}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<input id="reg_name" title="{name_surname}" class="form-control" type="text">
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4 col-12 pad0">
-					<label class="label-required">{phone_cap}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<input id="reg_phone" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__">
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4 col-12 pad0">
-					<label>{email_cap}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<input id="reg_email" title="{email_cap}" class="form-control" type="email">
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4 col-12 pad0">
-					<label class="label-required">{client_password_cap}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<input id="reg_password" name="reg_password" title="{client_password_cap}" class="form-control" type="password">
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4 col-12 pad0">
-					<label class="label-required">{repeat_password}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<input id="reg_repassword" title="{repeat_password}" class="form-control" type="password">
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4 col-12 pad0">
-					<label class="label-required">{client_category}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<select id="reg_category" title="{client_category}" class="form-control">
-						{category_options}
-					</select>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4 col-12 pad0">
-					<label class="label-required">{choose_office_near}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<select id="reg_tpoint" title="{choose_office}" class="form-control">
-						{tpoint_options}
-					</select>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4 col-12 pad0">
-					<label class="label-required">{location_cap}:</label>
-				</div>
-				<div class="col-lg-8 col-12 pad0">
-					<select id="user_city" title="{location_cap}" class="form-control" data-attr="select" oninput="getCityVal();" onchange="setCityVal();">
-                        <option value="0">{not_chosen}</option>
-                        {user_city_main_list}
-					</select>
-                    <select style="display: none!important;" class="orders-block-row__input" name="user_city_np" id="user_city_np" data-attr="select" title="NovaPoshta">
-                        <option value="0">{not_chosen}</option>
-                    </select>
-					<div class="city-inline">
-						<ul class="list-inline">
-							<li class="list-inline-item">{for_example}:</li>
-							<li class="list-inline-item"><button id="10108" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>
-							<li class="list-inline-item"><button id="22739" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kharkiv} </button></li>
-							<li class="list-inline-item"><button id="13549" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
-							<li class="list-inline-item"><button id="4074" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_dnepr} </button></li>
-						</ul>
+			<div class="registration-row">
+				<div class="row">
+					<div class="col-lg-4 col-12">
+						<label class="label-required">{name_surname}:</label>
+					</div>
+					<div class="col-lg-8 col-12">
+						<input id="reg_name" title="{name_surname}" class="form-control" type="text">
 					</div>
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="col-lg-12 col-12 pad0">
-					<label class="container_check">{mailing_cap}
-						<input id="reg_mailing" value="{mailing_cap}" name="{mailing_cap}" type="checkbox" checked="checked">
-						<span class="checkmark"></span>
-					</label>
+			<div class="registration-row">
+				<div class="row">
+					<div class="col-lg-4 col-12">
+						<label class="label-required">{phone_cap}:</label>
+					</div>
+					<div class="col-lg-8 col-12">
+						<input id="reg_phone" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__">
+					</div>
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="col-lg-12 col-12 pad0">
-					<input type="submit" class="btn btn-primary" value="{save_cap}" onclick="saveRegistrationForm();">
+			<div class="registration-row">
+				<div class="row">
+					<div class="col-lg-4 col-12">
+						<label>{email_cap}:</label>
+					</div>
+					<div class="col-lg-8 col-12">
+						<input id="reg_email" title="{email_cap}" class="form-control" type="email">
+					</div>
 				</div>
+			</div>
+
+			<div class="registration-row">
+				<div class="row">
+					<div class="col-lg-4 col-12">
+						<label class="label-required">{client_password_cap}:</label>
+					</div>
+					<div class="col-lg-8 col-12">
+						<input id="reg_password" name="reg_password" title="{client_password_cap}" class="form-control" type="password">
+					</div>
+				</div>
+			</div>
+
+			<div class="registration-row">
+				<div class="row">
+					<div class="col-lg-4 col-12">
+						<label class="label-required">{repeat_password}:</label>
+					</div>
+					<div class="col-lg-8 col-12">
+						<input id="reg_repassword" title="{repeat_password}" class="form-control" type="password">
+					</div>
+				</div>
+			</div>
+
+			<div class="registration-row">
+				<div class="row">
+					<div class="col-lg-4 col-12">
+						<label class="label-required">{client_category}:</label>
+					</div>
+					<div class="col-lg-8 col-12">
+						<select id="reg_category" title="{client_category}" class="form-control">
+							{category_options}
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="registration-row">
+				<div class="row">
+					<div class="col-lg-4 col-12">
+						<label class="label-required">{choose_office_near}:</label>
+					</div>
+					<div class="col-lg-8 col-12">
+						<select id="reg_tpoint" title="{choose_office}" class="form-control">
+							{tpoint_options}
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="registration-row">
+				<div class="row">
+					<div class="col-lg-4 col-12">
+						<label class="label-required">{location_cap}:</label>
+					</div>
+					<div class="col-lg-8 col-12">
+						<select id="user_city" title="{location_cap}" class="form-control" data-attr="select" oninput="getCityVal();" onchange="setCityVal();">
+							<option value="0">{not_chosen}</option>
+							{user_city_main_list}
+						</select>
+						<select style="display: none!important;" class="orders-block-row__input" name="user_city_np" id="user_city_np" data-attr="select" title="NovaPoshta">
+							<option value="0">{not_chosen}</option>
+						</select>
+						<div class="city-inline">
+							<ul class="list-inline">
+								<li class="list-inline-item">{for_example}:</li>
+								<li class="list-inline-item"><button id="10108" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>
+								<li class="list-inline-item"><button id="22739" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kharkiv} </button></li>
+								<li class="list-inline-item"><button id="13549" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
+								<li class="list-inline-item"><button id="4074" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_dnepr} </button></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="registration-row">
+				<label class="container_check">{mailing_cap}
+					<input id="reg_mailing" value="{mailing_cap}" name="{mailing_cap}" type="checkbox" checked="checked">
+					<span class="checkmark"></span>
+				</label>
+			</div>
+
+			<div class="registration-row">
+				<input type="submit" class="btn btn-primary" value="{save_cap}" onclick="saveRegistrationForm();">
 			</div>
 
 		</div>
@@ -175,7 +180,6 @@
         $("#user_city").select2();
     }, 1500);
 </script>
-
 
 <script>
     function triggerCity(a) {

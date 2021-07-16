@@ -86,7 +86,7 @@ class MenuClass extends CatalogueClass
                         <h3 itemprop=\"description\">$short_desc</h3><br>
                         <a itemprop=\"url\" href=\"" . $this->getSiteLink() . "$this->news_link/state/$state_id/$format_title/\">{details_cap} <span class=\"fas fa-angle-right\"></span></a>
                     </div>
-                    <div class=\"col-4 pad10\">$img</div>
+                    <div class=\"col-4\" style=\"padding: 10px 0;\">$img</div>
                 </div>";
             }
         } else {

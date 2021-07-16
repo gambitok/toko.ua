@@ -1,46 +1,28 @@
 <link rel="stylesheet" href="/js/plugins/dropzone/dropzone.css">
 
-<style>
-    .nav-tabs {
-        background: white;
-    }
-    .nav-tabs li {
-        padding: 15px;
-    }
-    .nav-tabs a {
-        color: black;
-    }
-    .nav-tabs a:hover {
-        color: black;
-        text-decoration: underline;
-    }
-</style>
-
 <div class="content">
 
-    <div class="row">
-        <div class="col-12" style="padding-bottom: 2em; padding-left: 2em;">
+    <div class="sell">
+        <div class="sell-title">
             <h1>{terms_of_cooperation}</h1>
         </div>
-    </div>
 
-    <ul class="nav nav-tabs">
-        <li><a data-toggle="tab" href="#menu1" class="active show">{first_step_cap}</a></li>
-        <li><a data-toggle="tab" href="#menu2">{terms_of_cooperation}</a></li>
-    </ul>
-
-    <div class="tab-content pad0">
-        <div id="menu1" class="tab-pane fade in active show">
-            <div class="content">
-                {deal_cap}
-            </div>
-        </div>
-        <div id="menu2" class="tab-pane fade">
-            <div class="content">
-                {terms_cap}
+        <div class="sell-navs">
+            <ul class="nav nav-tabs">
+                <li><a data-toggle="tab" href="#menu1" class="active show">{first_step_cap}</a></li>
+                <li><a data-toggle="tab" href="#menu2">{terms_of_cooperation}</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="menu1" class="tab-pane fade in active show">
+                    {deal_cap}
+                </div>
+                <div id="menu2" class="tab-pane fade">
+                    {terms_cap}
+                </div>
             </div>
         </div>
     </div>
+
 </div>
 
 <div class="modal inmodal fade filePhotoUploadForm in" id="filePhotoUploadForm" tabindex="-1" role="dialog" aria-hidden="true">

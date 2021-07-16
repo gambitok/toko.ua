@@ -11,25 +11,26 @@
 
 <div class="content">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-12" style="margin: 0; padding: 0; width: 100%;">
+        <div class="row">
+            <div class="col-12 signin">
                 <form action="" autocomplete="off" class="signin-form" onsubmit="return false;">
                     <h1>{authorization}</h1>
                     <hr>
-                    <input class="clearAll TextBox" id="loginform2" type="hidden" name="loginform" value="1">
-                    <input class="clearAll TextBox" id="remember2" type="hidden" name="remember" value="1">
+                    <input id="loginform2" type="hidden" name="loginform" value="1">
+                    <input id="remember2" type="hidden" name="remember" value="1">
                     <div class="auth-input">
-                        <label class="auth-label">{client_login}</label><br>
-                        <input id="userlogin2" name="userlogin" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__">
+                        <label for="userlogin2">{client_login}</label><br>
+                        <input id="userlogin2" name="userlogin" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__" title="{phone_cap}">
                     </div>
                     <br>
                     <div class="auth-input">
-                        <label class="auth-label">{client_password_cap}</label><br>
-                        <input class="form-control" id="userpassword2" type="password" name="userpassword" placeholder="{input_password}" title="{password_cap}">
+                        <label for="userpassword2">{client_password_cap}</label><br>
+                        <input id="userpassword2" name="userpassword" class="form-control" type="password" placeholder="{input_password}" title="{password_cap}">
                     </div>
                     <br>
-                    <input class="btn btn-primary" type="submit" value="{login}" onClick="signInForm();"><br><br>
-                    <a class="d-block" href="{site_main_link}registration/">{registration}</a> <br>
+                    <input class="btn btn-primary" type="submit" value="{login}" onClick="signInForm();">
+                    <br><br>
+                    <a class="dblock" href="{site_main_link}registration/">{registration}</a> <br>
                     <a class="dblock" href="{site_main_link}recover_password/">{forget_password}?</a>
                 </form>
             </div>

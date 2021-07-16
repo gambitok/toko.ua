@@ -1,6 +1,16 @@
-<div class="home-cars">
-    <div id="car_content">
-        {cars_list}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div id="car_content">
+                {cars_list}
+            </div>
+        </div>
     </div>
+    {seo_content}
 </div>
-{seo_content}
+
+<script>
+    $(document).ready(function() {
+        getCarsSelectUser("car_content", "{mfa_link}", "{model_link}");
+    });
+</script>

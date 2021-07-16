@@ -1,6 +1,6 @@
 $(document).ready(function() {
-
-    if ($("#cars_form-selected").length !== 0 && $("#car_form-select").length !== 0) {
+// !== 0 && $("#car_form-select").length !== 0
+    if ($("#cars_form-selected").length) {
 
         $("body").scroll(function() {
             let checked_index = $(".cars-nav__item-checked")[0];

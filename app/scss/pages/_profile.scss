@@ -1,56 +1,82 @@
 .profile {
     margin: 0;
-    &__main {
+    &-main {
         padding: 0;
         &-form {
             height: 100%;
             min-height: 500px;
         }
     }
-    &__side {
+    &-side {
         padding: 0 15px 0 0;
     }
 }
 
-.profile-account {
-    .row {
-        border-top: 1px dashed #ddd;
-        margin: 0;
-        padding: 15px;
+.signin {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    &-form {
+        color: #000;
+        display: block;
+        margin: 0 auto;
+        width: 45%;
     }
-    input, select {
-        display: inline;
-    }
-    input[type=submit] {
-        float: right;
-        width: 25%;
-    }
-}
-
-.signin-form {
-    color: #000;
-    display: block;
-    margin: 0 auto;
-    width: 45%;
 }
 
 .registration {
-    input {
-        display: inline;
-    }
-    input[type=submit] {
-        float: right;
-        width: 25%;
-    }
-    .row {
+    &-row {
         border-bottom: 1px dashed #ddd;
         padding: 15px;
+        &__title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
+    input {
+        display: inline;
     }
 }
 
 .label-required:before {
     color: red;
     content: ' *';
+}
+
+.sell {
+    &-title {
+        margin-bottom: 30px;
+        padding: 0 15px;
+    }
+    &-navs {
+        .nav-tabs {
+            background: #fff;
+            margin-bottom: 30px;
+            li {
+                a {
+                    display: block;
+                    color: #000;
+                    padding: 15px;
+                    &:hover {
+                        color: #000;
+                        text-decoration: underline;
+                    }
+                }
+                & > a.active {
+                    background: #ddd;
+                    color: #fff;
+                }
+            }
+        }
+    }
+    &-cooperation {
+        &-title {
+            font-size: 16px;
+        }
+        ul {
+            list-style: none;
+        }
+    }
 }
 
 @media (min-width:992px) and (max-width:1200px) {

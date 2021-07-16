@@ -8,89 +8,100 @@
 <div class="container">
 	<div class="registration">
 
-		<div class="row align-items-center">
-			<div class="col-lg-12 col-12 pad0">
-				<h2 style="font-size: 16px;"><b>{site_sellers}</b></h2>
-			</div>
+		<div class="registration-row">
+			<h2 class="registration-row__title">{site_sellers}</h2>
 		</div>
 
-		<div class="row">
-			<div class="col-lg-4 col-12 pad0">
-				<label class="label-required">{company_name}:</label>
-			</div>
-			<div class="col-lg-8 col-12 pad0">
-				<input id="reg_company" title="{company_name}" class="form-control" type="text">
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-lg-4 col-12 pad0">
-				<label class="label-required">{name_surname}:</label>
-			</div>
-			<div class="col-lg-8 col-12 pad0">
-				<input id="reg_name" title="{name_surname}" class="form-control" type="text">
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-lg-4 col-12 pad0">
-				<label class="label-required">{phone_cap}:</label>
-			</div>
-			<div class="col-lg-8 col-12 pad0">
-				<input id="reg_phone" title="{phone_cap}" class="form-control" type="tel" placeholder="+380" aria-hidden="true" aria-label="+380">
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-lg-4 col-12 pad0">
-				<label>{email_cap}:</label>
-			</div>
-			<div class="col-lg-8 col-12 pad0">
-				<input id="reg_email" title="{email_cap}" class="form-control" type="email">
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-lg-4 col-12 pad0">
-				<label class="label-required">{location_cap}:</label>
-			</div>
-			<div class="col-lg-8 col-12 pad0">
-				<select id="user_city" title="{location_cap}" class="form-control select2-city pointer" onchange="validateForm('city','select')">
-				</select>
-				<div class="city-inline">
-					<ul class="list-inline">
-						<li class="list-inline-item">{for_example}:</li>
-						<li class="list-inline-item"><button id="10108" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>
-						<li class="list-inline-item"><button id="22739" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kharkiv} </button></li>
-						<li class="list-inline-item"> <button id="13549" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
-						<li class="list-inline-item"><button id="4074" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_dnepr} </button></li>
-					</ul>
+		<div class="registration-row">
+			<div class="row">
+				<div class="col-lg-4 col-12">
+					<label class="label-required">{company_name}:</label>
+				</div>
+				<div class="col-lg-8 col-12">
+					<input id="reg_company" title="{company_name}" class="form-control" type="text">
 				</div>
 			</div>
 		</div>
 
-		<div class="row">
-			<div class="col-lg-4 col-12 pad0">
-				<label>{comment_cap}:</label>
-			</div>
-			<div class="col-lg-8 col-12 pad0">
-				<textarea id="reg_comment" title="{comment_cap}" class="form-control"></textarea>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-lg-4 col-12 pad0">
-				<label>{sample_price_list}:</label>
-			</div>
-			<div class="col-lg-2 col-12 pad0">
-				<button id="upload_btn" type="button" class="btn" data-toggle="modal" data-target="#filePhotoUploadForm" onClick="showUploadForm()"><i class="fa fa-cloud-upload"></i> {upload_file}</button>
-			</div>
-			<div class="col-lg-2 col-12 pad0">
-				<span id="upload_image"></span>
+		<div class="registration-row">
+			<div class="row">
+				<div class="col-lg-4 col-12">
+					<label class="label-required">{name_surname}:</label>
+				</div>
+				<div class="col-lg-8 col-12">
+					<input id="reg_name" title="{name_surname}" class="form-control" type="text">
+				</div>
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="registration-row">
+			<div class="row">
+				<div class="col-lg-4 col-12">
+					<label class="label-required">{phone_cap}:</label>
+				</div>
+				<div class="col-lg-8 col-12">
+					<input id="reg_phone" title="{phone_cap}" class="form-control" type="tel" placeholder="+380" aria-hidden="true" aria-label="+380">
+				</div>
+			</div>
+		</div>
+
+		<div class="registration-row">
+			<div class="row">
+				<div class="col-lg-4 col-12">
+					<label>{email_cap}:</label>
+				</div>
+				<div class="col-lg-8 col-12">
+					<input id="reg_email" title="{email_cap}" class="form-control" type="email">
+				</div>
+			</div>
+		</div>
+
+		<div class="registration-row">
+			<div class="row">
+				<div class="col-lg-4 col-12">
+					<label class="label-required">{location_cap}:</label>
+				</div>
+				<div class="col-lg-8 col-12">
+					<select id="user_city" title="{location_cap}" class="form-control select2-city pointer" onchange="validateForm('city','select')"></select>
+					<div class="city-inline">
+						<ul class="list-inline">
+							<li class="list-inline-item">{for_example}:</li>
+							<li class="list-inline-item"><button id="10108" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>
+							<li class="list-inline-item"><button id="22739" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kharkiv} </button></li>
+							<li class="list-inline-item"><button id="13549" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
+							<li class="list-inline-item"><button id="4074" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_dnepr} </button></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="registration-row">
+			<div class="row">
+				<div class="col-lg-4 col-12">
+					<label>{comment_cap}:</label>
+				</div>
+				<div class="col-lg-8 col-12">
+					<textarea id="reg_comment" title="{comment_cap}" class="form-control"></textarea>
+				</div>
+			</div>
+		</div>
+
+		<div class="registration-row">
+			<div class="row">
+				<div class="col-lg-4 col-12">
+					<label>{sample_price_list}:</label>
+				</div>
+				<div class="col-lg-2 col-12">
+					<button id="upload_btn" type="button" class="btn" data-toggle="modal" data-target="#filePhotoUploadForm" onClick="showUploadForm()"><i class="fa fa-cloud-upload"></i> {upload_file}</button>
+				</div>
+				<div class="col-lg-2 col-12">
+					<span id="upload_image"></span>
+				</div>
+			</div>
+		</div>
+
+		<div class="registration-row">
 			<ul class="list-inline">
 				<li><b>{sell_contacts}:</b></li>
 				<li>{manager_cap}: <a href="#">{manager_buchkov}</a></li>
@@ -99,10 +110,8 @@
 			</ul>
 		</div>
 
-		<div class="row">
-			<div class="col-lg-12 col-12 pad0">
-				<input type="submit" class="btn btn-primary" value="{send_seller}" onclick="saveSellForm();">
-			</div>
+		<div class="registration-row">
+			<input type="submit" class="btn btn-primary" value="{send_seller}" onclick="saveSellForm();">
 		</div>
 
 	</div>

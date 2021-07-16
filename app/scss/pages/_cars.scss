@@ -245,10 +245,12 @@
             }
         }
         &-tab {
+            max-height: 530px;
             &__block {
                 border-bottom: 3px solid #2d8bfa;
                 border-top: none;
-                max-height: 40vh;
+                //max-height: 40vh;
+                height: 200px;
                 overflow-x: hidden;
                 overflow-y: auto;
                 &-item {

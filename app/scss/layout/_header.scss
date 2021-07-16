@@ -239,16 +239,19 @@ header {
     &-search {
         background: #f1f1f1;
         border-bottom: 1px solid #ccc;
-        padding: 10px 15px;
-        button {
+        button, a {
             background: #fff;
             border: 1px solid #0c5460;
             border-radius: .25em;
             color: #ccc;
             text-align: left;
-            height: 40px;
-            width: 100%;
-            padding: 5px 10px;
+            width: auto;
+            padding: 5px;
+            display: block;
+            margin: 10px;
+            &:hover {
+                text-decoration: none;
+            }
             i, span {
                 color: #0c5460;
                 float: right;

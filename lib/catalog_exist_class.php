@@ -1587,7 +1587,7 @@ class CatalogExistClass extends CatalogueClass
                 }
                 $list .= "<a class=\"seo-li seo-li-id\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/$mod_id_link/\">
                     <div class=\"row mar0\">
-                        <div class=\"col-4 pad0\"><img src=\"https://toko.ua/uploads/images/models/$image\" alt=\"$text\" title=\"$text\"></div>
+                        <div class=\"col-4 seo-li-id-img\"><img src=\"https://toko.ua/uploads/images/models/$image\" alt=\"$text\" title=\"$text\"></div>
                         <div class=\"col-8\"><span>$mfa_brand $text ($d_start - $d_end)</span></div>
                     </div>
                 </a>";

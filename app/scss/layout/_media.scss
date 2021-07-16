@@ -1,6 +1,10 @@
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
 
+    .cars-loader {
+        min-height: 530px;
+    }
+
     .gallery-item-image {
         img {
             width: 100%;
@@ -18,20 +22,13 @@
                 flex-wrap: wrap;
             }
             &-text {
-                width: 100%;
+                width: auto;
             }
             &-image {
-                width: 100%;
-                img {
-                    display: block;
-                    margin: 0 auto;
-                }
+                width: auto;
             }
             &-descr {
                 font-size: 10px;
-            }
-            &-image {
-                margin-top: 15px;
             }
         }
     }
@@ -252,13 +249,13 @@
         display: none!important;
     }
 
-    .car_form-select {
-        padding: .75em;
-        h1, h2 {
-            font-size: 1em;
-            margin: 0;
-        }
-    }
+    //.car_form-select {
+    //    padding: .75em;
+    //    h1, h2 {
+    //        font-size: 1em;
+    //        margin: 0;
+    //    }
+    //}
 
     .garage-drop-block__select {
         border: none;

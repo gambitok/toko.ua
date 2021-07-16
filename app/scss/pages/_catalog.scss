@@ -59,9 +59,8 @@
     }
     &__info {
         color: #606975;
-        font-size: 12px;
-        //min-height: 56px;
         display: block;
+        font-size: 12px;
         margin-bottom: 0;
     }
     &__offers {
@@ -81,21 +80,6 @@
     h1 {
         font-size: 36px;
     }
-    //h2 {
-    //    color: #606975;
-    //    font-size: 18px;
-    //}
-    //span {
-    //    font-size: 18px;
-    //}
-    //i {
-    //    color: #606975;
-    //    cursor: pointer;
-    //    font-size: 1em;
-    //    &:hover {
-    //        color: #228b94;
-    //    }
-    //}
 }
 
 .article-list {
@@ -382,19 +366,6 @@
 
 /*==== TEMPLATES ====*/
 
-.list-hide {
-    max-height: 140px;
-    overflow: hidden;
-    transition: max-height .15s ease-out;
-    &-link {
-        color: #9da9b9!important;
-        cursor: pointer;
-        &:hover {
-            color: gray!important;
-        }
-    }
-}
-
 .products {
     &-title {
         margin: 0 15px;
@@ -434,9 +405,9 @@
     display: block;
     margin-bottom: 30px;
     &-title {
+        color: #606975;
         display: block;
         font-weight: 700;
-        color: #606975;
         text-transform: uppercase;
     }
     &-content {
@@ -448,12 +419,12 @@
             overflow: unset;
         }
         &__item {
+            color: #606975;
             display: flex;
             justify-content: space-between;
-            width: 100%;
             font-size: 14px;
             margin: 5px 0;
-            color: #606975;
+            width: 100%;
             &-left {
                 float: left;
                 i {
@@ -474,22 +445,6 @@
         color: #a9a9a9;
         cursor: pointer;
         display: block;
-    }
-}
-
-.btn-labeled {
-    background-color: #0ca9ee;
-    border-color: #0ca9ee;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 12px;
-    line-height: 1.5;
-    margin-bottom: 10px;
-    margin-right: 10px;
-    padding: 4px 8px;
-    &:hover {
-        background-color: #fff;
-        color: #0ca9ee;
     }
 }
 
@@ -637,8 +592,8 @@
         margin-bottom: 15px;
         padding: 10px;
         &-title {
-            display: block;
             color: #9da9b9;
+            display: block;
             font-size: 16px;
             font-weight: bold;
             margin-bottom: 30px;
@@ -668,8 +623,8 @@
                     }
                     input {
                         border: 1px solid #ccc;
-                        width: auto;
                         max-width: 65px;
+                        width: auto;
                     }
                     button {
                         background: #f1f1f1;
@@ -730,10 +685,10 @@
             top: 3px;
         }
         .article-list__title {
-            color: white!important;
+            color: #fff!important;
         }
         a {
-            color: white;
+            color: #fff;
         }
         &-active {
             background: #fff;
@@ -850,13 +805,13 @@
                 text-transform: uppercase;
             }
             &-list {
-                padding: 15px 0;
                 list-style: none;
+                padding: 15px 0;
                 li {
                     content: "-";
-                    position: relative;
                     left: -5px;
                     margin-left: 30px;
+                    position: relative;
                 }
             }
         }
