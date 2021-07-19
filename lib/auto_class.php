@@ -358,7 +358,7 @@ class AutoClass extends CatalogueClass
                     </div>
                     <div class=\"col-6 garage-row__buttons\"> 
                         <button class=\"btn btn-primary btn-sm\" $status_btn $status_disable>$status_cap</button>
-                        <button class=\"btn btn-primary btn-sm\" onclick=\"deleteAutoGarage('$id');\"><i class=\"fa fa-trash-alt\"></i></button>
+                        <button class=\"btn btn-primary btn-sm\" onclick=\"deleteAutoGarage('$id');\">x</button>
                     </div>
                 </li>";
             }
@@ -473,7 +473,7 @@ class AutoClass extends CatalogueClass
                                 <a onclick=\"setCookie('auto_typ_id', '$typ_id'); location.reload();\">" . $this->getCarDescription($typ_id) . "</a>
                             </div>
                             <div class=\"col-2 text-right\">
-                                <a onclick=\"dropAutoHistory('$id')\"><i class=\"fa fa-times\"></i></a>
+                                <a onclick=\"dropAutoHistory('$id')\">x</a>
                             </div>
                         </div>
                     </div>
@@ -547,11 +547,11 @@ class AutoClass extends CatalogueClass
         foreach ($mas as $mfa_brand => $values) {
             $mfa_id = $values["mfa_id"];
             $mfa_link = $values["mfa_link"];
+
+            $list .= "<div class=\"seo-auto-list\">";
             $list .= "<div class=\"seo-auto-list-title\">
                 <a href=\"" . $this->getSiteLink() . "cars/$mfa_link/\">{details_on_cap} $mfa_brand</a>
             </div>";
-
-            $list .= "<div class=\"seo-auto-list\">";
             $r = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id GROUP BY `Model`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {

@@ -970,7 +970,7 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_count}", "{unselect_cap} $count " . $this->getGoodsCap($count), $form);
             $form = str_replace("{parts_filters}", "$filters_btn", $form);
             $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
-            $filterData = $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $where_mfa, $where_link_arts, $query);
+            $filterData = $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $where_mfa, $where_link_arts);
             $form = str_replace("{parts_params}", $filterData["form"], $form);
 //            $form = str_replace("{parts_params}", "", $form);
 
@@ -1017,7 +1017,7 @@ class CatalogExistClass extends CatalogueClass
                     $count_values++;
                     $value_name = $this->getGroupValueName($value_id, $param_id);
                     $link = $this->getPartsFilterLinks($group_id, $params, $param_id, $value_id, $mfa_id, $model);
-                    $filters_btn .= "<a href=\"$link\" class=\"btn btn-sm\">$value_name <i class=\"fa fa-times\"></i></a>";
+                    $filters_btn .= "<a href=\"$link\" class=\"btn btn-sm\">$value_name x</a>";
                 }
             }
             if ($count_values > 1) {
@@ -1031,7 +1031,7 @@ class CatalogExistClass extends CatalogueClass
                     $model_link = $this->getModelLink($model);
                     $car_link .= "$model_link/";
                 }
-                $filters_btn = "<a class=\"btn btn-sm btn-filter\" href=\"" . $this->getSiteLink() . "$car_link\">{filter_cap_empty} <i class=\"fa fa-times\"></i></a>" . $filters_btn;
+                $filters_btn = "<a class=\"btn btn-sm btn-filter\" href=\"" . $this->getSiteLink() . "$car_link\">{filter_cap_empty} x</a>" . $filters_btn;
             }
         }
 
@@ -1140,8 +1140,9 @@ class CatalogExistClass extends CatalogueClass
 
     /*
      * show filter form
+     * , $query = ""
      * */
-    public function getPartsFiltersForm($group_id, $params = [], $mfa_id = 0, $model = "", $where_mfa = "", $where_link_arts = "", $query = "")
+    public function getPartsFiltersForm($group_id, $params = [], $mfa_id = 0, $model = "", $where_mfa = "", $where_link_arts = "")
     {
         $time = 0;
         $start = microtime(true);
@@ -2007,7 +2008,7 @@ class CatalogExistClass extends CatalogueClass
                 $review_title = $db->result($r, $i - 1, "TITLE_$postfix");
                 $transcript = $this->formatUrlText($review_title);
                 $link = "/reviews/state/$review_id/$transcript/";
-                $list .= "<div class=\"reviews-list__item\"><a href=\"$link\"><i class=\"fa fa-circle\"></i> $review_title</a></div>";
+                $list .= "<div class=\"reviews-list__item\"><a href=\"$link\">$review_title</a></div>";
             }
             if ($n > 0) {
                 $list .= "</div>";
@@ -2058,7 +2059,7 @@ class CatalogExistClass extends CatalogueClass
         $head_title = $this->getHeadRowName($head_id);
         $form = $this->getHtmlForm("catalog_exist/cat_form");
         $form = str_replace("{cat_title}", $cat_title, $form);
-        $form = str_replace("{head_title}", "<a href=\"../\"><i class=\"fa fa-chevron-left\"></i> $head_title</a>", $form);
+        $form = str_replace("{head_title}", "<a href=\"../\">< $head_title</a>", $form);
         $form = str_replace("{cat_list}", $this->getCatalogColListGroup($head_id, $cat_id), $form);
         return $this->replaceLang($form);
     }

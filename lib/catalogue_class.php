@@ -2161,7 +2161,7 @@ class CatalogueClass
                                     <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\"><span class=\"span-grey\">{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
                                 </div>";
                             } else {
-                                $ll[$i] = "<a href=\"" . $this->getSiteLink() . "$this->search_link/{content_search_number}/{content_brand_link}/\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> <i class=\"fa fa-chevron-right\"></i></a>";
+                                $ll[$i] = "<a href=\"" . $this->getSiteLink() . "$this->search_link/{content_search_number}/{content_brand_link}/\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> ></a>";
                             }
                             $hide[$i] = "none";
                             $class[$i] = "$art_id-hide";
@@ -2179,7 +2179,7 @@ class CatalogueClass
                                 <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\"><span class=\"span-grey\">{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
                             </div>";
                         } else {
-                            $ll[$i] = "<a href=\"" . $this->getSiteLink() . "$this->search_link/{content_search_number}/{content_brand_link}/\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> <i class=\"fa fa-chevron-right\"></i></a>";
+                            $ll[$i] = "<a href=\"" . $this->getSiteLink() . "$this->search_link/{content_search_number}/{content_brand_link}/\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $currency_cap</span> ></i></a>";
                         }
                         $hide[$i] = "none";
                         $class[$i] = "$art_id-hide";
@@ -2449,7 +2449,7 @@ class CatalogueClass
             $group_list = $this->getCatalogColListGroup($head_id, $cat_id, $mfa_link, $model_link);
             $icon = "";
             if ($cat_id == 0) {
-                $icon = "<i class=\"fa fa-circle\" style=\"margin-right: 5px; color: #f44438\"></i>";
+                $icon = "<span style=\"margin-right: 5px; color: #f44438\">o</span>";
             }
             $list .= "<div class=\"tree-cat__item\">
                 <div class=\"tree-cat__item-title\">
@@ -2570,7 +2570,7 @@ class CatalogueClass
                     $icon = "";
                     if ($cat_id == 0) {
                         $href = $this->getSiteLink();
-                        $icon = "<i class=\"fa fa-circle\" style=\"margin-right: 5px; color: #f44438;\"></i>";
+                        $icon = "<span style=\"margin-right: 5px; color: #f44438;\">o</span>";
                     }
                     $list .= "<div>
                         <div class=\"tree-item\">

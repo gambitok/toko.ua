@@ -166,7 +166,6 @@ function printBreadcrumbs($path)
     $menu = new MenuClass();
     $bread = findLinks();
 
-//    $icon = "<i class=\"fa fa-chevron-right\"></i>";
     $icon = "<span> > </span>";
 
     $section = $path;

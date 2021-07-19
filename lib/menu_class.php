@@ -864,13 +864,13 @@ class MenuClass extends CatalogueClass
                 $arr[$cat_id][] = $group_id;
             }
             if (!empty($arr)) {
-                $list .= "<div class=\"menu-bar-head__title\" onclick=\"getMenuBar('0');\"><i class=\"fa fa-chevron-left\"></i> $head_name</div>";
+                $list .= "<div class=\"menu-bar-head__title\" onclick=\"getMenuBar('0');\">< $head_name</div>";
                 $list .= "<div class=\"menu-bar-cat\">";
                 foreach ($arr as $cat_id => $groups) {
                     $cat_name = $this->getCatRowName($cat_id);
                     $icon = "";
                     if ($cat_id == 0) {
-                        $icon = "<i class=\"fa fa-circle\" style=\"color: #f44438; margin-right: 5px;\"></i>";
+                        $icon = "<span style=\"color: #f44438; margin-right: 5px;\">o</span>";
                     }
                     $list .= "<div class=\"menu-bar-cat__title\">$icon$cat_name</div>";
                     $list .= "<div class=\"menu-bar-group\">";
@@ -898,13 +898,6 @@ class MenuClass extends CatalogueClass
         $profile = new ProfileClass();
         $shop = new ShopClass();
         $form = $this->getHtmlForm("bar/nav");
-//        if (!$profile->getProfileClientInfo()) {
-//            $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
-//            $form = str_replace("{region_select_phone}", "<li>" . $this->getRegionSelect() . "</li>", $form);
-//        } else {
-//            $form = str_replace("{region_select}", "", $form);
-//            $form = str_replace("{region_select_phone}", "", $form);
-//        }
         $form = str_replace("{site_main_link}", $this->getSiteLink(), $form);
         $form = str_replace("{profile_mobile}", $profile->getProfileInfoMobile(), $form);
         $form = str_replace("{basket_summ}", $shop->countSummBasket(), $form);

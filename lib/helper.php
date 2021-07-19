@@ -448,7 +448,6 @@ trait Helper
             $key = 0;
             $list = "";
             $script_list = "";
-            //$icon = "<i class=\"fa fa-chevron-right\"></i>";
             $icon = "<span> > </span>";
             foreach ($breads as $bread) {
                 $key++;
