@@ -116,7 +116,7 @@ else {
             $content = str_replace("{meta_social_tag}", $catalog_exist->getCatalogMetaTags($group_id, $catalog_form["h1"]), $content);
             $content = str_replace("{site_script_breadcrumbs}", $catalog_form["script"], $content);
 
-            //  $content = str_replace("{site_console}", $catalog_exist->getSiteConsole($catalog_form["time"]), $content);
+            $content = str_replace("{site_console}", $catalog_exist->getSiteConsole($catalog_form["time"]), $content);
         }
 
         /*
@@ -153,3 +153,4 @@ if ($redirect_status) {
         header("Location: $redirect_link", TRUE, 301);
     }
 }
+

@@ -861,8 +861,10 @@
             font-size: 22px;
         }
         &__image {
+            width: 200px;
             img {
-                width: 200px;
+                height: 100%;
+                width: 100%;
             }
         }
         .modal-help-row-phones {

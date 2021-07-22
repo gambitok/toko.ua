@@ -1,56 +1,66 @@
-<div>
-    <div id="cat-products-cars">
-        {parts_cars}
-    </div>
-    <div class="content catalogue-error">
-        <h1>{catalog_exist_error}</h1>
-        <div class="row">
-            <div class="col-lg-3 col-12 order-lg-0 order-1 catalogue-error__image">
-                <img src="/images/sad_car.png" alt="404">
+<div class="container">
+    <div class="row cat-products">
+        <div class="col-12">
+            <div id="cat-products-cars">
+                {parts_cars}
             </div>
-            <div class="col-lg-9 col-12 order-lg-1 order-0">
-                <div>
-                    <p>{catalog_exist_error_1}</p>
-                    <p>{catalog_exist_error_2}</p>
-                    <p>{catalog_exist_error_3}</p>
-                </div>
-                <div class="catalogue-error__contacts">
-                    <div>
-                        <ul class="modal-help-row-phones">
-                            <li>
-                                <img data-src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar">
-                                <a href="tel:0970803060">(097) <b>080 30 60</b></a>
-                            </li>
-                            <li>
-                                <img data-src="/images/phones/vodafone.png" class="lazy" alt="vodafone">
-                                <a href="tel:0500803060">(050) <b>080 30 60</b></a>
-                            </li>
-                            <li>
-                                <img data-src="/images/phones/lifecell.png" class="lazy" alt="lifecell">
-                                <a href="tel:0930803060">(093) <b>080 30 60</b></a>
-                            </li>
-                        </ul>
+        </div>
+    </div>
+    <div class="row cat-products">
+        <div class="col-12">
+            <div class="catalogue-error">
+                <h1>{catalog_exist_error}</h1>
+                <div class="row">
+                    <div class="col-lg-3 col-12 order-lg-0 order-1">
+                        <div class="catalogue-error__image">
+                            <img class="lazy" data-src="/images/sad_car.png" src="/images/no_photo.png" alt="404">
+                        </div>
                     </div>
-                    <div class="modal-help-row-socials">
-                        <a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="modal-help-row-socials__item">
-                            <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__telegram ">
-                                <img src="/images/icons/socials/png/telegram.png" alt="Telegram">
+                    <div class="col-lg-9 col-12 order-lg-1 order-0">
+                        <div>
+                            <p>{catalog_exist_error_1}</p>
+                            <p>{catalog_exist_error_2}</p>
+                            <p>{catalog_exist_error_3}</p>
+                        </div>
+                        <div class="catalogue-error__contacts">
+                            <div>
+                                <ul class="modal-help-row-phones">
+                                    <li>
+                                        <img data-src="/images/phones/kyivstar.png" class="lazy" alt="kyivstar" src="/images/no_photo_min.png">
+                                        <a href="tel:0970803060"><span>(097)</span> <b>080 30 60</b></a>
+                                    </li>
+                                    <li>
+                                        <img data-src="/images/phones/vodafone.png" class="lazy" alt="vodafone" src="/images/no_photo_min.png">
+                                        <a href="tel:0500803060"><span>(050)</span> <b>080 30 60</b></a>
+                                    </li>
+                                    <li>
+                                        <img data-src="/images/phones/lifecell.png" class="lazy" alt="lifecell" src="/images/no_photo_min.png">
+                                        <a href="tel:0930803060"><span>(093)</span> <b>080 30 60</b></a>
+                                    </li>
+                                </ul>
                             </div>
-                        </a>
-                        <a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="modal-help-row-socials__item">
-                            <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__viber ">
-                                <img src="/images/icons/socials/png/viber.png" alt="Viber">
+                            <div class="modal-help-row-socials">
+                                <a href="https://t.me/tokoua_bot" rel="noopener" target="_blank" class="modal-help-row-socials__item">
+                                    <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__telegram ">
+                                        <img src="/images/icons/socials/png/telegram.png" alt="Telegram">
+                                    </div>
+                                </a>
+                                <a href="viber://pa?chatURI=tokogroup" rel="noopener" target="_blank" class="modal-help-row-socials__item">
+                                    <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__viber ">
+                                        <img src="/images/icons/socials/png/viber.png" alt="Viber">
+                                    </div>
+                                </a>
+                                <a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="modal-help-row-socials__item">
+                                    <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__facebook ">
+                                        <img src="/images/icons/socials/png/facebook.png" alt="Facebook">
+                                    </div>
+                                </a>
                             </div>
-                        </a>
-                        <a href="http://m.me/tokogroup" rel="noopener" target="_blank" class="modal-help-row-socials__item">
-                            <div class="modal-help-row-socials__item-image modal-help-row-socials__item-image__facebook ">
-                                <img src="/images/icons/socials/png/facebook.png" alt="Facebook">
-                            </div>
-                        </a>
+                        </div>
+                        <div>
+                            <p>{catalog_exist_error_4}</p>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <p>{catalog_exist_error_4}</p>
                 </div>
             </div>
         </div>
@@ -92,7 +102,6 @@
         </div>
     </div>
 </div>
-
 
 <script>
     $(document).ready(function() {

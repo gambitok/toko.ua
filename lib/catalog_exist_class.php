@@ -877,8 +877,9 @@ class CatalogExistClass extends CatalogueClass
         $form = $this->replaceLang($form);
         $form = str_replace("{h1_text}", "<b>$filters_h1</b>", $form);
         $form = str_replace("{vin_text}", "<a class=\"blue-a\" onclick=\"$('#VinFormPhone').modal('show');\">{vin_order}</a>", $form);
+        $form = str_replace("{parts_cars}", $this->drawLoader(), $form);
         $catalog_text = "{in_catalog_strs}";
-        $catalog_link = $this->getSiteLink() . "cars/";
+        $catalog_link = $this->getSiteLink() . $this->cars_link . "/";
         if ($mfa_id > 0) {
             $mfa_name = $automan->getMfaBrand($mfa_id);
             $mfa_link = $this->getManufactureLink($mfa_id);
@@ -899,6 +900,7 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0, $str_link = "", $source_link = "")
     {
+        $time = 0;
         $automan = new AutoClass();
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
@@ -973,6 +975,7 @@ class CatalogExistClass extends CatalogueClass
             $filterData = $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $where_mfa, $where_link_arts);
             $form = str_replace("{parts_params}", $filterData["form"], $form);
 //            $form = str_replace("{parts_params}", "", $form);
+            $time = $filterData["time"];
 
             $breadcrumbsData = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $h1_text, $source_link));
             $breadcrumbs_script = $breadcrumbsData["script"];
@@ -992,7 +995,7 @@ class CatalogExistClass extends CatalogueClass
         $description = str_replace("{h1_caption}", $h1_text, $description);
         $description = str_replace("{h1_caption_parrent}", $this->getGroupRowName($group_id), $description);
 
-        return array("form" => $form, "title" => $filters_title, "h1" => $h1_text, "pages_count" => $max_pages_count, "description" => $description, "script" => $breadcrumbs_script);
+        return array("form" => $form, "title" => $filters_title, "h1" => $h1_text, "pages_count" => $max_pages_count, "description" => $description, "script" => $breadcrumbs_script, "time" => $time);
     }
 
     public function drawLoader()
@@ -1144,7 +1147,6 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function getPartsFiltersForm($group_id, $params = [], $mfa_id = 0, $model = "", $where_mfa = "", $where_link_arts = "")
     {
-        $time = 0;
         $start = microtime(true);
 //        $count_arts_full = $this->getPartsCount($group_id, $query);
 
@@ -1169,8 +1171,8 @@ class CatalogExistClass extends CatalogueClass
                     foreach ($values as $value_id) {
                         $value_name = $this->getGroupValueName($value_id, $param_id);
                         $checked = (in_array($value_id, $params[$param_id]));
-                        $time_1 = microtime(true) - $start;
                         $link = $this->getPartsFilterLinks($group_id, $params, $param_id, $value_id, $mfa_id, $model);
+
                         $count_arts = 0;
 //                        if (!empty($params)) {
 //                            if (in_array($param_id, $checked_params_keys)) {
@@ -1183,8 +1185,6 @@ class CatalogExistClass extends CatalogueClass
 //                        } else {
 //                            $count_arts = $this->getPartsCountWill($group_id, $params, $param_id, $value_id, $where_mfa, $where_link_arts);
 //                        }
-                        $time2 = microtime(true) - $start;
-                        $time .= ", $time_1 - $time2";
                         $items[$value_id] = compact("value_name", "link", "checked", "count_arts");
                     }
 
@@ -1243,6 +1243,8 @@ class CatalogExistClass extends CatalogueClass
 
         $form = $this->getHtmlForm("catalog_exist/params");
         $form = str_replace("{list_params}", $list_params, $form);
+
+        $time = microtime(true) - $start;
 
         return array("form" => $this->replaceLang($form), "time" => $time);
     }
