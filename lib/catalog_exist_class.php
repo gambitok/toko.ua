@@ -995,6 +995,8 @@ class CatalogExistClass extends CatalogueClass
         $description = str_replace("{h1_caption}", $h1_text, $description);
         $description = str_replace("{h1_caption_parrent}", $this->getGroupRowName($group_id), $description);
 
+        //test
+
         return array("form" => $form, "title" => $filters_title, "h1" => $h1_text, "pages_count" => $max_pages_count, "description" => $description, "script" => $breadcrumbs_script, "time" => $time);
     }
 
