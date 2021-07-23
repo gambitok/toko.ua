@@ -15,14 +15,6 @@ class LangClass
      * */
     public function getLanguageData()
     {
-//        $cookie_lang_id = $this->getUrlNumber($_COOKIE["lang_id"]);
-//        if (!empty($cookie_lang_id)) {
-//            $_SESSION["lang_id"] = $cookie_lang_id;
-//        }
-//        $session_lang_id = $this->getUrlNumber($_SESSION["lang_id"]);
-//        if (empty($session_lang_id)) {
-//            $_SESSION["lang_id"] = $this->default_lang_id;
-//        }
         $lang_id = $this->getUrlNumber($_SESSION["lang_id"]);
         if (empty($lang_id)) {
             $lang_id = $this->getUrlNumber($_COOKIE["lang_id"]);
@@ -74,6 +66,7 @@ class LangClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
+        $link = ltrim($_SERVER["REQUEST_URI"], "/");
         $r = $db->query("SELECT `id`, `abr` FROM `new_lang` WHERE 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -81,7 +74,8 @@ class LangClass
             $lang_abr = $db->result($r, $i - 1, "abr");
             $active = ($lang_id == $sel_id) ? "menu-language__item-active" : "";
             $postfix = $this->getLangIDPrefix($lang_id);
-            $list .= "<div class=\"menu-language__item $active\"><a href=\"https://toko.ua/$postfix\">$lang_abr</a></div>";
+            $url = "https://toko.ua/$postfix" . $link;
+            $list .= "<div class=\"menu-language__item $active\"><a href=\"$url\">$lang_abr</a></div>";
         }
         return $list;
     }

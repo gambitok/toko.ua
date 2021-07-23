@@ -214,11 +214,11 @@ class CatalogueClass
                 $brand_link = $mas[$i]["brand_link"];
                 $count = $mas[$i]["count"];
                 $article_name = $mas[$i]["article_name"];
-                $photo_name = $showform->getShortArticlePhoto($mas[$i]["art_id"]);
+                $photo_name = $showform->getArticleActivePhoto($mas[$i]["art_id"]);
                 $link = ($count == 0) ? "showAlertModal(\"{brand_no_offer} `$article_nr_displ/$brand_name`\",\"{sorry_cap}\");" : "location.href=\"" . $this->getSiteLink() . "$this->search_link/$search_number/$brand_link/\";";
-                $list .= "<tr class=\"table-row pointer\" onclick='$link'>
+                $list .= "<tr onclick=\"$link\">
                     <td class=\"minify\">
-                        <img itemprop=\"image\" data-src=\"$photo_name\" class=\"lazy\" alt=\"Article\">
+                        <img itemprop=\"image\" data-src=\"$photo_name\" class=\"lazy\" alt=\"$article_nr_displ\" src=\"/images/no_photo.png\">
                     </td>
                     <td>$article_nr_displ</td>
                     <td>$brand_name</td>
@@ -1415,9 +1415,9 @@ class CatalogueClass
         $form = str_replace("{return_days_alt}", $return_days_alt, $form);
         $form = str_replace("{return_display}", ($return_days == 14 || $return_days_img == "") ? "none" : "", $form);
 
-        $form = str_replace("{photo_src}", $this->getArticlePhoto($art_id), $form);
+        $form = str_replace("{photo_src}", $showform->getArticleActivePhoto($art_id), $form);
         $form = str_replace("{photo_display}", $this->checkPhoto($art_id) ? "" : "none", $form);
-        $form = str_replace("{product_main_photo}", $showform->getArticleMainPhoto($art_id), $form);
+        $form = str_replace("{product_main_photo}", ($showform->getArticlePhoto($art_id) == "") ? $this->noPhoto : $showform->getArticlePhoto($art_id), $form);
 
         $form = str_replace("{product_del}", $delivery_info, $form);
         $form = str_replace("{product_dd}", $delivery_days, $form);

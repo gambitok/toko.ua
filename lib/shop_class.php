@@ -173,6 +173,19 @@ class ShopClass extends CatalogueClass
         return $form;
     }
 
+    public function getBasketArticlePhoto($art_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `PHOTO_NAME` ASC LIMIT 1;");
+        $n = $db->num_rows($r);
+        $photo_name = $db->result($r, 0, "PHOTO_NAME");
+        $photo_src = "https://toko.ua/uploads/images/catalogue/$photo_name";
+        if ($n == 0) {
+            $photo_src = "https://toko.ua/$this->noPhoto";
+        }
+        return $photo_src;
+    }
+
     /*
      * get client action information
      * */

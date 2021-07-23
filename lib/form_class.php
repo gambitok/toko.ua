@@ -158,6 +158,10 @@ class FormClass extends CatalogueClass
         $arr[] = ["name" => "{site_catalog}", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/"];
 
         $group_id = $catalog->getArticleGroupExist($art_id);
+        $brand_name = $catalog->getBrandName($brand_id);
+        $brand_link = $catalog->getBrandLink($brand_id);
+        $article_name = $this->getArticleName($art_id);
+
         if ($group_id > 0) {
             $head_id = $catalog_exist->getHeadExistID($group_id);
             $head_name = $catalog_exist->getHeadExistName($head_id);
@@ -170,13 +174,11 @@ class FormClass extends CatalogueClass
 
             $arr[] = ["name" => "$group_name", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$group_link/"];
 
-            $brand_name = $catalog->getBrandName($brand_id);
-            $brand_link = $catalog->getBrandLink($brand_id);
 
             $arr[] = ["name" => "$group_name $brand_name", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$group_link/brandy=$brand_link/"];
         }
 
-        $article_text = $catalog->getArticleText($art_id);
+        $article_text = "$article_name $brand_name $article_nr_displ";
 
         $format_article_search = $this->getFormatAticle($article_nr_displ);
         $format_brand_name = $this->getFormatBrand($this->getBrandName($brand_id));
@@ -437,43 +439,21 @@ class FormClass extends CatalogueClass
         return true;
     }
 
-    public function getArticleMainPhoto($art_id)
+    public function getArticlePhoto($art_id)
     {
         $db = DbSingleton::getTokoDb();
         $photo_name = "";
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;");
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `PHOTO_NAME` ASC LIMIT 1;");
         $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
-        }
-        if ($photo_name == "") {
-            $photo_name = $this->noPhoto;
+        if ($n > 0) {
+            $photo_name = trim($db->result($r, 0, "PHOTO_NAME"));
         }
         return $photo_name;
     }
 
     public function getArticleActivePhoto($art_id)
     {
-        $db = DbSingleton::getTokoDb();
-        $photo_name = "";
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
-        }
-        $photo_name = ($photo_name == "") ? $this->noPhoto : "$this->uploads_link/$photo_name";
-        return $photo_name;
-    }
-
-    public function getShortArticlePhoto($art_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $photo_name = "";
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC LIMIT 1;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
-        }
+        $photo_name = $this->getArticlePhoto($art_id);
         $photo_name = ($photo_name == "") ? $this->noPhoto : "$this->uploads_link/$photo_name";
         return $photo_name;
     }

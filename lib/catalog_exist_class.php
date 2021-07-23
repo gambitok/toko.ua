@@ -414,7 +414,7 @@ class CatalogExistClass extends CatalogueClass
         WHERE ex.brand_id = 0;");
 
         // deleted nulls
-        $dbc->query("DELETE FROM `$table` WHERE `brand_id`=0;");
+        $dbc->query("DELETE FROM `$table` WHERE `brand_id` = 0;");
 
         $dbc->query("INSERT INTO `$table_available` (`art_id`, `brand_id`, `group_id`, `status`)
         SELECT ex.art_id, ex.brand_id, tt.group_id, ex.status 
@@ -1150,11 +1150,10 @@ class CatalogExistClass extends CatalogueClass
     public function getPartsFiltersForm($group_id, $params = [], $mfa_id = 0, $model = "", $where_mfa = "", $where_link_arts = "")
     {
         $start = microtime(true);
-//        $count_arts_full = $this->getPartsCount($group_id, $query);
-
         $paramData = $this->getPartsFiltersArr($group_id, $params, $where_mfa, $where_link_arts);
-
         $arr = $paramData["arr"];
+
+//        $count_arts_full = $this->getPartsCount($group_id, $query);
 //        $checked_params_keys = $paramData["checked"];
 //        $unchecked_params_keys = $paramData["unchecked"];
 
@@ -1209,7 +1208,6 @@ class CatalogExistClass extends CatalogueClass
                         $link = $item["link"];
                         $checked = $item["checked"];
 //                        $count_arts = $item["count_arts"];
-
 //                        $count_arts_label = "($count_arts)";
 //                        if (!empty($params)) {
 //                            if (in_array($param_id, $checked_params_keys)) {

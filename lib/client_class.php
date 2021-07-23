@@ -274,6 +274,18 @@ class ClientClass
     }
 
     /*
+     * get country name
+     * from COUNTRY_ID
+     * */
+    public function getCountryName($country_id)
+    {
+        $country_id = $this->getUrlNumber($country_id);
+        $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT `COUNTRY_NAME` FROM `T2_COUNTRIES` WHERE `COUNTRY_ID` = $country_id LIMIT 1;");
+        return $db->result($r, 0, "COUNTRY_NAME");
+    }
+
+    /*
      * get client info
      * */
     public function getClientInfo($client_id, $user_id)
