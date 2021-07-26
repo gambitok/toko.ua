@@ -42,6 +42,7 @@ $content = str_replace("{site_page_pagination}", "", $content);
 $content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
 $content = str_replace("{seo_footers_block}", "<!--footers_block-->", $content);
 $content = str_replace("{site_console}", "", $content);
+$content = str_replace("{seoshield_formulas}", "", $content);
 
 // Main SEO BLOCK
 $seo_text = "<!--seo_text_start--><!--seo_text_end-->";

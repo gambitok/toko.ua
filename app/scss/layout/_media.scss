@@ -378,6 +378,9 @@
 
     .request {
         min-height: unset;
+        &-mob {
+            display: block;
+        }
         &-row {
             display: none;
             &-mob {

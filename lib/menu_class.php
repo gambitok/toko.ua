@@ -413,7 +413,7 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             $region = $db->result($r, 0, "full_name");
             $address = $db->result($r, 0, "address");
-            $list = "<span><span class=\"fas fa-map-marker-alt\"></span> {choose_office}:</span>
+            $list = "<span>{choose_office}:</span>
             <a onClick=\"showRegionForm();\">
                 <span id=\"region_select\">
                     <span>$region ($address)</span>
@@ -487,36 +487,6 @@ class MenuClass extends CatalogueClass
             $checked = ($id == $org_type) ? "selected=\"selected\"" : "";
             $form .= "<option value=\"$id\" $checked>$caption</option>";
         }
-        return $form;
-    }
-
-    /*
-     * show language select
-     * */
-    public function getLanguageList()
-    {
-        $db = DbSingleton::getTokoDb();
-        $list = "";
-        $language_id = $this->getLanguage();
-        $r = $db->query("SELECT `id`, `abr`, `value` FROM `new_lang` WHERE 1;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $id = $db->result($r, $i - 1, "id");
-            $abr = $db->result($r, $i - 1, "abr");
-            $value = $db->result($r, $i - 1, "value");
-            $ch = "";
-            $style = "";
-            if ($language_id != "" && $id == $language_id) {
-                $ch = "checked='checked'";
-                $style = "menu-bar-lang__item-checked";
-            }
-            $list .= "<label class=\"menu-bar-lang__item $style\" itemprop=\"availableLanguage\" itemtype=\"http://schema.org/Language\" itemscope>
-                <input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onclick=\"setSiteLang('$id')\"><span>$abr</span>
-                <input itemprop=\"name\" type=\"hidden\" value=\"$value\">
-            </label>";
-        }
-        $form = $this->getHtmlForm("bar/lang");
-        $form = str_replace("{lang_list}", $list, $form);
         return $form;
     }
 
@@ -907,13 +877,14 @@ class MenuClass extends CatalogueClass
     public function getPhoneContacts()
     {
         $profile = new ProfileClass();
+        $language = new LangClass();
         $form = $this->getHtmlForm("bar/contacts");
         if (!$profile->getProfileClientInfo()) {
             $form = str_replace("{region_select}", $this->getRegionSelect(), $form);
         } else {
             $form = str_replace("{region_select}", "", $form);
         }
-        $form = str_replace("{lang_select}", $this->getLanguageList(), $form);
+        $form = str_replace("{lang_select}", $language->getLanguageMenuList($this->getLanguage()), $form);
         return $form;
     }
 

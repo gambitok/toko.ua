@@ -20,6 +20,7 @@
 	<link rel="preload" href="/js/library/popper.min.js" as="script" />
 	<link rel="preload" href="/js/library/bootstrap.min.js" as="script" />
 	<link rel="preload" href="/js/JsHttpRequest/JsHttpRequest.min.js" as="script" />
+<!--	<link rel="preload" href="/app/js/app.min.js" as="script" />-->
 	<link rel="preload" href="/images/no_photo.png" as="image" type="image/png" />
 	<link rel="preload" href="/images/no_photo_min.png" as="image" type="image/png" />
 
@@ -175,19 +176,21 @@
 		<div class="row header-top">
 			<div class="container">
 				<div class="row align-items-center">
-					<div class="col-4 contacts">
-						{login_info}
-						{region_select}
+					<div class="col-4">
+						<div class="contacts">
+							{login_info}
+							{region_select}
+						</div>
 					</div>
-					<div class="col-8 authorization">
-						<ul>
-							<li>
+					<div class="col-8">
+						<ul class="authorization">
+							<li class="authorization-item">
 								<a href="{site_main_link}contacts/"><span class="fas fa-address-card"></span><span> {contacts_cap}</span></a>
 							</li>
 							{news_info}
 							{special_offers}
 							{profile_info}
-							<li style="display: inline-block;">
+							<li class="authorization-item authorization-item-inline">
 								<div class="menu-language">
 									{menu_language}
 								</div>
@@ -464,9 +467,9 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" onclick="hideGarageForm();">x</button>
+					<button type="button" class="close" data-dismiss="modal" onclick="hideGarageForm();">&times;</button>
 				</div>
-				<div class="modal-body text-left" style="margin-bottom: 15px; padding: 0;">
+				<div class="modal-body">
 					<div class="container">
 						<div class="row">
 							<div id="garage_block" class="container garage-drop">
@@ -563,7 +566,7 @@
 
 	<!-- Modal Brand -->
 	<div class="modal fade" id="BrandForm" role="dialog" tabindex="-1">
-		<div class="modal-dialog" style="max-width: 1000px;">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<span class="modal-title">{info_cap}</span>
@@ -629,7 +632,7 @@
 	<nav id="menu-catalog" class="panel-filters" role="navigation">
 		<div class="container">
 			<div class="text-right">
-				<div class="bar-catalog">x</div>
+				<div class="bar-catalog">&times;</div>
 			</div>
 			<div class="template_filters">
 				<h2>{filters_cap}</h2>
@@ -639,7 +642,7 @@
 	</nav>
 	<nav id="bar-menu" class="panel" role="navigation">
 		<div class="col-12 text-right">
-			<div class="bar-menu">x</div>
+			<div class="bar-menu">&times;</div>
 		</div>
 		<div id="menu-bar-content">
 			{site_menu_bar}
@@ -652,6 +655,8 @@
 <!-- Backdrop -->
 <div class="backdrop"></div>
 
+{seoshield_formulas}
+
 </body>
 
 </html>
@@ -662,6 +667,7 @@
 <script type="text/javascript" src="/js/plugins/maskedinput.js"></script>
 
 <!-- Custom Scripts -->
+<!--<script type="text/javascript" src="/app/js/app.min.js"></script>-->
 <script type="text/javascript" src="/js/onload.js"></script>
 <script type="text/javascript" src="/js/catalogue.js"></script>
 <script type="text/javascript" src="/js/menu.js"></script>

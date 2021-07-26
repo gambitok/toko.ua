@@ -670,7 +670,7 @@ class ShopClass extends CatalogueClass
                 }
                 $list .= "<li class=\"orders-user__item\">
                     <a onclick=\"setClientOrderInfo('$id');\">$i. $delivery_text $delivery_info <br> $payment_text</a>
-                    <a onclick=\"dropClientOrderInfo('$id');\">x</a>
+                    <a onclick=\"dropClientOrderInfo('$id');\">&times;</a>
                 </li>";
             }
             if ($n == 1) {

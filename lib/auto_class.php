@@ -358,7 +358,7 @@ class AutoClass extends CatalogueClass
                     </div>
                     <div class=\"col-6 garage-row__buttons\"> 
                         <button class=\"btn btn-primary btn-sm\" $status_btn $status_disable>$status_cap</button>
-                        <button class=\"btn btn-primary btn-sm\" onclick=\"deleteAutoGarage('$id');\">x</button>
+                        <button class=\"btn btn-primary btn-sm\" onclick=\"deleteAutoGarage('$id');\">&times;</button>
                     </div>
                 </li>";
             }

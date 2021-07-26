@@ -166,10 +166,6 @@ $colors: (
         list-style: none;
     }
     &-title {
-        //font-size: 14px;
-        //font-weight: bold;
-        //text-align: center;
-        //margin-bottom: 30px;
         color:#000;
         font-size: 13px;
         font-weight: bold;
@@ -276,6 +272,12 @@ $colors: (
     padding: 0;
 }
 
+#BrandForm {
+    .modal-dialog {
+        max-width: 1000px;
+    }
+}
+
 #CarsForm {
     .modal-dialog {
         max-width: 1200px;
@@ -317,6 +319,10 @@ $colors: (
                     color: #000!important;
                 }
             }
+        }
+        .modal-body {
+            margin-bottom: 15px;
+            padding: 0;
         }
     }
 }

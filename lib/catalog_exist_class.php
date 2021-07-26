@@ -2273,4 +2273,13 @@ class CatalogExistClass extends CatalogueClass
         return 0;
     }
 
+    public function getCatalogFilterSeo()
+    {
+        $form = "
+            <!--ss_selected_filters_info|FilterName|FilterValue-->
+            <!--seoshield_formulas--fil-traciya-->
+        ";
+        return $form;
+    }
+
 }

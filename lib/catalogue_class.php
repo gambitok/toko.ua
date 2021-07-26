@@ -216,7 +216,7 @@ class CatalogueClass
                 $article_name = $mas[$i]["article_name"];
                 $photo_name = $showform->getArticleActivePhoto($mas[$i]["art_id"]);
                 $link = ($count == 0) ? "showAlertModal(\"{brand_no_offer} `$article_nr_displ/$brand_name`\",\"{sorry_cap}\");" : "location.href=\"" . $this->getSiteLink() . "$this->search_link/$search_number/$brand_link/\";";
-                $list .= "<tr onclick=\"$link\">
+                $list .= "<tr onclick='$link'>
                     <td class=\"minify\">
                         <img itemprop=\"image\" data-src=\"$photo_name\" class=\"lazy\" alt=\"$article_nr_displ\" src=\"/images/no_photo.png\">
                     </td>
@@ -2449,7 +2449,7 @@ class CatalogueClass
             $group_list = $this->getCatalogColListGroup($head_id, $cat_id, $mfa_link, $model_link);
             $icon = "";
             if ($cat_id == 0) {
-                $icon = "<span style=\"margin-right: 5px; color: #f44438\">o</span>";
+                $icon = "<span style=\"margin-right: 5px; color: #f44438\">&bull;</span>";
             }
             $list .= "<div class=\"tree-cat__item\">
                 <div class=\"tree-cat__item-title\">
@@ -2570,7 +2570,7 @@ class CatalogueClass
                     $icon = "";
                     if ($cat_id == 0) {
                         $href = $this->getSiteLink();
-                        $icon = "<span style=\"margin-right: 5px; color: #f44438;\">o</span>";
+                        $icon = "<span style=\"margin-right: 5px; color: #f44438;\">&bull;</span>";
                     }
                     $list .= "<div>
                         <div class=\"tree-item\">

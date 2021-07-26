@@ -67,6 +67,8 @@ class LangClass
         $db = DbSingleton::getTokoDb();
         $list = "";
         $link = ltrim($_SERVER["REQUEST_URI"], "/");
+        $link = str_replace("uk/", "", $link);
+        $link = str_replace("en/", "", $link);
         $r = $db->query("SELECT `id`, `abr` FROM `new_lang` WHERE 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {

@@ -18,10 +18,7 @@ class ProfileClass extends ClientClass
         $client = new ClientClass();
         list($client_id, $user_id) = $client->getClientData();
         $name = $client->getClientInfo($client_id, $user_id)["name"];
-        ($user_id == 0)
-            ? $info = false
-            : $info = "{hello_cap}, <a href=\"" . $this->getSiteLink() . "$this->page_profile\">" . $name . "</a>";
-        return $info;
+        return ($user_id == 0) ? false : "{hello_cap}, <a href=\"" . $this->getSiteLink() . "$this->page_profile\">" . $name . "</a>";
     }
 
     /*
@@ -77,9 +74,9 @@ class ProfileClass extends ClientClass
         $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `timestamp` > '$update_actions 00:00:00' AND `status` = 1;");
         $n = $db->num_rows($r);
 
-        $counter = ($n > 0) ? "<span class=\"authorization-counter\">($n)</span>" : "";
+        $counter = ($n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
         if ($user_id > 0 && ($n1 > 0 || $n2 > 0)) {
-            $info = "<li>
+            $info = "<li class=\"authorization-item\">
                 <a href=\"" . $this->getSiteLink() . "special_offers/\">
                     <span class=\"fas fa-box-open\"></span> <span>{special_offers_cap} $counter</span>
                 </a>
@@ -106,8 +103,8 @@ class ProfileClass extends ClientClass
         $update_news = $db->result($r, 0, "update_news");
         $r = $dbt->query("SELECT COUNT(`id`) as count_ids FROM `news` WHERE `data` > '$update_news' AND `lang_id` = $language_id AND `status` = 1;");
         $n = $dbt->result($r, 0, "count_ids");
-        $counter = ($user_id > 0 && $n > 0) ? "<span class=\"authorization-counter\">($n)</span>" : "";
-        return "<li>
+        $counter = ($user_id > 0 && $n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
+        return "<li class=\"authorization-item\">
             <a href=\"" . $this->getSiteLink() . "news/\">
                 <span class=\"fas fa-newspaper\"></span><span> {news_cap} $counter</span>
             </a>
@@ -497,10 +494,10 @@ class ProfileClass extends ClientClass
                 if ($ndp > 0) {
                     $dp_id = $db->result($r, 0, "id") + 0;
                     if ($dp_check != "") {
-                        $where_dp = "WHERE dp.dp_id = $dp_id AND ord.dp_str_id != 0";
+                        $where_dp = "WHERE dp.`dp_id` = $dp_id AND ord.`dp_str_id` != 0";
                     } else {
                         $dp_id = $dp_arr[$jj];
-                        $where_dp = "WHERE dp.dp_id = $dp_id AND ord.dp_str_id != 0";
+                        $where_dp = "WHERE dp.`dp_id` = $dp_id AND ord.`dp_str_id` != 0";
                     }
                     $prefix = $db->result($r, 0, "prefix");
 
@@ -521,14 +518,14 @@ class ProfileClass extends ClientClass
                         $article_nr_displ = $db->result($rstr, $j - 1, "article_nr_displ");
                         $art_id = $db->result($rstr, $j - 1, "art_id");
                         $brand_id = $db->result($rstr, $j - 1, "brand_id");
-                        $brand_name = $this->getBrandName($brand_id);
                         $amount = intval($db->result($rstr, $j - 1, "amount"));
                         $amount_collect = intval($db->result($rstr, $j - 1, "amount_collect"));
                         $summ = $db->result($rstr, $j - 1, "summ");
-                        $price = round($summ / $amount, 2);
                         $status_dps = $db->result($rstr, $j - 1, "status_dps");
-                        $status_dps = $this->getManualName($status_dps);
                         $status_visible = $db->result($rstr, $j - 1, "status_visible");
+                        $price = round($summ / $amount, 2);
+                        $status_dps = $this->getManualName($status_dps);
+                        $brand_name = $this->getBrandName($brand_id);
 
                         if ($this->checkSelectStrDpBug($dp_id, $art_id) > 0 && $status_visible == 1) {
                             $db->query("UPDATE `orders_str_new` SET `status_visible` = 1 WHERE `id` = $order_str_id;");
@@ -701,12 +698,13 @@ class ProfileClass extends ClientClass
         $saldo_start_cap = $saldo_end_cap = "";
 
         $client_cash_id = $client->getClientCurrency($client_id);
-        list($saldo_start, $saldo_cash_id,) = $this->getClientBalansPeriodStart($client_id, $client_cash_id, $data_from, 0);
+        list($saldo_start, $saldo_cash_id) = $this->getClientBalansPeriodStart($client_id, $client_cash_id, $data_from, 0);
 
         $saldo_data_start = date("Y-m-01");
         if ($saldo_start < 0) {
             $saldo_start_cap = " (<span class=\"span-red\">{debt_cap}</span>)";
-        } elseif ($saldo_start > 0) {
+        }
+        elseif ($saldo_start > 0) {
             $saldo_start_cap = " (<span class=\"span-green\">{prepayment}</span>)";
         }
         $form = str_replace("{saldo_start_data}", $saldo_start . " " . $kours->getKoursCaption($saldo_cash_id) . $saldo_start_cap, $form);
@@ -715,7 +713,8 @@ class ProfileClass extends ClientClass
         $saldo_data_end = date("Y-m-d");
         if ($saldo_end < 0) {
             $saldo_end_cap = " (<span class=\"span-red\">{debt_cap}</span>)";
-        } elseif ($saldo_end > 0) {
+        }
+        elseif ($saldo_end > 0) {
             $saldo_end_cap = " (<span class=\"span-green\">{prepayment}</span>)";
         }
         $form = str_replace("{saldo_end_data}", $saldo_end . " " . $kours->getKoursCaption($saldo_cash_id) . $saldo_end_cap, $form);
@@ -794,7 +793,8 @@ class ProfileClass extends ClientClass
         }
         if (!file_exists(RDD . "/uploads/$user_id")) {
             mkdir(RDD . "/uploads/$user_id", 0777, true);
-        } elseif (file_exists(RDD . "/uploads/$user_id/")) {
+        }
+        elseif (file_exists(RDD . "/uploads/$user_id/")) {
             foreach (glob(RDD . "/uploads/$user_id/*") as $file) {
                 unlink($file);
             }

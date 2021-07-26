@@ -30,8 +30,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $redirect_status = 1;
     $redirect_type = 301;
     $redirect_link = "$path_to";
-}
-else {
+} else {
     $str_linka = $linka;
     unset($str_linka[0]);
     $str_linka = implode("/", $str_linka);
@@ -91,6 +90,7 @@ else {
                         <meta name="yandex" content="noindex, nofollow">
                     ', $content);
                 }
+                $content = str_replace("{seoshield_formulas}", $catalog_exist->getCatalogFilterSeo(), $content);
             }
 
             ($page != NULL) ?: $page = 1;
@@ -127,8 +127,7 @@ else {
             $cat_id = $catalog_exist->getGroupCatExistId($router_2);
             if (empty($cat_id)) {
                 $catalog_form = $catalog_exist->showGroupHeadForm($head_id);
-            }
-            else {
+            } else {
                 $catalog_form = $catalog_exist->showGroupCatForm($head_id, $cat_id);
             }
             $content = str_replace("{main_window}", $catalog_form, $content);
