@@ -315,8 +315,10 @@ $colors: (
             top: 0;
             .modal-header {
                 background: #fff!important;
+                display: block;
                 button {
                     color: #000!important;
+                    margin: 0!important;
                 }
             }
         }

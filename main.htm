@@ -139,18 +139,6 @@
 	<link rel="stylesheet" href="/css/plugins/bootstrap.min.css">
 	<link rel="stylesheet" href="/app/css/app.min.css">
 
-	<script type="text/javascript">
-        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-        (function(){
-            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-            s1.async=true;
-            s1.src='https://embed.tawk.to/5f101b155b59f94722bad5c7/default';
-            s1.charset='UTF-8';
-            s1.setAttribute('crossorigin','*');
-            s0.parentNode.insertBefore(s1,s0);
-        })();
-	</script>
-
 	<script type="text/javascript" src="/js/library/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="/js/library/popper.min.js"></script>
 	<script type="text/javascript" src="/js/library/bootstrap.min.js"></script>
@@ -326,8 +314,8 @@
                                 </a>
                             </li>
                             <li>
-								<div class="basket_status">
-									<div id="basket_status3" class="tool-status {basket_style}">{basket_count}</div>
+								<div id="basket_status3" class="basket_status {basket_style}">
+									<div class="tool-status">{basket_count}</div>
 								</div>
                                 <div class="header-phone-nav__list-link" onclick="showBasketMinForm();">
                                     <img class="lazy" data-src="/images/icons/headers/30x30/basket.png" alt="Basket" src="">
@@ -343,9 +331,9 @@
                 </div>
                 <div class="row header-phone-search">
 					<div class="col-12">
-						<a onclick="showArtSearch();">
+						<button class="header-phone-search__button" onclick="showArtSearch();">
 							{search_onsite}
-						</a>
+						</button>
 					</div>
                 </div>
             </div>
@@ -675,3 +663,15 @@
 <script type="text/javascript" src="/js/client.js"></script>
 <script type="text/javascript" src="/js/cars.js"></script>
 <script type="text/javascript" src="/js/orders.js"></script>
+
+<script type="text/javascript">
+	var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+	(function(){
+		var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+		s1.async=true;
+		s1.src='https://embed.tawk.to/5f101b155b59f94722bad5c7/default';
+		s1.charset='UTF-8';
+		s1.setAttribute('crossorigin','*');
+		s0.parentNode.insertBefore(s1,s0);
+	})();
+</script>

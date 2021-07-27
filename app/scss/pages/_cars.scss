@@ -9,19 +9,19 @@
         justify-content: start;
         border-bottom: 3px solid #2d8bfa;
         &__item {
-            background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat #fff;
-            color: #000;
+            background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat;
+            color: black;
             cursor: pointer;
             overflow: hidden;
             padding: 20px 65px 20px 30px;
             position: relative;
-            transition: .3s;
+            //transition: .3s;
             text-overflow: ellipsis;
             white-space: nowrap;
             width: 100%;
-            &:hover {
-                filter: brightness(90%);
-            }
+            //&:hover {
+            //    filter: brightness(90%);
+            //}
             &:not(:first-child) {
                 &:before {
                     background: #ececec;
@@ -249,7 +249,6 @@
             &__block {
                 border-bottom: 3px solid #2d8bfa;
                 border-top: none;
-                //max-height: 40vh;
                 height: 200px;
                 overflow-x: hidden;
                 overflow-y: auto;

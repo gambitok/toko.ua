@@ -25,8 +25,9 @@ function getContent($content)
     $content = str_replace("{canonical_link}", $actual_link, $content);
     $content = str_replace("{canonical_full_link}", $actual_full_link, $content);
     $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
-    $content = str_replace("{basket_count}", $shop->countBasket()[0], $content);
-    $content = str_replace("{basket_style}", $shop->countBasket()[1], $content);
+    $basketData = $shop->countBasket();
+    $content = str_replace("{basket_count}", $basketData[0], $content);
+    $content = str_replace("{basket_style}", $basketData[1], $content);
     $content = str_replace("{garage_style}", "", $content);
     $content = str_replace("{garage_status}", $automan->getGarageAutoCount(), $content);
     $content = str_replace("{basket_summ}", $shop->countSummBasket(), $content);

@@ -581,14 +581,23 @@ class ShopClass extends CatalogueClass
     public function setDeliveryIndex($order_id)
     {
         $db = DbSingleton::getDbm();
-        $price = 0;
+        $price = 0; $delivery_id = 0;
         $client = new ClientClass();
-        $r = $db->query("SELECT `order_info_id`, `tpoint_id`, `client_id` FROM `orders_new` WHERE `ID` = $order_id LIMIT 1;");
+        $r = $db->query("SELECT `order_info_id`, `tpoint_id`, `client_id`, `client_user_id` FROM `orders_new` WHERE `ID` = $order_id LIMIT 1;");
         $order_info_id = $db->result($r, 0, "order_info_id") + 0;
         $tpoint_id = $db->result($r, 0, "tpoint_id");
         $client_id = $db->result($r, 0, "client_id");
+        $user_id = $db->result($r, 0, "client_user_id");
         $r = $db->query("SELECT `DELIVERY_ID` FROM `ORDERS_CLIENT_INFO` WHERE `ID` = $order_info_id LIMIT 1;");
-        $delivery_id = $db->result($r, 0, "DELIVERY_ID");
+        $n = $db->num_rows($r);
+
+        if ($n > 0) {
+            $delivery_id = $db->result($r, 0, "DELIVERY_ID");
+            $db->query("UPDATE `ORDERS_CLIENT_INFO` SET `CLIENT_ID` = $client_id, `USER_ID` = $user_id WHERE `ID` = $order_info_id LIMIT 1;");
+        } else {
+            $db->query("INSERT INTO `ORDERS_CLIENT_INFO` (`CLIENT_ID`, `USER_ID`, `STATUS`) VALUES ($client_id, $user_id, 1);");
+        }
+
         if (in_array($delivery_id, [4, 5]) && ($client->checkRetailClientCategory($client_id))) {
             list($art_id, $brand_id, $storage_id, $price) = $this->getDeliveryIndex($delivery_id, $tpoint_id);
             $rmax = $db->query("SELECT MAX(`id`) AS max_order_str FROM `orders_str_new`;");
@@ -966,6 +975,7 @@ class ShopClass extends CatalogueClass
         $tpoint_id = $this->getTpointID();
         $cookie = $this->getSessionID();
         $cash_id = intval($client->getClientCurrency($client_id));
+
         // CREATE ORDER
         $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0, 0);
 

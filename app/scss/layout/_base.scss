@@ -827,8 +827,10 @@
     top: -4px;
     &-hidden {
         display: none;
+        position: unset;
         &.show {
             display: block!important;
+            position: unset;
         }
     }
     &-contain {
@@ -1282,148 +1284,6 @@
     }
 }
 
-//.car_form-select {
-//    background: #0c5460;
-//    color: #fff;
-//    min-height: unset!important;
-//    padding: 1em 0;
-//    h1, h2 {
-//        font-size: 1.5em;
-//        font-weight: bold;
-//        padding-left: 15px;
-//        text-transform: uppercase;
-//    }
-//    &-h {
-//        display: block;
-//        font-size: 1.5em;
-//        font-weight: bold;
-//        text-transform: uppercase;
-//        padding-left: 15px;
-//    }
-//}
-
-//.t_mfa {
-//    column-count: 4;
-//    column-gap: 20px;
-//    list-style: none;
-//    padding: 0 20px;
-//    a {
-//        color: #000;
-//    }
-//}
-//
-//.t_model {
-//    column-count: 4;
-//    column-gap: 20px;
-//    list-style: none;
-//    padding: 0 20px;
-//}
-
-//.t_year {
-//    color: #000;
-//    display: flex;
-//    justify-content: space-between;
-//    ul {
-//        width: 100%;
-//    }
-//    span {
-//        display: block!important;
-//    }
-//    .year-title {
-//        background: #ddd;
-//        color: #000;
-//        margin: 10px;
-//        text-align: center;
-//    }
-//}
-
-//.t_model_id {
-//    a {
-//        display: block;
-//        &:hover {
-//            background: #f1f1f1;
-//        }
-//    }
-//    b {
-//        text-align: left;
-//    }
-//    span {
-//        float: right;
-//    }
-//    img {
-//        height: 70px;
-//        max-width: 100%;
-//        width: auto;
-//    }
-//    .row {
-//        padding: 10px;
-//        .body-car {
-//            padding-right: 0;
-//            img {
-//                height: auto;
-//                width: 50px;
-//            }
-//        }
-//        .image-car {
-//            padding-left: 0;
-//            img {
-//                width: 100%;
-//            }
-//        }
-//    }
-//}
-
-//.t_modification {
-//    align-items: stretch;
-//    display: flex;
-//    flex-wrap: wrap;
-//    div {
-//        border: 1px solid #ddd;
-//        margin-right: 15px;
-//        margin-bottom: 15px;
-//        padding: 15px;
-//        width: calc(25% - 15px);
-//    }
-//}
-
-//.t_types {
-//    display: flex;
-//    flex-direction: row;
-//    a {
-//        display: block;
-//    }
-//    div {
-//        flex: 1 1 auto;
-//    }
-//    span {
-//        display: block;
-//    }
-//}
-
-//.garage_form {
-//    a {
-//        color: #fff;
-//        font-size: 15px;
-//        padding: 0!important;
-//        text-transform: uppercase;
-//    }
-//    img {
-//        filter: none;
-//        float: none;
-//        width: auto;
-//    }
-//    span {
-//        float: none;
-//        font-size: 11px;
-//        padding: 0;
-//        text-align: left;
-//        &.title {
-//            font-size: 16px;
-//            font-weight: bold;
-//        }
-//    }
-//}
-
 .btn-close {
     background: url(/images/icons/close-white.svg) center no-repeat;
     border-radius: 15px;
@@ -1542,8 +1402,6 @@
         }
         img {
             filter: grayscale(100%);
-            //height: 60px;
-            //width: auto;
             display: block;
             margin: 0 auto;
             height: 100%;

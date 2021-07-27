@@ -209,7 +209,8 @@ function showBasketStatus() {
         function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content[0] !== "") {
                 status1.addClass("show").removeClass("none").removeClass("tool-status-hidden").html(result.content[0]);
-                status3.addClass("show").removeClass("none").html(result.content[0]);
+                status3.addClass("show").removeClass("none").removeClass("tool-status-hidden");
+                status3.html("<div class=\"tool-status\">" + result.content[0] + "</div>");
                 status5.removeClass("tool-status-hidden").text(result.content[0]);
             } else {
                 status1.addClass("none").removeClass("show");
