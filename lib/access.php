@@ -165,6 +165,7 @@ function printBreadcrumbs($path)
 {
     $cat = new CatalogueClass();
     $menu = new MenuClass();
+    $automan = new AutoClass();
     $bread = findLinks();
 
     $icon = "<span> > </span>";
@@ -184,6 +185,22 @@ function printBreadcrumbs($path)
     $b_arr[1] = ["name" => "{seo_site_toko}", "item" => $cat->getSiteLink()];
 
     switch ($section) {
+        case "cars" : {
+            $mfa_link = $bread[1];
+            $model_link = $bread[2];
+            $b_arr[2] = ["name" => "$h_section", "item" => "" . $cat->getSiteLink() . "cars/"];
+            $pretitle = "$a_home $icon <a href=\"https://toko.ua/cars/\" rel=\"v:url\" property=\"v:title\">$h_section</a>";
+            list($mfa_name, $model_name) = $automan->getAutoDescrLink($mfa_link, $model_link);
+            if ($mfa_link != "") {
+                $b_arr[3] = ["name" => "$mfa_name", "item" => "" . $cat->getSiteLink() . "cars/" . $mfa_link . "/"];
+                $pretitle .= " $icon <a href=\"https://toko.ua/cars/$mfa_link/\" rel=\"v:url\" property=\"v:title\">$mfa_name</a>";
+                if ($model_link != "") {
+                    $b_arr[4] = ["name" => "$mfa_name $model_name", "item" => "" . $cat->getSiteLink() . "cars/" . $mfa_link . "/" . $model_link . "/"];
+                    $pretitle .= " $icon <a href=\"https://toko.ua/cars/$mfa_link/$model_link/\" rel=\"v:url\" property=\"v:title\">$mfa_name $model_name</a>";
+                }
+            }
+            break;
+        }
         case "search" : {
             $article_nr_search = $cat->getUrlString($bread[1]);
             $info = $article_nr_search;

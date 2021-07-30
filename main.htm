@@ -49,15 +49,15 @@
 			"logo": "https://toko.ua/favicon.ico",
 			"contactPoint": [{
 				"@type": "ContactPoint",
-				"telephone": "+380(44) 507 16 16",
+				"telephone": "+380 (97) 080 30 60",
 				"contactType": "customer service"
 			},{
 				"@type": "ContactPoint",
-				"telephone": "+380(67) 381 16 83",
+				"telephone": "+380 (50) 080 30 60",
 				"contactType": "customer service"
 			},{
 				"@type": "ContactPoint",
-				"telephone": "+380 (67) 384 82 55",
+				"telephone": "+380 (93) 080 30 60",
 				"contactType": "customer service"
 			}]
 		}
@@ -150,8 +150,8 @@
 
 <link rel="stylesheet" href="/fonts/fontawesome_web/css/all-minify.css">
 
-<div id="myHeader" class="sticky-header"></div>
-<div id="myBackdrop" class="sticky-backdrop"></div>
+<!--<div id="myHeader" class="sticky-header"></div>-->
+<!--<div id="myBackdrop" class="sticky-backdrop"></div>-->
 
 {site_console}
 
@@ -194,7 +194,7 @@
 				<div class="row align-items-center">
 
 					<div class="col-2 logotype-main">
-                        <a href="{site_main_link}">
+                        <a class="logotype-main-image" href="{site_main_link}">
                             <img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}">
                         </a>
                     </div>
@@ -301,34 +301,32 @@
                     </div>
                     <div class="offset-2 col-6 pad0">
                         <ul class="header-phone-nav__list">
-                            <li>
-                                <a class="header-phone-nav__list-link" href="{site_main_link}catalogue/">
+                            <li class="header-phone-nav__list-link">
+                                <a href="{site_main_link}catalogue/">
                                     <img class="lazy" data-src="/images/icons/headers/30x30/garage.png" alt="Garage" src="">
                                 </a>
                             </li>
-                            <li>
-                                <a class="header-phone-nav__list-link" href="{site_main_link}profile/">
+                            <li class="header-phone-nav__list-link">
+                                <a href="{site_main_link}profile/">
                                     <img class="lazy" data-src="/images/icons/headers/30x30/profile.png" alt="Profile" src="">
                                 </a>
                             </li>
-                            <li>
+                            <li class="header-phone-nav__list-link">
 								<div id="basket_status3" class="basket_status {basket_style}">
 									<div class="tool-status">{basket_count}</div>
 								</div>
-                                <div class="header-phone-nav__list-link" onclick="showBasketMinForm();">
+                                <div onclick="showBasketMinForm();">
                                     <img class="lazy" data-src="/images/icons/headers/30x30/basket.png" alt="Basket" src="">
                                 </div>
                             </li>
-                            <li class="bar-menu">
-                                <div class="header-phone-nav__list-link" title="{mob_menu}">
-                                    <img class="lazy" data-src="/images/icons/headers/30x30/bars.png" alt="Bar" src="">
-                                </div>
+                            <li class="header-phone-nav__list-link bar-menu">
+								<img class="lazy" data-src="/images/icons/headers/30x30/bars.png" alt="Bar" src="" title="{mob_menu}">
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="row header-phone-search">
-					<div class="col-12">
+					<div class="col-12 pad0">
 						<button class="header-phone-search__button" onclick="showArtSearch();">
 							{search_onsite}
 						</button>

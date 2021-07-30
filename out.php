@@ -12,11 +12,14 @@ if ($path == "seoshield-client") {
     include RDD . "/seoshield-client/index.php";
     include RDD . "/seoshield-client/main.php";
     $content = "";
-} elseif ($path == "" || $path == "/") {
+}
+elseif ($path == "" || $path == "/") {
     include_once RDD . "/event/main.php";
-} elseif ($path == "/uk/" || $path == "/en/") {
+}
+elseif ($path == "/uk/" || $path == "/en/") {
     include_once RDD . "/event/main.php";
-} elseif (file_exists(RDD . "/event/$path.php")) {
+}
+elseif (file_exists(RDD . "/event/$path.php")) {
     include_once RDD . "/event/$path.php";
 } else {
     include RDD . "/event/404.php";

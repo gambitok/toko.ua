@@ -509,7 +509,7 @@ class AutoClass extends CatalogueClass
     /*
      * get cars seo content
      * */
-    public function getSeoContent($title, $mfa_link, $mod_link = "")
+    public function getSeoContent($mfa_link, $mod_link = "")
     {
         $catalogue = new CatalogueClass();
         $form = $this->getHtmlForm("seo_content");
@@ -523,7 +523,7 @@ class AutoClass extends CatalogueClass
         } else {
             $form = str_replace("{seo_list}", $catalogue->getCatalogColList($mfa_link, $mod_link), $form);
         }
-        $form = str_replace("{seo_header}", $title, $form);
+        $form = str_replace("{seo_header}", "", $form);
         return $form;
     }
 

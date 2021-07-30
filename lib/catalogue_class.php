@@ -254,7 +254,7 @@ class CatalogueClass
         $client = new ClientClass();
         $showform = new FormClass();
         $article_nr_displ = $this->getArtDispl($article_nr_search, $brand_nr_search);
-        $title = $this->getHtmlForm("catalog/title");
+        $title = $this->getHtmlForm("catalog_exist/title");
         $title = str_replace("{article_nr_displ}", $article_nr_displ, $title);
         $title = str_replace("{brand_name}", $this->getBrandName($brand_nr_search), $title);
         $view = $client->getProductView();

@@ -1,6 +1,5 @@
 .cars {
     background: #fff;
-    position: relative;
     &-nav {
         background: #fff;
         color: #fff;
@@ -22,30 +21,30 @@
             //&:hover {
             //    filter: brightness(90%);
             //}
-            &:not(:first-child) {
-                &:before {
-                    background: #ececec;
-                    bottom: 19px;
-                    content: '';
-                    left: 0;
-                    position: absolute;
-                    top: 19px;
-                    width: 1px;
-                }
-            }
+            //&:not(:first-child) {
+            //    &:before {
+            //        background: #ececec;
+            //        bottom: 19px;
+            //        content: '';
+            //        left: 0;
+            //        position: absolute;
+            //        top: 19px;
+            //        width: 1px;
+            //    }
+            //}
             &-checked {
                 background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #2d8bfa;
                 color: #fff;
-                &:before {
-                    content: none!important;
-                }
+                //&:before {
+                //    content: none!important;
+                //}
             }
             &-active {
                 background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat #2d8bfa;
                 color: #fff;
-                &:before {
-                    content: none!important;
-                }
+                //&:before {
+                //    content: none!important;
+                //}
             }
             &-mob {
                 display: none;
@@ -68,6 +67,9 @@
             flex-wrap: wrap;
             &-active {
                 display: flex;
+            }
+            &-mob {
+                //display: flex;
             }
             &-item {
                 background: #fff;
@@ -234,10 +236,13 @@
             &__item {
                 padding: 15px 65px 15px 15px;
                 &:not(:last-child) {
-                    border-bottom: 1px solid #ebebeb;
+                    //border-bottom: 1px solid #ebebeb;
                 }
                 &-mob {
                     display: block;
+                    text-overflow: unset;
+                    white-space: unset;
+                    position: unset;
                 }
                 &-hidden {
                     display: none;
@@ -245,13 +250,16 @@
             }
         }
         &-tab {
-            max-height: 530px;
+            //max-height: 530px;
             &__block {
                 border-bottom: 3px solid #2d8bfa;
                 border-top: none;
                 height: 200px;
                 overflow-x: hidden;
                 overflow-y: auto;
+                &-mob {
+                    display: none;
+                }
                 &-item {
                     width: 100%;
                     &-years {

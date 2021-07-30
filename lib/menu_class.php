@@ -112,8 +112,9 @@ class MenuClass extends CatalogueClass
         }
         $text = $db->result($r, 0, "desc");
         $date = $db->result($r, 0, "data");
-        $img_file = "/uploads/images/news/$language_id/$state_id/" . $this->getNewsImage($state_id);
-        $img = ($img_file != "") ? "<p><img itemprop=\"image\" src=\"$img_file\" alt=\"state\"></p>" : "";
+        $img_file_name = $this->getNewsImage($state_id);
+        $img_file = "/uploads/images/news/$language_id/$state_id/" . $img_file_name;
+        $img = ($img_file_name != "") ? "<p><img itemprop=\"image\" src=\"$img_file\" alt=\"state\"></p>" : "";
         $format_title = $this->formatUrlText($title);
         $url = $this->getSiteLink() . "$this->news_link/state/$state_id/$format_title/";
         return compact("title", "date", "img_file", "img", "text", "url");

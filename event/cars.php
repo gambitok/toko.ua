@@ -11,10 +11,12 @@ $translit = $automan->getCarManufTranslit($mfa_id, $model);
 $title = ($mfa_text == "") ? "{spare_parts_catalog_cap}" : $catalogue->replaceLang("{details_on_cap} $mfa_text $model_text $translit");
 
 $form = $catalogue->getHtmlForm("cars/form");
-$form = str_replace("{cars_list}", $showform->drawLoader(), $form);
+$form = str_replace("{cars_title}", $title, $form);
+//$form = str_replace("{cars_list}", $showform->drawLoader(), $form);
+$form = str_replace("{cars_list}", $prod->getCarsSearch($mfa_link, $mod_link), $form);
 $form = str_replace("{mfa_link}", $mfa_link, $form);
 $form = str_replace("{model_link}", $mod_link, $form);
-$form = str_replace("{seo_content}", $automan->getSeoContent($title, $mfa_link, $mod_link), $form);
+$form = str_replace("{seo_content}", $automan->getSeoContent($mfa_link, $mod_link), $form);
 
 $content = str_replace("{main_window}", $form, $content);
 

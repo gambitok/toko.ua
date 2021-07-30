@@ -2,7 +2,7 @@
 @media (max-width: 768px) {
 
     .cars-loader {
-        min-height: 530px;
+        min-height: 165px;
     }
 
     .gallery-item-image {
@@ -361,11 +361,16 @@
         }
     }
 
+    .cat-products-filters {
+        display: none;
+    }
+
     .cat-products-title h1 {
-        font-size: 20px;
+        font-size: 18px;
     }
     .cat-products-cars {
-        margin-bottom: 15px;
+        margin-bottom: 0;
+        min-height: 165px;
     }
     .cat-products-count a {
         margin-left: 0;

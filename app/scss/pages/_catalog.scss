@@ -251,12 +251,14 @@
 }
 
 .search__link {
-    &:hover {
-        text-decoration: unset;
-    }
     span {
         display: block;
         font-size: 14px;
+        //height: 20px;
+        //overflow: hidden;
+    }
+    &:hover {
+        text-decoration: unset;
     }
 }
 

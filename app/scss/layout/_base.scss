@@ -216,7 +216,7 @@
 }
 
 .request {
-    min-height: 446px;
+    min-height: 397px;
     padding: 10px;
     &-row {
         display: flex;
@@ -229,7 +229,7 @@
             }
         }
         textarea {
-            height: 100px;
+            height: 70px;
         }
         input[type='text'], input[type='tel'], textarea {
             border: 1px solid #ccc;
@@ -648,7 +648,7 @@
     }
     &-cars {
         box-shadow: 0 1px 4px #ccc;
-        margin-bottom: 60px;
+        margin-bottom: 30px;
     }
     &-count {
         margin-bottom: 15px;
@@ -1094,9 +1094,10 @@
 
 .cars-loader {
     display: flex;
-    min-height: 458px;
+    min-height: 365px;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .tree-heads {
