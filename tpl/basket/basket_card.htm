@@ -3,7 +3,7 @@
     <div class="col-4 search__basket">
         <div class="row">
             <div class="col-3">
-                <img src="{product_image}" alt="{art_name}" class="search__img">
+                <img class="search__img" src="{product_image}" alt="{art_name}">
             </div>
             <div class="col-9 pad0">
                 <span class="search__brand tooltips" data-toggle="tooltip" data-placement="bottom" title="{country_name}">{flag} {brand_name}</span> <a class="search__art" href="{link}">{art_name}</a>
@@ -22,7 +22,7 @@
             <div class="input-group-prepend">
                 <button class="btn btn-sm btn-outline-secondary" onclick="updateCountBasket(0,{art_id},{storage_id},{stock},0);">-</button>
             </div>
-            <input id="{amount_field}" class="show_count form-control" title="count" min="0" value="{amount}" onchange="updateBasketForm({art_id},{storage_id},{stock},0);">
+            <input id="{amount_field}" class="form-control" title="count" min="0" value="{amount}" onchange="updateBasketForm({art_id},{storage_id},{stock},0);">
             <div class="input-group-append">
                 <button class="btn btn-sm btn-outline-secondary" onclick="updateCountBasket(1,{art_id},{storage_id},{stock},0);">+</button>
             </div>
@@ -30,11 +30,11 @@
     </div>
 
     <div class="col-1 search__price">
-        <span class="search__price">{price} {cash_abr}</span> {action}
+        <span>{price} {cash_abr}</span> {action}
     </div>
 
-    <div class="col-2 text-center">
-        <span class="search__total">{full_price} {cash_abr}</span>
+    <div class="col-2 search__total">
+        <span>{full_price} {cash_abr}</span>
     </div>
 
     <div class="col-1 pad0">

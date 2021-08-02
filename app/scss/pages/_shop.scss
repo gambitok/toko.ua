@@ -132,70 +132,6 @@
     }
 }
 
-.order {
-    &__header {
-        margin: 0 0 15px 0;
-        h1 {
-            font-size: 24px;
-        }
-        &-total {
-            float: right;
-        }
-    }
-    &__basket {
-        display: none;
-    }
-    &__navs {
-        .nav-tabs {
-            background: #fff;
-            box-shadow: none;
-            padding-bottom: 30px;
-            a {
-                background: #fff;
-                border-radius: 25px;
-                color: #a9a9a9;
-                display: inline;
-                margin-right: 15px;
-                padding: 10px 30px;
-                transition: all .2s linear;
-                &.active {
-                    background: #ee7f80;
-                    color: #fff;
-                }
-                &:hover {
-                    box-shadow: 0 1px 3px #000;
-                    text-decoration: none;
-                }
-            }
-            li {
-                display: flex;
-            }
-        }
-    }
-    &__tabs {
-        .label {
-            background: #fff;
-            border-radius: 25px;
-            color: #a9a9a9;
-            margin-right: 15px;
-            &:hover {
-                background: #fff;
-                color: #ee7f80;
-            }
-        }
-        .input:checked+.label {
-            background: #ee7f80;
-            color: #fff;
-        }
-        .table-order {
-            margin-bottom: 15px;
-            .row {
-                margin-bottom: 15px;
-            }
-        }
-    }
-}
-
 .btn-basket {
     background: #f7f7f7;
     border: none;
@@ -628,38 +564,4 @@
         }
     }
 }
-
-//@media (min-width: 768px) and (max-width: 992px) {
-//    .basket-phone {
-//        display: block;
-//    }
-//    .basket-table {
-//        display: none;
-//    }
-//    .orders {
-//        padding: 30px 10px;
-//        &-title {
-//            display: none;
-//            width: 100%;
-//        }
-//        &-block {
-//            margin-bottom: 10px;
-//            width: 100%;
-//        }
-//        &-footer {
-//            flex-direction: column-reverse;
-//            width: 100%;
-//            &-about {
-//                width: 100%;
-//            }
-//            &-button {
-//                width: 100%;
-//                button {
-//                    margin-bottom: 15px;
-//                    width: 100%;
-//                }
-//            }
-//        }
-//    }
-//}
 

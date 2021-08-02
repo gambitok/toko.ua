@@ -12,6 +12,7 @@ class AutoClass extends CatalogueClass
     public function getCarManufTranslit($mfa_id, $model = "")
     {
         $mfa_id = $this->getUrlNumber($mfa_id);
+        $model = $this->getUrlString($model);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_BRAND_TRANSLIT` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
         $mfa_translate = $db->result($r, 0, "MFA_BRAND_TRANSLIT");
@@ -105,10 +106,10 @@ class AutoClass extends CatalogueClass
      * */
     public function getAutoDescrLink($mfa_link, $model_link)
     {
-        $db = DbSingleton::getTokoDb();
-        $mfa_brand = $model = "";
         $mfa_link = $this->getUrlString($mfa_link);
         $model_link = $this->getUrlString($model_link);
+        $db = DbSingleton::getTokoDb();
+        $mfa_brand = $model = "";
         if ($mfa_link != "") {
             $r = $db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' LIMIT 1;");
             $mfa_brand = $db->result($r, 0, "MFA_BRAND");
@@ -126,10 +127,10 @@ class AutoClass extends CatalogueClass
      * */
     public function getAutoIdsLink($mfa_link, $model_link)
     {
-        $db = DbSingleton::getTokoDb();
-        $mfa_id = $model = "";
         $mfa_link = $this->getUrlString($mfa_link);
         $model_link = $this->getUrlString($model_link);
+        $db = DbSingleton::getTokoDb();
+        $mfa_id = $model = "";
         if ($mfa_link != "") {
             $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' LIMIT 1;");
             $mfa_id = $db->result($r, 0, "MFA_ID");
@@ -159,6 +160,7 @@ class AutoClass extends CatalogueClass
      * */
     public function getMfaLink($mfa_link)
     {
+        $mfa_link = $this->getUrlString($mfa_link);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' LIMIT 1;");
         return intval($db->result($r, 0, "MFA_ID"));
@@ -170,6 +172,7 @@ class AutoClass extends CatalogueClass
      * */
     public function getModLink($mod_link)
     {
+        $mod_link = $this->getUrlString($mod_link);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link` = '$mod_link' LIMIT 1;");
         return $db->result($r, 0, "Model");
@@ -618,19 +621,19 @@ class AutoClass extends CatalogueClass
     /*
      * get CARS seo meta tags
      * */
-    public function getCarsMetaTags($mfa_link, $model_link, $h1_text)
+    public function getCarsMetaTags($mfa_id, $model, $h1_text)
     {
-        $mfa_id = $this->getMfaLink($mfa_link);
-        $model = $this->getModLink($model_link);
-
+        $catalog = new CatalogueClass();
         $url_text = $this->getSiteLink() . $this->cars_link . "/";
         $car_pict = "";
         $imgData = $this->getAutoIMG($mfa_id, $model);
-        if ($mfa_link != "") {
+        if ($mfa_id > 0) {
+            $mfa_link = $catalog->getManufactureLink($mfa_id);
             $url_text .= "$mfa_link/";
             $car_pict = $imgData["mfa_image"];
             $car_pict = "https://toko.ua/uploads/images/manufacturers/$car_pict";
-            if ($model_link != "") {
+            if ($model != "") {
+                $model_link = $catalog->getModelLink($model);
                 $url_text .= "$model_link/";
                 $car_pict = $imgData["model_image"];
                 $car_pict = "https://toko.ua/uploads/images/models/$car_pict";
@@ -641,6 +644,18 @@ class AutoClass extends CatalogueClass
         $form = str_replace("{url_meta_tag}", $url_text, $form);
         $form = str_replace("{main_image_cap}", $car_pict, $form);
         return $form;
+    }
+
+    public function getCarsTitle($mfa_id, $model)
+    {
+        $catalog = new CatalogueClass();
+        $mfa_link = $catalog->getManufactureLink($mfa_id);
+        $model_link = $catalog->getModelLink($model);
+        list($mfa_text, $model_text) = $this->getAutoDescrLink($mfa_link, $model_link);
+        $translit = $this->getCarManufTranslit($mfa_id, $model);
+        return ($mfa_text == "")
+            ? "{spare_parts_catalog_cap}"
+            : $this->replaceLang("{details_on_cap} $mfa_text $model_text $translit");
     }
 
 }

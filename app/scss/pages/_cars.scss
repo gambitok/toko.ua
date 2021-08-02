@@ -14,37 +14,16 @@
             overflow: hidden;
             padding: 20px 65px 20px 30px;
             position: relative;
-            //transition: .3s;
             text-overflow: ellipsis;
             white-space: nowrap;
             width: 100%;
-            //&:hover {
-            //    filter: brightness(90%);
-            //}
-            //&:not(:first-child) {
-            //    &:before {
-            //        background: #ececec;
-            //        bottom: 19px;
-            //        content: '';
-            //        left: 0;
-            //        position: absolute;
-            //        top: 19px;
-            //        width: 1px;
-            //    }
-            //}
             &-checked {
                 background: url("/images/icons/dropdown-red.svg") calc(100% - 20px) center no-repeat #2d8bfa;
                 color: #fff;
-                //&:before {
-                //    content: none!important;
-                //}
             }
             &-active {
                 background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat #2d8bfa;
                 color: #fff;
-                //&:before {
-                //    content: none!important;
-                //}
             }
             &-mob {
                 display: none;
@@ -67,9 +46,6 @@
             flex-wrap: wrap;
             &-active {
                 display: flex;
-            }
-            &-mob {
-                //display: flex;
             }
             &-item {
                 background: #fff;
@@ -235,9 +211,6 @@
             display: none;
             &__item {
                 padding: 15px 65px 15px 15px;
-                &:not(:last-child) {
-                    //border-bottom: 1px solid #ebebeb;
-                }
                 &-mob {
                     display: block;
                     text-overflow: unset;
@@ -250,7 +223,6 @@
             }
         }
         &-tab {
-            //max-height: 530px;
             &__block {
                 border-bottom: 3px solid #2d8bfa;
                 border-top: none;

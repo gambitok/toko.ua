@@ -74,7 +74,7 @@ class CatalogueClass
 
         // if found something
         if (($list_brand) && ($filters)) {
-            $colon = "col-lg-9 col-12 cat_result_table";
+            $colon = "col-lg-9 col-12 pad0";
             $colon_filter = "col-lg-3 col-12";
         } else {
             $colon = "col-lg-12 col-12 pad0";

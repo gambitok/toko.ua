@@ -15,12 +15,12 @@
                 {art_images}
             </div>
             <div class="col-lg-6 col-12">
-                <ul class="list-inline article-list">
-                    <li class="tables__delivery applicable {applicable_display}">
+                <ul class="article-list">
+                    <li class="article-list-item applicable {applicable_display}">
                         <div class="article-list__title">{is_applicable}:</div>
                         <div class="article-list__content">{applicable_cap}</div>
                     </li>
-                    <li class="tables__delivery">
+                    <li class="article-list-item">
                         <div class="article-list__title">{brand_cap}:</div>
                         <div class="article-list__content">
                             <span>
@@ -31,23 +31,31 @@
                             </span>
                         </div>
                     </li>
-                    <li class="tables__delivery {del_class}">
+                    <li class="article-list-item {del_class}">
                         <div class="article-list__title">{delivery_cap}:</div>
-                        <div class="article-list__content"><span style="font-size: 14px;">{art_del}</span></div>
+                        <div class="article-list__content">
+                            <span style="font-size: 14px;">{art_del}</span>
+                        </div>
                     </li>
-                    <li class="tables__stock">
+                    <li class="article-list-item">
                         <div class="article-list__title">{stock_cap}:</div>
-                        <div class="article-list__content"><span>{art_stock} {amount_abbr}.</span></div>
+                        <div class="article-list__content">
+                            <span>{art_stock} {amount_abbr}.</span>
+                        </div>
                     </li>
-                    <li class="tables__count">
+                    <li class="article-list-item">
                         <div class="article-list__title">{count_cap}:</div>
-                        <div class="article-list__content" style="width: 150px; margin-left: auto;"><input type="text" value="1" min="1" title="amount" id="count_0"></div>
+                        <div class="article-list__content">
+                            <input type="text" value="1" min="1" title="amount" id="count_0">
+                        </div>
                     </li>
-                    <li class="tables__price">
+                    <li class="article-list-item">
                         <div class="article-list__title">{price_cap}:</div>
-                        <div class="article-list__content"><span style="font-size: 24px;">{art_price} {art_cur}</span></div>
+                        <div class="article-list__content">
+                            <span style="font-size: 24px;">{art_price} {art_cur}</span>
+                        </div>
                     </li>
-                    <li class="buy-cart-group" style="float: unset!important;">
+                    <li class="article-list-item buy-cart-group" style="float: unset!important;">
                         <div class="btn-group btn btn-sm btn-info" onClick="{art_basket}">
                             <img src="/images/buy-cart-white.png" alt="PNG" width="25">
                             <span>{buy_cap}</span>

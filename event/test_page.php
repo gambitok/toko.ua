@@ -1,5 +1,8 @@
 <?php
 
+
+$content = str_replace("{main_window}", "hello", $content);
+
 //$r = $dbm->query("SELECT `id`, `name` FROM `A_CLIENTS` WHERE 1 LIMIT 10;");
 //$n = $dbm->num_rows($r);
 //
@@ -10,7 +13,6 @@
 //var_dump($result);
 //
 //$content = str_replace("{main_window}", "", $content);
-phpinfo();
 
 
 

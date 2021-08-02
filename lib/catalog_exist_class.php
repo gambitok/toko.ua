@@ -672,8 +672,7 @@ class CatalogExistClass extends CatalogueClass
                 $param_link = $params_item_str[0];
                 $params_item_values = $params_item_str[1];
                 $params_item_values_arr = explode(",", $params_item_values);
-                foreach ($params_item_values_arr as $value_link)
-                {
+                foreach ($params_item_values_arr as $value_link) {
                     $param_id = $this->getGroupParamID($group_id, $param_link);
                     $value_id = $this->getGroupValueID($group_id, $param_id, $value_link);
                     if ($value_id != 0) {
@@ -845,9 +844,7 @@ class CatalogExistClass extends CatalogueClass
         $where_mfa = "";
         if ($mfa_id > 0) {
             if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 1)) {
-                if ($mfa_id > 0) {
-                    $where_mfa .= " AND tm.`mfa_id` = $mfa_id";
-                }
+                $where_mfa .= " AND tm.`mfa_id` = $mfa_id";
                 if ($model != "") {
                     $where_mfa .= " AND tm.`model` = '$model'";
                 }
@@ -856,11 +853,10 @@ class CatalogExistClass extends CatalogueClass
         return $where_mfa;
     }
 
-    public function getArtsLinksWhere($status_auto = 0, $status_auto_type = 0)
+    public function getArtsLinksWhere($status_auto = 0, $status_auto_type = 0, $typ_id = 0)
     {
         $where_link_arts = "";
         if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 1)) {
-            $typ_id = $this->getCookieAuto();
             if ($typ_id != "") {
                 $typ_arts = $this->getPartsCatalogueAuto($typ_id);
                 $where_link_arts = " AND t.art_id IN (" . implode(",", $typ_arts) . ") ";
@@ -869,11 +865,11 @@ class CatalogExistClass extends CatalogueClass
         return $where_link_arts;
     }
 
-    public function showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $filters_h1)
+    public function showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $typ_id, $filters_h1)
     {
         $automan = new AutoClass();
         $form = $this->getHtmlForm("catalog_exist/error");
-        $form = str_replace("{form_car}", $this->getPartsCatalogueCars($group_id, $mfa_id, $model, $status_auto, $status_auto_type), $form);
+        $form = str_replace("{form_car}", $this->getPartsCatalogueCars($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $typ_id), $form);
         $form = $this->replaceLang($form);
         $form = str_replace("{h1_text}", "<b>$filters_h1</b>", $form);
         $form = str_replace("{vin_text}", "<a class=\"blue-a\" onclick=\"$('#VinFormPhone').modal('show');\">{vin_order}</a>", $form);
@@ -900,6 +896,7 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0, $str_link = "", $source_link = "")
     {
+        $typ_id = $this->getCookieAuto();
         $time = 0;
         $automan = new AutoClass();
         $dbc = DbSingleton::getTokoCacheDb();
@@ -909,7 +906,7 @@ class CatalogExistClass extends CatalogueClass
         $limit = $this->getSearchLimit($page);
         $group_text = $this->getGroupRowName($group_id);
         $where_mfa = $this->getMfaWhere($mfa_id, $model, $status_auto, $status_auto_type);
-        $where_link_arts = $this->getArtsLinksWhere($status_auto, $status_auto_type);
+        $where_link_arts = $this->getArtsLinksWhere($status_auto, $status_auto_type, $typ_id);
 
         $arts = [];
         if (empty($filters)) {
@@ -958,7 +955,7 @@ class CatalogExistClass extends CatalogueClass
 
         $breadcrumbs_script = "";
         if (empty($art_id_str)) {
-            $form = $this->showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $h1_text);
+            $form = $this->showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $typ_id, $h1_text);
             $form = str_replace("{mfa_link}", $this->getManufactureLink($mfa_id), $form);
             $form = str_replace("{model_link}", $this->getModelLink($model), $form);
         } else {
@@ -984,8 +981,8 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{filters_count}", $filters_count, $form);
             $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);
             $form = str_replace("{parts_cars}", $this->drawLoader(), $form);
-            $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $params, $status_auto, $status_auto_type), $form);
-            $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $params, $h1_text, $mfa_id, $model, $status_auto, $status_auto_type), $form);
+            $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $params, $status_auto, $status_auto_type, $typ_id), $form);
+            $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $params, $h1_text, $mfa_id, $model, $status_auto, $status_auto_type, $typ_id), $form);
             $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
         }
 
@@ -993,7 +990,7 @@ class CatalogExistClass extends CatalogueClass
 
         $description = $this->replaceLang("{site_description_catalog}");
         $description = str_replace("{h1_caption}", $h1_text, $description);
-        $description = str_replace("{h1_caption_parrent}", $this->getGroupRowName($group_id), $description);
+        $description = str_replace("{h1_caption_parrent}", $group_text, $description);
 
         //test
 
@@ -1392,11 +1389,10 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show param cars form
      * */
-    public function getPartsCatalogueParamsCars($group_id, $params, $status_auto = 0, $status_auto_type = 0)
+    public function getPartsCatalogueParamsCars($group_id, $params, $status_auto = 0, $status_auto_type = 0, $typ_id = 0)
     {
         $automan = new AutoClass();
         $form = "";
-        $typ_id = $this->getCookieAuto();
         if ($status_auto == 1 && $typ_id != "") {
             $car_checked = $all_checked = $car_count = $all_count = "";
             list($mfa_id, $model) = $automan->getCarInfo($typ_id);
@@ -1434,10 +1430,9 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show cars form
      * */
-    public function getPartsCatalogueCars($group_id, $mfa_link = "", $model_link = "", $status_auto = 0, $status_auto_type = 0)
+    public function getPartsCatalogueCars($group_id, $mfa_link = "", $model_link = "", $status_auto = 0, $status_auto_type = 0, $typ_id = 0)
     {
         $products = new ProductsClass();
-        $typ_id = $this->getCookieAuto();
         $form = "";
         if ($status_auto == 0 || $status_auto == 1) {
             if ($typ_id != "") {
@@ -1498,12 +1493,11 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show products seo form
      * */
-    public function getPartsCatalogueSeo($group_id, $page = 1, $params = [], $h1_text = "", $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0)
+    public function getPartsCatalogueSeo($group_id, $page = 1, $params = [], $h1_text = "", $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0, $typ_id = 0)
     {
         $menu = new MenuClass();
         $form = $this->getHtmlForm("catalog_exist/seo");
         if ($page <= 1) {
-            $typ_id = $this->getCookieAuto();
             if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 0)) {
                 // SEO filters
                 if ($typ_id == "" || ($status_auto == 1 && $status_auto_type == 0)) {
@@ -1738,11 +1732,10 @@ class CatalogExistClass extends CatalogueClass
     public function getCatalogH1($group_id, $params = [], $mfa_id = 0, $model = "")
     {
         $automan = new AutoClass();
-        $group_text = "";
         $car_text = "";
-        if ($group_id > 0) {
-            $group_text = $this->getGroupRowName($group_id);
-        }
+        $group_name = ($group_id > 0) ? $this->getGroupRowName($group_id) : "";
+        $group_text = $group_name;
+
         if ($mfa_id > 0) {
             $mfa_name = $automan->getMfaBrand($mfa_id);
             $car_text = "{on_cap} $mfa_name";
@@ -1755,7 +1748,7 @@ class CatalogExistClass extends CatalogueClass
             // brand or not
             // >2 param
             if (count($params) > 1) {
-                $group_text = $this->getGroupRowName($group_id);
+                $group_text = $group_name;
                 $count_params = 0;
                 ksort($params);
                 foreach ($params as $param_id => $values) {
@@ -1786,7 +1779,7 @@ class CatalogExistClass extends CatalogueClass
             if (array_key_exists(0, $params)) {
                 // only 1 brand
                 if (count($params) == 1) {
-                    $group_text = $this->getGroupRowName($group_id);
+                    $group_text = $group_name;
                     if (count($params[0]) == 1) {
                         foreach ($params[0] as $value_id) {
                             $brand_name = $this->getGroupValueName($value_id);
@@ -1796,7 +1789,7 @@ class CatalogExistClass extends CatalogueClass
                 }
                 // 1 brand + 1 param
                 if (count($params) == 2) {
-                    $group_text = $this->getGroupRowName($group_id);
+                    $group_text = $group_name;
                     krsort($params);
                     $endpoint = 0;
                     foreach ($params as $param_id => $values) {
@@ -1828,7 +1821,7 @@ class CatalogExistClass extends CatalogueClass
             // without brand
             // only 1 param
             if (count($params) == 1 && !array_key_exists(0, $params)) {
-                $group_text = $this->getGroupRowName($group_id);
+                $group_text = $group_name;
                 foreach ($params as $param_id => $values) {
                     foreach ($values as $value_id) {
                         $value_name = $this->getGroupValueName($value_id, $param_id);
@@ -2275,11 +2268,10 @@ class CatalogExistClass extends CatalogueClass
 
     public function getCatalogFilterSeo()
     {
-        $form = "
+        return "
             <!--ss_selected_filters_info|FilterName|FilterValue-->
             <!--seoshield_formulas--fil-traciya-->
         ";
-        return $form;
     }
 
 }
