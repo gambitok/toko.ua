@@ -282,16 +282,9 @@ function addToGarage(typ_id = 0) {
 function deleteAutoGarage(auto_id) {
     JsHttpRequest.query(folder,{'w':'deleteAutoGarage', 'auto_id':auto_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            showAutoGarage();
+            //showAutoGarage();
+            showGarageForm();
             showGarageStatus();
-        }}, true);
-}
-
-// UPDATE GARAGE MODAL
-function updateChosenAutoGarage(auto_id) {
-    JsHttpRequest.query(folder,{'w':'updateChosenAutoGarage', 'auto_id':auto_id},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.reload();
         }}, true);
 }
 
@@ -305,15 +298,6 @@ function showGarageStatus() {
             } else {
                 status1.addClass("none").removeClass("show");
             }
-        }}, true);
-}
-
-// SHOW GARAGE MODAL
-function showAutoGarage() {
-    $("#garage_form_dropdown").html("<div class=\"loader\"></div>");
-    JsHttpRequest.query(folder,{'w':'showAutoGarage'},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#garage_form_dropdown").html(result.content);
         }}, true);
 }
 

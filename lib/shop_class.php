@@ -307,6 +307,7 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $exrate = new ExRateClass();
+        $showform = new FormClass();
         $user_id = $this->getUser();
         $where = $client->getClientWhere();
         $cookie = $this->getSessionID();
@@ -332,14 +333,7 @@ class ShopClass extends CatalogueClass
         }
 
         $tpoint_id = $this->getTpointID();
-        $deliveryData = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
-        $delivery_days = $deliveryData["days"];
-        $delivery_short_info = $deliveryData["short"];
-        if ($suppl_id != 0) {
-            $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
-            $delivery_days = $deliveryData["days"];
-            $delivery_short_info = $deliveryData["short"];
-        }
+        list($delivery_days, $delivery_short_info) = $showform->getDeliveryData($tpoint_id, $storage_id, $suppl_id);
         $delivery_short_info = $this->replaceLang($delivery_short_info);
 
         if ($n > 0) {

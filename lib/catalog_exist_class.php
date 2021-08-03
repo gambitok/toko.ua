@@ -1019,7 +1019,7 @@ class CatalogExistClass extends CatalogueClass
                     $count_values++;
                     $value_name = $this->getGroupValueName($value_id, $param_id);
                     $link = $this->getPartsFilterLinks($group_id, $params, $param_id, $value_id, $mfa_id, $model);
-                    $filters_btn .= "<a href=\"$link\" class=\"btn btn-sm\">$value_name x</a>";
+                    $filters_btn .= "<a href=\"$link\" class=\"btn btn-sm\">$value_name &times;</a>";
                 }
             }
             if ($count_values > 1) {
@@ -1033,7 +1033,7 @@ class CatalogExistClass extends CatalogueClass
                     $model_link = $this->getModelLink($model);
                     $car_link .= "$model_link/";
                 }
-                $filters_btn = "<a class=\"btn btn-sm btn-filter\" href=\"" . $this->getSiteLink() . "$car_link\">{filter_cap_empty} x</a>" . $filters_btn;
+                $filters_btn = "<a class=\"btn btn-sm\" href=\"" . $this->getSiteLink() . "$car_link\">{filter_cap_empty} &times;</a>" . $filters_btn;
             }
         }
 
@@ -1295,11 +1295,11 @@ class CatalogExistClass extends CatalogueClass
 
         $value_arr = [];
         $r = $dbc->query("SELECT tp.*, t.brand_id as brand_cur_id 
-                FROM `$table` t
-                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
-                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-                WHERE 1 $where $where_mfa $where_link_arts
-                GROUP BY t.art_id;");
+        FROM `$table` t
+            LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
+            LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+        WHERE 1 $where $where_mfa $where_link_arts
+        GROUP BY t.art_id;");
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             if ($param_id == 0) {
@@ -1368,7 +1368,8 @@ class CatalogExistClass extends CatalogueClass
             $list .= "$group_link/";
             if ($link != "") {
                 $list .= "$link/";
-            } elseif ($mfa_id > 0) {
+            }
+            elseif ($mfa_id > 0) {
                 $list .= "auto/";
             } else {
                 $list .= "";
@@ -1561,7 +1562,7 @@ class CatalogExistClass extends CatalogueClass
             $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
             $mod_link = $db->result($r, $i - 1, "Model_Link");
 
-            $list .= "<div class=\"seo-auto-list-title\">
+            $list .= "<div>
                 <span>$details_cap $mfa_brand $model</span>
             </div>";
 
@@ -1582,10 +1583,14 @@ class CatalogExistClass extends CatalogueClass
                 if ($d_end == 0) {
                     $d_end = "{cur_time}";
                 }
-                $list .= "<a class=\"seo-li seo-li-id\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/$mod_id_link/\">
+                $list .= "<a class=\"seo-li\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/$mod_id_link/\">
                     <div class=\"row mar0\">
-                        <div class=\"col-4 seo-li-id-img\"><img src=\"https://toko.ua/uploads/images/models/$image\" alt=\"$text\" title=\"$text\"></div>
-                        <div class=\"col-8\"><span>$mfa_brand $text ($d_start - $d_end)</span></div>
+                        <div class=\"col-4\">
+                            <img src=\"https://toko.ua/uploads/images/models/$image\" alt=\"$text\" title=\"$text\">
+                        </div>
+                        <div class=\"col-8\">
+                            <span>$mfa_brand $text ($d_start - $d_end)</span>
+                        </div>
                     </div>
                 </a>";
             }
@@ -1629,11 +1634,11 @@ class CatalogExistClass extends CatalogueClass
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
 
             if ($mfa_id_sel == 0) {
-                $list .= "<div class=\"seo-auto-list-title\">
+                $list .= "<div>
                     <a href=\"" . $this->getSiteLink() . "$link/$mfa_link/\">$details_cap $mfa_brand</a>
                 </div>";
             } else {
-                $list .= "<div class=\"seo-auto-list-title\">
+                $list .= "<div>
                     $details_cap $mfa_brand
                 </div>";
             }
@@ -1645,7 +1650,7 @@ class CatalogExistClass extends CatalogueClass
                 $mod = $db->result($r2, $i2 - 1, "Model");
                 $mod_link = $db->result($r2, $i2 - 1, "Model_Link");
                 $list .= "<div class=\"seo-auto-list__item\">
-                    <a class=\"seo-li\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/\">
+                    <a href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/\">
                         <span>$mfa_brand $mod</span>
                     </a>
                 </div>";
@@ -1702,7 +1707,7 @@ class CatalogExistClass extends CatalogueClass
             $mfa_id = $values["mfa_id"];
             $mfa_link = $values["mfa_link"];
             if ($mfa_id_sel == 0) {
-                $list .= "<div class=\"seo-auto-list-title\">
+                $list .= "<div>
                     <a href=\"" . $this->getSiteLink() . "$link/$mfa_link/\">$details_cap $mfa_brand</a>
                 </div>";
             }

@@ -248,13 +248,6 @@ function getSpecialOffersList() {
         }}, true);
 }
 
-function showHomeCars() {
-    JsHttpRequest.query(folder,{'w':'showHomeCars'},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#js-details").html(result.content);
-        }}, true);
-}
-
 function validateBonusPhone() {
     let phone = $("#phone").val();
     let password = $("#sms_code").val();

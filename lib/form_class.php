@@ -174,7 +174,6 @@ class FormClass extends CatalogueClass
 
             $arr[] = ["name" => "$group_name", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$group_link/"];
 
-
             $arr[] = ["name" => "$group_name $brand_name", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$group_link/brandy=$brand_link/"];
         }
 
@@ -186,6 +185,19 @@ class FormClass extends CatalogueClass
         $arr[] = ["name" => "$article_text", "link" => $catalog->getSiteLink() . "$catalog->article_link/$format_article_search/$format_brand_name/$art_id/"];
 
         return $arr;
+    }
+
+    public function getDeliveryData($tpoint, $storage_id, $suppl_id)
+    {
+        $deliveryData = $this->getTpointDeliveryInfo($tpoint, $storage_id);
+        $delivery_days = $deliveryData["days"];
+        $delivery_short_info = $deliveryData["short"];
+        if ($suppl_id != 0) {
+            $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
+            $delivery_days = $deliveryData["days"];
+            $delivery_short_info = $deliveryData["short"];
+        }
+        return array($delivery_days, $delivery_short_info);
     }
 
     /*
@@ -236,15 +248,7 @@ class FormClass extends CatalogueClass
                 $price = $client->getClientPriceRounding($this->getClient(), $price);
             }
 
-            $deliveryData = $this->getTpointDeliveryInfo($tpoint, $storage_id);
-            $delivery_days = $deliveryData["days"];
-            $delivery_short_info = $deliveryData["short"];
-
-            if ($suppl_id != 0) {
-                $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
-                $delivery_days = $deliveryData["days"];
-                $delivery_short_info = $deliveryData["short"];
-            }
+            list($delivery_days, $delivery_short_info) = $this->getDeliveryData($tpoint, $storage_id, $suppl_id);
 
             $real_stock = $stock;
             if ($stock > 10) {
@@ -868,39 +872,6 @@ class FormClass extends CatalogueClass
         $form = str_replace("{banner_title}", $title, $form);
         $form = str_replace("{banner_text}", $text, $form);
         $form = str_replace("{banner_image}", $image, $form);
-        return $form;
-    }
-
-    /**
-     * show cars form (`Home Page`)
-     */
-    public function showHomeCars()
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `MFA_BRAND`, `MFA_BRAND_LINK`, `LOGO_SVG` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `POSITION` DESC LIMIT 0,25;");
-        $n = $db->num_rows($r);
-        $arr = [];
-        for ($i = 1; $i <= $n; $i++) {
-            $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
-            $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
-            $mfa_image = $db->result($r, $i - 1, "LOGO_SVG");
-            $arr[$i] = compact("mfa_brand", "mfa_link", "mfa_image");
-        }
-        sort($arr);
-        $list = "";
-        foreach ($arr as $value) {
-            $mfa_brand = $value["mfa_brand"];
-            $mfa_link = $value["mfa_link"];
-            $mfa_image = $value["mfa_image"];
-            $form_list = $this->getHtmlForm("menu/seo_details_card");
-            $form_list = str_replace("{mfa_brand}", $mfa_brand, $form_list);
-            $form_list = str_replace("{mfa_image}", $mfa_image, $form_list);
-            $form_list = str_replace("{page_mfa_link}", $this->getSiteLink() . "$this->cars_link/$mfa_link/", $form_list);
-
-            $list .= $form_list;
-        }
-        $form = $this->getHtmlForm("menu/seo_details");
-        $form = str_replace("{details_range}", $list, $form);
         return $form;
     }
 

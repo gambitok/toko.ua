@@ -71,18 +71,6 @@
     }
 }
 
-.lang_select {
-    cursor: pointer;
-    &:hover {
-        span {
-            color: #ccc;
-        }
-        img {
-            box-shadow: 0 0 5px #fff;
-        }
-    }
-}
-
 .ancor {
     color: #000;
     left: 85%;
@@ -118,11 +106,4 @@
             }
         }
     }
-}
-
-.mob-span span {
-    width: 44px;
-    height: 44px;
-    text-align: center;
-    padding: 14px;
 }

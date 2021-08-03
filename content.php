@@ -147,14 +147,6 @@ if ($_REQUEST["w"] == "addToGarage") {
     $GLOBALS['_RESULT'] = array("content" => $automan->addToGarage($_REQUEST["typ_id"]));
 }
 
-if ($_REQUEST["w"] == "showAutoGarage") {
-    $GLOBALS['_RESULT'] = array("content" => $automan->showGarageForm());
-}
-
-if ($_REQUEST["w"] == "updateChosenAutoGarage") {
-    $GLOBALS['_RESULT'] = array("content" => $automan->updateChosenAutoGarage($_REQUEST["auto_id"]));
-}
-
 if ($_REQUEST["w"] == "deleteAutoGarage") {
     $GLOBALS['_RESULT'] = array("content" => $automan->deleteAutoGarage($_REQUEST["auto_id"]));
 }
@@ -350,10 +342,6 @@ if ($_REQUEST["w"] == "checkActionClients") {
 
 if ($_REQUEST["w"] == "setClientRequestDone") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->setClientRequestDone());
-}
-
-if ($_REQUEST["w"] == "showHomeCars") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->showHomeCars());
 }
 
 if ($_REQUEST["w"] == "showModalForm") {

@@ -727,7 +727,7 @@ class CatalogueClass
         $mas = $filters = $brands = $current_value = array();
         $filters["max_price"] = $filters["max_dd"] = $main_brand = $count = 0;
         $list_brand = "";
-        $error = $this->replaceLang($this->getHtmlForm("error/404_tree"));
+        $error = $this->replaceLang("<h5 class=\"error_message\">$this->err1</h5>");
         $list = "$error";
         $art_id_search = 0;
         if ($article_nr_search != "") {

@@ -97,19 +97,13 @@
         display: none;
     }
 
-    .pop {
-        display: none!important;
-    }
-
     .desktop-only {
         display: none;
     }
 
     .header-main,
     .header-nav,
-    .fixed-main,
     .ancor,
-    .mob-span,
     .logotype-main {
         display: none;
     }
@@ -150,7 +144,6 @@
 
     .header-phone,
     .table-responsive,
-    .info_block,
     .nav-tabs {
         display: block;
     }
@@ -173,11 +166,6 @@
 
     .contacts ul li {
         padding-top: 30px;
-    }
-
-    .profile__side {
-        margin-bottom: 15px;
-        padding: 0;
     }
 
     .label {
@@ -211,20 +199,6 @@
         }
     }
 
-    .nav-title h1 {
-        font-size: 1em;
-    }
-
-    .owl-row {
-        padding: 0 15px;
-    }
-
-    .tree-list li {
-        margin: 0;
-        padding: 10px;
-        width: 50%;
-    }
-
     .footer {
         &__socials {
             padding-left: 15px;
@@ -249,14 +223,6 @@
         display: none!important;
     }
 
-    //.car_form-select {
-    //    padding: .75em;
-    //    h1, h2 {
-    //        font-size: 1em;
-    //        margin: 0;
-    //    }
-    //}
-
     .garage-drop-block__select {
         border: none;
     }
@@ -265,41 +231,18 @@
         text-align: left;
     }
 
-    .seo_details .seo-li {
+    .seo-li {
         margin-right: 0;
         width: 100%;
-        &.seo-li-id {
-            width: 100%;
-        }
         img {
             max-height: 70px;
             width: 100%;
         }
-        &-min {
-            margin-right: 15px;
-            img {
-                height: 40px;
-                width: 40px;
-            }
-        }
     }
-
-    //.seo_auto ul.list-inline {
-    //    column-count: 2;
-    //}
 
     .seo-auto-list__item {
         margin: 10px;
         width: calc(50% - 20px);
-    }
-
-    .basket {
-        &__table {
-            display: none;
-        }
-        &__phone {
-            display: block;
-        }
     }
 
     .garage-user {
@@ -364,7 +307,6 @@
     .cat-products-filters {
         display: none;
     }
-
     .cat-products-title h1 {
         font-size: 18px;
     }
@@ -372,13 +314,15 @@
         margin-bottom: 0;
         min-height: 165px;
     }
-    .cat-products-count a {
-        margin-left: 0;
-        margin-right: 15px;
-    }
-    .cat-products-count span {
-        margin-left: 0;
-        margin-right: 15px;
+    .cat-products-count {
+        a {
+            margin-left: 0;
+            margin-right: 15px;
+        }
+        span {
+            margin-left: 0;
+            margin-right: 15px;
+        }
     }
 
     .request {
@@ -419,6 +363,10 @@
         padding: 15px;
     }
 
+    .btn-close-arrow {
+        display: inline-block;
+    }
+
 }
 
 /* ==== /PHONE ==== */
@@ -431,9 +379,6 @@
 
 /*==== PAD PRO ====*/
 @media (min-width: 992px) and (max-width: 1275px) {
-    .pop {
-        display: none!important;
-    }
     .desktop-only {
         display: none;
     }
@@ -465,9 +410,6 @@
 @media (min-width: 768px) and (max-width: 992px) {
     .fixed-nav {
         display: flex;
-    }
-    .pop {
-        display: none!important;
     }
     .header-main {
         .icons {
@@ -532,10 +474,6 @@
         }
     }
 
-    .basket_count {
-        left: 120px;
-    }
-
     .table-responsive {
         display: block;
     }
@@ -546,39 +484,6 @@
     .garage-drop-block__list .garage-row__buttons {
         text-align: left;
     }
-
-    //.garage-user {
-    //    height: auto;
-    //    .btn-arrow {
-    //        display: block;
-    //    }
-    //    #toggle_btn {
-    //        display: none;
-    //    }
-    //    &-select {
-    //        padding-right: 15px;
-    //    }
-    //    &__title {
-    //        margin-right: 0;
-    //        &:after {
-    //            content: none;
-    //        }
-    //    }
-    //    &__nav {
-    //        flex-wrap: wrap;
-    //        justify-content: center;
-    //        .btn-img {
-    //            margin-bottom: 15px;
-    //        }
-    //        button {
-    //            margin-bottom: 10px;
-    //            margin-left: 10px;
-    //        }
-    //    }
-    //    &__image {
-    //        display: none;
-    //    }
-    //}
 
     .tree-block {
         &-title {
