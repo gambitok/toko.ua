@@ -10,6 +10,7 @@ Disallow: /en/
 Disallow: /uk/
 Disallow: /uk/article/
 Disallow: /en/article/
+Disallow: /signin/
 
 User-agent: Googlebot
 Disallow: /*utm_
@@ -23,6 +24,7 @@ Disallow: /en/
 Disallow: /uk/
 Disallow: /uk/article/
 Disallow: /en/article/
+Disallow: /signin/
 
 User-agent: Yandex
 Disallow: /*utm_
@@ -38,6 +40,7 @@ Disallow: /en/
 Disallow: /uk/
 Disallow: /uk/article/
 Disallow: /en/article/
+Disallow: /signin/
 
 User-agent: YandexImages
 Disallow: /

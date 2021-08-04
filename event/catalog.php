@@ -38,7 +38,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
      * Catalog
      * */
     if ($router == "") {
-        $content = str_replace("{main_window}", $catalogue->getCatalogColList(), $content);
+        $content = str_replace("{main_window}", "<div><h1>{site_catalog}</h1></div>" . $catalogue->getCatalogColList(), $content);
     } else {
         /*
          * Catalog with Group
