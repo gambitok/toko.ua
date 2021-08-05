@@ -79,7 +79,8 @@ class MenuClass extends CatalogueClass
                 $img = ($img_file != "")
                     ? "<img itemprop=\"image\" class=\"lazy\" data-src=\"https://toko.ua/uploads/images/news/$language_id/$state_id/$img_file\" src=\"https://toko.ua/images/no_photo.png\" alt=\"image\">"
                     : "";
-                $list .= "<div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"row news-block__item\">
+                $list .= "
+                <div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"row news-block__item\">
                     <div class=\"col-8\">
                         <h4>$date</h4>
                         <h2 itemprop=\"name\">$title</h2>
@@ -126,7 +127,8 @@ class MenuClass extends CatalogueClass
     public function showNewsState($state_id)
     {
         $newsData = $this->getNewsData($state_id);
-        $list = "<div class=\"news-state\">
+        $list = "
+        <div class=\"news-state\">
             <h1>" . $newsData['title'] . "</h1>
             <h2>" . $newsData['date'] . "</h2>
             " . $newsData['img'] . "
@@ -194,7 +196,8 @@ class MenuClass extends CatalogueClass
         )) $where_arts AND ac.data >= '$cur_data';");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $list = "<div class=\"row\">";
+            $list = "
+            <div class=\"row\">";
             $arr = [];
             for ($i = 1; $i <= $n; $i++) {
                 $art_id = $db->result($r, $i - 1, "art_id");
@@ -247,7 +250,8 @@ class MenuClass extends CatalogueClass
                 $status_new = ($status_new) ? "<span class=\"special-offers-item__bell\" title=\"{new_cap} {offer_cap}\"><span class=\"fa fa-bell\"></span></span>" : "";
 
                 $article_info = $showform->getArticleInfoForm($art_id);
-                $info = "<span class=\"fas fa-info-circle tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-html=\"true\" title=\"$article_info\"></span>";
+                $info = "
+                <span class=\"fas fa-info-circle tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" data-html=\"true\" title=\"$article_info\"></span>";
 
                 if ($status) {
                     $list .= "
@@ -284,7 +288,8 @@ class MenuClass extends CatalogueClass
             }
             $list .= "</div>";
         } else {
-            $list = "<div class=\"content\"><h2>$err1<h2></div>";
+            $list = "
+            <div class=\"content\"><h2>$err1<h2></div>";
         }
 
         $list = $this->replaceLang($list);
@@ -348,14 +353,17 @@ class MenuClass extends CatalogueClass
         ORDER BY t2.position DESC, t2a.full_name ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $list = "<form action=\"\" autocomplete=\"off\">";
+            $list = "
+            <form action=\"\" autocomplete=\"off\">";
             $ch = "";
             for ($i = 1; $i <= $n; $i++) {
                 $id = $db->result($r, $i - 1, "id");
                 $region = $db->result($r, $i - 1, "full_name");
                 $address = $db->result($r, $i - 1, "address");
                 ($tpoint_id == "") ?: ($ch = ($id == $tpoint_id) ? "checked='checked'" : "");
-                $list .= "<label class=\"container_radio\"> $region ($address)<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
+                $list .= "
+                <label class=\"container_radio\"> 
+                    $region ($address)<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
                     <span class=\"radiomark\"></span>
                 </label>";
             }
@@ -380,13 +388,16 @@ class MenuClass extends CatalogueClass
         ORDER BY t2.position DESC, t2a.full_name ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $list = "<form action=\"\" autocomplete=\"off\">";
+            $list = "
+            <form action=\"\" autocomplete=\"off\">";
             $ch = "";
             for ($i = 1; $i <= $n; $i++) {
                 $id = $db->result($r, $i - 1, "id");
                 $region = $db->result($r, $i - 1, "full_name");
                 ($tpoint_id == "") ?: ($ch = ($id == $tpoint_id) ? "checked='checked'" : "");
-                $list .= "<label class=\"container_radio-phone\">$region<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
+                $list .= "
+                <label class=\"container_radio-phone\">
+                    $region<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
                     <span class=\"radiomark-phone\"></span>
                 </label>";
             }
@@ -414,7 +425,8 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             $region = $db->result($r, 0, "full_name");
             $address = $db->result($r, 0, "address");
-            $list = "<span>{choose_office}:</span>
+            $list = "
+            <span>{choose_office}:</span>
             <a onClick=\"showRegionForm();\">
                 <span id=\"region_select\">
                     <span>$region ($address)</span>
@@ -465,7 +477,8 @@ class MenuClass extends CatalogueClass
             $id = $db->result($r, $i - 1, "STATE_ID");
             $caption = $db->result($r, $i - 1, "STATE_NAME");
             $checked = ($id == $region) ? "selected=\"selected\"" : "";
-            $form .= "<option value=\"$id\" $checked>$caption</option>";
+            $form .= "
+            <option value=\"$id\" $checked>$caption</option>";
         }
         return $form;
     }
@@ -527,7 +540,8 @@ class MenuClass extends CatalogueClass
             $text = $db->result($r, $i - 1, "text");
             $icon = $db->result($r, $i - 1, "icon");
             $link = $db->result($r, $i - 1, "link");
-            $list_phone .= "<li>
+            $list_phone .= "
+            <li>
                 <a href=\"tel:$link\">
                     <span class=\"fas $icon\"></span>
                     <span>$text</span>
@@ -541,7 +555,8 @@ class MenuClass extends CatalogueClass
             $text = $db->result($r, $i - 1, "text");
             $icon = $db->result($r, $i - 1, "icon");
             $link = $db->result($r, $i - 1, "link");
-            $list_email .= "<li>
+            $list_email .= "
+            <li>
                 <a href=\"$link\">
                     <span class=\"fas $icon\"></span>
                     <span itemprop=\"email\">$text</span>
@@ -552,13 +567,15 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT `text`, `text_short`, `icon`, `link` FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 3;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $list_address .= "<div itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\"><ul>";
+            $list_address .= "
+            <div itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\"><ul>";
             for ($i = 1; $i <= $n; $i++) {
                 $text = $db->result($r, $i - 1, "text");
                 $text_short = $db->result($r, $i - 1, "text_short");
                 $icon = $db->result($r, $i - 1, "icon");
                 $link = $db->result($r, $i - 1, "link");
-                $list_address .= "<li>
+                $list_address .= "
+                <li>
                     <a href=\"$link\">
                         <span class=\"fas $icon\"></span>
                         <span itemprop=\"addressLocality\">$text_short</span>
@@ -809,7 +826,10 @@ class MenuClass extends CatalogueClass
                 for ($i = 1; $i <= $n; $i++) {
                     $head_id = $db->result($r, $i - 1, "HEAD_ID");
                     $head_name = $this->getHeadRowName($head_id);
-                    $head_list .= "<div class=\"menu-bar-head__item\" onclick=\"getMenuBar('$head_id')\">$head_name</div>";
+                    $head_list .= "
+                    <div class=\"menu-bar-head__item\" onclick=\"getMenuBar('$head_id')\">
+                        $head_name
+                    </div>";
                 }
                 $list = str_replace("{head_list}", $head_list, $list);
                 $list = str_replace("{media_list}", $this->getPhoneNav(), $list);
@@ -835,20 +855,31 @@ class MenuClass extends CatalogueClass
                 $arr[$cat_id][] = $group_id;
             }
             if (!empty($arr)) {
-                $list .= "<div class=\"menu-bar-head__title\" onclick=\"getMenuBar('0');\">< $head_name</div>";
-                $list .= "<div class=\"menu-bar-cat\">";
+                $list .= "
+                <div class=\"menu-bar-head__title\" onclick=\"getMenuBar('0');\">
+                    < $head_name
+                </div>";
+                $list .= "
+                <div class=\"menu-bar-cat\">";
                 foreach ($arr as $cat_id => $groups) {
                     $cat_name = $this->getCatRowName($cat_id);
                     $icon = "";
                     if ($cat_id == 0) {
                         $icon = "<span style=\"color: #f44438; margin-right: 5px;\">o</span>";
                     }
-                    $list .= "<div class=\"menu-bar-cat__title\">$icon$cat_name</div>";
-                    $list .= "<div class=\"menu-bar-group\">";
+                    $list .= "
+                    <div class=\"menu-bar-cat__title\">
+                        $icon$cat_name
+                    </div>";
+                    $list .= "
+                    <div class=\"menu-bar-group\">";
                     foreach ($groups as $group_id) {
                         $group_name = $this->getGroupRowName($group_id);
                         $group_link = $this->getGroupRowLink($group_id);
-                        $list .= "<div class=\"menu-bar-group__item\"><a href=\"" . $this->getSiteLink() . "$catalogue->catalog_link/$group_link/\">$group_name</a></div>";
+                        $list .= "
+                        <div class=\"menu-bar-group__item\">
+                            <a href=\"" . $this->getSiteLink() . "$catalogue->catalog_link/$group_link/\">$group_name</a>
+                        </div>";
                     }
                     $list .= "</div>";
                 }

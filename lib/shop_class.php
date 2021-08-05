@@ -72,7 +72,13 @@ class ShopClass extends CatalogueClass
                 }
             }
         } else {
-            $brow = "<div class=\"row align-items-center\"><div class=\"col-12\"><p class=\"text-center mar0\"><br>{basket_empty}</p><br></div></div>";
+            $brow = "
+            <div class=\"row align-items-center\">
+                <div class=\"col-12\">
+                    <p class=\"text-center mar0\"><br>
+                    {basket_empty}</p><br>
+                </div>
+            </div>";
             $bprow = "";
         }
 
@@ -209,7 +215,8 @@ class ShopClass extends CatalogueClass
                 $true_cap = "";
                 $true_clr = "color:lightcoral!important;";
             }
-            $action = "$true_cap<br>
+            $action = "
+            $true_cap<br>
             <span style=\"font-size: 1.5em; $true_clr\" class=\"span-green tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" 
                 title=\"{price_cap} $action_price $cur_cap, {from_cap} $action_amount {amount_abbr}.\">
                 <i class=\"fa fa-box-open\"></i>
@@ -705,7 +712,6 @@ class ShopClass extends CatalogueClass
         }
 
         $userData = $client->getClientInfo($client->getClientByUser($user_id), $user_id);
-
         $form = str_replace("{order_id}", $order_id, $form);
         $form = str_replace("{order_user_id}", $user_id, $form);
         $form = str_replace("{user_phone}", $userData["phone"], $form);
@@ -816,7 +822,8 @@ class ShopClass extends CatalogueClass
             if ($valid_main) {
                 $result = 1;
             }
-        } elseif ($valid_other) {
+        }
+        elseif ($valid_other) {
             $result = 1;
         }
         return $result;
@@ -886,7 +893,8 @@ class ShopClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "ID");
             $text = $db->result($r, $i - 1, "TEXT");
-            $list .= "<option value=\"$id\">$text</option>";
+            $list .= "
+            <option value=\"$id\">$text</option>";
         }
         $list = $this->replaceLang($list);
         return $list;
@@ -1288,7 +1296,8 @@ class ShopClass extends CatalogueClass
     {
         $cur = $this->getCurrentExrate();
         $cur_cap = $this->getSymbolExrate($cur);
-        return "<div class=\"cart-table-row cart-table-row-offset\">
+        return "
+        <div class=\"cart-table-row cart-table-row-offset\">
             <div class=\"cart-table-cell cart-table-cell__label\">{total_cap}</div>
             <div class=\"cart-table-cell cart-table-cell__price\">$total $cur_cap</div>
         </div>";
@@ -1299,7 +1308,8 @@ class ShopClass extends CatalogueClass
      * */
     public function hideOrderInfo($name, $phone, $city)
     {
-        $list = "<span>$name, $phone, $city</span> <a onclick=\"editFields();\">{edit_cap}</a>";
+        $list = "
+        <span>$name, $phone, $city</span> <a onclick=\"editFields();\">{edit_cap}</a>";
         $list = $this->replaceLang($list);
         return $list;
     }
@@ -1325,7 +1335,10 @@ class ShopClass extends CatalogueClass
 
         $basket_total_cap = $basket_total . " $cur_cap";
         if ($bonus_total > 0) {
-            $basket_total_cap = "<span class=\"span-red\" style=\"text-decoration: line-through\">$basket_total_full $cur_cap</span><br>" . $basket_total_cap;
+            $basket_total_cap = "
+            <span class=\"span-red\" style=\"text-decoration: line-through\">
+                $basket_total_full $cur_cap
+            </span><br>" . $basket_total_cap;
         }
 
         $total = $basket_total + $delivery_total;
@@ -1414,7 +1427,8 @@ class ShopClass extends CatalogueClass
         }
 
         $del_cap = $this->replaceLang($del_cap);
-        $list = "<div class=\"cart-table-row cart-table-row-offset\">
+        $list = "
+        <div class=\"cart-table-row cart-table-row-offset\">
             <div class=\"cart-table-cell cart-table-cell__label\">{delivery_cap}</div>
             <div class=\"cart-table-cell cart-table-cell__price\">$del_cap</div>
         </div>";
@@ -1518,10 +1532,15 @@ class ShopClass extends CatalogueClass
                     $price_cap = "<span>$full_price $cur_cap</span>";
                     $bonus_total += $discount;
                     if ($full_price != $price_discount) {
-                        $price_cap = "<span class=\"span-red\" style=\"text-decoration: line-through;\">$full_price $cur_cap ($real_discount%)</span><br /><span>$price_discount $cur_cap</span>";
+                        $price_cap = "
+                        <span class=\"span-red\" style=\"text-decoration: line-through;\">
+                            $full_price $cur_cap ($real_discount%)
+                        </span><br />
+                        <span>$price_discount $cur_cap</span>";
                     }
                 }
-                $list .= "<div class=\"cart-table-row\">
+                $list .= "
+                <div class=\"cart-table-row\">
                     <div class=\"cart-table-cell cart-table-cell__photo\"><img src=\"$img\" alt=\"$name\"></div>
                     <div class=\"cart-table-cell cart-table-cell__text\">
                         <div class=\"cart-table-cell cart-table-cell__name\">$name</div>
@@ -1533,7 +1552,8 @@ class ShopClass extends CatalogueClass
                 </div>";
             }
         } else {
-            $list = "<div class=\"cart-table-row\">{empty_cap}</div>";
+            $list = "
+            <div class=\"cart-table-row\">{empty_cap}</div>";
         }
         $list = $this->replaceLang($list);
         return array($list, $sum_total, $bonus_total);
@@ -1573,7 +1593,8 @@ class ShopClass extends CatalogueClass
             $city_id = $db->result($r, $i - 1, "CITY_ID");
             $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
             $sel = ($user_city > 0 && $user_city == $city_id) ? "selected" : "";
-            $list .= "<option value=\"$city_id\" $sel>$city_name</option>";
+            $list .= "
+            <option value=\"$city_id\" $sel>$city_name</option>";
         }
         return $list;
     }
@@ -1621,7 +1642,8 @@ class ShopClass extends CatalogueClass
             $ref = $db->result($r, $i - 1, "CITY_REF");
             $name = $db->result($r, $i - 1, "CITY_NAME");
             $area_name = $db->result($r, $i - 1, "AREA_NAME");
-            $list .= "<option value=\"$ref\">$name ($area_name)</option>";
+            $list .= "
+            <option value=\"$ref\">$name ($area_name)</option>";
         }
         return $list;
     }
@@ -1633,7 +1655,8 @@ class ShopClass extends CatalogueClass
     {
         $city_ref = $this->getNameString($city_ref);
         $list_np = $this->getNovaPoshtaWarehousesSelect($city_ref, $department_ref);
-        $list_up = "<option value=\"0\">{not_chosen}</option>";
+        $list_up = "
+        <option value=\"0\">{not_chosen}</option>";
         return array($list_np, $list_up);
     }
 
@@ -1654,7 +1677,8 @@ class ShopClass extends CatalogueClass
             } else {
                 $sel = "";
             }
-            $list .= "<option value=\"$war_ref\" $sel>$name</option>";
+            $list .= "
+            <option value=\"$war_ref\" $sel>$name</option>";
         }
         return $list;
     }

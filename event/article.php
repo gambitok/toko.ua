@@ -11,6 +11,9 @@ if ($catalogue->checkArticleExist($art_id)) {
     $breadcrumbsData = $catalogue->getBreadCrumbForm($articleData["breadcrumbs"]);
     $content = str_replace("{main_site_breadcrumbs}", $breadcrumbsData["form"], $content);
     $content = str_replace("{site_script_breadcrumbs}", $breadcrumbsData["script"], $content);
+    $content = str_replace("{site_title}", $articleData["title"], $content);
+    $content = str_replace("{site_description}", $articleData["description"], $content);
+    $content = str_replace("{meta_social_tag}", "", $content);
 } else {
     header("HTTP/1.0 404 Not Found");
     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404"), $content);

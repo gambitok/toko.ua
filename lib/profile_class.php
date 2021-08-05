@@ -18,7 +18,9 @@ class ProfileClass extends ClientClass
         $client = new ClientClass();
         list($client_id, $user_id) = $client->getClientData();
         $name = $client->getClientInfo($client_id, $user_id)["name"];
-        return ($user_id == 0) ? false : "{hello_cap}, <a href=\"" . $this->getSiteLink() . "$this->page_profile\">" . $name . "</a>";
+        return ($user_id == 0)
+            ? false
+            : "{hello_cap}, <a href=\"" . $this->getSiteLink() . "$this->page_profile\">" . $name . "</a>";
     }
 
     /*
@@ -76,7 +78,8 @@ class ProfileClass extends ClientClass
 
         $counter = ($n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
         if ($user_id > 0 && ($n1 > 0 || $n2 > 0)) {
-            $info = "<li class=\"authorization-item\">
+            $info = "
+            <li class=\"authorization-item\">
                 <a href=\"" . $this->getSiteLink() . "special_offers/\">
                     <span class=\"fas fa-box-open\"></span> <span>{special_offers_cap} $counter</span>
                 </a>
@@ -104,7 +107,8 @@ class ProfileClass extends ClientClass
         $r = $dbt->query("SELECT COUNT(`id`) as count_ids FROM `news` WHERE `data` > '$update_news' AND `lang_id` = $language_id AND `status` = 1;");
         $n = $dbt->result($r, 0, "count_ids");
         $counter = ($user_id > 0 && $n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
-        return "<li class=\"authorization-item\">
+        return "
+        <li class=\"authorization-item\">
             <a href=\"" . $this->getSiteLink() . "news/\">
                 <span class=\"fas fa-newspaper\"></span><span> {news_cap} $counter</span>
             </a>
@@ -409,7 +413,8 @@ class ProfileClass extends ClientClass
             $price_summ = number_format($price_summ, 2, '.', '');
 
             if ($summ > 0 && $id != "") {
-                $list .= "<tr class=\"$bg_bug pointer\" onclick='showProfileOrdersArts(\"$id\",\"\")'>
+                $list .= "
+                <tr class=\"$bg_bug pointer\" onclick='showProfileOrdersArts(\"$id\",\"\")'>
                     <td>$prefix-$id</td>
                     <td>$name</td>
                     <td>$date</td>
@@ -439,7 +444,8 @@ class ProfileClass extends ClientClass
             $delivery_type = $this->getManualName($delivery);
             $payment_type = $this->getManualName($payment);
             $cash_name = $kours->getKoursCaption($cash_id);
-            $list .= "<tr class=\"pointer\" onclick='showProfileOrdersArts(\"\",\"$id\")'>
+            $list .= "
+            <tr class=\"pointer\" onclick='showProfileOrdersArts(\"\",\"$id\")'>
                 <td>{order_cap} #$id</td>
                 <td>$name</td>
                 <td>$date</td>
@@ -542,7 +548,8 @@ class ProfileClass extends ClientClass
                         $amount_text = ($this->checkSelectStrDpBug($dp_id, $art_id) > 0) ? "$amount_collect ($amount)" : $amount;
 
                         if ($nedp) {
-                            $list .= "<tr class=\"$bg_bug\">
+                            $list .= "
+                            <tr class=\"$bg_bug\">
                                 <td>$prefix-$dp_id</td>
                                 <td>$article_nr_displ</td>
                                 <td>$brand_name</td>
@@ -554,7 +561,8 @@ class ProfileClass extends ClientClass
                         }
 
                         if ($this->checkOrderUser($order_id, $user_id) > 0) {
-                            $list .= "<tr class=\"$bg_bug\">
+                            $list .= "
+                            <tr class=\"$bg_bug\">
                                 <td>$prefix-$dp_id</td>
                                 <td>$article_nr_displ</td>
                                 <td>$brand_name</td>
@@ -589,7 +597,8 @@ class ProfileClass extends ClientClass
                     $brand_name = $this->getBrandName($brand_id);
                     $price = $kours->getKoursFromUAH($price, $cash_id);
                     $summ = $kours->getKoursFromUAH($summ, $cash_id);
-                    $list .= "<tr>
+                    $list .= "
+                    <tr>
                         <td>{order_cap} #$order_id</td>
                         <td>$article_nr_displ</td>
                         <td>$brand_name</td>
@@ -672,7 +681,8 @@ class ProfileClass extends ClientClass
                     $kredit = $summ;
                     $saldo_end += $kredit;
                 }
-                $list .= "<tr class='text-center'>
+                $list .= "
+                <tr class='text-center'>
                     <td>$i</td>
                     <td>$data</td>
                     <td>$cash_name</td>
@@ -686,7 +696,11 @@ class ProfileClass extends ClientClass
             }
             $saldo_end = round($balans_after, 2);
         } else {
-            $list = "<tr><td class=\"text-center\" colspan=\"9\">" . $this->err1 . "</td></tr></table>";
+            $list = "
+            <tr>
+                <td class=\"text-center\" colspan=\"9\">" . $this->err1 . "</td>
+            </tr>
+            </table>";
         }
         if ($n == 0) {
             $r = $db->query("SELECT `balans_after` FROM `B_CLIENT_BALANS_JOURNAL` WHERE `client_id` = $client_id ORDER BY `data` DESC LIMIT 1;");
@@ -841,7 +855,8 @@ class ProfileClass extends ClientClass
                 } else {
                     $current = "";
                 }
-                $table .= "<tr $current>
+                $table .= "
+                <tr $current>
 					<td>$filename</td>
 					<td>$date</td>
 					<td>$date_end</td>
@@ -894,7 +909,8 @@ class ProfileClass extends ClientClass
             $id = $db->result($r, $i - 1, "id");
             $region = $db->result($r, $i - 1, "full_name");
             $address = $db->result($r, $i - 1, "address");
-            $options .= "<option value=\"$id\">$region ($address)</option>";
+            $options .= "
+            <option value=\"$id\">$region ($address)</option>";
         }
         return $options;
     }

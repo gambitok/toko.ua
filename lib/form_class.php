@@ -134,9 +134,10 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_images}", $this->showArticlePhotoGallery($art_id), $form);
 
         $analogs = $this->shortSearchList($art_id);
+        $h1 = "$article_name $brand_name $article_nr_displ";
         $form = str_replace("{analogs_list}", $analogs, $form);
         $form = str_replace("{analogs_display}", ($analogs == "") ? "dnone" : "", $form);
-        $form = str_replace("{article_header}", "<h1>$article_name $brand_name $article_nr_displ</h1>", $form);
+        $form = str_replace("{article_header}", "$h1", $form);
         $form = str_replace("{applicable_display}", "dnone", $form);
         $form = str_replace("{applicable_cap}", "", $form);
         $form = str_replace("{flag_visible}", "dnone", $form);
@@ -145,7 +146,12 @@ class FormClass extends CatalogueClass
 
         $breadcrumbs = $this->getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id);
 
-        return compact("form", "breadcrumbs");
+        $title = $h1 . " {seo_title_article}";
+
+        $description = $this->replaceLang("{seo_article_title}");
+        $description = str_replace("{h1_text}", $h1, $description);
+
+        return compact("form", "title", "description", "breadcrumbs");
     }
 
     public function getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id)
@@ -311,15 +317,18 @@ class FormClass extends CatalogueClass
             $jsFilter = "showBasketForm();";
         }
         if ($cash_id == 2) {
-            $cash_add = "<input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"$jsFilter\"><label for=\"radio_usd\">$</label>";
+            $cash_add = "
+            <input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"$jsFilter\"><label for=\"radio_usd\">$</label>";
         }
         if ($cash_id == 3) {
-            $cash_add = "<input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"$jsFilter\"><label for=\"radio_eur\">€</label>";
+            $cash_add = "
+            <input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"$jsFilter\"><label for=\"radio_eur\">€</label>";
         }
         if ($this->getUser() != 0) {
             $cur_usd = $kours->getKours("dollar");
             $cur_eur = $kours->getKours("euro");
-            $list = "<input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"$jsFilter\">
+            $list = "
+            <input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"$jsFilter\">
                 <label for=\"radio_uah\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{currency_cap}: &#xA USD - $cur_usd &#xA EURO - $cur_eur\">{uah_cap}</label>
             $cash_add";
         } else {
@@ -385,7 +394,8 @@ class FormClass extends CatalogueClass
             $article_nr_displ = $list[$i]["article_nr_displ"];
             $brand = $list[$i]["brand"];
             $brand_link = $list[$i]["brand_link"];
-            $result .= "<li>$col. <a href=\"" . $this->getSiteLink() . "$this->search_link/$article_nr_displ/$brand_link/\">$article_nr_displ ($brand)</a></li>";
+            $result .= "
+            <li>$col. <a href=\"" . $this->getSiteLink() . "$this->search_link/$article_nr_displ/$brand_link/\">$article_nr_displ ($brand)</a></li>";
         }
         !empty($list) ?: $result .= "<p>{empty_history}</p>";
         $form = $this->getHtmlForm("menu/history_block");
@@ -520,13 +530,15 @@ class FormClass extends CatalogueClass
             $i++;
             $active = ($i == 1) ? "active" : "";
             if ($display == 1) {
-                $list .= "<div class=\"carousel-item $active\">
+                $list .= "
+                <div class=\"carousel-item $active\">
                     <a itemprop=\"url\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/\">
                         <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" alt=\"Slide $i\">
                     </a>
                 </div>";
             } else {
-                $list .= "<div class=\"carousel-item $active\">
+                $list .= "
+                <div class=\"carousel-item $active\">
                     <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" alt=\"Slide $i\">
                     <div class=\"carousel-caption\">{photo_card_cap} $i {of_cap} $count_pages</div>
                 </div>";
@@ -534,7 +546,8 @@ class FormClass extends CatalogueClass
         }
 
         if ($n > 0) {
-            $info = "<div class=\"row\">
+            $info = "
+            <div class=\"row\">
                 <div class=\"col-12\">
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\">
                         <div class=\"carousel-inner\" role=\"listbox\">$list</div>
@@ -550,7 +563,8 @@ class FormClass extends CatalogueClass
                 </div>
             </div>";
         } else {
-            $info = "<div class=\"row\">
+            $info = "
+            <div class=\"row\">
                 <div class=\"col-12\">
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\">
                         <div class=\"carousel-inner\" role=\"listbox\">
@@ -580,16 +594,19 @@ class FormClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
             $active = ($i == 1) ? "active" : "";
-            $page_cap = "<div class=\"carousel-caption\">{page_cap} $i {of_cap} $n</div>";
-            $list .= "<div class=\"carousel-item $active\">
-                <div class=\"search__photo\" style=\"height: 400px\">
+            $list .= "
+            <div class=\"carousel-item $active\">
+                <div class=\"search__photo\" style=\"height: 400px;\">
                     <img class=\"lazy\" itemprop=\"image\" data-src=\"$this->uploads_link/$photo_name\" alt=\"$article_info #$i\" title=\"$article_info #$i\">
                 </div>
-                $page_cap
+                <div class=\"carousel-caption\">
+                    {page_cap} $i {of_cap} $n
+                </div>
             </div>";
         }
         if ($n == 0) {
-            $gallery = "<div class=\"row\">
+            $gallery = "
+            <div class=\"row\">
                 <div class=\"col-12\">
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\" style=\"border: 1px solid #e9e9e9; border-radius: .25em;\">
                         <div class=\"carousel-inner\" role=\"listbox\">
@@ -603,7 +620,8 @@ class FormClass extends CatalogueClass
                 </div>
             </div>";
         } else {
-            $gallery = "<div class=\"row\">
+            $gallery = "
+            <div class=\"row\">
                 <div class=\"col-12\">
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\" style=\"border: 1px solid #e9e9e9; border-radius: .25em;\">
                         <div class=\"carousel-inner\" role=\"listbox\">$list</div>
@@ -663,7 +681,8 @@ class FormClass extends CatalogueClass
         $art_id = $this->getUrlNumber($art_id);
         $article_nr_displ = $this->getArticleDispl($art_id);
         $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
-        $title = "<span class=\"text-dark bold\">$brand_name</span> $article_nr_displ";
+        $title = "
+        <span class=\"text-dark bold\">$brand_name</span> $article_nr_displ";
         $form = $this->getHtmlForm("modals/form_info");
         $form = str_replace("{info-main__photo}", $this->showPhotoGallery($art_id), $form);
         $form = str_replace("{info-main__parameters}", $this->getArticleInfoForm($art_id), $form);
@@ -695,7 +714,8 @@ class FormClass extends CatalogueClass
             for ($i = 1; $i <= $n; $i++) {
                 $brand_id = $db->result($r, $i - 1, "MFA_ID");
                 $brand = $db->result($r, $i - 1, "MFA_BRAND");
-                $list .= "<a class=\"info__applicability-checked\" onclick='getArticleApplModelForm(\"$art_id\", \"$brand_id\", this)'><i class=\"fas fa-car\"></i>$brand</a>";
+                $list .= "
+                <a class=\"info__applicability-checked\" onclick='getArticleApplModelForm(\"$art_id\", \"$brand_id\", this)'><i class=\"fas fa-car\"></i>$brand</a>";
             }
         } else {
             $list = $this->err1;
@@ -709,7 +729,8 @@ class FormClass extends CatalogueClass
         $art_id = $this->getUrlNumber($art_id);
         $mfa_id = $this->getUrlNumber($mfa_id);
         $db = DbSingleton::getTokoDb();
-        $list = "<div class=\"search__appl-tcd\">";
+        $list = "
+        <div class=\"search__appl-tcd\">";
         $r = $db->query("SELECT tt.TYP_ID, tt.TYP_MMT_TEXT, 
         CASE WHEN tt.TYP_PCON_START = 0 THEN '-' ELSE tt.TYP_PCON_START END AS TYP_PCON_START,
         CASE WHEN tt.TYP_PCON_END = 0 THEN '-' ELSE tt.TYP_PCON_END END AS TYP_PCON_END
@@ -736,15 +757,18 @@ class FormClass extends CatalogueClass
             if ($d_end == "" || $d_end == "-") {
                 $d_end = "{cur_time}";
             }
-            $list .= "<li class=\"list-inline\">
+            $list .= "
+            <li class=\"list-inline\">
                 <a onclick=\"getArticleApplModelInfoForm('$art_id', '$typ_id')\">$model ($d_start-$d_end)</a> 
                 <div id=\"AMI$typ_id\"></div>
             </li>";
         }
         if ($n > 20) {
-            $list = "<div>$list</div>";
+            $list = "
+            <div>$list</div>";
         }
-        $list .= "</div>";
+        $list .= "
+        </div>";
         $list = $this->replaceLang($list);
         return $list;
     }
@@ -784,7 +808,8 @@ class FormClass extends CatalogueClass
             if (strlen($end) == 6) {
                 $end = substr($end, 0, 4) . "." . substr($end, 4, 2);
             }
-            $list .= "<tr class=\"pointer\" href=\"" . $this->getSiteLink() . "$this->catalog_link/\" style=\"font-size: .8em;\">
+            $list .= "
+            <tr class=\"pointer\" href=\"" . $this->getSiteLink() . "$this->catalog_link/\" style=\"font-size: .8em;\">
                 <td>$fuel_name</td>
                 <td>$TYP_TEXT</td>
                 <td>$start - $end</td>

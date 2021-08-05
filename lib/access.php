@@ -93,17 +93,17 @@ function getMoreTitle($path)
             $pretitle = "$brand_name $article_nr_search - $art_name | {site_title_short}";
         }
     }
-    elseif ($path == "article") {
-        $art_id = $cat->getUrlNumber($linka[3]);
-        $article_nr_search = $cat->getArticleDispl($art_id);
-        $brand_id = $cat->getArticleBrand($art_id);
-        $article_nr_search = strtoupper($article_nr_search);
-        $brand_name = $cat->getBrandName($brand_id);
-        $brand_name = strtoupper($brand_name);
-        $art_name = $cat->getArticleName($art_id);
-        $pretitle = "$art_name $brand_name $article_nr_search - {seo_title_article}";
-        $pretitle = ltrim($pretitle," ");
-    }
+//    elseif ($path == "article") {
+//        $art_id = $cat->getUrlNumber($linka[3]);
+//        $article_nr_search = $cat->getArticleDispl($art_id);
+//        $brand_id = $cat->getArticleBrand($art_id);
+//        $article_nr_search = strtoupper($article_nr_search);
+//        $brand_name = $cat->getBrandName($brand_id);
+//        $brand_name = strtoupper($brand_name);
+//        $art_name = $cat->getArticleName($art_id);
+//        $pretitle = "$art_name $brand_name $article_nr_search - {seo_title_article}";
+//        $pretitle = ltrim($pretitle," ");
+//    }
     elseif ($path == "cars") {
         $mfa_link = $cat->getUrlString($linka[1]);
         $mod_link = $cat->getUrlString($linka[2]);
@@ -305,7 +305,8 @@ function getDescription($path)
     $cat = new CatalogueClass();
     $linka = findLinks();
     $path = str_replace("/", "", $path);
-    $prefix = getMoreTitle($path);
+    //$prefix = getMoreTitle($path);
+    $prefix = "";
     $description = ($path != "") ? "{seo_description} $prefix {seo_description2}" : "{seo_description} {seo_description2}";
     if ($path == "article") {
         $art_id = $linka[3];
@@ -331,7 +332,8 @@ function getKeywords($path)
     $language = new LangClass();
     $cat = new CatalogueClass();
     $path = str_replace("/", "", $path);
-    $prefix = getMoreTitle($path);
+    //$prefix = getMoreTitle($path);
+    $prefix = "";
     $keywords = ($path != "") ? "$prefix" : "{site_keywords}";
     $keywords = $language->replaceLangData($keywords);
     ($cat->getUrlNumber($_GET['page']) == 0) ?: $keywords = "";

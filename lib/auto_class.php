@@ -201,7 +201,7 @@ class AutoClass extends CatalogueClass
             $r = $db->query("SELECT `Car_pict` FROM `T_models` WHERE `MOD_ID` = $model_id LIMIT 1;");
             $model_id_image = $db->result($r, 0, "Car_pict");
         }
-        return array("mfa_image" => $mfa_image, "model_image" => $model_image, "model_id_image" => $model_id_image);
+        return compact("mfa_image", "model_image", "model_id_image");
     }
 
     /*
@@ -432,26 +432,22 @@ class AutoClass extends CatalogueClass
         $user_id = $this->getUser();
         $client_id = $this->getClient();
         $where = ($user_id == 0) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
-        $r = $db->query("SELECT `id`, `typ_id`, `timestamp` 
-        FROM `AUTO_HISTORY`
-        WHERE $where 
-        GROUP BY `typ_id` 
-        ORDER BY `timestamp` DESC 
-        LIMIT 10;");
+        $r = $db->query("SELECT `id`, `typ_id`, `timestamp` FROM `AUTO_HISTORY` WHERE $where GROUP BY `typ_id` ORDER BY `timestamp` DESC LIMIT 10;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $list = "";
             for ($i = 1; $i <= $n; $i++) {
                 $id = $db->result($r, $i - 1, "id");
                 $typ_id = $db->result($r, $i - 1, "typ_id");
-                $list .= "<li>
+                $list .= "
+                <li>
                     <div class=\"container\">
                         <div class=\"row\">
                             <div class=\"col-10\">
                                 <a onclick=\"setCookie('auto_typ_id', '$typ_id'); location.reload();\">" . $this->getCarDescription($typ_id) . "</a>
                             </div>
                             <div class=\"col-2 text-right\">
-                                <a onclick=\"dropAutoHistory('$id')\">x</a>
+                                <a onclick=\"dropAutoHistory('$id')\">&times;</a>
                             </div>
                         </div>
                     </div>
@@ -525,22 +521,24 @@ class AutoClass extends CatalogueClass
         foreach ($mas as $mfa_brand => $values) {
             $mfa_id = $values["mfa_id"];
             $mfa_link = $values["mfa_link"];
-
-            $list .= "<div>
+            $list .= "
+            <div>
                 <a href=\"" . $this->getSiteLink() . "cars/$mfa_link/\">{details_on_cap} $mfa_brand</a>
             </div>";
-            $list .= "<div class=\"seo-auto-list\">";
-
+            $list .= "
+            <div class=\"seo-auto-list\">";
             $r = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id GROUP BY `Model`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
                 $model_link = $db->result($r, $i - 1, "Model_Link");
-                $list .= "<div class=\"seo-auto-list__item\">
+                $list .= "
+                <div class=\"seo-auto-list__item\">
                     <a href=\"" . $this->getSiteLink() . "cars/$mfa_link/$model_link/\">$mfa_brand $model</a>
                 </div>";
             }
-            $list .= "</div>";
+            $list .= "
+            </div>";
         }
 
         $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
@@ -567,22 +565,26 @@ class AutoClass extends CatalogueClass
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
 
             if ($mfa_id_sel == "") {
-                $list .= "<div>
+                $list .= "
+                <div>
                     <a href=\"" . $this->getSiteLink() . "cars/$mfa_link/\">{details_on_cap} $mfa_brand</a>
                 </div>";
             } else {
-                $list = "<div>
+                $list = "
+                <div>
                     {details_on_cap} $mfa_brand
                 </div>";
             }
 
-            $list .= "<div class=\"seo-auto-list seo_details\">";
+            $list .= "
+            <div class=\"seo-auto-list seo_details\">";
             $r2 = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model`;");
             $n2 = $db->num_rows($r2);
             for ($i2 = 1; $i2 <= $n2; $i2++) {
                 $mod = $db->result($r2, $i2 - 1, "Model");
                 $mod_link = $db->result($r2, $i2 - 1, "Model_Link");
-                $list .= "<a class=\"seo-li\" href=\"" . $this->getSiteLink() . "cars/$mfa_link/$mod_link/\">
+                $list .= "
+                <a class=\"seo-li\" href=\"" . $this->getSiteLink() . "cars/$mfa_link/$mod_link/\">
                     <span>$mfa_brand $mod</span>
                 </a>";
             }

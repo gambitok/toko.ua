@@ -1159,12 +1159,13 @@ class CatalogExistClass extends CatalogueClass
             foreach ($arr as $param_id => $values) {
                 $param_name = $this->getGroupParamName($param_id);
                 if (!empty($values)) {
-                    $list_params .= "<div class=\"hidden-list\">
-                    <div class=\"hidden-list-title\">$param_name</div>
-                    <div class=\"hidden-list-search\">
-                        <input type=\"text\" class=\"text-filter\" onkeyup=\"textParamSearch('$param_id')\" data-attr=\"$param_id\" placeholder=\"{search_by_name}\">
-                    </div>
-                    <div class=\"hidden-list-content\" data-attr=\"$param_id\">";
+                    $list_params .= "
+                    <div class=\"hidden-list\">
+                        <div class=\"hidden-list-title\">$param_name</div>
+                        <div class=\"hidden-list-search\">
+                            <input type=\"text\" class=\"text-filter\" onkeyup=\"textParamSearch('$param_id')\" data-attr=\"$param_id\" placeholder=\"{search_by_name}\">
+                        </div>
+                        <div class=\"hidden-list-content\" data-attr=\"$param_id\">";
                     $items = [];
                     foreach ($values as $value_id) {
                         $value_name = $this->getGroupValueName($value_id, $param_id);
@@ -1217,7 +1218,8 @@ class CatalogExistClass extends CatalogueClass
 //                            $count_arts_label = "";
                         }
 //                        $count_arts_label
-                        $list_params .= "<a href=\"$link\" class=\"hidden-list-content__item\">
+                        $list_params .= "
+                        <a href=\"$link\" class=\"hidden-list-content__item\">
                             <div class=\"hidden-list-content__item-left\" data-param-value=\"$param_id\">$checked_label <span>$value_name</span></div> 
                             <div class=\"hidden-list-content__item-right\"></div>
                         </a>";
@@ -1226,14 +1228,14 @@ class CatalogExistClass extends CatalogueClass
                     $bottom = "";
                     if (count($values) > $this->filters_count) {
                         $more_count = count($values) - $this->filters_count;
-                        $bottom = "<div class=\"hidden-list-more\" onclick=\"toggleSideMenu(this);\" data-attr-more=\"$param_id\">
+                        $bottom = "
+                        <div class=\"hidden-list-more\" onclick=\"toggleSideMenu(this);\" data-attr-more=\"$param_id\">
                             <span>{more_cap} $more_count</span>
                             <span class=\"none\">{hide_cap}</span>
                         </div>";
                     }
-                    $list_params .= "</div>
-                    $bottom
-                    </div>";
+                    $list_params .= "
+                    </div>$bottom</div>";
                 }
             }
         }
@@ -1562,11 +1564,13 @@ class CatalogExistClass extends CatalogueClass
             $mfa_brand = $db->result($r, $i - 1, "MFA_BRAND");
             $mod_link = $db->result($r, $i - 1, "Model_Link");
 
-            $list .= "<div>
+            $list .= "
+            <div>
                 <span>$details_cap $mfa_brand $model</span>
             </div>";
 
-            $list .= "<div class=\"seo-auto-list seo_details\">";
+            $list .= "
+            <div class=\"seo-auto-list seo_details\">";
             $r2 = $db->query("SELECT `TEX_TEXT_link`, `TEX_TEXT`, `Car_pict`, `MOD_PCON_START`, `MOD_PCON_END` 
             FROM `T_models` 
             WHERE `MOD_MFA_ID` = $mfa_id_sel AND `Model` = '$model' 
@@ -1583,7 +1587,8 @@ class CatalogExistClass extends CatalogueClass
                 if ($d_end == 0) {
                     $d_end = "{cur_time}";
                 }
-                $list .= "<a class=\"seo-li\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/$mod_id_link/\">
+                $list .= "
+                <a class=\"seo-li\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/$mod_id_link/\">
                     <div class=\"row mar0\">
                         <div class=\"col-4\">
                             <img src=\"https://toko.ua/uploads/images/models/$image\" alt=\"$text\" title=\"$text\">
@@ -1594,7 +1599,8 @@ class CatalogExistClass extends CatalogueClass
                     </div>
                 </a>";
             }
-            $list .= "</div>";
+            $list .= "
+            </div>";
         }
         $list .= $this->getGroupCarMfaList($group_id, $mfa_id_sel);
 
@@ -1634,28 +1640,33 @@ class CatalogExistClass extends CatalogueClass
             $mfa_link = $db->result($r, $i - 1, "MFA_BRAND_LINK");
 
             if ($mfa_id_sel == 0) {
-                $list .= "<div>
+                $list .= "
+                <div>
                     <a href=\"" . $this->getSiteLink() . "$link/$mfa_link/\">$details_cap $mfa_brand</a>
                 </div>";
             } else {
-                $list .= "<div>
+                $list .= "
+                <div>
                     $details_cap $mfa_brand
                 </div>";
             }
 
-            $list .= "<div class=\"seo-auto-list\">";
+            $list .= "
+            <div class=\"seo-auto-list\">";
             $r2 = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id GROUP BY `Model`;");
             $n2 = $db->num_rows($r2);
             for ($i2 = 1; $i2 <= $n2; $i2++) {
                 $mod = $db->result($r2, $i2 - 1, "Model");
                 $mod_link = $db->result($r2, $i2 - 1, "Model_Link");
-                $list .= "<div class=\"seo-auto-list__item\">
+                $list .= "
+                <div class=\"seo-auto-list__item\">
                     <a href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/\">
                         <span>$mfa_brand $mod</span>
                     </a>
                 </div>";
             }
-            $list .= "</div>";
+            $list .= "
+            </div>";
         }
 
         $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
@@ -1707,21 +1718,25 @@ class CatalogExistClass extends CatalogueClass
             $mfa_id = $values["mfa_id"];
             $mfa_link = $values["mfa_link"];
             if ($mfa_id_sel == 0) {
-                $list .= "<div>
+                $list .= "
+                <div>
                     <a href=\"" . $this->getSiteLink() . "$link/$mfa_link/\">$details_cap $mfa_brand</a>
                 </div>";
             }
-            $list .= "<div class=\"seo-auto-list\">";
+            $list .= "
+            <div class=\"seo-auto-list\">";
             $r = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id GROUP BY `Model`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $model = $db->result($r, $i - 1, "Model");
                 $model_link = $db->result($r, $i - 1, "Model_Link");
-                $list .= "<div class=\"seo-auto-list__item\">
+                $list .= "
+                <div class=\"seo-auto-list__item\">
                     <a href=\"" . $this->getSiteLink() . "$link/$mfa_link/$model_link/\">$mfa_brand $model</a>
                 </div>";
             }
-            $list .= "</div>";
+            $list .= "
+            </div>";
         }
 
         $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
@@ -2001,17 +2016,23 @@ class CatalogExistClass extends CatalogueClass
             WHERE t2gr.`GROUP_ID` = $group_id AND t2r.`STATUS` = 1;");
             $n = $db->num_rows($r);
             if ($n > 0) {
-                $list = "<div class=\"reviews-list-title\">{states_cap}</div><div class=\"reviews-list\">";
+                $list = "
+                <div class=\"reviews-list-title\">{states_cap}</div>
+                    <div class=\"reviews-list\">";
             }
             for ($i = 1; $i <= $n; $i++) {
                 $review_id = $db->result($r, $i - 1, "ID");
                 $review_title = $db->result($r, $i - 1, "TITLE_$postfix");
                 $transcript = $this->formatUrlText($review_title);
                 $link = "/reviews/state/$review_id/$transcript/";
-                $list .= "<div class=\"reviews-list__item\"><a href=\"$link\">$review_title</a></div>";
+                $list .= "
+                <div class=\"reviews-list__item\">
+                    <a href=\"$link\">$review_title</a>
+                </div>";
             }
             if ($n > 0) {
-                $list .= "</div>";
+                $list .= "
+                </div>";
             }
         }
         return $list;
