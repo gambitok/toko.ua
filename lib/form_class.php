@@ -141,6 +141,7 @@ class FormClass extends CatalogueClass
         $form = str_replace("{applicable_display}", "dnone", $form);
         $form = str_replace("{applicable_cap}", "", $form);
         $form = str_replace("{flag_visible}", "dnone", $form);
+        $form = str_replace("{art_seo_text}", $this->getArticleSeoText($art_id, $h1), $form);
 
         $form = $this->replaceLang($form);
 
@@ -152,6 +153,165 @@ class FormClass extends CatalogueClass
         $description = str_replace("{h1_text}", $h1, $description);
 
         return compact("form", "title", "description", "breadcrumbs");
+    }
+
+    /*
+     * show article form
+     * */
+    public function getArticleForm2($art_id)
+    {
+        $art_id = $this->getUrlNumber($art_id);
+        $auto = new AutoClass();
+        $client = new ClientClass();
+        $shop = new ShopClass();
+        $auto_typ_id = $this->getCookieAuto();
+
+        $form = $this->getHtmlForm("article/new");
+        if ($auto_typ_id != "") {
+            if ($this->checkT2Link($auto_typ_id, $art_id)) {
+                $form = str_replace("{applicable_display}", "applicable-active", $form);
+                $form = str_replace("{applicable_display_text}", "{is_applicable}", $form);
+                list($manufacture, $model, $model_id) = $auto->getCarInfo($auto_typ_id);
+                list($manufacture_cap, , $model_id_cap,) = $auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
+                $form = str_replace("{applicable_cap}", "<a href=\"/\">$manufacture_cap $model_id_cap</a>", $form);
+            }
+        }
+
+        $articleData = $this->getArticleInfo($art_id);
+        $article_nr_displ = $articleData["article_nr_displ"];
+        $brand_id = $articleData["brand_id"];
+        $brand_name = $articleData["brand_name"];
+        $article_name = $articleData["article_name"];
+
+        if ($client->checkRetailClientCategory($this->getClient()) && $this->getCookieAuto() != "") {
+            $article_nr_displ = $this->getSecretString($article_nr_displ);
+        }
+        $format_article = $this->getFormatAticle($article_nr_displ);
+
+        $brand_link = "";
+        $flagData = $this->getCountryFlag($brand_id);
+        if ($flagData !== false) {
+            $flag = $flagData["flag"];
+            $country_name = $flagData["country"];
+            $form = str_replace("{country_name}", $country_name, $form);
+            $form = str_replace("{brand_link}", $brand_link, $form);
+            $form = str_replace("{flag_name}", $flag, $form);
+            $form = str_replace("{flag_visible}", "", $form);
+        } else {
+            $form = str_replace("{country_name}", $brand_name, $form);
+            $form = str_replace("{brand_link}", $brand_link, $form);
+        }
+
+        $form = str_replace("{art_id}", $art_id, $form);
+        $form = str_replace("{art_name}", $article_nr_displ, $form);
+        $form = str_replace("{art_format_name}", $format_article, $form);
+        $form = str_replace("{art_brand_id}", $brand_id, $form);
+        $form = str_replace("{art_brand_name}", $brand_name, $form);
+        $form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $form);
+        $form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-red" : (($articleData["delivery_days"] == 1) ? "delivery-blue" : (($articleData["delivery_days"] > 1) ? "delivery-dark" : "")), $form);
+        $form = str_replace("{art_stock}", $articleData["stock"], $form);
+        $form = str_replace("{art_price}", $articleData["price"], $form);
+        $form = str_replace("{art_cur}", $articleData["currency"], $form);
+        $form = str_replace("{art_basket}", $articleData["basket"], $form);
+        $form = str_replace("{art_images}", $this->showPhotoGallery($art_id), $form);
+        $form = str_replace("{art_info}", $this->getArticleInfoForm($art_id, 1, 1), $form);
+        $form = str_replace("{brand_info}", $this->showBrandForm($brand_id), $form);
+        $form = str_replace("{art_applicable}", $this->getArticleApplForm($art_id), $form);
+        $form = str_replace("{art_originals}", $this->getOriginalNumbers($art_id), $form);
+        $form = str_replace("{art_proposed}", $shop->getProposedArts(), $form);
+
+        $analogs = $this->shortSearchList($art_id);
+        $h1 = "$article_name $brand_name $article_nr_displ";
+        $form = str_replace("{analogs_list}", $analogs, $form);
+        $form = str_replace("{analogs_display}", ($analogs == "") ? "dnone" : "", $form);
+        $form = str_replace("{article_header}", "$h1", $form);
+        $form = str_replace("{applicable_display}", "dnone", $form);
+        $form = str_replace("{applicable_cap}", "", $form);
+        $form = str_replace("{flag_visible}", "dnone", $form);
+        $form = str_replace("{art_seo_text}", $this->getArticleSeoText($art_id, $h1), $form);
+
+        $form = $this->replaceLang($form);
+
+        $breadcrumbs = $this->getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id);
+
+        $title = $h1 . " {seo_title_article}";
+
+        $description = $this->replaceLang("{seo_article_title}");
+        $description = str_replace("{h1_text}", $h1, $description);
+
+        return compact("form", "title", "description", "breadcrumbs");
+    }
+
+    public function getArticleSeoText($art_id, $h1)
+    {
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+        $catalog = new CatalogueClass();
+        $catalog_exist = new CatalogExistClass();
+        $r = $db->query("SELECT `TEXT` FROM `SEO_STR_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $form = $db->result($r, 0, "TEXT");
+        } else {
+            $form = "{_still_search} {Main_Category_H1}? {_go_store_toko} {_toko} {_choose_best} {GET_PAGE_H1}. {_lowest_prices} {product_1} {_high_quality_category} {Main_Category_H1}. {_cooperate} {_popular_brands} {tags_brand_1} {and_cap} {tags_brand_2}, {_presented_in_section} {cat_random1} {and_cap} {cat_random2}. {_right_choice} {GET_PAGE_H2}. {_fast_order} {geo_nominative} {_other_cities}";
+
+            $form = str_replace("{GET_PAGE_H1}", $h1, $form);
+
+            $group_id = $catalog->getArticleGroupExist($art_id);
+            $group_name = $catalog->getGroupRowName($group_id);
+            $parrent_h1 = $group_name;
+            $form = str_replace("{Main_Category_H1}", $parrent_h1, $form);
+
+            $r = $dbc->query("SELECT `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` = $group_id ORDER BY RAND() LIMIT 3;");
+            $n = $dbc->num_rows($r);
+            $brand_id_arr = [];
+            for ($i = 1; $i <= $n; $i++) {
+                $brand_id_arr[] = $dbc->result($r, $i - 1, "brand_id");
+            }
+
+            $brand_id_sel1 = $brand_id_arr[0];
+            $brand_id_sel2 = $brand_id_arr[1];
+            $form = str_replace("{tags_brand_1}", $this->getBrandName($brand_id_sel1), $form);
+            $form = str_replace("{tags_brand_2}", $this->getBrandName($brand_id_sel2), $form);
+
+            $r = $dbc->query("SELECT `art_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` = $group_id ORDER BY RAND() LIMIT 1;");
+            $art_id_sel = $db->result($r, 0, "art_id");
+            $brand_id_sel = $db->result($r, 0, "brand_id");
+            $form = str_replace("{product_1}", $this->getBrandName($brand_id_sel) . " " . $this->getArticleDispl($art_id_sel), $form);
+
+            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
+            $group_id_sel = $dbc->result($r, 0, "group_id");
+            $form = str_replace("{cat_random1}", $this->getGroupRowName($group_id_sel), $form);
+            $form = str_replace("{GET_PAGE_H2}", $catalog_exist->getCatalogH1($group_id_sel), $form);
+
+            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
+            $group_id_sel = $dbc->result($r, 0, "group_id");
+            $form = str_replace("{cat_random2}", $this->getGroupRowName($group_id_sel), $form);
+
+            $r = $db->query("SELECT `CITY_NAME` FROM `SEO_LISTING_CITY` ORDER BY RAND() LIMIT 1;");
+            $random_city = $db->result($r, 0, "CITY_NAME");
+            $form = str_replace("{geo_nominative}", $random_city, $form);
+
+            $r = $db->query("SELECT `LIST_KEY` FROM `SEO_LISTING`;");
+            $langVariables = array_column(mysqli_fetch_all($r), 0);
+
+            foreach ($langVariables as $langVariable) {
+                $form = str_replace("{" . $langVariable . "}", $this->getSeoListingName($langVariable), $form);
+            }
+
+            $form = $this->replaceLang($form);
+
+            //$db->query("INSERT INTO `SEO_STR_ARTICLES` (`ART_ID`, `TEXT`) VALUES ($art_id, '$form');");
+
+        }
+        return $form;
+    }
+
+    public function getSeoListingName($key)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEXT` FROM `SEO_LISTING` WHERE `LIST_KEY` = '$key' ORDER BY RAND() LIMIT 1;");
+        return $db->result($r, 0, "TEXT");
     }
 
     public function getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id)
@@ -217,7 +377,7 @@ class FormClass extends CatalogueClass
         $kours = new ExRateClass();
         $tpoint = $this->getTpointID();
         $cur = $this->getCurrentExrate();
-        $cur_cap = $kours->getKoursCaption($cur);
+        $cur_cap = $kours->getKoursCaptionLang($cur);
 
         $arr = [];
         $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
@@ -854,7 +1014,7 @@ class FormClass extends CatalogueClass
                     {more_read}
                 </a>    
             </p>";
-            (!$display) ?: $info = "<div style='padding: 10px;'>$info</div>";
+            (!$display) ?: $info = "<div>$info</div>";
         } else {
             $info = (!$display) ? "{info_cap}" : "";
         }

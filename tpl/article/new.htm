@@ -1,0 +1,138 @@
+<link rel="stylesheet" href="/css/plugins/flags.min.css">
+<script type="text/javascript" src="/js/plugins/bootstrap-input-spinner.js"></script>
+
+<div class="container article-form">
+
+    <div class="row article-form-row">
+        <div class="col-12">
+            <h1>{article_header}</h1>
+        </div>
+    </div>
+
+    <div class="row article-form-row">
+        <div class="col-12 col-lg-6">
+            {art_images}
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="article-info">
+                <div class="article-info-row">
+                    <div class="article-info-row__applicable">
+                        <img src="/images/no_photo.png" alt="applicable info">
+                        <span>{applicable_car_cap}</span>
+                    </div>
+                </div>
+                <div class="article-info-row">
+                    <div class="article-info-row__col">
+                        <div class="article-info-row__bold">{art_price}</div>
+                        <div class="article-info-row__upper">{art_cur}</div>
+                    </div>
+                    <div class="article-info-row__col article-info-row__col-right">
+                        <div class="btn btn-info btn-buy" onClick="{art_basket}">
+                            <span>{buy_cap}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="article-info-row">
+                    <div class="article-info-row__col">
+                        <div class="article-info-row__text {del_class}">
+                            {storage_info}: {art_del}
+                        </div>
+                        <div class="article-info-row__text">
+                            {available_cap}: <span class="article-info-row__stock">{art_stock} {amount_abbr}.</span>
+                        </div>
+                    </div>
+                    <div class="article-info-row__col article-info-row__col-center">
+                        <input type="text" value="1" min="1" title="amount" id="count_0">
+                    </div>
+                </div>
+                <div class="article-info-row">
+                    <div class="input-group">
+                        <input
+                            id="input_phone2" class="form-control masked-phone" type="tel" name="phone"
+                            placeholder="+38(___) ___-__-__" onchange="validationInput('input_phone2');"
+                            title="{input_valid_phone}" data-toggle="tooltip" data-placement="top" data-html="true" value="{user_phone}"
+                        >
+                        <div class="input-group-append">
+                            <button class="btn btn-info" id="make_order_fast" {disabled} onclick="{location_fast}">{make_order_fast}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row article-form-row">
+        <div class="col-12">
+            <nav class="article-form-row__title">
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{product_about_cap}</a>
+                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">{analogs_2_cap}</a>
+                    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">{original_numbers}</a>
+                    <a class="nav-item nav-link" id="nav-applicable-tab" data-toggle="tab" href="#nav-applicable" role="tab" aria-controls="nav-applicable" aria-selected="false">{applicability_cap}</a>
+                    <a class="nav-item nav-link" id="nav-reviews-tab" data-toggle="tab" href="#nav-reviews" role="tab" aria-controls="nav-reviews" aria-selected="false">{reviews_cap}</a>
+                </div>
+            </nav>
+            <div class="tab-content article-form-row__content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <div>
+                        <h2>{specifications_cap} {art_name}</h2>
+                        {art_info}
+                    </div>
+                    <div>
+                        <h2>{about_brand_cap}</h2>
+                        {brand_info}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    {analogs_list}
+                </div>
+                <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                    {art_originals}
+                </div>
+                <div class="tab-pane fade" id="nav-applicable" role="tabpanel" aria-labelledby="nav-applicable-tab">
+                    <div id="info_art2" class="info__applicability">
+                        {art_applicable}
+                    </div>
+                    <div id="info2_more" class="info__applicability"></div>
+                </div>
+                <div class="tab-pane fade" id="nav-reviews" role="tabpanel" aria-labelledby="nav-reviews-tab">
+                    {reviews_non_product}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row article-form-row">
+        <div class="col-12">
+            <div class="article-form-row__title">
+                {popular_goods}
+            </div>
+            <div class="article-form-row__content">
+                {art_proposed}
+            </div>
+        </div>
+    </div>
+
+    <div class="row article-form-row">
+        <div class="col-12">
+            <div class="article-form-row__title">
+                {info_cap}
+            </div>
+            <div class="article-form-row__content">
+                {index_analog_name}: {art_brand_name} {art_format_name} ('{art_name}, {art_name}, {art_brand_name} {art_name})
+                <br>
+                {art_seo_text}
+            </div>
+        </div>
+    </div>
+
+    <!--seoshield_formulas--kartochka-tovara-->
+
+</div>
+
+
+<script>
+    $(document).ready(function() { "use strict";
+        $("#count_0").inputSpinner();
+    });
+</script>
