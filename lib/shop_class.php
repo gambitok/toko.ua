@@ -1205,7 +1205,7 @@ class ShopClass extends CatalogueClass
         $express_info = $db->result($r, 0, "DEL_EXPRESS_INFO");
         $recipient_name = $db->result($r, 0, "DEL_NAME");
         $recipient_phone = $db->result($r, 0, "DEL_PHONE");
-        $delivery_info = ["street" => $street, "house" => $house, "porch" => $porch, "department" => $department, "express" => $express, "express_info" => $express_info];
+        $delivery_info = compact("street", "house", "porch", "department", "express", "express_info");
         return
             array(
                 "city_id" => $city_id,
