@@ -17,8 +17,7 @@
             <div class="article-info">
                 <div class="article-info-row">
                     <div class="article-info-row__applicable">
-                        <img src="/images/no_photo.png" alt="applicable info">
-                        <span>{applicable_car_cap}</span>
+                        {applicable_form}
                     </div>
                 </div>
                 <div class="article-info-row">
@@ -119,9 +118,9 @@
                 {info_cap}
             </div>
             <div class="article-form-row__content">
-                {index_analog_name}: {art_brand_name} {art_format_name} ('{art_name}, {art_name}, {art_brand_name} {art_name})
-                <br>
                 {art_seo_text}
+                <br>
+                {index_analog_name}: {art_brand_name} {art_format_name} ('{art_name}, {art_name}, {art_brand_name} {art_name})
             </div>
         </div>
     </div>
@@ -129,7 +128,6 @@
     <!--seoshield_formulas--kartochka-tovara-->
 
 </div>
-
 
 <script>
     $(document).ready(function() { "use strict";
