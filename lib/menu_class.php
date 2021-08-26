@@ -464,9 +464,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    /*
-     * get region select (registration)
-     * */
+        /*
+         * get region select (registration)
+         * */
     public function getRegionForm($region = 0)
     {
         $db = DbSingleton::getTokoDb();

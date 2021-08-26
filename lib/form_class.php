@@ -147,9 +147,10 @@ class FormClass extends CatalogueClass
 
         $breadcrumbs = $this->getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id);
 
-        $title = $h1 . " {seo_title_article}";
+        $title = $this->replaceLang("{site_article}");
+        $title = str_replace("{h1_text}", $h1, $title);
 
-        $description = $this->replaceLang("{seo_article_title}");
+        $description = $this->replaceLang("{site_article_description}");
         $description = str_replace("{h1_text}", $h1, $description);
 
         return compact("form", "title", "description", "breadcrumbs");
@@ -374,7 +375,7 @@ class FormClass extends CatalogueClass
             }
             $form = $this->replaceLang($form);
 
-            //$db->query("INSERT INTO `SEO_STR_ARTICLES` (`ART_ID`, `TEXT`) VALUES ($art_id, '$form');");
+            $db->query("INSERT INTO `SEO_STR_ARTICLES` (`ART_ID`, `TEXT`) VALUES ($art_id, '$form');");
 
         }
         return $form;

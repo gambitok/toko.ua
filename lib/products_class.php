@@ -17,6 +17,34 @@ class ProductsClass extends CatalogueClass
         return $form;
     }
 
+    public function getCarsForm($mfa_link, $mod_link)
+    {
+        $title = "";
+        $description = "";
+        $catalogue = new CatalogueClass();
+        $automan = new AutoClass();
+        list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
+        $h1 = $automan->getCarsTitle($mfa_id, $model);
+        $form = $catalogue->getHtmlForm("cars/form");
+        $form = str_replace("{cars_h1}", $h1, $form);
+        $form = str_replace("{cars_list}", $this->getCarsSearch($mfa_link, $mod_link), $form);
+        $form = str_replace("{cars_seo}", $automan->getCarsSeoContent($mfa_link, $mod_link), $form);
+        $automan->getCarsMetaTags($mfa_id, $model, $h1);
+        if ($mfa_id > 0) {
+            $title = $this->replaceLang("{site_cars_mfa}");
+            $title = str_replace("{h1_text}", $h1, $title);
+            $description = $this->replaceLang("{site_cars_mfa_description}");
+            $description = str_replace("{h1_text}", $h1, $description);
+            if ($model != "") {
+                $title = $this->replaceLang("{site_cars_model}");
+                $title = str_replace("{h1_text}", $h1, $title);
+                $description = $this->replaceLang("{site_cars_model_description}");
+                $description = str_replace("{h1_text}", $h1, $description);
+            }
+        }
+        return compact("form", "title", "description", "meta_tag");
+    }
+
     public function getCarsSearch($mfa_link = "", $mod_link = "", $group_id = 0)
     {
         $automan = new AutoClass();

@@ -897,7 +897,6 @@ class CatalogExistClass extends CatalogueClass
     public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0, $str_link = "", $source_link = "")
     {
         $typ_id = $this->getCookieAuto();
-        $time = 0;
         $automan = new AutoClass();
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
@@ -971,8 +970,6 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
             $filterData = $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $where_mfa, $where_link_arts);
             $form = str_replace("{parts_params}", $filterData["form"], $form);
-//            $form = str_replace("{parts_params}", "", $form);
-            $time = $filterData["time"];
 
             $breadcrumbsData = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $h1_text, $source_link));
             $breadcrumbs_script = $breadcrumbsData["script"];
@@ -992,9 +989,7 @@ class CatalogExistClass extends CatalogueClass
         $description = str_replace("{h1_caption}", $h1_text, $description);
         $description = str_replace("{h1_caption_parrent}", $group_text, $description);
 
-        //test
-
-        return array("form" => $form, "title" => $filters_title, "h1" => $h1_text, "pages_count" => $max_pages_count, "description" => $description, "script" => $breadcrumbs_script, "time" => $time);
+        return array("form" => $form, "title" => $filters_title, "h1" => $h1_text, "pages_count" => $max_pages_count, "description" => $description, "script" => $breadcrumbs_script);
     }
 
     public function drawLoader()

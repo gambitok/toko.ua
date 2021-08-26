@@ -72,10 +72,10 @@ function getMoreTitle($path)
 {
     $automan = new AutoClass();
     $cat = new CatalogueClass();
-    $menu = new MenuClass();
+//    $menu = new MenuClass();
 
     $linka = findLinks();
-    $pretitle = "";
+//    $pretitle = "";
 
     if ($path == "search") {
         $article_nr_search = $cat->getUrlString($linka[1]);
@@ -93,17 +93,6 @@ function getMoreTitle($path)
             $pretitle = "$brand_name $article_nr_search - $art_name | {site_title_short}";
         }
     }
-//    elseif ($path == "article") {
-//        $art_id = $cat->getUrlNumber($linka[3]);
-//        $article_nr_search = $cat->getArticleDispl($art_id);
-//        $brand_id = $cat->getArticleBrand($art_id);
-//        $article_nr_search = strtoupper($article_nr_search);
-//        $brand_name = $cat->getBrandName($brand_id);
-//        $brand_name = strtoupper($brand_name);
-//        $art_name = $cat->getArticleName($art_id);
-//        $pretitle = "$art_name $brand_name $article_nr_search - {seo_title_article}";
-//        $pretitle = ltrim($pretitle," ");
-//    }
     elseif ($path == "cars") {
         $mfa_link = $cat->getUrlString($linka[1]);
         $mod_link = $cat->getUrlString($linka[2]);
@@ -128,26 +117,26 @@ function getMoreTitle($path)
             $pretitle = "$pretitle - $postfix";
         }
     }
-    elseif ($path == "news") {
-        if ($cat->getUrlString($linka[1]) == "") {
-            $pretitle = "{site_$path} - {seo_state_title}";
-        }
-        if ($cat->getUrlString($linka[1]) == "state") {
-            $state_link = $cat->getUrlString($linka[2]);
-            $state_name = $menu->getNewsStateTitle($state_link);
-            $pretitle = "$state_name - {seo_state_title}";
-        }
-    }
-    elseif ($path == "reviews") {
-        if ($cat->getUrlString($linka[1]) == "") {
-            $pretitle = "{site_$path} - {seo_state_title}";
-        }
-        if ($cat->getUrlString($linka[1]) == "state") {
-            $state_link = $cat->getUrlString($linka[2]);
-            $state_name = $menu->getReviewStateTitle($state_link);
-            $pretitle = "$state_name - {seo_state_title}";
-        }
-    }
+//    elseif ($path == "news") {
+//        if ($cat->getUrlString($linka[1]) == "") {
+//            $pretitle = "{site_$path} - {seo_state_title}";
+//        }
+//        if ($cat->getUrlString($linka[1]) == "state") {
+//            $state_link = $cat->getUrlString($linka[2]);
+//            $state_name = $menu->getNewsStateTitle($state_link);
+//            $pretitle = "$state_name - {seo_state_title}";
+//        }
+//    }
+//    elseif ($path == "reviews") {
+//        if ($cat->getUrlString($linka[1]) == "") {
+//            $pretitle = "{site_$path} - {seo_state_title}";
+//        }
+//        if ($cat->getUrlString($linka[1]) == "state") {
+//            $state_link = $cat->getUrlString($linka[2]);
+//            $state_name = $menu->getReviewStateTitle($state_link);
+//            $pretitle = "$state_name - {seo_state_title}";
+//        }
+//    }
     elseif (checkLangVariable("site_$path")) {
         $pretitle = "{site_$path} - {seo_title}";
     } else {
@@ -178,6 +167,7 @@ function printBreadcrumbs($path)
 
     $a_home = "<li class=\"cat-products-bread__item\"><a href=\"" . $cat->getSiteLink() . "\" title=\"{seo_site_toko}\">{seo_shop_toko}</a></li>";
     $a_section = "<li class=\"cat-products-bread__item\"><a href=\"" . $cat->getSiteLink() . "$section/\">{site_$section}</a></li>";
+
     $h_section = "{site_$section}";
 
     $list = "";
@@ -208,8 +198,12 @@ function printBreadcrumbs($path)
             break;
         }
         case "news" : {
+            $h_section = $cat->replaceLang($h_section);
+            $h_section = str_replace("{h1_text}", "{news_cap}", $h_section);
             $b_arr[2] = ["name" => "$h_section", "item" => "" . $cat->getSiteLink() . "news/"];
             if ($cat->getUrlString($bread[1]) == "state") {
+                $a_section = $cat->replaceLang($a_section);
+                $a_section = str_replace("{h1_text}", "{news_cap}", $a_section);
                 $state_link = $cat->getUrlString($bread[2]);
                 $state_name = $menu->getNewsStateTitle($state_link);
                 $info = "$a_section $icon " . $state_name;
@@ -221,8 +215,12 @@ function printBreadcrumbs($path)
             break;
         }
         case "reviews" : {
+            $h_section = $cat->replaceLang($h_section);
+            $h_section = str_replace("{h1_text}", "{review_state_cap}", $h_section);
             $b_arr[2] = ["name" => "$h_section", "item" => "" . $cat->getSiteLink() . "reviews/"];
             if ($cat->getUrlString($bread[1]) == "state") {
+                $a_section = $cat->replaceLang($a_section);
+                $a_section = str_replace("{h1_text}", "{review_state_cap}", $a_section);
                 $state_link = $cat->getUrlString($bread[2]);
                 $state_name = $menu->getReviewStateTitle($state_link);
                 $info = "$a_section $icon " . $state_name;
