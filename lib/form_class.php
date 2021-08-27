@@ -81,7 +81,7 @@ class FormClass extends CatalogueClass
     {
         $art_id = $this->getUrlNumber($art_id);
         $auto = new AutoClass();
-        $client = new ClientClass();
+//        $client = new ClientClass();
         $auto_typ_id = $this->getCookieAuto();
 
         $form = $this->getHtmlForm("article/card");
@@ -101,9 +101,9 @@ class FormClass extends CatalogueClass
         $brand_name = $articleData["brand_name"];
         $article_name = $articleData["article_name"];
 
-        if ($client->checkRetailClientCategory($this->getClient()) && $this->getCookieAuto() != "") {
-            $article_nr_displ = $this->getSecretString($article_nr_displ);
-        }
+//        if ($client->checkRetailClientCategory($this->getClient()) && $this->getCookieAuto() != "") {
+//            $article_nr_displ = $this->getSecretString($article_nr_displ);
+//        }
         $format_article = $this->getFormatAticle($article_nr_displ);
 
         $brand_link = "";
@@ -163,7 +163,6 @@ class FormClass extends CatalogueClass
     {
         $art_id = $this->getUrlNumber($art_id);
         $auto = new AutoClass();
-        $client = new ClientClass();
         $shop = new ShopClass();
         $auto_typ_id = $this->getCookieAuto();
 
@@ -184,9 +183,10 @@ class FormClass extends CatalogueClass
         $brand_name = $articleData["brand_name"];
         $article_name = $articleData["article_name"];
 
-        if ($client->checkRetailClientCategory($this->getClient()) && $this->getCookieAuto() != "") {
-            $article_nr_displ = $this->getSecretString($article_nr_displ);
-        }
+//        $client = new ClientClass();
+//        if ($client->checkRetailClientCategory($this->getClient()) && $this->getCookieAuto() != "") {
+//            $article_nr_displ = $this->getSecretString($article_nr_displ);
+//        }
         $format_article = $this->getFormatAticle($article_nr_displ);
 
         $brand_link = "";
@@ -209,29 +209,36 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_brand_id}", $brand_id, $form);
         $form = str_replace("{art_brand_name}", $brand_name, $form);
         $form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $form);
-        $form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-red" : (($articleData["delivery_days"] == 1) ? "delivery-blue" : (($articleData["delivery_days"] > 1) ? "delivery-dark" : "")), $form);
+        $form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-green" : ($articleData["delivery_days"] == 1 ? "delivery-blue" : ($articleData["delivery_days"] > 1 ? "delivery-dark" : "")), $form);
         $form = str_replace("{art_stock}", $articleData["stock"], $form);
         $form = str_replace("{art_price}", $articleData["price"], $form);
         $form = str_replace("{art_cur}", $articleData["currency"], $form);
         $form = str_replace("{art_basket}", $articleData["basket"], $form);
         $form = str_replace("{art_images}", $this->showPhotoGallery($art_id), $form);
-        $form = str_replace("{art_info}", $this->getArticleInfoForm($art_id, 1, 1), $form);
-        $form = str_replace("{brand_info}", $this->showBrandForm($brand_id), $form);
+        $article_info = $this->getArticleInfoForm($art_id, 1, 1);
+        $form = str_replace("{art_info}", ($article_info != "") ? $article_info : $this->err1, $form);
+        $brand_info = $this->showBrandForm($brand_id);
+        $form = str_replace("{brand_info}", ($brand_info != "") ? $brand_info : $this->err1, $form);
         $form = str_replace("{art_applicable}", $this->getArticleApplForm($art_id), $form);
         $form = str_replace("{art_originals}", $this->getOriginalNumbers($art_id), $form);
         $form = str_replace("{art_proposed}", $shop->getProposedArts(), $form);
 
         $analogs = $this->shortSearchList($art_id);
+        $form = str_replace("{analogs_list}", ($analogs != "") ? $analogs : $this->err1, $form);
         $h1 = "$article_name $brand_name $article_nr_displ";
-        $form = str_replace("{analogs_list}", $analogs, $form);
-        $form = str_replace("{analogs_display}", ($analogs == "") ? "dnone" : "", $form);
         $form = str_replace("{article_header}", "$h1", $form);
         $form = str_replace("{applicable_display}", "dnone", $form);
         $form = str_replace("{applicable_cap}", "", $form);
         $form = str_replace("{flag_visible}", "dnone", $form);
         $form = str_replace("{art_seo_text}", $this->getArticleSeoText($art_id, $h1), $form);
-
         $form = str_replace("{applicable_form}", $this->getApplicableForm($art_id), $form);
+
+        $form = str_replace("{location_fast}", "finishFastOrder('input_phone2');", $form);
+
+        $form = str_replace("{art_id}", $art_id, $form);
+        $form = str_replace("{brand_id}", $brand_id, $form);
+        $form = str_replace("{suppl_id}", $articleData["suppl_id"], $form);
+        $form = str_replace("{storage_id}", $articleData["storage_id"], $form);
 
         $form = $this->replaceLang($form);
 
@@ -253,7 +260,7 @@ class FormClass extends CatalogueClass
             $typ_name = $automan->getCarDescription($typ_id);
             if ($this->checkT2Link($typ_id, $art_id)) {
                 //success
-                $form = "<img src=\"/images/applicable/success.png\" alt=\"{applicable_success_cap}\"><span>{applicable_success_cap} $typ_name</span>";
+                $form = "<img src=\"/images/applicable/success.webp\" alt=\"{applicable_success_cap}\"><span>{applicable_success_cap} $typ_name</span>";
             } else {
                 $catalog = new CatalogueClass();
                 $group_id = $catalog->getArticleGroupExist($art_id);
@@ -262,12 +269,11 @@ class FormClass extends CatalogueClass
                 $form = "
                 <div class=\"article-info-row__applicable-danger\">
                     <div class=\"article-info-row__applicable-danger--row\">
-                        <img src=\"/images/applicable/danger.png\" alt=\"{applicable_danger_cap}\">
+                        <img src=\"/images/applicable/danger.webp\" alt=\"{applicable_danger_cap}\">
                         <span>{applicable_danger_cap}</span>
                     </div>
                     <div class=\"article-info-row__applicable-danger--row\">
                         <span>$typ_name <a onclick=\"deleteAutoGarage('$typ_id');\">&times;</a></span>
-                        
                     </div>
                     <div class=\"article-info-row__applicable-danger--row\">
                         <a href=\"" . $this->getSiteLink() ."$this->catalog_link/$group_link/\" class=\"btn btn-info\" style='color:white'>{choose_product_car}</a>
@@ -277,7 +283,7 @@ class FormClass extends CatalogueClass
             }
         } else {
             //warning
-            $form = "<img src=\"/images/applicable/warning.png\" alt=\"{applicable_warning_cap}\"><span>{applicable_warning_cap}</span>";
+            $form = "<img src=\"/images/applicable/warning.webp\" alt=\"{applicable_warning_cap}\"><span>{applicable_warning_cap}</span>";
         }
         return $form;
     }
@@ -492,12 +498,12 @@ class FormClass extends CatalogueClass
 
             $real_stock = $stock;
             if ($stock > 10) {
-                $stock = ">10";
+                $stock = "{more_then} 10";
             }
 
             $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
 
-            $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "stock", "delivery_short_info", "price", "cur_cap", "delivery_days", "basket");
+            $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "stock", "delivery_short_info", "price", "cur_cap", "delivery_days", "basket", "storage_id", "suppl_id");
         }
 
         $arr = $this->multiSort($arr, "delivery_days", "price");
@@ -512,6 +518,8 @@ class FormClass extends CatalogueClass
         $cur_cap = $arr[0]["cur_cap"];
         $delivery_days = $arr[0]["delivery_days"];
         $basket = $arr[0]["basket"];
+        $suppl_id = $arr[0]["suppl_id"];
+        $storage_id = $arr[0]["storage_id"];
 
         return [
             "article_nr_displ" => $article_nr_displ,
@@ -523,7 +531,9 @@ class FormClass extends CatalogueClass
             "price" => $price,
             "currency" => $cur_cap,
             "delivery_days" => $delivery_days,
-            "basket" => $basket
+            "basket" => $basket,
+            "suppl_id" => $suppl_id,
+            "storage_id" => $storage_id
         ];
     }
 
@@ -539,7 +549,8 @@ class FormClass extends CatalogueClass
         $cash_id = $client->getClientCurrency($this->getClient());
         if ($cur == 2) {
             $ch2 = "checked=\"checked\"";
-        } elseif ($cur == 3) {
+        }
+        elseif ($cur == 3) {
             $ch3 = "checked=\"checked\"";
         } else {
             $ch1 = "checked=\"checked\"";

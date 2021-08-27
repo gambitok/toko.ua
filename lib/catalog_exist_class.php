@@ -985,9 +985,21 @@ class CatalogExistClass extends CatalogueClass
 
         $max_pages_count = ceil($count / $this->products_on_page);
 
-        $description = $this->replaceLang("{site_description_catalog}");
-        $description = str_replace("{h1_caption}", $h1_text, $description);
-        $description = str_replace("{h1_caption_parrent}", $group_text, $description);
+//        $description = $this->replaceLang("{site_description_catalog}");
+//        $description = str_replace("{h1_caption}", $h1_text, $description);
+//        $description = str_replace("{h1_caption_parrent}", $group_text, $description);
+
+        $description = $this->replaceLang("{site_catalog_group_description}");
+        $description = str_replace("{h1_text}", $h1_text, $description);
+
+        if (!empty($filters)) {
+            list($count_brands) = $this->getCatalogParamsCount($params);
+            if ($count_brands > 0) {
+                $description = $this->replaceLang("{site_catalog_brand_description}");
+                $description = str_replace("{h1_text}", $h1_text, $description);
+                $description = str_replace("{h1_parrent}", $group_text, $description);
+            }
+        }
 
         return array("form" => $form, "title" => $filters_title, "h1" => $h1_text, "pages_count" => $max_pages_count, "description" => $description, "script" => $breadcrumbs_script);
     }
@@ -1034,9 +1046,20 @@ class CatalogExistClass extends CatalogueClass
 
         $h1_text = $this->getCatalogH1($group_id, $params, $mfa_id, $model);
 
-        $filters_title = $this->getCatalogTitleCache($str_link);
-        if ($filters_title == "") {
-            $filters_title = $this->getCatalogTitle($group_id, $params, $h1_text, $mfa_id, $model);
+//        $filters_title = $this->getCatalogTitleCache($str_link);
+//        if ($filters_title == "") {
+//            $filters_title = $this->getCatalogTitle($group_id, $params, $h1_text, $mfa_id, $model);
+//        }
+
+        $filters_title = $this->replaceLang("{site_catalog_group}");
+        $filters_title = str_replace("{h1_text}", $h1_text, $filters_title);
+
+        if (!empty($params)) {
+            list($count_brands) = $this->getCatalogParamsCount($params);
+            if ($count_brands > 0) {
+                $filters_title = $this->replaceLang("{site_catalog_brand}");
+                $filters_title = str_replace("{h1_text}", $h1_text, $filters_title);
+            }
         }
 
         if ($page > 1) {
@@ -2062,22 +2085,36 @@ class CatalogExistClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
         $r = $db->query("SELECT `TEX_$postfix`, `IMAGES` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1 AND `HEAD_ID` = $head_id LIMIT 1;");
-        $head_title = $db->result($r, 0, "TEX_$postfix");
+        $h1_text = $db->result($r, 0, "TEX_$postfix");
         $form = $this->getHtmlForm("catalog_exist/head_form");
-        $form = str_replace("{head_title}", $head_title, $form);
+        $form = str_replace("{head_h1}", $h1_text, $form);
         $form = str_replace("{head_list}", $this->getCatalogColListCat($head_id), $form);
-        return $this->replaceLang($form);
+        $form = $this->replaceLang($form);
+
+        $title = $this->replaceLang("{site_catalog_header}");
+        $title = str_replace("{h1_text}", $h1_text, $title);
+        $description = $this->replaceLang("{site_catalog_header_description}");
+        $description = str_replace("{h1_text}", $h1_text, $description);
+
+        return compact("form", "title", "description");
     }
 
     public function showGroupCatForm($head_id, $cat_id)
     {
-        $cat_title = $this->getCatRowName($cat_id);
-        $head_title = $this->getHeadRowName($head_id);
+        $h1_text = $this->getCatRowName($cat_id);
+        $h1_parrent = $this->getHeadRowName($head_id);
         $form = $this->getHtmlForm("catalog_exist/cat_form");
-        $form = str_replace("{cat_title}", $cat_title, $form);
-        $form = str_replace("{head_title}", "<a href=\"../\">< $head_title</a>", $form);
+        $form = str_replace("{cat_h1}", $h1_text, $form);
+        $form = str_replace("{head_title}", "<a href=\"../\">< $h1_parrent</a>", $form);
         $form = str_replace("{cat_list}", $this->getCatalogColListGroup($head_id, $cat_id), $form);
-        return $this->replaceLang($form);
+        $form = $this->replaceLang($form);
+
+        $title = $this->replaceLang("{site_catalog_header}");
+        $title = str_replace("{h1_text}", $h1_text, $title);
+        $description = $this->replaceLang("{site_catalog_header_description}");
+        $description = str_replace("{h1_text}", $h1_text, $description);
+
+        return compact("form", "title", "description");
     }
 
     /*
@@ -2085,7 +2122,7 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function getCatalogParamsCount($params)
     {
-        $count_brands = $count_params = 0; $count_values = 0;
+        $count_brands = $count_params = $count_values = 0;
         foreach ($params as $param_id => $values) {
             if ($param_id == 0) {
                 $count_brands += count($values);

@@ -302,6 +302,10 @@ if ($_REQUEST["w"] == "finish_fast_order") {
     $GLOBALS['_RESULT'] = array("content" => $shop->saveFastOrder($_REQUEST["phone"]));
 }
 
+if ($_REQUEST["w"] == "add_fast_order") {
+    $GLOBALS['_RESULT'] = array("content" => $shop->addFastOrder($_REQUEST["phone"], $_REQUEST["art_id"], $_REQUEST["brand_id"], $_REQUEST["suppl_id"], $_REQUEST["storage_id"], $_REQUEST["amount"]));
+}
+
 if ($_REQUEST["w"] == "showBasketForm") {
     $GLOBALS['_RESULT'] = array("content" => $shop->showBasketForm($_REQUEST["cur"]));
 }

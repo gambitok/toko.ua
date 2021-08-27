@@ -981,6 +981,63 @@ class ShopClass extends CatalogueClass
         // CREATE ORDER
         $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0, 0);
 
+        //$order_id = $this->addFastOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $phone, $art_id, $brand_id, $storage_id, $suppl_id, $amount);
+
+        return $this->getSiteLink() . "order/?order_id=$order_id&user_id=$user_id&user_status=$user_status/";
+    }
+
+    public function addFastOrder($phone, $art_id, $brand_id, $suppl_id, $storage_id, $amount)
+    {
+        $client = new ClientClass();
+        $phone = $client->formatValidPhone($phone);
+        list(, $user_id) = $client->getAuthorizedUser($phone);
+        $client_id = $client->getClientByUser($user_id);
+        $user_status = 0;
+        // CREATE CLIENT
+        if ($user_id == 0) {
+            $clientData = $client->addRetailClient($this->getClient(), $phone);
+            $client_id = $clientData["client_id"];
+            $user_id = $clientData["user_id"];
+            $user_status = 1;
+        }
+        $tpoint_id = $this->getTpointID();
+        $cookie = $this->getSessionID();
+        $cash_id = intval($client->getClientCurrency($client_id));
+
+        $db = DbSingleton::getDbm();
+        $exrate = new ExrateClass();
+        $status_action = 0;
+
+        $r = $db->query("SELECT MAX(`ID`) as maxim FROM `orders_new`;");
+        $order_id = intval($db->result($r, 0, "maxim")) + 1;
+
+        $price = $this->getArticlePrice($art_id);
+        if ($suppl_id != 0) {
+            $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+        }
+
+        if (!($this->checkActionPrice($art_id))) {
+        } else {
+            list($action_id, $action_amount, $action_price) = $this->checkActionPrice($art_id);
+            $action_price = $exrate->getKoursFromUSA($action_price, 1); // to UAH
+            if ($amount >= $action_amount) {
+                $status_action = $action_id;
+                $price = $action_price;
+            }
+        }
+
+        $summ = $price * $amount;
+
+        $db->query("INSERT INTO `orders_new` 
+            (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `comment`, `order_info_id`, `price_summ`) 
+        VALUES 
+            ($order_id, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '', '', '$phone', '', '', 0, '$summ');");
+
+        $db->query("INSERT INTO `orders_str_new` 
+            (`order_id`, `suppl_id`, `storage_id`, `art_id`, `brand_id`, `amount`, `price`, `summ`, `status_action`) 
+        VALUES 
+            ($order_id, $suppl_id, $storage_id, $art_id, $brand_id, '$amount', '$price', '$summ', $status_action);");
+
         return $this->getSiteLink() . "order/?order_id=$order_id&user_id=$user_id&user_status=$user_status/";
     }
 

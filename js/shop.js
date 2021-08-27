@@ -33,7 +33,12 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
 
     // for single product
     if (id == 'one') {
-        count = 1;
+        let count_one = $("#count_one").val();
+        if (count_one === undefined) {
+            count = 1;
+        } else {
+            count = count_one;
+        }
     }
 
     if (parseInt(stock) < parseInt(count) || parseInt(count) === 0) {
@@ -255,6 +260,24 @@ function validateOperator(phone) {
                 showFastOrder();
                 $("#BasketForm").modal("hide");
             }
+        }}, true);
+}
+
+function addFastOrder() {
+    let count_one = $("#count_one").val();
+    let count = 1;
+    if (count_one !== undefined) {
+        count = count_one;
+    }
+    let art_id = $("#art_id").val();
+    let brand_id = $("#brand_id").val();
+    let suppl_id = $("#suppl_id").val();
+    let storage_id = $("#storage_id").val();
+    let phone = $("#input_phone2").val();
+
+    JsHttpRequest.query(folder,{'w':'add_fast_order', 'phone':phone, 'art_id':art_id, 'brand_id':brand_id, 'suppl_id':suppl_id, 'storage_id':storage_id, 'amount':count},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            location.href = result.content;
         }}, true);
 }
 

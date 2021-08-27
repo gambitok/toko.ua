@@ -928,7 +928,7 @@ class CatalogueClass
         $client_id = $this->getClient();
         $tpoint_id = $this->getTpointID();
         $cur = $this->getCurrentExrate();
-        $view = $client->getProductView();
+        $view = 1;
         session_start();
         $temp_key = session_id();
         $mas = [];

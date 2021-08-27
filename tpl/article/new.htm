@@ -1,6 +1,11 @@
 <link rel="stylesheet" href="/css/plugins/flags.min.css">
 <script type="text/javascript" src="/js/plugins/bootstrap-input-spinner.js"></script>
 
+<input type="hidden" id="art_id" value="{art_id}">
+<input type="hidden" id="brand_id" value="{brand_id}">
+<input type="hidden" id="suppl_id" value="{suppl_id}">
+<input type="hidden" id="storage_id" value="{storage_id}">
+
 <div class="container article-form">
 
     <div class="row article-form-row">
@@ -41,19 +46,19 @@
                         </div>
                     </div>
                     <div class="article-info-row__col article-info-row__col-center">
-                        <input type="text" value="1" min="1" title="amount" id="count_0">
+                        <input type="text" value="1" min="1" title="amount" id="count_one">
                     </div>
                 </div>
                 <div class="article-info-row">
-                    <div class="input-group">
+                    <div class="article-info-row__col">
                         <input
-                            id="input_phone2" class="form-control masked-phone" type="tel" name="phone"
+                            id="input_phone2" class="form-control masked-phone input-buy-min" type="tel" name="phone"
                             placeholder="+38(___) ___-__-__" onchange="validationInput('input_phone2');"
                             title="{input_valid_phone}" data-toggle="tooltip" data-placement="top" data-html="true" value="{user_phone}"
                         >
-                        <div class="input-group-append">
-                            <button class="btn btn-info" id="make_order_fast" {disabled} onclick="{location_fast}">{make_order_fast}</button>
-                        </div>
+                    </div>
+                    <div class="article-info-row__col article-info-row__col-right">
+                        <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="{location_fast}">{make_order_fast}</button>
                     </div>
                 </div>
             </div>
@@ -131,6 +136,6 @@
 
 <script>
     $(document).ready(function() { "use strict";
-        $("#count_0").inputSpinner();
+        $("#count_one").inputSpinner();
     });
 </script>

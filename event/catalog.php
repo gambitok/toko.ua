@@ -116,7 +116,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             $content = str_replace("{meta_social_tag}", $catalog_exist->getCatalogMetaTags($group_id, $catalog_form["h1"]), $content);
             $content = str_replace("{site_script_breadcrumbs}", $catalog_form["script"], $content);
 
-//            $content = str_replace("{site_console}", $catalog_exist->getSiteConsole($catalog_form["time"]), $content);
+            //$content = str_replace("{site_console}", $catalog_exist->getSiteConsole($catalog_form["time"]), $content);
         }
 
         /*
@@ -126,11 +126,17 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
         if (!empty($head_id)) {
             $cat_id = $catalog_exist->getGroupCatExistId($router_2);
             if (empty($cat_id)) {
-                $catalog_form = $catalog_exist->showGroupHeadForm($head_id);
+                //Header
+//                $catalog_form = $catalog_exist->showGroupHeadForm($head_id);
+                $catalogData = $catalog_exist->showGroupHeadForm($head_id);
             } else {
-                $catalog_form = $catalog_exist->showGroupCatForm($head_id, $cat_id);
+                //Category
+  //              $catalog_form = $catalog_exist->showGroupCatForm($head_id, $cat_id);
+                $catalogData = $catalog_exist->showGroupCatForm($head_id, $cat_id);
             }
-            $content = str_replace("{main_window}", $catalog_form, $content);
+            $content = str_replace("{main_window}", $catalogData["form"], $content);
+            $content = str_replace("{site_title}", $catalogData["title"], $content);
+            $content = str_replace("{site_description}", $catalogData["description"], $content);
         }
 
         /*
@@ -152,4 +158,3 @@ if ($redirect_status) {
         header("Location: $redirect_link", TRUE, 301);
     }
 }
-
