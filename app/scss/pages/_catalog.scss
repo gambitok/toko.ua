@@ -928,6 +928,22 @@
 /*==== PHONE ====*/
 @media (max-width:992px) {
 
+    .article-info {
+        &-row {
+            flex-wrap: wrap;
+            &__col {
+                width: 100%;
+                &-right {
+                    float: unset;
+                }
+                .input-buy-min {
+                    margin-right: 0;
+                    margin-bottom: 15px;
+                }
+            }
+        }
+    }
+
     .catalogue-error {
         h1 {
             font-size: 22px;

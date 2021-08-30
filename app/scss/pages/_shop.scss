@@ -478,14 +478,16 @@
             width: 100%;
         }
         &__image {
-            height: 100px;
-            width: 100%;
+            max-height: 100px;
+            max-width: 100px;
+            display: block;
+            margin: 0 auto;
             img {
                 display: block;
                 filter: grayscale(100%);
                 margin: 0 auto;
-                max-height: 100px;
-                max-width: 100px;
+                height: 100px;
+                width: 100px;
                 transition: all .3s linear;
             }
         }

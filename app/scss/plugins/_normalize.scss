@@ -655,11 +655,15 @@ table {
 }
 
 /*==== Bootstrap Carousel ====*/
-.carousel-item img {
-    display: block;
-    margin: 0 auto;
-    max-height: calc(100vh - 100px);
-    width: auto;
+.carousel-item {
+    //max-height: calc(100vh - 100px);
+    //width: 100%;
+    img {
+        display: block;
+        margin: 0 auto;
+        height: 100%;
+        width: 100%;
+    }
 }
 
 .carousel-caption {

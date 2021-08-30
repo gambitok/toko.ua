@@ -5,6 +5,7 @@
 <input type="hidden" id="brand_id" value="{brand_id}">
 <input type="hidden" id="suppl_id" value="{suppl_id}">
 <input type="hidden" id="storage_id" value="{storage_id}">
+<input type="hidden" id="stock" value="{stock}">
 
 <div class="container article-form">
 
@@ -52,13 +53,13 @@
                 <div class="article-info-row">
                     <div class="article-info-row__col">
                         <input
-                            id="input_phone2" class="form-control masked-phone input-buy-min" type="tel" name="phone"
-                            placeholder="+38(___) ___-__-__" onchange="validationInput('input_phone2');"
-                            title="{input_valid_phone}" data-toggle="tooltip" data-placement="top" data-html="true" value="{user_phone}"
+                            id="input_phone_article" class="form-control masked-phone input-buy-min" type="tel" name="phone"
+                            placeholder="+38(___) ___-__-__"
+                            title="{input_valid_phone}" value="{user_phone}"
                         >
                     </div>
                     <div class="article-info-row__col article-info-row__col-right">
-                        <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="{location_fast}">{make_order_fast}</button>
+                        <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="validationInputPhone();">{make_order_fast}</button>
                     </div>
                 </div>
             </div>

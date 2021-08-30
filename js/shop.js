@@ -273,12 +273,17 @@ function addFastOrder() {
     let brand_id = $("#brand_id").val();
     let suppl_id = $("#suppl_id").val();
     let storage_id = $("#storage_id").val();
-    let phone = $("#input_phone2").val();
+    let phone = $("#input_phone_article").val();
+    let stock = $("#stock").val();
 
-    JsHttpRequest.query(folder,{'w':'add_fast_order', 'phone':phone, 'art_id':art_id, 'brand_id':brand_id, 'suppl_id':suppl_id, 'storage_id':storage_id, 'amount':count},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.href = result.content;
-        }}, true);
+    if (count > stock) {
+        showAlertModal("{too_much}", "{error_cap}", 0);
+    } else {
+        JsHttpRequest.query(folder,{'w':'add_fast_order', 'phone':phone, 'art_id':art_id, 'brand_id':brand_id, 'suppl_id':suppl_id, 'storage_id':storage_id, 'amount':count},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                location.href = result.content;
+            }}, true);
+    }
 }
 
 function showFastOrder() {
@@ -333,4 +338,18 @@ function validationInput(name) {
         valid.removeClass("accept").addClass("non_accept").removeClass("fa-check-circle").addClass("fa-times-circle");
         return false;
     }
+}
+
+function validationInputPhone() {
+    let phone = $("#input_phone_article").val();
+    JsHttpRequest.query(folder,{'w':'validateOperator', 'phone':phone},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            if (result.content === false) {
+                let text = "{check_phone_data}!";
+                showAlertModal(text, "{error_cap}", 0);
+                $("#input_phone_article").css("border", "1px solid red");
+            } else {
+                addFastOrder();
+            }
+        }}, true);
 }
