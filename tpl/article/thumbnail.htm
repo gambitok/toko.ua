@@ -1,0 +1,46 @@
+<script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous"
+></script>
+
+<link rel="stylesheet" href="/js/plugins/thumbnail-slider/css/horizontalvertical.css">
+
+<h1>Thumbnail</h1>
+
+<div class="thumbnail">
+    <div
+        class="horVerSlider"
+        data-desktop="800"
+        data-tabportrait="600"
+        data-tablandscape="600"
+        data-mobilelarge="375"
+        data-mobilelandscape="500"
+        data-mobileportrait="375"
+    >
+        <div class="close"></div>
+        <div class="vertical-wrapper">
+            <div id="vertical-slider">
+                <ul>
+                    {images_range}
+                </ul>
+            </div>
+        </div>
+        <div class="horizon-wrapper">
+            <div class="horizone-nav">
+                <div class="prev" style="display: none;"> <img src="/js/plugins/thumbnail-slider/images/leftarrow.svg"  alt=""/> </div>
+                <div class="next" style="display: block;"> <img src="/js/plugins/thumbnail-slider/images/rightarrow.svg"  alt=""/> </div>
+            </div>
+            <div id="horizon-slider" class="zoomin zoomenable zoomed">
+                <ul class="horizone-tab">
+                    {images_range}
+                </ul>
+            </div>
+<!--            <div class="dots">-->
+<!--                <div class="dotwrap"></div>-->
+<!--            </div>-->
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/js/plugins/thumbnail-slider/js/horizontalvertical.js"></script>

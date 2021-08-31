@@ -1110,7 +1110,11 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $delivery_days . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
-            $today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+            $today = (($delivery_days == 0)
+                ? "<span class=\"delivery-green\">{today_cap}</span>"
+                : (($delivery_days == 1)
+                    ? "<span class=\"delivery-blue\">{tomorrow_cap}</span>"
+                    : "<span class=\"delivery-dark\">$date_del ($week_day_short)</span>"));
             $info = "$today<br>$time_from_del - $time_to_del";
             $delivery_short_info = "$today<br>{with_cap} $time_from_del";
             $array[$deliver["storage_id"]] = compact("info", "delivery_days", "delivery_short_info");
@@ -1161,7 +1165,13 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $deliveryTime["delivery_days"] . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $deliveryTime["delivery_days"] . " days"));
-            $today = (($deliveryTime["delivery_days"] == 0) ? "<i>{today_cap}</i>" : (($deliveryTime["delivery_days"] == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+            //$today = (($deliveryTime["delivery_days"] == 0) ? "<i>{today_cap}</i>" : (($deliveryTime["delivery_days"] == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+            $delivery_days = $deliveryTime["delivery_days"];
+            $today = (($delivery_days == 0)
+                ? "<span class=\"delivery-green\">{today_cap}</span>"
+                : (($delivery_days == 1)
+                    ? "<span class=\"delivery-blue\">{tomorrow_cap}</span>"
+                    : "<span class=\"delivery-dark\">$date_del ($week_day_short)</span>"));
             $info = "$today<br>{$time_from_del} - {$time_to_del}";
             $delivery_short_info = "$today<br>{with_cap} $time_from_del";
             $result[$deliveryTime["suppl_id"]][$deliveryTime["suppl_storage_id"]] = [
@@ -1415,10 +1425,12 @@ class CatalogueClass
         $form = str_replace("{photo_src}", $showform->getArticleActivePhoto($art_id), $form);
         $form = str_replace("{photo_display}", $this->checkPhoto($art_id) ? "" : "none", $form);
         $form = str_replace("{product_main_photo}", ($showform->getArticlePhoto($art_id) == "") ? $this->noPhoto : $showform->getArticlePhoto($art_id), $form);
-
+        $delivery_info = str_replace('"', "", $delivery_info);
         $form = str_replace("{product_del}", $delivery_info, $form);
         $form = str_replace("{product_dd}", $delivery_days, $form);
-        $form = str_replace("{product_delivery_class}", ($delivery_days == 0) ? "delivery-green" : ($delivery_days == 1 ? "delivery-blue" : ($delivery_days > 1 ? "delivery-dark" : "")), $form);
+        //$form = str_replace("{product_delivery_class}", ($delivery_days == 0) ? "delivery-green" : ($delivery_days == 1 ? "delivery-blue" : ($delivery_days > 1 ? "delivery-dark" : "")), $form);
+
+        $form = str_replace("{product_delivery_class}", "", $form);
         $form = str_replace("{product_delivery_short_info}", str_replace("<br>", " ", $delivery_short_info), $form);
 
         $form = str_replace("{product_price}", $price . " $kours_cap", $form);
@@ -1847,7 +1859,14 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $delivery_days . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
-            $today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+            //$today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+
+            $today = (($delivery_days == 0)
+                ? "<span class=\"delivery-green\">{today_cap}</span>"
+                : (($delivery_days == 1)
+                    ? "<span class=\"delivery-blue\">{tomorrow_cap}</span>"
+                    : "<span class=\"delivery-dark\">$date_del ($week_day_short)</span>"));
+
             $info = "$today<br>$time_from_del - $time_to_del";
             $short_info = "$today<br>{with_cap} $time_from_del";
         }
@@ -1873,7 +1892,13 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $delivery_days . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
-            $today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+            //$today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
+            $today = (($delivery_days == 0)
+                ? "<span class=\"delivery-green\">{today_cap}</span>"
+                : (($delivery_days == 1)
+                    ? "<span class=\"delivery-blue\">{tomorrow_cap}</span>"
+                    : "<span class=\"delivery-dark\">$date_del ($week_day_short)</span>"));
+
             $info = "$today<br>$time_from_del - $time_to_del";
             $short_info = "$today<br>{with_cap} $time_from_del";
         }
@@ -2977,6 +3002,25 @@ class CatalogueClass
             }
         }
         return true;
+    }
+
+    public function getPhotoForm($art_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            for ($i = 1; $i <= $n; $i++) {
+                $photo = $db->result($r, $i - 1, "PHOTO_NAME");
+                if ($photo != "") {
+                    $list .= "<li data-image=\"https://toko.ua/uploads/images/catalogue/$photo\" class=\"ui-draggable ui-draggable-handle ui-draggable-disabled\"></li>";
+                }
+            }
+        } else {
+            $list = "";
+        }
+        return $list;
     }
 
 }

@@ -68,6 +68,7 @@ class FormClass extends CatalogueClass
             $info = str_replace("{brand_form_descr}", trim($db->result($r, 0, "descr")), $info);
             $info = str_replace("{brand_form_link}", trim($db->result($r, 0, "link")), $info);
             $info = str_replace("{brand_form_logo_name}", trim($db->result($r, 0, "logo_name")), $info);
+            $info = $this->replaceLang($info);
         } else {
             $info = $this->err3;
         }
@@ -126,7 +127,8 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_brand_id}", $brand_id, $form);
         $form = str_replace("{art_brand_name}", $brand_name, $form);
         $form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $form);
-        $form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-red" : (($articleData["delivery_days"] == 1) ? "delivery-blue" : (($articleData["delivery_days"] > 1) ? "delivery-dark" : "")), $form);
+        //$form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-red" : (($articleData["delivery_days"] == 1) ? "delivery-blue" : (($articleData["delivery_days"] > 1) ? "delivery-dark" : "")), $form);
+        $form = str_replace("{del_class}",  "", $form);
         $form = str_replace("{art_stock}", $articleData["stock"], $form);
         $form = str_replace("{art_price}", $articleData["price"], $form);
         $form = str_replace("{art_cur}", $articleData["currency"], $form);
@@ -205,7 +207,8 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_brand_id}", $brand_id, $form);
         $form = str_replace("{art_brand_name}", $brand_name, $form);
         $form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $form);
-        $form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-green" : ($articleData["delivery_days"] == 1 ? "delivery-blue" : ($articleData["delivery_days"] > 1 ? "delivery-dark" : "")), $form);
+        //$form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-green" : ($articleData["delivery_days"] == 1 ? "delivery-blue" : ($articleData["delivery_days"] > 1 ? "delivery-dark" : "")), $form);
+        $form = str_replace("{del_class}", "", $form);
         $form = str_replace("{art_stock}", $articleData["stock"], $form);
         $form = str_replace("{art_price}", $articleData["price"], $form);
         $form = str_replace("{art_cur}", $articleData["currency"], $form);
@@ -318,76 +321,76 @@ class FormClass extends CatalogueClass
     public function getArticleSeoText($art_id, $h1)
     {
         $db = DbSingleton::getTokoDb();
-//        $dbc = DbSingleton::getTokoCacheDb();
-//        $catalog = new CatalogueClass();
+        $dbc = DbSingleton::getTokoCacheDb();
+        $catalog = new CatalogueClass();
         $r = $db->query("SELECT `TEXT` FROM `SEO_STR_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $form = $db->result($r, 0, "TEXT");
         }
-//        else {
-//            $form = "
-//            {_still_search} {Main_Category_H1}? {_go_store_toko} {_toko} {_choose_best} {GET_PAGE_H1}.
-//            {_lowest_prices} {Product_1} {_high_quality_category} {Product_Category_H1}.
-//            {_cooperate} {_popular_brands} {Tags_brand_1} {and_cap} {Tags_brand_2}, {_presented_in_section} {Cat_random1} {and_cap} {Cat_random2}.
-//            {_right_choice} {GET_PAGE_H2}.
-//            {_fast_order} {Geo_nominative} {_other_cities}";
-//
-//            $form = str_replace("{GET_PAGE_H1}", $h1, $form);
-//
-//            $group_id = $catalog->getArticleGroupExist($art_id);
-//            $form = str_replace("{Main_Category_H1}", $this->getSeoLinkCatalog($group_id), $form);
-//
-//            $r = $dbc->query("SELECT `art_id`, `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id ORDER BY RAND() LIMIT 1;");
-//            $art_id_sel = $db->result($r, 0, "art_id");
-//            $brand_id_sel = $db->result($r, 0, "brand_id");
-//            $group_id_sel = $db->result($r, 0, "group_id");
-//            $form = str_replace("{Product_1}", $this->getSeoLinkArticle($art_id_sel, $brand_id_sel), $form);
-//
-//            $group_id_sel_name = $this->getGroupRowName($group_id_sel);
-//            $group_id_sel_link = $this->getGroupRowLink($group_id_sel);
-//            $parrent_group = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_id_sel_link/\">$group_id_sel_name</a>";
-//            $form = str_replace("{Product_Category_H1}", $parrent_group, $form);
-//
-//            $r = $dbc->query("SELECT `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id AND `group_id` != $group_id_sel ORDER BY RAND() LIMIT 2;");
-//            $n = $dbc->num_rows($r);
-//            $arr = [];
-//            for ($i = 1; $i <= $n; $i++) {
-//                $arr[] = ["group_id" => $dbc->result($r, $i - 1, "group_id"), "brand_id" => $dbc->result($r, $i - 1, "brand_id")];
-//            }
-//            $form = str_replace("{Tags_brand_1}", $this->getSeoLinkCatalog($arr[0]["group_id"], $arr[0]["brand_id"]), $form);
-//            $form = str_replace("{Tags_brand_2}", $this->getSeoLinkCatalog($arr[1]["group_id"], $arr[1]["brand_id"]), $form);
-//
-//            $brand_id_sel1 = $arr[0]["brand_id"];
-//            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
-//            $group_id_sel = $dbc->result($r, 0, "group_id");
-//            $form = str_replace("{Cat_random1}", $this->getSeoLinkCatalog($group_id_sel), $form);
-//
-//            $r = $dbc->query("SELECT `art_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` = $group_id_sel ORDER BY RAND() LIMIT 1;");
-//            $art_id_sel = $db->result($r, 0, "art_id");
-//            $brand_id_sel = $db->result($r, 0, "brand_id");
-//            $form = str_replace("{GET_PAGE_H2}", $this->getSeoLinkArticle($art_id_sel, $brand_id_sel), $form);
-//
-//            $brand_id_sel2 = $arr[1]["brand_id"];
-//            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
-//            $group_id_sel2 = $dbc->result($r, 0, "group_id");
-//            $form = str_replace("{Cat_random2}", $this->getSeoLinkCatalog($group_id_sel2), $form);
-//
-//            $r = $db->query("SELECT `CITY_NAME` FROM `SEO_LISTING_CITY` ORDER BY RAND() LIMIT 1;");
-//            $random_city = $db->result($r, 0, "CITY_NAME");
-//            $form = str_replace("{Geo_nominative}", $random_city, $form);
-//
-//            $r = $db->query("SELECT `LIST_KEY` FROM `SEO_LISTING` WHERE 1;");
-//            $langVariables = array_column(mysqli_fetch_all($r), 0);
-//
-//            foreach ($langVariables as $langVariable) {
-//                $form = str_replace("{" . $langVariable . "}", $this->getSeoListingName($langVariable), $form);
-//            }
-//            $form = $this->replaceLang($form);
-//
-//            $db->query("INSERT INTO `SEO_STR_ARTICLES` (`ART_ID`, `TEXT`) VALUES ($art_id, '$form');");
-//
-//        }
+        else {
+            $form = "
+            {_still_search} {Main_Category_H1}? {_go_store_toko} {_toko} {_choose_best} {GET_PAGE_H1}.
+            {_lowest_prices} {Product_1} {_high_quality_category} {Product_Category_H1}.
+            {_cooperate} {_popular_brands} {Tags_brand_1} {and_cap} {Tags_brand_2}, {_presented_in_section} {Cat_random1} {and_cap} {Cat_random2}.
+            {_right_choice} {GET_PAGE_H2}.
+            {_fast_order} {Geo_nominative} {_other_cities}";
+
+            $form = str_replace("{GET_PAGE_H1}", $h1, $form);
+
+            $group_id = $catalog->getArticleGroupExist($art_id);
+            $form = str_replace("{Main_Category_H1}", $this->getSeoLinkCatalog($group_id), $form);
+
+            $r = $dbc->query("SELECT `art_id`, `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id ORDER BY RAND() LIMIT 1;");
+            $art_id_sel = $db->result($r, 0, "art_id");
+            $brand_id_sel = $db->result($r, 0, "brand_id");
+            $group_id_sel = $db->result($r, 0, "group_id");
+            $form = str_replace("{Product_1}", $this->getSeoLinkArticle($art_id_sel, $brand_id_sel), $form);
+
+            $group_id_sel_name = $this->getGroupRowName($group_id_sel);
+            $group_id_sel_link = $this->getGroupRowLink($group_id_sel);
+            $parrent_group = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_id_sel_link/\">$group_id_sel_name</a>";
+            $form = str_replace("{Product_Category_H1}", $parrent_group, $form);
+
+            $r = $dbc->query("SELECT `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id AND `group_id` != $group_id_sel ORDER BY RAND() LIMIT 2;");
+            $n = $dbc->num_rows($r);
+            $arr = [];
+            for ($i = 1; $i <= $n; $i++) {
+                $arr[] = ["group_id" => $dbc->result($r, $i - 1, "group_id"), "brand_id" => $dbc->result($r, $i - 1, "brand_id")];
+            }
+            $form = str_replace("{Tags_brand_1}", $this->getSeoLinkCatalog($arr[0]["group_id"], $arr[0]["brand_id"]), $form);
+            $form = str_replace("{Tags_brand_2}", $this->getSeoLinkCatalog($arr[1]["group_id"], $arr[1]["brand_id"]), $form);
+
+            $brand_id_sel1 = $arr[0]["brand_id"];
+            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
+            $group_id_sel = $dbc->result($r, 0, "group_id");
+            $form = str_replace("{Cat_random1}", $this->getSeoLinkCatalog($group_id_sel), $form);
+
+            $r = $dbc->query("SELECT `art_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` = $group_id_sel ORDER BY RAND() LIMIT 1;");
+            $art_id_sel = $db->result($r, 0, "art_id");
+            $brand_id_sel = $db->result($r, 0, "brand_id");
+            $form = str_replace("{GET_PAGE_H2}", $this->getSeoLinkArticle($art_id_sel, $brand_id_sel), $form);
+
+            $brand_id_sel2 = $arr[1]["brand_id"];
+            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
+            $group_id_sel2 = $dbc->result($r, 0, "group_id");
+            $form = str_replace("{Cat_random2}", $this->getSeoLinkCatalog($group_id_sel2), $form);
+
+            $r = $db->query("SELECT `CITY_NAME` FROM `SEO_LISTING_CITY` ORDER BY RAND() LIMIT 1;");
+            $random_city = $db->result($r, 0, "CITY_NAME");
+            $form = str_replace("{Geo_nominative}", $random_city, $form);
+
+            $r = $db->query("SELECT `LIST_KEY` FROM `SEO_LISTING` WHERE 1;");
+            $langVariables = array_column(mysqli_fetch_all($r), 0);
+
+            foreach ($langVariables as $langVariable) {
+                $form = str_replace("{" . $langVariable . "}", $this->getSeoListingName($langVariable), $form);
+            }
+            $form = $this->replaceLang($form);
+
+            $db->query("INSERT INTO `SEO_STR_ARTICLES` (`ART_ID`, `TEXT`) VALUES ($art_id, '$form');");
+
+        }
         return $form;
     }
 

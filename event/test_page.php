@@ -1,7 +1,10 @@
 <?php
 
+$form = $catalogue->getHtmlForm("article/thumbnail");
 
-$content = str_replace("{main_window}", "hello", $content);
+$form = str_replace("{images_range}", $catalogue->getPhotoForm(100053510), $form);
+
+$content = str_replace("{main_window}", $form, $content);
 
 //$r = $dbm->query("SELECT `id`, `name` FROM `A_CLIENTS` WHERE 1 LIMIT 10;");
 //$n = $dbm->num_rows($r);

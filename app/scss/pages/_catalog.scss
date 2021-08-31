@@ -190,6 +190,9 @@
         transition: all 0.2s linear;
         width: calc(100% + 2px);
         z-index: 99;
+        table {
+            width: 100%;
+        }
     }
     &__price {
         align-items: center;
@@ -546,7 +549,7 @@
             width: 100%;
             &-left {
                 float: left;
-                i {
+                i, span {
                     &.checked {
                         color: #228b94;
                     }
@@ -779,28 +782,28 @@
     }
 }
 
-.delivery-red i {
+.delivery-red {
     color: #f44336!important;
     font-style: normal;
     font-weight: 700!important;
     text-transform: uppercase;
 }
 
-.delivery-green i {
+.delivery-green {
     color: #64B961!important;
     font-style: normal;
     font-weight: 700!important;
     text-transform: uppercase;
 }
 
-.delivery-blue i {
+.delivery-blue {
     color: #228b94!important;
     font-style: normal;
     font-weight: 700!important;
     text-transform: uppercase;
 }
 
-.delivery-dark i {
+.delivery-dark {
     color: #000!important;
     font-style: normal;
     font-weight: 700!important;

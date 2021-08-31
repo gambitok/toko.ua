@@ -500,7 +500,8 @@ class CatalogExistClass extends CatalogueClass
             PRIMARY KEY (`id`)
         ) ENGINE = MYISAM;");
 
-        $count_add = 0; $count_upd = 0;
+        $count_add = 0;
+        $count_upd = 0;
         foreach ($arts as $art_id => $mfa_ids) {
             foreach ($mfa_ids as $mfa_id => $models) {
                 foreach ($models as $model) {
@@ -1230,9 +1231,9 @@ class CatalogExistClass extends CatalogueClass
 //                                $count_arts_label = "[+$count_arts]";
 //                            }
 //                        }
-                        $checked_label = "<i class=\"fas fa-square unchecked\"></i>";
+                        $checked_label = "<span class=\"fas fa-square unchecked\"></span>";
                         if ($checked) {
-                            $checked_label = "<i class=\"fas fa-check-square checked\"></i>";
+                            $checked_label = "<span class=\"fas fa-check-square checked\"></span>";
 //                            $count_arts_label = "";
                         }
 //                        $count_arts_label
@@ -1566,8 +1567,7 @@ class CatalogExistClass extends CatalogueClass
             $group_name = $this->getGroupRowName($group_id);
             $group_link = $this->getGroupRowLink($group_id);
             $link .= "/$group_link/auto";
-            $details_cap  = $group_name;
-            $details_cap .= " {on_cap}";
+            $details_cap = $group_name . " {on_cap}";
         }
 
         $list = "";
