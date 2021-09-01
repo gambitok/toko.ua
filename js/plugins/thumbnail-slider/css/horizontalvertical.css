@@ -66,26 +66,24 @@
 }
 
 .horizon-wrapper {
-    padding: 0;
-    float: left;
     position: relative;
-    margin-left: 60px;
+    margin-left: 30px;
 }
 
 .vertical-wrapper {
-  float: left;
-  display: block;
-  position: relative;
+    float: left;
+    display: block;
+    position: relative;
 }
 
 #horizon-slider {
-  width: 600px;
-  height: 600px;
-  overflow: hidden;
-  position: relative;
-  margin-top: 15px;
-  float: right;
-  display: block;
+    width: 600px;
+    height: 600px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 15px;
+    float: right;
+    display: block;
 }
 
 .fullscreen #horizon-slider {
@@ -98,15 +96,15 @@
 }
 
 #horizon-slider ul {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  flex-flow: row;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 999;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    flex-flow: row;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 999;
 }
 
 #horizon-slider ul li {
@@ -143,28 +141,28 @@
 }
 
 .fullscreen #horizon-slider ul li{
-  width: 800px;
+    width: 800px;
 }
 
 .fullscreen .horizone-nav {
-  width: 925px;
-  left: -60px;
+    width: 925px;
+    left: -60px;
 }
 
 #horizon-slider ul li img {
-  width: auto;
-  height: 100%;
-  text-align: center;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -o-user-select: none;
-  user-select: none;
+    width: auto;
+    height: 100%;
+    text-align: center;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 #horizon-slider ul li iframe {
-  width: 100%;
-  height: 500px;
+    width: 100%;
+    height: 500px;
 }
 
 #vertical-slider {
@@ -177,15 +175,15 @@
 }
 
 #vertical-slider ul {
-  width: 100px;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  flex-flow: row;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 999;
+    width: 100px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    flex-flow: row;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 999;
 }
 
 #vertical-slider:before {
@@ -200,19 +198,19 @@
 }
 
 #vertical-slider ul li {
-  width: 100px;
-  height: 100px;
-  float: left;
-  display: inline;
-  text-align: center;
-  overflow: hidden;
-  border: 2px rgba(0,0,0,0) solid;
-  box-sizing: border-box;
-  background-size: contain;
-  background-repeat: no-repeat;
-  position: relative;
-  cursor: pointer;
-  background-position: center;
+    width: 100px;
+    height: 100px;
+    float: left;
+    display: inline;
+    text-align: center;
+    overflow: hidden;
+    border: 2px rgba(0,0,0,0) solid;
+    box-sizing: border-box;
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: relative;
+    cursor: pointer;
+    background-position: center;
 }
 
 #vertical-slider ul li.video:before {
@@ -252,15 +250,15 @@
 }
 
 .horizone-nav {
-  width: 710px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -55px;
-  right: 0;
-  margin: auto;
-  height: 0;
-  z-index: 9999;
+    width: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    height: 0;
+    z-index: 9999;
 }
 
 .horizone-nav .prev {
@@ -298,94 +296,95 @@
 }
 
 .vertical-nav {
-  width: 17px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  height: 560px;
+    width: 17px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    height: 560px;
 }
 
 .vertical-nav .top {
-  width: 17px;
-  height: 14px;
-  position: absolute;
-  top: 10px;
-  left: 0;
-  right: 0;
+    width: 17px;
+    height: 14px;
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
 }
 
 .vertical-nav .bottom {
-  width: 17px;
-  height: 14px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+    width: 17px;
+    height: 14px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .vertical-nav .top .up {
-  margin-left: 3px;
-  cursor: pointer;
+    margin-left: 3px;
+    cursor: pointer;
 }
 
 .vertical-nav .bottom .down {
-  margin-left: 3px;
-  cursor: pointer;
+    margin-left: 3px;
+    cursor: pointer;
 }
 
 .horVerSlider i {
-  border: solid black;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: 3px;
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
 }
 
 .horVerSlider .right {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  padding: 7px;
-  border-width: 0 2px 2px 0;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    padding: 7px;
+    border-width: 0 2px 2px 0;
 }
 
 .horVerSlider .left {
-  transform: rotate(135deg);
-  -webkit-transform: rotate(135deg);
-  padding: 7px;
-  border-width: 0 2px 2px 0;
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+    padding: 7px;
+    border-width: 0 2px 2px 0;
 }
 
 .horVerSlider .up {
-  transform: rotate(-135deg);
-  -webkit-transform: rotate(-135deg);
-  padding: 4px;
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    padding: 4px;
 }
 
 .horVerSlider .down {
-  transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-  padding: 4px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    padding: 4px;
 }
 
 .horVerSlider .dots {
-  position: absolute;
-  left:0;
-  right: 0;
-  bottom:55px;
-  z-index: 1000;
-  height: 10px;
-  margin: auto;
+    position: absolute;
+    left:0;
+    right: 0;
+    bottom:55px;
+    z-index: 1000;
+    height: 10px;
+    margin: auto;
 }
 
 .horVerSlider .dots .dotwrap {
-  margin: 0;
-  padding: 0;
-  height: 10px;
-  display: flex;
-  justify-content: center
+    margin: 0;
+    padding: 0;
+    height: 10px;
+    display: flex;
+    justify-content: center;
 }
+
 .dots .dotwrap > div {
     width: 8px;
     height: 8px;
@@ -402,41 +401,41 @@
 }
 
 .horVerSlider .close {
-  position: fixed;
-  right: 32px;
-  top: 32px;
-  width: 32px;
-  height: 32px;
-  opacity: 0.3;
-  cursor: pointer;
-  display: none;
-  z-index: 1000;
+    position: fixed;
+    right: 32px;
+    top: 32px;
+    width: 32px;
+    height: 32px;
+    opacity: 0.3;
+    cursor: pointer;
+    display: none;
+    z-index: 1000;
 }
 
 .horVerSlider .close:hover {
-  opacity: 1;
+    opacity: 1;
 }
 
 .horVerSlider .close:before, .horVerSlider .close:after {
-  position: absolute;
-  left: 15px;
-  content: ' ';
-  height: 33px;
-  width: 2px;
-  background-color: #333;
-  z-index: 999;
+    position: absolute;
+    left: 15px;
+    content: ' ';
+    height: 33px;
+    width: 2px;
+    background-color: #333;
+    z-index: 999;
 }
 
 .horVerSlider .close:before {
-  transform: rotate(45deg);
+    transform: rotate(45deg);
 }
 
 .horVerSlider .close:after {
-  transform: rotate(-45deg);
+    transform: rotate(-45deg);
 }
 
 .horVerSlider.fullscreen .close {
-  display: block;
+    display: block;
 }
 
 .horVerSlider.fullscreen #horizon-slider ul li iframe {
@@ -492,15 +491,19 @@
     }
 
     #horizon-slider {
-        width: 150px;
+        width: calc(100vw - 180px);
     }
 
-    #horizon-slider ul li{
-        width: 150px;
+    #horizon-slider ul li {
+        width: calc(100vw - 180px);
     }
 
-    .horizone-nav {
-        width: 160px;
-        left: 0;
+    .horizone-tab {
+        /*width: 1800px!important;*/
+    }
+
+    .horizone-tab li {
+        width: calc(100vw - 180px)!important;
+        /*height: unset!important;*/
     }
 }

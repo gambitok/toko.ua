@@ -2345,6 +2345,12 @@ class CatalogueClass
             $postfix = $this->getLangPostfix($this->getLanguage());
             $r = $db->query("SELECT `TEX_$postfix` FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID` = $cat_id LIMIT 1;");
             $text_txt = $db->result($r, 0, "TEX_$postfix");
+
+//            $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HCG` WHERE `CAT_ID` = $cat_id AND `HEAD_ID` = 1 LIMIT 1;");
+//            $n = $db->num_rows($r);
+//            if ($n > 0) {
+//                $text_txt .= " - " . $this->getHeadRowName(1);
+//            }
         }
         return $text_txt;
     }
@@ -2593,6 +2599,9 @@ class CatalogueClass
                 <div class=\"tree-block__col\" style=\"width: calc(100% / $max_col);\">";
                 foreach ($rows as $row_id => $cat_id) {
                     $cat_name = $this->getCatRowName($cat_id);
+//                    if ($head_id == 1) {
+//                        $cat_name .= " - " . $this->getHeadRowName($head_id);
+//                    }
                     $group_list = $this->getTreeConsGroupList($head_id, $cat_id);
                     $head_link = $this->getHeadRowLink($head_id);
                     $cat_link = $this->getCatRowLink($cat_id);

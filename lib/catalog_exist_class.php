@@ -2080,12 +2080,37 @@ class CatalogExistClass extends CatalogueClass
         return $cat_id;
     }
 
+    public function getHeaderBreadCrumb($head_id, $cat_id = 0)
+    {
+        $arr = [];
+
+        $arr[] = ["name" => "{seo_site_toko}", "link" => $this->getSiteLink()];
+        $arr[] = ["name" => "{site_catalog}", "link" => $this->getSiteLink() . "$this->catalog_link/"];
+
+        if ($head_id > 0) {
+            $head_name = $this->getHeadExistName($head_id);
+            $head_link = $this->getHeadExistLink($head_id);
+            $arr[] = ["name" => "$head_name", "link" => $this->getSiteLink() . "$this->catalog_link/$head_link/"];
+
+            if ($cat_id > 0) {
+                $cat_name = $this->getCatRowName($cat_id);
+                if ($head_id == 1) {
+                    $cat_name .= " - " . $this->getHeadRowName($head_id);
+                }
+                $cat_link = $this->getCatRowLink($cat_id);
+                $arr[] = ["name" => "$cat_name", "link" => $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/"];
+            }
+        }
+        return $arr;
+    }
+
     public function showGroupHeadForm($head_id)
     {
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
-        $r = $db->query("SELECT `TEX_$postfix`, `IMAGES` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1 AND `HEAD_ID` = $head_id LIMIT 1;");
+        $r = $db->query("SELECT `TEX_$postfix` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1 AND `HEAD_ID` = $head_id LIMIT 1;");
         $h1_text = $db->result($r, 0, "TEX_$postfix");
+
         $form = $this->getHtmlForm("catalog_exist/head_form");
         $form = str_replace("{head_h1}", $h1_text, $form);
         $form = str_replace("{head_list}", $this->getCatalogColListCat($head_id), $form);
@@ -2096,16 +2121,21 @@ class CatalogExistClass extends CatalogueClass
         $description = $this->replaceLang("{site_catalog_header_description}");
         $description = str_replace("{h1_text}", $h1_text, $description);
 
-        return compact("form", "title", "description");
+        $breadcrumbsData = $this->getBreadCrumbForm($this->getHeaderBreadCrumb($head_id));
+        $breadcrumb = $breadcrumbsData["form"];
+        $script = $breadcrumbsData["script"];
+
+        return compact("form", "title", "description", "breadcrumb", "script");
     }
 
     public function showGroupCatForm($head_id, $cat_id)
     {
         $h1_text = $this->getCatRowName($cat_id);
-        $h1_parrent = $this->getHeadRowName($head_id);
+        if ($head_id == 1) {
+            $h1_text .= " - " . $this->getHeadRowName($head_id);
+        }
         $form = $this->getHtmlForm("catalog_exist/cat_form");
         $form = str_replace("{cat_h1}", $h1_text, $form);
-        $form = str_replace("{head_title}", "<a href=\"../\">< $h1_parrent</a>", $form);
         $form = str_replace("{cat_list}", $this->getCatalogColListGroup($head_id, $cat_id), $form);
         $form = $this->replaceLang($form);
 
@@ -2114,7 +2144,11 @@ class CatalogExistClass extends CatalogueClass
         $description = $this->replaceLang("{site_catalog_header_description}");
         $description = str_replace("{h1_text}", $h1_text, $description);
 
-        return compact("form", "title", "description");
+        $breadcrumbsData = $this->getBreadCrumbForm($this->getHeaderBreadCrumb($head_id, $cat_id));
+        $breadcrumb = $breadcrumbsData["form"];
+        $script = $breadcrumbsData["script"];
+
+        return compact("form", "title", "description", "breadcrumb", "script");
     }
 
     /*

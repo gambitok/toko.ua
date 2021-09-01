@@ -1,0 +1,272 @@
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css">
+
+<style>
+    .carousel {
+        position: relative;
+    }
+    .carousel-item img {
+        object-fit: cover;
+    }
+
+    #carousel-thumbs {
+        background: #f0f0f0;
+        padding: 0 50px;
+    }
+    #carousel-thumbs img:hover {
+        opacity: 100%;
+    }
+
+    #carousel-thumbs img {
+        opacity: 80%;
+        border: 3px solid transparent;
+        cursor: pointer;
+    }
+    #carousel-thumbs .selected img {
+        opacity: 100%;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 50px;
+    }
+
+    .carousel-fullscreen-icon {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        width: 1.75rem;
+        height: 1.75rem;
+        z-index: 4;
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(255,255,255,.80)'  viewBox='0 0 16 16'%3E%3Cpath d='M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z' /%3E%3C/svg%3E");
+    }
+
+    .carousel-fullscreen-icon:hover {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgb(255,255,255)' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z' /%3E%3C/svg%3E");
+    }
+
+    .pause .carousel-pause-icon {
+        position: absolute;
+        top: 3.75rem;
+        left: 1rem;
+        width: 1.75rem;
+        height: 1.75rem;
+        z-index: 4;
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(255,255,255,.80)'  viewBox='0 0 16 16'%3E%3Cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5zm3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5z' /%3E%3C/svg%3E");
+    }
+    .pause .carousel-pause-icon:hover {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgb(255,255,255)'  viewBox='0 0 16 16'%3E%3Cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5zm3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5z' /%3E%3C/svg%3E");
+    }
+
+    .play .carousel-pause-icon {
+        position: absolute;
+        top: 3.75rem;
+        left: 1rem;
+        width: 1.75rem;
+        height: 1.75rem;
+        z-index: 4;
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(255,255,255,.80)'  viewBox='0 0 16 16'%3E%3Cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z' /%3E%3C/svg%3E");
+    }
+
+    .play .carousel-pause-icon:hover {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgb(255,255,255)'  viewBox='0 0 16 16'%3E%3Cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z' /%3E%3C/svg%3E");
+    }
+
+    #carousel-thumbs .carousel-control-prev-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(0,0,0,.60)' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+    }
+
+    #carousel-thumbs .carousel-control-next-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%60000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+    }
+
+    .modal-content {
+        border-radius: 0;
+        background-color: transparent;
+        border: none;
+    }
+    #lightbox-container-image img {
+        width: auto;
+        max-height: 520px;
+    }
+
+</style>
+
+<div id="wrap" class="container">
+    <div class="row">
+        <div class="col-4">
+
+            <!-- Carousel -->
+            <div id="carousel" class="carousel slide gallery" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active" data-slide-number="0" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/vbNTwfO9we0/1600x900.jpg">
+                        <img src="https://source.unsplash.com/vbNTwfO9we0/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="1" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/DEhwkPYevhE/1600x900.jpg">
+                        <img src="https://source.unsplash.com/DEhwkPYevhE/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="2" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/-RV5PjUDq9U/1600x900.jpg">
+                        <img src="https://source.unsplash.com/-RV5PjUDq9U/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="3" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/sd0rPap7Uus/1600x900.jpg">
+                        <img src="https://source.unsplash.com/sd0rPap7Uus/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="4" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/kmRZFcZEMY8/1600x900.jpg">
+                        <img src="https://source.unsplash.com/kmRZFcZEMY8/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="5" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/HJDdrWtlkIY/1600x900.jpg">
+                        <img src="https://source.unsplash.com/HJDdrWtlkIY/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="6" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/VfuJpt81JZo/1600x900.jpg">
+                        <img src="https://source.unsplash.com/VfuJpt81JZo/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="7" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/NLkXZQ7kHzI/1600x900.jpg">
+                        <img src="https://source.unsplash.com/NLkXZQ7kHzI/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="8" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/bl4WNYGe2KE/1600x900.jpg">
+                        <img src="https://source.unsplash.com/bl4WNYGe2KE/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="9" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/_8zfgT9kS2g/1600x900.jpg">
+                        <img src="https://source.unsplash.com/_8zfgT9kS2g/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="10" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/enuCEimS1p4/1600x900.jpg">
+                        <img src="https://source.unsplash.com/enuCEimS1p4/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item" data-slide-number="11" data-toggle="lightbox" data-gallery="gallery" data-remote="https://source.unsplash.com/hZDtZkdXtek/1600x900.jpg">
+                        <img src="https://source.unsplash.com/hZDtZkdXtek/1600x900.jpg" class="d-block w-100" alt="...">
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+                <a class="carousel-fullscreen" href="#carousel" role="button">
+                    <span class="carousel-fullscreen-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Fullscreen</span>
+                </a>
+                <a class="carousel-pause pause" href="#carousel" role="button">
+                    <span class="carousel-pause-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Pause</span>
+                </a>
+            </div>
+
+            <!-- Carousel Navigatiom -->
+            <div id="carousel-thumbs" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active" data-slide-number="0">
+                        <div class="row mx-0">
+                            <div id="carousel-selector-0" class="thumb col-3 px-1 py-2 selected" data-target="#carousel" data-slide-to="0">
+                                <img src="https://source.unsplash.com/vbNTwfO9we0/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                            <div id="carousel-selector-1" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="1">
+                                <img src="https://source.unsplash.com/DEhwkPYevhE/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                            <div id="carousel-selector-2" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="2">
+                                <img src="https://source.unsplash.com/-RV5PjUDq9U/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                            <div id="carousel-selector-3" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="3">
+                                <img src="https://source.unsplash.com/sd0rPap7Uus/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item " data-slide-number="1">
+                        <div class="row mx-0">
+                            <div id="carousel-selector-4" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="4">
+                                <img src="https://source.unsplash.com/kmRZFcZEMY8/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                            <div id="carousel-selector-5" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="5">
+                                <img src="https://source.unsplash.com/HJDdrWtlkIY/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                            <div id="carousel-selector-6" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="6">
+                                <img src="https://source.unsplash.com/VfuJpt81JZo/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                            <div id="carousel-selector-7" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="7">
+                                <img src="https://source.unsplash.com/NLkXZQ7kHzI/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item" data-slide-number="2">
+                        <div class="row mx-0">
+                            <div id="carousel-selector-8" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="8">
+                                <img src="https://source.unsplash.com/bl4WNYGe2KE/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                            <div id="carousel-selector-9" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="9">
+                                <img src="https://source.unsplash.com/_8zfgT9kS2g/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                            <div id="carousel-selector-10" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="10">
+                                <img src="https://source.unsplash.com/enuCEimS1p4/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                            <div id="carousel-selector-11" class="thumb col-3 px-1 py-2" data-target="#carousel" data-slide-to="11">
+                                <img src="https://source.unsplash.com/hZDtZkdXtek/1600x900.jpg" class="img-fluid" alt="...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#carousel-thumbs" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carousel-thumbs" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.js">
+
+</script>
+
+<script>
+    $("[id^=carousel-thumbs]").carousel({
+        interval: false
+    });
+
+    /** Pause/Play Button **/
+    $(".carousel-pause").click(function () {
+        var id = $(this).attr("href");
+        if ($(this).hasClass("pause")) {
+            $(this).removeClass("pause").toggleClass("play");
+            $(this).children(".sr-only").text("Play");
+            $(id).carousel("pause");
+        } else {
+            $(this).removeClass("play").toggleClass("pause");
+            $(this).children(".sr-only").text("Pause");
+            $(id).carousel("cycle");
+        }
+        $(id).carousel;
+    });
+
+    /** Fullscreen Buttun **/
+    $(".carousel-fullscreen").click(function () {
+        var id = $(this).attr("href");
+        $(id).find(".active").ekkoLightbox({
+            type: "image"
+        });
+    });
+
+    if ($("[id^=carousel-thumbs] .carousel-item").length < 2) {
+        $("#carousel-thumbs [class^=carousel-control-]").remove();
+        $("#carousel-thumbs").css("padding", "0 5px");
+    }
+
+    $("#carousel").on("slide.bs.carousel", function (e) {
+        var id = parseInt($(e.relatedTarget).attr("data-slide-number"));
+        var thumbNum = parseInt(
+            $("[id=carousel-selector-" + id + "]")
+                .parent()
+                .parent()
+                .attr("data-slide-number")
+        );
+        $("[id^=carousel-selector-]").removeClass("selected");
+        $("[id=carousel-selector-" + id + "]").addClass("selected");
+        $("#carousel-thumbs").carousel(thumbNum);
+    });
+
+</script>
