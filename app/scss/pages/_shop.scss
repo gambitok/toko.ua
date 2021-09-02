@@ -150,7 +150,7 @@
 }
 
 .orders {
-    box-shadow: 0 0 40px 0 rgba(0,0,0,.11);
+    box-shadow: 0 0 40px 0 rgba(0, 0, 0, .11);
     font-size: 16px;
     padding: 30px;
     width: 100%;
@@ -215,10 +215,10 @@
             color: #000;
             display: inline-block;
             height: 40px;
-            width: 40px;
             line-height: 30px;
             padding: 5px;
             text-align: center;
+            width: 40px;
             &-fill {
                 background: #55bae6;
                 border-color: #55bae6;
@@ -299,8 +299,8 @@
             &__radio {
                 cursor: pointer;
                 display: block;
-                position: relative;
                 padding-left: 35px;
+                position: relative;
                 user-select: none;
                 width: 100%;
                 &:hover {
@@ -326,21 +326,21 @@
                     background-color: #eee;
                     border-radius: 50%;
                     height: 16px;
+                    left: 4px;
                     line-height: 16px;
                     position: absolute;
                     top: 4px;
-                    left: 4px;
                     width: 16px;
                     &:after {
                         background: #fff;
                         border-radius: 50%;
                         content: "";
                         display: none;
-                        top: 5px;
-                        left: 5px;
-                        width: 6px;
                         height: 6px;
+                        left: 5px;
                         position: absolute;
+                        top: 5px;
+                        width: 6px;
                     }
                 }
             }
@@ -436,9 +436,9 @@
         font-weight: bold;
     }
     &-foot {
-        padding: 15px 0;
         border-top: 1px solid #ddd;
         margin-top: 15px;
+        padding: 15px 0;
     }
 }
 
@@ -478,17 +478,17 @@
             width: 100%;
         }
         &__image {
-            max-height: 100px;
-            max-width: 100px;
             display: block;
             margin: 0 auto;
+            max-height: 100px;
+            max-width: 100px;
             img {
                 display: block;
                 filter: grayscale(100%);
-                margin: 0 auto;
                 height: 100px;
-                width: 100px;
+                margin: 0 auto;
                 transition: all .3s linear;
+                width: 100px;
             }
         }
         &__text {
@@ -542,8 +542,8 @@
     .orders {
         padding: 30px 10px;
         &-title {
-            width: 100%;
             display: none;
+            width: 100%;
         }
         &-block {
             margin-bottom: 10px;
@@ -565,4 +565,3 @@
         }
     }
 }
-

@@ -179,6 +179,30 @@ class AutoClass extends CatalogueClass
     }
 
     /*
+     * get car model name
+     * from LINK
+     * */
+    public function getModIdName($mod_id)
+    {
+        $mod_id = $this->getUrlNumber($mod_id);
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = '$mod_id' LIMIT 1;");
+        return $db->result($r, 0, "TEX_TEXT");
+    }
+
+    /*
+     * get car model name
+     * from LINK
+     * */
+    public function getModIdLink($mod_id_link)
+    {
+        $mod_id_link = $this->getUrlString($mod_id_link);
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `MOD_ID` FROM `T_models` WHERE `TEX_TEXT_link` = '$mod_id_link' LIMIT 1;");
+        return $db->result($r, 0, "MOD_ID");
+    }
+
+    /*
      * get car mfa, model, model_id images
      * from ID
      * */

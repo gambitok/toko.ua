@@ -12,6 +12,7 @@ $router = $catalogue->getUrlString($linka[1]);
 $router_2 = $catalogue->getUrlString($linka[2]);
 $router_3 = $catalogue->getUrlString($linka[3]);
 $router_4 = $catalogue->getUrlString($linka[4]);
+$router_5 = $catalogue->getUrlString($linka[5]);
 $page = $catalogue->getUrlNumber($_GET["page"]);
 
 $path_from = $site_name . "/" . $router . "/";
@@ -53,9 +54,11 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             }
             $mfa_link = $router_3;
             $model_link = $router_4;
+            $model_id_link = $router_5;
 
             $mfa_id = 0;
             $model = "";
+            $model_id = 0;
             if ($mfa_link != "") {
                 $mfa_id = $automan->getMfaLink($mfa_link);
                 if ($mfa_id == 0) {
@@ -74,6 +77,9 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                             $redirect_status = 1;
                             $redirect_type = 404;
                             $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                        }
+                        if ($model != "") {
+                            $model_id = $automan->getModIdLink($model_id_link);
                         }
                     }
                 }
@@ -100,7 +106,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             $status_auto_type = $catalogue->getUrlNumber($_COOKIE["status_auto_type"]);
             ($status_auto_type != NULL) ?: $status_auto_type = 0;
 
-            $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $status_auto, $status_auto_type, $str_linka, $source_link);
+            $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $str_linka, $source_link);
 
             if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
                 $max_page = $catalog_form["pages_count"];

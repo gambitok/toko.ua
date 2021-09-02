@@ -895,7 +895,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show catalog form
      * */
-    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0, $str_link = "", $source_link = "")
+    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $model_id = 0, $status_auto = 0, $status_auto_type = 0, $str_link = "", $source_link = "")
     {
         $typ_id = $this->getCookieAuto();
         $automan = new AutoClass();
@@ -939,7 +939,7 @@ class CatalogExistClass extends CatalogueClass
 
         $pagination_form = $this->getPartsPaginationForm($count, $page);
 
-        list($h1_text, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $page, $params, $mfa_id, $model, $str_link);
+        list($h1_text, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $page, $params, $mfa_id, $model, $model_id, $str_link);
 
         $translit = "";
         if ($mfa_id > 0) {
@@ -1016,7 +1016,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show filter items form
      * */
-    public function getPartsFiltersItems($group_id, $page = 1, $params = [], $mfa_id = 0, $model = "", $str_link = "")
+    public function getPartsFiltersItems($group_id, $page = 1, $params = [], $mfa_id = 0, $model = "", $model_id = 0, $str_link = "")
     {
         $filters_btn = "";
         $count_values = 0;
@@ -1045,7 +1045,7 @@ class CatalogExistClass extends CatalogueClass
             }
         }
 
-        $h1_text = $this->getCatalogH1($group_id, $params, $mfa_id, $model);
+        $h1_text = $this->getCatalogH1($group_id, $params, $mfa_id, $model, $model_id);
 
 //        $filters_title = $this->getCatalogTitleCache($str_link);
 //        if ($filters_title == "") {
@@ -1607,7 +1607,7 @@ class CatalogExistClass extends CatalogueClass
                 }
                 $list .= "
                 <a class=\"seo-li\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/$mod_id_link/\">
-                    <div class=\"row mar0\">
+                    <div class=\"row \">
                         <div class=\"col-4\">
                             <img src=\"https://toko.ua/uploads/images/models/$image\" alt=\"$text\" title=\"$text\">
                         </div>
@@ -1767,7 +1767,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * catalog h1
      * */
-    public function getCatalogH1($group_id, $params = [], $mfa_id = 0, $model = "")
+    public function getCatalogH1($group_id, $params = [], $mfa_id = 0, $model = "", $model_id = 0)
     {
         $automan = new AutoClass();
         $car_text = "";
@@ -1779,6 +1779,10 @@ class CatalogExistClass extends CatalogueClass
             $car_text = "{on_cap} $mfa_name";
             if ($model != "") {
                 $car_text .= " $model";
+                if ($model_id > 0) {
+                    $model_id_name = $automan->getModIdName($model_id);
+                    $car_text .= " $model_id_name";
+                }
             }
         }
 
@@ -1830,8 +1834,15 @@ class CatalogExistClass extends CatalogueClass
                     $group_text = $group_name;
                     krsort($params);
                     $endpoint = 0;
+                    $count_params = 0;
                     foreach ($params as $param_id => $values) {
                         if ($param_id > 0) {
+                            $param_name = $this->getGroupParamName($param_id);
+                            $count_params++;
+                            if ($count_params == 1) {
+                                $group_text .= ":";
+                            }
+                            $group_text .= " $param_name - ";
                             foreach ($values as $value_id) {
                                 $value_name = $this->getGroupValueName($value_id, $param_id);
                                 $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
@@ -1860,7 +1871,14 @@ class CatalogExistClass extends CatalogueClass
             // only 1 param
             if (count($params) == 1 && !array_key_exists(0, $params)) {
                 $group_text = $group_name;
+                $count_params = 0;
                 foreach ($params as $param_id => $values) {
+                    $param_name = $this->getGroupParamName($param_id);
+                    $count_params++;
+                    if ($count_params == 1) {
+                        $group_text .= ":";
+                    }
+                    $group_text .= " $param_name - ";
                     foreach ($values as $value_id) {
                         $value_name = $this->getGroupValueName($value_id, $param_id);
                         $value_h1_name = $this->getGroupValueH1($value_id, $param_id);

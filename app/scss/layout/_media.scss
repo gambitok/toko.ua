@@ -35,19 +35,19 @@
 
     .tree-group {
         &__item {
-            width: calc(100%);
-            min-height: unset;
             display: flex;
             justify-content: center;
+            min-height: unset;
+            width: calc(100%);
             &-image {
                 width: 15%;
             }
             &-text {
-                width: 85%;
-                display: flex;
-                margin-left: 15px;
                 align-items: center;
+                display: flex;
                 font-weight: bold;
+                margin-left: 15px;
+                width: 85%;
                 span {
                     text-align: left;
                 }
@@ -79,18 +79,14 @@
         position: relative;
     }
 
-    .sticky-backdrop {
-        &-active {
-            left: -100%;
-            opacity: 0;
-        }
+    .sticky-backdrop-active {
+        left: -100%;
+        opacity: 0;
     }
 
-    .backdrop {
-        &-show {
-            left: -100%;
-            opacity: 0;
-        }
+    .backdrop-show {
+        left: -100%;
+        opacity: 0;
     }
 
     .article-card:hover > .article-card-hidden {
@@ -112,12 +108,8 @@
         margin: 0;
     }
 
-    .orders {
-        &-col {
-            &-wide {
-                padding: 0;
-            }
-        }
+    .orders-col-wide {
+        padding: 0;
     }
 
     .header-order {
@@ -379,6 +371,14 @@
 
 /*==== PAD PRO ====*/
 @media (min-width: 992px) and (max-width: 1275px) {
+    .seo-li {
+        margin-right: 0;
+        width: 100%;
+        img {
+            max-height: 70px;
+            width: 100%;
+        }
+    }
     .desktop-only {
         display: none;
     }
@@ -408,6 +408,14 @@
 
 /*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) {
+    .seo-li {
+        margin-right: 0;
+        width: 100%;
+        img {
+            max-height: 70px;
+            width: 100%;
+        }
+    }
     .fixed-nav {
         display: flex;
     }
@@ -485,10 +493,8 @@
         text-align: left;
     }
 
-    .tree-block {
-        &-title {
-            height: 200px;
-        }
+    .tree-block-title {
+        height: 200px;
     }
 
     .tree-item {

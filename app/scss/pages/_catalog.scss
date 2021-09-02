@@ -152,10 +152,10 @@
 
 .article-card {
     border: 1px solid #ddd;
-    margin: 10px;
-    position: relative;
     bottom: 0;
     left: 0;
+    margin: 10px;
+    position: relative;
     right: 0;
     top: 0;
     transition: all 0.2s linear;
@@ -343,10 +343,10 @@
 }
 
 .search__name-stock {
-    font-size: 13px;
-    letter-spacing: normal;
     color: #64B961;
+    font-size: 13px;
     font-weight: bold;
+    letter-spacing: normal;
 }
 
 .search__soldout {
@@ -363,11 +363,11 @@
     height: 200px;
     img {
         display: block;
-        margin: 0 auto;
         height: 100%;
-        width: 100%;
+        margin: 0 auto;
         object-fit: contain;
         user-select: none;
+        width: 100%;
     }
 }
 
@@ -396,8 +396,8 @@
 
 .search__total {
     color: #000;
-    font-weight: bold;
     font-size: 14px;
+    font-weight: bold;
     text-align: center;
 }
 
@@ -727,8 +727,8 @@
 /*==== SEARCHING ====*/
 .tables__price {
     color: #606975;
-    font-weight: bold;
     font-size: 14px;
+    font-weight: bold;
     text-align: center;
 }
 
@@ -940,8 +940,8 @@
                     float: unset;
                 }
                 .input-buy-min {
-                    margin-right: 0;
                     margin-bottom: 15px;
+                    margin-right: 0;
                 }
             }
         }
@@ -1042,7 +1042,8 @@
         display: none;
     }
 
-    .tables-p__delivery, .tables-p__stock {
+    .tables-p__delivery,
+    .tables-p__stock {
         color: #606975;
         display: block;
         font-size: 0.6em;
