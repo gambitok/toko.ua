@@ -14,6 +14,7 @@ require_once (RDD . "/lib/mysql_class.php");
 $link = "https://toko.ua/";
 
 $db = DbSingleton::getTokoDb();
+$dbc = DbSingleton::getTokoCacheDb();
 $xmlWriter = new XMLWriter();
 $xmlWriter->openMemory();
 $max_tags_count = 15000;
@@ -30,7 +31,6 @@ unlink("sitemap-cars.xml");
 unlink("sitemap-categories.xml");
 unlink("sitemap-categories-params.xml");
 
-
 /*
  * INIT `sitemap-manufactures`
  * */
@@ -41,43 +41,24 @@ $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instan
 $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
 
 $col = 0;
-$r2 = $db->query("SELECT `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1;");
+$r2 = $db->query("SELECT `GROUP_ID`, `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1;");
 $n2 = $db->num_rows($r2);
 for ($j = 1; $j <= $n2; $j++) {
+    $group_id = $db->result($r2, $j - 1, "GROUP_ID");
     $tex_link = $db->result($r2, $j - 1, "TEX_LINK");
 
-    $r1 = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID` ASC;");
-    $n1 = $db->num_rows($r1);
-    for ($l = 1; $l <= $n1; $l++) {
-        $mfa_id = $db->result($r1, $l - 1, "MFA_ID") + 0;
-        $mfa_link = $db->result($r1, $l - 1, "MFA_BRAND_LINK");
-
-        $xmlWriter->setIndent(2);
-        $xmlWriter->startElement('url');
-        $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/");
-        $xmlWriter->writeElement('changefreq', 'weekly');
-        $xmlWriter->writeElement('priority', '0.9');
-        $xmlWriter->endElement();
-        $col++;
-
-        if (($col % $max_tags_count) == 0) {
-            $xmlWriter->endElement();
-            $doc_nom++;
-            file_put_contents("sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
-            $xmlWriter->startElement('urlset');
-            $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
-            $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
-            $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
-        }
-
-        $r = $db->query("SELECT `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model` ORDER BY `Model` ASC;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $model_link = $db->result($r, $i - 1, "Model_Link");
+    $rtt = $dbc->query("SHOW TABLES LIKE 'EX_TABLE_TREE_MFA_$group_id';");
+    $ntt = $dbc->num_rows($rtt);
+    if ($ntt > 0) {
+        $r1 = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID` ASC;");
+        $n1 = $db->num_rows($r1);
+        for ($l = 1; $l <= $n1; $l++) {
+            $mfa_id = $db->result($r1, $l - 1, "MFA_ID") + 0;
+            $mfa_link = $db->result($r1, $l - 1, "MFA_BRAND_LINK");
 
             $xmlWriter->setIndent(2);
             $xmlWriter->startElement('url');
-            $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/$model_link/");
+            $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/");
             $xmlWriter->writeElement('changefreq', 'weekly');
             $xmlWriter->writeElement('priority', '0.9');
             $xmlWriter->endElement();
@@ -91,6 +72,36 @@ for ($j = 1; $j <= $n2; $j++) {
                 $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
                 $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
                 $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+            }
+
+            $r = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model` ORDER BY `Model` ASC;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $model = $db->result($r, $i - 1, "Model");
+                $model_link = $db->result($r, $i - 1, "Model_Link");
+
+                $rrr = $dbc->query("SELECT `id` FROM `EX_TABLE_TREE_MFA_$group_id` WHERE `mfa_id` = $mfa_id AND `model` = '$model' LIMIT 1;");
+                $nnn = $dbc->num_rows($rrr);
+                if ($nnn > 0) {
+                    $xmlWriter->setIndent(2);
+                    $xmlWriter->startElement('url');
+                    $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/$model_link/");
+                    $xmlWriter->writeElement('changefreq', 'weekly');
+                    $xmlWriter->writeElement('priority', '0.9');
+                    $xmlWriter->endElement();
+                    $col++;
+
+                    if (($col % $max_tags_count) == 0) {
+                        $xmlWriter->endElement();
+                        $doc_nom++;
+                        file_put_contents("sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
+                        $xmlWriter->startElement('urlset');
+                        $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+                        $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+                        $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+                    }
+                }
+
             }
         }
     }

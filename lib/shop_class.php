@@ -160,7 +160,8 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{price}", $price, $form);
         $form = str_replace("{date1}", date("d.m.y H:i", strtotime($date_create)), $form);
         $form = str_replace("{date2}", date("d.m.y H:i", strtotime(date("Y-m-d H:i:s"))), $form);
-        $form = str_replace("{delivery_info}", $deliveryData["info"], $form);
+        $delivery_info = str_replace('"', "", $deliveryData["info"]);
+        $form = str_replace("{delivery_info}", $delivery_info, $form);
         $form = str_replace("{delivery_short_info}", $deliveryData["short"], $form);
         $form = str_replace("{storage_id}", $storage_id, $form);
         $form = str_replace("{stock}", $stock, $form);

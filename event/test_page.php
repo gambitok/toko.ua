@@ -4,6 +4,9 @@
 //
 //$form = str_replace("{images_range}", $catalogue->getPhotoForm(100053510), $form);
 
+$result = $catalogue->testLinks();
+
+
 $content = str_replace("{main_window}", $catalogue->getHtmlForm("article/test"), $content);
 
 //$r = $dbm->query("SELECT `id`, `name` FROM `A_CLIENTS` WHERE 1 LIMIT 10;");

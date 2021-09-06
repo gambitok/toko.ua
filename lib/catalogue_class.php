@@ -3032,6 +3032,86 @@ class CatalogueClass
         return $list;
     }
 
+    function checkMfa($mfa_link)
+    {
+        $mfa_id = 0;
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' AND `ACTIVE` = 1 LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $mfa_id = $db->result($r, 0, "MFA_ID");
+        }
+        return $mfa_id;
+    }
+
+    function checkModel($mfa_id, $model_link)
+    {
+        $model = "";
+        if ($mfa_id > 0) {
+            $db = DbSingleton::getTokoDb();
+            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link` = '$model_link' AND `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 LIMIT 1;");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $model = $db->result($r, 0, "Model");
+            }
+        }
+        return $model;
+    }
+
+    public function testLinks()
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `LINK` FROM `T_TEST_LINKS`");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $link = $db->result($r, $i - 1, "LINK");
+            $arr = explode("/", $link);
+
+            $status = 0;
+            $router = $arr[1];
+
+            if ($router == "") {
+                $status = 1;
+            }
+
+            if ($router == "cars") {
+                $mfa_link = $arr[2]; $mfa_id = 0;
+                $model_link = $arr[3]; $model = "";
+                if ($mfa_link != "") {
+                    $mfa_id = $this->checkMfa($mfa_link);
+                    if ($model_link != "") {
+                        $model = $this->checkModel($mfa_id, $model_link);
+                    }
+                }
+                if ($mfa_link != "" && $model_link == "") {
+                    if ($mfa_id > 0) {
+                        $status = 1;
+                    } else {
+                        $status = 0;
+                    }
+                }
+                elseif ($mfa_link != "" && $model_link != "") {
+                    if ($model != "") {
+                        $status = 1;
+                    } else {
+                        $status = 0;
+                    }
+                }
+
+                if ($mfa_link == "nissan" && $model_link == "rogue") {
+                    var_dump("SELECT `Model` FROM `T_models` WHERE `Model_Link` = '$model_link' AND `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 LIMIT 1;");
+                }
+            }
+
+            if ($router == "catalog") {
+
+            }
+
+            $db->query("UPDATE `T_TEST_LINKS` SET `STATUS` = $status WHERE `LINK` = '$link' LIMIT 1;");
+        }
+        return 0;
+    }
+
 }
 
 function myBrandCmp($a, $b) {
