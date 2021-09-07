@@ -35,6 +35,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $str_linka = $linka;
     unset($str_linka[0]);
     $str_linka = implode("/", $str_linka);
+
     /*
      * Catalog
      * */
@@ -106,7 +107,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             $status_auto_type = $catalogue->getUrlNumber($_COOKIE["status_auto_type"]);
             ($status_auto_type != NULL) ?: $status_auto_type = 0;
 
-            $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $str_linka, $source_link);
+            $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $source_link);
 
             if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
                 $max_page = $catalog_form["pages_count"];

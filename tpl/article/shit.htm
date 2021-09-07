@@ -1,0 +1,49 @@
+<link rel="stylesheet" type="text/css" href="/js/plugins/sliderPro/css/slider-pro.min.css" media="screen"/>
+
+<script type="text/javascript" src="/js/plugins/sliderPro/js/jquery.sliderPro.min.js"></script>
+
+<div id="example5" class="slider-pro">
+    <div class="sp-slides">
+        {images_slide}
+    </div>
+    <div class="sp-thumbnails">
+        {images_thumbnail}
+    </div>
+</div>
+
+<script type="text/javascript">
+    $( document ).ready(function( $ ) {
+        $( '#example5' ).sliderPro({
+            width: 700,
+            height: 500,
+            orientation: 'vertical',
+            loop: false,
+            arrows: true,
+            buttons: false,
+            thumbnailsPosition: 'left',
+            thumbnailPointer: true,
+            imageScaleMode: 'contain',
+            thumbnailWidth: 120,
+            fullScreen: true,
+            shuffle: true,
+            smallSize: 500,
+            mediumSize: 1000,
+            largeSize: 3000,
+            fade: true,
+            autoplay: false,
+            thumbnailArrows: true,
+            breakpoints: {
+                800: {
+                    thumbnailsPosition: 'bottom',
+                    thumbnailWidth: 270,
+                    thumbnailHeight: 100
+                },
+                500: {
+                    thumbnailsPosition: 'bottom',
+                    thumbnailWidth: 120,
+                    thumbnailHeight: 50
+                }
+            }
+        });
+    });
+</script>

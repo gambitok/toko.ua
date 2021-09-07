@@ -214,8 +214,11 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_cur}", $articleData["currency"], $form);
         $form = str_replace("{art_basket}", $articleData["basket"], $form);
 
-        $form_photo = $this->getHtmlForm("article/thumbnail");
-        $form_photo = str_replace("{images_range}", $this->getPhotoForm($art_id), $form_photo);
+        $form_photo = $this->getHtmlForm("article/shit");
+        $dataPhoto = $this->getSlideProPhoto($art_id);
+        $form_photo = str_replace("{images_slide}", $dataPhoto["slide"], $form_photo);
+        $form_photo = str_replace("{images_thumbnail}", $dataPhoto["thumbnail"], $form_photo);
+//        $form = str_replace("{images_range}", $catalogue->getSlideProPhoto($art_id), $form);
 
 //        $form = str_replace("{art_images}", $this->showPhotoGallery($art_id), $form);
         $form = str_replace("{art_images}", $form_photo, $form);

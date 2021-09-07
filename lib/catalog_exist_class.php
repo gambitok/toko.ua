@@ -895,7 +895,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show catalog form
      * */
-    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $model_id = 0, $status_auto = 0, $status_auto_type = 0, $str_link = "", $source_link = "")
+    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $model_id = 0, $status_auto = 0, $status_auto_type = 0, $source_link = "")
     {
         $typ_id = $this->getCookieAuto();
         $automan = new AutoClass();
@@ -939,7 +939,7 @@ class CatalogExistClass extends CatalogueClass
 
         $pagination_form = $this->getPartsPaginationForm($count, $page);
 
-        list($h1_text, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $page, $params, $mfa_id, $model, $model_id, $str_link);
+        list($h1_text, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $page, $params, $mfa_id, $model, $model_id);
 
         $translit = "";
         if ($mfa_id > 0) {
@@ -1016,7 +1016,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show filter items form
      * */
-    public function getPartsFiltersItems($group_id, $page = 1, $params = [], $mfa_id = 0, $model = "", $model_id = 0, $str_link = "")
+    public function getPartsFiltersItems($group_id, $page = 1, $params = [], $mfa_id = 0, $model = "", $model_id = 0)
     {
         $filters_btn = "";
         $count_values = 0;

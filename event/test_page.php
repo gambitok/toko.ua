@@ -4,10 +4,16 @@
 //
 //$form = str_replace("{images_range}", $catalogue->getPhotoForm(100053510), $form);
 
-$result = $catalogue->testLinks();
+//$result = $catalogue->testLinks();
 
+$form = $catalogue->getHtmlForm("article/shit");
+$dataPhoto = $catalogue->getSlideProPhoto(100002193);
+$form = str_replace("{images_slide}", $dataPhoto["slide"], $form);
+$form = str_replace("{images_thumbnail}", $dataPhoto["thumbnail"], $form);
 
-$content = str_replace("{main_window}", $catalogue->getHtmlForm("article/test"), $content);
+$form = str_replace("{images_range}", $catalogue->getSlideProPhoto(100053510), $form);
+
+$content = str_replace("{main_window}", $form, $content);
 
 //$r = $dbm->query("SELECT `id`, `name` FROM `A_CLIENTS` WHERE 1 LIMIT 10;");
 //$n = $dbm->num_rows($r);

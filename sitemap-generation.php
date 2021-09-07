@@ -47,9 +47,9 @@ for ($j = 1; $j <= $n2; $j++) {
     $group_id = $db->result($r2, $j - 1, "GROUP_ID");
     $tex_link = $db->result($r2, $j - 1, "TEX_LINK");
 
-    $rtt = $dbc->query("SHOW TABLES LIKE 'EX_TABLE_TREE_MFA_$group_id';");
-    $ntt = $dbc->num_rows($rtt);
-    if ($ntt > 0) {
+    $rttt = $dbc->query("SHOW TABLES LIKE 'EX_TABLE_TREE_MFA_$group_id';");
+    $nttt = $dbc->num_rows($rttt);
+    if ($nttt > 0) {
         $r1 = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID` ASC;");
         $n1 = $db->num_rows($r1);
         for ($l = 1; $l <= $n1; $l++) {
@@ -80,9 +80,9 @@ for ($j = 1; $j <= $n2; $j++) {
                 $model = $db->result($r, $i - 1, "Model");
                 $model_link = $db->result($r, $i - 1, "Model_Link");
 
-                $rrr = $dbc->query("SELECT `id` FROM `EX_TABLE_TREE_MFA_$group_id` WHERE `mfa_id` = $mfa_id AND `model` = '$model' LIMIT 1;");
-                $nnn = $dbc->num_rows($rrr);
-                if ($nnn > 0) {
+                $rrrr = $dbc->query("SELECT `id` FROM `EX_TABLE_TREE_MFA_$group_id` WHERE `mfa_id` = $mfa_id AND `model` = '$model' LIMIT 1;");
+                $nnnn = $dbc->num_rows($rrrr);
+                if ($nnnn > 0) {
                     $xmlWriter->setIndent(2);
                     $xmlWriter->startElement('url');
                     $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/$model_link/");
