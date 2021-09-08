@@ -2842,6 +2842,7 @@ class CatalogueClass
 
     public function getManufactureLink($mfa_id)
     {
+        $mfa_id = $this->getUrlNumber($mfa_id);
         $db = DbSingleton::getTokoDb();
         $mfa_link = "";
         $r = $db->query("SELECT `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
@@ -2854,6 +2855,7 @@ class CatalogueClass
 
     public function getModelLink($model)
     {
+        $model = $this->getUrlString($model);
         $db = DbSingleton::getTokoDb();
         $model_link = "";
         $r = $db->query("SELECT `Model_Link` FROM `T_models` WHERE `Model` = '$model' LIMIT 1;");
@@ -3013,53 +3015,78 @@ class CatalogueClass
         return true;
     }
 
-    public function getPhotoForm($art_id)
-    {
-        $db = DbSingleton::getTokoDb();
-        $list = "";
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            for ($i = 1; $i <= $n; $i++) {
-                $photo = $db->result($r, $i - 1, "PHOTO_NAME");
-                if ($photo != "") {
-                    $list .= "<li data-image=\"https://toko.ua/uploads/images/catalogue/$photo\" class=\"ui-draggable ui-draggable-handle ui-draggable-disabled\"></li>";
-                }
-            }
-        } else {
-            $list = "";
-        }
-        return $list;
-    }
+//    public function getPhotoForm($art_id)
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $list = "";
+//        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC;");
+//        $n = $db->num_rows($r);
+//        if ($n > 0) {
+//            for ($i = 1; $i <= $n; $i++) {
+//                $photo = $db->result($r, $i - 1, "PHOTO_NAME");
+//                if ($photo != "") {
+//                    $list .= "<li data-image=\"https://toko.ua/uploads/images/catalogue/$photo\" class=\"ui-draggable ui-draggable-handle ui-draggable-disabled\"></li>";
+//                }
+//            }
+//        } else {
+//            $list = "";
+//        }
+//        return $list;
+//    }
 
-    public function getSlideProPhoto($art_id)
+    public function getSlideProPhoto($art_id, $brand_id, $h1)
     {
         $db = DbSingleton::getTokoDb();
+
         $slide = "";
         $thumbnail = "";
+        $arr = [];
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `ID` ASC;");
         $n = $db->num_rows($r);
-        if ($n > 0) {
+        for ($i = 1; $i <= $n; $i++) {
+            $photo = $db->result($r, $i - 1, "PHOTO_NAME");
+            if ($photo != "") {
+                $arr[] = ["type" => "catalogue", "photo" => $photo];
+            }
+        }
+
+        $client = new ClientClass();
+        if ($client->checkRetailClientCategory($this->getClient())) {
+            $date_cur = date("Y-m-d");
+            $r = $db->query("SELECT `photo_link` FROM `T2_CERTIFICATES` WHERE `brand_id` = $brand_id AND `date_from` <= '$date_cur' AND `date_to` >= '$date_cur' AND `status` = 1;");
+            $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
-                $photo = $db->result($r, $i - 1, "PHOTO_NAME");
-                if ($photo != "") {
-                    $slide .= "
-                    <div class=\"sp-slide\">
-                        <img class=\"sp-image\" 
-                            src=\"../src/css/images/blank.gif\"
-                            data-src=\"https://toko.ua/uploads/images/catalogue/$photo\"
-                            data-retina=\"https://toko.ua/uploads/images/catalogue/$photo\"
-                            alt=\"slide\"/>
-                    </div>";
-                    $thumbnail .= "
-                    <div class=\"sp-thumbnail\">
-                        <div class=\"sp-thumbnail-image-container\">
-                            <img class=\"sp-thumbnail-image\" 
-                                src=\"https://toko.ua/resize_image.php?image=$photo&w=100&h=80\"
-                                alt=\"slide\"/>
-                        </div>
-                    </div>";
-                }
+                $photo = $db->result($r, $i - 1, "photo_link");
+                $arr[] = ["type" => "certificates", "photo" => $photo];
+            }
+        }
+
+        if ($n > 0) {
+            $i = 0;
+            foreach ($arr as $value) {
+                $i++;
+                $photo = $value["photo"];
+                $type = $value["type"];
+                $slide .= "
+                <div class=\"sp-slide\">
+                    <img class=\"sp-image lazy\" 
+                        src=\"/images/no_photo.png\"
+                        data-src=\"https://toko.ua/uploads/images/$type/$photo\"
+                        data-retina=\"https://toko.ua/uploads/images/$type/$photo\"
+                        style=\"height: 100%; width: 100%;\"
+                        alt=\"$h1 - {photo_card_cap} #$i\"
+                        title=\"$h1 - {photo_card_cap} #$i\"/>
+                </div>";
+                $thumbnail .= "
+                <div class=\"sp-thumbnail\">
+                    <div class=\"sp-thumbnail-image-container\">
+                        <img class=\"sp-thumbnail-image lazy\" 
+                            src=\"/images/no_photo_120.png\"
+                            data-src=\"https://toko.ua/resize_image.php?image=$photo&w=100&h=80&type=$type\"
+                            style=\"height: 100%; width: 100%;\"
+                            alt=\"$h1 - {photo_card_cap} #$i\"/>
+                    </div>
+                </div>";
             }
         } else {
             $slide = "";
@@ -3080,7 +3107,7 @@ class CatalogueClass
         return $mfa_id;
     }
 
-    function checkModel($mfa_id, $model_link)
+    public function checkModel($mfa_id, $model_link)
     {
         $model = "";
         if ($mfa_id > 0) {
@@ -3134,29 +3161,6 @@ class CatalogueClass
                     }
                 }
 
-            }
-
-            if ($router == "catalog") {
-//                $group_link = $arr[2];
-//                $filters = $arr[3];
-//                $mfa_link = $arr[4];
-//                $model_link = $arr[5];
-//                $catalog_exist = new CatalogExistClass();
-//
-//                $group_id = $catalog_exist->getGroupExistId($group_link);
-//
-//                if ($group_link != "") {
-//                    if ($filters == "") {
-//
-//                    }
-//                    if ($filters != "") {
-//                        if ($filters == "auto") {
-//
-//                        } else {
-//
-//                        }
-//                    }
-//                }
             }
 
             $db->query("UPDATE `T_TEST_LINKS` SET `STATUS` = $status WHERE `LINK` = '$link' LIMIT 1;");

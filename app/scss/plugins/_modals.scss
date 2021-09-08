@@ -24,6 +24,21 @@ $colors: (
     }
 }
 
+.modal-brand {
+    &__text {
+        font-size: 12px;
+        text-align: justify;
+    }
+    &-logo {
+        max-height: 300px;
+        max-width: 300px;
+        &__image {
+            height: 100%;
+            width: 100%;
+        }
+    }
+}
+
 .contact-form {
     .modal-body {
         padding: 0;

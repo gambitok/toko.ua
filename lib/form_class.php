@@ -214,14 +214,9 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_cur}", $articleData["currency"], $form);
         $form = str_replace("{art_basket}", $articleData["basket"], $form);
 
-        $form_photo = $this->getHtmlForm("article/shit");
-        $dataPhoto = $this->getSlideProPhoto($art_id);
-        $form_photo = str_replace("{images_slide}", $dataPhoto["slide"], $form_photo);
-        $form_photo = str_replace("{images_thumbnail}", $dataPhoto["thumbnail"], $form_photo);
 //        $form = str_replace("{images_range}", $catalogue->getSlideProPhoto($art_id), $form);
 
 //        $form = str_replace("{art_images}", $this->showPhotoGallery($art_id), $form);
-        $form = str_replace("{art_images}", $form_photo, $form);
         $article_info = $this->getArticleInfoForm($art_id, 1, 1);
         $form = str_replace("{art_info}", ($article_info != "") ? $article_info : $this->err1, $form);
         $brand_info = $this->showBrandForm($brand_id);
@@ -253,6 +248,12 @@ class FormClass extends CatalogueClass
         $form = str_replace("{suppl_id}", $articleData["suppl_id"], $form);
         $form = str_replace("{storage_id}", $articleData["storage_id"], $form);
         $form = str_replace("{stock}", $articleData["stock"], $form);
+
+        $form_photo = $this->getHtmlForm("article/shit");
+        $dataPhoto = $this->getSlideProPhoto($art_id, $brand_id, $h1);
+        $form_photo = str_replace("{images_slide}", $dataPhoto["slide"], $form_photo);
+        $form_photo = str_replace("{images_thumbnail}", $dataPhoto["thumbnail"], $form_photo);
+        $form = str_replace("{art_images}", $form_photo, $form);
 
         $form = $this->replaceLang($form);
 
