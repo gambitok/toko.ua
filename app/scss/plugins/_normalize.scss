@@ -664,6 +664,13 @@ table {
     }
 }
 
+.carousel-item-image {
+    display: block;
+    margin: 0 auto;
+    height: auto;
+    max-width: 600px;
+}
+
 .carousel-caption {
     text-shadow: #000 0 0 4px;
 }

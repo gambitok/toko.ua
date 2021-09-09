@@ -71,6 +71,15 @@ function selectRegion(id) {
         }}, true);
 }
 
+function shortSearchList() {
+    let art_id = $("#art_id").val();
+    JsHttpRequest.query(folder,{'w':'shortSearchList', 'art_id':art_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#analogs_form").html(result.content);
+            new LazyLoad({ elements_selector: ".lazy" });
+        }}, true);
+}
+
 // Modal `Brands`
 function showBrandForm(brand) {
     JsHttpRequest.query(folder,{'w':'showBrandForm', 'brand':brand},

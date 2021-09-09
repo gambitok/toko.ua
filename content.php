@@ -58,6 +58,10 @@ if ($_REQUEST["w"] == "showBasketMinForm") {
     $GLOBALS['_RESULT'] = array("content" => $shop->showBasketForm());
 }
 
+if ($_REQUEST["w"] == "shortSearchList") {
+    $GLOBALS['_RESULT'] = array("content" => $shop->shortSearchList($_REQUEST["art_id"]));
+}
+
 if ($_REQUEST["w"] == "setCityDepartments") {
     $GLOBALS['_RESULT'] = array("content" => $shop->setCityDepartments($_REQUEST["city_ref"], $_REQUEST["department_ref"]));
 }

@@ -3051,22 +3051,24 @@ class CatalogueClass
         }
 
         $client = new ClientClass();
+        $nn = 0;
         if ($client->checkRetailClientCategory($this->getClient())) {
             $date_cur = date("Y-m-d");
             $r = $db->query("SELECT `photo_link` FROM `T2_CERTIFICATES` WHERE `brand_id` = $brand_id AND `date_from` <= '$date_cur' AND `date_to` >= '$date_cur' AND `status` = 1;");
-            $n = $db->num_rows($r);
-            for ($i = 1; $i <= $n; $i++) {
+            $nn = $db->num_rows($r);
+            for ($i = 1; $i <= $nn; $i++) {
                 $photo = $db->result($r, $i - 1, "photo_link");
                 $arr[] = ["type" => "certificates", "photo" => $photo];
             }
         }
 
-        if ($n > 0) {
+        if ($n > 0 || $nn > 0) {
             $i = 0;
             foreach ($arr as $value) {
                 $i++;
                 $photo = $value["photo"];
                 $type = $value["type"];
+
                 $slide .= "
                 <div class=\"sp-slide\">
                     <img class=\"sp-image lazy\" 

@@ -26,7 +26,7 @@ $colors: (
 
 .modal-brand {
     &__text {
-        font-size: 12px;
+        font-size: 14px;
         text-align: justify;
     }
     &-logo {
@@ -394,11 +394,12 @@ $colors: (
     }
     &__table {
         border-collapse: separate;
-        border-spacing: 0 1em;
-        font-size: 0.7em;
-        width: 100%;
+        border-spacing: 0 10px;
+        font-size: 14px;
+        width: auto;
         td {
             width: 175px;
+            padding-right: 60px;
         }
         &_min {
             font-size: 0.7em;
@@ -406,6 +407,7 @@ $colors: (
                 border: none;
                 td {
                     padding-bottom: 5px;
+                    padding-right: 0;
                 }
             }
         }

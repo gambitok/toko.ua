@@ -13,7 +13,9 @@
 //
 //$form = str_replace("{images_range}", $catalogue->getSlideProPhoto(100053510), $form);
 
-$content = str_replace("{main_window}", "", $content);
+$form = $catalogue->getHtmlForm("article/button");
+
+$content = str_replace("{main_window}", $form, $content);
 
 //$r = $dbm->query("SELECT `id`, `name` FROM `A_CLIENTS` WHERE 1 LIMIT 10;");
 //$n = $dbm->num_rows($r);

@@ -82,7 +82,6 @@ class FormClass extends CatalogueClass
     {
         $art_id = $this->getUrlNumber($art_id);
         $auto = new AutoClass();
-//        $client = new ClientClass();
         $auto_typ_id = $this->getCookieAuto();
 
         $form = $this->getHtmlForm("article/card");
@@ -102,9 +101,6 @@ class FormClass extends CatalogueClass
         $brand_name = $articleData["brand_name"];
         $article_name = $articleData["article_name"];
 
-//        if ($client->checkRetailClientCategory($this->getClient()) && $this->getCookieAuto() != "") {
-//            $article_nr_displ = $this->getSecretString($article_nr_displ);
-//        }
         $format_article = $this->getFormatAticle($article_nr_displ);
 
         $brand_link = "";
@@ -127,7 +123,6 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_brand_id}", $brand_id, $form);
         $form = str_replace("{art_brand_name}", $brand_name, $form);
         $form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $form);
-        //$form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-red" : (($articleData["delivery_days"] == 1) ? "delivery-blue" : (($articleData["delivery_days"] > 1) ? "delivery-dark" : "")), $form);
         $form = str_replace("{del_class}",  "", $form);
         $form = str_replace("{art_stock}", $articleData["stock"], $form);
         $form = str_replace("{art_price}", $articleData["price"], $form);
@@ -207,17 +202,13 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_brand_id}", $brand_id, $form);
         $form = str_replace("{art_brand_name}", $brand_name, $form);
         $form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $form);
-        //$form = str_replace("{del_class}", ($articleData["delivery_days"] == 0) ? "delivery-green" : ($articleData["delivery_days"] == 1 ? "delivery-blue" : ($articleData["delivery_days"] > 1 ? "delivery-dark" : "")), $form);
         $form = str_replace("{del_class}", "", $form);
         $form = str_replace("{art_stock}", $articleData["stock"], $form);
         $form = str_replace("{art_price}", $articleData["price"], $form);
         $form = str_replace("{art_cur}", $articleData["currency"], $form);
         $form = str_replace("{art_basket}", $articleData["basket"], $form);
 
-//        $form = str_replace("{images_range}", $catalogue->getSlideProPhoto($art_id), $form);
-
-//        $form = str_replace("{art_images}", $this->showPhotoGallery($art_id), $form);
-        $article_info = $this->getArticleInfoForm($art_id, 1, 1);
+        $article_info = $this->getArticleInfoForm($art_id, 0, 1);
         $form = str_replace("{art_info}", ($article_info != "") ? $article_info : $this->err1, $form);
         $brand_info = $this->showBrandForm($brand_id);
         $form = str_replace("{brand_info}", ($brand_info != "") ? $brand_info : $this->err1, $form);
@@ -225,8 +216,9 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_originals}", $this->getOriginalNumbers($art_id), $form);
         $form = str_replace("{art_proposed}", $shop->getProposedArts(), $form);
 
-        $analogs = $this->shortSearchList($art_id);
-        $form = str_replace("{analogs_list}", ($analogs != "") ? $analogs : $this->err1, $form);
+//        $analogs = $this->shortSearchList($art_id);
+//        $form = str_replace("{analogs_list}", ($analogs != "") ? $analogs : $this->err1, $form);
+        $form = str_replace("{analogs_list}", "", $form);
         $h1 = "$article_name $brand_name $article_nr_displ";
         $form = str_replace("{article_header}", "$h1", $form);
         $form = str_replace("{applicable_display}", "dnone", $form);
@@ -793,15 +785,19 @@ class FormClass extends CatalogueClass
             if ($display == 1) {
                 $list .= "
                 <div class=\"carousel-item $active\">
-                    <a itemprop=\"url\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/\">
-                        <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" src=\"/images/no_photo.png\" alt=\"Slide $i\">
-                    </a>
+                    <div class=\"carousel-item-image\">
+                        <a itemprop=\"url\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/\">
+                            <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" src=\"/images/no_photo.png\" alt=\"Slide $i\">
+                        </a>
+                    </div>
                 </div>";
             } else {
                 $list .= "
                 <div class=\"carousel-item $active\">
-                    <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" src=\"/images/no_photo.png\" alt=\"Slide $i\">
-                    <div class=\"carousel-caption\">{photo_card_cap} $i {of_cap} $count_pages</div>
+                    <div class=\"carousel-item-image\">
+                        <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" src=\"/images/no_photo.png\" alt=\"Slide $i\">
+                        <div class=\"carousel-caption\">{photo_card_cap} $i {of_cap} $count_pages</div>
+                    </div>
                 </div>";
             }
         }
@@ -830,7 +826,9 @@ class FormClass extends CatalogueClass
                     <div id=\"carouselGalleryControls\" class=\"carousel slide\" data-ride=\"carousel\">
                         <div class=\"carousel-inner\" role=\"listbox\">
                             <div class=\"carousel-item active\">
-                                <img itemprop=\"image\" class=\"lazy\" data-src=\"https://toko.ua$nophoto\" alt=\"Slide 1\">
+                                <div class=\"carousel-item-image\">
+                                    <img itemprop=\"image\" class=\"lazy\" data-src=\"https://toko.ua$nophoto\" alt=\"Slide 1\">
+                                </div>
                             </div>
                         </div>
                     </div>

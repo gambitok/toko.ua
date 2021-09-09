@@ -3,12 +3,10 @@
 ob_start();
 
 function show_image($srcimage, $newwidth, $newheight) {
-    //$this->helper('file');                   why need this?
-    //$image_content = read_file($image);      We does not want to use this as output.
     $extension = pathinfo($srcimage, PATHINFO_EXTENSION);
 
-    //resize image
     list($width, $height) = getimagesize($srcimage);
+
     $image = "";
     if ($extension == "jpg" || $extension == "jpeg"|| $extension == "JPG"|| $extension == "JPEG") {
         $image = imagecreatefromjpeg($srcimage);
@@ -24,8 +22,7 @@ function show_image($srcimage, $newwidth, $newheight) {
 
     imagecopyresized($thumbImage, $image, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
     imagedestroy($image);
-    //imagedestroy($thumbImage); do not destroy before display :)
-    ob_end_clean();  // clean the output buffer ... if turned on.
+
     header("Content-Type: image/$extension");
 
     if ($extension == "jpg" || $extension == "jpeg"|| $extension == "JPG"|| $extension == "JPEG") {
@@ -37,7 +34,7 @@ function show_image($srcimage, $newwidth, $newheight) {
     elseif ($extension == "webp" || $extension == "WEBP") {
         imagewebp($thumbImage, NULL, 75);
     }
-    imagedestroy($thumbImage); //but not needed, cause the script exit in next line and free the used memory
+    imagedestroy($thumbImage);
     exit;
 }
 
@@ -46,7 +43,7 @@ $width = $_GET['w'];
 $height = $_GET['h'];
 $type = $_GET['type'];
 
-if ($type == "" || $type = "catalogue") {
+if ($type == "" || $type == "catalogue") {
     $path = "uploads/images/catalogue/" . $path;
 } elseif ($type == "certificates") {
     $path = "uploads/images/certificates/" . $path;
