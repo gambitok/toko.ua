@@ -3054,6 +3054,7 @@ class CatalogueClass
         $nn = 0;
         if ($client->checkRetailClientCategory($this->getClient())) {
             $date_cur = date("Y-m-d");
+            $brand_id = $this->getUrlNumber($brand_id);
             $r = $db->query("SELECT `photo_link` FROM `T2_CERTIFICATES` WHERE `brand_id` = $brand_id AND `date_from` <= '$date_cur' AND `date_to` >= '$date_cur' AND `status` = 1;");
             $nn = $db->num_rows($r);
             for ($i = 1; $i <= $nn; $i++) {

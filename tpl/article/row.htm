@@ -1,0 +1,114 @@
+<style>
+    .buy-form {
+        display: block;
+        width: 100%;
+    }
+    .buy-form__button .btn-buy {
+        float: unset;
+    }
+    .buy-form__button {
+        display: block;
+    }
+    .buy-form__button-hidden {
+        display: none;
+    }
+    .buy-form__input {
+        display: block;
+    }
+    .buy-form__input-hidden {
+        display: none;
+    }
+    .article-info-row__col .input-group {
+        max-width: 100%;
+    }
+</style>
+
+<div class="article-info-row">
+    <div class="article-info-row__col">
+        <div class="article-info-row__bold">{art_price}</div>
+        <div class="article-info-row__upper">{art_cur}</div>
+    </div>
+    <div class="article-info-row__col article-info-row__col-right">
+<!--        <div class="btn btn-info btn-buy" onClick="{art_basket}">-->
+<!--            <span>{buy_cap}</span>-->
+<!--        </div>-->
+        <div class="buy-form">
+            <div class="buy-form__button {buy_class_btn}">
+                <div class="btn btn-info btn-buy" onclick="moveBasketButton(this);">
+                    <span>{buy_cap}</span>
+                </div>
+            </div>
+            <div class="buy-form__input {buy_class_input}">
+                <input class="count_amount" type="text" value="{article_card_amount}" min="1" title="amount" id="count_1">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="article-info-row">
+    <div class="article-info-row__col">
+        <div class="article-info-row__text">
+            {storage_info}: {art_del}
+        </div>
+        <div class="article-info-row__text">
+            {available_cap}: <span class="article-info-row__stock">{art_stock} {amount_abbr}.</span>
+        </div>
+    </div>
+<!--    <div class="article-info-row__col article-info-row__col-center">-->
+<!--        <input type="text" value="1" min="1" title="amount" id="count_one">-->
+<!--    </div>-->
+</div>
+
+<div class="article-info-row">
+    <div class="input-group">
+        <input
+            id="input_phone_article" class="form-control masked-phone input-buy-min" type="tel" name="phone"
+            placeholder="+38(___) ___-__-__"
+            title="{input_valid_phone}" value="{user_phone}"
+            aria-describedby="make_order_fast"
+        >
+        <div class="input-group-append">
+            <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="validationInputPhone();">{make_order_fast}</button>
+        </div>
+    </div>
+<!--    <div class="article-info-row__col">-->
+<!--        <input-->
+<!--            id="input_phone_article" class="form-control masked-phone input-buy-min" type="tel" name="phone"-->
+<!--            placeholder="+38(___) ___-__-__"-->
+<!--            title="{input_valid_phone}" value="{user_phone}"-->
+<!--        >-->
+<!--    </div>-->
+<!--    <div class="article-info-row__col article-info-row__col-right">-->
+<!--        <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="validationInputPhone();">{make_order_fast}</button>-->
+<!--    </div>-->
+</div>
+
+<script>
+    function moveBasketButton(a) {
+        $(a).parent(".buy-form__button").toggle().next(".buy-form__input").toggle();
+        let id = "one";
+        let art_id = $("#art_id").val();
+        let brand_id = $("#brand_id").val();
+        let stock = $("#stock").val();
+        let storage_id = $("#storage_id").val();
+        let suppl_id = $("#suppl_id").val();
+        moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id);
+    }
+</script>
+
+<script>
+    $(document).ready(function() {
+        $(".count_amount").inputSpinner();
+        let art_id = $("#art_id").val();
+        let stock = $("#stock").val();
+        let storage_id = $("#storage_id").val();
+
+        let btn_decrement = "updateCountBasket(0," + art_id + ", " + storage_id + ", " + stock + ", 0);";
+        let btn_increment = "updateCountBasket(1," + art_id + ", " + storage_id + ", " + stock + ", 0);";
+
+        $(".buy-form__input > .count_amount").each(function(  ) {
+            console.log($(this).attr('id'));
+            $(this).next().find(".btn-decrement").attr('onclick', btn_decrement);
+            $(this).next().find(".btn-increment").attr('onclick', btn_increment);
+        });
+    });
+</script>

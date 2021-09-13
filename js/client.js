@@ -1,4 +1,3 @@
-
 /*
 * change Site Langugage
 * */
@@ -280,4 +279,3 @@ function recoverPasswordNext() {
             $("#recover_block").html(result.content);
         }}, true);
 }
-

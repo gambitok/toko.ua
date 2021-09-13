@@ -26,42 +26,7 @@
                         {applicable_form}
                     </div>
                 </div>
-                <div class="article-info-row">
-                    <div class="article-info-row__col">
-                        <div class="article-info-row__bold">{art_price}</div>
-                        <div class="article-info-row__upper">{art_cur}</div>
-                    </div>
-                    <div class="article-info-row__col article-info-row__col-right">
-                        <div class="btn btn-info btn-buy" onClick="{art_basket}">
-                            <span>{buy_cap}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="article-info-row">
-                    <div class="article-info-row__col">
-                        <div class="article-info-row__text {del_class}">
-                            {storage_info}: {art_del}
-                        </div>
-                        <div class="article-info-row__text">
-                            {available_cap}: <span class="article-info-row__stock">{art_stock} {amount_abbr}.</span>
-                        </div>
-                    </div>
-                    <div class="article-info-row__col article-info-row__col-center">
-                        <input type="text" value="1" min="1" title="amount" id="count_one">
-                    </div>
-                </div>
-                <div class="article-info-row">
-                    <div class="article-info-row__col">
-                        <input
-                            id="input_phone_article" class="form-control masked-phone input-buy-min" type="tel" name="phone"
-                            placeholder="+38(___) ___-__-__"
-                            title="{input_valid_phone}" value="{user_phone}"
-                        >
-                    </div>
-                    <div class="article-info-row__col article-info-row__col-right">
-                        <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="validationInputPhone();">{make_order_fast}</button>
-                    </div>
-                </div>
+                {article_info_row}
             </div>
         </div>
     </div>
@@ -88,14 +53,16 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <h2>{article_card_analogs} {article_name}</h2>
                     <div id="analogs_form">
-                        {analogs_list}
                     </div>
                 </div>
                 <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                    <h2>{article_card_oe} {article_name}</h2>
                     {art_originals}
                 </div>
                 <div class="tab-pane fade" id="nav-applicable" role="tabpanel" aria-labelledby="nav-applicable-tab">
+                    <h2>{article_card_applicable} {article_name}</h2>
                     <div id="info_art2" class="info__applicability">
                         {art_applicable}
                     </div>
@@ -136,8 +103,9 @@
 
 </div>
 
-<script>
-    $(document).ready(function() { "use strict";
-        $("#count_one").inputSpinner();
-    });
-</script>
+<!--<script>-->
+<!--    $(document).ready(function() { "use strict";-->
+<!--        $("#count_one").inputSpinner();-->
+<!--    });-->
+<!--</script>-->
+

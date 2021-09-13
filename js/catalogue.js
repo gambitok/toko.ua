@@ -1,4 +1,3 @@
-
 function navigateTo(id) {
     $([document.documentElement, document.body]).animate({
         scrollTop: $("#" + id).offset().top
@@ -332,8 +331,6 @@ function dropAutoHistory(history_id) {
         }}, true);
 }
 
-/*==== /GARAGE =====*/
-
 function changeBasketCount(status, id) {
     let input_id = $("#" + id);
     let count = parseInt(input_id.val());
@@ -463,4 +460,3 @@ function setClientRequestDone() {
             $("#request-card").html(result.content);
         }}, true);
 }
-

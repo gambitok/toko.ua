@@ -1,4 +1,3 @@
-
 function goHome() {
     location.href = "/";
 }
@@ -64,8 +63,7 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
         if (secret !== 0 && secret !== "") {
             moveToBasket(id, art_id, brand_id, count, stock, storage_id, suppl_id);
         }
-    }
-    else {
+    } else {
         moveToBasket(id, art_id, brand_id, count, stock, storage_id, suppl_id);
     }
 }
@@ -106,6 +104,9 @@ function updateCountBasket(status, art_id, storage_id, stock, phone) {
         prefix = "_phone";
     }
     let count_id = $("#count_" + art_id + "_" + storage_id + prefix);
+    if (!isNaN(count_id)) {
+        count_id = $("#count_1");
+    }
     let count = parseInt(count_id.val());
     if (status > 0) {
         count = count + 1;
@@ -129,9 +130,15 @@ function updateBasketForm(art_id, storage_id, stock, phone) {
     if (parseInt(stock) < parseInt(count) || parseInt(count) === 0) {
         var secret = parseInt(stock) + 1;
         while (parseInt(secret) > parseInt(stock)) {
-            if (secret === null) { count_id.val(1); return; }
+            if (secret === null) {
+                count_id.val(1);
+                return;
+            }
             secret = prompt("Выбранное количество продукта превышает доступное количество!", 1);
-            if (secret === null) { count_id.val(stock); return; }
+            if (secret === null) {
+                count_id.val(stock);
+                return;
+            }
             if (parseInt(secret) < 0) {
                 secret = 999999;
             } else if (isNaN(parseInt(secret))) {
@@ -162,7 +169,7 @@ function deleteFromBasket(art_id, storage_id, art_name) {
     JsHttpRequest.query(folder,{'w':'deleteFromBasket', 'art_id':art_id, 'storage_id':storage_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             showBasketForm();
-            showNotify("{done_cap}:","{art_cap} '"+art_name+"' {removed_from_basket}!","danger")
+            showNotify("{done_cap}:", "{art_cap} '" + art_name + "' {removed_from_basket}!", "danger")
         }}, true);
 }
 
@@ -182,13 +189,13 @@ function checkAllBasket() {
     let btn = $("#check_all_box");
     if (btn.prop("checked") === true) {
         checked_basket.each(function () {
-            checkBasketItem($(this).attr("id"),$(this).attr("name"),this);
+            checkBasketItem($(this).attr("id"), $(this).attr("name"), this);
             $(this).attr("checked", "checked");
         });
         btn.attr("checked", "checked");
     } else {
         checked_basket.each(function () {
-            checkBasketItem($(this).attr("id"),$(this).attr("name"),this);
+            checkBasketItem($(this).attr("id"), $(this).attr("name"), this);
             $(this).removeAttr("checked");
         });
         btn.removeAttr("checked");
@@ -249,6 +256,7 @@ function finishFastOrder(name) {
             }}, true);
     }
 }
+
 // VALIDATE PHONE NUMBER (by OPERATOR)
 function validateOperator(phone) {
     JsHttpRequest.query(folder,{'w':'validateOperator', 'phone':phone},

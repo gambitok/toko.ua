@@ -2,11 +2,11 @@
     background: #fff;
     &-nav {
         background: #fff;
-        border-bottom: 3px solid #2d8bfa;
         color: #fff;
         display: flex;
         flex-wrap: nowrap;
         justify-content: start;
+        border-bottom: 3px solid #2d8bfa;
         &__item {
             background: url("/images/icons/dropdown.svg") calc(100% - 20px) center no-repeat;
             color: black;
@@ -140,9 +140,9 @@
 
 .garage-user {
     background: #fff;
-    border: 2px solid #2d8afa;
     box-shadow: 0 1px 4px #ccc;
     height: auto;
+    border: 2px solid #2d8afa;
     .btn-close {
         float: right;
     }
@@ -152,15 +152,15 @@
     &__title {
         background: #2d8afa;
         color: #fff;
-        height: 100%;
         padding: 15px;
+        height: 100%;
         span {
             display: inline-block;
             font-size: 11px;
-            overflow: hidden;
             position: relative;
-            text-overflow: ellipsis;
+            overflow: hidden;
             white-space: nowrap;
+            text-overflow: ellipsis;
             width: calc(100% - 29px);
             &.title {
                 font-size: 16px;
@@ -170,12 +170,12 @@
         }
     }
     &__nav {
-        align-items: center;
         display: flex;
         flex-wrap: nowrap;
-        height: 100%;
-        justify-content: flex-end;
         padding: 15px;
+        align-items: center;
+        justify-content: flex-end;
+        height: 100%;
         .btn-img {
             color: #2d8afa;
             border: 2px solid #fff;
@@ -209,9 +209,9 @@
                 padding: 15px 65px 15px 15px;
                 &-mob {
                     display: block;
-                    position: unset;
                     text-overflow: unset;
                     white-space: unset;
+                    position: unset;
                 }
                 &-hidden {
                     display: none;
