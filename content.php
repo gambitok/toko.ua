@@ -223,6 +223,20 @@ if ($_REQUEST["w"] == "deleteHistoryItem") {
     $GLOBALS['_RESULT'] = array("content" => $showform->deleteHistoryItem($_REQUEST["history_id"]));
 }
 
+
+if ($_REQUEST["w"] == "getBasketId") {
+    $GLOBALS['_RESULT'] = array("content" => $showform->getBasketId($_REQUEST["art_id"], $_REQUEST["storage_id"]));
+}
+if ($_REQUEST["w"] == "updateBasketCount") {
+    list($answer, $err, $new_amount) = $showform->updateBasketCount($_REQUEST["basket_id"], $_REQUEST["status"]);
+    $GLOBALS['_RESULT'] = array("answer" => $answer, "err" => $err, "new_amount" => $new_amount);
+}
+
+if ($_REQUEST["w"] == "updateBasketCountChange") {
+    list($answer, $err, $new_amount) = $showform->updateBasketCountChange($_REQUEST["basket_id"], $_REQUEST["amount"]);
+    $GLOBALS['_RESULT'] = array("answer" => $answer, "err" => $err, "new_amount" => $new_amount);
+}
+
 /*==== CLIENT ====*/
 
 if ($_REQUEST["w"] == "loginClient") {

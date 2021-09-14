@@ -29,17 +29,15 @@
         <div class="article-info-row__upper">{art_cur}</div>
     </div>
     <div class="article-info-row__col article-info-row__col-right">
-<!--        <div class="btn btn-info btn-buy" onClick="{art_basket}">-->
-<!--            <span>{buy_cap}</span>-->
-<!--        </div>-->
         <div class="buy-form">
+            <input type="hidden" value="{article_card_basket_id}" id="basket_id">
             <div class="buy-form__button {buy_class_btn}">
                 <div class="btn btn-info btn-buy" onclick="moveBasketButton(this);">
                     <span>{buy_cap}</span>
                 </div>
             </div>
             <div class="buy-form__input {buy_class_input}">
-                <input class="count_amount" type="text" value="{article_card_amount}" min="1" title="amount" id="count_1">
+                <input class="count_amount" type="number" value="{article_card_amount}" min="1" title="amount" id="count_1" >
             </div>
         </div>
     </div>
@@ -53,9 +51,6 @@
             {available_cap}: <span class="article-info-row__stock">{art_stock} {amount_abbr}.</span>
         </div>
     </div>
-<!--    <div class="article-info-row__col article-info-row__col-center">-->
-<!--        <input type="text" value="1" min="1" title="amount" id="count_one">-->
-<!--    </div>-->
 </div>
 
 <div class="article-info-row">
@@ -64,27 +59,59 @@
             id="input_phone_article" class="form-control masked-phone input-buy-min" type="tel" name="phone"
             placeholder="+38(___) ___-__-__"
             title="{input_valid_phone}" value="{user_phone}"
-            aria-describedby="make_order_fast"
         >
         <div class="input-group-append">
-            <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="validationInputPhone();">{make_order_fast}</button>
+<!--            <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="validationInputPhone();">{make_order_fast}</button>-->
+            <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="finishFastOrder('input_phone_article');">{make_order_fast}</button>
         </div>
     </div>
-<!--    <div class="article-info-row__col">-->
-<!--        <input-->
-<!--            id="input_phone_article" class="form-control masked-phone input-buy-min" type="tel" name="phone"-->
-<!--            placeholder="+38(___) ___-__-__"-->
-<!--            title="{input_valid_phone}" value="{user_phone}"-->
-<!--        >-->
-<!--    </div>-->
-<!--    <div class="article-info-row__col article-info-row__col-right">-->
-<!--        <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="validationInputPhone();">{make_order_fast}</button>-->
-<!--    </div>-->
 </div>
 
 <script>
+
+    function updateBasketCount(status) {
+
+        $(".buy-form__input > .count_amount").each(function(  ) {
+            $(this).next().find(".btn-decrement").prop('disabled', true);
+            $(this).next().find(".btn-increment").prop('disabled', true);
+        });
+
+        let basket_id = parseInt($("#basket_id").val());
+        JsHttpRequest.query(folder,{'w':'updateBasketCount', 'basket_id':basket_id, 'status':status},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                let answer = result["answer"];
+                let err = result["err"];
+                let new_amount = result["new_amount"];
+
+                if (err == 0) {
+                    console.log(0);
+                }
+                if (err == 1) {
+                    console.log(1);
+                    showNotify("{error_cap}!", answer, "danger");
+                    $("#count_1").val(new_amount);
+                }
+                if (err == 2) {
+                    console.log(2);
+                    $("#basket_id").val(0);
+                    $(".buy-form__button").removeClass("buy-form__button-hidden");
+                    $(".buy-form__input").addClass("buy-form__input-hidden");
+                }
+                if (err == 3) {
+                    console.log(3);
+                }
+
+            }}, true);
+
+        $(".buy-form__input > .count_amount").each(function(  ) {
+            $(this).next().find(".btn-decrement").prop('disabled', false);
+            $(this).next().find(".btn-increment").prop('disabled', false);
+        });
+
+    }
+
     function moveBasketButton(a) {
-        $(a).parent(".buy-form__button").toggle().next(".buy-form__input").toggle();
+        $(a).parent(".buy-form__button").toggleClass("buy-form__button-hidden").next(".buy-form__input").toggleClass("buy-form__input-hidden");
         let id = "one";
         let art_id = $("#art_id").val();
         let brand_id = $("#brand_id").val();
@@ -92,23 +119,61 @@
         let storage_id = $("#storage_id").val();
         let suppl_id = $("#suppl_id").val();
         moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id);
+        getBasketId(art_id, suppl_id, storage_id);
     }
-</script>
 
-<script>
+    function getBasketId(art_id, suppl_id, storage_id) {
+        JsHttpRequest.query(folder,{'w':'getBasketId', 'art_id':art_id, 'suppl_id':suppl_id, 'storage_id':storage_id},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                let basket_id = result.content;
+                $("#basket_id").val(basket_id);
+            }}, true);
+    }
+
+    function updateBasketCountChange() {
+        let basket_id = parseInt($("#basket_id").val());
+        let amount = $("#count_1").val();
+        JsHttpRequest.query(folder,{'w':'updateBasketCountChange', 'basket_id':basket_id, 'amount':amount},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                let answer = result["answer"];
+                let err = result["err"];
+                let new_amount = result["new_amount"];
+
+                if (err == 0) {
+                    console.log(0);
+                }
+                if (err == 1) {
+                    console.log(1);
+                    showNotify("{error_cap}!", answer, "danger");
+                    $("#count_1").val(new_amount);
+                }
+                if (err == 2) {
+                    console.log(2);
+                    $("#basket_id").val(0);
+                    $(".buy-form__button").removeClass("buy-form__button-hidden");
+                    $(".buy-form__input").addClass("buy-form__input-hidden");
+                }
+                if (err == 3) {
+                    console.log(3);
+                }
+
+            }}, true);
+    }
+
     $(document).ready(function() {
         $(".count_amount").inputSpinner();
-        let art_id = $("#art_id").val();
-        let stock = $("#stock").val();
-        let storage_id = $("#storage_id").val();
+        // let btn_decrement = "updateCountBasket(0," + art_id + ", " + storage_id + ", " + stock + ", 0);";
+        // let btn_increment = "updateCountBasket(1," + art_id + ", " + storage_id + ", " + stock + ", 0);";
 
-        let btn_decrement = "updateCountBasket(0," + art_id + ", " + storage_id + ", " + stock + ", 0);";
-        let btn_increment = "updateCountBasket(1," + art_id + ", " + storage_id + ", " + stock + ", 0);";
+        let btn_decrement = "updateBasketCount(0);";
+        let btn_increment = "updateBasketCount(1);";
+        let btn_change = "updateBasketCountChange();";
 
         $(".buy-form__input > .count_amount").each(function(  ) {
-            console.log($(this).attr('id'));
             $(this).next().find(".btn-decrement").attr('onclick', btn_decrement);
             $(this).next().find(".btn-increment").attr('onclick', btn_increment);
+            $(this).next().find("input[type='text']").attr('onchange', btn_change);
         });
     });
+
 </script>

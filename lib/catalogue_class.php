@@ -1395,7 +1395,8 @@ class CatalogueClass
         $form = str_replace("{product_brand}", $brand_name, $form);
         $form = str_replace("{product_format_name}", $format_name, $form);
         $form = str_replace("{product_format_brand}", $format_brand_name, $form);
-        $form = str_replace("{page_product_link}", $this->getSiteLink() . "$this->article_link/$format_name/$format_brand_name/$art_id/", $form);
+        $format_brand_link = $this->getBrandLink($brand_id);
+        $form = str_replace("{page_product_link}", $this->getSiteLink() . "$this->article_link/$format_name/$format_brand_link/$art_id/", $form);
         $form = str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
         $product_text = ($article_name == "") ? "{details_name_cap}" : $article_name;
         $format_product_text = ($article_name == "") ? "{details_name_cap}" : $this->formatArticleName($article_name);
@@ -2905,7 +2906,7 @@ class CatalogueClass
         $cur = $client->getClientCurrency($client_id);
         $cur_cap = $kours->getKoursCaption($cur);
         $list = $storages = [];
-        $filials_list = ["#", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "{barcode_cap}"];
+        $filials_list = ["#", "{art_cap}", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "{barcode_cap}"];
 
         $tpoints = $client->getOtherTpoints($tpoint_user_id);
         foreach ($tpoints as $tpoint) {
@@ -2959,7 +2960,7 @@ class CatalogueClass
             $rs = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES_NOT_EXPORT` WHERE `ART_ID` = $art_id LIMIT 1;");
             $ns = $db->result($rs, 0, "count_arts");
             if ($ns == 0) {
-                $list[$i] = [$i, "$article_nr_displ", "$brand_name", "$article_name", "$price", "$cur_cap", "$info", "$barcode"];
+                $list[$i] = [$i, "$art_id", "$article_nr_displ", "$brand_name", "$article_name", "$price", "$cur_cap", "$info", "$barcode"];
                 foreach ($storages as $storage) {
                     $stock = $this->getStockStorage($art_id, $storage);
                     if ($stock > 10) {

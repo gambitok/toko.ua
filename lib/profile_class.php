@@ -848,6 +848,9 @@ class ProfileClass extends ClientClass
                 $filename = $db->result($r, $i - 1, "filename");
                 $date = $db->result($r, $i - 1, "date");
                 $date_end = $db->result($r, $i - 1, "date_end");
+                if ($date_end == "0000-00-00 00:00:00") {
+                    $date_end = "-";
+                }
                 $status = $db->result($r, $i - 1, "status");
                 $status_name = $this->getStatusProfilePrice($status);
                 if ($status == 2 && $i == 1) {

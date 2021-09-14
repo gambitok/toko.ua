@@ -153,6 +153,78 @@ class FormClass extends CatalogueClass
         return compact("form", "title", "description", "breadcrumbs");
     }
 
+    public function getBasketId($art_id, $storage_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $client = new ClientClass();
+        $where = $client->getClientWhere();
+        $basket_id = 0;
+        $r = $db->query("SELECT `id` FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where ORDER BY `id` DESC LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $basket_id = $db->result($r, 0, "id");
+        }
+        return $basket_id;
+    }
+
+    public function updateBasketCountChange($basket_id, $amount)
+    {
+        $basket_id = $this->getUrlNumber($basket_id);
+        $answer = ""; $err = 0; //$new_amount = 0;
+        $stock = 0;
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `stock` FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            //$amount = $db->result($r, 0, "amount");
+            $stock = $db->result($r, 0, "stock");
+            $new_amount = $amount;
+            if ($new_amount > $stock) {
+                $answer = "{too_much}"; $err = 1;
+            }
+            elseif ($new_amount == 0) {
+                $db->query("DELETE FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
+                $answer = "new_amount = 0"; $err = 2;
+            }
+            elseif ($new_amount > 0) {
+                $db->query("UPDATE `basket` SET `amount` = $new_amount WHERE `id` = $basket_id LIMIT 1;");
+                $answer = "ok"; $err = 3;
+            }
+        } else {
+            $answer = "pusto";
+        }
+        return array($answer, $err, $stock);
+    }
+
+    public function updateBasketCount($basket_id, $status = 0)
+    {
+        $basket_id = $this->getUrlNumber($basket_id);
+        $answer = ""; $err = 0; //$new_amount = 0;
+        $stock = 0;
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `amount`, `stock` FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $amount = $db->result($r, 0, "amount");
+            $stock = $db->result($r, 0, "stock");
+            $new_amount = ($status == 0) ? $amount - 1 : $amount + 1;
+            if ($new_amount > $stock) {
+                $answer = "{too_much}"; $err = 1;
+            }
+            elseif ($new_amount == 0) {
+                $db->query("DELETE FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
+                $answer = "new_amount = 0"; $err = 2;
+            }
+            elseif ($new_amount > 0) {
+                $db->query("UPDATE `basket` SET `amount` = $new_amount WHERE `id` = $basket_id LIMIT 1;");
+                $answer = "ok"; $err = 3;
+            }
+        } else {
+            $answer = "pusto";
+        }
+        return array($answer, $err, $stock);
+    }
+
     /*
      * show article form
      * */
@@ -225,11 +297,13 @@ class FormClass extends CatalogueClass
             } else {
                 $article_info_row = str_replace("{buy_class_btn}", "buy-form__button-hidden", $article_info_row);
                 $article_info_row = str_replace("{article_card_amount}", $basket_count, $article_info_row);
+                $article_info_row = str_replace("{article_card_basket_id}", $this->getBasketId($art_id, $articleData["storage_id"]), $article_info_row);
             }
             $article_info_row = str_replace("{buy_class_input}", "", $article_info_row);
             $article_info_row = str_replace("{buy_class_btn}", "", $article_info_row);
         }
         $article_info_row = str_replace("{article_card_amount}", 1, $article_info_row);
+        $article_info_row = str_replace("{article_card_basket_id}", 0, $article_info_row);
 
         $form = str_replace("{art_id}", $art_id, $form);
         $form = str_replace("{art_name}", $article_nr_displ, $form);

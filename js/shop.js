@@ -236,13 +236,16 @@ function showBasketStatus() {
 function finishFastOrder(name) {
     $("#input_phone").val("");
     validateForm("phone", "input");
-    let input_phone = $("#input_phone2");
+    //let input_phone = $("#input_phone2");
+    let input_phone = $("#" + name);
     let phone = input_phone.val();
     if (!validationInput(name)) {
-        input_phone.tooltip("show");
-        setTimeout(function() {
-            input_phone.tooltip("hide");
-        }, 5000);
+        // input_phone.tooltip("show");
+        // setTimeout(function() {
+        //     input_phone.tooltip("hide");
+        // }, 5000);
+        let text = "{input_valid_phone}";
+        showAlertModal(text, "{error_cap}", 0);
         return true;
     } else {
         JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
