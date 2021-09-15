@@ -38,18 +38,17 @@
             </div>
             <div class="buy-form__input {buy_class_input}">
                 <input class="count_amount" type="number" value="{article_card_amount}" min="1" title="amount" id="count_1" >
+                <div class="text-center">{count_in_basket}</div>
             </div>
         </div>
     </div>
 </div>
-<div class="article-info-row">
-    <div class="article-info-row__col">
-        <div class="article-info-row__text">
-            {storage_info}: {art_del}
-        </div>
-        <div class="article-info-row__text">
-            {available_cap}: <span class="article-info-row__stock">{art_stock} {amount_abbr}.</span>
-        </div>
+<div class="article-info-row article-info-row-wrap">
+    <div class="article-info-row__text">
+        {storage_info}: {art_del}
+    </div>
+    <div class="article-info-row__text">
+        {available_cap}: <span class="article-info-row__stock">{art_stock} {amount_abbr}.</span>
     </div>
 </div>
 
@@ -69,101 +68,19 @@
 
 <script>
 
-    function updateBasketCount(status) {
-
-        $(".buy-form__input > .count_amount").each(function(  ) {
-            $(this).next().find(".btn-decrement").prop('disabled', true);
-            $(this).next().find(".btn-increment").prop('disabled', true);
-        });
-
-        let basket_id = parseInt($("#basket_id").val());
-        JsHttpRequest.query(folder,{'w':'updateBasketCount', 'basket_id':basket_id, 'status':status},
-            function (result, errors){ if (errors) {alert(errors);} if (result){
-                let answer = result["answer"];
-                let err = result["err"];
-                let new_amount = result["new_amount"];
-
-                if (err == 0) {
-                    console.log(0);
-                }
-                if (err == 1) {
-                    console.log(1);
-                    showNotify("{error_cap}!", answer, "danger");
-                    $("#count_1").val(new_amount);
-                }
-                if (err == 2) {
-                    console.log(2);
-                    $("#basket_id").val(0);
-                    $(".buy-form__button").removeClass("buy-form__button-hidden");
-                    $(".buy-form__input").addClass("buy-form__input-hidden");
-                }
-                if (err == 3) {
-                    console.log(3);
-                }
-
-            }}, true);
-
-        $(".buy-form__input > .count_amount").each(function(  ) {
-            $(this).next().find(".btn-decrement").prop('disabled', false);
-            $(this).next().find(".btn-increment").prop('disabled', false);
-        });
-
-    }
-
-    function moveBasketButton(a) {
-        $(a).parent(".buy-form__button").toggleClass("buy-form__button-hidden").next(".buy-form__input").toggleClass("buy-form__input-hidden");
-        let id = "one";
-        let art_id = $("#art_id").val();
-        let brand_id = $("#brand_id").val();
-        let stock = $("#stock").val();
-        let storage_id = $("#storage_id").val();
-        let suppl_id = $("#suppl_id").val();
-        moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id);
-        getBasketId(art_id, suppl_id, storage_id);
-    }
-
-    function getBasketId(art_id, suppl_id, storage_id) {
-        JsHttpRequest.query(folder,{'w':'getBasketId', 'art_id':art_id, 'suppl_id':suppl_id, 'storage_id':storage_id},
-            function (result, errors){ if (errors) {alert(errors);} if (result){
-                let basket_id = result.content;
-                $("#basket_id").val(basket_id);
-            }}, true);
-    }
-
-    function updateBasketCountChange() {
-        let basket_id = parseInt($("#basket_id").val());
-        let amount = $("#count_1").val();
-        JsHttpRequest.query(folder,{'w':'updateBasketCountChange', 'basket_id':basket_id, 'amount':amount},
-            function (result, errors){ if (errors) {alert(errors);} if (result){
-                let answer = result["answer"];
-                let err = result["err"];
-                let new_amount = result["new_amount"];
-
-                if (err == 0) {
-                    console.log(0);
-                }
-                if (err == 1) {
-                    console.log(1);
-                    showNotify("{error_cap}!", answer, "danger");
-                    $("#count_1").val(new_amount);
-                }
-                if (err == 2) {
-                    console.log(2);
-                    $("#basket_id").val(0);
-                    $(".buy-form__button").removeClass("buy-form__button-hidden");
-                    $(".buy-form__input").addClass("buy-form__input-hidden");
-                }
-                if (err == 3) {
-                    console.log(3);
-                }
-
-            }}, true);
-    }
+    // $(".buy-form__input > .count_amount").each(function(  ) {
+    //     $(this).next().find(".btn-decrement").prop('disabled', true);
+    //     $(this).next().find(".btn-increment").prop('disabled', true);
+    // });
+    // $(".buy-form__input > .count_amount").each(function(  ) {
+    //     $(this).next().find(".btn-decrement").prop('disabled', false);
+    //     $(this).next().find(".btn-increment").prop('disabled', false);
+    // });
 
     $(document).ready(function() {
-        $(".count_amount").inputSpinner();
         // let btn_decrement = "updateCountBasket(0," + art_id + ", " + storage_id + ", " + stock + ", 0);";
         // let btn_increment = "updateCountBasket(1," + art_id + ", " + storage_id + ", " + stock + ", 0);";
+        $(".count_amount").inputSpinner();
 
         let btn_decrement = "updateBasketCount(0);";
         let btn_increment = "updateBasketCount(1);";
@@ -174,6 +91,7 @@
             $(this).next().find(".btn-increment").attr('onclick', btn_increment);
             $(this).next().find("input[type='text']").attr('onchange', btn_change);
         });
+
     });
 
 </script>

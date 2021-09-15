@@ -24,6 +24,9 @@
         align-items: center;
         display: flex;
         margin-bottom: 15px;
+        &-wrap {
+            flex-wrap: wrap;
+        }
         &__applicable {
             align-items: center;
             display: flex;
@@ -957,13 +960,16 @@
         &-row {
             flex-wrap: wrap;
             &__col {
-                width: 100%;
+                //width: 100%;
                 &-right {
                     float: unset;
                 }
                 .input-buy-min {
                     margin-bottom: 15px;
                     margin-right: 0;
+                }
+                .btn-buy-min {
+                    font-size: 11px;
                 }
             }
         }

@@ -27,6 +27,7 @@ function showNotify(title, text, type_text) {
 }
 
 function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
+    console.log('move');
     let count_id = $("#count_" + id);
     let count = count_id.val();
 

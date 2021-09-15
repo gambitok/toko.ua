@@ -2906,7 +2906,7 @@ class CatalogueClass
         $cur = $client->getClientCurrency($client_id);
         $cur_cap = $kours->getKoursCaption($cur);
         $list = $storages = [];
-        $filials_list = ["#", "{art_cap}", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "{barcode_cap}"];
+        $filials_list = ["#", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "{barcode_cap}"];
 
         $tpoints = $client->getOtherTpoints($tpoint_user_id);
         foreach ($tpoints as $tpoint) {
@@ -2960,7 +2960,7 @@ class CatalogueClass
             $rs = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES_NOT_EXPORT` WHERE `ART_ID` = $art_id LIMIT 1;");
             $ns = $db->result($rs, 0, "count_arts");
             if ($ns == 0) {
-                $list[$i] = [$i, "$art_id", "$article_nr_displ", "$brand_name", "$article_name", "$price", "$cur_cap", "$info", "$barcode"];
+                $list[$i] = [$i, "$article_nr_displ", "$brand_name", "$article_name", "$price", "$cur_cap", "$info", "$barcode"];
                 foreach ($storages as $storage) {
                     $stock = $this->getStockStorage($art_id, $storage);
                     if ($stock > 10) {

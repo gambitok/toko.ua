@@ -460,3 +460,94 @@ function setClientRequestDone() {
             $("#request-card").html(result.content);
         }}, true);
 }
+
+/*================================================================================*/
+
+function updateBasketCount(status) {
+    console.log('upd');
+
+    getBasketId();
+    let basket_id = parseInt($("#basket_id").val());
+    JsHttpRequest.query(folder,{'w':'updateBasketCount', 'basket_id':basket_id, 'status':status},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            let answer = result["answer"];
+            let err = result["err"];
+            let new_amount = result["new_amount"];
+
+            if (err == 0) {
+                console.log(0);
+            }
+            if (err == 1) {
+                console.log(1);
+                showNotify("{error_cap}!", answer, "danger");
+                $("#count_1").val(new_amount);
+            }
+            if (err == 2) {
+                console.log(2);
+                $("#basket_id").val(0);
+                $(".buy-form__button").removeClass("buy-form__button-hidden");
+                $(".buy-form__input").addClass("buy-form__input-hidden");
+            }
+            if (err == 3) {
+                console.log(3);
+            }
+
+        }}, true);
+
+}
+
+function moveBasketButton(a) {
+    $(a).parent(".buy-form__button").toggleClass("buy-form__button-hidden").next(".buy-form__input").toggleClass("buy-form__input-hidden");
+    let id = "one";
+    let art_id = $("#art_id").val();
+    let brand_id = $("#brand_id").val();
+    let stock = $("#stock").val();
+    let storage_id = $("#storage_id").val();
+    let suppl_id = $("#suppl_id").val();
+    moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id);
+    getBasketId();
+}
+
+function getBasketId() {
+    let art_id = $("#art_id").val();
+    let storage_id = $("#storage_id").val();
+    let suppl_id = $("#suppl_id").val();
+    JsHttpRequest.query(folder,{'w':'getBasketId', 'art_id':art_id, 'suppl_id':suppl_id, 'storage_id':storage_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            let basket_id = result.content;
+            $("#basket_id").val(basket_id);
+        }}, true);
+}
+
+function updateBasketCountChange() {
+
+    getBasketId();
+    let basket_id = parseInt($("#basket_id").val());
+    let amount = $("#count_1").val();
+    JsHttpRequest.query(folder,{'w':'updateBasketCountChange', 'basket_id':basket_id, 'amount':amount},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            let answer = result["answer"];
+            let err = result["err"];
+            let new_amount = result["new_amount"];
+
+            if (err == 0) {
+                console.log(0);
+            }
+            if (err == 1) {
+                console.log(1);
+                showNotify("{error_cap}!", answer, "danger");
+                $("#count_1").val(new_amount);
+            }
+            if (err == 2) {
+                console.log(2);
+                $("#basket_id").val(0);
+                $(".buy-form__button").removeClass("buy-form__button-hidden");
+                $(".buy-form__input").addClass("buy-form__input-hidden");
+            }
+            if (err == 3) {
+                console.log(3);
+            }
+
+        }}, true);
+
+}
