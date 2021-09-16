@@ -32,7 +32,7 @@
         <div class="buy-form">
             <input type="hidden" value="{article_card_basket_id}" id="basket_id">
             <div class="buy-form__button {buy_class_btn}">
-                <div class="btn btn-info btn-buy" onclick="moveBasketButton(this);">
+                <div class="btn btn-info btn-buy" id="article-btn-buy" onclick="moveBasketButton();">
                     <span>{buy_cap}</span>
                 </div>
             </div>
@@ -61,7 +61,7 @@
         >
         <div class="input-group-append">
 <!--            <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="validationInputPhone();">{make_order_fast}</button>-->
-            <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="finishFastOrder('input_phone_article');">{make_order_fast}</button>
+            <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="finishFastOrder('input_phone_article',1);">{make_order_fast}</button>
         </div>
     </div>
 </div>
@@ -80,16 +80,29 @@
     $(document).ready(function() {
         // let btn_decrement = "updateCountBasket(0," + art_id + ", " + storage_id + ", " + stock + ", 0);";
         // let btn_increment = "updateCountBasket(1," + art_id + ", " + storage_id + ", " + stock + ", 0);";
-        $(".count_amount").inputSpinner();
+        $("#count_1").inputSpinner();
 
         let btn_decrement = "updateBasketCount(0);";
         let btn_increment = "updateBasketCount(1);";
         let btn_change = "updateBasketCountChange();";
 
+        // $(".buy-form__input > .count_amount").each(function(  ) {
+        //     $(this).next().find(".btn-decrement").attr('onclick', btn_decrement);
+        //     $(this).next().find(".btn-increment").attr('onclick', btn_increment);
+        //     $(this).next().find("input[type='text']").attr('onchange', btn_change);
+        //
+        // });
         $(".buy-form__input > .count_amount").each(function(  ) {
-            $(this).next().find(".btn-decrement").attr('onclick', btn_decrement);
-            $(this).next().find(".btn-increment").attr('onclick', btn_increment);
-            $(this).next().find("input[type='text']").attr('onchange', btn_change);
+            $(this).next().find(".btn-decrement").on('click touchstart', function() {
+                updateBasketCount(0);
+            });
+            $(this).next().find(".btn-increment").on('click touchstart', function() {
+                updateBasketCount(1);
+            });
+            $(this).next().find("input[type='text']").on('click touchstart', function() {
+                updateBasketCountChange();
+            });
+
         });
 
     });

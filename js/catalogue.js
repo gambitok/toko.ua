@@ -464,7 +464,6 @@ function setClientRequestDone() {
 /*================================================================================*/
 
 function updateBasketCount(status) {
-    console.log('upd');
 
     getBasketId();
     let basket_id = parseInt($("#basket_id").val());
@@ -496,8 +495,9 @@ function updateBasketCount(status) {
 
 }
 
-function moveBasketButton(a) {
-    $(a).parent(".buy-form__button").toggleClass("buy-form__button-hidden").next(".buy-form__input").toggleClass("buy-form__input-hidden");
+function moveBasketButton() {
+    // $(a).parent(".buy-form__button").toggleClass("buy-form__button-hidden").next(".buy-form__input").toggleClass("buy-form__input-hidden");
+    $(".btn-buy").parent(".buy-form__button").toggleClass("buy-form__button-hidden").next(".buy-form__input").toggleClass("buy-form__input-hidden");
     let id = "one";
     let art_id = $("#art_id").val();
     let brand_id = $("#brand_id").val();

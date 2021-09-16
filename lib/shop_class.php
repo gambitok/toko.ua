@@ -958,6 +958,16 @@ class ShopClass extends CatalogueClass
         return $form;
     }
 
+    public function saveFastOrderBasket($phone, $art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id)
+    {
+        $basket_amount = $this->getBasketArticleAmount($art_id, $storage_id);
+        if ($basket_amount == 0) {
+            $this->moveToBasket($art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id);
+        }
+        $link = $this->saveFastOrder($phone);
+        return $link;
+    }
+
     /*
      * finish Fast Order
      * */
@@ -981,8 +991,6 @@ class ShopClass extends CatalogueClass
 
         // CREATE ORDER
         $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0, 0);
-
-        //$order_id = $this->addFastOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, $phone, $art_id, $brand_id, $storage_id, $suppl_id, $amount);
 
         return $this->getSiteLink() . "order/?order_id=$order_id&user_id=$user_id&user_status=$user_status/";
     }

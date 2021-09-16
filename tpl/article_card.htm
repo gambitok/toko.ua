@@ -1,3 +1,9 @@
+<style>
+    .filter-bw {
+        filter: grayscale(100%);
+    }
+</style>
+
 <div class="col-lg-4 col-12 pad0">
 
     <div class="article-card">
@@ -8,7 +14,7 @@
                 <a itemprop="url" href="{page_product_link}">
                     <div class="search__photo">
                         <div class="flag-search-card tooltips {country_display}" data-toggle="tooltip" data-placement="bottom" title="{brand_manuf}: {country_name}"><span class="flag flag-{flag_image}"></span></div>
-                        <img class="lazy" data-src="{product_image}" alt="{product_title}" title="{product_title}" src="/images/no_photo.png">
+                        <img class="lazy {product_image_class}" data-src="{product_image}" alt="{product_title}" title="{product_title}" src="/images/no_photo.png">
                     </div>
                 </a>
             </div>

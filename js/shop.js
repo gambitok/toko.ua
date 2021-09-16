@@ -27,7 +27,6 @@ function showNotify(title, text, type_text) {
 }
 
 function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
-    console.log('move');
     let count_id = $("#count_" + id);
     let count = count_id.val();
 
@@ -234,42 +233,39 @@ function showBasketStatus() {
 }
 
 // FINISH FAST ORDER
-function finishFastOrder(name) {
+function finishFastOrder(name, status = 0) {
     $("#input_phone").val("");
     validateForm("phone", "input");
     //let input_phone = $("#input_phone2");
     let input_phone = $("#" + name);
     let phone = input_phone.val();
     if (!validationInput(name)) {
-        // input_phone.tooltip("show");
-        // setTimeout(function() {
-        //     input_phone.tooltip("hide");
-        // }, 5000);
         let text = "{input_valid_phone}";
         showAlertModal(text, "{error_cap}", 0);
         return true;
-    } else {
+    }
+    else {
         JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content !== false) {
                     let text = "{user_already_logged}!<br>{phone_cap}: " + result.content[0];
                     showAlertModal(text, "{error_cap}", 0, showLoginForm);
                 } else {
-                    validateOperator(phone);
+                    validateOperator(phone, status);
                 }
             }}, true);
     }
 }
 
 // VALIDATE PHONE NUMBER (by OPERATOR)
-function validateOperator(phone) {
+function validateOperator(phone, status = 0) {
     JsHttpRequest.query(folder,{'w':'validateOperator', 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content === false) {
                 let text = "{check_phone_data}!";
                 showAlertModal(text, "{error_cap}", 0);
             } else {
-                showFastOrder();
+                showFastOrder(phone, status);
                 $("#BasketForm").modal("hide");
             }
         }}, true);
@@ -298,12 +294,26 @@ function addFastOrder() {
     }
 }
 
-function showFastOrder() {
-    let phone = $("#input_phone2").val();
-    JsHttpRequest.query(folder,{'w':'finish_fast_order', 'phone':phone},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.href = result.content;
-        }}, true);
+function showFastOrder(phone, status = 0) {
+    if (status === 1) {
+        let art_id = $("#art_id").val();
+        let brand_id = $("#brand_id").val();
+        let stock = $("#stock").val();
+        let storage_id = $("#storage_id").val();
+        let suppl_id = $("#suppl_id").val();
+        let count = 1;
+        JsHttpRequest.query(folder,{'w':'saveFastOrderBasket', 'phone':phone, 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                location.href = result.content;
+            }}, true);
+
+    } else {
+        JsHttpRequest.query(folder,{'w':'finish_fast_order', 'phone':phone},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                location.href = result.content;
+            }}, true);
+    }
+
 }
 
 function closeOrderArtUpdate(dp_id, art_id, order_id) {

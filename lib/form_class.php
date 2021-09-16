@@ -333,7 +333,7 @@ class FormClass extends CatalogueClass
         $dataPhoto = $this->getSlideProPhoto($art_id, $brand_id, $h1);
         $form_photo = str_replace("{images_slide}", $dataPhoto["slide"], $form_photo);
         $form_photo = str_replace("{images_thumbnail}", $dataPhoto["thumbnail"], $form_photo);
-        $form = str_replace("{art_images}", $form_photo, $form);
+        $form = str_replace("{art_images}", ($dataPhoto["status"] == 1) ? $form_photo : "<div><img style=\"display:block;margin:0 auto;width:100%;\" itemprop=\"image\" alt=\"$article_nr_displ\" src=\"/images/no_photo.png\"></div>", $form);
 
         $form = str_replace("{applicable_form}", $this->getApplicableForm($art_id), $form);
         $form = str_replace("{article_info_row}", $article_info_row, $form);
@@ -818,6 +818,33 @@ class FormClass extends CatalogueClass
         $photo_name = $this->getArticlePhoto($art_id);
         $photo_name = ($photo_name == "") ? $this->noPhoto : "$this->uploads_link/$photo_name";
         return $photo_name;
+    }
+
+    public function getArticleCatalogPhoto($art_id, $brand_id = 0)
+    {
+        $status = 0;
+        $photo_name = $this->getArticlePhoto($art_id);
+        if ($photo_name != "") {
+            $photo_name = "$this->uploads_link/$photo_name";
+        } else {
+            $brand_photo = "";
+            $db = DbSingleton::getTokoDb();
+            $r = $db->query("SELECT `logo_name` FROM `T2_BRAND_LINK` WHERE `BRAND_ID` = $brand_id LIMIT 1;");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $brand_photo = $db->result($r, 0, "logo_name");
+            }
+            if ($photo_name == "" && $brand_photo != "") {
+                $status = 1;
+            }
+            if ($brand_photo != "") {
+                $photo_name = "https://portal.myparts.pro/cdn/brands_files/" . $brand_photo;
+            }
+        }
+        if ($photo_name == "")  {
+            $this->noPhoto;
+        }
+        return compact("photo_name", "status");
     }
 
     public static function cacheArticlesPhotos($where_art_id_str)

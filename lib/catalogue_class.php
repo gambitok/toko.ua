@@ -1461,7 +1461,11 @@ class CatalogueClass
 
         $form = str_replace("{product_info}", $showform->getArticleInfoForm($art_id, 1), $form);
         $form = str_replace("{product_button}", ($price == 0) ? "none" : "", $form);
-        $form = str_replace("{product_image}", $showform->getArticleActivePhoto($art_id), $form);
+
+        $photoData = $showform->getArticleCatalogPhoto($art_id, $brand_id);
+        $form = str_replace("{product_image}", $photoData["photo_name"], $form);
+        $form = str_replace("{product_image_class}", ($photoData["status"] == 0) ? "" : "filter-bw", $form);
+
         $form = str_replace("{product_title}", "$article_name $brand_name $article_nr_displ", $form);
 
         $basket_amount = $shop->getBasketArticleAmount($art_id, $storage_id);
@@ -3039,6 +3043,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
 
+        $status = 0;
         $slide = "";
         $thumbnail = "";
         $arr = [];
@@ -3091,12 +3096,14 @@ class CatalogueClass
                             alt=\"$h1 - {photo_card_cap} #$i\"/>
                     </div>
                 </div>";
+                $status = 1;
             }
         } else {
             $slide = "";
             $thumbnail = "";
+            $status = 0;
         }
-        return array("slide" => $slide, "thumbnail" => $thumbnail);
+        return array("slide" => $slide, "thumbnail" => $thumbnail, "status" => $status);
     }
 
     public function checkMfa($mfa_link)

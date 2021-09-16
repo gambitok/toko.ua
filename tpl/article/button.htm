@@ -1,71 +1,71 @@
-<script type="text/javascript" src="/js/plugins/bootstrap-input-spinner.js"></script>
+<!--<script type="text/javascript" src="/js/plugins/bootstrap-input-spinner.js"></script>-->
 
-<style>
-    .btn-buy {
-        float: unset;
-    }
-    .buy-form {
-        display: block;
-        width: 200px;
-        margin-bottom: 30px;
-    }
-    .buy-form__button {
-        display: block;
-    }
-    .buy-form__input {
-        display: none;
-    }
-</style>
+<!--<style>-->
+<!--    .btn-buy {-->
+<!--        float: unset;-->
+<!--    }-->
+<!--    .buy-form {-->
+<!--        display: block;-->
+<!--        width: 200px;-->
+<!--        margin-bottom: 30px;-->
+<!--    }-->
+<!--    .buy-form__button {-->
+<!--        display: block;-->
+<!--    }-->
+<!--    .buy-form__input {-->
+<!--        display: none;-->
+<!--    }-->
+<!--</style>-->
 
-<div class="metro">
+<!--<div class="metro">-->
 
-    <input type="hidden" id="art_id" value="100002193">
-    <input type="hidden" id="brand_id" value="30146">
-    <input type="hidden" id="suppl_id" value="0">
-    <input type="hidden" id="storage_id" value="4">
-    <input type="hidden" id="stock" value="168">
+<!--    <input type="hidden" id="art_id" value="100002193">-->
+<!--    <input type="hidden" id="brand_id" value="30146">-->
+<!--    <input type="hidden" id="suppl_id" value="0">-->
+<!--    <input type="hidden" id="storage_id" value="4">-->
+<!--    <input type="hidden" id="stock" value="168">-->
 
-    <div class="buy-form">
-        <div class="buy-form__button">
-            <div class="btn btn-info btn-buy" onclick="moveBasketButton(this);">
-                <span>{buy_cap}</span>
-            </div>
-        </div>
-        <div class="buy-form__input">
-            <input class="count_amount" type="text" value="1" min="1" title="amount" id="count_1">
-        </div>
-    </div>
+<!--    <div class="buy-form">-->
+<!--        <div class="buy-form__button">-->
+<!--            <div class="btn btn-info btn-buy" onclick="moveBasketButton();">-->
+<!--                <span>{buy_cap}</span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="buy-form__input">-->
+<!--            <input class="count_amount" type="text" value="1" min="1" title="amount" id="count_1">-->
+<!--        </div>-->
+<!--    </div>-->
 
-</div>
+<!--</div>-->
 
-<script>
-    function moveBasketButton(a) {
-        $(a).parent(".buy-form__button").toggle().next(".buy-form__input").toggle();
-        let id = "one";
-        let art_id = $("#art_id").val();
-        let brand_id = $("#brand_id").val();
-        let stock = $("#stock").val();
-        let storage_id = $("#storage_id").val();
-        let suppl_id = $("#suppl_id").val();
-        moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id);
-    }
-</script>
+<!--<script>-->
+<!--    function moveBasketButton(a) {-->
+<!--        $(a).parent(".buy-form__button").toggle().next(".buy-form__input").toggle();-->
+<!--        let id = "one";-->
+<!--        let art_id = $("#art_id").val();-->
+<!--        let brand_id = $("#brand_id").val();-->
+<!--        let stock = $("#stock").val();-->
+<!--        let storage_id = $("#storage_id").val();-->
+<!--        let suppl_id = $("#suppl_id").val();-->
+<!--        moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id);-->
+<!--    }-->
+<!--</script>-->
 
-<script>
-    $(document).ready(function() {
-        $(".count_amount").inputSpinner();
-        let art_id = $("#art_id").val();
-        let stock = $("#stock").val();
-        let storage_id = $("#storage_id").val();
+<!--<script>-->
+<!--    $(document).ready(function() {-->
+<!--        $(".count_amount").inputSpinner();-->
+<!--        let art_id = $("#art_id").val();-->
+<!--        let stock = $("#stock").val();-->
+<!--        let storage_id = $("#storage_id").val();-->
 
-        let btn_decrement = "updateCountBasket(0," + art_id + ", " + storage_id + ", " + stock + ", 0);";
-        let btn_increment = "updateCountBasket(1," + art_id + ", " + storage_id + ", " + stock + ", 0);";
+<!--        let btn_decrement = "updateCountBasket(0," + art_id + ", " + storage_id + ", " + stock + ", 0);";-->
+<!--        let btn_increment = "updateCountBasket(1," + art_id + ", " + storage_id + ", " + stock + ", 0);";-->
 
-        $(".buy-form__input > .count_amount").each(function(  ) {
-            console.log($(this).attr('id'));
-            $(this).next().find(".btn-decrement").attr('onclick', btn_decrement);
-            $(this).next().find(".btn-increment").attr('onclick', btn_increment);
-        });
-    });
-</script>
+<!--        $(".buy-form__input > .count_amount").each(function(  ) {-->
+<!--            console.log($(this).attr('id'));-->
+<!--            $(this).next().find(".btn-decrement").attr('onclick', btn_decrement);-->
+<!--            $(this).next().find(".btn-increment").attr('onclick', btn_increment);-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 
