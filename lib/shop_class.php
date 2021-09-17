@@ -170,7 +170,7 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{full_price}", $full_price, $form);
         $form = str_replace("{disabled}", ($this->checkStatusBasket()) ? "" : "disabled", $form);
         $form = str_replace("{checked}", ($status_checked) ? "checked=\"checked\"" : "", $form);
-        $form = str_replace("{link}", $this->getSiteLink() . "$this->article_link/" . $this->getFormatAticle($article_nr_displ) . "/" . $this->getFormatAticle($brand_name) . "/$art_id/", $form);
+        $form = str_replace("{link}", $this->getSiteLink() . "$this->article_link/" . $this->getFormatAticle($article_nr_displ) . "/" . $this->getBrandLink($brand_id) . "/$art_id/", $form);
         $form = str_replace("{flag}", $flag, $form);
         $form = str_replace("{country_name}", $country_name, $form);
         $form = str_replace("{amount_field}", "count_" . $art_id . "_" . $storage_id, $form);
@@ -281,13 +281,14 @@ class ShopClass extends CatalogueClass
         $showform = new FormClass();
         $article = $showform->getArticleInfo($art_id);
         $article_nr_displ = $article["article_nr_displ"];
+        $brand_id = $article["brand_id"];
         $brand_name = $article["brand_name"];
         $article_name = $article["article_name"];
         $price = $article["price"];
         $basket = $article["basket"];
         $currency = $article["currency"];
         $format_name = $this->getFormatAticle($article_nr_displ);
-        $format_brand = $this->getFormatBrand($brand_name);
+        $brand_link = $this->getBrandLink($brand_id);
         $form = $this->getHtmlForm("orders/proposed_card");
         $form = str_replace("{basket}", $basket, $form);
         $form = str_replace("{article_nr_displ}", $article_nr_displ, $form);
@@ -296,7 +297,7 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{price}", $price, $form);
         $form = str_replace("{image}", $showform->getArticleActivePhoto($art_id), $form);
         $form = str_replace("{currency}", $currency, $form);
-        $form = str_replace("{page_proposed_link}", $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/", $form);
+        $form = str_replace("{page_proposed_link}", $this->getSiteLink() . "$this->article_link/$format_name/$brand_link/$art_id/", $form);
         return $form;
     }
 

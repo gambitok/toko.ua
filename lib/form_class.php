@@ -199,7 +199,7 @@ class FormClass extends CatalogueClass
     public function updateBasketCount($basket_id, $status = 0)
     {
         $basket_id = $this->getUrlNumber($basket_id);
-        $answer = ""; $err = 0; //$new_amount = 0;
+        $answer = ""; $err = 0;
         $stock = 0;
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `amount`, `stock` FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
@@ -333,7 +333,8 @@ class FormClass extends CatalogueClass
         $dataPhoto = $this->getSlideProPhoto($art_id, $brand_id, $h1);
         $form_photo = str_replace("{images_slide}", $dataPhoto["slide"], $form_photo);
         $form_photo = str_replace("{images_thumbnail}", $dataPhoto["thumbnail"], $form_photo);
-        $form = str_replace("{art_images}", ($dataPhoto["status"] == 1) ? $form_photo : "<div><img style=\"display:block;margin:0 auto;width:100%;\" itemprop=\"image\" alt=\"$article_nr_displ\" src=\"/images/no_photo.png\"></div>", $form);
+        $nophoto = $this->noPhoto;
+        $form = str_replace("{art_images}", ($dataPhoto["status"] == 1) ? $form_photo : "<div><img style=\"display:block;margin:0 auto;width:100%;\" itemprop=\"image\" alt=\"$article_nr_displ\" src=\"$nophoto\"></div>", $form);
 
         $form = str_replace("{applicable_form}", $this->getApplicableForm($art_id), $form);
         $form = str_replace("{article_info_row}", $article_info_row, $form);
@@ -408,8 +409,8 @@ class FormClass extends CatalogueClass
         $article_displ = $this->getArticleDispl($art_id_sel);
         $article_name = $this->getArticleName($art_id_sel);
         $brand_name = $this->getBrandName($brand_id_sel);
-        $brand_search = $this->getUrlString($brand_name);
-        return "<a href=\"" . $this->getSiteLink() . "$this->article_link/$article_search/$brand_search/$art_id_sel/\">$article_name $brand_name $article_displ</a>";
+        $brand_link = $this->getBrandLink($brand_id_sel);
+        return "<a href=\"" . $this->getSiteLink() . "$this->article_link/$article_search/$brand_link/$art_id_sel/\">$article_name $brand_name $article_displ</a>";
     }
 
     public function getArticleSeoText($art_id, $h1)
@@ -884,9 +885,8 @@ class FormClass extends CatalogueClass
         $list = "";
         $article_name = $this->getArticleSearch($art_id);
         $brand_id = $this->getArticleBrand($art_id);
-        $brand_name = $this->getBrandName($brand_id);
         $format_name = $this->getFormatAticle($article_name);
-        $format_brand = $this->getFormatBrand($brand_name);
+        $brand_link = $this->getBrandLink($brand_id);
         $arr = [];
 
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
@@ -909,8 +909,8 @@ class FormClass extends CatalogueClass
                 $list .= "
                 <div class=\"carousel-item $active\">
                     <div class=\"carousel-item-image\">
-                        <a itemprop=\"url\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/\">
-                            <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" src=\"/images/no_photo.png\" alt=\"Slide $i\">
+                        <a itemprop=\"url\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$brand_link/$art_id/\">
+                            <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" src=\"$nophoto\" alt=\"Slide $i\">
                         </a>
                     </div>
                 </div>";
@@ -918,7 +918,7 @@ class FormClass extends CatalogueClass
                 $list .= "
                 <div class=\"carousel-item $active\">
                     <div class=\"carousel-item-image\">
-                        <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" src=\"/images/no_photo.png\" alt=\"Slide $i\">
+                        <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" src=\"$nophoto\" alt=\"Slide $i\">
                         <div class=\"carousel-caption\">{photo_card_cap} $i {of_cap} $count_pages</div>
                     </div>
                 </div>";
@@ -1212,9 +1212,9 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $info = "";
         $article_name = $this->getArticleSearch($art_id);
-        $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
+        $brand_id = $this->getArticleBrand($art_id);
         $format_name = $this->getFormatAticle($article_name);
-        $format_brand = $this->getFormatBrand($brand_name);
+        $brand_link = $this->getBrandLink($brand_id);
         $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID` = $art_id AND `LANG_ID` = 16 ORDER BY `SORT` ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
@@ -1232,7 +1232,7 @@ class FormClass extends CatalogueClass
             }
             $info .= "</table>";
             $type ?: ($n <= 5) ?: $info .= "<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
-                <a class=\"search__more\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$format_brand/$art_id/\">
+                <a class=\"search__more\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$brand_link/$art_id/\">
                     {more_read}
                 </a>    
             </p>";

@@ -11,6 +11,19 @@ function setCookies()
     return true;
 }
 
+function getSiteCurentLink()
+{
+    $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $actual_link = str_replace("/uk/", "/", $actual_link);
+    $actual_link = str_replace("/en/", "/", $actual_link);
+    $ru = $actual_link;
+    $uk = $actual_link;
+    $en = $actual_link;
+    $uk = str_replace("https://toko.ua/", "https://toko.ua/uk/", $uk);
+    $en = str_replace("https://toko.ua/", "https://toko.ua/en/", $en);
+    return compact("ru", "uk", "en");
+}
+
 function getContent($content)
 {
     $menu = new MenuClass();

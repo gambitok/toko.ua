@@ -61,6 +61,7 @@ class MenuClass extends CatalogueClass
             $language_id = 5;
         }
         $list = "";
+        $nophoto = $this->noPhoto;
         $err1 = $this->err1;
         $date_cur = date("Y-m-d");
         $r = $db->query("SELECT `id`, `caption`, `short_desc`, `data` FROM `news` WHERE `lang_id` = $language_id AND `data` <= '$date_cur' AND `status` = 1 ORDER BY `data` DESC;");
@@ -77,7 +78,7 @@ class MenuClass extends CatalogueClass
                 $date = $db->result($r, $i - 1, "data");
                 $img_file = $this->getNewsImage($state_id);
                 $img = ($img_file != "")
-                    ? "<img itemprop=\"image\" class=\"lazy\" data-src=\"https://toko.ua/uploads/images/news/$language_id/$state_id/$img_file\" src=\"https://toko.ua/images/no_photo.png\" alt=\"image\">"
+                    ? "<img itemprop=\"image\" class=\"lazy\" data-src=\"https://toko.ua/uploads/images/news/$language_id/$state_id/$img_file\" src=\"https://toko.ua$nophoto\" alt=\"image\">"
                     : "";
                 $list .= "
                 <div itemprop=\"publisher\" itemtype=\"https://schema.org/Organization\" itemscope class=\"row news-block__item\">

@@ -47,6 +47,11 @@ $content = str_replace("{seo_footers_block}", "<!--footers_block-->", $content);
 $content = str_replace("{site_console}", "", $content);
 $content = str_replace("{seoshield_formulas}", "", $content);
 
+$site_link = getSiteCurentLink();
+$content = str_replace("{site_link_ru}", $site_link["ru"], $content);
+$content = str_replace("{site_link_uk}", $site_link["uk"], $content);
+$content = str_replace("{site_link_en}", $site_link["en"], $content);
+
 // Main SEO BLOCK
 $seo_text = "<!--seo_text_start--><!--seo_text_end-->";
 if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') === false && $_SERVER['REQUEST_METHOD'] === 'GET') {

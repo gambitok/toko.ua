@@ -205,7 +205,7 @@ class CatalogueClass
                 }
                 $mas[$i] = compact("search_number", "article_nr_displ", "brand_id", "brand_name", "brand_link", "count", "article_name", "art_id");
             }
-
+            $nophoto = $this->noPhoto;
             usort($mas, "myBrandCmp");
             for ($i = 0; $i < $n; $i++) {
                 $search_number = strtolower($mas[$i]["search_number"]);
@@ -219,7 +219,7 @@ class CatalogueClass
                 $list .= "
                 <tr onclick='$link'>
                     <td class=\"minify\">
-                        <img itemprop=\"image\" data-src=\"$photo_name\" class=\"lazy\" alt=\"$article_nr_displ\" src=\"/images/no_photo.png\">
+                        <img itemprop=\"image\" data-src=\"$photo_name\" class=\"lazy\" alt=\"$article_nr_displ\" src=\"$nophoto\">
                     </td>
                     <td>$article_nr_displ</td>
                     <td>$brand_name</td>
@@ -2430,6 +2430,7 @@ class CatalogueClass
     public function getCatalogColList($mfa_link = "", $model_link = "")
     {
         $db = DbSingleton::getTokoDb();
+        $nophoto = $this->noPhoto;
         $list = "";
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
@@ -2455,7 +2456,7 @@ class CatalogueClass
                                 </div>
                             </div>
                             <div class=\"tree-heads__item-image\">
-                                <img data-src=\"/uploads/images/group_tree_head/$head_img\" class=\"lazy\" alt=\"$head_name\" src=\"/images/no_photo.png\">
+                                <img data-src=\"/uploads/images/group_tree_head/$head_img\" class=\"lazy\" alt=\"$head_name\" src=\"$nophoto\">
                             </div>
                         </div>
                     </label>
@@ -3042,7 +3043,7 @@ class CatalogueClass
     public function getSlideProPhoto($art_id, $brand_id, $h1)
     {
         $db = DbSingleton::getTokoDb();
-
+        $nophoto = $this->noPhoto;
         $status = 0;
         $slide = "";
         $thumbnail = "";
@@ -3075,11 +3076,10 @@ class CatalogueClass
                 $i++;
                 $photo = $value["photo"];
                 $type = $value["type"];
-
                 $slide .= "
                 <div class=\"sp-slide\">
                     <img class=\"sp-image lazy\" 
-                        src=\"/images/no_photo.png\"
+                        src=\"$nophoto\"
                         data-src=\"https://toko.ua/uploads/images/$type/$photo\"
                         data-retina=\"https://toko.ua/uploads/images/$type/$photo\"
                         style=\"height: 100%; width: 100%;\"
