@@ -1,0 +1,72 @@
+<style>
+    .buy-form {
+        display: block;
+        width: 100%;
+    }
+    .buy-form__button .btn-buy {
+        float: unset;
+    }
+    .buy-form__button {
+        display: block;
+    }
+    .buy-form__button-hidden {
+        display: none;
+    }
+    .buy-form__input {
+        display: block;
+    }
+    .buy-form__input-hidden {
+        display: none;
+    }
+    .article-info-row__col .input-group {
+        max-width: 100%;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 pad0">
+            <div style="display: flex; align-items: baseline; flex-wrap: wrap;">
+                <div class="article-info-row__bold" style="font-size:30px;">{art_price}</div>
+                <div class="article-info-row__upper" style="font-size:20px;">{art_cur}</div>
+            </div>
+        </div>
+        <div class="col-6 pad0">
+            <div class="buy-form">
+                <input type="hidden" value="{article_card_basket_id}" id="basket_id">
+                <div class="buy-form__button {buy_class_btn}">
+                    <div class="btn btn-info btn-buy" id="article-btn-buy" onclick="moveBasketButton();">
+                        <span>{buy_cap}</span>
+                    </div>
+                </div>
+                <div class="buy-form__input {buy_class_input}">
+                    <input class="count_amount" type="number" value="{article_card_amount}" min="1" title="amount" id="count_0" >
+                    <div class="text-center">{count_in_basket}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function() {
+        $("#count_0").inputSpinner();
+
+        $(".buy-form__input > .count_amount").each(function(  ) {
+            $(this).next().find(".btn-decrement").on('click touchstart', function() {
+                updateBasketCount(0);
+            });
+            $(this).next().find(".btn-increment").on('click touchstart', function() {
+                updateBasketCount(1);
+            });
+            $(this).next().find("input[type='text']").on('click touchstart', function() {
+                updateBasketCountChange();
+            });
+
+        });
+
+    });
+
+</script>

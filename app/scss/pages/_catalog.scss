@@ -367,13 +367,12 @@
     color: #808080;
     font-size: 13px;
     letter-spacing: normal;
-}
-
-.search__name-stock {
-    color: #64B961;
-    font-size: 13px;
-    font-weight: bold;
-    letter-spacing: normal;
+    &-stock {
+        color: #64B961;
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: normal;
+    }
 }
 
 .search__soldout {
@@ -451,14 +450,14 @@
     text-align: center;
 }
 
-.border-dashed {
-    border-top: 1px dashed #ddd;
+.border {
+    &-dashed {
+        border-top: 1px dashed #ddd;
+    }
+    &-line {
+        border-top: 3px solid #e1e7ec;
+    }
 }
-
-.border-line {
-    border-top: 3px solid #e1e7ec;
-}
-
 .span-search {
     color: #000!important;
     font-size: 1em!important;
@@ -645,36 +644,19 @@
 
 /*==== SIDE FILTERS, SIDE TREE ====*/
 .side-brands {
-    background: #fff;
-    box-shadow: 0 1px 4px #ccc;
-    font-size: 11px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px 15px;
-    width: 100%;
-    &-title {
-        color: #9da9b9;
-        font-size: 16px;
-        font-weight: bold;
-        margin-bottom: 30px;
-        text-transform: uppercase;
-    }
     &-item {
         padding-bottom: 5px;
-        &__text {
-            padding-right: 0;
-            span {
-                padding-left: 5px;
-            }
-        }
         &__price {
             padding-left: 0;
+            padding-right: 30px;
             span {
                 color: #9da9b9;
-                float: right!important;
+                float: right;
                 font-size: 12px;
-                text-align: right!important;
             }
+        }
+        &__text {
+            padding-right: 0;
         }
     }
 }
@@ -752,6 +734,12 @@
 /*==== /SIDE FILTERS, SIDE TREE ====*/
 
 /*==== SEARCHING ====*/
+.tables__box {
+    &-buy {
+        padding: 0;
+    }
+}
+
 .tables__price {
     color: #606975;
     font-size: 14px;
@@ -850,6 +838,7 @@
     float: right;
     .btn-group {
         background: #55bae6;
+        cursor: pointer;
         display: block;
         margin: 10px auto 0 auto;
         width: 100%;
@@ -961,17 +950,33 @@
     .article-info {
         &-row {
             flex-wrap: wrap;
+            &__stock {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+            &__bold {
+                font-size: 40px;
+            }
+            &__upper {
+                font-size: 20px;
+            }
+            .input-buy-min {
+                margin-bottom: 15px;
+                margin-right: 0;
+            }
+            .buy-form__button .btn-buy {
+                float: right;
+                font-size: 22px;
+                height: 50px;
+                width: 140px;
+            }
+            .btn-buy-min {
+                font-size: 11px;
+                height: 38px;
+            }
             &__col {
-                //width: 100%;
                 &-right {
                     float: unset;
-                }
-                .input-buy-min {
-                    margin-bottom: 15px;
-                    margin-right: 0;
-                }
-                .btn-buy-min {
-                    font-size: 11px;
                 }
             }
         }
@@ -1103,7 +1108,7 @@
 
     .tables__box {
         padding: 10px;
-        .col-4 {
+        &-buy {
             padding-left: 0;
             padding-right: 5px;
         }

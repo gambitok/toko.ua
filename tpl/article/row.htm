@@ -60,7 +60,6 @@
             title="{input_valid_phone}" value="{user_phone}"
         >
         <div class="input-group-append">
-<!--            <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="validationInputPhone();">{make_order_fast}</button>-->
             <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="finishFastOrder('input_phone_article',1);">{make_order_fast}</button>
         </div>
     </div>
@@ -68,30 +67,9 @@
 
 <script>
 
-    // $(".buy-form__input > .count_amount").each(function(  ) {
-    //     $(this).next().find(".btn-decrement").prop('disabled', true);
-    //     $(this).next().find(".btn-increment").prop('disabled', true);
-    // });
-    // $(".buy-form__input > .count_amount").each(function(  ) {
-    //     $(this).next().find(".btn-decrement").prop('disabled', false);
-    //     $(this).next().find(".btn-increment").prop('disabled', false);
-    // });
-
     $(document).ready(function() {
-        // let btn_decrement = "updateCountBasket(0," + art_id + ", " + storage_id + ", " + stock + ", 0);";
-        // let btn_increment = "updateCountBasket(1," + art_id + ", " + storage_id + ", " + stock + ", 0);";
         $("#count_1").inputSpinner();
 
-        let btn_decrement = "updateBasketCount(0);";
-        let btn_increment = "updateBasketCount(1);";
-        let btn_change = "updateBasketCountChange();";
-
-        // $(".buy-form__input > .count_amount").each(function(  ) {
-        //     $(this).next().find(".btn-decrement").attr('onclick', btn_decrement);
-        //     $(this).next().find(".btn-increment").attr('onclick', btn_increment);
-        //     $(this).next().find("input[type='text']").attr('onchange', btn_change);
-        //
-        // });
         $(".buy-form__input > .count_amount").each(function(  ) {
             $(this).next().find(".btn-decrement").on('click touchstart', function() {
                 updateBasketCount(0);

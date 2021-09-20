@@ -88,6 +88,21 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
 
             $params = [];
             if (!empty($filters)) {
+                list($check_status, $check_link) = $catalog_exist->checRedirects($filters);
+
+                if ($check_status > 0) {
+                    $redirect_status = 1;
+                    $redirect_type = 301;
+                    $group_link = $catalog_exist->getGroupRowLink($group_id);
+                    $redirect_link = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$group_link/" . $check_link . "/";
+                    if ($mfa_link != "") {
+                        $redirect_link .= "$mfa_link/";
+                        if ($model_link != "") {
+                            $redirect_link .= "$model_link/";
+                        }
+                    }
+                }
+
                 $params = $catalog_exist->getCheckedFilters($group_id, $filters);
                 list($count_brands, $count_params, $count_values) = $catalog_exist->getCatalogParamsCount($params);
                 if ($count_values > 0) {
@@ -144,6 +159,12 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
 
             $content = str_replace("{main_site_breadcrumbs}", $catalogData["breadcrumb"], $content);
             $content = str_replace("{site_script_breadcrumbs}", $catalogData["script"], $content);
+        }
+
+        if ($router_2 == "clutch%20" || $router_2 == "clutch ") {
+            $redirect_status = 1;
+            $redirect_type = 301;
+            $redirect_link = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/stceplenie_i_transmissiia/clutch/";
         }
 
         /*

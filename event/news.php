@@ -7,6 +7,11 @@ $dbm->query("UPDATE `A_CLIENTS_USERS` SET `update_news` = '$today' WHERE `id` = 
 $link = $catalogue->getUrlString(findLinks()[1]);
 $title = "";
 
+if (findLinks()[3] == "grafС–k-roboti-na-novorС–chnС–-svyata" || findLinks()[3] == "graf%D0%A1%E2%80%93k-roboti-na-novor%D0%A1%E2%80%93chn%D0%A1%E2%80%93-svyata") {
+    $link = $catalogue->getSiteLink() . $catalogue->news_link . "/state/" . findLinks()[2] . "/grafik-roboti-na-novorichni-svyata/";
+    header("Location: $link", TRUE, 301);
+}
+
 if ($link == "") {
     $content = str_replace("{main_window}", $menu->showNews(), $content);
     $title = $catalogue->replaceLang("{site_news}");

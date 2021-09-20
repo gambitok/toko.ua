@@ -7,7 +7,48 @@
 <input type="hidden" id="storage_id" value="{storage_id}">
 <input type="hidden" id="stock" value="{stock}">
 
+<style>
+    .article-form-fixed {
+        background: white;
+        border-bottom: 1px solid black;
+        color: black;
+        left: 0;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 999999;
+    }
+    .article-form-fixed .row {
+        align-items: center;
+        height: 80px;
+    }
+    .article-form-fixed img {
+        width: auto;
+        height: 60px;
+    }
+</style>
+
+<!--<div class="article-form-fixed">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-2 pad0">-->
+<!--                <img src="https://toko.ua/uploads/images/catalogue/{art_main_image}" alt="{article_header}">-->
+<!--            </div>-->
+<!--            <div class="col-6 pad0">-->
+<!--                {article_header}-->
+<!--            </div>-->
+<!--            <div class="col-4 pad0">-->
+<!--                {article_buy_here}-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
 <div class="container article-form">
+
+    <div class="row article-form-row" style="display: block; width: 100%; margin: 0; margin-bottom: 30px;">
+        {article_cars}
+    </div>
 
     <div class="row article-form-row">
         <div class="col-12">

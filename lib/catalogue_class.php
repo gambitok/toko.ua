@@ -760,6 +760,7 @@ class CatalogueClass
                     $suppl_id = $db->result($rs, $i - 1, "suppl_id");
                     $storage_id = $db->result($rs, $i - 1, "storage_id");
                     $format_name = $this->getFormatAticle($article_nr_displ);
+
                     // price
                     $price = $articlePrices[$art_id] ?? 0;
                     // delivery
@@ -773,6 +774,7 @@ class CatalogueClass
                             ];
                         $delivery_days = $deliveryData["delivery_days"];
                     }
+
                     $price = $kours->getKoursPrice($price, $cur);
                     if ($cur == 1) {
                         $price = $client->getClientPriceRounding($client_id, $price);
@@ -792,8 +794,8 @@ class CatalogueClass
                             if ($art_id == $art_id_search) {
                                 $main_brand = $brand_id;
                             }
-                            if ($stock > 0 && $price > 0) {
-                                if ($brand_name != "") {
+                            if ($brand_name != "") {
+                                if ($stock > 0 && $price > 0) {
                                     $brands[$art_id]["brand_name"] = $brand_name;
                                     $brands[$art_id]["brand_id"] = $brand_id;
                                     if (!empty($brands[$art_id]["price"])) {
@@ -922,6 +924,7 @@ class CatalogueClass
 
     public function shortSearchList($art_id_search)
     {
+        $art_id_search = $this->getUrlNumber($art_id_search);
         $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
         $client = new ClientClass();
@@ -948,9 +951,7 @@ class CatalogueClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
-            if ($art_id_search != $art_id) {
-                $arts[] = $art_id;
-            }
+            $arts[] = $art_id;
         }
         $where_art_id_str = implode(",", $arts);
 
@@ -972,6 +973,7 @@ class CatalogueClass
                     $suppl_id = $db->result($r, $i - 1, "suppl_id");
                     $stock = intval($db->result($r, $i - 1, "AMOUNT"));
                     $storage_id = $db->result($r, $i - 1, "storage_id");
+                    $format_name = $this->getFormatAticle($article_nr_displ);
 
                     // price
                     $price = $this->getArticlePrice($art_id);
@@ -988,7 +990,6 @@ class CatalogueClass
                     $delivery_info = $deliveryData["info"];
                     $delivery_days = $deliveryData["days"];
                     $delivery_short_info = $deliveryData["short"];
-
                     if ($suppl_id != 0) {
                         $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
                         $delivery_info = $deliveryData["info"];
@@ -997,19 +998,21 @@ class CatalogueClass
                     }
 
                     // ORDER BY search art and suppl_id
-                    if ($art_id == $art_id_search) {
+                    if (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search) {
                         $status = 2;
                     } else {
                         $status = ($suppl_id == 0) ? 1 : 0;
                     }
 
                     // show articles with suppl_id=0 or with price!=0 and stock!=0
-                    if ($price != 0 || ($art_id == $art_id_search)) {
-                        if ($stock > 0 || ($art_id == $art_id_search)) {
+                    if ($price != 0 || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
+                        if ($stock > 0 || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
                             // visible suppl storage
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
-                                $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
-                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', '$article_name', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
+                                if ($art_id_search != $art_id) {
+                                    $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
+                                    VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', '$article_name', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
+                                }
                             }
                         }
                     }
@@ -1071,15 +1074,16 @@ class CatalogueClass
                 // show other storages
                 $other_storages = $this->showOtherStorages($mas, $cur, $view);
 
-                $cc = 0;
-                if (!empty($mas)) {
-                    foreach ($mas as $mas_key => $mas_val) {
-                        $cc++;
-                        if ($cc > 3) {
-                            unset($mas[$mas_key]);
-                        }
-                    }
-                }
+//                $cc = 0;
+//                if (!empty($mas)) {
+//                    foreach ($mas as $mas_key => $mas_val) {
+//                        $cc++;
+//                        if ($cc > 3) {
+//                            unset($mas[$mas_key]);
+//                        }
+//                    }
+//                }
+
                 // show search list
                 $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view);
             }

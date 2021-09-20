@@ -685,6 +685,37 @@ class CatalogExistClass extends CatalogueClass
         return $params;
     }
 
+    public function checRedirects($filters)
+    {
+        $status = 0;
+        $arr = ["neolux%D0%92%C2%AE", "JP%20GROUP", "HENGST%20FILTER", "continental%C2%A0rear-ctrl", "continental-aqua-ctrl%C2%A0set", "continental-aqua-ctrl%C2%A0multi"];
+        $arr_new = [
+            "neolux%D0%92%C2%AE" => "neolux",
+            "JP%20GROUP" => "jp-group",
+            "HENGST%20FILTER" => "hengst-filter",
+            "continental%C2%A0rear-ctrl" => "continental-rear-ctrl",
+            "continental-aqua-ctrl%C2%A0set" => "continental-aqua-ctrl-set",
+            "continental-aqua-ctrl%C2%A0multi" => "continental-aqua-ctrl-multi"
+        ];
+
+        if (!empty($filters)) {
+            $params_arr = explode(";", $filters);
+            foreach ($params_arr as $params_item) {
+                $params_item_str = explode("=", $params_item);
+                $params_item_values = $params_item_str[1];
+                $params_item_values_arr = explode(",", $params_item_values);
+                foreach ($params_item_values_arr as $value_link) {
+                    if (in_array($value_link, $arr)) {
+                        $status++;
+                        $filters = str_replace("$value_link", $arr_new["$value_link"], $filters);
+                    }
+                }
+            }
+        }
+
+        return array($status, $filters);
+    }
+
     /*
      * get params from selected group
      * */
