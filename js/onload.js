@@ -131,14 +131,14 @@ $(document).ready(function() {
     });
 
     // Ancor link (for scrolling top)
-    $(".ancor__link a").click(function() {
-        let elementClick = $(this).attr("href");
-        let destination = $(elementClick).offset().top;
-        jQuery("html:not(:animated),body:not(:animated)").animate({
-            scrollTop: destination
-        }, 800);
-        return false;
-    });
+    // $(".ancor__link a").click(function() {
+    //     let elementClick = $(this).attr("href");
+    //     let destination = $(elementClick).offset().top;
+    //     jQuery("html:not(:animated),body:not(:animated)").animate({
+    //         scrollTop: destination
+    //     }, 800);
+    //     return false;
+    // });
 
     // Catalog Filters
     let input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
@@ -204,12 +204,12 @@ $(document).ready(function() {
     });
 
     // fixed top search
-    var $wind = $(window), $fixedup = $(".ancor"), limit2 = 240;
-    function tglup (state) { $fixedup.toggleClass("hidden", state); }
-    $wind.on("scroll", function () {
-        var topd = $wind.scrollTop();
-        if (topd < limit2) { tglup(true); } else { tglup(false); }
-    });
+    // var $wind = $(window), $fixedup = $(".ancor"), limit2 = 240;
+    // function tglup (state) { $fixedup.toggleClass("hidden", state); }
+    // $wind.on("scroll", function () {
+    //     var topd = $wind.scrollTop();
+    //     if (topd < limit2) { tglup(true); } else { tglup(false); }
+    // });
 
     // Adaptive navigation
     $(".bar").bigSlide({

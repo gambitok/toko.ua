@@ -141,6 +141,57 @@
     }
 }
 
+.article-fixed {
+    background: #fff;
+    box-shadow: 0 8px 8px grey;
+    color: black;
+    display: none;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999999;
+    &-form {
+        align-items: center;
+        display: flex;
+        flex-wrap: nowrap;
+        margin: 10px auto;
+        &__image {
+            width: 10%;
+            img {
+                height: 60px;
+                width: auto;
+            }
+        }
+        &__text {
+            width: 60%;
+            img {
+                height: 40px;
+                margin-left: 30px;
+                width: 40px;
+            }
+        }
+        &__buy {
+            width: 30%;
+            &-form {
+                align-items: baseline;
+                display: flex;
+                flex-wrap: wrap;
+            }
+            &-price {
+                color: black;
+                font-size: 25px;
+                font-weight: bold;
+            }
+            &-cur {
+                color: gray;
+                font-size: 14px;
+                margin-left: 10px;
+            }
+        }
+    }
+}
+
 .article-form {
     display: block;
     &-row {
@@ -160,8 +211,8 @@
                 }
             }
             a {
-                border-top: 5px solid #deedf3;
                 border-bottom: 5px solid #deedf3;
+                border-top: 5px solid #deedf3;
                 color: #000;
                 padding: 15px;
             }
@@ -1111,6 +1162,24 @@
         &-buy {
             padding-left: 0;
             padding-right: 5px;
+        }
+    }
+
+    .article-fixed {
+        &-form {
+            display: block;
+            margin: 10px 0;
+            &__image {
+                display: none;
+            }
+            &__text {
+                display: flex;
+                align-items: center;
+                width: 100%;
+            }
+            &__buy {
+                width: 100%;
+            }
         }
     }
 }

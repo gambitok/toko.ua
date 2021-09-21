@@ -7,7 +7,6 @@ header {
     background: #f1f1f1;
     border-bottom: 1px solid #ced4da;
     color: #606975;
-    padding: 0;
     a, a:not([href]):not([tabindex]) {
         color: #606975;
         &:hover {
@@ -17,14 +16,10 @@ header {
 }
 
 .menu-language {
-    align-items: baseline;
     display: flex;
-    flex-wrap: nowrap;
-    font-size: 14px;
     justify-content: space-around;
     width: 100px;
     &__item {
-        font-size: 14px;
         &-active {
             a {
                 text-decoration: underline;
@@ -36,31 +31,21 @@ header {
 .contacts {
     font-size: 14px;
     overflow: hidden;
-    padding: 0;
-    position: relative;
     text-overflow: ellipsis;
     white-space: nowrap;
-    a:hover {
-        color: #000;
-        text-decoration: none;
-        transition: all .2s ease;
-    }
 }
 
 .authorization {
-    margin: 0;
     text-align: right;
     &-item {
         display: inline;
         font-size: 14px;
-        margin-right: 0;
         padding: 0 5px;
         a, a:not([href]):not([tabindex]) {
+            cursor: pointer;
             &:hover {
                 color: #000;
-                cursor: pointer;
                 text-decoration: none;
-                transition: all .2s ease;
             }
         }
         &__counter {
@@ -74,137 +59,137 @@ header {
 }
 
 .header-main {
-    background: 75% no-repeat #fff;
-    background-size: 32%;
     margin-bottom: 0;
-    padding: 1% 0;
-    position: relative;
+    padding: 15px 0;
+
     .logotype-main {
-        height: auto;
-        position: relative;
         &-image {
-            display: block;
+            align-items: center;
+            display: flex;
+            overflow: hidden;
             padding: 0;
             width: 100%;
-            height: 65px;
-            overflow: hidden;
+
             img {
-                height: 100%;
                 width: 100%;
             }
         }
     }
+
     .phones {
         text-align: center;
+
         ul {
             list-style: none;
-            margin: 0;
+
             li {
                 img {
                     height: 15px;
                     width: 15px;
                 }
+
                 a {
-                    border: none;
-                    background: transparent;
                     color: #606975;
                     font-size: 14px;
                 }
             }
         }
     }
+
     .search {
         input {
-            border-radius: .25rem!important;
-            border-right: none;
-            box-shadow: none;
-            margin-right: -41px;
+            border-radius: .25rem !important;
+            margin-right: -1px;
         }
+
         button {
             border: 1px solid #ced4da;
         }
+
         &-nav {
             list-style: none;
-            margin: 0;
+
             &__item {
                 background: #fff;
+
                 a, a:not([href]):not([tabindex]) {
-                    color: #000;
                     cursor: pointer;
-                    display: block;
-                    position: relative;
                     overflow: hidden;
                     white-space: nowrap;
                     text-overflow: ellipsis;
-                    padding: 15px 0;
-                    &:hover {
-                        color: #ccc;
-                    }
                 }
+
                 &:hover {
-                    background: #f7f7f7;
+                    color: #ccc;
                 }
             }
         }
     }
+
     .icons {
         &-nav {
             display: flex;
             font-weight: bold;
             flex-wrap: wrap;
             justify-content: space-between;
+
             &-item {
                 cursor: pointer;
-                display: block;
                 padding-left: 45px;
                 text-decoration: none;
-                transition: all .3s linear;
                 width: 30%;
+
                 &:hover {
                     & .icons-nav-item__title {
                         color: #228B94;
                     }
+
                     & .icons-nav-item__descr {
                         color: #228B94;
                     }
                 }
+
                 &-row {
                     display: flex;
                     height: 25px;
                 }
+
                 &-garage {
                     background: url(/images/icons/headers/30x30/garage.png) left no-repeat;
                     background-size: 30px;
                 }
+
                 &-profile {
                     background: url(/images/icons/headers/30x30/profile.png) left no-repeat;
                     background-size: 30px;
                 }
+
                 &-basket {
                     background: url(/images/icons/headers/30x30/basket.png) left no-repeat;
                     background-size: 30px;
                 }
+
                 &__title {
                     color: #606975;
                     font-size: 14px;
                     width: calc(100% - 25px);
                 }
+
                 &__descr {
                     color: #606975;
                     font-size: 14px;
                     text-transform: uppercase;
                     width: 100%;
                 }
+
                 &__status {
                     background: #f44336;
-                    border: 1px solid #f44336;
                     border-radius: 30px;
                     color: #fff;
                     font-size: 12px;
                     height: 20px;
                     line-height: 20px;
                     text-align: center;
-                    text-transform: uppercase;
                     width: 20px;
                 }
             }
@@ -217,17 +202,11 @@ header {
     &-nav {
         border-bottom: 1px solid #ccc;
         padding: 10px 15px;
-        align-items: center!important;
-        height: 60px;
-        overflow: hidden;
         &__logo {
             display: block;
-            padding: 0;
-            width: 100%;
-            height: 30px;
-            overflow: hidden;
             img {
-                width: 100%;
+                max-height: 30px;
+                width: auto;
             }
         }
         &__list {
@@ -235,17 +214,9 @@ header {
             flex-wrap: nowrap;
             justify-content: space-around;
             list-style: none;
-            margin: 0;
             &-link {
-                display: block;
                 cursor: pointer;
-                width: 30px;
-                img {
-                    display: block;
-                    margin: 0 auto;
-                    height: 100%;
-                    width: 100%;
-                }
+                display: block;
             }
             .basket_status {
                 position: absolute;
@@ -253,12 +224,12 @@ header {
         }
     }
     &-search {
-        align-items: center!important;
+        align-items: center;
         background: #f1f1f1;
         border-bottom: 1px solid #ccc;
-        padding: 10px 15px;
         height: 50px;
         overflow: hidden;
+        padding: 10px 15px;
         &__button {
             background: #fff;
             border: 1px solid #0c5460;
@@ -271,43 +242,13 @@ header {
         }
     }
     &-drop {
-        background: #f1f1f1;
         border-bottom: 1px solid #ccc;
         padding: 10px 15px;
-        height: 50px;
-        overflow: hidden;
-        &__socials {
-            display: block;
-            margin: 0;
-            width: 100%;
-        }
-        a {
-            color: #606975;
-            display: block;
-            overflow: hidden;
-            white-space: nowrap;
-            &:hover {
-                background-color: inherit;
-                color: inherit;
-            }
-        }
-        input {
-            border: none;
-            background: transparent;
-            color: #606975;
-            font-size: 14px;
-        }
-        label {
-            color: #606975;
-            font-size: 18px;
-            margin: 0;
-        }
     }
 }
 
 .header-order {
-    align-items: center;
-    padding: 30px 0;
+    margin: 30px 0;
     .header-phone-drop {
         background: #fff;
         border: unset;
@@ -322,14 +263,12 @@ header {
     &-phone {
         ul {
             list-style: none;
-            margin: 0;
             li {
                 display: inline-block;
                 margin-right: 30px;
                 a {
                     color: #606975;
                     font-size: 20px;
-                    line-height: 40px;
                     &:hover {
                         text-decoration: underline;
                     }
@@ -342,56 +281,44 @@ header {
         }
     }
     &-text {
-        span {
-            color: #606975;
-            font-size: 20px;
-        }
+        color: #606975;
+        font-size: 20px;
     }
 }
 
 .garage-drop {
     &-block {
-        background: #fff;
         h2 {
-            font-size: 22px;
+            font-size: 20px;
             margin-bottom: 30px;
         }
         &__list {
             padding: 15px;
+            text-align: left;
             .garage-row {
+                display: flex;
+                flex-wrap: nowrap;
                 padding-bottom: 15px;
                 &__text {
+                    width: 50%;
                     span {
                         color: #606975;
-                        padding: 0;
                     }
                 }
                 &__buttons {
                     text-align: right;
+                    width: 50%;
                     button {
                         width: auto;
-                        .fa {
-                            float: unset;
-                            font-size: 16px;
-                        }
                     }
                 }
             }
-            button {
-                width: 50px;
-            }
-            i {
-                float: unset;
-                font-size: 13px;
-                width: auto;
-            }
-            span {
-                padding: 0;
-            }
+
         }
-        &__select   {
+        &__select {
             border-left: 1px solid #f1f1f1;
             padding: 15px;
+            text-align: left;
             &-title {
                 color: #000;
                 display: block;

@@ -67,12 +67,28 @@ class FormClass extends CatalogueClass
             $info = str_replace("{brand_form_country}", $this->getCountryFlag($brand_id)["flag"], $info);
             $info = str_replace("{brand_form_descr}", trim($db->result($r, 0, "descr")), $info);
             $info = str_replace("{brand_form_link}", trim($db->result($r, 0, "link")), $info);
-            $info = str_replace("{brand_form_logo_name}", trim($db->result($r, 0, "logo_name")), $info);
+            $logo_brand = trim($db->result($r, 0, "logo_name"));
+            $info = str_replace("{brand_form_logo_class}", ($logo_brand == "") ? "none" : "", $info);
+            $logo_brand = ($logo_brand == "") ? $this->noPhoto : "https://portal.myparts.pro/cdn/brands_files/$logo_brand";
+            $info = str_replace("{brand_form_logo_name}", $logo_brand, $info);
             $info = $this->replaceLang($info);
         } else {
             $info = "{no_info_brand}";
         }
         return $info;
+    }
+
+    public function showBrandPhoto($brand_id) {
+        $brand_id = $this->getUrlNumber($brand_id);
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `logo_name` FROM `T2_BRAND_LINK` WHERE `brand_id` = $brand_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $logo_name = trim($db->result($r, 0, "logo_name"));
+            $logo_class = ($logo_name == "") ? "none" : "";
+            $logo_name = ($logo_name == "") ? $this->noPhoto : "https://portal.myparts.pro/cdn/brands_files/$logo_name";
+        }
+        return compact("logo_name", "logo_class");
     }
 
     /*
@@ -331,12 +347,14 @@ class FormClass extends CatalogueClass
         $form = str_replace("{storage_id}", $articleData["storage_id"], $form);
         $form = str_replace("{stock}", $articleData["real_stock"], $form);
 
-        $form = str_replace("{art_main_image}", ($this->getArticlePhoto($art_id) == "") ? $this->noPhoto : $this->getArticlePhoto($art_id), $form);
+        $form = str_replace("{art_main_image}", ($this->getArticlePhoto($art_id) == "") ? $this->noPhoto : "https://toko.ua/uploads/images/catalogue/" . $this->getArticlePhoto($art_id), $form);
+        $form = str_replace("{article_brand_photo}", $this->showBrandPhoto($brand_id)["logo_name"], $form);
+        $form = str_replace("{article_brand_class}", $this->showBrandPhoto($brand_id)["logo_class"], $form);
 
         $hidden_form = $this->getHtmlForm("article/row-hidden");
         $hidden_form = str_replace("{art_price}", $articleData["price"], $hidden_form);
         $hidden_form = str_replace("{art_cur}", $articleData["currency"], $hidden_form);
-        $hidden_form = str_replace("{art_stock}", $articleData["stock"], $hidden_form);
+        $hidden_form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $hidden_form);
         $hidden_form = str_replace("{article_card_amount}", $basket_count, $hidden_form);
         $hidden_form = str_replace("{buy_class_btn}", $buy_class_btn, $hidden_form);
         $hidden_form = str_replace("{buy_class_input}", $buy_class_input, $hidden_form);

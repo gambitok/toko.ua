@@ -24,11 +24,14 @@
 </style>
 
 <div class="container">
-    <div class="row">
+    <div class="row" style="align-items: center;">
         <div class="col-6 pad0">
-            <div style="display: flex; align-items: baseline; flex-wrap: wrap;">
-                <div class="article-info-row__bold" style="font-size:30px;">{art_price}</div>
-                <div class="article-info-row__upper" style="font-size:20px;">{art_cur}</div>
+            <div class="article-fixed-form__buy-form">
+                <div class="article-fixed-form__buy-price">{art_price}</div>
+                <div class="article-fixed-form__buy-cur">{art_cur}</div>
+            </div>
+            <div class="article-fixed-form__buy-delivery">
+                {art_del}
             </div>
         </div>
         <div class="col-6 pad0">
@@ -40,7 +43,7 @@
                     </div>
                 </div>
                 <div class="buy-form__input {buy_class_input}">
-                    <input class="count_amount" type="number" value="{article_card_amount}" min="1" title="amount" id="count_0" >
+                    <input class="count_amount" type="number" value="{article_card_amount}" min="1" title="amount" id="count_0">
                     <div class="text-center">{count_in_basket}</div>
                 </div>
             </div>
@@ -48,12 +51,9 @@
     </div>
 </div>
 
-
 <script>
-
     $(document).ready(function() {
         $("#count_0").inputSpinner();
-
         $(".buy-form__input > .count_amount").each(function(  ) {
             $(this).next().find(".btn-decrement").on('click touchstart', function() {
                 updateBasketCount(0);
@@ -64,9 +64,6 @@
             $(this).next().find("input[type='text']").on('click touchstart', function() {
                 updateBasketCountChange();
             });
-
         });
-
     });
-
 </script>
