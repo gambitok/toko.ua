@@ -289,6 +289,12 @@ class FormClass extends CatalogueClass
         $basket_count = 1;
         $buy_class_btn = "";
         $buy_class_input = "";
+        $delivery_short_info = $articleData["delivery"];
+        $delivery_short_info = str_replace("<br>", " ", $delivery_short_info);
+        if ($articleData["delivery_days"] == 0 && $articleData["suppl_id"] == 0) {
+            $delivery_short_info = "{send_done}";
+        }
+
         if ($articleData["real_stock"] === NULL) {
             $article_info_row = $this->getHtmlForm("article/soldout");
             $article_nr_displ = $this->getArticleDispl($art_id);
@@ -303,7 +309,7 @@ class FormClass extends CatalogueClass
             $article_info_row = str_replace("{art_price}", $articleData["price"], $article_info_row);
             $article_info_row = str_replace("{art_cur}", $articleData["currency"], $article_info_row);
             $article_info_row = str_replace("{art_stock}", $articleData["stock"], $article_info_row);
-            $article_info_row = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $article_info_row);
+            $article_info_row = str_replace("{art_del}", $delivery_short_info, $article_info_row);
 
             $client = new ClientClass();
             $client_phone = "";
@@ -354,7 +360,7 @@ class FormClass extends CatalogueClass
         $hidden_form = $this->getHtmlForm("article/row-hidden");
         $hidden_form = str_replace("{art_price}", $articleData["price"], $hidden_form);
         $hidden_form = str_replace("{art_cur}", $articleData["currency"], $hidden_form);
-        $hidden_form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $hidden_form);
+        $hidden_form = str_replace("{art_del}", $delivery_short_info, $hidden_form);
         $hidden_form = str_replace("{article_card_amount}", $basket_count, $hidden_form);
         $hidden_form = str_replace("{buy_class_btn}", $buy_class_btn, $hidden_form);
         $hidden_form = str_replace("{buy_class_input}", $buy_class_input, $hidden_form);
