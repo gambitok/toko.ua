@@ -40,13 +40,19 @@
         </div>
     </div>
 
+    <div class="article-info-row article-info-phone">
+        <div class="article-info-row__applicable">
+            {applicable_form}
+        </div>
+    </div>
+
     <div class="row article-form-row">
         <div class="col-12 col-lg-6">
             {art_images}
         </div>
         <div class="col-12 col-lg-6">
-            <div class="article-info">
-                <div class="article-info-row">
+            <div class="article-info ">
+                <div class="article-info-row article-info-pc">
                     <div class="article-info-row__applicable">
                         {applicable_form}
                     </div>
@@ -132,6 +138,9 @@
 
     $(document).ready(function() {
         toggleCarsNavigation($("div[data-type='manuf']"));
+        if (detectmob()) {
+            toggleCarsNavigation($("div[data-type='manuf']"));
+        }
     });
 
     $(function() {

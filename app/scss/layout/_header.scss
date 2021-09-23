@@ -227,7 +227,7 @@ header {
         align-items: center;
         background: #f1f1f1;
         border-bottom: 1px solid #ccc;
-        height: 50px;
+        height: 70px;
         overflow: hidden;
         padding: 10px 15px;
         &__button {
@@ -239,6 +239,8 @@ header {
             padding: 5px;
             text-align: left;
             width: 100%;
+            height: 100%;
+            font-size: 20px;
         }
     }
     &-drop {

@@ -1060,7 +1060,7 @@ class CatalogueClass
                 if (empty($mas)) {
                     $list = $this->getHtmlForm("error/nothing_found");
                     $list = str_replace("{error_nothing_found}", $this->err1, $list);
-                    return array($list, "", "", 0);
+                    return $this->replaceLang($list);
                 }
 
                 // sort by delivery and price
@@ -1092,7 +1092,7 @@ class CatalogueClass
             }
         }
 
-        return $list;
+        return $this->replaceLang($list);
     }
 
     public function getTpointDeliveryInfos($tpoint_id, $where_art_id_str)
@@ -1436,7 +1436,11 @@ class CatalogueClass
         //$form = str_replace("{product_delivery_class}", ($delivery_days == 0) ? "delivery-green" : ($delivery_days == 1 ? "delivery-blue" : ($delivery_days > 1 ? "delivery-dark" : "")), $form);
 
         $form = str_replace("{product_delivery_class}", "", $form);
-        $form = str_replace("{product_delivery_short_info}", str_replace("<br>", " ", $delivery_short_info), $form);
+        $delivery_short_info = str_replace("<br>", " ", $delivery_short_info);
+        if ($delivery_days == 0 && $suppl_id == 0) {
+            $delivery_short_info = "{send_done}";
+        }
+        $form = str_replace("{product_delivery_short_info}", $delivery_short_info, $form);
 
         $form = str_replace("{product_price}", $price . " $kours_cap", $form);
         $form = str_replace("{product_true_price}", $price, $form);

@@ -20,6 +20,12 @@
 
 .article-info {
     border-top: 3px solid lightgray;
+    &-pc {
+        display: block;
+    }
+    &-phone {
+        display: none!important;
+    }
     &-row {
         align-items: center;
         display: flex;
@@ -999,6 +1005,12 @@
 @media (max-width:992px) {
 
     .article-info {
+        &-pc {
+            display: none;
+        }
+        &-phone {
+            display: block!important;
+        }
         &-row {
             flex-wrap: wrap;
             &__stock {
