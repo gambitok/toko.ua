@@ -137,6 +137,10 @@ if ($_REQUEST["w"] == "hideOrderInfo") {
 
 /*==== CATALOG ====*/
 
+if ($_REQUEST["w"] == "showSearchDropdown") {
+    $GLOBALS['_RESULT'] = array("content" => $catalog->showSearchDropdown($_REQUEST["text"]));
+}
+
 if ($_REQUEST["w"] == "getCatalogueLink") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogueLink($_REQUEST["article_nr_search"]));
 }

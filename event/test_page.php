@@ -13,7 +13,9 @@
 //
 //$form = str_replace("{images_range}", $catalogue->getSlideProPhoto(100053510), $form);
 
-$form = $catalogue->getHtmlForm("article/button");
+//$catalogue->initKeywords();
+
+$form = $catalogue->getHtmlForm("input");
 
 $content = str_replace("{main_window}", $form, $content);
 

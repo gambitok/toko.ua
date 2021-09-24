@@ -1,0 +1,59 @@
+<style>
+    .search {
+        width: 100%;
+    }
+    .search-input {
+        width: 100%;
+        background: white;
+        margin-top: 15px;
+    }
+    .search-input ul {
+        margin: 15px;
+    }
+    .search button{
+        width: 60px;
+        font-size: 22px;
+    }
+    .search input {
+        height: 60px;
+    }
+</style>
+
+<div class="content">
+    <button onclick="$('#InputForm').modal('show');">
+        {search_cap}
+    </button>
+</div>
+
+<div class="modal fade" id="InputForm" role="dialog" tabindex="-1">
+    <div class="modal-dialog" style="    max-width: 1000px;
+    margin: 0 auto;
+    top: -20px;">
+        <div class="modal-content" style="background: transparent; border: none;">
+            <div class="modal-body text-left">
+                <div class="container">
+                    <div class="row">
+                        <div class="search">
+                            <div class="input-group">
+                                <input
+                                        id="search_input"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="{search_onsite}"
+                                        title="{search_onsite}"
+                                        onkeyup="showSearchDropdown();"
+                                />
+                                <div class="input-group-append">
+                                    <button onClick="artSearch('search_input');" class="btn btn-primary btn-search-art" type="button" title="{search_cap}">
+                                        <span class="fas fa-search"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="search_input_dropdown" class="search-input"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

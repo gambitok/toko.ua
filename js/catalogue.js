@@ -290,7 +290,6 @@ function addToGarage(typ_id = 0) {
 function deleteAutoGarage(auto_id) {
     JsHttpRequest.query(folder,{'w':'deleteAutoGarage', 'auto_id':auto_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            //showAutoGarage();
             showGarageForm();
             showGarageStatus();
         }}, true);
@@ -461,10 +460,7 @@ function setClientRequestDone() {
         }}, true);
 }
 
-/*================================================================================*/
-
 function updateBasketCount(status) {
-
     getBasketId();
     let basket_id = parseInt($("#basket_id").val());
     JsHttpRequest.query(folder,{'w':'updateBasketCount', 'basket_id':basket_id, 'status':status},
@@ -472,31 +468,19 @@ function updateBasketCount(status) {
             let answer = result["answer"];
             let err = result["err"];
             let new_amount = result["new_amount"];
-
-            if (err == 0) {
-                console.log(0);
-            }
             if (err == 1) {
-                console.log(1);
                 showNotify("{error_cap}!", answer, "danger");
                 $("#count_1").val(new_amount);
             }
             if (err == 2) {
-                console.log(2);
                 $("#basket_id").val(0);
                 $(".buy-form__button").removeClass("buy-form__button-hidden");
                 $(".buy-form__input").addClass("buy-form__input-hidden");
             }
-            if (err == 3) {
-                console.log(3);
-            }
-
         }}, true);
-
 }
 
 function moveBasketButton() {
-    // $(a).parent(".buy-form__button").toggleClass("buy-form__button-hidden").next(".buy-form__input").toggleClass("buy-form__input-hidden");
     $(".btn-buy").parent(".buy-form__button").toggleClass("buy-form__button-hidden").next(".buy-form__input").toggleClass("buy-form__input-hidden");
     let id = "one";
     let art_id = $("#art_id").val();
@@ -520,7 +504,6 @@ function getBasketId() {
 }
 
 function updateBasketCountChange() {
-
     getBasketId();
     let basket_id = parseInt($("#basket_id").val());
     let amount = $("#count_1").val();
@@ -529,25 +512,22 @@ function updateBasketCountChange() {
             let answer = result["answer"];
             let err = result["err"];
             let new_amount = result["new_amount"];
-
-            if (err == 0) {
-                console.log(0);
-            }
             if (err == 1) {
-                console.log(1);
                 showNotify("{error_cap}!", answer, "danger");
                 $("#count_1").val(new_amount);
             }
             if (err == 2) {
-                console.log(2);
                 $("#basket_id").val(0);
                 $(".buy-form__button").removeClass("buy-form__button-hidden");
                 $(".buy-form__input").addClass("buy-form__input-hidden");
             }
-            if (err == 3) {
-                console.log(3);
-            }
-
         }}, true);
+}
 
+function showSearchDropdown() {
+    let text = $("#search_input").val();
+    JsHttpRequest.query(folder,{'w':'showSearchDropdown', 'text':text},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#search_input_dropdown").html(result.content);
+        }}, true);
 }

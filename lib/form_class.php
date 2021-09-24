@@ -292,7 +292,7 @@ class FormClass extends CatalogueClass
         $delivery_short_info = $articleData["delivery"];
         $delivery_short_info = str_replace("<br>", " ", $delivery_short_info);
         if ($articleData["delivery_days"] == 0 && $articleData["suppl_id"] == 0) {
-            $delivery_short_info = "{send_done}";
+            $delivery_short_info = "<span class='delivery-green'>{send_done}</span>";
         }
 
         if ($articleData["real_stock"] === NULL) {

@@ -1169,7 +1169,6 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $deliveryTime["delivery_days"] . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $deliveryTime["delivery_days"] . " days"));
-            //$today = (($deliveryTime["delivery_days"] == 0) ? "<i>{today_cap}</i>" : (($deliveryTime["delivery_days"] == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
             $delivery_days = $deliveryTime["delivery_days"];
             $today = (($delivery_days == 0)
                 ? "<span class=\"delivery-green\">{today_cap}</span>"
@@ -1433,12 +1432,11 @@ class CatalogueClass
         $delivery_info = str_replace('"', "", $delivery_info);
         $form = str_replace("{product_del}", $delivery_info, $form);
         $form = str_replace("{product_dd}", $delivery_days, $form);
-        //$form = str_replace("{product_delivery_class}", ($delivery_days == 0) ? "delivery-green" : ($delivery_days == 1 ? "delivery-blue" : ($delivery_days > 1 ? "delivery-dark" : "")), $form);
 
         $form = str_replace("{product_delivery_class}", "", $form);
         $delivery_short_info = str_replace("<br>", " ", $delivery_short_info);
         if ($delivery_days == 0 && $suppl_id == 0) {
-            $delivery_short_info = "{send_done}";
+            $delivery_short_info = "<span class='delivery-green'>{send_done}</span>";
         }
         $form = str_replace("{product_delivery_short_info}", $delivery_short_info, $form);
 
@@ -1872,8 +1870,6 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $delivery_days . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
-            //$today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
-
             $today = (($delivery_days == 0)
                 ? "<span class=\"delivery-green\">{today_cap}</span>"
                 : (($delivery_days == 1)
@@ -1905,7 +1901,6 @@ class CatalogueClass
             $week = date("N", strtotime(" + " . $delivery_days . " days"));
             $week_day_short = $this->getWeekdayAbr($week);
             $date_del = date("d.m", strtotime(" + " . $delivery_days . " days"));
-            //$today = (($delivery_days == 0) ? "<i>{today_cap}</i>" : (($delivery_days == 1) ? "<i>{tomorrow_cap}</i>" : "<i>$date_del ($week_day_short)</i>"));
             $today = (($delivery_days == 0)
                 ? "<span class=\"delivery-green\">{today_cap}</span>"
                 : (($delivery_days == 1)
@@ -2326,7 +2321,6 @@ class CatalogueClass
     /*
      * CATALOG ROW
      * */
-
     public function getHeadRowName($head_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -2358,12 +2352,6 @@ class CatalogueClass
             $postfix = $this->getLangPostfix($this->getLanguage());
             $r = $db->query("SELECT `TEX_$postfix` FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID` = $cat_id LIMIT 1;");
             $text_txt = $db->result($r, 0, "TEX_$postfix");
-
-//            $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HCG` WHERE `CAT_ID` = $cat_id AND `HEAD_ID` = 1 LIMIT 1;");
-//            $n = $db->num_rows($r);
-//            if ($n > 0) {
-//                $text_txt .= " - " . $this->getHeadRowName(1);
-//            }
         }
         return $text_txt;
     }
@@ -2613,9 +2601,6 @@ class CatalogueClass
                 <div class=\"tree-block__col\" style=\"width: calc(100% / $max_col);\">";
                 foreach ($rows as $row_id => $cat_id) {
                     $cat_name = $this->getCatRowName($cat_id);
-//                    if ($head_id == 1) {
-//                        $cat_name .= " - " . $this->getHeadRowName($head_id);
-//                    }
                     $group_list = $this->getTreeConsGroupList($head_id, $cat_id);
                     $head_link = $this->getHeadRowLink($head_id);
                     $cat_link = $this->getCatRowLink($cat_id);
@@ -3185,6 +3170,106 @@ class CatalogueClass
             $db->query("UPDATE `T_TEST_LINKS` SET `STATUS` = $status WHERE `LINK` = '$link' LIMIT 1;");
         }
         return 0;
+    }
+
+    /*
+     * type_id = 1 : group_id
+     * type_id = 2 : cat_id
+     * type_id = 3 : head_id
+     * */
+//    public function initKeywords()
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT `HEAD_ID`, `TEX_RU`, `TEX_UA`, `TEX_EN` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $group_id = $db->result($r, $i - 1, "HEAD_ID");
+//            $text_ru = $db->result($r, $i - 1, "TEX_RU");
+//            $text_ua = $db->result($r, $i - 1, "TEX_UA");
+//            $text_en = $db->result($r, $i - 1, "TEX_EN");
+//            $db->query("INSERT INTO `T2_TREE_KEYWORDS` (`KEY_ID`, `TYPE_ID`, `KEYWORD`) VALUES ($group_id, 3, \"$text_ru\");");
+//            $db->query("INSERT INTO `T2_TREE_KEYWORDS` (`KEY_ID`, `TYPE_ID`, `KEYWORD`) VALUES ($group_id, 3, \"$text_ua\");");
+//            $db->query("INSERT INTO `T2_TREE_KEYWORDS` (`KEY_ID`, `TYPE_ID`, `KEYWORD`) VALUES ($group_id, 3, \"$text_en\");");
+//        }
+//        return true;
+//    }
+
+    public function getHeadCatRow($cat_id)
+    {
+        $head_id = 0;
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HCG_EXIST` WHERE `CAT_ID` = $cat_id AND `HEAD_ID` != 1 LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $head_id = $db->result($r, 0, "HEAD_ID");
+        }
+        return $head_id;
+    }
+
+    public function showSearchDropdown($text)
+    {
+        $list = "";
+        $db = DbSingleton::getTokoDb();
+        if ($text != "") {
+
+            $r = $db->query("SELECT `ART_ID`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$text' AND `KIND` = 0 GROUP BY `ART_ID`;");
+            $n2 = $db->num_rows($r);
+            for ($i = 1; $i <= $n2; $i++) {
+                $art_id = $db->result($r, $i - 1, "ART_ID");
+                $brand_id = $db->result($r, $i - 1, "BRAND_ID");
+                $article_nr_displ = $this->getArticleDispl($art_id);
+                $format_name = $this->getFormatAticle($article_nr_displ);
+                $article_name = $this->getArticleName($art_id);
+                $brand_name = $this->getBrandName($brand_id);
+                $brand_link = $this->getBrandLink($brand_id);
+                //$link = $this->getSiteLink() . $this->article_link . "/" . $format_name . "/" . $brand_link . "/" . $art_id . "/";
+                $link = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";
+                $list .= "<li>
+                    <a href='$link'>$brand_name $article_nr_displ $article_name</a>
+                </li>";
+            }
+
+            $r = $db->query("SELECT `KEY_ID`, `TYPE_ID` FROM `T2_TREE_KEYWORDS` WHERE `KEYWORD` LIKE '%$text%' GROUP BY `TYPE_ID`, `KEY_ID`;");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $key_id = $db->result($r, $i - 1, "KEY_ID");
+                $type_id = $db->result($r, $i - 1, "TYPE_ID");
+                $row = "";
+                if ($type_id == 1) {
+                    $key_name = $this->getGroupRowText($key_id);
+                    $key_link = $this->getGroupRowLink($key_id);
+                    $link = $this->getSiteLink() . $this->catalog_link . "/" . $key_link . "/";
+                    $row = "<li>
+                        <a href='$link'>$key_name</a>
+                    <li>";
+                }
+                elseif ($type_id == 2) {
+                    $key_name = $this->getCatRowName($key_id);
+                    $key_link = $this->getCatRowLink($key_id);
+                    $head_id = $this->getHeadCatRow($key_id);
+                    $head_link = $this->getHeadRowLink($head_id);
+                    $link = $this->getSiteLink() . $this->catalog_link . "/" . $head_link . "/" . $key_link . "/";
+                    $row = "<li>
+                        <a href='$link'>$key_name</a>
+                    <li>";
+                }
+                elseif ($type_id == 3) {
+                    $key_name = $this->getHeadRowName($key_id);
+                    $key_link = $this->getHeadRowLink($key_id);
+                    $link = $this->getSiteLink() . $this->catalog_link . "/" . $key_link . "/";
+                    $row = "<li>
+                        <a href='$link'>$key_name</a>
+                    <li>";
+                }
+                $list .= $row;
+            }
+            if ($n > 0 || $n2 > 0) {
+                $list = "<ul class='list-inline'>$list</ul>";
+            } else {
+                $list = "";
+            }
+        }
+        return $list;
     }
 
 }
