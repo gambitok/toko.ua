@@ -223,6 +223,10 @@ if ($_REQUEST["w"] == "showHistoryList") {
     $GLOBALS['_RESULT'] = array("content" => $showform->showHistoryList());
 }
 
+//if ($_REQUEST["w"] == "getSearchHistory") {
+//    $GLOBALS['_RESULT'] = array("content" => $showform->showHistoryList());
+//}
+
 if ($_REQUEST["w"] == "deleteHistoryItem") {
     $GLOBALS['_RESULT'] = array("content" => $showform->deleteHistoryItem($_REQUEST["history_id"]));
 }

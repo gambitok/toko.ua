@@ -58,6 +58,98 @@ header {
     }
 }
 
+#InputForm {
+    .modal-dialog {
+        max-width: 1000px; margin: 0 auto; top: -20px;
+    }
+    .modal-content {
+        background: transparent; border: none;
+    }
+}
+
+.search {
+    width: 100%;
+    &-input {
+        background: white;
+        margin-top: 15px;
+        width: 100%;
+    }
+    &-block {
+        margin: 15px;
+        &-header {
+            color: #292929;
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 20px;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+            img {
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                z-index: 2;
+            }
+            &__item {
+                background: #fff;
+                padding-right: 15px;
+                z-index: 1;
+                padding-left: 30px;
+            }
+            &:after {
+                content: "";
+                height: 1px;
+                width: 100%;
+                background: url(/images/bg-repeat-blue.png) repeat-x;
+                top: -14px;
+                position: relative;
+            }
+        }
+        &-content {
+            list-style: none;
+            margin-bottom: 30px;
+            margin-left: 30px;
+            li {
+                margin-bottom: 10px;
+                a, a:not([href]):not([tabindex]) {
+                    color: #0CA9EE;
+                    cursor: pointer;
+                }
+                &:hover {
+                    color: #ccc;
+                }
+            }
+        }
+    }
+    &-btn {
+        width: 100%;
+        text-align: left;
+        padding-left: 15px;
+        padding-right: 15px;
+        height: 50px;
+        font-size: 18px;
+        background: white;
+        border: 1px solid lightgray;
+        border-radius: .25em;
+        cursor: pointer;
+        color: gray;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    input {
+        border-radius: .25rem !important;
+        height: 60px;
+        margin-right: -1px;
+        padding-left: 20px;
+    }
+    button {
+        border: 1px solid #ced4da;
+        font-size: 22px;
+        width: 60px;
+    }
+}
+
 .header-main {
     margin-bottom: 0;
     padding: 15px 0;
@@ -69,7 +161,6 @@ header {
             overflow: hidden;
             padding: 0;
             width: 100%;
-
             img {
                 width: 100%;
             }
@@ -78,49 +169,16 @@ header {
 
     .phones {
         text-align: center;
-
         ul {
             list-style: none;
-
             li {
                 img {
                     height: 15px;
                     width: 15px;
                 }
-
                 a {
                     color: #606975;
                     font-size: 14px;
-                }
-            }
-        }
-    }
-
-    .search {
-        input {
-            border-radius: .25rem !important;
-            margin-right: -1px;
-        }
-
-        button {
-            border: 1px solid #ced4da;
-        }
-
-        &-nav {
-            list-style: none;
-
-            &__item {
-                background: #fff;
-
-                a, a:not([href]):not([tabindex]) {
-                    cursor: pointer;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                }
-
-                &:hover {
-                    color: #ccc;
                 }
             }
         }
@@ -240,7 +298,7 @@ header {
             text-align: left;
             width: 100%;
             height: 100%;
-            font-size: 20px;
+            font-size: 14px;
         }
     }
     &-drop {

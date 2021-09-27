@@ -202,16 +202,17 @@
                         </a>
                     </div>
 
-					<div class="col-4 search">
-						<div class="input-group">
-							<input id="search_art" onfocus="dropHistoryShow();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">
-							<div id="myDropdown" class="dropdown-content"></div>
-							<div class="input-group-append">
-								<button onClick="artSearch('search_art');" class="btn btn-primary btn-search-art" type="button" title="{search_cap}">
-									<span class="fas fa-search"></span>
-								</button>
-							</div>
-						</div>
+					<div class="col-4">
+						<button class="search-btn" onclick="showSearchInput();" title="{search_onsite}">{search_onsite}</button>
+<!--						<div class="input-group">-->
+<!--							<input id="search_art" onfocus="dropHistoryShow();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">-->
+<!--							<div id="myDropdown" class="dropdown-content"></div>-->
+<!--							<div class="input-group-append">-->
+<!--								<button onClick="artSearch('search_art');" class="btn btn-primary btn-search-art" type="button" title="{search_cap}">-->
+<!--									<span class="fas fa-search"></span>-->
+<!--								</button>-->
+<!--							</div>-->
+<!--						</div>-->
 					</div>
 
 					<div class="col-2 phones">
@@ -330,7 +331,7 @@
                 </div>
                 <div class="row header-phone-search">
 					<div class="col-12 pad0" style="height: 100%;">
-						<button class="header-phone-search__button" onclick="showArtSearch();">
+						<button class="header-phone-search__button" onclick="showSearchInput();">
 							{search_onsite}
 						</button>
 					</div>
@@ -635,6 +636,37 @@
 			{site_menu_bar}
 		</div>
 	</nav>
+</div>
+
+<div class="modal fade" id="InputForm" role="dialog" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body text-left">
+				<div class="container">
+					<div class="row">
+						<div class="search">
+							<div class="input-group">
+								<input
+										id="search_input"
+										type="text"
+										class="form-control"
+										placeholder="{search_onsite}"
+										title="{search_onsite}"
+										onkeyup="showSearchDropdown();"
+								/>
+								<div class="input-group-append">
+									<button onClick="artSearch('search_input');" class="btn btn-primary btn-search-art" type="button" title="{search_cap}">
+										<span class="fas fa-search"></span>
+									</button>
+								</div>
+							</div>
+						</div>
+						<div id="search_input_dropdown" class="search-input"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 {main_seo_products_content}

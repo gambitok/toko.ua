@@ -1,7 +1,6 @@
 $(document).ready(function() {
 
-    if ($("#cars_form-selected").length) {
-
+    // if ($("#cars_form-selected").length) {
         // $("body").scroll(function() {
         //     let checked_index = $(".cars-nav__item-checked")[0];
         //     let header = $("#catalogue-main");
@@ -36,8 +35,7 @@ $(document).ready(function() {
         //         }
         //     }
         // });
-
-    }
+    // }
 
     // hide on mobile
     // if (detectmob()) {
@@ -243,20 +241,11 @@ function setActiveCar() {
         });
 
         // Set ACTIVE + CHECKED Tab
-        // $("#" + $(elem).attr("data-tab")).addClass("cars-tab__block-active");
         if (!detectmob()) {
             $("#" + $(elem).attr("data-tab")).addClass("cars-tab__block-active");
         } else {
-            //$("#" + $(elem).attr("data-tab")).removeClass("cars-tab__block-mob");
             $(elem).removeClass("cars-nav__item-active").addClass("cars-nav__item-checked");
         }
-
-        // if (detectmob()) {
-        //     let data_id = elem.attr("data-id");
-        //     if (data_id === "0" || data_id === undefined) {
-        //         toggleCarsNavigation($(elem));
-        //     }
-        // }
     } else {
         if (detectmob()) {
             let manuf = $("div[data-type='manuf']");

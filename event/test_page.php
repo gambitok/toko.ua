@@ -15,7 +15,7 @@
 
 //$catalogue->initKeywords();
 
-$form = $catalogue->getHtmlForm("input");
+//$catalogue->initKeywords();
 
 $content = str_replace("{main_window}", $form, $content);
 

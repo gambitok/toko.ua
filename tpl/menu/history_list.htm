@@ -1,17 +1,12 @@
 <div class="search-block">
-    <div class="search-header">
-        <div class='container'>
-            <div class='row'>
-                <div class='col-6'>
-                    <span>{history_cap}</span>
-                </div>
-                <div class='col-6 text-right'>
-                    <a onclick="deleteHistoryItem('')">{clear_cap}</a>
-                </div>
-            </div>
+    <div class="search-block-header">
+        <img src='/images/icons/search/search_history.svg' alt='history'>
+        <div class='search-block-header__item'>
+            <span>{history_cap}</span>
         </div>
     </div>
-    <ul class="search-nav">
+<!--    (<a onclick="deleteHistoryItem('')">{clear_cap}</a>)-->
+    <ul class="search-block-content">
         {history_range}
     </ul>
 </div>

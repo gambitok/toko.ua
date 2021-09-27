@@ -4,6 +4,9 @@ $linka = findLinks();
 $article_nr_search = $catalogue->getUrlString($linka[1]);
 $brand_link = $catalogue->getUrlString($linka[2]);
 
+$article_nr_search = rawurldecode($article_nr_search);
+$article_nr_search = iconv("UTF-8", "windows-1251", $article_nr_search);
+
 if ($article_nr_search == "") {
     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/search_unknown"), $content);
 } else {

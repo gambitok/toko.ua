@@ -152,6 +152,11 @@
     background: #f7f7f7;
     border: 1px solid #ced4da;
     color: #a9a9a9;
+    &:hover {
+        background: #55bae6;
+        border: 1px solid #55bae6;
+        color: #fff;
+    }
 }
 
 .js-programmatic-set-val {

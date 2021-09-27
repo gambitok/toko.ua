@@ -3180,16 +3180,14 @@ class CatalogueClass
 //    public function initKeywords()
 //    {
 //        $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `HEAD_ID`, `TEX_RU`, `TEX_UA`, `TEX_EN` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1;");
+//        $r = $db->query("SELECT `HEAD_ID`, `TEX_RU`, `TEX_UA` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1;");
 //        $n = $db->num_rows($r);
 //        for ($i = 1; $i <= $n; $i++) {
 //            $group_id = $db->result($r, $i - 1, "HEAD_ID");
 //            $text_ru = $db->result($r, $i - 1, "TEX_RU");
 //            $text_ua = $db->result($r, $i - 1, "TEX_UA");
-//            $text_en = $db->result($r, $i - 1, "TEX_EN");
 //            $db->query("INSERT INTO `T2_TREE_KEYWORDS` (`KEY_ID`, `TYPE_ID`, `KEYWORD`) VALUES ($group_id, 3, \"$text_ru\");");
 //            $db->query("INSERT INTO `T2_TREE_KEYWORDS` (`KEY_ID`, `TYPE_ID`, `KEYWORD`) VALUES ($group_id, 3, \"$text_ua\");");
-//            $db->query("INSERT INTO `T2_TREE_KEYWORDS` (`KEY_ID`, `TYPE_ID`, `KEYWORD`) VALUES ($group_id, 3, \"$text_en\");");
 //        }
 //        return true;
 //    }
@@ -3206,40 +3204,95 @@ class CatalogueClass
         return $head_id;
     }
 
+    public function getSearchMatches($text)
+    {
+        $arr = [];
+        if ($text != "") {
+            $text_arr = explode(" ", $text);
+            foreach ($text_arr as $value) {
+                if (strlen($value) > 1) {
+                    $arr[] = $value;
+                    if (strlen($value) > 4) {
+                        $format_value = substr($value, 0, strlen($value) - 2);
+                        $arr[] = $format_value;
+                    }
+                }
+            }
+        }
+        $where = "0";
+        if (!empty($arr)) {
+            $where = "(";
+            $i = 0;
+            foreach ($arr as $value) {
+                $i++;
+                if ($i > 1) {
+                    $where .= "OR ";
+                }
+                $where .= "`KEYWORD` LIKE '%$value%'";
+            }
+            $where .= ")";
+        }
+        return $where;
+    }
+
     public function showSearchDropdown($text)
     {
         $list = "";
         $db = DbSingleton::getTokoDb();
-        if ($text != "") {
+        $showform = new FormClass();
 
-            $r = $db->query("SELECT `ART_ID`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$text' AND `KIND` = 0 GROUP BY `ART_ID`;");
-            $n2 = $db->num_rows($r);
-            for ($i = 1; $i <= $n2; $i++) {
+        if ($text == "") {
+            $list = $showform->showHistoryList();
+        }
+
+        $list1 = $list2 = $list3 = "";
+
+        if ($text != "" && strlen($text) > 1) {
+
+            $text = $this->getUrlString($text);
+            $format_text = $text;
+            $format_text = str_replace(" ", "", $format_text);
+            $format_text = str_replace("-", "", $format_text);
+            $format_text = str_replace("_", "", $format_text);
+
+            //LEFT JOIN `T2_ARTICLES` t2a ON t2a.ART_ID = t2c.ART_ID
+            $r = $db->query("SELECT t2c.`ART_ID`, t2c.`BRAND_ID`, t2c.`KIND`, t2c.`DISPLAY_NR` FROM `T2_CROSS` t2c 
+            WHERE t2c.`SEARCH_NUMBER` = '$format_text' GROUP BY t2c.`BRAND_ID`, t2c.`KIND`;");
+            $n1 = $db->num_rows($r);
+            for ($i = 1; $i <= $n1; $i++) {
                 $art_id = $db->result($r, $i - 1, "ART_ID");
                 $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-                $article_nr_displ = $this->getArticleDispl($art_id);
-                $format_name = $this->getFormatAticle($article_nr_displ);
-                $article_name = $this->getArticleName($art_id);
+                $kind = $db->result($r, $i - 1, "KIND");
+                $display_nr = $db->result($r, $i - 1, "DISPLAY_NR");
                 $brand_name = $this->getBrandName($brand_id);
                 $brand_link = $this->getBrandLink($brand_id);
-                //$link = $this->getSiteLink() . $this->article_link . "/" . $format_name . "/" . $brand_link . "/" . $art_id . "/";
-                $link = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";
-                $list .= "<li>
-                    <a href='$link'>$brand_name $article_nr_displ $article_name</a>
+                if ($kind == "0") {
+                    $article_nr_displ = $this->getArticleDispl($art_id);
+                    $format_name = $this->getFormatAticle($article_nr_displ);
+                    $article_name = $this->getArticleName($art_id);
+                    $link = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";
+                    $str = "$brand_name $article_nr_displ $article_name";
+                } else {
+                    $format_name = $this->getFormatAticle($display_nr);
+                    $link = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";
+                    $str = "$brand_name $display_nr";
+                }
+                $list1 .= "<li>
+                    <a href='$link'>$str </a>
                 </li>";
             }
 
-            $r = $db->query("SELECT `KEY_ID`, `TYPE_ID` FROM `T2_TREE_KEYWORDS` WHERE `KEYWORD` LIKE '%$text%' GROUP BY `TYPE_ID`, `KEY_ID`;");
+            $where = $this->getSearchMatches($text);
+            $r = $db->query("SELECT `KEY_ID`, `TYPE_ID` FROM `T2_TREE_KEYWORDS` WHERE $where GROUP BY `TYPE_ID`, `KEY_ID`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $key_id = $db->result($r, $i - 1, "KEY_ID");
                 $type_id = $db->result($r, $i - 1, "TYPE_ID");
-                $row = "";
                 if ($type_id == 1) {
                     $key_name = $this->getGroupRowText($key_id);
                     $key_link = $this->getGroupRowLink($key_id);
                     $link = $this->getSiteLink() . $this->catalog_link . "/" . $key_link . "/";
-                    $row = "<li>
+                    $list2 .= "<li>
                         <a href='$link'>$key_name</a>
                     <li>";
                 }
@@ -3249,7 +3302,7 @@ class CatalogueClass
                     $head_id = $this->getHeadCatRow($key_id);
                     $head_link = $this->getHeadRowLink($head_id);
                     $link = $this->getSiteLink() . $this->catalog_link . "/" . $head_link . "/" . $key_link . "/";
-                    $row = "<li>
+                    $list3 .= "<li>
                         <a href='$link'>$key_name</a>
                     <li>";
                 }
@@ -3257,19 +3310,56 @@ class CatalogueClass
                     $key_name = $this->getHeadRowName($key_id);
                     $key_link = $this->getHeadRowLink($key_id);
                     $link = $this->getSiteLink() . $this->catalog_link . "/" . $key_link . "/";
-                    $row = "<li>
+                    $list3 .= "<li>
                         <a href='$link'>$key_name</a>
                     <li>";
                 }
-                $list .= $row;
             }
-            if ($n > 0 || $n2 > 0) {
-                $list = "<ul class='list-inline'>$list</ul>";
+            if ($n > 0 || $n1 > 0) {
+                if ($n1 > 0) {
+                    $list .= "
+                     <div class='search-block'>
+                        <div class='search-block-header'>
+                            <img src='/images/icons/search/number_result.svg' alt='number'>
+                            <span class='search-block-header__item'>{search_accurate}</span>
+                        </div>
+                        <ul class='search-block-content'>
+                            $list1
+                        </ul>
+                    </div>";
+                }
+                if ($n > 0) {
+                    if ($list2 != "") {
+                        $list .= "
+                        <div class='search-block'>
+                            <div class='search-block-header'>
+                                <img src='/images/icons/search/categories_result.svg' alt='groups'>   
+                                <span class='search-block-header__item'>{category_cap}</span>
+                            </div>
+                            <ul class='search-block-content'>
+                                $list2
+                            </ul>
+                        </div>";
+                    }
+                    if ($list3 != "") {
+                        $list .= "
+                        <div class='search-block'>
+                            <div class='search-block-header'>
+                                <img src='/images/icons/search/groups_result.svg' alt='categories'>   
+                                <span class='search-block-header__item'>{sections_groups}</span>
+                            </div>
+                            <ul class='search-block-content'>
+                                $list3
+                            </ul>
+                        </div>";
+                    }
+                }
             } else {
                 $list = "";
             }
         }
-        return $list;
+
+        return $this->replaceLang($list);
     }
 
 }

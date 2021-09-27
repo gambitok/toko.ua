@@ -4,6 +4,17 @@ $('.modal').on('shown.bs.modal', function () {
 
 const folder = '/content.php';
 
+function showSearchInput() {
+    $('#InputForm').modal('show').on('shown.bs.modal', function () {
+        $('#search_input').focus();
+    }).on('keypress',function(e) {
+        if(e.which == 13) {
+            artSearch('search_input');
+        }
+    });
+    showSearchDropdown();
+}
+
 // MAIN NAVIGATION
 $(".header-main").mouseover(function() {
     closeHideNavigation();
