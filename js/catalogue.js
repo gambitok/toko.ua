@@ -1,19 +1,8 @@
+
 function navigateTo(id) {
     $([document.documentElement, document.body]).animate({
         scrollTop: $("#" + id).offset().top
     }, 500);
-}
-
-// Main Search
-function showArtSearch() {
-    $("#PhoneArticle").modal("show");
-    JsHttpRequest.query(folder,{'w':'showHistoryList'},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#modal-phone__history").html(result.content);
-        }}, true);
-    setTimeout(function() {
-        $("#search_art3").focus();
-    }, 2000);
 }
 
 // Modal `Region`
@@ -48,13 +37,13 @@ function showStorage(art_id) {
 // SEARCH (by ARTICLE_DISPLAY / ARTICLE_SEARCH)
 function artSearch(input_name) {
     let art = $("#" + input_name).val();
-    art = art.replace(/\s+/g,'');
-    art = art.replace(/\.+/g,'');
-    art = art.replace(/\-+/g,'');
-    art = art.replace(/\//g,'');
+    art = art.replace(/\s+/g, '');
+    art = art.replace(/\.+/g, '');
+    art = art.replace(/\-+/g, '');
+    art = art.replace(/\//g, '');
     if (art === "" || art === undefined) {
-        showNotify("{error_cap}:","{input_art_first}!","danger");
-        $("#search_art").focus();
+        showNotify("{error_cap}:", "{input_art_first}!", "danger");
+        $("#" + input_name).focus();
     } else {
         JsHttpRequest.query(folder,{'w':'getCatalogueLink', 'article_nr_search':art},
             function (result, errors){ if (errors) {alert(errors);} if (result){

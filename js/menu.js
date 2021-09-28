@@ -1,3 +1,4 @@
+
 // DROPZONE FILE UPLOAD
 function showUploadForm() {
     let myDropzone = new Dropzone("#myDropzone",{ dictDefaultMessage: "Press to choose file!" });
@@ -131,27 +132,10 @@ function hideGarageForm() {
     $("#GarageForm").modal("hide");
 }
 
-function dropHistoryShow() {
-    let myDropDown = $("#myDropdown");
-    myDropDown.show();
-    if (myDropDown.html() === "") {
-        JsHttpRequest.query(folder,{ 'w': 'showHistoryList'},
-            function (result, errors){ if (errors) {} if (result){
-                myDropDown.html(result.content);
-            }}, true);
-    }
-}
-
-function dropHistoryHide() {
-    $("#myDropdown").hide();
-}
-
 function deleteHistoryItem(history_id) {
     JsHttpRequest.query(folder,{ 'w': 'deleteHistoryItem', 'history_id':history_id},
         function (result, errors){ if (errors) {} if (result){
-            dropHistoryHide();
-            $("#myDropdown").html("");
-            if (detectmob()) showArtSearch();
+            showSearchInput();
         }}, true);
 }
 

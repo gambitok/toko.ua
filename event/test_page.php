@@ -17,6 +17,8 @@
 
 //$catalogue->initKeywords();
 
+$form = $catalogue->getHtmlForm("input");
+
 $content = str_replace("{main_window}", $form, $content);
 
 //$r = $dbm->query("SELECT `id`, `name` FROM `A_CLIENTS` WHERE 1 LIMIT 10;");

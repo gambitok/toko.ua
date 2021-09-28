@@ -3255,23 +3255,24 @@ class CatalogueClass
             $format_text = str_replace("-", "", $format_text);
             $format_text = str_replace("_", "", $format_text);
 
-            //LEFT JOIN `T2_ARTICLES` t2a ON t2a.ART_ID = t2c.ART_ID
-            $r = $db->query("SELECT t2c.`ART_ID`, t2c.`BRAND_ID`, t2c.`KIND`, t2c.`DISPLAY_NR` FROM `T2_CROSS` t2c 
-            WHERE t2c.`SEARCH_NUMBER` = '$format_text' GROUP BY t2c.`BRAND_ID`, t2c.`KIND`;");
+            $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `DISPLAY_NR`, MIN(`KIND`) as min_kind 
+            FROM `T2_CROSS` 
+            WHERE `SEARCH_NUMBER` = '$format_text' 
+            GROUP BY `BRAND_ID` 
+            ORDER BY `min_kind`;");
             $n1 = $db->num_rows($r);
             for ($i = 1; $i <= $n1; $i++) {
                 $art_id = $db->result($r, $i - 1, "ART_ID");
                 $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-                $kind = $db->result($r, $i - 1, "KIND");
+                $min_kind = $db->result($r, $i - 1, "min_kind");
                 $display_nr = $db->result($r, $i - 1, "DISPLAY_NR");
                 $brand_name = $this->getBrandName($brand_id);
                 $brand_link = $this->getBrandLink($brand_id);
-                if ($kind == "0") {
-                    $article_nr_displ = $this->getArticleDispl($art_id);
-                    $format_name = $this->getFormatAticle($article_nr_displ);
+                if ($min_kind == "0") {
+                    $format_name = $this->getFormatAticle($display_nr);
                     $article_name = $this->getArticleName($art_id);
                     $link = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";
-                    $str = "$brand_name $article_nr_displ $article_name";
+                    $str = "$brand_name $display_nr $article_name";
                 } else {
                     $format_name = $this->getFormatAticle($display_nr);
                     $link = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";

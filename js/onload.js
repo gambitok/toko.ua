@@ -1,3 +1,4 @@
+
 $('.modal').on('shown.bs.modal', function () {
     new LazyLoad({ elements_selector: ".lazy" });
 })
@@ -8,7 +9,7 @@ function showSearchInput() {
     $('#InputForm').modal('show').on('shown.bs.modal', function () {
         $('#search_input').focus();
     }).on('keypress',function(e) {
-        if(e.which == 13) {
+        if (e.which == 13) {
             artSearch('search_input');
         }
     });
@@ -41,15 +42,6 @@ $('.header-nav__li').on({'mouseover': function () {
     },
     'mouseout' : function () {
         clearTimeout(timer);
-    }
-});
-
-$("body").click(function(e) {
-    if ($(e.target).attr('id') === 'search_art'
-        || $(e.target).attr('class') === 'search-nav'
-        || $(e.target).attr('class') === 'search-nav__item'
-    ) { return true; } else {
-        dropHistoryHide();
     }
 });
 
@@ -141,16 +133,6 @@ $(document).ready(function() {
         interval: 122000
     });
 
-    // Ancor link (for scrolling top)
-    // $(".ancor__link a").click(function() {
-    //     let elementClick = $(this).attr("href");
-    //     let destination = $(elementClick).offset().top;
-    //     jQuery("html:not(:animated),body:not(:animated)").animate({
-    //         scrollTop: destination
-    //     }, 800);
-    //     return false;
-    // });
-
     // Catalog Filters
     let input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
     if (input_price.length) {
@@ -179,22 +161,6 @@ $(document).ready(function() {
         });
     });
 
-    // Searching on `Enter` key
-    $("#search_art").keyup(function(event) {
-        if (event.keyCode === 13) {
-            artSearch("search_art");
-        }
-    });
-    $("#search_art2").keyup(function(event) {
-        if (event.keyCode === 13) {
-            artSearch("search_art2");
-        }
-    });
-    $("#search_art3").keyup(function(event) {
-        if (event.keyCode === 13) {
-            artSearch("search_art3");
-        }
-    });
     $("#userlogin").keyup(function(event) {
         if (event.keyCode === 13) {
             loginForm();
@@ -267,4 +233,3 @@ function getMenuBar(head_id) {
             $("#menu-bar-content").html(result.content);
         }}, true);
 }
-

@@ -20,13 +20,13 @@
 	<link rel="preload" href="/js/library/popper.min.js" as="script" />
 	<link rel="preload" href="/js/library/bootstrap.min.js" as="script" />
 	<link rel="preload" href="/js/JsHttpRequest/JsHttpRequest.min.js" as="script" />
-<!--	<link rel="preload" href="/app/js/app.min.js" as="script" />-->
 	<link rel="preload" href="/images/no_photo.svg" as="image" type="image/png" />
 	<link rel="preload" href="/images/no_photo_min.png" as="image" type="image/png" />
 
 	<title>{site_title}</title>
 	<meta http-equiv="Content-Type" content="text/html" charset="windows-1251">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
 	<meta name="description" content="{site_description}">
 	<meta name="keywords" content="{site_keywords}">
 
@@ -204,15 +204,6 @@
 
 					<div class="col-4">
 						<button class="search-btn" onclick="showSearchInput();" title="{search_onsite}">{search_onsite}</button>
-<!--						<div class="input-group">-->
-<!--							<input id="search_art" onfocus="dropHistoryShow();" type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2" autocomplete="off">-->
-<!--							<div id="myDropdown" class="dropdown-content"></div>-->
-<!--							<div class="input-group-append">-->
-<!--								<button onClick="artSearch('search_art');" class="btn btn-primary btn-search-art" type="button" title="{search_cap}">-->
-<!--									<span class="fas fa-search"></span>-->
-<!--								</button>-->
-<!--							</div>-->
-<!--						</div>-->
 					</div>
 
 					<div class="col-2 phones">
@@ -509,7 +500,7 @@
 							<div id="validate_message" class="wdt100">{code_from_SMS}</div>
 							<div class="wdt100"><br>
 								<input id="validate_code" name="validate_code" type="text" title="code" maxlength="4" onkeypress="validate(event);"><br>
-								<label id="validate_label" for="validate_code" class="span-red" style="display: none">{wrong_code}</label>
+								<label id="validate_label" for="validate_code" class="span-red" style="display: none;">{wrong_code}</label>
 							</div>
 						</div>
 						<div class="row float-right">
@@ -529,7 +520,7 @@
 					<span id="info_title">{info_title}</span>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
-				<div class="modal-body text-left pad0">
+				<div class="modal-body pad0">
 					<div id="info_content"></div>
 				</div>
 			</div>
@@ -566,28 +557,6 @@
 							<div id="info_brand">
 							</div>
 						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Phone Search -->
-	<div class="modal fade modal-gallery modal-phone" id="PhoneArticle" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-				<div class="modal-body text-left">
-					<div class="container">
-						<div class="input-group">
-							<input id="search_art3" autofocus type="text" class="form-control" placeholder="{search_onsite}" title="{search_onsite}" aria-describedby="basic-addon2">
-							<div class="input-group-append">
-								<button onClick="artSearch('search_art3');" class="btn btn-outline-secondary btn-primary btn-search-art" type="button"><span class="fas fa-search"></span></button>
-							</div>
-						</div>
-                        <div id="modal-phone__history" class="modal-phone__history search"></div>
 					</div>
 				</div>
 			</div>
@@ -653,6 +622,7 @@
 										placeholder="{search_onsite}"
 										title="{search_onsite}"
 										onkeyup="showSearchDropdown();"
+										autofocus
 								/>
 								<div class="input-group-append">
 									<button onClick="artSearch('search_input');" class="btn btn-primary btn-search-art" type="button" title="{search_cap}">

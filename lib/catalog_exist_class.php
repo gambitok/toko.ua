@@ -205,6 +205,22 @@ class CatalogExistClass extends CatalogueClass
     /*
      * check exist of group params table
      * */
+    public function checkTable($group_id)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+        $r = $dbc->query("SHOW TABLES LIKE '$table';");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
+            $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1;");
+            $n = $dbc->result($r, 0, "col_arts");
+        }
+        return $n;
+    }
+
+    /*
+     * check exist of group params table
+     * */
     public function checkTableParams($group_id)
     {
         $dbc = DbSingleton::getTokoCacheDb();
@@ -939,23 +955,27 @@ class CatalogExistClass extends CatalogueClass
         $where_mfa = $this->getMfaWhere($mfa_id, $model, $status_auto, $status_auto_type);
         $where_link_arts = $this->getArtsLinksWhere($status_auto, $status_auto_type, $typ_id);
 
+        $check_group = $this->checkTable($group_id);
+
         $arts = [];
-        if (empty($filters)) {
-            $query = "SELECT t.art_id FROM `$table` t
-                LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
-                LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-            WHERE 1 $where_mfa $where_link_arts
-            GROUP BY t.art_id";
-        } else {
-            $where = $this->getFiltersWhere($params);
-            $query = "SELECT t.art_id FROM `$table` t
-                LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
-                LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-            WHERE 1 $where $where_mfa $where_link_arts
-            GROUP BY t.art_id";
+        if ($check_group) {
+            if (empty($filters)) {
+                $query = "SELECT t.art_id FROM `$table` t
+                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
+                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+                WHERE 1 $where_mfa $where_link_arts
+                GROUP BY t.art_id";
+            } else {
+                $where = $this->getFiltersWhere($params);
+                $query = "SELECT t.art_id FROM `$table` t
+                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
+                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+                WHERE 1 $where $where_mfa $where_link_arts
+                GROUP BY t.art_id";
+            }
+            $query_limit = "$query $limit ;";
         }
 
-        $query_limit = "$query $limit ;";
         $r = $dbc->query($query_limit);
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {

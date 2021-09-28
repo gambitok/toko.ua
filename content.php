@@ -219,18 +219,9 @@ if ($_REQUEST["w"] == "showBrandForm") {
     $GLOBALS['_RESULT'] = array("content" => $showform->showBrandForm($_REQUEST["brand"]));
 }
 
-if ($_REQUEST["w"] == "showHistoryList") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->showHistoryList());
-}
-
-//if ($_REQUEST["w"] == "getSearchHistory") {
-//    $GLOBALS['_RESULT'] = array("content" => $showform->showHistoryList());
-//}
-
 if ($_REQUEST["w"] == "deleteHistoryItem") {
     $GLOBALS['_RESULT'] = array("content" => $showform->deleteHistoryItem($_REQUEST["history_id"]));
 }
-
 
 if ($_REQUEST["w"] == "getBasketId") {
     $GLOBALS['_RESULT'] = array("content" => $showform->getBasketId($_REQUEST["art_id"], $_REQUEST["storage_id"]));
