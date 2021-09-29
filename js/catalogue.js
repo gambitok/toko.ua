@@ -520,3 +520,11 @@ function showSearchDropdown() {
             $("#search_input_dropdown").html(result.content);
         }}, true);
 }
+
+function showSearchDropdown2() {
+    let text = $("#search-mobile").val();
+    JsHttpRequest.query(folder,{'w':'showSearchDropdown', 'text':text},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#search-dropdown").html(result.content);
+        }}, true);
+}

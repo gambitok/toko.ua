@@ -233,3 +233,17 @@ function getMenuBar(head_id) {
             $("#menu-bar-content").html(result.content);
         }}, true);
 }
+
+function showModalSearch() {
+    $("#search-mobile").addClass("search-mobile-fixed");
+    $("#search-dropdown").addClass("search-dropdown-fixed");
+    $("#SearchForm").modal('show');
+    showSearchDropdown2();
+}
+$(document).ready(function() {
+    $('#SearchForm').on('click', function () {
+        $("#search-mobile").removeClass("search-mobile-fixed");
+        $("#search-dropdown").removeClass("search-dropdown-fixed");
+        $("#SearchForm").modal('hide');
+    });
+});

@@ -322,9 +322,14 @@
                 </div>
                 <div class="row header-phone-search">
 					<div class="col-12 pad0" style="height: 100%;">
-						<button class="header-phone-search__button" onclick="showSearchInput();">
-							{search_onsite}
-						</button>
+<!--						<button class="header-phone-search__button" onclick="showSearchInput();">-->
+<!--							{search_onsite}-->
+<!--						</button>-->
+						<div class="search-container">
+							<input id="search-mobile" type="text" class="search-mobile" onclick="showModalSearch();" onkeyup="showSearchDropdown2();" placeholder="{search_onsite}">
+						</div>
+						<div id="search-dropdown" class="search-dropdown">
+						</div>
 					</div>
                 </div>
             </div>
@@ -354,6 +359,9 @@
 </div>
 
 <div id="modals" class="modals">
+
+	<div class="modal" id="SearchForm">
+	</div>
 
 	<!-- Viber Modal -->
 	<div class="modal fade contact-form contact-form--purple" id="ViberForm" role="dialog" tabindex="-1">

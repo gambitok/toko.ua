@@ -135,7 +135,11 @@ function hideGarageForm() {
 function deleteHistoryItem(history_id) {
     JsHttpRequest.query(folder,{ 'w': 'deleteHistoryItem', 'history_id':history_id},
         function (result, errors){ if (errors) {} if (result){
-            showSearchInput();
+            if (detectmob()) {
+                showSearchDropdown2();
+            } else {
+                showSearchInput();
+            }
         }}, true);
 }
 

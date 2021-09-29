@@ -69,6 +69,44 @@ header {
 
 .search {
     width: 100%;
+    &-container {
+        display: block;
+        height: 60px;
+        width: 100%;
+        border: 1px solid #ced4da;
+        border-radius: .25em;
+        background: #f7f7f7;
+    }
+    &-mobile {
+        display: block;
+        font-size: 14px;
+        height: 60px;
+        width: inherit;
+        border: 1px solid #ced4da;
+        border-radius: .25em;
+        background: #f7f7f7;
+        padding: 0 15px;
+        &-fixed {
+            position: fixed;
+            z-index: 99999999999;
+            width: calc(100% - 30px);
+        }
+    }
+    &-dropdown {
+        display: none;
+        width: 100%;
+        background: #fff;
+        ul {
+            list-style: none;
+        }
+        &-fixed {
+            display: block;
+            position: fixed;
+            z-index: 99999999999;
+            width: calc(100% - 30px);
+            margin-top: 15px;
+        }
+    }
     &-input {
         background: white;
         margin-top: 15px;
@@ -286,7 +324,7 @@ header {
         align-items: center;
         background: #f1f1f1;
         border-bottom: 1px solid #ccc;
-        height: 70px;
+        height: 82px;
         overflow: hidden;
         padding: 10px 15px;
         &__button {

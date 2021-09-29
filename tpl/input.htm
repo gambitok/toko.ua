@@ -1,75 +1,13 @@
-<style>
-    .search-conainer {
-        display: block;
-        height: 60px;
-        width: 100%;
-        border: 1px solid #ced4da;
-        border-radius: .25em;
-        background: #f7f7f7;
-    }
-    .search-mobile {
-        display: block;
-        font-size: 14px;
-        height: 60px;
-        width: inherit;
-        border: 1px solid #ced4da;
-        border-radius: .25em;
-        background: #f7f7f7;
-        padding: 0 15px;
-    }
-    .search-mobile-fixed {
-        position: fixed;
-        z-index: 99999999999;
-        width: calc(100% - 30px);
-    }
-    .search-dropdown {
-        display: none;
-        width: 100%;
-        background: #fff;
-        padding: 15px;
-    }
-    .search-dropdown ul {
-        list-style: none;
-    }
-    .search-dropdown-fixed {
-        display: block;
-        position: fixed;
-        z-index: 99999999999;
-        width: calc(100% - 30px);
-        margin-top: 15px;
-    }
-</style>
 
 <div class="content">
-    <div class="search-conainer">
-        <input id="search-mobile" type="text" class="search-mobile" onclick="showModalSearch();" placeholder="search...">
+    <div class="search-container">
+        <input id="search-mobile" type="text" class="search-mobile" onclick="showModalSearch();" placeholder="{search_onsite}">
     </div>
     <div id="search-dropdown" class="search-dropdown">
-        <ul>
-            <li>123</li>
-            <li>123</li>
-            <li>123</li>
-            <li>123</li>
-        </ul>
     </div>
 </div>
 
 <script>
-    function showModalSearch() {
-        $("#search-mobile").addClass("search-mobile-fixed");
-        $("#search-dropdown").addClass("search-dropdown-fixed");
-        $("#SearchForm").modal('show');
-    }
 
-    $(document).ready(function() {
-        $('#SearchForm').on('click', function () {
-            $("#search-mobile").removeClass("search-mobile-fixed");
-            $("#search-dropdown").removeClass("search-dropdown-fixed");
-            $("#SearchForm").modal('hide');
-        });
-    });
 </script>
 
-<div class="modal " id="SearchForm">
-
-</div>
