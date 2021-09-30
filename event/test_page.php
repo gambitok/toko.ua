@@ -17,7 +17,7 @@
 
 //$catalogue->initKeywords();
 
-$form = $catalogue->getHtmlForm("input");
+$form = $catalogue->getSearchMatches2("фильтры воздушные");
 
 $content = str_replace("{main_window}", $form, $content);
 

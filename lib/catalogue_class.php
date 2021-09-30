@@ -3235,6 +3235,80 @@ class CatalogueClass
         return $where;
     }
 
+    public function getSearchMatches2($text)
+    {
+        $max_word = 4;
+        $arr = [];
+        $max_matches = 0;
+
+        if ($text != "") {
+            $text_arr = explode(" ", $text);
+            $i = 0;
+            foreach ($text_arr as $value) {
+                $i++;
+                if (strlen($value) > 1) {
+                    $arr[$i][] = $value;
+                    if (strlen($value) > $max_word) {
+                        $format_value = substr($value, 0, strlen($value) - 2);
+                        $arr[$i][] = $format_value;
+                    }
+                }
+
+            }
+        }
+
+        $db = DbSingleton::getTokoDb();
+        $new = [];
+        $m = [];
+
+        foreach ($arr as $key => $values) {
+            foreach ($values as $value) {
+                $r = $db->query("SELECT `ID`, `KEY_ID`, `TYPE_ID`, substrCount(LOWER(`KEYWORD`), '$value') as str_count FROM `T2_TREE_KEYWORDS` GROUP BY `KEY_ID`, `TYPE_ID` HAVING str_count > 0;");
+                $n = $db->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    $id = $db->result($r, $i - 1, "ID");
+                    $key_id = $db->result($r, $i - 1, "KEY_ID");
+                    $type_id = $db->result($r, $i - 1, "TYPE_ID");
+                    $str_count = $db->result($r, $i - 1, "str_count");
+
+                    if (!array_key_exists($id, $new)) {
+                        $new[$id] = ["key_id" => $key_id, "type_id" => $type_id, "str_count" => $str_count];
+                    } else {
+                        $new[$id]["str_count"] += $str_count;
+                    }
+                    if (!in_array($key, $new[$id]["key"])) {
+                        $new[$id]["key"][] = $key;
+                        $m[] = $key;
+                        $max_matches++;
+                    }
+                }
+            }
+        }
+
+        $m = array_unique($m);
+        $max_matches = count($m);
+
+//        foreach ($arr as $value) {
+//            $r = $db->query("SELECT `ID`, `KEY_ID`, `TYPE_ID`, substrCount(LOWER(`KEYWORD`), '$value') as str_count FROM `T2_TREE_KEYWORDS` GROUP BY `KEY_ID`, `TYPE_ID` HAVING str_count > 0;");
+//            $n = $db->num_rows($r);
+//            for ($i = 1; $i <= $n; $i++) {
+//                $id = $db->result($r, $i - 1, "ID");
+//                $key_id = $db->result($r, $i - 1, "KEY_ID");
+//                $type_id = $db->result($r, $i - 1, "TYPE_ID");
+//                $str_count = $db->result($r, $i - 1, "str_count");
+//                if (!array_key_exists($id, $new)) {
+//                    $new[$id] = ["key_id" => $key_id, "type_id" => $type_id, "str_count" => $str_count, "key" => $value];
+//                } else {
+//                    $new[$id]["str_count"] += $str_count;
+//                    $new[$id]["key"] .= " $value";
+//                }
+//            }
+//        }
+
+        usort($new, "keywordCmp");
+        return array($new, $max_matches);
+    }
+
     public function showSearchDropdown($text)
     {
         $list = "";
@@ -3283,37 +3357,46 @@ class CatalogueClass
                 </li>";
             }
 
-            $where = $this->getSearchMatches($text);
-            $r = $db->query("SELECT `KEY_ID`, `TYPE_ID` FROM `T2_TREE_KEYWORDS` WHERE $where GROUP BY `TYPE_ID`, `KEY_ID`;");
-            $n = $db->num_rows($r);
-            for ($i = 1; $i <= $n; $i++) {
-                $key_id = $db->result($r, $i - 1, "KEY_ID");
-                $type_id = $db->result($r, $i - 1, "TYPE_ID");
-                if ($type_id == 1) {
-                    $key_name = $this->getGroupRowText($key_id);
-                    $key_link = $this->getGroupRowLink($key_id);
-                    $link = $this->getSiteLink() . $this->catalog_link . "/" . $key_link . "/";
-                    $list2 .= "<li>
-                        <a href='$link'>$key_name</a>
-                    <li>";
-                }
-                elseif ($type_id == 2) {
-                    $key_name = $this->getCatRowName($key_id);
-                    $key_link = $this->getCatRowLink($key_id);
-                    $head_id = $this->getHeadCatRow($key_id);
-                    $head_link = $this->getHeadRowLink($head_id);
-                    $link = $this->getSiteLink() . $this->catalog_link . "/" . $head_link . "/" . $key_link . "/";
-                    $list3 .= "<li>
-                        <a href='$link'>$key_name</a>
-                    <li>";
-                }
-                elseif ($type_id == 3) {
-                    $key_name = $this->getHeadRowName($key_id);
-                    $key_link = $this->getHeadRowLink($key_id);
-                    $link = $this->getSiteLink() . $this->catalog_link . "/" . $key_link . "/";
-                    $list3 .= "<li>
-                        <a href='$link'>$key_name</a>
-                    <li>";
+//            $where = $this->getSearchMatches($text);
+//            $r = $db->query("SELECT `KEY_ID`, `TYPE_ID` FROM `T2_TREE_KEYWORDS` WHERE $where GROUP BY `TYPE_ID`, `KEY_ID`;");
+//            $n = $db->num_rows($r);
+//            for ($i = 1; $i <= $n; $i++) {
+            list($arr, $max_matches) = $this->getSearchMatches2($text);
+            $n = count($arr);
+            foreach ($arr as $value) {
+//                $key_id = $db->result($r, $i - 1, "KEY_ID");
+//                $type_id = $db->result($r, $i - 1, "TYPE_ID");
+                $key_id = $value["key_id"];
+                $type_id = $value["type_id"];
+                //$str_count = $value["str_count"];
+                $key = $value["key"];
+                if (count($key) >= $max_matches) {
+                    if ($type_id == 1) {
+                        $key_name = $this->getGroupRowText($key_id);
+                        $key_link = $this->getGroupRowLink($key_id);
+                        $link = $this->getSiteLink() . $this->catalog_link . "/" . $key_link . "/";
+                        $list2 .= "<li>
+                            <a href='$link'>$key_name</a>
+                        <li>";
+                    }
+                    elseif ($type_id == 2) {
+                        $key_name = $this->getCatRowName($key_id);
+                        $key_link = $this->getCatRowLink($key_id);
+                        $head_id = $this->getHeadCatRow($key_id);
+                        $head_link = $this->getHeadRowLink($head_id);
+                        $link = $this->getSiteLink() . $this->catalog_link . "/" . $head_link . "/" . $key_link . "/";
+                        $list3 .= "<li>
+                            <a href='$link'>$key_name</a>
+                        <li>";
+                    }
+                    elseif ($type_id == 3) {
+                        $key_name = $this->getHeadRowName($key_id);
+                        $key_link = $this->getHeadRowLink($key_id);
+                        $link = $this->getSiteLink() . $this->catalog_link . "/" . $key_link . "/";
+                        $list3 .= "<li>
+                            <a href='$link'>$key_name</a>
+                        <li>";
+                    }
                 }
             }
             if ($n > 0 || $n1 > 0) {
@@ -3363,6 +3446,11 @@ class CatalogueClass
         return $this->replaceLang($list);
     }
 
+}
+
+function keywordCmp($a, $b) {
+    if ($a["str_count"] == $b["str_count"]) return 0;
+    return $a["str_count"] < $b["str_count"] ? 1 : -1;
 }
 
 function myBrandCmp($a, $b) {
