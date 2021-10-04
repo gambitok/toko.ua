@@ -25,16 +25,24 @@ $colors: (
 }
 
 .modal-brand {
-    &__text {
-        font-size: 14px;
-        text-align: justify;
-    }
-    &-logo {
-        max-height: 300px;
-        max-width: 300px;
-        &__image {
-            height: 100%;
-            width: 100%;
+    &__item {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        &-text {
+            width: 80%;
+            p {
+                font-size: 14px;
+                text-align: justify;
+            }
+        }
+        &-logo {
+            max-height: 300px;
+            max-width: 300px;
+            img {
+                height: 100%;
+                width: 100%;
+            }
         }
     }
 }

@@ -176,9 +176,9 @@ class CatalogueClass
         $exist_brand_link = $result = $list = "";
         $mas = [];
 
-        $form = $this->getHtmlForm("cat_search_list");
-        $form_brand = $this->getHtmlForm("cat_brand_list");
-        $search_form = $this->getHtmlForm("cat_search_brands_list");
+        $form = $this->getHtmlForm("search/brand_options_form");
+        $form_brand = $this->getHtmlForm("search/brand_options_list");
+        $search_form = $this->getHtmlForm("search/brand_options");
 
         $r = $db->query("SELECT t2c.ART_ID, t2c.BRAND_ID, t2c.SEARCH_NUMBER, t2c.DISPLAY_NR, t2c.KIND, t2c.RELATION, t2b.BRAND_NAME, t2b.BRAND_LINK, IFNULL(t2n.NAME,'') as NAME 
         FROM `T2_CROSS` t2c 
@@ -259,7 +259,7 @@ class CatalogueClass
         $title = str_replace("{article_nr_displ}", $article_nr_displ, $title);
         $title = str_replace("{brand_name}", $this->getBrandName($brand_nr_search), $title);
         $view = $client->getProductView();
-        $radio_view = $this->getHtmlForm("products_view_radio");
+        $radio_view = $this->getHtmlForm("search/view_radio");
         $radio_view = str_replace("{checked_table}", ($view == 0) ? "checked" : "", $radio_view);
         $radio_view = str_replace("{checked_cards}", ($view == 1) ? "checked" : "", $radio_view);
         $search_main = str_replace("{art}", $this->replaceLang($title), $search_main);
@@ -339,7 +339,7 @@ class CatalogueClass
                 break;
         }
         $jsFilter = "catalogueFilter";
-        $form = $this->getHtmlForm("cat_search_header");
+        $form = $this->getHtmlForm("search/header");
         $form = str_replace("{cat_js_filter}", $jsFilter, $form);
         $form = str_replace("{cat_sort_1}", $sort1, $form);
         $form = str_replace("{cat_sort_2}", $sort2, $form);
@@ -359,7 +359,7 @@ class CatalogueClass
         $db->query("CREATE TEMPORARY TABLE IF NOT EXISTS `TEMP_ARTICLES_$temp_key` (
             `art_id` INT(100) NOT NULL,
             `article_nr_displ` VARCHAR(100),
-            `brand_id` INT(100), 
+            `brand_id` INT(100),
             `brand_name` VARCHAR(100),
             `article_name` VARCHAR(100),
             `delivery_info` VARCHAR(100),
@@ -446,7 +446,6 @@ class CatalogueClass
                 array_push($art_id_arr, $cross_art_id);
             }
         }
-
         return implode(",", $art_id_arr);
     }
 
@@ -505,7 +504,7 @@ class CatalogueClass
                 }
             }
 
-            $list_brand .= $this->getHtmlForm("cat_brand_range");
+            $list_brand .= $this->getHtmlForm("search/brand_item");
             $list_brand = str_replace("{val_brand}", $val_brand, $list_brand);
             $list_brand = str_replace("{brand_id}", $brand_id, $list_brand);
             $list_brand = str_replace("{main_brand_class}", $main_brand_class, $list_brand);
@@ -514,8 +513,8 @@ class CatalogueClass
             $list_brand = str_replace("{currency_cap}", $this->getSymbolExrate($cur), $list_brand);
             $list_brand = str_replace("{jsFilterModel}", $jsFilterModel, $list_brand);
         }
-        $list_brand = $this->replaceLang($list_brand);
-        return $list_brand;
+
+        return $this->replaceLang($list_brand);
     }
 
     public function searchList($where_art_id_str, $view = 0, $article_nr_search = "", $brand_nr_search = "", $mfa_id = 0, $model = "", $status_auto = 0)
@@ -1381,7 +1380,7 @@ class CatalogueClass
             if ($cur == 1) {
                 $action_price = $client->getClientPriceRounding($this->getClient(), $action_price);
             }
-            $action_form = $this->getHtmlForm("action_box");
+            $action_form = $this->getHtmlForm("search/action_box");
             $action_form = str_replace("{action_price}", $action_price, $action_form);
             $action_form = str_replace("{action_amount}", $action_amount, $action_form);
             $action_form = str_replace("{action_data}", ($action_data > 0) ? date("d.m.Y", strtotime($action_data)) : "{indefinitely_cap}", $action_form);

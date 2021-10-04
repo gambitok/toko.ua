@@ -144,7 +144,7 @@
 .request {
     min-height: 397px;
     padding: 10px;
-    &-row {
+    &-row, &-display {
         display: flex;
         margin-bottom: 15px;
         &-mob {

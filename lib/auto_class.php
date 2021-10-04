@@ -510,7 +510,7 @@ class AutoClass extends CatalogueClass
     public function getCarsSeoContent($mfa_link, $mod_link = "")
     {
         $catalogue = new CatalogueClass();
-        $form = $this->getHtmlForm("seo_content");
+        $form = $this->getHtmlForm("cars/seo_content");
         $mfa_id = $this->getMfaLink($mfa_link);
         if ($mfa_link == "") {
             $mfa_id = "";

@@ -522,8 +522,8 @@ function showSearchDropdown() {
 }
 
 function showSearchDropdown2() {
-    let text = $("#search-mobile").val();
-    JsHttpRequest.query(folder,{'w':'showSearchDropdown', 'text':text},
+    let text_input = $("#search-mobile").val();
+    JsHttpRequest.query(folder,{'w':'showSearchDropdown2', 'text_input':text_input},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#search-dropdown").html(result.content);
         }}, true);

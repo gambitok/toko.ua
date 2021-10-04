@@ -235,11 +235,15 @@ function getMenuBar(head_id) {
 }
 
 function showModalSearch() {
-    $("#search-mobile").addClass("search-mobile-fixed");
-    $("#search-dropdown").addClass("search-dropdown-fixed");
-    $("#SearchForm").modal('show');
-    showSearchDropdown2();
+    if (!detectmob()) {
+    } else {
+        $("#SearchForm").modal('show');
+        $("#search-mobile").addClass("search-mobile-fixed");
+        $("#search-dropdown").addClass("search-dropdown-fixed");
+        showSearchDropdown2();
+    }
 }
+
 $(document).ready(function() {
     $('#SearchForm').on('click', function () {
         $("#search-mobile").removeClass("search-mobile-fixed");

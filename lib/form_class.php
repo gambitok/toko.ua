@@ -62,7 +62,7 @@ class FormClass extends CatalogueClass
         $r = $db->query("SELECT `name`, `descr`, `link`, `logo_name` FROM `T2_BRAND_LINK` WHERE `brand_id` = $brand_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $info = $this->getHtmlForm("brand_form");
+            $info = $this->getHtmlForm("modals/brand_form");
             $info = str_replace("{brand_form_name}", trim($db->result($r, 0, "name")), $info);
             $info = str_replace("{brand_form_country}", $this->getCountryFlag($brand_id)["flag"], $info);
             $info = str_replace("{brand_form_descr}", trim($db->result($r, 0, "descr")), $info);
@@ -1243,7 +1243,7 @@ class FormClass extends CatalogueClass
                 <td>$ENG_Cod</td>
             </tr>";
         }
-        $form = $this->getHtmlForm("cat_modif_group_form");
+        $form = $this->getHtmlForm("search/modif");
         $form = str_replace("{cat_modif_list}", $list, $form);
         $form = "<div>$form</div>";
         return $this->replaceLang($form);

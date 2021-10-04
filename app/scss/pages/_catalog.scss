@@ -1,3 +1,7 @@
+.filter-bw {
+    filter: opacity(0.4) grayscale(100%);
+}
+
 .buy-form {
     display: block;
     width: 100%;
@@ -702,18 +706,17 @@
 /*==== SIDE FILTERS, SIDE TREE ====*/
 .side-brands {
     &-item {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
         padding-bottom: 5px;
         &__price {
-            padding-left: 0;
             padding-right: 30px;
             span {
                 color: #9da9b9;
                 float: right;
                 font-size: 12px;
             }
-        }
-        &__text {
-            padding-right: 0;
         }
     }
 }

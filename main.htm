@@ -289,12 +289,12 @@
 					</div>
                 </div>
                 <div class="row header-phone-nav">
-                    <div class="col-4 pad0">
+                    <div class="col-3 pad0">
                         <a class="header-phone-nav__logo" href="{site_main_link}">
 							<img class="lazy" itemprop="logo" data-src="{image_logotype_phone}" alt="{site_title_short}" title="{site_title_short}" src="">
                         </a>
                     </div>
-                    <div class="offset-2 col-6 pad0">
+                    <div class="offset-3 col-6 pad0">
                         <ul class="header-phone-nav__list">
                             <li class="header-phone-nav__list-link">
                                 <a href="{site_main_link}catalogue/">
@@ -321,12 +321,9 @@
                     </div>
                 </div>
                 <div class="row header-phone-search">
-					<div class="col-12 pad0" style="height: 100%;">
-<!--						<button class="header-phone-search__button" onclick="showSearchInput();">-->
-<!--							{search_onsite}-->
-<!--						</button>-->
+					<div class="col-12 pad0">
 						<div class="search-container">
-							<input id="search-mobile" type="text" class="search-mobile" onclick="showModalSearch();" onkeyup="showSearchDropdown2();" placeholder="{search_onsite}">
+							<input id="search-mobile" type="text" class="search-mobile" onclick="showModalSearch();" oninput="showSearchDropdown2();" placeholder="{search_onsite}">
 						</div>
 						<div id="search-dropdown" class="search-dropdown">
 						</div>
@@ -664,7 +661,6 @@
 <script type="text/javascript" src="/js/plugins/maskedinput.js"></script>
 
 <!-- Custom Scripts -->
-<!--<script type="text/javascript" src="/app/js/app.min.js"></script>-->
 <script type="text/javascript" src="/js/onload.js"></script>
 <script type="text/javascript" src="/js/catalogue.js"></script>
 <script type="text/javascript" src="/js/menu.js"></script>
@@ -684,6 +680,3 @@
 		s0.parentNode.insertBefore(s1,s0);
 	})();
 </script>
-
-
-
