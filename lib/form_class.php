@@ -91,84 +91,6 @@ class FormClass extends CatalogueClass
         return compact("logo_name", "logo_class");
     }
 
-    /*
-     * show article form
-     * */
-//    public function getArticleForm($art_id)
-//    {
-//        $art_id = $this->getUrlNumber($art_id);
-//        $auto = new AutoClass();
-//        $auto_typ_id = $this->getCookieAuto();
-//
-//        $form = $this->getHtmlForm("article/card");
-//        if ($auto_typ_id != "") {
-//            if ($this->checkT2Link($auto_typ_id, $art_id)) {
-//                $form = str_replace("{applicable_display}", "applicable-active", $form);
-//                $form = str_replace("{applicable_display_text}", "{is_applicable}", $form);
-//                list($manufacture, $model, $model_id) = $auto->getCarInfo($auto_typ_id);
-//                list($manufacture_cap, , $model_id_cap,) = $auto->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
-//                $form = str_replace("{applicable_cap}", "<a href=\"/\">$manufacture_cap $model_id_cap</a>", $form);
-//            }
-//        }
-//
-//        $articleData = $this->getArticleInfo($art_id);
-//        $article_nr_displ = $articleData["article_nr_displ"];
-//        $brand_id = $articleData["brand_id"];
-//        $brand_name = $articleData["brand_name"];
-//        $article_name = $articleData["article_name"];
-//
-//        $format_article = $this->getFormatAticle($article_nr_displ);
-//
-//        $brand_link = "";
-//        $flagData = $this->getCountryFlag($brand_id);
-//        if ($flagData !== false) {
-//            $flag = $flagData["flag"];
-//            $country_name = $flagData["country"];
-//            $form = str_replace("{country_name}", $country_name, $form);
-//            $form = str_replace("{brand_link}", $brand_link, $form);
-//            $form = str_replace("{flag_name}", $flag, $form);
-//            $form = str_replace("{flag_visible}", "", $form);
-//        } else {
-//            $form = str_replace("{country_name}", $brand_name, $form);
-//            $form = str_replace("{brand_link}", $brand_link, $form);
-//        }
-//
-//        $form = str_replace("{art_id}", $art_id, $form);
-//        $form = str_replace("{art_name}", $article_nr_displ, $form);
-//        $form = str_replace("{art_format_name}", $format_article, $form);
-//        $form = str_replace("{art_brand_id}", $brand_id, $form);
-//        $form = str_replace("{art_brand_name}", $brand_name, $form);
-//        $form = str_replace("{art_del}", str_replace("<br>", ", ", $articleData["delivery"]), $form);
-//        $form = str_replace("{del_class}",  "", $form);
-//        $form = str_replace("{art_stock}", $articleData["stock"], $form);
-//        $form = str_replace("{art_price}", $articleData["price"], $form);
-//        $form = str_replace("{art_cur}", $articleData["currency"], $form);
-//        $form = str_replace("{art_basket}", $articleData["basket"], $form);
-//        $form = str_replace("{art_images}", $this->showArticlePhotoGallery($art_id), $form);
-//
-//        $analogs = $this->shortSearchList($art_id);
-//        $h1 = "$article_name $brand_name $article_nr_displ";
-//        $form = str_replace("{analogs_list}", $analogs, $form);
-//        $form = str_replace("{analogs_display}", ($analogs == "") ? "dnone" : "", $form);
-//        $form = str_replace("{article_header}", "$h1", $form);
-//        $form = str_replace("{applicable_display}", "dnone", $form);
-//        $form = str_replace("{applicable_cap}", "", $form);
-//        $form = str_replace("{flag_visible}", "dnone", $form);
-//        $form = str_replace("{art_seo_text}", $this->getArticleSeoText($art_id, $h1), $form);
-//
-//        $form = $this->replaceLang($form);
-//
-//        $breadcrumbs = $this->getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id);
-//
-//        $title = $this->replaceLang("{site_article}");
-//        $title = str_replace("{h1_text}", $h1, $title);
-//
-//        $description = $this->replaceLang("{site_article_description}");
-//        $description = str_replace("{h1_text}", $h1, $description);
-//
-//        return compact("form", "title", "description", "breadcrumbs");
-//    }
-
     public function getBasketId($art_id, $storage_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -243,7 +165,7 @@ class FormClass extends CatalogueClass
     /*
      * show article form
      * */
-    public function getArticleForm2($art_id)
+    public function getArticleForm($art_id)
     {
         $art_id = $this->getUrlNumber($art_id);
         $auto = new AutoClass();
@@ -252,6 +174,7 @@ class FormClass extends CatalogueClass
         $auto_typ_id = $this->getCookieAuto();
 
         $form = $this->getHtmlForm("article/new");
+
         if ($auto_typ_id != "") {
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
                 $form = str_replace("{applicable_display}", "applicable-active", $form);
@@ -338,22 +261,22 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_brand_name}", $brand_name, $form);
         $form = str_replace("{art_basket}", $articleData["basket"], $form);
 
-        $form = str_replace("{art_info}", ($this->getArticleInfoForm($art_id, 0, 1) != "") ? $this->getArticleInfoForm($art_id, 0, 1) : $this->err1, $form);
-        $form = str_replace("{brand_info}", ($this->showBrandForm($brand_id) != "") ? $this->showBrandForm($brand_id) : $this->err1, $form);
+        $article_info_form = $this->getArticleInfoForm($art_id, 0, 1);
+        $form = str_replace("{art_info}", ($article_info_form != "") ? $article_info_form : $this->err1 , $form);
 
-        $form = str_replace("{art_applicable}", $this->getArticleApplForm($art_id), $form);
-        $form = str_replace("{art_originals}", $this->getOriginalNumbers($art_id), $form);
+        $brand_form = $this->showBrandForm($brand_id);
+        $form = str_replace("{brand_info}", ($brand_form != "") ? $brand_form : $this->err1, $form);
         $form = str_replace("{art_proposed}", $shop->getProposedArts(), $form);
 
         $form = str_replace("{art_seo_text}", $this->getArticleSeoText($art_id, $h1), $form);
-
         $form = str_replace("{art_id}", $art_id, $form);
         $form = str_replace("{brand_id}", $brand_id, $form);
         $form = str_replace("{suppl_id}", $articleData["suppl_id"], $form);
         $form = str_replace("{storage_id}", $articleData["storage_id"], $form);
         $form = str_replace("{stock}", $articleData["real_stock"], $form);
 
-        $form = str_replace("{art_main_image}", ($this->getArticlePhoto($art_id) == "") ? $this->noPhoto : "https://toko.ua/uploads/images/catalogue/" . $this->getArticlePhoto($art_id), $form);
+        $main_article_photo = $this->getArticlePhoto($art_id);
+        $form = str_replace("{art_main_image}", ($main_article_photo == "") ? $this->noPhoto : "https://toko.ua/uploads/images/catalogue/" . $main_article_photo, $form);
         $form = str_replace("{article_brand_photo}", $this->showBrandPhoto($brand_id)["logo_name"], $form);
         $form = str_replace("{article_brand_class}", $this->showBrandPhoto($brand_id)["logo_class"], $form);
 
@@ -368,27 +291,21 @@ class FormClass extends CatalogueClass
 
         $form = str_replace("{article_buy_here}", $hidden_form, $form);
 
-        $form_photo = $this->getHtmlForm("article/shit");
         $dataPhoto = $this->getSlideProPhoto($art_id, $brand_id, $h1);
+        $form_photo = $this->getHtmlForm("article/shit");
         $form_photo = str_replace("{images_slide}", $dataPhoto["slide"], $form_photo);
         $form_photo = str_replace("{images_thumbnail}", $dataPhoto["thumbnail"], $form_photo);
-        $nophoto = $this->noPhoto;
-        $form = str_replace("{art_images}",
-            ($dataPhoto["status"] == 1)
-                ? $form_photo
-                : "<div><img style=\"display:block;margin:0 auto;width:100%;\" itemprop=\"image\" alt=\"$article_nr_displ\" src=\"$nophoto\"></div>"
-            , $form);
-
-        $form = str_replace("{applicable_form}", $this->getApplicableForm($art_id), $form);
+        $form = str_replace("{art_images}", ($dataPhoto["status"] == 1) ? $form_photo : "<div><img style=\"display: block; margin: 0 auto; width: 100%;\" itemprop=\"image\" alt=\"$article_nr_displ\" src=\"$this->noPhoto\"></div>", $form);
+        $form = str_replace("{applicable_form}", $this->getApplicableForm($art_id, $auto_typ_id), $form);
         $form = str_replace("{article_info_row}", $article_info_row, $form);
         $form = str_replace("{article_name}", "$brand_name $article_nr_displ", $form);
         $form = str_replace("{article_header}", "$h1", $form);
-
+        $form = str_replace("{loader_form}", $this->drawLoader(), $form);
         $form = $this->replaceLang($form);
 
-        $breadcrumbs = $this->getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id);
-
         $title = $h1 . " {seo_title_article}";
+
+        $breadcrumbs = $this->getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id);
 
         $description = $this->replaceLang("{seo_article_title}");
         $description = str_replace("{h1_text}", $h1, $description);
@@ -396,9 +313,8 @@ class FormClass extends CatalogueClass
         return compact("form", "title", "description", "breadcrumbs");
     }
 
-    public function getApplicableForm($art_id)
+    public function getApplicableForm($art_id, $typ_id)
     {
-        $typ_id = $this->getCookieAuto();
         if ($typ_id != "") {
             $automan = new AutoClass();
             $typ_name = $automan->getCarDescription($typ_id);
@@ -1117,6 +1033,17 @@ class FormClass extends CatalogueClass
         return array($form, $title);
     }
 
+    public function getArticleApplicableForm($art_id)
+    {
+        $form = "                    
+        <div id=\"info_art2\" class=\"info__applicability\">
+            {art_applicable}
+        </div>
+        <div id=\"info2_more\" class=\"info__applicability\"></div>";
+        $form = str_replace("{art_applicable}", $this->getArticleApplForm($art_id), $form);
+        return $this->replaceLang($form);
+    }
+
     /*
      * применяемость
      * */
@@ -1274,10 +1201,11 @@ class FormClass extends CatalogueClass
                 </tr>";
             }
             $info .= "</table>";
-            $type ?: ($n <= 5) ?: $info .= "<p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
+            $type ?: ($n <= 5) ?: $info .= "
+            <p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
                 <a class=\"search__more\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$brand_link/$art_id/\">
                     {more_read}
-                </a>    
+                </a>
             </p>";
             (!$display) ?: $info = "<div>$info</div>";
         } else {

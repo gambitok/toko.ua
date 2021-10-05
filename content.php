@@ -62,6 +62,14 @@ if ($_REQUEST["w"] == "shortSearchList") {
     $GLOBALS['_RESULT'] = array("content" => $shop->shortSearchList($_REQUEST["art_id"]));
 }
 
+if ($_REQUEST["w"] == "shortArticleOE") {
+    $GLOBALS['_RESULT'] = array("content" => $catalog->getOriginalNumbers($_REQUEST["art_id"]));
+}
+
+if ($_REQUEST["w"] == "shortArticleApplicable") {
+    $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplicableForm($_REQUEST["art_id"]));
+}
+
 if ($_REQUEST["w"] == "setCityDepartments") {
     $GLOBALS['_RESULT'] = array("content" => $shop->setCityDepartments($_REQUEST["city_ref"], $_REQUEST["department_ref"]));
 }

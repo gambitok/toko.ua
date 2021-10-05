@@ -2,10 +2,14 @@
 
 ob_start();
 
-function show_image($srcimage, $newwidth, $newheight) {
+function show_image($srcimage, $newwidth, $newheight = 0) {
     $extension = pathinfo($srcimage, PATHINFO_EXTENSION);
 
     list($width, $height) = getimagesize($srcimage);
+
+    if ($newheight == 0) {
+        $newheight = round($height * $newwidth /  $width);
+    }
 
     $image = "";
     if ($extension == "jpg" || $extension == "jpeg"|| $extension == "JPG"|| $extension == "JPEG") {

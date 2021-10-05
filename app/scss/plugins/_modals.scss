@@ -132,6 +132,18 @@ $colors: (
 }
 
 @media (max-width: 992px) {
+
+    .modal-brand__item {
+        display: block;
+        &-text {
+            width: 100%;
+        }
+        &-logo {
+            max-width: unset;
+            max-height: unset;
+        }
+    }
+
     .contact-form {
         &-social {
             flex-wrap: wrap;

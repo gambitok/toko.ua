@@ -68,6 +68,22 @@ function shortSearchList() {
         }}, true);
 }
 
+function shortArticleOE() {
+    let art_id = $("#art_id").val();
+    JsHttpRequest.query(folder,{'w':'shortArticleOE', 'art_id':art_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#oe_form").html(result.content);
+        }}, true);
+}
+
+function shortArticleApplicable() {
+    let art_id = $("#art_id").val();
+    JsHttpRequest.query(folder,{'w':'shortArticleApplicable', 'art_id':art_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#applicable_form").html(result.content);
+        }}, true);
+}
+
 // Modal `Brands`
 function showBrandForm(brand) {
     JsHttpRequest.query(folder,{'w':'showBrandForm', 'brand':brand},

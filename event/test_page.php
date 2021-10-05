@@ -17,9 +17,9 @@
 
 //$catalogue->initKeywords();
 
-$form = $catalogue->getSearchMatches2("фильтры воздушные");
+//$form = $catalogue->getSearchMatches2("фильтры воздушные");
 
-$content = str_replace("{main_window}", $form, $content);
+$content = str_replace("{main_window}", "", $content);
 
 //$r = $dbm->query("SELECT `id`, `name` FROM `A_CLIENTS` WHERE 1 LIMIT 10;");
 //$n = $dbm->num_rows($r);

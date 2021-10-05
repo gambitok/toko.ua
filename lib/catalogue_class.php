@@ -1956,7 +1956,7 @@ class CatalogueClass
         } else {
             $list = $this->err1;
         }
-        return $list;
+        return $this->replaceLang($list);
     }
 
     /*
@@ -3013,29 +3013,9 @@ class CatalogueClass
         return true;
     }
 
-//    public function getPhotoForm($art_id)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $list = "";
-//        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC;");
-//        $n = $db->num_rows($r);
-//        if ($n > 0) {
-//            for ($i = 1; $i <= $n; $i++) {
-//                $photo = $db->result($r, $i - 1, "PHOTO_NAME");
-//                if ($photo != "") {
-//                    $list .= "<li data-image=\"https://toko.ua/uploads/images/catalogue/$photo\" class=\"ui-draggable ui-draggable-handle ui-draggable-disabled\"></li>";
-//                }
-//            }
-//        } else {
-//            $list = "";
-//        }
-//        return $list;
-//    }
-
     public function getSlideProPhoto($art_id, $brand_id, $h1)
     {
         $db = DbSingleton::getTokoDb();
-        $nophoto = $this->noPhoto;
         $status = 0;
         $slide = "";
         $thumbnail = "";
@@ -3051,9 +3031,8 @@ class CatalogueClass
 
         $client = new ClientClass();
         $nn = 0;
-        if ($client->checkRetailClientCategory($this->getClient())) {
+        if ($client->checkRetailClientCategory($this->getClient()) && $brand_id > 0) {
             $date_cur = date("Y-m-d");
-            $brand_id = $this->getUrlNumber($brand_id);
             $r = $db->query("SELECT `photo_link` FROM `T2_CERTIFICATES` WHERE `brand_id` = $brand_id AND `date_from` <= '$date_cur' AND `date_to` >= '$date_cur' AND `status` = 1;");
             $nn = $db->num_rows($r);
             for ($i = 1; $i <= $nn; $i++) {
@@ -3068,12 +3047,12 @@ class CatalogueClass
                 $i++;
                 $photo = $value["photo"];
                 $type = $value["type"];
+                //                        data-src=\"https://toko.ua/uploads/images/$type/$photo\"
                 $slide .= "
                 <div class=\"sp-slide\">
                     <img class=\"sp-image lazy\" 
-                        src=\"$nophoto\"
-                        data-src=\"https://toko.ua/uploads/images/$type/$photo\"
-                        data-retina=\"https://toko.ua/uploads/images/$type/$photo\"
+                        src=\"$this->noPhoto\"
+                        data-src=\"https://toko.ua/resize_image.php?image=$photo&w=633&h=0&type=$type\"
                         style=\"height: 100%; width: 100%;\"
                         alt=\"$h1 - {photo_card_cap} #$i\"
                         title=\"$h1 - {photo_card_cap} #$i\"/>
@@ -3124,52 +3103,52 @@ class CatalogueClass
         return $model;
     }
 
-    public function testLinks()
-    {
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `LINK` FROM `T_TEST_LINKS`");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $link = $db->result($r, $i - 1, "LINK");
-            $arr = explode("/", $link);
-
-            $status = 0;
-            $router = $arr[1];
-
-            if ($router == "") {
-                $status = 1;
-            }
-
-            if ($router == "cars") {
-                $mfa_link = $arr[2]; $mfa_id = 0;
-                $model_link = $arr[3]; $model = "";
-                if ($mfa_link != "") {
-                    $mfa_id = $this->checkMfa($mfa_link);
-                    if ($model_link != "") {
-                        $model = $this->checkModel($mfa_id, $model_link);
-                    }
-                }
-                if ($mfa_link != "" && $model_link == "") {
-                    if ($mfa_id > 0) {
-                        $status = 1;
-                    } else {
-                        $status = 0;
-                    }
-                }
-                elseif ($mfa_link != "" && $model_link != "") {
-                    if ($model != "") {
-                        $status = 1;
-                    } else {
-                        $status = 0;
-                    }
-                }
-
-            }
-
-            $db->query("UPDATE `T_TEST_LINKS` SET `STATUS` = $status WHERE `LINK` = '$link' LIMIT 1;");
-        }
-        return 0;
-    }
+//    public function testLinks()
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT `LINK` FROM `T_TEST_LINKS`");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $link = $db->result($r, $i - 1, "LINK");
+//            $arr = explode("/", $link);
+//
+//            $status = 0;
+//            $router = $arr[1];
+//
+//            if ($router == "") {
+//                $status = 1;
+//            }
+//
+//            if ($router == "cars") {
+//                $mfa_link = $arr[2]; $mfa_id = 0;
+//                $model_link = $arr[3]; $model = "";
+//                if ($mfa_link != "") {
+//                    $mfa_id = $this->checkMfa($mfa_link);
+//                    if ($model_link != "") {
+//                        $model = $this->checkModel($mfa_id, $model_link);
+//                    }
+//                }
+//                if ($mfa_link != "" && $model_link == "") {
+//                    if ($mfa_id > 0) {
+//                        $status = 1;
+//                    } else {
+//                        $status = 0;
+//                    }
+//                }
+//                elseif ($mfa_link != "" && $model_link != "") {
+//                    if ($model != "") {
+//                        $status = 1;
+//                    } else {
+//                        $status = 0;
+//                    }
+//                }
+//
+//            }
+//
+//            $db->query("UPDATE `T_TEST_LINKS` SET `STATUS` = $status WHERE `LINK` = '$link' LIMIT 1;");
+//        }
+//        return 0;
+//    }
 
     /*
      * type_id = 1 : group_id
@@ -3204,37 +3183,6 @@ class CatalogueClass
     }
 
     public function getSearchMatches($text)
-    {
-        $arr = [];
-        if ($text != "") {
-            $text_arr = explode(" ", $text);
-            foreach ($text_arr as $value) {
-                if (strlen($value) > 1) {
-                    $arr[] = $value;
-                    if (strlen($value) > 4) {
-                        $format_value = substr($value, 0, strlen($value) - 2);
-                        $arr[] = $format_value;
-                    }
-                }
-            }
-        }
-        $where = "0";
-        if (!empty($arr)) {
-            $where = "(";
-            $i = 0;
-            foreach ($arr as $value) {
-                $i++;
-                if ($i > 1) {
-                    $where .= "OR ";
-                }
-                $where .= "`KEYWORD` LIKE '%$value%'";
-            }
-            $where .= ")";
-        }
-        return $where;
-    }
-
-    public function getSearchMatches2($text)
     {
         $max_word = 4;
         $arr = [];
@@ -3310,18 +3258,14 @@ class CatalogueClass
 
     public function showSearchDropdown($text)
     {
-        $list = "";
         $db = DbSingleton::getTokoDb();
         $showform = new FormClass();
-
+        $list = $list1 = $list2 = $list3 = "";
         if ($text == "") {
             $list = $showform->showHistoryList();
         }
 
-        $list1 = $list2 = $list3 = "";
-
         if ($text != "" && strlen($text) > 1) {
-
             $text = $this->getUrlString($text);
             $format_text = $text;
             $format_text = str_replace(" ", "", $format_text);
@@ -3356,18 +3300,11 @@ class CatalogueClass
                 </li>";
             }
 
-//            $where = $this->getSearchMatches($text);
-//            $r = $db->query("SELECT `KEY_ID`, `TYPE_ID` FROM `T2_TREE_KEYWORDS` WHERE $where GROUP BY `TYPE_ID`, `KEY_ID`;");
-//            $n = $db->num_rows($r);
-//            for ($i = 1; $i <= $n; $i++) {
-            list($arr, $max_matches) = $this->getSearchMatches2($text);
+            list($arr, $max_matches) = $this->getSearchMatches($text);
             $n = count($arr);
             foreach ($arr as $value) {
-//                $key_id = $db->result($r, $i - 1, "KEY_ID");
-//                $type_id = $db->result($r, $i - 1, "TYPE_ID");
                 $key_id = $value["key_id"];
                 $type_id = $value["type_id"];
-                //$str_count = $value["str_count"];
                 $key = $value["key"];
                 if (count($key) >= $max_matches) {
                     if ($type_id == 1) {
