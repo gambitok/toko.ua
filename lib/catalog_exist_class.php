@@ -383,6 +383,7 @@ class CatalogExistClass extends CatalogueClass
             `art_id` INT(11) NOT NULL,
             `group_id` SMALLINT(4),
             `brand_id` INT(11),
+            `price` FLOAT,
             `status` TINYINT(2),
             PRIMARY KEY (`id`)
         ) ENGINE = MYISAM;");
@@ -400,7 +401,13 @@ class CatalogExistClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "art_id");
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `status`) VALUES ('$art_id', '0', '$brand_id', 1);");
+            $price = 0;
+            $rr = $db->query("SELECT `price_12` FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
+            $nn = $db->num_rows($rr);
+            if ($nn > 0) {
+                $price = $db->result($rr, 0, "price_12");
+            }
+            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
             $count_add++;
         }
 
@@ -413,7 +420,13 @@ class CatalogExistClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `status`) VALUES ('$art_id', '0', '$brand_id', 1);");
+            $price = 0;
+            $rr = $db->query("SELECT `price_12` FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
+            $nn = $db->num_rows($rr);
+            if ($nn > 0) {
+                $price = $db->result($rr, 0, "price_12");
+            }
+            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
             $count_add++;
         }
 
@@ -432,8 +445,8 @@ class CatalogExistClass extends CatalogueClass
         // deleted nulls
         $dbc->query("DELETE FROM `$table` WHERE `brand_id` = 0;");
 
-        $dbc->query("INSERT INTO `$table_available` (`art_id`, `brand_id`, `group_id`, `status`)
-        SELECT ex.art_id, ex.brand_id, tt.group_id, ex.status 
+        $dbc->query("INSERT INTO `$table_available` (`art_id`, `brand_id`, `group_id`, `price`, `status`)
+        SELECT ex.art_id, ex.brand_id, tt.group_id, tt.price, ex.status 
         FROM `$table` ex
             LEFT JOIN toko_dba.`T2_TREE_ARTS_EXIST` tt ON (tt.ART_ID = ex.art_id)
         WHERE tt.group_id IS NOT NULL

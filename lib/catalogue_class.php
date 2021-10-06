@@ -3184,6 +3184,7 @@ class CatalogueClass
 
     public function getSearchMatches($text)
     {
+        $text = mb_strtolower($text, 'windows-1251');
         $max_word = 4;
         $arr = [];
         $max_matches = 0;
