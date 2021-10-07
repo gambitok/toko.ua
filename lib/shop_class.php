@@ -91,7 +91,8 @@ class ShopClass extends CatalogueClass
         $table_basket = str_replace("{count}", $count_checked, $table_basket);
         $table_basket = str_replace("{total_style}", ($sum_checked == $sum_total) ? "d-none" : "", $table_basket);
         $table_basket = str_replace("{location}", $location, $table_basket);
-        $table_basket = str_replace("{location_fast}", $location_fast, $table_basket);
+        $mss = $this->replaceLang("{chose_all_in_basket}");
+        $table_basket = str_replace("{location_fast}", ($count_checked > 0) ? $location_fast : "alert('$mss');", $table_basket);
         $table_basket = str_replace("{currency}", $showform->getCurrencyForm($cur, 1), $table_basket);
         $table_basket = str_replace("{cur_cap}", $this->getSymbolExrate($cur), $table_basket);
         $table_basket = str_replace("{disabled}", $disabled, $table_basket);

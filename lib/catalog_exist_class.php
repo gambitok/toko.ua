@@ -371,6 +371,7 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function initMainTable()
     {
+        $kours = new ExRateClass();
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE";
@@ -391,7 +392,7 @@ class CatalogExistClass extends CatalogueClass
         $dbc->query("TRUNCATE TABLE `$table`;");
         $dbc->query("TRUNCATE TABLE `$table_available`;");
 
-        $r = $db->query("SELECT t2si.art_id, t2a.BRAND_ID
+        $r = $db->query("SELECT t2si.art_id, t2si.client_storage_id, t2si.suppl_id, t2a.BRAND_ID
         FROM `T2_SUPPL_IMPORT` t2si
             LEFT JOIN `T2_ARTICLES` t2a ON (t2a.ART_ID = t2si.art_id)
             LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
@@ -401,12 +402,12 @@ class CatalogExistClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "art_id");
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-            $price = 0;
-            $rr = $db->query("SELECT `price_12` FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
-            $nn = $db->num_rows($rr);
-            if ($nn > 0) {
-                $price = $db->result($rr, 0, "price_12");
-            }
+            $suppl_id = $db->result($r, $i - 1, "suppl_id");
+            $storage_id = $db->result($r, $i - 1, "client_storage_id");
+
+            $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+            $price = $kours->getKoursPrice($price, 2);
+
             $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
             $count_add++;
         }
@@ -420,12 +421,10 @@ class CatalogExistClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-            $price = 0;
-            $rr = $db->query("SELECT `price_12` FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
-            $nn = $db->num_rows($rr);
-            if ($nn > 0) {
-                $price = $db->result($rr, 0, "price_12");
-            }
+
+            $price = $this->getArticlePrice($art_id);
+            $price = $kours->getKoursPrice($price, 2);
+
             $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
             $count_add++;
         }
@@ -446,7 +445,7 @@ class CatalogExistClass extends CatalogueClass
         $dbc->query("DELETE FROM `$table` WHERE `brand_id` = 0;");
 
         $dbc->query("INSERT INTO `$table_available` (`art_id`, `brand_id`, `group_id`, `price`, `status`)
-        SELECT ex.art_id, ex.brand_id, tt.group_id, tt.price, ex.status 
+        SELECT ex.art_id, ex.brand_id, tt.group_id, ex.price, ex.status 
         FROM `$table` ex
             LEFT JOIN toko_dba.`T2_TREE_ARTS_EXIST` tt ON (tt.ART_ID = ex.art_id)
         WHERE tt.group_id IS NOT NULL
@@ -464,8 +463,14 @@ class CatalogExistClass extends CatalogueClass
         $table = "EX_TABLE_TREE_$group_id";
         $table_available = "EX_TABLE_TREE_AVAILABLE";
         $dbc->query("TRUNCATE TABLE `$table`;");
-        $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status`) 
-            SELECT `art_id`, `brand_id`, `status` FROM `$table_available` WHERE `group_id` = $group_id;");
+
+//        $dbc->query("ALTER TABLE `$table` ADD `price` FLOAT NOT NULL AFTER `brand_id`;");
+        $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `price`, `status`)
+            SELECT `art_id`, `brand_id`, `price`, `status` FROM `$table_available` WHERE `group_id` = $group_id;");
+
+//        $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status`)
+//            SELECT `art_id`, `brand_id`, `status` FROM `$table_available` WHERE `group_id` = $group_id;");
+
         return "UPDATED $group_id";
     }
 
@@ -969,7 +974,7 @@ class CatalogExistClass extends CatalogueClass
         $where_link_arts = $this->getArtsLinksWhere($status_auto, $status_auto_type, $typ_id);
 
         $check_group = $this->checkTable($group_id);
-
+        $query_limit = "";
         $arts = [];
         if ($check_group) {
             if (empty($filters)) {

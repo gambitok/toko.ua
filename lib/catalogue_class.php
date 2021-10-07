@@ -936,7 +936,7 @@ class CatalogueClass
         $mas = [];
         $list = "";
 
-        $article_nr_search = $this->getArticleDispl($art_id_search);
+        $article_nr_search = $this->getArticleSearch($art_id_search);
         $brand_nr_search = $this->getArticleBrand($art_id_search);
 
         $arts = [];
@@ -1648,8 +1648,8 @@ class CatalogueClass
         $markup_min = $client->getClientMarkupMin($client_id);
         $r = $dbt->query("SELECT t2apr.price_$price_lvl, t2apr.minMarkup, t2aps.OPER_PRICE
         FROM `T2_ARTICLES` t2a 
-            LEFT OUTER JOIN `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id=t2a.ART_ID)
-            LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID=t2a.ART_ID)
+            LEFT OUTER JOIN `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id = t2a.ART_ID)
+            LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID = t2a.ART_ID)
         WHERE t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;");
         $n = $dbt->num_rows($r);
         if ($n == 1) {
