@@ -366,6 +366,54 @@ class CatalogExistClass extends CatalogueClass
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
     }
 
+    public function getArticlePriceStorage($art_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $art_id = $this->getUrlNumber($art_id);
+        $client = new ClientClass();
+        $kours = new ExRateClass();
+        $cur = $this->getCurrentExrate();
+
+        $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
+        FROM `T2_ARTICLES` t2a
+            LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
+            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
+            LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
+        WHERE t2a.ART_ID IN ($art_id) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) AND (t2asc.AMOUNT != NULL OR t2asc.AMOUNT != 0)
+        GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
+        UNION ALL
+        SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2si.stock_suppl, t2si.client_storage_id, t2si.suppl_id, t2si.return_delay
+        FROM `T2_ARTICLES` t2a
+            LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
+            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
+            LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
+        WHERE t2a.ART_ID IN ($art_id) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) AND (t2si.stock_suppl != NULL OR t2si.stock_suppl != 0)
+        GROUP BY t2a.ART_ID, t2si.client_storage_id;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $suppl_id = $db->result($r, $i - 1, "suppl_id");
+            $storage_id = $db->result($r, $i - 1, "storage_id");
+
+            $price = $this->getArticlePrice($art_id);
+            if ($suppl_id != 0) {
+                $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+            }
+            $price = $kours->getKoursPrice($price, $cur);
+            if ($cur == 1) {
+                $price = $client->getClientPriceRounding($this->getClient(), $price);
+            }
+
+            if ($price > 0)
+                $arr[] = $price;
+        }
+
+        sort($arr);
+
+        $price = $arr[0];
+
+        return $price;
+    }
+
     /*
      * init main table
      * */
@@ -402,10 +450,10 @@ class CatalogExistClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "art_id");
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-            $suppl_id = $db->result($r, $i - 1, "suppl_id");
-            $storage_id = $db->result($r, $i - 1, "client_storage_id");
+//            $suppl_id = $db->result($r, $i - 1, "suppl_id");
+//            $storage_id = $db->result($r, $i - 1, "client_storage_id");
 
-            $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+            $price = $this->getArticlePriceStorage($art_id);
             $price = $kours->getKoursPrice($price, 2);
 
             $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
@@ -960,7 +1008,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show catalog form
      * */
-    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $model_id = 0, $status_auto = 0, $status_auto_type = 0, $source_link = "")
+    public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $model_id = 0, $status_auto = 0, $status_auto_type = 0, $source_link = "", $sort = 0)
     {
         $typ_id = $this->getCookieAuto();
         $automan = new AutoClass();
@@ -973,8 +1021,16 @@ class CatalogExistClass extends CatalogueClass
         $where_mfa = $this->getMfaWhere($mfa_id, $model, $status_auto, $status_auto_type);
         $where_link_arts = $this->getArtsLinksWhere($status_auto, $status_auto_type, $typ_id);
 
+        $where_sort = "";
+        if ($sort == "asc") {
+            $where_sort = "ORDER BY t.price ASC";
+        }
+        if ($sort == "desc") {
+            $where_sort = "ORDER BY t.price DESC";
+        }
+
         $check_group = $this->checkTable($group_id);
-        $query_limit = "";
+        $query_limit = ""; $query = "";
         $arts = [];
         if ($check_group) {
             if (empty($filters)) {
@@ -982,14 +1038,16 @@ class CatalogExistClass extends CatalogueClass
                     LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
                     LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
                 WHERE 1 $where_mfa $where_link_arts
-                GROUP BY t.art_id";
+                GROUP BY t.art_id
+                $where_sort";
             } else {
                 $where = $this->getFiltersWhere($params);
                 $query = "SELECT t.art_id FROM `$table` t
                     LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
                     LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
                 WHERE 1 $where $where_mfa $where_link_arts
-                GROUP BY t.art_id";
+                GROUP BY t.art_id
+                $where_sort";
             }
             $query_limit = "$query $limit ;";
         }
@@ -1002,6 +1060,7 @@ class CatalogExistClass extends CatalogueClass
         }
 
         $art_id_str = implode(",", array_unique($arts));
+
         list($list) = $this->searchList($art_id_str, 1, "", "", $mfa_id, $model, $status_auto);
 
         $count = $this->getPartsCount($group_id, $query);
