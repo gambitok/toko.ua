@@ -517,6 +517,152 @@ class CatalogueClass
         return $this->replaceLang($list_brand);
     }
 
+    public function searchListCatalog($where_art_id_str, $view = 0, $mfa_id = 0, $model = "", $status_auto = 0)
+    {
+        $db = DbSingleton::getTokoDb();
+        $kours = new ExRateClass();
+        $client = new ClientClass();
+        $client_id = $this->getClient();
+        $tpoint_id = $this->getTpointID();
+        $cur = $this->getCurrentExrate();
+
+        session_start();
+        $temp_key = session_id();
+        $mas = [];
+
+        list($error, , $list) = $this->getSearchMessages();
+
+        if ($where_art_id_str != "") {
+            $this->createTemporarySearchTable($temp_key);
+            $r = $this->getTemporarySearchTable($where_art_id_str, "", "", "");
+            $n = $db->num_rows($r);
+            $list = $this->drawHeaderSearchList($view);
+
+            if ($n > 0) {
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id = $db->result($r, $i - 1, "ART_ID");
+                    $brand_id = $db->result($r, $i - 1, "BRAND_ID");
+                    $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
+                    $article_nr_displ = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+                    $article_name = $db->result($r, $i - 1, "NAME");
+                    $suppl_id = $db->result($r, $i - 1, "suppl_id");
+                    $stock = intval($db->result($r, $i - 1, "AMOUNT"));
+                    $storage_id = $db->result($r, $i - 1, "storage_id");
+                    $return_days = $db->result($r, $i - 1, "return_delay");
+
+                    // price
+                    $price = $this->getArticlePrice($art_id);
+                    if ($suppl_id != 0) {
+                        $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+                    }
+                    $price = $kours->getKoursPrice($price, $cur);
+                    if ($cur == 1) {
+                        $price = $client->getClientPriceRounding($client_id, $price);
+                    }
+
+                    // delivery
+                    $deliveryData = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
+                    $delivery_info = $deliveryData["info"];
+                    $delivery_days = $deliveryData["days"];
+                    $delivery_short_info = $deliveryData["short"];
+                    if ($suppl_id != 0) {
+                        $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
+                        $delivery_info = $deliveryData["info"];
+                        $delivery_days = $deliveryData["days"];
+                        $delivery_short_info = $deliveryData["short"];
+                    }
+
+                    $status = ($suppl_id == 0) ? 1 : 0;
+
+                    if ($price != 0) {
+                        if ($stock > 0) {
+                            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+                                $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
+                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', '$article_name', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
+                            }
+                        }
+                    }
+                }
+
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ` ASC;");
+                $n = $db->num_rows($r);
+
+                if ($n == 1) {
+                    $stock = $db->result($r, 0, "stock");
+                    $price = $db->result($r, 0, "price");
+                    if ($stock == 0 && $price == 0) {
+                        $list = $this->getHtmlForm("error/nothing_found");
+                        $list = str_replace("{error_nothing_found}", $this->err1, $list);
+                        return array($list, "", "", 0);
+                    }
+                }
+
+                $temp_arr = [];
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id = $db->result($r, $i - 1, "art_id");
+                    $article_nr_displ = $db->result($r, $i - 1, "article_nr_displ");
+                    $brand_id = $db->result($r, $i - 1, "brand_id");
+                    $brand_name = $db->result($r, $i - 1, "brand_name");
+                    $article_name = $db->result($r, $i - 1, "article_name");
+                    $delivery_days = $db->result($r, $i - 1, "delivery_days");
+                    $delivery_info = $db->result($r, $i - 1, "delivery_info");
+                    $delivery_short_info = $db->result($r, $i - 1, "delivery_short_info");
+                    $stock = $db->result($r, $i - 1, "stock");
+                    $price = $db->result($r, $i - 1, "price");
+                    $suppl_id = $db->result($r, $i - 1, "suppl_id");
+                    $storage_id = $db->result($r, $i - 1, "storage_id");
+                    $return_days = $db->result($r, $i - 1, "return_days");
+                    $status = $db->result($r, $i - 1, "status");
+                    $temp_arr[] = compact("art_id", "article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+                }
+
+                usort($temp_arr, "cmpPrice");
+                foreach ($temp_arr as $value) {
+                    $art_id = $value["art_id"];
+                    $article_nr_displ = $value["article_nr_displ"];
+                    $brand_id = $value["brand_id"];
+                    $brand_name = $value["brand_name"];
+                    $article_name = $value["article_name"];
+                    $delivery_days = $value["delivery_days"];
+                    $delivery_info = $value["delivery_info"];
+                    $delivery_short_info = $value["delivery_short_info"];
+                    $stock = $value["stock"];
+                    $price = $value["price"];
+                    $suppl_id = $value["suppl_id"];
+                    $storage_id = $value["storage_id"];
+                    $return_days = $value["return_days"];
+                    $status = $value["status"];
+                    if (!empty($mas[$art_id][0])) {
+                        if ($mas[$art_id][0]["price"] > $price) {
+                            $mas[$art_id][0] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+                        }
+                    } else {
+                        $mas[$art_id][0] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+                    }
+                }
+
+                // delete temp table
+                $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$temp_key`;");
+
+                if (empty($mas)) {
+                    $list = $this->getHtmlForm("error/nothing_found");
+                    $list = str_replace("{error_nothing_found}", $this->err1, $list);
+                    return array($list, "", "", 0);
+                }
+
+                // show search list
+                $list = $this->outSearchList($list, $error, $mas, "", "", "", $view, 0, $status_auto, $mfa_id, $model);
+            }
+
+            $count = count($mas);
+            if ($count < 1) {
+                $list = $error;
+            }
+
+        }
+        return $list;
+    }
+
     public function searchList($where_art_id_str, $view = 0, $article_nr_search = "", $brand_nr_search = "", $mfa_id = 0, $model = "", $status_auto = 0)
     {
         $db = DbSingleton::getTokoDb();
@@ -1072,16 +1218,6 @@ class CatalogueClass
 
                 // show other storages
                 $other_storages = $this->showOtherStorages($mas, $cur, $view);
-
-//                $cc = 0;
-//                if (!empty($mas)) {
-//                    foreach ($mas as $mas_key => $mas_val) {
-//                        $cc++;
-//                        if ($cc > 3) {
-//                            unset($mas[$mas_key]);
-//                        }
-//                    }
-//                }
 
                 // show search list
                 $list = $this->outSearchList($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $view);
@@ -3047,7 +3183,6 @@ class CatalogueClass
                 $i++;
                 $photo = $value["photo"];
                 $type = $value["type"];
-                //                        data-src=\"https://toko.ua/uploads/images/$type/$photo\"
                 $slide .= "
                 <div class=\"sp-slide\">
                     <img class=\"sp-image lazy\" 
@@ -3235,23 +3370,6 @@ class CatalogueClass
 
         $m = array_unique($m);
         $max_matches = count($m);
-
-//        foreach ($arr as $value) {
-//            $r = $db->query("SELECT `ID`, `KEY_ID`, `TYPE_ID`, substrCount(LOWER(`KEYWORD`), '$value') as str_count FROM `T2_TREE_KEYWORDS` GROUP BY `KEY_ID`, `TYPE_ID` HAVING str_count > 0;");
-//            $n = $db->num_rows($r);
-//            for ($i = 1; $i <= $n; $i++) {
-//                $id = $db->result($r, $i - 1, "ID");
-//                $key_id = $db->result($r, $i - 1, "KEY_ID");
-//                $type_id = $db->result($r, $i - 1, "TYPE_ID");
-//                $str_count = $db->result($r, $i - 1, "str_count");
-//                if (!array_key_exists($id, $new)) {
-//                    $new[$id] = ["key_id" => $key_id, "type_id" => $type_id, "str_count" => $str_count, "key" => $value];
-//                } else {
-//                    $new[$id]["str_count"] += $str_count;
-//                    $new[$id]["key"] .= " $value";
-//                }
-//            }
-//        }
 
         usort($new, "keywordCmp");
         return array($new, $max_matches);

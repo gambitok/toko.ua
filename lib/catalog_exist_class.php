@@ -440,7 +440,7 @@ class CatalogExistClass extends CatalogueClass
         $dbc->query("TRUNCATE TABLE `$table`;");
         $dbc->query("TRUNCATE TABLE `$table_available`;");
 
-        $r = $db->query("SELECT t2si.art_id, t2si.client_storage_id, t2si.suppl_id, t2a.BRAND_ID
+        $r = $db->query("SELECT t2si.art_id, t2a.BRAND_ID
         FROM `T2_SUPPL_IMPORT` t2si
             LEFT JOIN `T2_ARTICLES` t2a ON (t2a.ART_ID = t2si.art_id)
             LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
@@ -450,8 +450,6 @@ class CatalogExistClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "art_id");
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-//            $suppl_id = $db->result($r, $i - 1, "suppl_id");
-//            $storage_id = $db->result($r, $i - 1, "client_storage_id");
 
             $price = $this->getArticlePriceStorage($art_id);
             $price = $kours->getKoursPrice($price, 2);
@@ -512,12 +510,8 @@ class CatalogExistClass extends CatalogueClass
         $table_available = "EX_TABLE_TREE_AVAILABLE";
         $dbc->query("TRUNCATE TABLE `$table`;");
 
-//        $dbc->query("ALTER TABLE `$table` ADD `price` FLOAT NOT NULL AFTER `brand_id`;");
         $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `price`, `status`)
             SELECT `art_id`, `brand_id`, `price`, `status` FROM `$table_available` WHERE `group_id` = $group_id;");
-
-//        $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status`)
-//            SELECT `art_id`, `brand_id`, `status` FROM `$table_available` WHERE `group_id` = $group_id;");
 
         return "UPDATED $group_id";
     }
@@ -657,18 +651,20 @@ class CatalogExistClass extends CatalogueClass
 
     public function getPaginRow($text, $link, $class = "")
     {
-        $form = "<li class=\"page-item {pagin_class}\"><a class=\"page-link\" rel=\"noopener\" href=\"{pagin_link}\">{pagin_text}</a></li>";
-        $form = str_replace("{pagin_text}", $text, $form);
-        $form = str_replace("{pagin_link}", $link, $form);
-        $form = str_replace("{pagin_class}", $class, $form);
-        return $form;
+        return "<li class=\"page-item $class\"><a class=\"page-link\" rel=\"noopener\" href=\"$link\">$text</a></li>";
     }
 
     /*
      * show pagination form
      * */
-    public function getPartsPaginationForm($n, $page)
+    public function getPartsPaginationForm($n, $page, $sort = 0)
     {
+
+        $prefix = "?";
+        if ($sort != "") {
+            $prefix = "?sort=$sort&";
+        }
+
         $count = $this->products_on_page;
         $pages_count = ceil($n / $count);
         if ($n < $count) {
@@ -686,11 +682,11 @@ class CatalogExistClass extends CatalogueClass
             if ($page < $min_count) {
                 for ($i = 1; $i <= $min_count; $i++) {
                     $active = ($i == $page) ? "active" : "";
-                    $link = ($i > 1) ? "?page=$i" : ".";
+                    $link = ($i > 1) ? $prefix . "page=$i" : ".";
                     $pagination .= $this->getPaginRow($i, $link, $active);
                 }
                 $pagination .= $this->getPaginRow("...", "#");
-                $link = ($pages_count > 1) ? "?page=$pages_count" : ".";
+                $link = ($pages_count > 1) ? $prefix . "page=$pages_count" : ".";
                 $pagination .= $this->getPaginRow($pages_count, $link);
             }
 
@@ -699,7 +695,7 @@ class CatalogExistClass extends CatalogueClass
                 $pagination .= $this->getPaginRow("...", "#");
                 for ($i = $max_count; $i <= $pages_count; $i++) {
                     $active = ($i == $page) ? "active" : "";
-                    $link = ($i > 1) ? "?page=$i" : ".";
+                    $link = ($i > 1) ? $prefix . "page=$i" : ".";
                     $pagination .= $this->getPaginRow($i, $link, $active);
                 }
             }
@@ -708,22 +704,22 @@ class CatalogExistClass extends CatalogueClass
                 $pagination .= $this->getPaginRow("1", "./");
                 $pagination .= $this->getPaginRow("...", "#");
 
-                $link = ($pred_page > 1) ? "?page=$pred_page" : ".";
+                $link = ($pred_page > 1) ? $prefix . "page=$pred_page" : ".";
                 $pagination .= $this->getPaginRow($pred_page, $link);
-                $link = ($page > 1) ? "?page=$page" : ".";
+                $link = ($page > 1) ? $prefix . "page=$page" : ".";
                 $pagination .= $this->getPaginRow($page, $link, "active");
-                $link = ($next_page > 1) ? "?page=$next_page" : ".";
+                $link = ($next_page > 1) ? $prefix . "page=$next_page" : ".";
                 $pagination .= $this->getPaginRow($next_page, $link);
 
                 $pagination .= $this->getPaginRow("...", "#");
-                $link = ($pages_count > 1) ? "?page=$pages_count" : ".";
+                $link = ($pages_count > 1) ? $prefix . "page=$pages_count" : ".";
                 $pagination .= $this->getPaginRow($pages_count, $link);
             }
 
         } else {
             for ($i = 1; $i <= $pages_count; $i++) {
                 $active = ($i == $page) ? "active" : "";
-                $link = ($i > 1) ? "?page=$i" : ".";
+                $link = ($i > 1) ? $prefix . "page=$i" : ".";
                 $pagination .= $this->getPaginRow($i, $link, $active);
             }
         }
@@ -732,8 +728,8 @@ class CatalogExistClass extends CatalogueClass
         $list = str_replace("{pagination_range}", $pagination, $list);
         $list = str_replace("{pred_disabled_class}", ($page == 1) ? "disabled" : "", $list);
         $list = str_replace("{next_disabled_class}", ($page == $pages_count) ? "disabled" : "", $list);
-        $list = str_replace("{link_pred}", ($pred_page > 1) ? "?page=$pred_page" : ".", $list);
-        $list = str_replace("{link_next}", ($next_page > 1) ? "?page=$next_page" : ".", $list);
+        $list = str_replace("{link_pred}", ($pred_page > 1) ? $prefix . "page=$pred_page" : ".", $list);
+        $list = str_replace("{link_next}", ($next_page > 1) ? $prefix . "page=$next_page" : ".", $list);
 
         if ($pages_count == 1) {
             $list = "";
@@ -1061,11 +1057,11 @@ class CatalogExistClass extends CatalogueClass
 
         $art_id_str = implode(",", array_unique($arts));
 
-        list($list) = $this->searchList($art_id_str, 1, "", "", $mfa_id, $model, $status_auto);
+        $list = $this->searchListCatalog($art_id_str, 1, $mfa_id, $model, $status_auto);
 
         $count = $this->getPartsCount($group_id, $query);
 
-        $pagination_form = $this->getPartsPaginationForm($count, $page);
+        $pagination_form = $this->getPartsPaginationForm($count, $page, $sort);
 
         list($h1_text, $filters_title, $filters_btn, $filters_count) = $this->getPartsFiltersItems($group_id, $page, $params, $mfa_id, $model, $model_id);
 
@@ -1096,6 +1092,8 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_h1}", "$h1_text $translit $pager", $form);
             $form = str_replace("{parts_count}", "{unselect_cap} $count " . $this->getGoodsCap($count), $form);
             $form = str_replace("{parts_filters}", "$filters_btn", $form);
+            $form = str_replace("{filter_count}", "$filters_count", $form);
+            $form = str_replace("{parts_sort}", $this->getPartsSortForm($sort, $source_link), $form);
             $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
             $filterData = $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $where_mfa, $where_link_arts);
             $form = str_replace("{parts_params}", $filterData["form"], $form);
@@ -1114,10 +1112,6 @@ class CatalogExistClass extends CatalogueClass
 
         $max_pages_count = ceil($count / $this->products_on_page);
 
-//        $description = $this->replaceLang("{site_description_catalog}");
-//        $description = str_replace("{h1_caption}", $h1_text, $description);
-//        $description = str_replace("{h1_caption_parrent}", $group_text, $description);
-
         $description = $this->replaceLang("{site_catalog_group_description}");
         $description = str_replace("{h1_text}", $h1_text, $description);
 
@@ -1131,6 +1125,28 @@ class CatalogExistClass extends CatalogueClass
         }
 
         return array("form" => $form, "title" => $filters_title, "h1" => $h1_text, "pages_count" => $max_pages_count, "description" => $description, "script" => $breadcrumbs_script);
+    }
+
+    public function getPartsSortForm($sort, $source_link)
+    {
+        $selected1 = $selected2 = $selected3 = "";
+        if ($sort == "0") {
+            $selected1 = "selected='selected'";
+        }
+        elseif ($sort == "asc") {
+            $selected2 = "selected='selected'";
+        }
+        elseif ($sort == "desc") {
+            $selected3 = "selected='selected'";
+        }
+        $list = "
+        <select id='cat-products-sort' onchange=\"getPartsSortForm('$source_link');\">
+            <option value='0' $selected1>-</option>
+            <option value='1' $selected2>{sort_price_asc}</option>
+            <option value='2' $selected3>{sort_price_desc}</option>
+        </select>";
+        $list = $this->replaceLang($list);
+        return $list;
     }
 
     public function drawLoader()
@@ -1297,10 +1313,6 @@ class CatalogExistClass extends CatalogueClass
         $paramData = $this->getPartsFiltersArr($group_id, $params, $where_mfa, $where_link_arts);
         $arr = $paramData["arr"];
 
-//        $count_arts_full = $this->getPartsCount($group_id, $query);
-//        $checked_params_keys = $paramData["checked"];
-//        $unchecked_params_keys = $paramData["unchecked"];
-
         $list_params = "";
         if (!empty($arr)) {
             foreach ($arr as $param_id => $values) {
@@ -1320,17 +1332,6 @@ class CatalogExistClass extends CatalogueClass
                         $link = $this->getPartsFilterLinks($group_id, $params, $param_id, $value_id, $mfa_id, $model);
 
                         $count_arts = 0;
-//                        if (!empty($params)) {
-//                            if (in_array($param_id, $checked_params_keys)) {
-//                                $count_arts = $this->getPartsCountWill($group_id, $params, $param_id, $value_id, $where_mfa, $where_link_arts);
-//                                $count_arts = $count_arts - $count_arts_full;
-//                            }
-//                            if (in_array($param_id, $unchecked_params_keys)) {
-//                                $count_arts = $this->getPartsCountWill($group_id, $params, $param_id, $value_id, $where_mfa, $where_link_arts);
-//                            }
-//                        } else {
-//                            $count_arts = $this->getPartsCountWill($group_id, $params, $param_id, $value_id, $where_mfa, $where_link_arts);
-//                        }
                         $items[$value_id] = compact("value_name", "link", "checked", "count_arts");
                     }
 
@@ -1352,19 +1353,10 @@ class CatalogExistClass extends CatalogueClass
                         $value_name = $item["value_name"];
                         $link = $item["link"];
                         $checked = $item["checked"];
-//                        $count_arts = $item["count_arts"];
-//                        $count_arts_label = "($count_arts)";
-//                        if (!empty($params)) {
-//                            if (in_array($param_id, $checked_params_keys)) {
-//                                $count_arts_label = "[+$count_arts]";
-//                            }
-//                        }
                         $checked_label = "<span class=\"fas fa-square unchecked\"></span>";
                         if ($checked) {
                             $checked_label = "<span class=\"fas fa-check-square checked\"></span>";
-//                            $count_arts_label = "";
                         }
-//                        $count_arts_label
                         $list_params .= "
                         <a href=\"$link\" class=\"hidden-list-content__item\">
                             <div class=\"hidden-list-content__item-left\" data-param-value=\"$param_id\">$checked_label <span>$value_name</span></div> 

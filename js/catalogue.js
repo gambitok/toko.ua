@@ -544,3 +544,18 @@ function showSearchDropdown2() {
             $("#search-dropdown").html(result.content);
         }}, true);
 }
+
+function getPartsSortForm(link) {
+    redirect_link = "";
+    let sort_id = $("#cat-products-sort option:selected").val();
+    if (sort_id == "0") {
+        redirect_link = link;
+    }
+    if (sort_id == "1") {
+        redirect_link = link + "?sort=asc";
+    }
+    if (sort_id == "2") {
+        redirect_link = link + "?sort=desc";
+    }
+    location.href = redirect_link;
+}

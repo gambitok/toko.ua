@@ -1,6 +1,19 @@
 /* ==== PHONE ==== */
 @media (max-width: 768px) {
 
+    .cat-products-count {
+        margin: 15px 0;
+    }
+
+    .cat-products-set {
+        justify-content: space-between;
+        margin: 15px 0;
+    }
+
+    .cat-products-set-filter {
+        display: block;
+    }
+
     .cars-loader {
         min-height: 165px;
     }

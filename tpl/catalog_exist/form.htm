@@ -36,6 +36,24 @@
                 <span>{parts_count}</span>
                 {parts_filters}
             </div>
+            <div class="cat-products-set">
+                <div class="cat-products-set-filter bar-catalog" onclick="setCatalogFilters();">
+                    <div class="set-filter">
+                        <div class="set-filter__image">
+                            <img src="/images/icons/filtr-ico.png" alt="filter">
+                        </div>
+                        <div class="set-filter__text">
+                            {filter_cap}
+                        </div>
+                        <div class="set-filter__count">
+                            <span>{filter_count}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="cat-products-set-sort">
+                    {parts_sort}
+                </div>
+            </div>
             <div class="cat-products-list">
                 {parts_list}
             </div>

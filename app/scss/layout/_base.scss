@@ -537,13 +537,14 @@
         margin-bottom: 30px;
     }
     &-count {
-        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        margin: 10px;
+        flex-wrap: wrap;
         span {
-            display: inline-block;
             font-size: 16px;
-            line-height: 30px;
-            margin: 15px 0 0 15px;
-            vertical-align: middle;
+            margin-left: 15px;
+            margin-top: 15px;
         }
         a {
             background: #eee;
@@ -555,6 +556,64 @@
         }
         i {
             color: #228b94;
+        }
+    }
+    &-set {
+        align-items: center;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: end;
+        margin: 10px;
+        &-filter {
+            cursor: pointer;
+            display: none;
+            .set-filter {
+                font-size: 12px;
+                height: 40px;
+                padding: 0 15px;
+                border: 1px solid darkgray;
+                color: #000;
+                border-radius: .25em;
+                display: flex;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                align-items: center;
+                &__image {
+                    max-width: 30px;
+                    max-height: 30px;
+                    img {
+                        height: 100%;
+                        width: 100%;
+                    }
+                }
+                &__text {
+                    color: #000;
+                    margin: 0 15px;
+                }
+                &__count {
+                    span {
+                        background: gray;
+                        color: #fff;
+                        height: 15px;
+                        width: 15px;
+                        display: block;
+                        text-align: center;
+                        font-size: 10px;
+                        border-radius: 1em;
+                    }
+                }
+            }
+        }
+        &-sort {
+            margin-left: 15px;
+            select {
+                font-size: 12px;
+                height: 40px;
+                padding: 0 15px;
+                border: 1px solid darkgray;
+                color: #000;
+                border-radius: .25em;
+            }
         }
     }
     &-title {

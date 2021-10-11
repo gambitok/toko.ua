@@ -785,6 +785,7 @@ class FormClass extends CatalogueClass
 
     public function getArticleCatalogPhoto($art_id, $brand_id = 0)
     {
+        $brand_id = $this->getUrlNumber($brand_id);
         $status = 0;
         $photo_name = $this->getArticlePhoto($art_id);
         if ($photo_name != "") {
