@@ -395,6 +395,7 @@ class CatalogueClass
         $where_art_id_str = rtrim($where_art_id_str, ",");
         $where_art_id_str = str_replace("'", "", $where_art_id_str);
         $r = "";
+
         if ($where_art_id_str != "") {
             $r = $db->query("
             SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT as AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
@@ -413,6 +414,7 @@ class CatalogueClass
             WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) AND (t2si.stock_suppl != NULL OR t2si.stock_suppl != 0) $where_brands 
             GROUP BY t2a.ART_ID, t2si.client_storage_id;");
         }
+
         return $r;
     }
 
