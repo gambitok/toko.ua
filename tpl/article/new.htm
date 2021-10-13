@@ -28,7 +28,13 @@
     </div>
 </div>
 
-<div class="container article-form">
+<div class="container article-form" itemtype="https://schema.org/Product" itemscope>
+
+    <meta itemprop="name" content="{product_name}" />
+    <meta itemprop="sku" content="{product_name}" />
+    <meta itemprop="gtin13" content="{product_barcode}" />
+    <meta itemprop="image" content="https://toko.ua/uploads/images/catalogue/{product_main_photo}" />
+    <meta itemprop="description" content="{product_text}" />
 
     <div class="row article-form-row" style="display: block; width: 100%; margin: 0; margin-bottom: 30px;">
         {article_cars}
@@ -137,7 +143,6 @@
 </div>
 
 <script>
-
     $(document).ready(function() {
         toggleCarsNavigation($("div[data-type='manuf']"));
         if (detectmob()) {
