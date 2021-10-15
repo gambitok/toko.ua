@@ -185,6 +185,7 @@ class FormClass extends CatalogueClass
             }
         }
         $form = str_replace("{article_cars}", $prod->getCarsSelectUser(), $form);
+        $form = str_replace("{product_barcode}", $this->getBarcode($art_id), $form);
 
         $articleData = $this->getArticleInfo($art_id);
         $article_nr_displ = $articleData["article_nr_displ"];
@@ -233,6 +234,9 @@ class FormClass extends CatalogueClass
             $article_info_row = str_replace("{art_cur}", $articleData["currency"], $article_info_row);
             $article_info_row = str_replace("{art_stock}", $articleData["stock"], $article_info_row);
             $article_info_row = str_replace("{art_del}", $delivery_short_info, $article_info_row);
+            $article_search = $this->getArticleSearch($art_id);
+            $brand_link = $this->getBrandLink($brand_id);
+            $article_info_row = str_replace("{page_product_link}", $this->getSiteLink() . $this->article_link . "/$article_search" . "/$brand_link" . "/$art_id/", $article_info_row);
 
             $client = new ClientClass();
             $client_phone = "";
@@ -259,6 +263,7 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_format_name}", $this->getFormatAticle($article_nr_displ), $form);
         $form = str_replace("{art_brand_id}", $brand_id, $form);
         $form = str_replace("{art_brand_name}", $brand_name, $form);
+        $form = str_replace("{art_text}", $article_name, $form);
         $form = str_replace("{art_basket}", $articleData["basket"], $form);
 
         $article_info_form = $this->getArticleInfoForm($art_id, 0, 1);

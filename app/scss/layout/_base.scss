@@ -269,6 +269,9 @@
             & ~ button {
                 display: none;
             }
+            &:after {
+                height: 0;
+            }
         }
         &:after {
             background: linear-gradient(180deg, hsla(0,0%,95.3%,0) 0, #fff 100%);

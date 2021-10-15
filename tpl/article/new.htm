@@ -30,11 +30,11 @@
 
 <div class="container article-form" itemtype="https://schema.org/Product" itemscope>
 
-    <meta itemprop="name" content="{product_name}" />
-    <meta itemprop="sku" content="{product_name}" />
+    <meta itemprop="name" content="{article_name}" />
+    <meta itemprop="sku" content="{article_name}" />
     <meta itemprop="gtin13" content="{product_barcode}" />
-    <meta itemprop="image" content="https://toko.ua/uploads/images/catalogue/{product_main_photo}" />
-    <meta itemprop="description" content="{product_text}" />
+    <meta itemprop="image" content="{art_main_image}" />
+    <meta itemprop="description" content="{art_text}" />
 
     <div class="row article-form-row" style="display: block; width: 100%; margin: 0; margin-bottom: 30px;">
         {article_cars}
@@ -42,7 +42,27 @@
 
     <div class="row article-form-row">
         <div class="col-12">
-            <h1>{article_header}</h1>
+            <h1 itemprop="name" >{article_header}</h1>
+
+            <div itemprop="aggregateRating" itemtype="http://schema.org/AggregateRating" itemscope class="dnone">
+                <meta itemprop="reviewCount" content="100" />
+                <meta itemprop="ratingValue" content="5" />
+            </div>
+
+            <div itemprop="review" itemtype="http://schema.org/Review" itemscope class="dnone">
+                <div itemprop="author" itemtype="http://schema.org/Person" itemscope>
+                    <meta itemprop="name" content="Author" />
+                </div>
+                <div itemprop="reviewRating" itemtype="http://schema.org/Rating" itemscope>
+                    <meta itemprop="ratingValue" content="5" />
+                    <meta itemprop="bestRating" content="5" />
+                </div>
+            </div>
+
+            <div itemprop="brand" itemtype="http://schema.org/Thing" itemscope class="dnone">
+                <meta itemprop="name" content="{art_brand_name}" />
+            </div>
+
         </div>
     </div>
 

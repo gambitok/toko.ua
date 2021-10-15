@@ -41,6 +41,19 @@
                 <div class="text-center">{count_in_basket}</div>
             </div>
         </div>
+
+        <div itemprop="offers" itemtype="https://schema.org/Offer" itemscope class="dnone">
+            <link itemprop="url" href="{page_product_link}" />
+            <meta itemprop="availability" content="https://schema.org/InStock" />
+            <meta itemprop="priceCurrency" content="USD" />
+            <meta itemprop="itemCondition" content="https://schema.org/UsedCondition" />
+            <meta itemprop="price" content="{art_price}" />
+            <meta itemprop="priceValidUntil" content="2021-01-01" />
+            <div itemprop="seller" itemtype="http://schema.org/Organization" itemscope>
+                <meta itemprop="name" content="TOKO GROUP" />
+            </div>
+        </div>
+
     </div>
 </div>
 <div class="article-info-row article-info-row-wrap">
@@ -50,6 +63,19 @@
     <div class="article-info-row__text">
         {available_cap}: <span class="article-info-row__stock">{art_stock} {amount_abbr}.</span>
     </div>
+
+    <div itemprop="offers" itemtype="http://schema.org/AggregateOffer" itemscope class="dnone">
+        <meta itemprop="url" href="{page_product_link}" />
+        <meta itemprop="availability" content="https://schema.org/InStock" />
+        <meta itemprop="priceCurrency" content="{art_cur}" />
+        <meta itemprop="itemCondition" content="https://schema.org/UsedCondition" />
+        <meta itemprop="price" content="{art_price}" />
+        <span itemprop="lowPrice">{art_price}</span>
+        <span itemprop="highPrice" class="dnone">{art_price}</span>
+        <span itemprop="offerCount">{art_stock}</span>
+        <meta itemprop="availability" content="http://schema.org/SoldOut" />
+    </div>
+
 </div>
 
 <div class="article-info-row">
