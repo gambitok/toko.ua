@@ -197,12 +197,18 @@ header {
         &-image {
             align-items: center;
             display: flex;
+            flex-wrap: wrap;
             overflow: hidden;
             padding: 0;
             width: 100%;
             img {
                 height: 100%;
                 width: 100%;
+            }
+            span {
+                color: #0c5460;
+                font-size: 1.3vh;
+                font-weight: bold;
             }
         }
     }
@@ -301,11 +307,17 @@ header {
         border-bottom: 1px solid #ccc;
         padding: 10px 15px;
         &__logo {
-            display: block;
+            display: flex;
+            flex-wrap: wrap;
             img {
                 max-height: 30px;
                 height: 100%;
                 width: 100%;
+            }
+            span {
+                color: #0c5460;
+                font-size: 0.1vh;
+                font-weight: 700;
             }
         }
         &__list {

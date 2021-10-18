@@ -232,7 +232,7 @@ class FormClass extends CatalogueClass
             $article_info_row = $this->getHtmlForm("article/row");
             $article_info_row = str_replace("{art_price}", $articleData["price"], $article_info_row);
             $article_info_row = str_replace("{art_cur}", $articleData["currency"], $article_info_row);
-            $article_info_row = str_replace("{art_stock}", $articleData["stock"], $article_info_row);
+            $article_info_row = str_replace("{art_stock}", $articleData["real_stock"], $article_info_row);
             $article_info_row = str_replace("{art_del}", $delivery_short_info, $article_info_row);
             $article_search = $this->getArticleSearch($art_id);
             $brand_link = $this->getBrandLink($brand_id);

@@ -73,8 +73,8 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/admin') 
 //$content = str_replace("{main_seo_text}", ($seo_text == "" || $seo_text == "<!--seo_text_start--><!--seo_text_end-->") ? "" : getSeoText($seo_text), $content);
 $content = str_replace("{main_seo_text}", getSeoTextForm(), $content);
 $content = str_replace("{main_window}", "", $content);
-$lang_postfix = findLanguage();
-if ($lang_postfix != "") {
+
+if (findLanguage() == "en") {
     $content = str_replace("{meta_noindex}", '
         <meta name="robots" content="noindex, nofollow">
         <meta name="googlebot" content="noindex, nofollow">

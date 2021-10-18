@@ -197,9 +197,10 @@
 				<div class="row align-items-center">
 
 					<div class="col-2 logotype-main">
-                        <a class="logotype-main-image" href="{site_main_link}">
-                            <img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}">
-                        </a>
+						<a class="logotype-main-image" href="{site_main_link}">
+							<img itemprop="logo" src="{image_logotype}" alt="{site_title_short}" title="{site_title_short}">
+							<span>{site_logo_text}</span>
+						</a>
                     </div>
 
 					<div class="col-4">
@@ -289,15 +290,16 @@
 					</div>
                 </div>
                 <div class="row header-phone-nav">
-                    <div class="col-3 pad0">
+                    <div class="col-4 pad0">
                         <a class="header-phone-nav__logo" href="{site_main_link}">
-							<img class="lazy" itemprop="logo" data-src="{image_logotype_phone}" alt="{site_title_short}" title="{site_title_short}" src="">
+							<img class="lazy" itemprop="logo" data-src="{image_logotype_phone}" alt="{site_title_short}" title="{site_title_short}" src="/images/no_photo_min.png">
+							<span>{site_logo_text}</span>
                         </a>
                     </div>
-                    <div class="offset-3 col-6 pad0">
+                    <div class="offset-2 col-6 pad0">
                         <ul class="header-phone-nav__list">
                             <li class="header-phone-nav__list-link">
-                                <a href="{site_main_link}catalogue/">
+                                <a onclick="showGarageForm();">
                                     <img class="lazy" data-src="/images/icons/headers/30x30/garage.png" alt="Garage" src="">
                                 </a>
                             </li>
@@ -323,7 +325,7 @@
                 <div class="row header-phone-search">
 					<div class="col-12 pad0">
 						<div class="search-container">
-							<input id="search-mobile" type="text" class="search-mobile" onclick="showModalSearch();" oninput="showSearchDropdown2();" placeholder="{search_onsite}">
+							<input id="search-mobile" type="text" class="search-mobile" onclick="showModalSearch();" oninput="showSearchDropdown2();" onsubmit="showSearchDropdown2();" placeholder="{search_onsite}">
 						</div>
 						<div id="search-dropdown" class="search-dropdown">
 						</div>

@@ -1113,13 +1113,13 @@ class CatalogExistClass extends CatalogueClass
         $max_pages_count = ceil($count / $this->products_on_page);
 
         $description = $this->replaceLang("{site_catalog_group_description}");
-        $description = str_replace("{h1_text}", $h1_text, $description);
+        $description = str_replace("{h1_text}", "$h1_text $pager", $description);
 
         if (!empty($filters)) {
             list($count_brands) = $this->getCatalogParamsCount($params);
             if ($count_brands > 0) {
                 $description = $this->replaceLang("{site_catalog_brand_description}");
-                $description = str_replace("{h1_text}", $h1_text, $description);
+                $description = str_replace("{h1_text}", "$h1_text $pager", $description);
                 $description = str_replace("{h1_parrent}", $group_text, $description);
             }
         }

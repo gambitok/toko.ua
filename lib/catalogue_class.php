@@ -34,8 +34,21 @@ class CatalogueClass
         if ($n == 1) {
             return $this->getCatalogList($article_search, $brand_id);
         } else {
-            return $this->getBrandList($article_search, $article_nr_search);
+            return $this->getSearchResult($article_search, $article_nr_search);
         }
+    }
+
+    public function getSearchResult($article_search, $article_nr_search)
+    {
+        if ($article_search != "") {
+            $form = $this->getBrandList($article_search, $article_nr_search);
+        } else {
+            $form = $this->getHtmlForm("search/search_catalog");
+            $form = str_replace("{search_query}", $article_nr_search, $form);
+            $list = $this->showSearchDropdown($article_nr_search);
+            $form = str_replace("{search_range}", $list, $form);
+        }
+        return $form;
     }
 
     /*
@@ -2618,13 +2631,15 @@ class CatalogueClass
             $cat_link = $this->getCatRowLink($cat_id);
             $group_list = $this->getCatalogColListGroup($head_id, $cat_id, $mfa_link, $model_link);
             $icon = "";
+            $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$icon $cat_name</a>";
             if ($cat_id == 0) {
                 $icon = "<span style=\"margin-right: 5px; color: #f44438\">&bull;</span>";
+                $link = "<span>$icon $cat_name</span>";
             }
             $list .= "
             <div class=\"tree-cat__item\">
                 <div class=\"tree-cat__item-title\">
-                    <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$icon $cat_name</a>
+                    $link
                 </div>
                 <div class=\"tree-group\">
                     $group_list    
@@ -3389,9 +3404,7 @@ class CatalogueClass
         if ($text != "" && strlen($text) > 1) {
             $text = $this->getUrlString($text);
             $format_text = $text;
-            $format_text = str_replace(" ", "", $format_text);
-            $format_text = str_replace("-", "", $format_text);
-            $format_text = str_replace("_", "", $format_text);
+            $format_text = str_replace(str_split(' -,+\/:*?"<>|_'), "", $format_text);
 
             $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `DISPLAY_NR`, MIN(`KIND`) as min_kind 
             FROM `T2_CROSS` 
@@ -3421,6 +3434,7 @@ class CatalogueClass
                 </li>";
             }
 
+            $text = str_replace(str_split('+\/:*?"<>|'), "", $text);
             list($arr, $max_matches) = $this->getSearchMatches($text);
             $n = count($arr);
             foreach ($arr as $value) {

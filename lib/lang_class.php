@@ -67,8 +67,11 @@ class LangClass
         $db = DbSingleton::getTokoDb();
         $list = "";
         $link = ltrim($_SERVER["REQUEST_URI"], "/");
-        $link = str_replace("uk/", "", $link);
-        $link = str_replace("en/", "", $link);
+
+        $link = "/" . $link;
+
+        $link = str_replace("/uk/", "", $link);
+        $link = str_replace("/en/", "", $link);
         $r = $db->query("SELECT `id`, `abr` FROM `new_lang` WHERE 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -76,8 +79,14 @@ class LangClass
             $lang_abr = $db->result($r, $i - 1, "abr");
             $active = ($lang_id == $sel_id) ? "menu-language__item-active" : "";
             $postfix = $this->getLangIDPrefix($lang_id);
-            $url = "https://toko.ua/$postfix" . $link;
-            $list .= "<div class=\"menu-language__item $active\"><a href=\"$url\">$lang_abr</a></div>";
+            $http = "https://";
+            $url = "toko.ua/$postfix" . $link;
+            $url = str_replace("//", "/", $url);
+            $url = $http . $url;
+            $list .= "
+            <div class=\"menu-language__item $active\">
+                <a href=\"$url\">$lang_abr</a>
+            </div>";
         }
         return $list;
     }
