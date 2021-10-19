@@ -94,6 +94,7 @@ class CatalogExistClass extends CatalogueClass
     }
     public function getGroupParamName($param_id)
     {
+        $param_id = $this->getUrlNumber($param_id);
         $db = DbSingleton::getTokoDb();
         $param_name = "";
         $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` = $param_id LIMIT 1;");
@@ -1332,7 +1333,7 @@ class CatalogExistClass extends CatalogueClass
                         $link = $this->getPartsFilterLinks($group_id, $params, $param_id, $value_id, $mfa_id, $model);
 
                         $count_arts = 0;
-                        $items[$value_id] = compact("value_name", "link", "checked", "count_arts");
+                        $items[$value_id] = compact("value_name", "link", "checked", "count_arts", "value_id");
                     }
 
                     $arr_checked = [];
@@ -1357,11 +1358,13 @@ class CatalogExistClass extends CatalogueClass
                         if ($checked) {
                             $checked_label = "<span class=\"fas fa-check-square checked\"></span>";
                         }
-                        $list_params .= "
-                        <a href=\"$link\" class=\"hidden-list-content__item\">
-                            <div class=\"hidden-list-content__item-left\" data-param-value=\"$param_id\">$checked_label <span>$value_name</span></div> 
-                            <div class=\"hidden-list-content__item-right\"></div>
-                        </a>";
+                        if ($value_name != "") {
+                            $list_params .= "
+                            <a href=\"$link\" class=\"hidden-list-content__item\">
+                                <div class=\"hidden-list-content__item-left\" data-param-value=\"$param_id\">$checked_label <span>$value_name</span></div> 
+                                <div class=\"hidden-list-content__item-right\"></div>
+                            </a>";
+                        }
                     }
 
                     $bottom = "";

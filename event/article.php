@@ -16,7 +16,7 @@ $brand_link = $catalogue->getBrandLink($brand);
 //    header("Location: $link", TRUE, 301);
 //}
 
-if ($catalogue->checkArticleExist($art_id)) {
+if ($catalogue->checkArticleExist($art_id) && $art_id > 0) {
     $articleData = $showform->getArticleForm($art_id);
     $content = str_replace("{main_window}", $articleData["form"], $content);
     $breadcrumbsData = $catalogue->getBreadCrumbForm($articleData["breadcrumbs"]);
@@ -28,4 +28,6 @@ if ($catalogue->checkArticleExist($art_id)) {
 } else {
     header("HTTP/1.0 404 Not Found");
     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404"), $content);
+    $content = str_replace("{site_title}", "{seo_404_title}", $content);
+    $content = str_replace("{site_description}", "", $content);
 }

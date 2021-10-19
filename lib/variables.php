@@ -86,6 +86,7 @@ trait Variables
      * */
     public function getArticleDispl($art_id)
     {
+        $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
         return $db->result($r, 0, "ARTICLE_NR_DISPL");

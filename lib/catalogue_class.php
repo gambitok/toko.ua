@@ -43,10 +43,14 @@ class CatalogueClass
         if ($article_search != "") {
             $form = $this->getBrandList($article_search, $article_nr_search);
         } else {
-            $form = $this->getHtmlForm("search/search_catalog");
-            $form = str_replace("{search_query}", $article_nr_search, $form);
             $list = $this->showSearchDropdown($article_nr_search);
-            $form = str_replace("{search_range}", $list, $form);
+            if ($list == "") {
+                $form = $this->getHtmlForm("error/search_unknown");
+            } else {
+                $form = $this->getHtmlForm("search/search_catalog");
+                $form = str_replace("{search_query}", $article_nr_search, $form);
+                $form = str_replace("{search_range}", $list, $form);
+            }
         }
         return $form;
     }

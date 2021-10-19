@@ -922,6 +922,7 @@
     h1 {
         font-size: 22px;
         font-weight: bold;
+        margin-bottom: 30px;
         text-align: center;
         text-transform: uppercase;
     }
@@ -930,9 +931,11 @@
         font-size: 14px;
         font-weight: bold;
         text-transform: uppercase;
+        margin: 15px 0;
     }
     p, strong {
         color: #606975;
+        margin: 10px 0;
     }
 }
 
