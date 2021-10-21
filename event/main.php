@@ -10,6 +10,8 @@ if ($w == "modelfind") {
 
 $content = str_replace("{main_window}", $catalogue->getHtmlForm("main_form"), $content);
 
+$content = str_replace("{history_arts}", $showform->getHistoryArts(), $content);
+
 // Поиск по автомобилю
 $content = str_replace("{catalogue_tab_search}", $showform->drawLoader(), $content);
 
@@ -31,5 +33,3 @@ if ($lang_postfix != "") {
         <meta name="yandex" content="noindex">
     ', $content);
 }
-
-

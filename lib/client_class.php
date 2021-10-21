@@ -958,6 +958,41 @@ class ClientClass
     }
 
     /*
+     * Add History by article
+     * */
+    public function insertArtsHistory($art_id)
+    {
+        $art_id = $this->getUrlNumber($art_id);
+        $db = DbSingleton::getTokoDb();
+        session_start();
+        $ses = session_id();
+        $cookie = $this->getSessionID();
+        $date = date("Y-m-d H:i:s");
+        $client_id = $this->getClient();
+        $user_id = $this->getUser();
+        if ($art_id > 0) {
+            $where = ($user_id == 0) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
+            $r = $db->query("SELECT COUNT(`id`) as kilk FROM `ARTS_HISTORY` WHERE $where;");
+            $k = $db->result($r, 0, "kilk");
+            if ($k > $this->max_history_count) {
+                $r = $db->query("SELECT `id` FROM `ARTS_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
+                $id = $db->result($r, 0, "id");
+                $db->query("UPDATE `ARTS_HISTORY` SET `data` = '$date', `art_id` = $art_id WHERE `id` = $id;");
+            } else {
+                $r = $db->query("SELECT `id` FROM `ARTS_HISTORY` WHERE $where AND `art_id` = $art_id;");
+                $n = $db->num_rows($r);
+                if ($n > 0) {
+                    $db->query("UPDATE `ARTS_HISTORY` SET `data` = '$date' WHERE $where AND `art_id` = $art_id;");
+                } else {
+                    $db->query("INSERT INTO `ARTS_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `data`, `art_id`) 
+                    VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$date', $art_id);");
+                }
+            }
+        }
+        return true;
+    }
+
+    /*
      * get user history
      * */
     public function getClientHistory()
@@ -988,6 +1023,37 @@ class ClientClass
                         "brand_id" => $brand_id,
                         "brand" => $brand_name,
                         "brand_link" => $brand_link
+                    ];
+                $col++;
+            }
+        }
+        return $history;
+    }
+
+    /*
+     * get user history
+     * */
+    public function getArtsHistory()
+    {
+        $db = DbSingleton::getTokoDb();
+        $col = 0;
+        $history = [];
+        $cookie = $this->getSessionID();
+        if ($cookie == "" || $cookie == NULL) {
+            $cookie = 0;
+        }
+        list($client_id, $user_id) = $this->getClientData();
+        $where = ($user_id == 0) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
+        $r = $db->query("SELECT `id`, `art_id` FROM `ARTS_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $id = $db->result($r, $i - 1, "id");
+            $art_id = $db->result($r, $i - 1, "art_id");
+            if ($art_id > 0) {
+                $history[$col] =
+                    [
+                        "id" => $id,
+                        "art_id" => $art_id,
                     ];
                 $col++;
             }

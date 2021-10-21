@@ -17,6 +17,7 @@ $brand_link = $catalogue->getBrandLink($brand);
 //}
 
 if ($catalogue->checkArticleExist($art_id) && $art_id > 0) {
+    $client->insertArtsHistory($art_id);
     $articleData = $showform->getArticleForm($art_id);
     $content = str_replace("{main_window}", $articleData["form"], $content);
     $breadcrumbsData = $catalogue->getBreadCrumbForm($articleData["breadcrumbs"]);

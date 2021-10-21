@@ -1,0 +1,53 @@
+<link rel="stylesheet" href="/js/plugins/OwlCarousel2-2.3.4/assets/owl.carousel.min.css" />
+
+<div class="row article-form-row" style="width:100%; margin-top:30px;">
+    <div class="col-12">
+        <div class="article-form-row__title">
+            {you_watched_cap}
+        </div>
+        <div class="article-form-row__content">
+            <div class="proposed">
+                <div id="owl-carousel-arts" class="owl-carousel owl-theme">
+                    {history_range}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/plugins/OwlCarousel2-2.3.4/owl.carousel.min.js"></script>
+
+<script>
+    var owl = $('#owl-carousel-arts');
+    owl.owlCarousel({
+        loop:false,
+        nav:false,
+        dots:false,
+        margin:10,
+        autoplay:true,
+        autoplayTimeout:3000,
+        autoplayHoverPause:true,
+        responsive:{
+            0:{
+                items:1
+            },
+            600:{
+                items:3
+            },
+            960:{
+                items:4
+            },
+            1200:{
+                items:4
+            }
+        }
+    });
+    owl.on('mousewheel', '.owl-stage', function (e) {
+        if (e.deltaY>0) {
+            owl.trigger('next.owl');
+        } else {
+            owl.trigger('prev.owl');
+        }
+        e.preventDefault();
+    });
+</script>

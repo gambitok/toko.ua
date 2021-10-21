@@ -42,7 +42,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
      * Catalog
      * */
     if ($router == "") {
-        $content = str_replace("{main_window}", "<div><h1>{site_catalog}</h1></div>" . $catalogue->getCatalogColList(), $content);
+        $content = str_replace("{main_window}", "<div><h1>{site_catalog}</h1></div>" . $catalogue->getCatalogColList() . $showform->getHistoryArts(), $content);
     } else {
         /*
          * Catalog with Group
@@ -134,7 +134,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                 $redirect_link = "$path_to";
             }
 
-            $content = str_replace("{main_window}", $catalog_form["form"], $content);
+            $content = str_replace("{main_window}", $catalog_form["form"] . $showform->getHistoryArts(), $content);
             $content = str_replace("{site_title}", $catalog_form["title"], $content);
             $content = str_replace("{site_description}", $catalog_form["description"], $content);
             $content = str_replace("{meta_social_tag}", $catalog_exist->getCatalogMetaTags($group_id, $catalog_form["h1"]), $content);
@@ -155,7 +155,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                 //Category
                 $catalogData = $catalog_exist->showGroupCatForm($head_id, $cat_id);
             }
-            $content = str_replace("{main_window}", $catalogData["form"], $content);
+            $content = str_replace("{main_window}", $catalogData["form"] . $showform->getHistoryArts(), $content);
             $content = str_replace("{site_title}", $catalogData["title"], $content);
             $content = str_replace("{site_description}", $catalogData["description"], $content);
 

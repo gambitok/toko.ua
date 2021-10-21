@@ -272,6 +272,7 @@ class FormClass extends CatalogueClass
         $brand_form = $this->showBrandForm($brand_id);
         $form = str_replace("{brand_info}", ($brand_form != "") ? $brand_form : $this->err1, $form);
         $form = str_replace("{art_proposed}", $shop->getProposedArts(), $form);
+        $form = str_replace("{art_history}", $this->getHistoryArts(), $form);
 
         $form = str_replace("{art_seo_text}", $this->getArticleSeoText($art_id, $h1), $form);
         $form = str_replace("{art_id}", $art_id, $form);
@@ -316,6 +317,51 @@ class FormClass extends CatalogueClass
         $description = str_replace("{h1_text}", $h1, $description);
 
         return compact("form", "title", "description", "breadcrumbs");
+    }
+
+    public function getHistoryArts()
+    {
+        $form = $this->getHtmlForm("article/history");
+        $list = "";
+        $client = new ClientClass();
+        $data = $client->getArtsHistory();
+        foreach ($data as $value) {
+            //$history_id = $value["id"];
+            $art_id = $value["art_id"];
+            $list .= $this->getHistoryArtsCard($art_id);
+        }
+        $form = str_replace("{history_range}", $list, $form);
+        $form = $this->replaceLang($form);
+
+        return $form;
+    }
+
+    /*
+     * show Proposed Arts Line
+     * */
+    public function getHistoryArtsCard($art_id)
+    {
+        $showform = new FormClass();
+        $article = $showform->getArticleInfo($art_id);
+        $article_nr_displ = $article["article_nr_displ"];
+        $brand_id = $article["brand_id"];
+        $brand_name = $article["brand_name"];
+        $article_name = $article["article_name"];
+        $price = $article["price"];
+        $basket = $article["basket"];
+        $currency = $article["currency"];
+        $format_name = $this->getFormatAticle($article_nr_displ);
+        $brand_link = $this->getBrandLink($brand_id);
+        $form = $this->getHtmlForm("article/history_card");
+        $form = str_replace("{basket}", $basket, $form);
+        $form = str_replace("{article_nr_displ}", $article_nr_displ, $form);
+        $form = str_replace("{name}", $article_name, $form);
+        $form = str_replace("{brand_name}", $brand_name, $form);
+        $form = str_replace("{price}", $price, $form);
+        $form = str_replace("{image}", $showform->getArticleActivePhoto($art_id), $form);
+        $form = str_replace("{currency}", $currency, $form);
+        $form = str_replace("{page_proposed_link}", $this->getSiteLink() . "$this->article_link/$format_name/$brand_link/$art_id/", $form);
+        return $form;
     }
 
     public function getApplicableForm($art_id, $typ_id)
@@ -386,8 +432,7 @@ class FormClass extends CatalogueClass
         $n = $db->num_rows($r);
         if ($n > 0) {
             $form = $db->result($r, 0, "TEXT");
-        }
-        else {
+        } else {
             $form = "
             {_still_search} {Main_Category_H1}? {_go_store_toko} {_toko} {_choose_best} {GET_PAGE_H1}.
             {_lowest_prices} {Product_1} {_high_quality_category} {Product_Category_H1}.
@@ -1264,6 +1309,7 @@ class FormClass extends CatalogueClass
 
     public function showSitemap()
     {
+        $catalog_exist = new CatalogExistClass();
         $db = DbSingleton::getTokoDb();
         $site_link = $this->getSiteLink();
         $list = "<a href=\"$site_link\">{site_main}</a>";
@@ -1286,6 +1332,7 @@ class FormClass extends CatalogueClass
         }
 
         $list .= "<ul>";
+        $site_link .= $this->catalog_link . "/";
         foreach ($arr as $head_id => $cats) {
             $head_name = $this->getHeadRowName($head_id);
             $head_link = $this->getHeadRowLink($head_id);
@@ -1297,9 +1344,12 @@ class FormClass extends CatalogueClass
                 $list .= "<li><a href=\"$site_link$head_link/$cat_link/\">$cat_name</a>";
                 $list .= "<ul>";
                 foreach ($groups as $group_id) {
-                    $group_name = $this->getGroupRowName($group_id);
-                    $group_link = $this->getGroupRowLink($group_id);
-                    $list .= "<li><a href=\"$site_link$group_link/\">$group_name</a></li>";
+                    $check = $catalog_exist->checkTable($group_id);
+                    if ($check > 0) {
+                        $group_name = $this->getGroupRowName($group_id);
+                        $group_link = $this->getGroupRowLink($group_id);
+                        $list .= "<li><a href=\"$site_link$group_link/\">$group_name</a></li>";
+                    }
                 }
                 $list .= "</ul>";
                 $list .= "</li>";
