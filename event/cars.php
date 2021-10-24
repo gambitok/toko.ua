@@ -10,7 +10,7 @@ $title = $formData["title"];
 $description = $formData["description"];
 $meta_tag = $formData["meta_tag"];
 
-$content = str_replace("{main_window}", $form, $content);
+$content = str_replace("{main_window}", $form . $showform->getHistoryArts(), $content);
 if ($title != "") {
     $content = str_replace("{site_title}", $title, $content);
 }

@@ -333,6 +333,9 @@ class FormClass extends CatalogueClass
         $form = str_replace("{history_range}", $list, $form);
         $form = $this->replaceLang($form);
 
+        if (empty($data)) {
+            $form = "";
+        }
         return $form;
     }
 
