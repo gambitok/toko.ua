@@ -236,7 +236,7 @@ class FormClass extends CatalogueClass
             $article_info_row = str_replace("{art_del}", $delivery_short_info, $article_info_row);
             $article_search = $this->getArticleSearch($art_id);
             $brand_link = $this->getBrandLink($brand_id);
-            $article_info_row = str_replace("{page_product_link}", $this->getSiteLink() . $this->article_link . "/$article_search" . "/$brand_link" . "/$art_id/", $article_info_row);
+            $article_info_row = str_replace("{page_product_link}", $this->getSiteLink() . $this->products_link . "/$article_search" . "-$brand_link" . "-$art_id/", $article_info_row);
 
             $client = new ClientClass();
             $client_phone = "";
@@ -363,7 +363,7 @@ class FormClass extends CatalogueClass
         $form = str_replace("{price}", $price, $form);
         $form = str_replace("{image}", $showform->getArticleActivePhoto($art_id), $form);
         $form = str_replace("{currency}", $currency, $form);
-        $form = str_replace("{page_proposed_link}", $this->getSiteLink() . "$this->article_link/$format_name/$brand_link/$art_id/", $form);
+        $form = str_replace("{page_proposed_link}", $this->getSiteLink() . "$this->products_link/$format_name-$brand_link-$art_id/", $form);
         return $form;
     }
 
@@ -423,7 +423,7 @@ class FormClass extends CatalogueClass
         $article_name = $this->getArticleName($art_id_sel);
         $brand_name = $this->getBrandName($brand_id_sel);
         $brand_link = $this->getBrandLink($brand_id_sel);
-        return "<a href=\"" . $this->getSiteLink() . "$this->article_link/$article_search/$brand_link/$art_id_sel/\">$article_name $brand_name $article_displ</a>";
+        return "<a href=\"" . $this->getSiteLink() . "$this->products_link/$article_search-$brand_link-$art_id_sel/\">$article_name $brand_name $article_displ</a>";
     }
 
     public function getArticleSeoText($art_id, $h1)
@@ -542,7 +542,7 @@ class FormClass extends CatalogueClass
         $format_article_search = $this->getFormatAticle($article_nr_displ);
         $format_brand_name = $this->getFormatBrand($this->getBrandName($brand_id));
 
-        $arr[] = ["name" => "$article_text", "link" => $catalog->getSiteLink() . "$catalog->article_link/$format_article_search/$format_brand_name/$art_id/"];
+        $arr[] = ["name" => "$article_text", "link" => $catalog->getSiteLink() . "$catalog->products_link/$format_article_search-$format_brand_name-$art_id/"];
 
         return $arr;
     }
@@ -925,7 +925,7 @@ class FormClass extends CatalogueClass
                 $list .= "
                 <div class=\"carousel-item $active\">
                     <div class=\"carousel-item-image\">
-                        <a itemprop=\"url\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$brand_link/$art_id/\">
+                        <a itemprop=\"url\" href=\"" . $this->getSiteLink() . "$this->products_link/$format_name-$brand_link-$art_id/\">
                             <img itemprop=\"image\" class=\"lazy\" data-src=\"$link\" src=\"$nophoto\" alt=\"Slide $i\">
                         </a>
                     </div>
@@ -1260,7 +1260,7 @@ class FormClass extends CatalogueClass
             $info .= "</table>";
             $type ?: ($n <= 5) ?: $info .= "
             <p style='font-weight: bold; margin-bottom: 0; margin-top: 15px; text-align: center;'>
-                <a class=\"search__more\" href=\"" . $this->getSiteLink() . "$this->article_link/$format_name/$brand_link/$art_id/\">
+                <a class=\"search__more\" href=\"" . $this->getSiteLink() . "$this->products_link/$format_name-$brand_link-$art_id/\">
                     {more_read}
                 </a>
             </p>";

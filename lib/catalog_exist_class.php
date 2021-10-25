@@ -1014,6 +1014,7 @@ class CatalogExistClass extends CatalogueClass
         $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
         $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
         $limit = $this->getSearchLimit($page);
+
         $group_text = $this->getGroupRowName($group_id);
         $where_mfa = $this->getMfaWhere($mfa_id, $model, $status_auto, $status_auto_type);
         $where_link_arts = $this->getArtsLinksWhere($status_auto, $status_auto_type, $typ_id);
@@ -1111,7 +1112,7 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
         }
 
-        $max_pages_count = ceil($count / $this->products_on_page);
+        $max_pages_count = intval(ceil($count / $this->products_on_page));
 
         $description = $this->replaceLang("{site_catalog_group_description}");
         $description = str_replace("{h1_text}", "$h1_text $pager", $description);

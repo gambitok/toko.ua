@@ -171,7 +171,7 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{full_price}", $full_price, $form);
         $form = str_replace("{disabled}", ($this->checkStatusBasket()) ? "" : "disabled", $form);
         $form = str_replace("{checked}", ($status_checked) ? "checked=\"checked\"" : "", $form);
-        $form = str_replace("{link}", $this->getSiteLink() . "$this->article_link/" . $this->getFormatAticle($article_nr_displ) . "/" . $this->getBrandLink($brand_id) . "/$art_id/", $form);
+        $form = str_replace("{link}", $this->getSiteLink() . "$this->products_link/" . $this->getFormatAticle($article_nr_displ) . "-" . $this->getBrandLink($brand_id) . "-" . "$art_id/", $form);
         $form = str_replace("{flag}", $flag, $form);
         $form = str_replace("{country_name}", $country_name, $form);
         $form = str_replace("{amount_field}", "count_" . $art_id . "_" . $storage_id, $form);
@@ -298,7 +298,7 @@ class ShopClass extends CatalogueClass
         $form = str_replace("{price}", $price, $form);
         $form = str_replace("{image}", $showform->getArticleActivePhoto($art_id), $form);
         $form = str_replace("{currency}", $currency, $form);
-        $form = str_replace("{page_proposed_link}", $this->getSiteLink() . "$this->article_link/$format_name/$brand_link/$art_id/", $form);
+        $form = str_replace("{page_proposed_link}", $this->getSiteLink() . "$this->products_link/$format_name-$brand_link-$art_id/", $form);
         return $form;
     }
 

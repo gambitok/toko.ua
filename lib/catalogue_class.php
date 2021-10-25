@@ -8,7 +8,8 @@ class CatalogueClass
 
     public $catalog_link = "catalog";
     public $search_link = "search";
-    public $article_link = "article";
+    //public $article_link = "article";
+    public $products_link = "products";
     public $order_link = "order";
     public $news_link = "news";
     public $reviews_link = "reviews";
@@ -1553,7 +1554,7 @@ class CatalogueClass
         $form = str_replace("{product_format_name}", $format_name, $form);
         $form = str_replace("{product_format_brand}", $format_brand_name, $form);
         $format_brand_link = $this->getBrandLink($brand_id);
-        $form = str_replace("{page_product_link}", $this->getSiteLink() . "$this->article_link/$format_name/$format_brand_link/$art_id/", $form);
+        $form = str_replace("{page_product_link}", $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/", $form);
         $form = str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
         $product_text = ($article_name == "") ? "{details_name_cap}" : $article_name;
         $format_product_text = ($article_name == "") ? "{details_name_cap}" : $this->formatArticleName($article_name);
@@ -3343,7 +3344,8 @@ class CatalogueClass
         $text = mb_strtolower($text, 'windows-1251');
         $max_word = 4;
         $arr = [];
-        $max_matches = 0;
+        //$max_matches =
+        $max_matches_key = 0;
 
         if ($text != "") {
             $text_arr = explode(" ", $text);
@@ -3357,7 +3359,6 @@ class CatalogueClass
                         $arr[$i][] = $format_value;
                     }
                 }
-
             }
         }
 
@@ -3367,7 +3368,16 @@ class CatalogueClass
 
         foreach ($arr as $key => $values) {
             foreach ($values as $value) {
-                $r = $db->query("SELECT `ID`, `KEY_ID`, `TYPE_ID`, substrCount(LOWER(`KEYWORD`), '$value') as str_count FROM `T2_TREE_KEYWORDS` GROUP BY `KEY_ID`, `TYPE_ID` HAVING str_count > 0;");
+                //$r = $db->query("SELECT `ID`, `KEY_ID`, `TYPE_ID`, substrCount(LOWER(`KEYWORD`), '$value') as str_count FROM `T2_TREE_KEYWORDS` GROUP BY `KEY_ID`, `TYPE_ID` HAVING str_count > 0;");
+                $r = $db->query("
+                SELECT `ID`, `KEY_ID`, `TYPE_ID`, `KEYWORD`, substrCount(LOWER(`KEYWORD`), '$value') as str_count 
+                FROM `T2_TREE_KEYWORDS` 
+                WHERE `ID` IN (
+                    SELECT `ID`
+                    FROM `T2_TREE_KEYWORDS`
+                    GROUP BY `KEY_ID`, `TYPE_ID`
+                ) GROUP BY `KEY_ID`, `TYPE_ID` HAVING str_count > 0;
+                ");
                 $n = $db->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
                     $id = $db->result($r, $i - 1, "ID");
@@ -3376,14 +3386,14 @@ class CatalogueClass
                     $str_count = $db->result($r, $i - 1, "str_count");
 
                     if (!array_key_exists($id, $new)) {
-                        $new[$id] = ["key_id" => $key_id, "type_id" => $type_id, "str_count" => $str_count];
+                        $new[$id] = ["key_id" => $key_id, "type_id" => $type_id, "str_count" => $str_count, "id" => $id];
                     } else {
                         $new[$id]["str_count"] += $str_count;
                     }
                     if (!in_array($key, $new[$id]["key"])) {
                         $new[$id]["key"][] = $key;
                         $m[] = $key;
-                        $max_matches++;
+                        $max_matches_key++;
                     }
                 }
             }
@@ -3391,6 +3401,7 @@ class CatalogueClass
 
         $m = array_unique($m);
         $max_matches = count($m);
+
 
         usort($new, "keywordCmp");
         return array($new, $max_matches);
@@ -3440,6 +3451,7 @@ class CatalogueClass
 
             $text = str_replace(str_split('+\/:*?"<>|'), "", $text);
             list($arr, $max_matches) = $this->getSearchMatches($text);
+
             $n = count($arr);
             foreach ($arr as $value) {
                 $key_id = $value["key_id"];

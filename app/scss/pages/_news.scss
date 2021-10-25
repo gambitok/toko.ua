@@ -101,10 +101,12 @@
                 }
             }
             &__image {
+                height: 230px;
+                width: 390px;
                 img {
                     display: block;
-                    margin: 15px auto;
-                    max-width: 100%;
+                    margin: 0 auto;
+                    height: 100%;
                 }
             }
             &__text {
