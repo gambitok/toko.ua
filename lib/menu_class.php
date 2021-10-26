@@ -527,6 +527,18 @@ class MenuClass extends CatalogueClass
         return $file;
     }
 
+    public function showPopularBrands()
+    {
+        $form = "";
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `POPULAR_BRANDS` WHERE 1;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            //
+        }
+        return $form;
+    }
+
     /*
      * show contacts bottom form
      * */

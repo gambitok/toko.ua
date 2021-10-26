@@ -3344,8 +3344,6 @@ class CatalogueClass
         $text = mb_strtolower($text, 'windows-1251');
         $max_word = 4;
         $arr = [];
-        //$max_matches =
-        $max_matches_key = 0;
 
         if ($text != "") {
             $text_arr = explode(" ", $text);
@@ -3368,7 +3366,6 @@ class CatalogueClass
 
         foreach ($arr as $key => $values) {
             foreach ($values as $value) {
-                //$r = $db->query("SELECT `ID`, `KEY_ID`, `TYPE_ID`, substrCount(LOWER(`KEYWORD`), '$value') as str_count FROM `T2_TREE_KEYWORDS` GROUP BY `KEY_ID`, `TYPE_ID` HAVING str_count > 0;");
                 $r = $db->query("
                 SELECT `ID`, `KEY_ID`, `TYPE_ID`, `KEYWORD`, substrCount(LOWER(`KEYWORD`), '$value') as str_count 
                 FROM `T2_TREE_KEYWORDS` 
@@ -3376,34 +3373,29 @@ class CatalogueClass
                     SELECT `ID`
                     FROM `T2_TREE_KEYWORDS`
                     GROUP BY `KEY_ID`, `TYPE_ID`
-                ) GROUP BY `KEY_ID`, `TYPE_ID` HAVING str_count > 0;
-                ");
+                ) GROUP BY `ID` HAVING str_count > 0;");
                 $n = $db->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
-                    $id = $db->result($r, $i - 1, "ID");
                     $key_id = $db->result($r, $i - 1, "KEY_ID");
                     $type_id = $db->result($r, $i - 1, "TYPE_ID");
                     $str_count = $db->result($r, $i - 1, "str_count");
-
-                    if (!array_key_exists($id, $new)) {
-                        $new[$id] = ["key_id" => $key_id, "type_id" => $type_id, "str_count" => $str_count, "id" => $id];
+                    $k = $key_id . "_" . $type_id;
+                    if (!array_key_exists($k, $new)) {
+                        $new[$k] = ["key_id" => $key_id, "type_id" => $type_id, "str_count" => $str_count];
                     } else {
-                        $new[$id]["str_count"] += $str_count;
+                        $new[$k]["str_count"] += $str_count;
                     }
-                    if (!in_array($key, $new[$id]["key"])) {
-                        $new[$id]["key"][] = $key;
+                    if (!in_array($key, $new[$k]["key"])) {
+                        $new[$k]["key"][] = $key;
                         $m[] = $key;
-                        $max_matches_key++;
                     }
                 }
             }
         }
 
-        $m = array_unique($m);
-        $max_matches = count($m);
+        $max_matches = count(array_unique($m));
+        uasort($new, "keywordCmp");
 
-
-        usort($new, "keywordCmp");
         return array($new, $max_matches);
     }
 
@@ -3457,6 +3449,7 @@ class CatalogueClass
                 $key_id = $value["key_id"];
                 $type_id = $value["type_id"];
                 $key = $value["key"];
+
                 if (count($key) >= $max_matches) {
                     if ($type_id == 1) {
                         $key_name = $this->getGroupRowText($key_id);

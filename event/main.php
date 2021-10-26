@@ -24,6 +24,8 @@ $content = str_replace("{select_auto_group}", $automan->getAutoMfaModelList(), $
 
 // Контакты
 $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
+// Контакты
+$content = str_replace("{popular_brands}", $menu->showPopularBrands(), $content);
 
 $lang_postfix = findLanguage();
 if ($lang_postfix != "") {
