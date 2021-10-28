@@ -529,13 +529,33 @@ class MenuClass extends CatalogueClass
 
     public function showPopularBrands()
     {
-        $form = "";
+        $showform = new FormClass();
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT * FROM `POPULAR_BRANDS` WHERE 1;");
+        $r = $db->query("SELECT `BRAND_ID` FROM `POPULAR_BRANDS` WHERE 1;");
         $n = $db->num_rows($r);
+        $form = $this->getHtmlForm("brands/form");
+        $list = "";
         for ($i = 1; $i <= $n; $i++) {
-            //
+            $brand_id = $db->result($r, $i - 1, "BRAND_ID");
+            $brand_name = $this->getBrandName($brand_id);
+            $brand_link = $this->getBrandLink($brand_id);
+            $link = $this->getSiteLink() . "/brands/" . $brand_link . "/";
+            $image = $showform->showBrandPhoto($brand_id)["logo_name"];
+            $list .= $this->showPopularBrandsCard($image, $brand_name, $link);
         }
+        $form = str_replace("{brands_range}", $list, $form);
+        if ($n == 0) {
+            $form = "";
+        }
+        return $form;
+    }
+
+    public function showPopularBrandsCard($image, $brand_name, $link)
+    {
+        $form =  $this->getHtmlForm("brands/card");
+        $form =  str_replace("{image}", $image, $form);
+        $form =  str_replace("{brand_name}", $brand_name, $form);
+        $form =  str_replace("{page_link}", $link, $form);
         return $form;
     }
 
