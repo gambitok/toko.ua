@@ -251,10 +251,10 @@ class AutoClass extends CatalogueClass
             $d_start = $db->result($r, 0, "TYP_PCON_START");
             $d_end = $db->result($r, 0, "TYP_PCON_END");
             $fuel = $this->getFuelName($fuel);
-            if (strlen($d_start) == 6) {
+            if (mb_strlen($d_start) == 6) {
                 $d_start = substr($d_start, 0, 4) . "." . substr($d_start, 4, 2);
             }
-            if (strlen($d_end) == 6) {
+            if (mb_strlen($d_end) == 6) {
                 $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
             }
             $text = "$full_name ($d_start - $d_end)<br>$fuel, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}, $ccm cm3, $eng_cod";

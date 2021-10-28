@@ -52,6 +52,36 @@ class FormClass extends CatalogueClass
         }
     }
 
+    public function showBrandRange()
+    {
+        $list = "
+        <link rel=\"stylesheet\" href=\"/css/plugins/flags.min.css\">
+        <div style='column-count: 5; column-gap: 40px; column-rule: 1px solid lightgrey; padding: 15px;'>";
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT t2b.`BRAND_ID`, t2b.`BRAND_NAME`, t2b.`BRAND_LINK` 
+        FROM `T2_BRANDS` t2b 
+            LEFT JOIN `T2_BRAND_LINK` t2bl ON t2bl.BRAND_ID = t2b.BRAND_ID
+        WHERE t2b.`VISIBLE` = 1 AND t2bl.descr != '' ORDER BY t2b.`BRAND_NAME` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $brand_id = $db->result($r, $i - 1, "BRAND_ID");
+            $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
+            $brand_link = $db->result($r, $i - 1, "BRAND_LINK");
+            $link = $this->getSiteLink() . "brands/" . $brand_link . "/";
+            $flag = $this->getCountryFlag($brand_id)["flag"];
+            if ($flag != "") {
+                $flag = "
+                <img itemprop=\"image\" class=\"flag flag-" . $flag . "\">";
+            }
+            $list .= "
+            <a href=\"$link\">
+                <div>$brand_name $flag</div>
+            </a>";
+        }
+        $list .= "</div>";
+        return $list;
+    }
+
     /*
      * show brand form
      * */
@@ -326,7 +356,6 @@ class FormClass extends CatalogueClass
         $client = new ClientClass();
         $data = $client->getArtsHistory();
         foreach ($data as $value) {
-            //$history_id = $value["id"];
             $art_id = $value["art_id"];
             $list .= $this->getHistoryArtsCard($art_id);
         }
@@ -559,8 +588,6 @@ class FormClass extends CatalogueClass
         }
         return array($delivery_days, $delivery_short_info);
     }
-
-
 
     /*
      * get article info
@@ -1038,7 +1065,8 @@ class FormClass extends CatalogueClass
 
         $info = $this->getArticleInfoForm($art_id, 1, 1);
         if ($info != "") {
-            $info = "<div style=\"border: 1px solid #e9e9e9; border-radius: .25em; padding: 10px;\">$info</div>";
+            $info = "
+            <div style=\"border: 1px solid #e9e9e9; border-radius: .25em; padding: 10px;\">$info</div>";
         }
         $applicability = $this->getArticleApplForm($art_id);
         $originals = $this->getOriginalNumbers($art_id);
@@ -1288,8 +1316,10 @@ class FormClass extends CatalogueClass
             $text = $db->result($r, $i - 1, "TEXT_$postfix");
             $image = $db->result($r, $i - 1, "IMAGE");
             $class = ($k == 0) ? "active" : "";
-            $indicators .= "<li class=\"$class\" data-target=\"#carouselBanner\" data-slide-to=\"$k\"></li>";
-            $items .= "<div class=\"carousel-item $class\">" . $this->getCarsBannerItem($title, $text, "/images/banners/" . $image) . "</div>";
+            $indicators .= "
+            <li class=\"$class\" data-target=\"#carouselBanner\" data-slide-to=\"$k\"></li>";
+            $items .= "
+            <div class=\"carousel-item $class\">" . $this->getCarsBannerItem($title, $text, "/images/banners/" . $image) . "</div>";
             $k++;
         }
         $form = $this->getHtmlForm("home/banner");

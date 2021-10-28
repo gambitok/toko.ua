@@ -539,7 +539,7 @@ class MenuClass extends CatalogueClass
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
             $brand_name = $this->getBrandName($brand_id);
             $brand_link = $this->getBrandLink($brand_id);
-            $link = $this->getSiteLink() . "/brands/" . $brand_link . "/";
+            $link = $this->getSiteLink() . "brands/" . $brand_link . "/";
             $image = $showform->showBrandPhoto($brand_id)["logo_name"];
             $list .= $this->showPopularBrandsCard($image, $brand_name, $link);
         }

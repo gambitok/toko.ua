@@ -3350,10 +3350,10 @@ class CatalogueClass
             $i = 0;
             foreach ($text_arr as $value) {
                 $i++;
-                if (strlen($value) > 1) {
+                if (mb_strlen($value) > 1) {
                     $arr[$i][] = $value;
-                    if (strlen($value) > $max_word) {
-                        $format_value = substr($value, 0, strlen($value) - 2);
+                    if (mb_strlen($value) > $max_word) {
+                        $format_value = substr($value, 0, mb_strlen($value) - 2);
                         $arr[$i][] = $format_value;
                     }
                 }
@@ -3408,7 +3408,7 @@ class CatalogueClass
             $list = $showform->showHistoryList();
         }
 
-        if ($text != "" && strlen($text) > 1) {
+        if ($text != "" && mb_strlen($text) > 1) {
             $text = $this->getUrlString($text);
             $format_text = $text;
             $format_text = str_replace(str_split(' -,+\/:*?"<>|_'), "", $format_text);

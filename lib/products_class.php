@@ -274,10 +274,10 @@ class ProductsClass extends CatalogueClass
                 $d_start = $db->result($r, $i - 1, "TYP_PCON_START");
                 $d_end = $db->result($r, $i - 1, "TYP_PCON_END");
                 $eng_cod = $db->result($r, $i - 1, "ENG_Cod");
-                if (strlen($d_start) == 6) {
+                if (mb_strlen($d_start) == 6) {
                     $d_start = substr($d_start, 0, 4) . "." . substr($d_start, 4, 2);
                 }
-                if (strlen($d_end) == 6) {
+                if (mb_strlen($d_end) == 6) {
                     $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
                 }
                 $onclick = "finishGarage('$typ_id', '$group_link')";

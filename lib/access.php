@@ -190,6 +190,18 @@ function printBreadcrumbs($path)
     $b_arr[1] = ["name" => "{seo_site_toko}", "item" => $cat->getSiteLink()];
 
     switch ($section) {
+        case "brands": {
+            $brand_link = $bread[1];
+            $b_arr[2] = ["name" => "$h_section", "item" => "" . $cat->getSiteLink() . "brands/"];
+            $pretitle = "$a_home $icon <a href=\"https://toko.ua/brands/\" rel=\"v:url\" property=\"v:title\">$h_section</a>";
+            if ($brand_link != "") {
+                $brand_id = $cat->getBrandNameLink($brand_link);
+                $brand_name = $cat->getBrandName($brand_id);
+                $b_arr[3] = ["name" => "$brand_name", "item" => "" . $cat->getSiteLink() . "brands/" . $brand_link . "/"];
+                $pretitle .= " $icon <a href=\"https://toko.ua/brands/$brand_link/\" rel=\"v:url\" property=\"v:title\">$brand_name</a>";
+            }
+            break;
+        }
         case "cars" : {
             $mfa_link = $bread[1];
             $model_link = $bread[2];

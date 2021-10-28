@@ -21,6 +21,24 @@
 
 $content = str_replace("{main_window}", "", $content);
 
+$db = DbSingleton::getTokoDb();
+$table = "test_table";
+$file   = fopen("test.csv", 'r');
+$header = false;
+while (($line = fgetcsv($file)) !== FALSE) {
+    if (!$header) {
+        $header = $line;
+        continue;
+    }
+    $writeLine = [];
+    foreach ($line as $item) {
+        $writeLine[] = "'{$item}'";
+    }
+    $writeLine = implode(',', $writeLine);
+    $db->query("INSERT IGNORE INTO ". $table . " (". implode(',', $header) . ") VALUES (". $writeLine .")");
+}
+fclose($file);
+
 //$r = $dbm->query("SELECT `id`, `name` FROM `A_CLIENTS` WHERE 1 LIMIT 10;");
 //$n = $dbm->num_rows($r);
 //
