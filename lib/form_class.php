@@ -82,6 +82,48 @@ class FormClass extends CatalogueClass
         return $list;
     }
 
+    public function showBrandSelect($brand_id)
+    {
+        $brand_id = $this->getUrlNumber($brand_id);
+        $form = $this->getHtmlForm("brands/select");
+
+        $form = str_replace("{brand_select}", $this->showBrandForm($brand_id), $form);
+        $form = str_replace("{brand_groups}", $this->showBrandGroups($brand_id), $form);
+
+        return $form;
+    }
+
+    public function showBrandGroups($brand_id)
+    {
+        $brand_id = $this->getUrlNumber($brand_id);
+        $form = "";
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id GROUP BY `group_id`;");
+        $n = $dbc->num_rows($r);
+        $groups = [];
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $dbc->result($r, $i - 1, "group_id");
+            $groups[] = $group_id;
+        }
+
+        $heads = [];
+        if (!empty($groups)) {
+            $groups_str = implode(",", $groups);
+            $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` IN ($groups_str);");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $head_id = $db->result($r, $i - 1, "HEAD_ID");
+                $cat_id = $db->result($r, $i - 1, "CAT_ID");
+                $group_id = $db->result($r, $i - 1, "GROUP_ID");
+                $heads[$head_id][$cat_id][] = $group_id;
+            }
+        }
+
+
+        return $form;
+    }
+
     /*
      * show brand form
      * */

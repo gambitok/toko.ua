@@ -211,11 +211,13 @@ trait Variables
     {
         $brand_id = 0;
         $brand = $this->getUrlString($brand);
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE BINARY `BRAND_LINK` = BINARY '$brand' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $brand_id = $db->result($r, 0, "BRAND_ID");
+        if ($brand != "") {
+            $db = DbSingleton::getTokoDb();
+            $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE BINARY `BRAND_LINK` = BINARY '$brand' LIMIT 1;");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $brand_id = $db->result($r, 0, "BRAND_ID");
+            }
         }
         return $brand_id;
     }

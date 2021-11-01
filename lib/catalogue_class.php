@@ -2590,8 +2590,8 @@ class CatalogueClass
                 $head_id = $db->result($r, $i - 1, "HEAD_ID");
                 $head_name = $this->getHeadRowName($head_id);
                 $head_img = $this->getHeadRowImage($head_id);
-                $head_content = $this->getCatalogColListCat($head_id, $mfa_link, $model_link);
                 $head_text = $this->getHeadRowText($head_id);
+                $head_content = $this->getCatalogColListCat($head_id, $mfa_link, $model_link);
 
                 $list .= "
                 <div class=\"tree-heads__item\">
