@@ -332,7 +332,6 @@ function getDescription($path)
     $cat = new CatalogueClass();
     $linka = findLinks();
     $path = str_replace("/", "", $path);
-    //$prefix = getMoreTitle($path);
     $prefix = "";
     $description = ($path != "") ? "{seo_description} $prefix {seo_description2}" : "{seo_description} {seo_description2}";
     if ($path == "article") {
@@ -345,6 +344,9 @@ function getDescription($path)
         $art_name = $cat->getArticleName($art_id);
         $description = "$art_name $brand_name $article_nr_search - {seo_description_article}";
         $description = ltrim($description, " ");
+    }
+    if ($path == "brands") {
+        $description = "{site_brands_description}";
     }
     if ($path == "catalog") {
         $description = "{seo_description} {seo_description2}";
