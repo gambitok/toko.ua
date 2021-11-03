@@ -96,7 +96,6 @@ class FormClass extends CatalogueClass
     public function showBrandGroups($brand_id)
     {
         $brand_id = $this->getUrlNumber($brand_id);
-        $form = "";
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
         $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id GROUP BY `group_id`;");
@@ -120,6 +119,24 @@ class FormClass extends CatalogueClass
             }
         }
 
+        $heads = [];
+        $cats = [];
+        $groups = [];
+        foreach ($heads as $head_id => $cats) {
+            $heads[] = $head_id;
+            foreach ($cats as $cat_id => $groups) {
+                $cats[] = $cat_id;
+                foreach ($groups as $group_id) {
+                    $groups[] = $group_id;
+                }
+            }
+        }
+        $heads = array_unique($heads);
+        $cats = array_unique($cats);
+        $groups = array_unique($groups);
+
+        $catalog = new CatalogueClass();
+        $form = $catalog->getCatalogColList("", "", $heads, $cats, $groups, $brand_id);
 
         return $form;
     }

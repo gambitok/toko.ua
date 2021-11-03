@@ -2578,12 +2578,21 @@ class CatalogueClass
     /*
      * Tree GRID Headers
      * */
-    public function getCatalogColList($mfa_link = "", $model_link = "")
+    public function getCatalogColList($mfa_link = "", $model_link = "", $heads = [], $cats = [], $groups = [], $brand_id = 0)
     {
         $db = DbSingleton::getTokoDb();
         $nophoto = $this->noPhoto;
         $list = "";
-        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
+        $where = "1";
+        if (!empty($heads)) {
+            $heads_str = implode(",", $heads);
+            $where = "`HEAD_ID` IN ($heads_str)";
+        }
+        $brand_name = "";
+        if ($brand_id > 0) {
+            $brand_name = $this->getBrandName($brand_id);
+        }
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE $where ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -2591,7 +2600,7 @@ class CatalogueClass
                 $head_name = $this->getHeadRowName($head_id);
                 $head_img = $this->getHeadRowImage($head_id);
                 $head_text = $this->getHeadRowText($head_id);
-                $head_content = $this->getCatalogColListCat($head_id, $mfa_link, $model_link);
+                $head_content = $this->getCatalogColListCat($head_id, $mfa_link, $model_link, $cats, $groups, $brand_id);
 
                 $list .= "
                 <div class=\"tree-heads__item\">
@@ -2600,7 +2609,7 @@ class CatalogueClass
                         <div id=\"tree_head-$head_id\" class=\"tree-heads__item-header\">
                             <div class=\"tree-heads__item-text\">
                                 <div class=\"tree-heads__item-title\">
-                                    $head_name
+                                    $head_name $brand_name
                                 </div>
                                 <div class=\"tree-heads__item-descr\">
                                     $head_text
@@ -2623,23 +2632,32 @@ class CatalogueClass
     /*
      * Tree GRID Categories
      * */
-    public function getCatalogColListCat($head_id, $mfa_link = "", $model_link = "")
+    public function getCatalogColListCat($head_id, $mfa_link = "", $model_link = "", $cats = [], $groups = [], $brand_id = 0)
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
         $head_link = $this->getHeadRowLink($head_id);
-        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id ORDER BY `COL` ASC, `ROW` ASC;");
+        $where = "1";
+        if (!empty($cats)) {
+            $cats_str = implode(",", $cats);
+            $where = "`CAT_ID` IN ($cats_str)";
+        }
+        $brand_name = "";
+        if ($brand_id > 0) {
+            $brand_name = $this->getBrandName($brand_id);
+        }
+        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id AND $where ORDER BY `COL` ASC, `ROW` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = $db->result($r, $i - 1, "CAT_ID");
             $cat_name = $this->getCatRowName($cat_id);
             $cat_link = $this->getCatRowLink($cat_id);
-            $group_list = $this->getCatalogColListGroup($head_id, $cat_id, $mfa_link, $model_link);
+            $group_list = $this->getCatalogColListGroup($head_id, $cat_id, $mfa_link, $model_link, $groups, $brand_id);
             $icon = "";
-            $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$icon $cat_name</a>";
+            $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$icon $cat_name $brand_name</a>";
             if ($cat_id == 0) {
                 $icon = "<span style=\"margin-right: 5px; color: #f44438\">&bull;</span>";
-                $link = "<span>$icon $cat_name</span>";
+                $link = "<span>$icon $cat_name $brand_name</span>";
             }
             $list .= "
             <div class=\"tree-cat__item\">
@@ -2657,15 +2675,21 @@ class CatalogueClass
     /*
      * Tree GRID Groups
      * */
-    public function getCatalogColListGroup($head_id, $cat_id, $mfa_link = "", $model_link = "")
+    public function getCatalogColListGroup($head_id, $cat_id, $mfa_link = "", $model_link = "", $groups_sel = [], $brand_id = 0)
     {
         $db = DbSingleton::getTokoDb();
-        $list = "";
         $groups = [];
+        $where_1 = "1";
+        $where_2 = "1";
+        if (!empty($groups_sel)) {
+            $groups_sel_str = implode(",", $groups_sel);
+            $where_1 = "t2hcg.`GROUP_ID` IN ($groups_sel_str)";
+            $where_2 = "`GROUP_ID` IN ($groups_sel_str)";
+        }
         $r = $db->query("SELECT t2hcg.`GROUP_ID` 
         FROM `T2_TREE_HCG_EXIST` t2hcg
             LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON (t2g.GROUP_ID = t2hcg.GROUP_ID)
-        WHERE t2hcg.`HEAD_ID` = $head_id AND t2hcg.`CAT_ID` = $cat_id AND t2g.`STATUS` = 1;");
+        WHERE t2hcg.`HEAD_ID` = $head_id AND t2hcg.`CAT_ID` = $cat_id AND t2g.`STATUS` = 1 AND $where_1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id = $db->result($r, $i - 1, "GROUP_ID");
@@ -2675,7 +2699,7 @@ class CatalogueClass
             $groups[] = compact("group_name", "group_link", "group_image");
         }
         if ($cat_id == 0) {
-            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `POPULAR` = 1;");
+            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `POPULAR` = 1 AND $where_2;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
@@ -2685,6 +2709,16 @@ class CatalogueClass
                 $groups[] = compact("group_name", "group_link", "group_image");
             }
         }
+        return $this->getCatalogColListGroupList($groups, $mfa_link, $model_link, $brand_id);
+    }
+
+    public function getCatalogColListGroupList($groups, $mfa_link = "", $model_link = "", $brand_id = 0)
+    {
+        $brand_name = "";
+        if ($brand_id > 0) {
+            $brand_name = $this->getBrandName($brand_id);
+        }
+        $list = "";
         foreach ($groups as $value) {
             $group_name = $value["group_name"];
             $group_link = $value["group_link"];
@@ -2702,7 +2736,7 @@ class CatalogueClass
                     <img data-src=\"/images/tree-group/$group_image\" class=\"lazy\" alt=\"$group_name\">
                 </div>
                 <div class=\"tree-group__item-text\">
-                    <span>$group_name</span>
+                    <span>$group_name $brand_name</span>
                 </div>
             </a>";
         }
