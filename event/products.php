@@ -21,7 +21,6 @@ $art_id = intval(substr($linka[1], strrpos($linka[1], "-") + 1));
 //}
 
 if ($catalogue->checkArticleExist($art_id) && $art_id > 0) {
-    $client->insertArtsHistory($art_id);
     $articleData = $showform->getArticleForm($art_id);
     $content = str_replace("{main_window}", $articleData["form"], $content);
     $breadcrumbsData = $catalogue->getBreadCrumbForm($articleData["breadcrumbs"]);
@@ -30,6 +29,9 @@ if ($catalogue->checkArticleExist($art_id) && $art_id > 0) {
     $content = str_replace("{site_title}", $articleData["title"], $content);
     $content = str_replace("{site_description}", $articleData["description"], $content);
     $content = str_replace("{meta_social_tag}", "", $content);
+    if ($articleData["real_stock"] > 0) {
+        $client->insertArtsHistory($art_id);
+    }
 } else {
     header("HTTP/1.0 404 Not Found");
     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404"), $content);

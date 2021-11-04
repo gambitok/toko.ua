@@ -2730,6 +2730,10 @@ class CatalogueClass
                     $link .= "$model_link/";
                 }
             }
+            if ($brand_id > 0) {
+                $brand_link = $this->getBrandLink($brand_id);
+                $link .= "brandy=$brand_link/";
+            }
             $list .= "
             <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$link\" class=\"tree-group__item\">
                 <div class=\"tree-group__item-image\">

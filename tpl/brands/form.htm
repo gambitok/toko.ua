@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="/js/plugins/OwlCarousel2-2.3.4/assets/owl.carousel.min.css" />
 
-<div class="row article-form-row" style="width:100%; margin-top:30px;">
+<div class="row article-form-row" style="margin-top: 30px; width: 100%;">
     <div class="col-12">
         <div class="article-form-row__title">
             {brands_popular_cap}
@@ -43,7 +43,7 @@
         }
     });
     owl.on('mousewheel', '.owl-stage', function (e) {
-        if (e.deltaY>0) {
+        if (e.originalEvent.deltaY > 0) {
             owl.trigger('next.owl');
         } else {
             owl.trigger('prev.owl');

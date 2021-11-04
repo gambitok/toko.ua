@@ -106,7 +106,7 @@ class FormClass extends CatalogueClass
             $groups[] = $group_id;
         }
 
-        $heads = [];
+        $hh = [];
         if (!empty($groups)) {
             $groups_str = implode(",", $groups);
             $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` IN ($groups_str);");
@@ -115,22 +115,24 @@ class FormClass extends CatalogueClass
                 $head_id = $db->result($r, $i - 1, "HEAD_ID");
                 $cat_id = $db->result($r, $i - 1, "CAT_ID");
                 $group_id = $db->result($r, $i - 1, "GROUP_ID");
-                $heads[$head_id][$cat_id][] = $group_id;
+                $hh[$head_id][$cat_id][] = $group_id;
             }
         }
 
         $heads = [];
         $cats = [];
         $groups = [];
-        foreach ($heads as $head_id => $cats) {
+
+        foreach ($hh as $head_id => $cc) {
             $heads[] = $head_id;
-            foreach ($cats as $cat_id => $groups) {
+            foreach ($cc as $cat_id => $gg) {
                 $cats[] = $cat_id;
-                foreach ($groups as $group_id) {
+                foreach ($gg as $group_id) {
                     $groups[] = $group_id;
                 }
             }
         }
+
         $heads = array_unique($heads);
         $cats = array_unique($cats);
         $groups = array_unique($groups);
@@ -317,6 +319,14 @@ class FormClass extends CatalogueClass
             $form = str_replace("{article_name}", $art_name, $form);
             $form = str_replace("{article_header}", $h1, $form);
             $form = str_replace("{art_name}", $article_nr_displ, $form);
+            $form = str_replace("{article_style}", "none", $form);
+            $delivery_short_info = "<div>
+                <img src=\"/images/sold.webp\" alt=\"soldout\" style=\"
+                width: 120px;
+                height: 100px;
+                display: block;
+                margin: 0 auto;\">
+            </div>";
         } else {
             $article_info_row = $this->getHtmlForm("article/row");
             $article_info_row = str_replace("{art_price}", $articleData["price"], $article_info_row);
@@ -405,7 +415,7 @@ class FormClass extends CatalogueClass
         $description = $this->replaceLang("{seo_article_title}");
         $description = str_replace("{h1_text}", $h1, $description);
 
-        return compact("form", "title", "description", "breadcrumbs");
+        return compact("form", "title", "description", "breadcrumbs", "real_stock");
     }
 
     public function getHistoryArts()

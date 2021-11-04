@@ -699,13 +699,14 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
         $list = "";
-        $r = $db->query("SELECT `ID`, `DATA`, `IMG`, `TITLE_$postfix` FROM `T2_REVIEWS` WHERE `STATUS` = 1 ORDER BY `data` DESC;");
+        $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `STATUS` = 1 ORDER BY `data` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $title = $db->result($r, $i - 1, "TITLE_$postfix");
+                $title_ru = $db->result($r, $i - 1, "TITLE_RU");
                 $state_id = $db->result($r, $i - 1, "ID");
-                $transcript = $this->formatUrlText($title);
+                $transcript = $this->formatUrlText($title_ru);
                 $form_range = $this->getHtmlForm("reviews/form_range");
                 $form_range = str_replace("{review_title}", $title, $form_range);
                 $form_range = str_replace("{review_date}", $db->result($r, $i - 1, "DATA"), $form_range);
@@ -724,11 +725,12 @@ class MenuClass extends CatalogueClass
         $state_id = $this->getUrlNumber($state_id);
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
-        $r = $db->query("SELECT `DATA`, `TITLE_$postfix`, `TEXT_$postfix` FROM `T2_REVIEWS` WHERE `ID` = $state_id;");
+        $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID` = $state_id;");
         $date = $db->result($r, 0, "DATA");
         $title = $db->result($r, 0, "TITLE_$postfix");
+        $title_ru = $db->result($r, 0, "TITLE_RU");
         $text = $db->result($r, 0, "TEXT_$postfix");
-        $format_title = $this->formatUrlText($title);
+        $format_title = $this->formatUrlText($title_ru);
         $url = $this->getSiteLink() . "$this->reviews_link/state/$state_id/$format_title/";
         return compact("title", "text", "date", "url");
     }
