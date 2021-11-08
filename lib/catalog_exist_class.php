@@ -587,12 +587,12 @@ class CatalogExistClass extends CatalogueClass
                     $n = $dbc->result($r, 0, "count_art") + 0;
                     if ($n == 0) {
                         $dbc->query("INSERT INTO `$table_mfa` (`art_id`, `mfa_id`, `model`, `status`) VALUES ($art_id, $mfa_id, '$model', 1);");
-                        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_MFA` (`group_id`, `art_id`, `mfa_id`, `model`, `status`) VALUES ($group_id, $art_id, $mfa_id, '$model', 1);");
                         $count_add++;
                     } else {
                         $dbc->query("UPDATE `$table_mfa` SET `status` = 1 WHERE `art_id` = $art_id;");
                         $count_upd++;
                     }
+                    $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_MFA` (`group_id`, `art_id`, `mfa_id`, `model`, `status`) VALUES ($group_id, $art_id, $mfa_id, '$model', 1);");
                 }
             }
         }

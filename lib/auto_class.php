@@ -504,6 +504,67 @@ class AutoClass extends CatalogueClass
         return true;
     }
 
+    public function showMfaCacheGroups($mfa_id, $model, $mfa_link, $model_link)
+    {
+        $mfa_id = $this->getUrlNumber($mfa_id);
+        $model = $this->getUrlString($model);
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+        $where = "1";
+        if ($model != "") {
+            $where = "`model` = '$model'";
+        }
+        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_MFA` WHERE `mfa_id` = $mfa_id AND $where GROUP BY `group_id`;");
+        $n = $dbc->num_rows($r);
+        $groups = [];
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $dbc->result($r, $i - 1, "group_id");
+            $groups[] = $group_id;
+        }
+
+        $hh = [];
+        if (!empty($groups)) {
+            $groups_str = implode(",", $groups);
+            $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` IN ($groups_str);");
+            $n = $db->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $head_id = $db->result($r, $i - 1, "HEAD_ID");
+                $cat_id = $db->result($r, $i - 1, "CAT_ID");
+                $group_id = $db->result($r, $i - 1, "GROUP_ID");
+                $hh[$head_id][$cat_id][] = $group_id;
+            }
+        }
+
+        $heads = [];
+        $cats = [];
+        $groups = [];
+
+        foreach ($hh as $head_id => $cc) {
+            $heads[] = $head_id;
+            foreach ($cc as $cat_id => $gg) {
+                $cats[] = $cat_id;
+                foreach ($gg as $group_id) {
+                    $groups[] = $group_id;
+                }
+            }
+        }
+
+        $heads = array_unique($heads);
+        $cats = array_unique($cats);
+        $groups = array_unique($groups);
+
+        $catalog = new CatalogueClass();
+
+        if (empty($groups)) {
+            $form = "";
+        } else {
+            $form = $catalog->getCatalogColList($mfa_link, $model_link, $heads, $cats, $groups);
+        }
+
+        return $form;
+    }
+
+
     /*
      * get cars seo content
      * */
@@ -519,7 +580,9 @@ class AutoClass extends CatalogueClass
         if ($model == "") {
             $form = str_replace("{seo_list}", $this->getCarsModelList($mfa_id) . $catalogue->getCatalogColList($mfa_link, $mod_link), $form);
         } else {
-            $form = str_replace("{seo_list}", $catalogue->getCatalogColList($mfa_link, $mod_link), $form);
+//            $form = str_replace("{seo_list}", $catalogue->getCatalogColList($mfa_link, $mod_link), $form);
+            $form = str_replace("{seo_list}", $this->showMfaCacheGroups($mfa_id, $model, $mfa_link, $mod_link), $form);
+            //
         }
         $form = str_replace("{seo_header}", "", $form);
         return $form;

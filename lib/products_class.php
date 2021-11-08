@@ -21,11 +21,11 @@ class ProductsClass extends CatalogueClass
     {
         $title = "";
         $description = "";
-        $catalogue = new CatalogueClass();
+        $meta_tag = "";
         $automan = new AutoClass();
         list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
         $h1 = $automan->getCarsTitle($mfa_id, $model);
-        $form = $catalogue->getHtmlForm("cars/form");
+        $form = $this->getHtmlForm("cars/form");
         $form = str_replace("{cars_h1}", $h1, $form);
         $form = str_replace("{cars_list}", $this->getCarsSearch($mfa_link, $mod_link), $form);
         $form = str_replace("{cars_seo}", $automan->getCarsSeoContent($mfa_link, $mod_link), $form);
@@ -42,8 +42,6 @@ class ProductsClass extends CatalogueClass
                 $description = str_replace("{h1_text}", $h1, $description);
             }
         }
-
-        $meta_tag = "";
         return compact("form", "title", "description", "meta_tag");
     }
 

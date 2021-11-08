@@ -3245,20 +3245,16 @@ class CatalogueClass
                 $type = $value["type"];
                 $slide .= "
                 <div class=\"sp-slide\">
-                    <img class=\"sp-image lazy\" 
-                        src=\"$this->noPhoto\"
-                        data-src=\"https://toko.ua/resize_image.php?image=$photo&w=633&h=0&type=$type\"
-                        style=\"height: 100%; width: 100%;\"
+                    <img class=\"sp-image\" 
+                        src=\"https://toko.ua/resize_image.php?image=$photo&w=633&h=0&type=$type\"
                         alt=\"$h1 - {photo_card_cap} #$i\"
                         title=\"$h1 - {photo_card_cap} #$i\"/>
                 </div>";
                 $thumbnail .= "
                 <div class=\"sp-thumbnail\">
                     <div class=\"sp-thumbnail-image-container\">
-                        <img class=\"sp-thumbnail-image lazy\" 
-                            src=\"/images/no_photo_120.png\"
-                            data-src=\"https://toko.ua/resize_image.php?image=$photo&w=100&h=80&type=$type\"
-                            style=\"height: 100%; width: 100%;\"
+                        <img class=\"sp-image sp-thumbnail-image\" 
+                            src=\"https://toko.ua/resize_image.php?image=$photo&w=100&h=80&type=$type\"
                             alt=\"$h1 - {photo_card_cap} #$i\"/>
                     </div>
                 </div>";
