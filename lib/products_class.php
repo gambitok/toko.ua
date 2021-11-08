@@ -42,6 +42,8 @@ class ProductsClass extends CatalogueClass
                 $description = str_replace("{h1_text}", $h1, $description);
             }
         }
+
+        $meta_tag = "";
         return compact("form", "title", "description", "meta_tag");
     }
 

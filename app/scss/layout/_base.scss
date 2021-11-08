@@ -264,6 +264,9 @@
         ul, ol {
             padding-left: 15px;
         }
+        p {
+            margin: 30px 0;
+        }
         &.full {
             max-height: unset;
             & ~ button {

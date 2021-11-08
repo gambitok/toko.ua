@@ -440,6 +440,7 @@ class CatalogExistClass extends CatalogueClass
 
         $dbc->query("TRUNCATE TABLE `$table`;");
         $dbc->query("TRUNCATE TABLE `$table_available`;");
+        $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_MFA`;");
 
         $r = $db->query("SELECT t2si.art_id, t2a.BRAND_ID
         FROM `T2_SUPPL_IMPORT` t2si
@@ -586,6 +587,7 @@ class CatalogExistClass extends CatalogueClass
                     $n = $dbc->result($r, 0, "count_art") + 0;
                     if ($n == 0) {
                         $dbc->query("INSERT INTO `$table_mfa` (`art_id`, `mfa_id`, `model`, `status`) VALUES ($art_id, $mfa_id, '$model', 1);");
+                        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_MFA` (`group_id`, `art_id`, `mfa_id`, `model`, `status`) VALUES ($group_id, $art_id, $mfa_id, '$model', 1);");
                         $count_add++;
                     } else {
                         $dbc->query("UPDATE `$table_mfa` SET `status` = 1 WHERE `art_id` = $art_id;");
