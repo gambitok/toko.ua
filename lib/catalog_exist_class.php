@@ -606,7 +606,7 @@ class CatalogExistClass extends CatalogueClass
         return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
     }
 
-    public function getCatalogBreadCrumb($group_id, $params, $filters_h1, $source_link)
+    public function getCatalogBreadCrumb($group_id, $params, $filters_h1, $source_link, $mfa_id)
     {
         $arr = [];
 
@@ -645,6 +645,9 @@ class CatalogExistClass extends CatalogueClass
                     }
                     $arr = array_merge($arr, $arr2);
                 }
+                $arr[] = ["name" => "$filters_h1", "link" => "$source_link"];
+            }
+            elseif ($mfa_id > 0) {
                 $arr[] = ["name" => "$filters_h1", "link" => "$source_link"];
             }
         }
@@ -1102,7 +1105,7 @@ class CatalogExistClass extends CatalogueClass
             $filterData = $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $where_mfa, $where_link_arts);
             $form = str_replace("{parts_params}", $filterData["form"], $form);
 
-            $breadcrumbsData = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $h1_text, $source_link));
+            $breadcrumbsData = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $h1_text, $source_link, $mfa_id));
             $breadcrumbs_script = $breadcrumbsData["script"];
             $form = str_replace("{parts_breadcrumbs}", $breadcrumbsData["form"], $form);
             $form = str_replace("{status_auto}", $status_auto, $form);
@@ -1725,8 +1728,8 @@ class CatalogExistClass extends CatalogueClass
                 $text = $db->result($r2, $i2 - 1, "TEX_TEXT");
                 $image = $db->result($r2, $i2 - 1, "Car_pict");
                 $d_start = $db->result($r2, $i2 - 1, "MOD_PCON_START");
-                $d_end = $db->result($r2, $i2 - 1, "MOD_PCON_END");
                 $d_start = substr($d_start, 0, 4);
+                $d_end = $db->result($r2, $i2 - 1, "MOD_PCON_END");
                 $d_end = substr($d_end, 0, 4);
                 if ($d_end == 0) {
                     $d_end = "{cur_time}";

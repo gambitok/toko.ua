@@ -514,6 +514,7 @@ class AutoClass extends CatalogueClass
         if ($model != "") {
             $where = "`model` = '$model'";
         }
+
         $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_MFA` WHERE `mfa_id` = $mfa_id AND $where GROUP BY `group_id`;");
         $n = $dbc->num_rows($r);
         $groups = [];
@@ -521,10 +522,19 @@ class AutoClass extends CatalogueClass
             $group_id = $dbc->result($r, $i - 1, "group_id");
             $groups[] = $group_id;
         }
+        $r2 = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS_AUTO` = 1 OR `STATUS_AUTO` = 2;");
+        $n2 = $db->num_rows($r2);
+        $groups2 = [];
+        for ($i = 1; $i <= $n2; $i++) {
+            $group_id = $db->result($r2, $i - 1, "GROUP_ID");
+            $groups2[] = $group_id;
+        }
+        $arr = array_merge($groups, $groups2);
+        $arr = array_unique($arr);
 
         $hh = [];
-        if (!empty($groups)) {
-            $groups_str = implode(",", $groups);
+        if (!empty($arr)) {
+            $groups_str = implode(",", $arr);
             $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` IN ($groups_str);");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
@@ -541,6 +551,9 @@ class AutoClass extends CatalogueClass
 
         foreach ($hh as $head_id => $cc) {
             $heads[] = $head_id;
+            if (!empty($cc)) {
+                $cats[] = 0;
+            }
             foreach ($cc as $cat_id => $gg) {
                 $cats[] = $cat_id;
                 foreach ($gg as $group_id) {
