@@ -15,7 +15,7 @@ require_once (RDD . "/lib/variables.php");
 require_once (RDD . "/lib/catalogue_class.php");
 require_once (RDD . "/lib/catalog_exist_class.php");
 
-$link = "https://toko.ua/";
+$link = "https://toko.ua/uk/";
 
 $db = DbSingleton::getTokoDb();
 $dbc = DbSingleton::getTokoCacheDb();
@@ -32,11 +32,11 @@ $mask = "sitemap-manufactures-*.*";
 array_map('unlink', glob($mask));
 $mask = "sitemap-manufactures-params-*.*";
 array_map('unlink', glob($mask));
-unlink("sitemap.xml");
-unlink("sitemap-pages.xml");
-unlink("sitemap-cars.xml");
-unlink("sitemap-categories.xml");
-unlink("sitemap-categories-params.xml");
+unlink("uk/sitemap.xml");
+unlink("uk/sitemap-pages.xml");
+unlink("uk/sitemap-cars.xml");
+unlink("uk/sitemap-categories.xml");
+unlink("uk/sitemap-categories-params.xml");
 
 /*
  * INIT `sitemap-manufactures`
@@ -72,7 +72,7 @@ for ($j = 1; $j <= $n3; $j++) {
 
             $xmlWriter->setIndent(2);
             $xmlWriter->startElement('url');
-            $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/");
+            $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/auto/$mfa_link/");
             $xmlWriter->writeElement('changefreq', 'weekly');
             $xmlWriter->writeElement('priority', '0.9');
             $xmlWriter->endElement();
@@ -99,7 +99,7 @@ for ($j = 1; $j <= $n3; $j++) {
                 if ($nnnn > 0) {
                     $xmlWriter->setIndent(2);
                     $xmlWriter->startElement('url');
-                    $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/$model_link/");
+                    $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/auto/$mfa_link/$model_link/");
                     $xmlWriter->writeElement('changefreq', 'weekly');
                     $xmlWriter->writeElement('priority', '0.9');
                     $xmlWriter->endElement();
@@ -141,7 +141,7 @@ foreach ($ggroups as $group_id) {
     $tex_link = $catalog->getGroupRowLink($group_id);
     $xmlWriter->setIndent(2);
     $xmlWriter->startElement('url');
-    $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/");
+    $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/");
     $xmlWriter->writeElement('changefreq', 'weekly');
     $xmlWriter->writeElement('priority', '1');
     $xmlWriter->endElement();
@@ -281,7 +281,7 @@ for ($l = 1; $l <= $n1; $l++) {
     $mfa_link = $db->result($r1, $l - 1, "MFA_BRAND_LINK");
     $xmlWriter->setIndent(2);
     $xmlWriter->startElement('url');
-    $xmlWriter->writeElement('loc', "https://toko.ua/cars/$mfa_link/");
+    $xmlWriter->writeElement('loc', $link . "cars/$mfa_link/");
     $xmlWriter->writeElement('changefreq', 'weekly');
     $xmlWriter->writeElement('priority', '0.9');
     $xmlWriter->endElement();
@@ -291,7 +291,7 @@ for ($l = 1; $l <= $n1; $l++) {
         $model_link = $db->result($r, $i - 1, "Model_Link");
         $xmlWriter->setIndent(2);
         $xmlWriter->startElement('url');
-        $xmlWriter->writeElement('loc', "https://toko.ua/cars/$mfa_link/$model_link/");
+        $xmlWriter->writeElement('loc', $link . "cars/$mfa_link/$model_link/");
         $xmlWriter->writeElement('changefreq', 'weekly');
         $xmlWriter->writeElement('priority', '0.9');
         $xmlWriter->endElement();
@@ -342,30 +342,30 @@ $xmlWriter->startElement('sitemapindex');
 $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
 
 $xmlWriter->startElement('sitemap');
-$xmlWriter->writeElement('loc', "https://toko.ua/sitemap-pages.xml");
+$xmlWriter->writeElement('loc', $link . "sitemap-pages.xml");
 $xmlWriter->endElement();
 
 $xmlWriter->startElement('sitemap');
-$xmlWriter->writeElement('loc', "https://toko.ua/sitemap-cars.xml");
+$xmlWriter->writeElement('loc', $link . "sitemap-cars.xml");
 $xmlWriter->endElement();
 
 $xmlWriter->startElement('sitemap');
-$xmlWriter->writeElement('loc', "https://toko.ua/sitemap-categories.xml");
+$xmlWriter->writeElement('loc', $link . "sitemap-categories.xml");
 $xmlWriter->endElement();
 
 $xmlWriter->startElement('sitemap');
-$xmlWriter->writeElement('loc', "https://toko.ua/sitemap-categories-params.xml");
+$xmlWriter->writeElement('loc', $link . "sitemap-categories-params.xml");
 $xmlWriter->endElement();
 
 for ($i = 1; $i <= $doc_nom; $i++) {
     $xmlWriter->startElement('sitemap');
-    $xmlWriter->writeElement('loc', "https://toko.ua/sitemap-manufactures-$i.xml");
+    $xmlWriter->writeElement('loc', $link . "sitemap-manufactures-$i.xml");
     $xmlWriter->endElement();
 }
 
 for ($i = 1; $i <= $doc_nom_params; $i++) {
     $xmlWriter->startElement('sitemap');
-    $xmlWriter->writeElement('loc', "https://toko.ua/sitemap-manufactures-params-$i.xml");
+    $xmlWriter->writeElement('loc', $link . "sitemap-manufactures-params-$i.xml");
     $xmlWriter->endElement();
 }
 
@@ -375,5 +375,3 @@ $xmlWriter->endDocument();
 
 $time = microtime(true) - $start;
 print "RUN TIME: " . $time;
-
-require_once (RDD . "sitemap-generation-uk.php");

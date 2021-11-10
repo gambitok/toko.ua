@@ -1413,17 +1413,35 @@ class FormClass extends CatalogueClass
     {
         $catalog_exist = new CatalogExistClass();
         $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
         $site_link = $this->getSiteLink();
         $list = "<a href=\"$site_link\">{site_main}</a>";
 
         $arr = [];
+
+        $gg = [];
+        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `status` = 1 GROUP BY `group_id`;");
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $dbc->result($r, $i - 1, "group_id");
+            $check = $catalog_exist->checkTable($group_id);
+            if ($check) {
+                $gg[] = $group_id;
+            }
+        }
+
+        $where = "1";
+        if (!empty($gg)) {
+            $gg_str = implode(",", $gg);
+            $where = "tg.`GROUP_ID` IN ($gg_str)";
+        }
 
         $r = $db->query("SELECT thcg.`HEAD_ID`, thcg.`CAT_ID`, thcg.`GROUP_ID` 
         FROM `T2_TREE_HCG_EXIST` thcg
             LEFT JOIN `T2_TREE_HEAD_EXIST` th ON (th.`HEAD_ID` = thcg.`HEAD_ID`)
             LEFT JOIN `T2_TREE_CAT_EXIST` tc ON (tc.`CAT_ID` = thcg.`CAT_ID`)
             LEFT JOIN `T2_TREE_GROUP_EXIST` tg ON (tg.`GROUP_ID` = thcg.`GROUP_ID`)
-        WHERE th.`STATUS` = 1 AND tc.`STATUS` = 1 AND tg.`STATUS` = 1
+        WHERE th.`STATUS` = 1 AND tc.`STATUS` = 1 AND tg.`STATUS` = 1 AND $where
         ORDER BY thcg.`POPULAR` DESC, thcg.`HEAD_ID`, thcg.`CAT_ID`, thcg.`GROUP_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1436,28 +1454,29 @@ class FormClass extends CatalogueClass
         $list .= "<ul>";
         $site_link .= $this->catalog_link . "/";
         foreach ($arr as $head_id => $cats) {
-            $head_name = $this->getHeadRowName($head_id);
-            $head_link = $this->getHeadRowLink($head_id);
-            $list .= "<li><a href=\"$site_link$head_link/\">$head_name</a>";
-            $list .= "<ul>";
-            foreach ($cats as $cat_id => $groups) {
-                $cat_name = $this->getCatRowName($cat_id);
-                $cat_link = $this->getCatRowLink($cat_id);
-                $list .= "<li><a href=\"$site_link$head_link/$cat_link/\">$cat_name</a>";
+            if (!empty($cats)) {
+                $head_name = $this->getHeadRowName($head_id);
+                $head_link = $this->getHeadRowLink($head_id);
+                $list .= "<li><a href=\"$site_link$head_link/\">$head_name</a>";
                 $list .= "<ul>";
-                foreach ($groups as $group_id) {
-                    $check = $catalog_exist->checkTable($group_id);
-                    if ($check > 0) {
-                        $group_name = $this->getGroupRowName($group_id);
-                        $group_link = $this->getGroupRowLink($group_id);
-                        $list .= "<li><a href=\"$site_link$group_link/\">$group_name</a></li>";
+                foreach ($cats as $cat_id => $groups) {
+                    if (!empty($groups)) {
+                        $cat_name = $this->getCatRowName($cat_id);
+                        $cat_link = $this->getCatRowLink($cat_id);
+                        $list .= "<li><a href=\"$site_link$head_link/$cat_link/\">$cat_name</a>";
+                        $list .= "<ul>";
+                        foreach ($groups as $group_id) {
+                            $group_name = $this->getGroupRowName($group_id);
+                            $group_link = $this->getGroupRowLink($group_id);
+                            $list .= "<li><a href=\"$site_link$group_link/\">$group_name</a></li>";
+                        }
+                        $list .= "</ul>";
+                        $list .= "</li>";
                     }
                 }
                 $list .= "</ul>";
                 $list .= "</li>";
             }
-            $list .= "</ul>";
-            $list .= "</li>";
         }
         $list .= "</ul>";
 
