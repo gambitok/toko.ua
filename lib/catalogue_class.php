@@ -2656,7 +2656,7 @@ class CatalogueClass
             $icon = "";
             $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$icon $cat_name $brand_name</a>";
             if ($cat_id == 0) {
-                $icon = "<span style=\"margin-right: 5px; color: #f44438\">&bull;</span>";
+                $icon = "<span style=\"color: #f44438; margin-right: 5px;\">&bull;</span>";
                 $link = "<span>$icon $cat_name $brand_name</span>";
             }
             $list .= "
@@ -2670,6 +2670,22 @@ class CatalogueClass
             </div>";
         }
         return $list;
+    }
+
+    /*
+  * check exist of group params table
+  * */
+    public function checkTable($group_id)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+        $r = $dbc->query("SHOW TABLES LIKE '$table';");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
+            $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1;");
+            $n = $dbc->result($r, 0, "col_arts");
+        }
+        return $n;
     }
 
     /*
@@ -2696,7 +2712,9 @@ class CatalogueClass
             $group_name = $this->getGroupRowText($group_id);
             $group_link = $this->getGroupRowLink($group_id);
             $group_image = $this->getGroupRowImage($group_id);
-            $groups[] = compact("group_name", "group_link", "group_image");
+            if ($this->checkTable($group_id)) {
+                $groups[] = compact("group_name", "group_link", "group_image");
+            }
         }
         if ($cat_id == 0) {
             $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `POPULAR` = 1 AND $where_2;");

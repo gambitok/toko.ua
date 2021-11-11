@@ -126,8 +126,6 @@ $doc_nom++;
 file_put_contents("sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
-var_dump($ggroups);
-
 /*
  * INIT `sitemap-categories`
  * */
@@ -376,4 +374,4 @@ $xmlWriter->endDocument();
 $time = microtime(true) - $start;
 print "RUN TIME: " . $time;
 
-require_once (RDD . "sitemap-generation-uk.php");
+require_once (RDD . "/sitemap-generation-uk.php");
