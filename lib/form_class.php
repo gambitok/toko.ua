@@ -54,9 +54,7 @@ class FormClass extends CatalogueClass
 
     public function showBrandRange()
     {
-        $list = "
-        <link rel=\"stylesheet\" href=\"/css/plugins/flags.min.css\">
-        <div style='column-count: 5; column-gap: 40px; column-rule: 1px solid lightgrey; padding: 15px;'>";
+        $list = "";
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT t2b.`BRAND_ID`, t2b.`BRAND_NAME`, t2b.`BRAND_LINK` 
         FROM `T2_BRANDS` t2b 
@@ -78,8 +76,9 @@ class FormClass extends CatalogueClass
                 <div>$brand_name $flag</div>
             </a>";
         }
-        $list .= "</div>";
-        return $list;
+        $form = $this->getHtmlForm("brands/range");
+        $form = str_replace("{brands_range}", $list, $form);
+        return $form;
     }
 
     public function showBrandSelect($brand_id)
@@ -87,6 +86,7 @@ class FormClass extends CatalogueClass
         $brand_id = $this->getUrlNumber($brand_id);
         $form = $this->getHtmlForm("brands/select");
 
+        $form = str_replace("{brand_h1}", $this->getBrandName($brand_id), $form);
         $form = str_replace("{brand_select}", $this->showBrandForm($brand_id), $form);
         $form = str_replace("{brand_groups}", $this->showBrandGroups($brand_id), $form);
 

@@ -583,7 +583,6 @@ class AutoClass extends CatalogueClass
      * */
     public function getCarsSeoContent($mfa_link, $mod_link = "")
     {
-        $catalogue = new CatalogueClass();
         $form = $this->getHtmlForm("cars/seo_content");
         $mfa_id = $this->getMfaLink($mfa_link);
         if ($mfa_link == "") {
@@ -591,11 +590,9 @@ class AutoClass extends CatalogueClass
         }
         $model = $this->getModLink($mod_link);
         if ($model == "") {
-            $form = str_replace("{seo_list}", $this->getCarsModelList($mfa_id) . $catalogue->getCatalogColList($mfa_link, $mod_link), $form);
+            $form = str_replace("{seo_list}", $this->getCarsModelList($mfa_id) . $this->showMfaCacheGroups($mfa_id, $model, $mfa_link, $mod_link), $form);
         } else {
-//            $form = str_replace("{seo_list}", $catalogue->getCatalogColList($mfa_link, $mod_link), $form);
             $form = str_replace("{seo_list}", $this->showMfaCacheGroups($mfa_id, $model, $mfa_link, $mod_link), $form);
-            //
         }
         $form = str_replace("{seo_header}", "", $form);
         return $form;

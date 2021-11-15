@@ -106,6 +106,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                 }
 
                 $params = $catalog_exist->getCheckedFilters($group_id, $filters);
+
                 list($count_brands, $count_params, $count_values) = $catalog_exist->getCatalogParamsCount($params);
                 if ($count_values > 0) {
                     $content = str_replace("{meta_noindex}", '
