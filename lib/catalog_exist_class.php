@@ -250,6 +250,8 @@ class CatalogExistClass extends CatalogueClass
             $dbc->query("UPDATE `$table_params` SET `status` = 0 WHERE 1;");
         }
 
+        //ALTER TABLE `EX_TABLE_TREE_PARAMS_$group_id` CHANGE `param_1` `param_1` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
         $params = [];
         $params_str = "";
         $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID` = $group_id AND `STATUS` = 1;");
@@ -257,7 +259,7 @@ class CatalogExistClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $param_id = $db->result($r, $i - 1, "PARAM_ID");
             $params[] = $param_id;
-            $params_str .= "`param_$param_id` VARCHAR(50),";
+            $params_str .= "`param_$param_id` VARCHAR(100),";
         }
 
         $dbc->query("CREATE TABLE IF NOT EXISTS `$table_params` 
@@ -290,6 +292,7 @@ class CatalogExistClass extends CatalogueClass
             EXECUTE alterIfNotExists;
             DEALLOCATE PREPARE alterIfNotExists;
             ");
+            $dbc->query("ALTER TABLE `EX_TABLE_TREE_PARAMS_$group_id` CHANGE `param_$param_id` `param_$param_id` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;");
         }
 
         $products = [];
@@ -331,7 +334,7 @@ class CatalogExistClass extends CatalogueClass
                 if ($param_id > 0) {
                     $params_values .= "'" . implode(",", $params_arr) . "',";
                     $params_column .= "`param_$param_id`,";
-                    $set_column .= "`param_$param_id`='" . implode(",", $params_arr) . "',";
+                    $set_column .= "`param_$param_id` = '" . implode(",", $params_arr) . "',";
                 }
             }
             $params_values = rtrim($params_values, ",");
@@ -828,7 +831,9 @@ class CatalogExistClass extends CatalogueClass
             foreach ($values as $value_id) {
                 $count++;
                 $separator = ($count > 1) ? "OR" : "";
-                $where .= " $separator ($param_name = '$value_id' OR $param_name LIKE '%,$value_id%' OR $param_name LIKE '%$value_id,%')";
+                //$where .= " $separator ($param_name = '$value_id' OR $param_name LIKE '%,$value_id%' OR $param_name LIKE '%$value_id,%')";
+                $where .= " $separator ($param_name = '$value_id' OR $param_name LIKE '$value_id,%' OR $param_name LIKE '%,$value_id' OR $param_name LIKE '%,$value_id,%')";
+                //WHERE (`param_1` = '16468' OR `param_1` LIKE '16468,%'  OR `param_1` LIKE '%,16468' OR `param_1` LIKE '%,16468,%');
             }
             $where .= ") ";
         }
@@ -1245,7 +1250,7 @@ class CatalogExistClass extends CatalogueClass
                 LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
                 LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
             WHERE 1 $where_mfa $where_link_arts
-            GROUP BY t.art_id ;");
+            GROUP BY t.art_id;");
             $n = $dbc->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $brand_id = $dbc->result($r, $i - 1, "brand_cur_id");
