@@ -151,7 +151,11 @@ class CatalogExistClass extends CatalogueClass
         $value_id = $this->getUrlNumber($value_id);
         $db = DbSingleton::getTokoDb();
         $value_name = "";
-        $r = $db->query("SELECT `VALUE_NAME` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
+        $where_param = "1";
+        if ($param_id > 0) {
+            $where_param = "`PARAM_ID` = $param_id";
+        }
+        $r = $db->query("SELECT `VALUE_NAME` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id AND $where_param LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $value_name = $db->result($r, 0, "VALUE_NAME");
@@ -1287,6 +1291,7 @@ class CatalogExistClass extends CatalogueClass
             $params[$param_id] = array_unique($values);
         }
 
+
         $arr = [];
         if (!empty($params)) {
             // error page key '' and 0 error
@@ -1361,13 +1366,17 @@ class CatalogExistClass extends CatalogueClass
                         array_multisort($arr_checked, SORT_DESC, SORT_NUMERIC, $arr_count_arts, SORT_DESC, SORT_NUMERIC, $items);
                     }
 
-                    foreach ($items as $item) {
+                    foreach ($items as $value_id => $item) {
                         $value_name = $item["value_name"];
+
                         $link = $item["link"];
                         $checked = $item["checked"];
                         $checked_label = "<span class=\"fas fa-square unchecked\"></span>";
                         if ($checked) {
                             $checked_label = "<span class=\"fas fa-check-square checked\"></span>";
+                        }
+                        if ( $value_name == "79.5") {
+                            $value_name .= "($value_id)";
                         }
                         if ($value_name != "") {
                             $list_params .= "

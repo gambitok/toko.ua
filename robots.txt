@@ -1,5 +1,5 @@
 User-agent: *
-Disallow: /*utm_
+Disallow: /utm_
 Disallow: /*gclid=
 Disallow: /search/
 Disallow: /basket/
@@ -7,45 +7,36 @@ Disallow: /registration/
 Disallow: /sell/
 Disallow: /profile/
 Disallow: /en/
-Disallow: /uk/
-Disallow: /uk/article/
 Disallow: /en/article/
 Disallow: /signin/
 
-User-agent: Googlebot
-Disallow: /*utm_
-Disallow: /*gclid=
-Disallow: /search/
-Disallow: /basket/
-Disallow: /registration/
-Disallow: /sell/
-Disallow: /profile/
-Disallow: /en/
-Disallow: /uk/
-Disallow: /uk/article/
-Disallow: /en/article/
-Disallow: /signin/
-
-User-agent: Yandex
-Disallow: /*utm_
-Disallow: /*gclid=
-Disallow: /search/
-Disallow: /basket/
-Disallow: /registration/
-Disallow: /sell/
-Disallow: /profile/
-Disallow: /thumb.php?image=catalogue/
-Disallow: /images/
-Disallow: /en/
-Disallow: /uk/
-Disallow: /uk/article/
-Disallow: /en/article/
-Disallow: /signin/
-
-User-agent: YandexImages
+User-agent: Yahoo
 Disallow: /
-Allow: /thumb.php?image=catalogue/
-Allow: /images/
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: Baiduspider
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: EmailCollector
+Disallow: /
+
+User-agent: EmailSiphon
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: SolomonoBot
+Disallow: /
 
 Host: https://toko.ua
 Sitemap: https://toko.ua/sitemap.xml
+Sitemap: https://toko.ua/ua-uk/sitemap.xml

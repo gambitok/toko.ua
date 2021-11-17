@@ -15,15 +15,15 @@ $max_tags_count = 15000;
 $doc_nom = 0;
 $doc_nom_params = 0;
 
-$mask = RDD . "/uk/sitemap-manufactures-*.*";
+$mask = RDD . "/ua-uk/sitemap-manufactures-*.*";
 array_map('unlink', glob($mask));
-$mask = RDD . "/uk/sitemap-manufactures-params-*.*";
+$mask = RDD . "/ua-uk/sitemap-manufactures-params-*.*";
 array_map('unlink', glob($mask));
-unlink(RDD . "/uk/sitemap.xml");
-unlink(RDD . "/uk/sitemap-pages.xml");
-unlink(RDD . "/uk/sitemap-cars.xml");
-unlink(RDD . "/uk/sitemap-categories.xml");
-unlink(RDD . "/uk/sitemap-categories-params.xml");
+unlink(RDD . "/ua-uk/sitemap.xml");
+unlink(RDD . "/ua-uk/sitemap-pages.xml");
+unlink(RDD . "/ua-uk/sitemap-cars.xml");
+unlink(RDD . "/ua-uk/sitemap-categories.xml");
+unlink(RDD . "/ua-uk/sitemap-categories-params.xml");
 
 /*
  * INIT `sitemap-manufactures`
@@ -68,7 +68,7 @@ for ($j = 1; $j <= $n3; $j++) {
             if (($col % $max_tags_count) == 0) {
                 $xmlWriter->endElement();
                 $doc_nom++;
-                file_put_contents(RDD . "/uk/sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
+                file_put_contents(RDD . "/ua-uk/sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
                 $xmlWriter->startElement('urlset');
                 $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
                 $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
@@ -95,7 +95,7 @@ for ($j = 1; $j <= $n3; $j++) {
                     if (($col % $max_tags_count) == 0) {
                         $xmlWriter->endElement();
                         $doc_nom++;
-                        file_put_contents(RDD . "/uk/sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
+                        file_put_contents(RDD . "/ua-uk/sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
                         $xmlWriter->startElement('urlset');
                         $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
                         $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
@@ -110,7 +110,7 @@ for ($j = 1; $j <= $n3; $j++) {
 
 $xmlWriter->endElement();
 $doc_nom++;
-file_put_contents(RDD . "/uk/sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "/ua-uk/sitemap-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 /*
@@ -133,7 +133,7 @@ foreach ($ggroups as $group_id) {
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/uk/sitemap-categories.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "/ua-uk/sitemap-categories.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 /*
@@ -167,7 +167,7 @@ foreach ($ggroups as $group_id) {
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/uk/sitemap-categories-params.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "/ua-uk/sitemap-categories-params.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 /*
@@ -211,7 +211,7 @@ foreach ($ggroups as $group_id) {
             if (($col % $max_tags_count) == 0) {
                 $xmlWriter->endElement();
                 $doc_nom_params++;
-                file_put_contents(RDD . "/uk/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+                file_put_contents(RDD . "/ua-uk/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
                 $xmlWriter->startElement('urlset');
                 $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
                 $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
@@ -233,7 +233,7 @@ foreach ($ggroups as $group_id) {
                 if (($col % $max_tags_count) == 0) {
                     $xmlWriter->endElement();
                     $doc_nom_params++;
-                    file_put_contents(RDD . "/uk/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+                    file_put_contents(RDD . "/ua-uk/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
                     $xmlWriter->startElement('urlset');
                     $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
                     $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
@@ -247,7 +247,7 @@ foreach ($ggroups as $group_id) {
 
 $xmlWriter->endElement();
 $doc_nom_params++;
-file_put_contents(RDD . "/uk/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "/ua-uk/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 /*
@@ -284,7 +284,7 @@ for ($l = 1; $l <= $n1; $l++) {
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/uk/sitemap-cars.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "/ua-uk/sitemap-cars.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 /*
@@ -316,7 +316,7 @@ for ($i = 1; $i <= $n; $i++) {
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/uk/sitemap-pages.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "/ua-uk/sitemap-pages.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 /*
@@ -355,7 +355,7 @@ for ($i = 1; $i <= $doc_nom_params; $i++) {
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/uk/sitemap.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "/ua-uk/sitemap.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 $time = microtime(true) - $start;
