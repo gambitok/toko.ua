@@ -1368,15 +1368,11 @@ class CatalogExistClass extends CatalogueClass
 
                     foreach ($items as $value_id => $item) {
                         $value_name = $item["value_name"];
-
                         $link = $item["link"];
                         $checked = $item["checked"];
                         $checked_label = "<span class=\"fas fa-square unchecked\"></span>";
                         if ($checked) {
                             $checked_label = "<span class=\"fas fa-check-square checked\"></span>";
-                        }
-                        if ( $value_name == "79.5") {
-                            $value_name .= "($value_id)";
                         }
                         if ($value_name != "") {
                             $list_params .= "
