@@ -209,38 +209,26 @@ foreach ($group_param_arr as $group_id => $params) {
         if ($param_id > 0) {
             $param_link = $catalog->getParamLink($param_id);
             foreach ($values as $value_id) {
-            $value_link = $catalog->getValueLink($value_id);
+                $value_link = $catalog->getValueLink($value_id);
 
-            $r1 = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID` ASC;");
-            $n1 = $db->num_rows($r1);
-            for ($l1 = 1; $l1 <= $n1; $l1++) {
-                $mfa_id = $db->result($r1, $l1 - 1, "MFA_ID") + 0;
-                $mfa_link = $db->result($r1, $l1 - 1, "MFA_BRAND_LINK");
-                $xmlWriter->setIndent(2);
-                $xmlWriter->startElement('url');
-                $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/$param_link=$value_link/$mfa_link/");
-                $xmlWriter->writeElement('changefreq', 'weekly');
-                $xmlWriter->writeElement('priority', '1');
-                $xmlWriter->endElement();
-                $col++;
-
-                if (($col % $max_tags_count) == 0) {
-                    $xmlWriter->endElement();
-                    $doc_nom_params++;
-                    file_put_contents(RDD . "/ua-uk/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
-                    $xmlWriter->startElement('urlset');
-                    $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
-                    $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
-                    $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+                $models = [];
+                $r1 = $dbc->query("SELECT tm.mfa_id, tm.model FROM `EX_TABLE_TREE_MFA_$group_id` tm
+                    LEFT JOIN `EX_TABLE_TREE_PARAMS_$group_id` tp ON tp.art_id = tm.art_id
+                WHERE `param_$param_id` = '$value_id' OR `param_$param_id` LIKE '$value_id,%' OR `param_$param_id` LIKE '%,$value_id' OR `param_$param_id` LIKE '%,$value_id,%';");
+                $n1 = $dbc->num_rows($r1);
+                if ($n1 > 0) {
+                    for ($i1 = 1; $i1 <= $n1; $i1++) {
+                        $mfa_id = $dbc->result($r1, $i1 - 1, "mfa_id");
+                        $model = $dbc->result($r1, $i1 - 1, "model");
+                        $models[$mfa_id][] = $model;
+                    }
                 }
 
-                $r = $db->query("SELECT `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model` ORDER BY `Model` ASC;");
-                $n = $db->num_rows($r);
-                for ($i = 1; $i <= $n; $i++) {
-                    $model_link = $db->result($r, $i - 1, "Model_Link");
+                foreach ($models as $mfa_id => $modell) {
+                    $mfa_link = $catalog->getManufactureLink($mfa_id);
                     $xmlWriter->setIndent(2);
                     $xmlWriter->startElement('url');
-                    $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/$param_link=$value_link/$mfa_link/$model_link/");
+                    $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/$param_link=$value_link/$mfa_link/");
                     $xmlWriter->writeElement('changefreq', 'weekly');
                     $xmlWriter->writeElement('priority', '1');
                     $xmlWriter->endElement();
@@ -249,16 +237,84 @@ foreach ($group_param_arr as $group_id => $params) {
                     if (($col % $max_tags_count) == 0) {
                         $xmlWriter->endElement();
                         $doc_nom_params++;
-                        file_put_contents(RDD . "/ua-uk/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+                        file_put_contents(RDD . "/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
                         $xmlWriter->startElement('urlset');
                         $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
                         $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
                         $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
                     }
-                }
-            }
 
-        }
+                    foreach ($modell as $model) {
+                        $model_link = $catalog->getModelLink($model);
+
+                        $xmlWriter->setIndent(2);
+                        $xmlWriter->startElement('url');
+                        $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/$param_link=$value_link/$mfa_link/$model_link/");
+                        $xmlWriter->writeElement('changefreq', 'weekly');
+                        $xmlWriter->writeElement('priority', '1');
+                        $xmlWriter->endElement();
+                        $col++;
+
+                        if (($col % $max_tags_count) == 0) {
+                            $xmlWriter->endElement();
+                            $doc_nom_params++;
+                            file_put_contents(RDD . "/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+                            $xmlWriter->startElement('urlset');
+                            $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+                            $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+                            $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+                        }
+                    }
+                }
+
+//            $r1 = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID` ASC;");
+//            $n1 = $db->num_rows($r1);
+//            for ($l1 = 1; $l1 <= $n1; $l1++) {
+//                $mfa_id = $db->result($r1, $l1 - 1, "MFA_ID") + 0;
+//                $mfa_link = $db->result($r1, $l1 - 1, "MFA_BRAND_LINK");
+//                $xmlWriter->setIndent(2);
+//                $xmlWriter->startElement('url');
+//                $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/$param_link=$value_link/$mfa_link/");
+//                $xmlWriter->writeElement('changefreq', 'weekly');
+//                $xmlWriter->writeElement('priority', '1');
+//                $xmlWriter->endElement();
+//                $col++;
+//
+//                if (($col % $max_tags_count) == 0) {
+//                    $xmlWriter->endElement();
+//                    $doc_nom_params++;
+//                    file_put_contents(RDD . "/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+//                    $xmlWriter->startElement('urlset');
+//                    $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+//                    $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+//                    $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+//                }
+//
+//                $r = $db->query("SELECT `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model` ORDER BY `Model` ASC;");
+//                $n = $db->num_rows($r);
+//                for ($i = 1; $i <= $n; $i++) {
+//                    $model_link = $db->result($r, $i - 1, "Model_Link");
+//                    $xmlWriter->setIndent(2);
+//                    $xmlWriter->startElement('url');
+//                    $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/$param_link=$value_link/$mfa_link/$model_link/");
+//                    $xmlWriter->writeElement('changefreq', 'weekly');
+//                    $xmlWriter->writeElement('priority', '1');
+//                    $xmlWriter->endElement();
+//                    $col++;
+//
+//                    if (($col % $max_tags_count) == 0) {
+//                        $xmlWriter->endElement();
+//                        $doc_nom_params++;
+//                        file_put_contents(RDD . "/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+//                        $xmlWriter->startElement('urlset');
+//                        $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+//                        $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+//                        $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+//                    }
+//                }
+//            }
+
+            }
         }
     }
 }
