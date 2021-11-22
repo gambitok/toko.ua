@@ -3,7 +3,7 @@
 trait Helper
 {
 
-    public $images = "/images";
+    public $images  = "/images";
     public $uploads = "/uploads";
     public $noPhoto = "/images/no_photo.svg";
     protected $err1 = "{nothing_found}";
@@ -374,7 +374,10 @@ trait Helper
 
         $redirect_link = rtrim($redirect_link, '/') . '/';
 
-        return array("status" => $status, "redirect_link" => $redirect_link);
+        return array(
+            "status"        => $status,
+            "redirect_link" => $redirect_link
+        );
     }
 
     public function getCatalogRedirectLink($link, $mfa_link = "", $model_link = "")
@@ -409,7 +412,10 @@ trait Helper
 
         $redirect_link = rtrim($redirect_link, '/') . '/';
 
-        return array("status" => $status, "redirect_link" => $redirect_link);
+        return array(
+            "status"        => $status,
+            "redirect_link" => $redirect_link
+        );
     }
 
     /*

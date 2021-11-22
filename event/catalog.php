@@ -115,7 +115,10 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                         <meta name="yandex" content="noindex, nofollow">
                     ', $content);
                 }
-                $content = str_replace("{seoshield_formulas}", $catalog_exist->getCatalogFilterSeo(), $content);
+                $content = str_replace("{seoshield_formulas}", "
+                    <!--ss_selected_filters_info|FilterName|FilterValue-->
+                    <!--seoshield_formulas--fil-traciya-->
+                ", $content);
             }
 
             ($page != NULL) ?: $page = 1;
@@ -140,7 +143,6 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             $content = str_replace("{site_description}", $catalog_form["description"], $content);
             $content = str_replace("{meta_social_tag}", $catalog_exist->getCatalogMetaTags($group_id, $catalog_form["h1"]), $content);
             $content = str_replace("{site_script_breadcrumbs}", $catalog_form["script"], $content);
-            //$content = str_replace("{site_console}", $catalog_exist->getSiteConsole($catalog_form["time"]), $content);
         }
 
         /*

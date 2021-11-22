@@ -10,8 +10,8 @@ class FormClass extends CatalogueClass
     private static $flags;
     private static $infoTemplates;
 
-    public $max_history_count = 10;
-    public $uploads_link = "https://toko.ua/uploads/images/catalogue";
+    public $max_history_count   = 10;
+    public $uploads_link        = "https://toko.ua/uploads/images/catalogue";
 
     /*
      * show modal form
@@ -48,7 +48,10 @@ class FormClass extends CatalogueClass
         if ($name_country == "") {
             return false;
         } else {
-            return array("flag" => $flag, "country" => $name_country);
+            return array(
+                "flag"      => $flag,
+                "country"   => $name_country
+            );
         }
     }
 
@@ -119,9 +122,7 @@ class FormClass extends CatalogueClass
             }
         }
 
-        $heads = [];
-        $cats = [];
-        $groups = [];
+        $heads = $cats = $groups = [];
 
         foreach ($hh as $head_id => $cc) {
             $heads[] = $head_id;
@@ -133,14 +134,12 @@ class FormClass extends CatalogueClass
             }
         }
 
-        $heads = array_unique($heads);
-        $cats = array_unique($cats);
+        $heads  = array_unique($heads);
+        $cats   = array_unique($cats);
         $groups = array_unique($groups);
 
         $catalog = new CatalogueClass();
-        $form = $catalog->getCatalogColList("", "", $heads, $cats, $groups, $brand_id);
-
-        return $form;
+        return $catalog->getCatalogColList("", "", $heads, $cats, $groups, $brand_id);
     }
 
     /*
@@ -175,9 +174,9 @@ class FormClass extends CatalogueClass
         $r = $db->query("SELECT `logo_name` FROM `T2_BRAND_LINK` WHERE `brand_id` = $brand_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $logo_name = trim($db->result($r, 0, "logo_name"));
+            $logo_name  = trim($db->result($r, 0, "logo_name"));
             $logo_class = ($logo_name == "") ? "none" : "";
-            $logo_name = ($logo_name == "") ? $this->noPhoto : "https://portal.myparts.pro/cdn/brands_files/$logo_name";
+            $logo_name  = ($logo_name == "") ? $this->noPhoto : "https://portal.myparts.pro/cdn/brands_files/$logo_name";
         }
         return compact("logo_name", "logo_class");
     }
@@ -471,13 +470,13 @@ class FormClass extends CatalogueClass
             $automan = new AutoClass();
             $typ_name = $automan->getCarDescription($typ_id);
             if ($this->checkT2Link($typ_id, $art_id)) {
-                //success
+                // success
                 $form = "<img src=\"/images/applicable/success.webp\" alt=\"{applicable_success_cap}\"><span>{applicable_success_cap} $typ_name</span>";
             } else {
                 $catalog = new CatalogueClass();
                 $group_id = $catalog->getArticleGroupExist($art_id);
                 $group_link = $this->getGroupRowLink($group_id);
-                //danger
+                // danger
                 $form = "
                 <div class=\"article-info-row__applicable-danger\">
                     <div class=\"article-info-row__applicable-danger--row\">
@@ -494,7 +493,7 @@ class FormClass extends CatalogueClass
                 </div>";
             }
         } else {
-            //warning
+            // warning
             $form = "<img src=\"/images/applicable/warning.webp\" alt=\"{applicable_warning_cap}\"><span>{applicable_warning_cap}</span>";
         }
         return $form;
@@ -561,7 +560,10 @@ class FormClass extends CatalogueClass
             $n = $dbc->num_rows($r);
             $arr = [];
             for ($i = 1; $i <= $n; $i++) {
-                $arr[] = ["group_id" => $dbc->result($r, $i - 1, "group_id"), "brand_id" => $dbc->result($r, $i - 1, "brand_id")];
+                $arr[] = [
+                    "group_id" => $dbc->result($r, $i - 1, "group_id"),
+                    "brand_id" => $dbc->result($r, $i - 1, "brand_id")
+                ];
             }
             $form = str_replace("{Tags_brand_1}", $this->getSeoLinkCatalog($arr[0]["group_id"], $arr[0]["brand_id"]), $form);
             $form = str_replace("{Tags_brand_2}", $this->getSeoLinkCatalog($arr[1]["group_id"], $arr[1]["brand_id"]), $form);
@@ -612,8 +614,14 @@ class FormClass extends CatalogueClass
         $catalog_exist = new CatalogExistClass();
         $arr = [];
 
-        $arr[] = ["name" => "{seo_site_toko}", "link" => $catalog->getSiteLink()];
-        $arr[] = ["name" => "{site_catalog}", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/"];
+        $arr[] = [
+            "name" => "{seo_site_toko}",
+            "link" => $catalog->getSiteLink()
+        ];
+        $arr[] = [
+            "name" => "{site_catalog}",
+            "link" => $catalog->getSiteLink() . "$catalog->catalog_link/"
+        ];
 
         $group_id = $catalog->getArticleGroupExist($art_id);
         $brand_name = $catalog->getBrandName($brand_id);
@@ -625,14 +633,23 @@ class FormClass extends CatalogueClass
             $head_name = $catalog_exist->getHeadExistName($head_id);
             $head_link = $catalog_exist->getHeadExistLink($head_id);
 
-            $arr[] = ["name" => "$head_name", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$head_link/"];
+            $arr[] = [
+                "name" => "$head_name",
+                "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$head_link/"
+            ];
 
             $group_name = $catalog->getGroupRowName($group_id);
             $group_link = $catalog->getGroupRowLink($group_id);
 
-            $arr[] = ["name" => "$group_name", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$group_link/"];
+            $arr[] = [
+                "name" => "$group_name",
+                "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$group_link/"
+            ];
 
-            $arr[] = ["name" => "$group_name $brand_name", "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$group_link/brandy=$brand_link/"];
+            $arr[] = [
+                "name" => "$group_name $brand_name",
+                "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$group_link/brandy=$brand_link/"
+            ];
         }
 
         $article_text = "$article_name $brand_name $article_nr_displ";
@@ -640,7 +657,10 @@ class FormClass extends CatalogueClass
         $format_article_search = $this->getFormatAticle($article_nr_displ);
         $format_brand_name = $this->getFormatBrand($this->getBrandName($brand_id));
 
-        $arr[] = ["name" => "$article_text", "link" => $catalog->getSiteLink() . "$catalog->products_link/$format_article_search-$format_brand_name-$art_id/"];
+        $arr[] = [
+            "name" => "$article_text",
+            "link" => $catalog->getSiteLink() . "$catalog->products_link/$format_article_search-$format_brand_name-$art_id/"
+        ];
 
         return $arr;
     }
@@ -721,34 +741,34 @@ class FormClass extends CatalogueClass
 
         $arr = $this->multiSort($arr, "delivery_days", "price");
 
-        $article_nr_displ = $arr[0]["article_nr_displ"];
-        $brand_id = $arr[0]["brand_id"];
-        $brand_name = $arr[0]["brand_name"];
-        $article_name = $arr[0]["article_name"];
-        $stock = $arr[0]["stock"];
-        $real_stock = $arr[0]["real_stock"];
-        $delivery_short_info = $arr[0]["delivery_short_info"];
-        $price = $arr[0]["price"];
-        $cur_cap = $arr[0]["cur_cap"];
-        $delivery_days = $arr[0]["delivery_days"];
-        $basket = $arr[0]["basket"];
-        $suppl_id = $arr[0]["suppl_id"];
-        $storage_id = $arr[0]["storage_id"];
+        $article_nr_displ       = $arr[0]["article_nr_displ"];
+        $brand_id               = $arr[0]["brand_id"];
+        $brand_name             = $arr[0]["brand_name"];
+        $article_name           = $arr[0]["article_name"];
+        $stock                  = $arr[0]["stock"];
+        $real_stock             = $arr[0]["real_stock"];
+        $delivery_short_info    = $arr[0]["delivery_short_info"];
+        $price                  = $arr[0]["price"];
+        $cur_cap                = $arr[0]["cur_cap"];
+        $delivery_days          = $arr[0]["delivery_days"];
+        $basket                 = $arr[0]["basket"];
+        $suppl_id               = $arr[0]["suppl_id"];
+        $storage_id             = $arr[0]["storage_id"];
 
         return [
-            "article_nr_displ" => $article_nr_displ,
-            "brand_id" => $brand_id,
-            "brand_name" => $brand_name,
-            "article_name" => $article_name,
-            "stock" => $stock,
-            "real_stock" => $real_stock,
-            "delivery" => $delivery_short_info,
-            "price" => $price,
-            "currency" => $cur_cap,
-            "delivery_days" => $delivery_days,
-            "basket" => $basket,
-            "suppl_id" => $suppl_id,
-            "storage_id" => $storage_id
+            "article_nr_displ"  => $article_nr_displ,
+            "brand_id"          => $brand_id,
+            "brand_name"        => $brand_name,
+            "article_name"      => $article_name,
+            "stock"             => $stock,
+            "real_stock"        => $real_stock,
+            "delivery"          => $delivery_short_info,
+            "price"             => $price,
+            "currency"          => $cur_cap,
+            "delivery_days"     => $delivery_days,
+            "basket"            => $basket,
+            "suppl_id"          => $suppl_id,
+            "storage_id"        => $storage_id
         ];
     }
 
@@ -993,13 +1013,14 @@ class FormClass extends CatalogueClass
     {
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
-        $nophoto = $this->noPhoto;
-        $list = "";
-        $article_name = $this->getArticleSearch($art_id);
-        $brand_id = $this->getArticleBrand($art_id);
-        $format_name = $this->getFormatAticle($article_name);
-        $brand_link = $this->getBrandLink($brand_id);
-        $arr = [];
+
+        $nophoto        = $this->noPhoto;
+        $list           = "";
+        $article_name   = $this->getArticleSearch($art_id);
+        $brand_id       = $this->getArticleBrand($art_id);
+        $format_name    = $this->getFormatAticle($article_name);
+        $brand_link     = $this->getBrandLink($brand_id);
+        $arr            = [];
 
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
         $n = $db->num_rows($r);
@@ -1229,7 +1250,9 @@ class FormClass extends CatalogueClass
         return $list;
     }
 
-    // применяемость на машину
+    /*
+     * применяемость на машину
+     * */
     public function getArticleApplModelForm($art_id, $mfa_id)
     {
         $art_id = $this->getUrlNumber($art_id);

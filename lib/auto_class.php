@@ -334,8 +334,7 @@ class AutoClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("garage/garage");
         $list = $auto_form = "";
-        $query = $this->getAutoGarageData();
-        $r = $db->query($query);
+        $r = $db->query($this->getAutoGarageData());
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -545,9 +544,7 @@ class AutoClass extends CatalogueClass
             }
         }
 
-        $heads = [];
-        $cats = [];
-        $groups = [];
+        $heads = $cats = $groups = [];
 
         foreach ($hh as $head_id => $cc) {
             $heads[] = $head_id;
@@ -576,7 +573,6 @@ class AutoClass extends CatalogueClass
 
         return $form;
     }
-
 
     /*
      * get cars seo content
@@ -703,17 +699,17 @@ class AutoClass extends CatalogueClass
         $catalog = new CatalogueClass();
         $url_text = $this->getSiteLink() . $this->cars_link . "/";
         $car_pict = "";
-        $imgData = $this->getAutoIMG($mfa_id, $model);
+        //$imgData = $this->getAutoIMG($mfa_id, $model);
         if ($mfa_id > 0) {
+            //$car_pict = $imgData["mfa_image"];
+            $car_pict = "https://toko.ua/uploads/images/manufacturers/$car_pict";
             $mfa_link = $catalog->getManufactureLink($mfa_id);
             $url_text .= "$mfa_link/";
-            $car_pict = $imgData["mfa_image"];
-            $car_pict = "https://toko.ua/uploads/images/manufacturers/$car_pict";
             if ($model != "") {
+                //$car_pict = $imgData["model_image"];
+                $car_pict = "https://toko.ua/uploads/images/models/$car_pict";
                 $model_link = $catalog->getModelLink($model);
                 $url_text .= "$model_link/";
-                $car_pict = $imgData["model_image"];
-                $car_pict = "https://toko.ua/uploads/images/models/$car_pict";
             }
         }
         $form = $this->getHtmlForm("article/social");

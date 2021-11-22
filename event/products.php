@@ -1,24 +1,8 @@
 <?php
 
-// PROFILE CATALOGS
-
 $linka = findLinks();
 
-//$path_from = $linka[0] . "/" . $linka[1] . "/";
-//if ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
-//    $path_to = $catalogue->getCatalogRedirectLink($path_from)["redirect_link"];
-//    header("Location: $path_to", TRUE, 301);
-//}
-
 $art_id = intval(substr($linka[1], strrpos($linka[1], "-") + 1));
-
-//$brand_redirect = $catalogue->getBrandNameLink($brand);
-// redirect from brand_name to brand_link
-//if ($brand_redirect > 0) {
-//    $brand_link = $catalogue->getBrandLink($brand_redirect);
-//    $link = $catalogue->getSiteLink() . $catalogue->article_link . "/" . $article_search . "/" . $brand_link . "/" . $art_id . "/";
-//    header("Location: $link", TRUE, 301);
-//}
 
 if ($catalogue->checkArticleExist($art_id) && $art_id > 0) {
     $articleData = $showform->getArticleForm($art_id);
