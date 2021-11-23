@@ -1,6 +1,60 @@
 <?php
 
-$link = "https://toko.ua/";
+$start = microtime(true);
+ob_clean();
+
+define('RDD', dirname (__FILE__));
+error_reporting(0);
+@ini_set('display_errors', false);
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
+@ini_set('display_errors', true);
+date_default_timezone_set("Europe/Kiev");
+ini_set('memory_limit', '2048M');
+
+require_once (RDD . "/lib/DbSingleton.php");
+require_once (RDD . "/lib/mysql_class.php");
+require_once (RDD . "/lib/helper.php");
+require_once (RDD . "/lib/variables.php");
+require_once (RDD . "/lib/catalogue_class.php");
+require_once (RDD . "/lib/catalog_exist_class.php");
+
+$link = "https://toko.ua/uk/";
+$lang = "/ua-uk";
+
+$db = DbSingleton::getTokoDb();
+$dbc = DbSingleton::getTokoCacheDb();
+$catalog = new CatalogueClass();
+$catalog_exist = new CatalogExistClass();
+
+$xmlWriter = new XMLWriter();
+$xmlWriter->openMemory();
+$max_tags_count = 15000;
+$doc_nom = 0;
+$doc_nom_params = 0;
+$doc_nom_models_params = 0;
+
+$mask = RDD . "$lang/sitemap-groups-params-*.*";
+array_map('unlink', glob($mask));
+$mask = RDD . "$lang/sitemap-groups-manufactures-*.*";
+array_map('unlink', glob($mask));
+$mask = RDD . "$lang/sitemap-groups-manufactures-params-*.*";
+array_map('unlink', glob($mask));
+unlink(RDD . "$lang/sitemap.xml");
+unlink(RDD . "$lang/sitemap-pages.xml");
+unlink(RDD . "$lang/sitemap-cars.xml");
+unlink(RDD . "$lang/sitemap-groups.xml");
+
+/*======================================================================================================================
+ * INIT `sitemap-manufactures`
+ * */
+
+$dataArray                  = $catalog_exist->getSitemapArray();
+$arr_modules                = $dataArray["arr_modules"];
+$arr_cars                   = $dataArray["arr_cars"];
+$arr_groups                 = $dataArray["arr_groups"];
+$arr_groups_params          = $dataArray["arr_groups_params"];
+$arr_groups_models          = $dataArray["arr_groups_models"];
+$arr_groups_models_params   = $dataArray["arr_groups_models_params"];
 
 /*======================================================================================================================
  * OUTPUT sitemap-pages
@@ -20,16 +74,16 @@ $xmlWriter->writeElement('priority', '1');
 $xmlWriter->endElement();
 
 // == > MODULES
-foreach ($arr_modules as $module) {
+foreach ($arr_modules as $module_name) {
     $xmlWriter->startElement('url');
-    $xmlWriter->writeElement('loc', $link . $module . "/");
+    $xmlWriter->writeElement('loc', $link . $module_name . "/");
     $xmlWriter->writeElement('changefreq', 'weekly');
     $xmlWriter->writeElement('priority', '0.9');
     $xmlWriter->endElement();
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/sitemap-pages.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "$lang/sitemap-pages.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 /*======================================================================================================================
@@ -46,7 +100,7 @@ foreach ($arr_cars as $mfa_id => $models) {
     $mfa_link = $catalog->getManufactureLink($mfa_id);
     $xmlWriter->setIndent(2);
     $xmlWriter->startElement('url');
-    $xmlWriter->writeElement('loc', "https://toko.ua/cars/$mfa_link/");
+    $xmlWriter->writeElement('loc', $link . "cars/$mfa_link/");
     $xmlWriter->writeElement('changefreq', 'weekly');
     $xmlWriter->writeElement('priority', '0.9');
     $xmlWriter->endElement();
@@ -54,7 +108,7 @@ foreach ($arr_cars as $mfa_id => $models) {
         $model_link = $catalog->getModelLink($model);
         $xmlWriter->setIndent(2);
         $xmlWriter->startElement('url');
-        $xmlWriter->writeElement('loc', "https://toko.ua/cars/$mfa_link/$model_link/");
+        $xmlWriter->writeElement('loc', $link . "cars/$mfa_link/$model_link/");
         $xmlWriter->writeElement('changefreq', 'weekly');
         $xmlWriter->writeElement('priority', '0.9');
         $xmlWriter->endElement();
@@ -62,7 +116,7 @@ foreach ($arr_cars as $mfa_id => $models) {
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/sitemap-cars.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "$lang/sitemap-cars.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 /*======================================================================================================================
@@ -79,19 +133,21 @@ foreach ($arr_groups as $group_id) {
     $tex_link = $catalog->getGroupRowLink($group_id);
     $xmlWriter->setIndent(2);
     $xmlWriter->startElement('url');
-    $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/");
+    $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/");
     $xmlWriter->writeElement('changefreq', 'weekly');
     $xmlWriter->writeElement('priority', '1');
     $xmlWriter->endElement();
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/sitemap-groups.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "$lang/sitemap-groups.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 /*======================================================================================================================
  * OUTPUT sitemap-groups-params
  * */
+
+$col = 0;
 
 $xmlWriter->startDocument('1.0', 'UTF-8');
 $xmlWriter->startElement('urlset');
@@ -111,12 +167,24 @@ foreach ($arr_groups_params as $group_id => $params) {
             $xmlWriter->writeElement('changefreq', 'weekly');
             $xmlWriter->writeElement('priority', '1');
             $xmlWriter->endElement();
+            $col++;
+
+            if (($col % $max_tags_count) == 0) {
+                $xmlWriter->endElement();
+                $doc_nom_params++;
+                file_put_contents(RDD . "$lang/sitemap-groups-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+                $xmlWriter->startElement('urlset');
+                $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+                $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+                $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+            }
         }
     }
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/sitemap-groups-params.xml", $xmlWriter->flush(true), FILE_APPEND);
+$doc_nom_params++;
+file_put_contents(RDD . "$lang/sitemap-groups-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
 
 /*======================================================================================================================
@@ -137,7 +205,7 @@ foreach ($arr_groups_models as $group_id => $mfas) {
         $mfa_link = $catalog->getManufactureLink($mfa_id);
         $xmlWriter->setIndent(2);
         $xmlWriter->startElement('url');
-        $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/");
+        $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/auto/$mfa_link/");
         $xmlWriter->writeElement('changefreq', 'weekly');
         $xmlWriter->writeElement('priority', '0.9');
         $xmlWriter->endElement();
@@ -146,7 +214,7 @@ foreach ($arr_groups_models as $group_id => $mfas) {
         if (($col % $max_tags_count) == 0) {
             $xmlWriter->endElement();
             $doc_nom++;
-            file_put_contents(RDD . "/sitemap-groups-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
+            file_put_contents(RDD . "$lang/sitemap-groups-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
             $xmlWriter->startElement('urlset');
             $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
             $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
@@ -157,7 +225,7 @@ foreach ($arr_groups_models as $group_id => $mfas) {
             $model_link = $catalog->getModelLink($model);
             $xmlWriter->setIndent(2);
             $xmlWriter->startElement('url');
-            $xmlWriter->writeElement('loc', "https://toko.ua/catalog/$tex_link/auto/$mfa_link/$model_link/");
+            $xmlWriter->writeElement('loc', $link . "catalog/$tex_link/auto/$mfa_link/$model_link/");
             $xmlWriter->writeElement('changefreq', 'weekly');
             $xmlWriter->writeElement('priority', '0.9');
             $xmlWriter->endElement();
@@ -166,7 +234,7 @@ foreach ($arr_groups_models as $group_id => $mfas) {
             if (($col % $max_tags_count) == 0) {
                 $xmlWriter->endElement();
                 $doc_nom++;
-                file_put_contents(RDD . "/sitemap-groups-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
+                file_put_contents(RDD . "$lang/sitemap-groups-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
                 $xmlWriter->startElement('urlset');
                 $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
                 $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
@@ -178,9 +246,8 @@ foreach ($arr_groups_models as $group_id => $mfas) {
 
 $xmlWriter->endElement();
 $doc_nom++;
-file_put_contents(RDD . "/sitemap-groups-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "$lang/sitemap-groups-manufactures-$doc_nom.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
-
 
 /*======================================================================================================================
  * OUTPUT sitemap-groups-manufactures-params
@@ -216,8 +283,8 @@ foreach ($arr_groups_models_params as $group_id => $params) {
 
                 if (($col % $max_tags_count) == 0) {
                     $xmlWriter->endElement();
-                    $doc_nom_params++;
-                    file_put_contents(RDD . "/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+                    $doc_nom_models_params++;
+                    file_put_contents(RDD . "$lang/sitemap-manufactures-params-$doc_nom_models_params.xml", $xmlWriter->flush(true), FILE_APPEND);
                     $xmlWriter->startElement('urlset');
                     $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
                     $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
@@ -237,8 +304,8 @@ foreach ($arr_groups_models_params as $group_id => $params) {
 
                     if (($col % $max_tags_count) == 0) {
                         $xmlWriter->endElement();
-                        $doc_nom_params++;
-                        file_put_contents(RDD . "/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+                        $doc_nom_models_params++;
+                        file_put_contents(RDD . "$lang/sitemap-manufactures-params-$doc_nom_models_params.xml", $xmlWriter->flush(true), FILE_APPEND);
                         $xmlWriter->startElement('urlset');
                         $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
                         $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
@@ -253,10 +320,9 @@ foreach ($arr_groups_models_params as $group_id => $params) {
 }
 
 $xmlWriter->endElement();
-$doc_nom_params++;
-file_put_contents(RDD . "/sitemap-manufactures-params-$doc_nom_params.xml", $xmlWriter->flush(true), FILE_APPEND);
+$doc_nom_models_params++;
+file_put_contents(RDD . "$lang/sitemap-manufactures-params-$doc_nom_models_params.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
-
 
 /*======================================================================================================================
  * INIT `sitemap`
@@ -267,33 +333,42 @@ $xmlWriter->startElement('sitemapindex');
 $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
 
 $xmlWriter->startElement('sitemap');
-$xmlWriter->writeElement('loc', "https://toko.ua/sitemap-pages.xml");
+$xmlWriter->writeElement('loc', "https://toko.ua$lang/sitemap-pages.xml");
 $xmlWriter->endElement();
 
 $xmlWriter->startElement('sitemap');
-$xmlWriter->writeElement('loc', "https://toko.ua/sitemap-cars.xml");
+$xmlWriter->writeElement('loc', "https://toko.ua$lang/sitemap-cars.xml");
 $xmlWriter->endElement();
 
 $xmlWriter->startElement('sitemap');
-$xmlWriter->writeElement('loc', "https://toko.ua/sitemap-groups.xml");
+$xmlWriter->writeElement('loc', "https://toko.ua$lang/sitemap-groups.xml");
 $xmlWriter->endElement();
 
-$xmlWriter->startElement('sitemap');
-$xmlWriter->writeElement('loc', "https://toko.ua/sitemap-groups-params.xml");
-$xmlWriter->endElement();
 
 for ($i = 1; $i <= $doc_nom; $i++) {
     $xmlWriter->startElement('sitemap');
-    $xmlWriter->writeElement('loc', "https://toko.ua/sitemap-groups-manufactures-$i.xml");
+    $xmlWriter->writeElement('loc', "https://toko.ua$lang/sitemap-groups-manufactures-$i.xml");
     $xmlWriter->endElement();
 }
 
 for ($i = 1; $i <= $doc_nom_params; $i++) {
     $xmlWriter->startElement('sitemap');
-    $xmlWriter->writeElement('loc', "https://toko.ua/sitemap-groups-manufactures-params-$i.xml");
+    $xmlWriter->writeElement('loc', "https://toko.ua$lang/sitemap-groups-params-$i.xml");
+    $xmlWriter->endElement();
+}
+
+for ($i = 1; $i <= $doc_nom_models_params; $i++) {
+    $xmlWriter->startElement('sitemap');
+    $xmlWriter->writeElement('loc', "https://toko.ua$lang/sitemap-groups-manufactures-params-$i.xml");
     $xmlWriter->endElement();
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/sitemap.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "$lang/sitemap.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();
+
+/*RT==================================================================================================================*/
+
+$time = microtime(true) - $start;
+print "RUN TIME: " . $time;
+

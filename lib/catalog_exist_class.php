@@ -2445,4 +2445,40 @@ class CatalogExistClass extends CatalogueClass
         return compact("arr_modules", "arr_cars", "arr_groups", "arr_groups_params", "arr_groups_models", "arr_groups_models_params");
     }
 
+    public function saveXMLFiles()
+    {
+        $xmlWriter = new XMLWriter();
+        $xmlWriter->openMemory();
+
+        unlink(RDD . "/test-sitemap.xml");
+
+        $xmlWriter->startDocument('1.0', 'UTF-8');
+
+            $xmlWriter->startElement('urlset');
+            $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+            $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
+            $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+                $xmlWriter->startElement('url');
+                $xmlWriter->writeElement('loc', "toko.ua");
+                $xmlWriter->writeElement('changefreq', 'weekly');
+                $xmlWriter->writeElement('priority', '1');
+                $xmlWriter->endElement();
+
+                foreach (range(0, 100) as $i) {
+                    $xmlWriter->startElement('url');
+                    $xmlWriter->writeElement('loc', "toko.ua/$i");
+                    $xmlWriter->writeElement('changefreq', 'weekly');
+                    $xmlWriter->writeElement('priority', '0.9');
+                    $xmlWriter->endElement();
+                }
+
+            $xmlWriter->endElement();
+
+        file_put_contents(RDD . "/test-sitemap.xml", $xmlWriter->flush(true), FILE_APPEND);
+        $xmlWriter->endDocument();
+
+        return true;
+    }
+
 }
