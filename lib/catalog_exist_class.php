@@ -267,7 +267,8 @@ class CatalogExistClass extends CatalogueClass
         $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
 
         if ($this->checkTableParams($group_id) > 0) {
-            $dbc->query("UPDATE `$table_params` SET `status` = 0 WHERE 1;");
+            //$dbc->query("UPDATE `$table_params` SET `status` = 0 WHERE 1;");
+            $dbc->query("DROP TABLE IF EXISTS `$table_params`;");
         }
 
         $params = [];
