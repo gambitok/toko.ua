@@ -62,7 +62,8 @@ class FormClass extends CatalogueClass
         $r = $db->query("SELECT t2b.`BRAND_ID`, t2b.`BRAND_NAME`, t2b.`BRAND_LINK` 
         FROM `T2_BRANDS` t2b 
             LEFT JOIN `T2_BRAND_LINK` t2bl ON t2bl.BRAND_ID = t2b.BRAND_ID
-        WHERE t2b.`VISIBLE` = 1 AND t2bl.descr != '' ORDER BY t2b.`BRAND_NAME` ASC;");
+        WHERE t2b.`VISIBLE` = 1 AND t2bl.descr != '' 
+        ORDER BY t2b.`BRAND_NAME` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $brand_id = $db->result($r, $i - 1, "BRAND_ID");
@@ -159,7 +160,9 @@ class FormClass extends CatalogueClass
             $info = str_replace("{brand_form_link}", trim($db->result($r, 0, "link")), $info);
             $logo_brand = trim($db->result($r, 0, "logo_name"));
             $info = str_replace("{brand_form_logo_class}", ($logo_brand == "") ? "none" : "", $info);
-            $logo_brand = ($logo_brand == "") ? $this->noPhoto : "https://portal.myparts.pro/cdn/brands_files/$logo_brand";
+            $logo_brand = ($logo_brand == "")
+                ? $this->noPhoto
+                : "https://portal.myparts.pro/cdn/brands_files/$logo_brand";
             $info = str_replace("{brand_form_logo_name}", $logo_brand, $info);
             $info = $this->replaceLang($info);
         } else {
@@ -423,14 +426,14 @@ class FormClass extends CatalogueClass
         $list = "";
         $client = new ClientClass();
         $data = $client->getArtsHistory();
-        foreach ($data as $value) {
-            $art_id = $value["art_id"];
-            $list .= $this->getHistoryArtsCard($art_id);
-        }
-        $form = str_replace("{history_range}", $list, $form);
-        $form = $this->replaceLang($form);
-
-        if (empty($data)) {
+        if (!empty($data)) {
+            foreach ($data as $value) {
+                $art_id = $value["art_id"];
+                $list .= $this->getHistoryArtsCard($art_id);
+            }
+            $form = str_replace("{history_range}", $list, $form);
+            $form = $this->replaceLang($form);
+        } else {
             $form = "";
         }
         return $form;

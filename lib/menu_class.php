@@ -64,7 +64,9 @@ class MenuClass extends CatalogueClass
         $nophoto = $this->noPhoto;
         $err1 = $this->err1;
         $date_cur = date("Y-m-d");
-        $r = $db->query("SELECT `id`, `caption`, `short_desc`, `data` FROM `news` WHERE `lang_id` = $language_id AND `data` <= '$date_cur' AND `status` = 1 ORDER BY `data` DESC;");
+        $r = $db->query("SELECT `id`, `caption`, `short_desc`, `data` FROM `news` 
+        WHERE `lang_id` = $language_id AND `data` <= '$date_cur' AND `status` = 1 
+        ORDER BY `data` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -228,15 +230,15 @@ class MenuClass extends CatalogueClass
             array_multisort($far_status, SORT_DESC, $far_article, SORT_ASC, $arr);
 
             for ($i = 0; $i < $n; $i++) {
-                $art_id = $arr[$i]["art_id"];
-                $article_nr_displ = $arr[$i]["article_nr_displ"];
-                $amount = $arr[$i]["amount"];
-                $max_amount = $arr[$i]["max_amount"];
-                $timestamp = $arr[$i]["timestamp"];
-                $data = $arr[$i]["data"];
-                $status = $arr[$i]["status"];
-                $status_new = $arr[$i]["status_new"];
-                $discount = $arr[$i]["discount"];
+                $art_id             = $arr[$i]["art_id"];
+                $article_nr_displ   = $arr[$i]["article_nr_displ"];
+                $amount             = $arr[$i]["amount"];
+                $max_amount         = $arr[$i]["max_amount"];
+                $timestamp          = $arr[$i]["timestamp"];
+                $data               = $arr[$i]["data"];
+                $status             = $arr[$i]["status"];
+                $status_new         = $arr[$i]["status_new"];
+                $discount           = $arr[$i]["discount"];
 
                 $group_arts[] = $art_id;
                 $name = $this->getArticleName($art_id);
@@ -552,10 +554,10 @@ class MenuClass extends CatalogueClass
 
     public function showPopularBrandsCard($image, $brand_name, $link)
     {
-        $form =  $this->getHtmlForm("brands/card");
-        $form =  str_replace("{image}", $image, $form);
-        $form =  str_replace("{brand_name}", $brand_name, $form);
-        $form =  str_replace("{page_link}", $link, $form);
+        $form = $this->getHtmlForm("brands/card");
+        $form = str_replace("{image}", $image, $form);
+        $form = str_replace("{brand_name}", $brand_name, $form);
+        $form = str_replace("{page_link}", $link, $form);
         return $form;
     }
 
@@ -642,12 +644,12 @@ class MenuClass extends CatalogueClass
     public function saveSellerForm($company, $name, $phone, $email, $city_id, $comment)
     {
         $client = new ClientClass();
-        $company = $this->getNameString($company);
-        $name = $this->getNameString($name);
-        $email = $this->getNameString($email);
-        $comment = $this->getNameString($comment);
-        $phone = $client->formatValidPhone($phone);
-        $city_id = $this->getUrlNumber($city_id);
+        $company    = $this->getNameString($company);
+        $name       = $this->getNameString($name);
+        $email      = $this->getNameString($email);
+        $comment    = $this->getNameString($comment);
+        $phone      = $client->formatValidPhone($phone);
+        $city_id    = $this->getUrlNumber($city_id);
         $db = DbSingleton::getDbm();
         $cookie_id = $this->getSessionID();
         $max_bytes = 10485760;

@@ -241,6 +241,7 @@ class AutoClass extends CatalogueClass
         FROM `T_types` 
         WHERE `TYP_ID` = $typ_id AND `ACTIVE` = 1;");
         $n = $db->num_rows($r);
+        $text = "";
         if ($n > 0) {
             $kw_from = $db->result($r, 0, "TYP_KW_FROM");
             $hp_from = $db->result($r, 0, "TYP_HP_FROM");
@@ -258,8 +259,6 @@ class AutoClass extends CatalogueClass
                 $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
             }
             $text = "$full_name ($d_start - $d_end)<br>$fuel, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}, $ccm cm3, $eng_cod";
-        } else {
-            $text = "";
         }
         return $text;
     }
@@ -274,6 +273,7 @@ class AutoClass extends CatalogueClass
         $where = ($user_id == 0) ? "`client_id` = $client_id AND `cookie_id` = '$cookie'" : "`client_id` = $client_id AND `user_id` = $user_id";
         $r = $db->query("SELECT `typ_id` FROM `AUTO_GARAGE` WHERE $where AND `status` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
+        $auto_form = "{choose_auto_first}";
         if ($n > 0) {
             $typ_id = $db->result($r, 0, "typ_id");
             $typ_text = $this->getGroupInfo($typ_id);
@@ -285,8 +285,6 @@ class AutoClass extends CatalogueClass
             $auto_form = str_replace("{model_id_cap}", $model_id_cap, $auto_form);
             $auto_form = str_replace("{models_img}", $model_id_image, $auto_form);
             $auto_form = str_replace("{typ_text}", $typ_text, $auto_form);
-        } else {
-            $auto_form = "{choose_auto_first}";
         }
         return $this->replaceLang($auto_form);
     }
@@ -727,7 +725,7 @@ class AutoClass extends CatalogueClass
         list($mfa_text, $model_text) = $this->getAutoDescrLink($mfa_link, $model_link);
         $translit = $this->getCarManufTranslit($mfa_id, $model);
         return ($mfa_text == "")
-            ? "{spare_parts_catalog_cap}"
+            ? "{site_cars_h1}"
             : $this->replaceLang("{details_on_cap} $mfa_text $model_text $translit");
     }
 

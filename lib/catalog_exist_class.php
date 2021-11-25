@@ -528,6 +528,7 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function initPartsTable($group_id)
     {
+        $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
         $table_available = "EX_TABLE_TREE_AVAILABLE";
@@ -546,6 +547,12 @@ class CatalogExistClass extends CatalogueClass
             SELECT `art_id`, `brand_id`, `price`, `status` FROM `$table_available` WHERE `group_id` = $group_id;");
 
         $dbc->query("ALTER TABLE `$table` ADD INDEX `art_id` (`art_id`);");
+
+        $r = $dbc->query("SELECT `id` FROM `$table` WHERE 1;");
+        $n = $dbc->num_rows($r);
+        if ($n > 0) {
+            $db->query("UPDATE `T2_TREE_GROUP_EXIST` SET `STATUS_CACHE` = 1 WHERE `GROUP_ID` = $group_id LIMIT 1;");
+        }
 
         return "UPDATED $group_id";
     }
@@ -2444,42 +2451,6 @@ class CatalogExistClass extends CatalogueClass
         }
 
         return compact("arr_modules", "arr_cars", "arr_groups", "arr_groups_params", "arr_groups_models", "arr_groups_models_params");
-    }
-
-    public function saveXMLFiles()
-    {
-        $xmlWriter = new XMLWriter();
-        $xmlWriter->openMemory();
-
-        unlink(RDD . "/test-sitemap.xml");
-
-        $xmlWriter->startDocument('1.0', 'UTF-8');
-
-            $xmlWriter->startElement('urlset');
-            $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
-            $xmlWriter->writeAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance");
-            $xmlWriter->writeAttribute('xsi:schemaLocation', "http://www.sitemaps.org/schemas/sitemap/0.9");
-
-                $xmlWriter->startElement('url');
-                $xmlWriter->writeElement('loc', "toko.ua");
-                $xmlWriter->writeElement('changefreq', 'weekly');
-                $xmlWriter->writeElement('priority', '1');
-                $xmlWriter->endElement();
-
-                foreach (range(0, 100) as $i) {
-                    $xmlWriter->startElement('url');
-                    $xmlWriter->writeElement('loc', "toko.ua/$i");
-                    $xmlWriter->writeElement('changefreq', 'weekly');
-                    $xmlWriter->writeElement('priority', '0.9');
-                    $xmlWriter->endElement();
-                }
-
-            $xmlWriter->endElement();
-
-        file_put_contents(RDD . "/test-sitemap.xml", $xmlWriter->flush(true), FILE_APPEND);
-        $xmlWriter->endDocument();
-
-        return true;
     }
 
 }

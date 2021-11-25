@@ -38,16 +38,16 @@ trait Helper
      * */
     public function getUrlString($str)
     {
-        $str = str_replace("'", "", $str);
-        $str = str_replace("`", "", $str);
-        $str = str_replace(",", "", $str);
-        $str = str_replace('"', "", $str);
-        $str = str_replace("%20", " ", $str);
-        $str = str_replace("%22", "", $str);
-        $str = str_replace("%27", "", $str);
-        $str = str_replace("%60", "", $str);
-        $str = str_replace("&nbsp;", "", $str);
-        $str = str_replace("&rsquo;", "", $str);
+        $str = str_replace("'",         "", $str);
+        $str = str_replace("`",         "", $str);
+        $str = str_replace(",",         "", $str);
+        $str = str_replace('"',         "", $str);
+        $str = str_replace("%22",       "", $str);
+        $str = str_replace("%27",       "", $str);
+        $str = str_replace("%60",       "", $str);
+        $str = str_replace("&nbsp;",    "", $str);
+        $str = str_replace("&rsquo;",   "", $str);
+        $str = str_replace("%20",       " ", $str);
         return $str;
     }
 
@@ -56,14 +56,14 @@ trait Helper
      * */
     public function getNameString($str)
     {
-        $str = str_replace("'", "", $str);
-        $str = str_replace("`", "", $str);
-        $str = str_replace('"', "", $str);
-        $str = str_replace("%20", " ", $str);
-        $str = str_replace("%22", "", $str);
-        $str = str_replace("%27", "", $str);
-        $str = str_replace("%60", "", $str);
-        $str = str_replace("&rsquo;", "", $str);
+        $str = str_replace("'",         "", $str);
+        $str = str_replace("`",         "", $str);
+        $str = str_replace('"',         "", $str);
+        $str = str_replace("%22",       "", $str);
+        $str = str_replace("%27",       "", $str);
+        $str = str_replace("%60",       "", $str);
+        $str = str_replace("&rsquo;",   "", $str);
+        $str = str_replace("%20",       " ", $str);
         return $str;
     }
 
@@ -118,11 +118,8 @@ trait Helper
 
     public function getSiteLink()
     {
-        $link = "https://toko.ua/";
         $language = new LangClass();
-        $postfix = $language->getLangIDPrefix($this->getLanguage());
-        $link .= $postfix;
-        return $link;
+        return "https://toko.ua/" . $language->getLangIDPrefix($this->getLanguage());
     }
 
     public function getLanguage()
@@ -246,15 +243,15 @@ trait Helper
      * */
     public function getOfferCap($i)
     {
-        $caption_1 = "{offer_cap}";
-        $caption_2 = "{offer_pair_cap}";
-        $caption_3 = "{offer_tenths_cap}";
-        $caption = "";
-        $mas1 = [1];
-        $mas2 = [2, 3, 4];
-        $mas3 = [0, 5, 6, 7, 8, 9];
-        $mas4 = [11, 12, 13, 14, 15, 16, 17, 18, 19];
-        $mod = $i % 10;
+        $caption_1  = "{offer_cap}";
+        $caption_2  = "{offer_pair_cap}";
+        $caption_3  = "{offer_tenths_cap}";
+        $caption    = "";
+        $mas1       = [1];
+        $mas2       = [2, 3, 4];
+        $mas3       = [0, 5, 6, 7, 8, 9];
+        $mas4       = [11, 12, 13, 14, 15, 16, 17, 18, 19];
+        $mod        = $i % 10;
         if (in_array($mod, $mas1)) {
             $caption = $caption_1;
         }
@@ -272,15 +269,15 @@ trait Helper
      * */
     public function getGoodsCap($i)
     {
-        $caption_1 = "{goods_cap}";
-        $caption_2 = "{goods_pair_cap}";
-        $caption_3 = "{goods_tenths_cap}";
-        $caption = "";
-        $mas1 = [1];
-        $mas2 = [2, 3, 4];
-        $mas3 = [0, 5, 6, 7, 8, 9];
-        $mas4 = [11, 12, 13, 14, 15, 16, 17, 18, 19];
-        $mod = $i % 10;
+        $caption_1  = "{goods_cap}";
+        $caption_2  = "{goods_pair_cap}";
+        $caption_3  = "{goods_tenths_cap}";
+        $caption    = "";
+        $mas1       = [1];
+        $mas2       = [2, 3, 4];
+        $mas3       = [0, 5, 6, 7, 8, 9];
+        $mas4       = [11, 12, 13, 14, 15, 16, 17, 18, 19];
+        $mod        = $i % 10;
         if (in_array($mod, $mas1)) {
             $caption = $caption_1;
         }
@@ -310,8 +307,8 @@ trait Helper
      * */
     public function getStaticH1($uri)
     {
-        $static_data = include $_SERVER["DOCUMENT_ROOT"] . '/seoshield-client/data/static_meta.cache.php';
         $static_h1 = "";
+        $static_data = include $_SERVER["DOCUMENT_ROOT"] . '/seoshield-client/data/static_meta.cache.php';
         if (isset($static_data['//' . $_SERVER["HTTP_HOST"] . $uri])) {
             $static_h1 = $static_data['//' . $_SERVER["HTTP_HOST"] . $uri][2];
         }

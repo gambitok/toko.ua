@@ -2722,9 +2722,9 @@ class CatalogueClass
             $group_name = $this->getGroupRowText($group_id);
             $group_link = $this->getGroupRowLink($group_id);
             $group_image = $this->getGroupRowImage($group_id);
-            if ($this->checkTable($group_id)) {
-                $groups[] = compact("group_name", "group_link", "group_image");
-            }
+            //if ($this->checkTable($group_id)) {
+            $groups[] = compact("group_name", "group_link", "group_image");
+            //}
         }
         if ($cat_id == 0) {
             $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `POPULAR` = 1 AND $where_2;");
