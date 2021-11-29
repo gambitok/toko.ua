@@ -266,10 +266,10 @@ class CatalogExistClass extends CatalogueClass
         $table = "EX_TABLE_TREE_$group_id";
         $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
 
-        if ($this->checkTableParams($group_id) > 0) {
+//        if ($this->checkTableParams($group_id) > 0) {
             //$dbc->query("UPDATE `$table_params` SET `status` = 0 WHERE 1;");
             $dbc->query("DROP TABLE IF EXISTS `$table_params`;");
-        }
+//        }
 
         $params = [];
         $params_str = "";
@@ -915,17 +915,27 @@ class CatalogExistClass extends CatalogueClass
     /*
      * get count parts from all group
      * */
-    public function getPartsCountGroup($group_id, $params, $where_link_arts = "")
+    public function getPartsCountGroup($group_id, $params, $where_link_arts = "", $mfa_id = 0, $model = "")
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
         $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
+        $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
         $n = 0;
         $r = $dbc->query("SHOW TABLES LIKE '$table_params';");
         $nc = $dbc->num_rows($r);
         if ($nc > 0) {
             if (empty($params)) {
-                $r = $dbc->query("SELECT COUNT(t.`art_id`) as count_arts FROM `$table` t WHERE 1 $where_link_arts ;");
+                // with selected car (typ_id)
+                if ($mfa_id == 0) {
+                    $r = $dbc->query("SELECT COUNT(t.`art_id`) as count_arts FROM `$table` t WHERE 1 $where_link_arts ;");
+                }
+                // no selected car, selected just mfa_id / model
+                elseif ($model == "") {
+                    $r = $dbc->query("SELECT COUNT(ex.art_id) as count_arts FROM ( SELECT t.art_id FROM `$table_mfa` t WHERE t.`mfa_id` = $mfa_id GROUP BY t.`art_id` ) as ex;");
+                } else {
+                    $r = $dbc->query("SELECT COUNT(t.`art_id`) as count_arts FROM `$table_mfa` t WHERE t.`mfa_id` = $mfa_id AND t.`model` = '$model';");
+                }
             } else {
                 $where = $this->getFiltersWhere($params);
                 $r = $dbc->query("SELECT SUM(ex.col_arts) as count_arts FROM (
@@ -1121,7 +1131,7 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{filters_count}", $filters_count, $form);
             $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);
             $form = str_replace("{parts_cars}", $this->drawLoader(), $form);
-            $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $params, $status_auto, $status_auto_type, $typ_id), $form);
+            $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $params, $status_auto, $status_auto_type, $typ_id, $mfa_id, $model), $form);
             $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $params, $h1_text, $mfa_id, $model, $status_auto, $status_auto_type, $typ_id), $form);
             $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
         }
@@ -1552,40 +1562,74 @@ class CatalogExistClass extends CatalogueClass
     /*
      * show param cars form
      * */
-    public function getPartsCatalogueParamsCars($group_id, $params, $status_auto = 0, $status_auto_type = 0, $typ_id = 0)
+    public function getPartsCatalogueParamsCars($group_id, $params, $status_auto = 0, $status_auto_type = 0, $typ_id = 0, $mfa_id = 0, $model = "")
     {
         $automan = new AutoClass();
         $form = "";
-        if ($status_auto == 1 && $typ_id != "") {
-            $car_checked = $all_checked = $car_count = $all_count = "";
-            list($mfa_id, $model) = $automan->getCarInfo($typ_id);
-            $mfa_name = $automan->getMfaBrand($mfa_id);
-            $typ_text = "$mfa_name $model";
-            // all
-            if ($status_auto_type == 0) {
-                $car_checked = "<i class=\"fas fa-circle unchecked\"></i>";
-                $all_checked = "<i class=\"fas fa-check-circle checked\"></i>";
-                $where_link_arts = "";
-                $typ_arts = $this->getPartsCatalogueAuto($typ_id);
-                if (!empty($typ_arts)) {
-                    $where_link_arts = " AND t.art_id IN (" . implode(",", $typ_arts) . ") ";
+        if ($status_auto == 1) {
+            if ($typ_id != "") {
+                $car_checked = $all_checked = $car_count = $all_count = "";
+                list($mfa_id_typ, $model_typ) = $automan->getCarInfo($typ_id);
+                $mfa_name = $automan->getMfaBrand($mfa_id_typ);
+                $typ_text = "$mfa_name $model_typ";
+                // all
+                if ($status_auto_type == 0) {
+                    $car_checked = "<i class=\"fas fa-circle unchecked\"></i>";
+                    $all_checked = "<i class=\"fas fa-check-circle checked\"></i>";
+                    $where_link_arts = "";
+                    $typ_arts = $this->getPartsCatalogueAuto($typ_id);
+                    if (!empty($typ_arts)) {
+                        $where_link_arts = " AND t.art_id IN (" . implode(",", $typ_arts) . ") ";
+                    }
+                    $count = $this->getPartsCountGroup($group_id, $params, $where_link_arts);
+                    $car_count = "($count)";
                 }
-                $count = $this->getPartsCountGroup($group_id, $params, $where_link_arts);
-                $car_count = "($count)";
+                // checked car
+                if ($status_auto_type == 1) {
+                    $car_checked = "<i class=\"fas fa-check-circle checked\"></i>";
+                    $all_checked = "<i class=\"fas fa-circle unchecked\"></i>";
+                    $count = $this->getPartsCountGroup($group_id, $params);
+                    $all_count = "($count)";
+                }
+                $form = $this->getHtmlForm("catalog_exist/params_cars");
+                $form = str_replace("{typ_text}", $typ_text, $form);
+                $form = str_replace("{on_car_checked}", $car_checked, $form);
+                $form = str_replace("{on_car_count}", $car_count, $form);
+                $form = str_replace("{on_all_checked}", $all_checked, $form);
+                $form = str_replace("{on_all_count}", $all_count, $form);
             }
-            // checked car
-            if ($status_auto_type == 1) {
-                $car_checked = "<i class=\"fas fa-check-circle checked\"></i>";
-                $all_checked = "<i class=\"fas fa-circle unchecked\"></i>";
-                $count = $this->getPartsCountGroup($group_id, $params);
-                $all_count = "($count)";
+
+            elseif ($mfa_id > 0) {
+                $car_checked = $all_checked = $car_count = $all_count = "";
+                $mfa_name = $automan->getMfaBrand($mfa_id);
+                $typ_text = "$mfa_name $model";
+
+                if ($status_auto_type == 0) {
+                    $car_checked = "<i class=\"fas fa-circle unchecked\"></i>";
+                    $all_checked = "<i class=\"fas fa-check-circle checked\"></i>";
+                    $where_link_arts = "";
+                    $typ_arts = $this->getPartsCatalogueAuto($typ_id);
+                    if (!empty($typ_arts)) {
+                        $where_link_arts = " AND t.art_id IN (" . implode(",", $typ_arts) . ") ";
+                    }
+                    $count = $this->getPartsCountGroup($group_id, $params, $where_link_arts, $mfa_id, $model);
+                    $car_count = "($count)";
+                }
+                if ($status_auto_type == 1) {
+                    $car_checked = "<i class=\"fas fa-check-circle checked\"></i>";
+                    $all_checked = "<i class=\"fas fa-circle unchecked\"></i>";
+                    $count = $this->getPartsCountGroup($group_id, $params);
+                    $all_count = "($count)";
+                }
+
+                $form = $this->getHtmlForm("catalog_exist/params_cars");
+                $form = str_replace("{typ_text}", $typ_text, $form);
+                $form = str_replace("{on_car_checked}", $car_checked, $form);
+                $form = str_replace("{on_car_count}", $car_count, $form);
+                $form = str_replace("{on_all_checked}", $all_checked, $form);
+                $form = str_replace("{on_all_count}", $all_count, $form);
             }
-            $form = $this->getHtmlForm("catalog_exist/params_cars");
-            $form = str_replace("{typ_text}", $typ_text, $form);
-            $form = str_replace("{on_car_checked}", $car_checked, $form);
-            $form = str_replace("{on_car_count}", $car_count, $form);
-            $form = str_replace("{on_all_checked}", $all_checked, $form);
-            $form = str_replace("{on_all_count}", $all_count, $form);
+
         }
         return $form;
     }

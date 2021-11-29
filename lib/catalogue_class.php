@@ -2546,6 +2546,14 @@ class CatalogueClass
         return $db->result($r, 0, "TEX_$postfix");
     }
 
+    public function getGroupRowStatusAuto($group_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT `STATUS_AUTO` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
+        return $db->result($r, 0, "STATUS_AUTO");
+    }
+
     public function getGroupRowLink($group_id)
     {
         $group_id = $this->getUrlNumber($group_id);
@@ -2704,6 +2712,7 @@ class CatalogueClass
     public function getCatalogColListGroup($head_id, $cat_id, $mfa_link = "", $model_link = "", $groups_sel = [], $brand_id = 0)
     {
         $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
         $groups = [];
         $where_1 = "1";
         $where_2 = "1";
@@ -2712,31 +2721,43 @@ class CatalogueClass
             $where_1 = "t2hcg.`GROUP_ID` IN ($groups_sel_str)";
             $where_2 = "`GROUP_ID` IN ($groups_sel_str)";
         }
-        $r = $db->query("SELECT t2hcg.`GROUP_ID` 
+        $r = $db->query("SELECT t2hcg.`GROUP_ID`
         FROM `T2_TREE_HCG_EXIST` t2hcg
             LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON (t2g.GROUP_ID = t2hcg.GROUP_ID)
         WHERE t2hcg.`HEAD_ID` = $head_id AND t2hcg.`CAT_ID` = $cat_id AND t2g.`STATUS` = 1 AND $where_1;");
         $n = $db->num_rows($r);
+        $gg = [];
         for ($i = 1; $i <= $n; $i++) {
-            $group_id = $db->result($r, $i - 1, "GROUP_ID");
-            $group_name = $this->getGroupRowText($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
-            $group_image = $this->getGroupRowImage($group_id);
-            //if ($this->checkTable($group_id)) {
-            $groups[] = compact("group_name", "group_link", "group_image");
-            //}
+            $group_id = $dbc->result($r, $i - 1, "GROUP_ID");
+            $gg[] = $group_id;
         }
+
         if ($cat_id == 0) {
             $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `POPULAR` = 1 AND $where_2;");
             $n = $db->num_rows($r);
+            $gg = [];
             for ($i = 1; $i <= $n; $i++) {
-                $group_id = $db->result($r, $i - 1, "GROUP_ID");
-                $group_name = $this->getGroupRowName($group_id);
-                $group_link = $this->getGroupRowLink($group_id);
-                $group_image = $this->getGroupRowImage($group_id);
-                $groups[] = compact("group_name", "group_link", "group_image");
+                $group_id = $dbc->result($r, $i - 1, "GROUP_ID");
+                $gg[] = $group_id;
             }
         }
+
+        $where_gg = "1";
+        if (!empty($gg)) {
+            $where_gg = "`group_id` IN (" . implode(",", $gg) . ")";
+        }
+
+        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE $where_gg GROUP BY `group_id`;");
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $dbc->result($r, $i - 1, "group_id");
+            $group_name = $this->getGroupRowText($group_id);
+            $group_link = $this->getGroupRowLink($group_id);
+            $group_image = $this->getGroupRowImage($group_id);
+            $status_auto = $this->getGroupRowStatusAuto($group_id);
+            $groups[] = compact("group_name", "group_link", "group_image", "status_auto");
+        }
+
         return $this->getCatalogColListGroupList($groups, $mfa_link, $model_link, $brand_id);
     }
 
@@ -2751,13 +2772,18 @@ class CatalogueClass
             $group_name = $value["group_name"];
             $group_link = $value["group_link"];
             $group_image = $value["group_image"];
+            $status_auto = $value["status_auto"];
             $link = "";
-            if ($mfa_link != "") {
-                $link .= "auto/$mfa_link/";
-                if ($model_link != "") {
-                    $link .= "$model_link/";
+
+            if ($status_auto != 2) {
+                if ($mfa_link != "") {
+                    $link .= "auto/$mfa_link/";
+                    if ($model_link != "") {
+                        $link .= "$model_link/";
+                    }
                 }
             }
+
             if ($brand_id > 0) {
                 $brand_link = $this->getBrandLink($brand_id);
                 $link .= "brandy=$brand_link/";

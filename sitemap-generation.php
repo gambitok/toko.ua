@@ -1,15 +1,13 @@
 <?php
 
 $start = microtime(true);
-ob_clean();
 
-define('RDD', dirname (__FILE__));
-error_reporting(0);
-@ini_set('display_errors', false);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 @ini_set('display_errors', true);
 date_default_timezone_set("Europe/Kiev");
 ini_set('memory_limit', '2048M');
+
+define('RDD', dirname (__FILE__));
 
 require_once (RDD . "/lib/DbSingleton.php");
 require_once (RDD . "/lib/mysql_class.php");
@@ -39,13 +37,14 @@ $mask = RDD . "$lang/sitemap-groups-manufactures-*.*";
 array_map('unlink', glob($mask));
 $mask = RDD . "$lang/sitemap-groups-manufactures-params-*.*";
 array_map('unlink', glob($mask));
-unlink(RDD . "$lang/sitemap.xml");
-unlink(RDD . "$lang/sitemap-pages.xml");
-unlink(RDD . "$lang/sitemap-cars.xml");
-unlink(RDD . "$lang/sitemap-groups.xml");
+unlink(RDD . "$lang/sitemap-pages.*");
+unlink(RDD . "$lang/sitemap-cars.*");
+unlink(RDD . "$lang/sitemap-groups.*");
+unlink(RDD . "$lang/sitemap.*");
 
 /*======================================================================================================================
-*/
+ * INIT DATA
+ * */
 
 $dataArray                  = $catalog_exist->getSitemapArray();
 $arr_modules                = $dataArray["arr_modules"];
@@ -378,6 +377,17 @@ $xmlWriter->endDocument();
 
 /*RT==================================================================================================================*/
 
+$mask = RDD . "$lang_ua/sitemap-groups-params-*.*";
+array_map('unlink', glob($mask));
+$mask = RDD . "$lang_ua/sitemap-groups-manufactures-*.*";
+array_map('unlink', glob($mask));
+$mask = RDD . "$lang_ua/sitemap-groups-manufactures-params-*.*";
+array_map('unlink', glob($mask));
+unlink(RDD . "$lang_ua/sitemap-pages.*");
+unlink(RDD . "$lang_ua/sitemap-cars.*");
+unlink(RDD . "$lang_ua/sitemap-groups.*");
+unlink(RDD . "$lang_ua/sitemap.*");
+
 /*======================================================================================================================
  * OUTPUT sitemap-pages
  * */
@@ -670,7 +680,6 @@ $xmlWriter->endElement();
 $xmlWriter->startElement('sitemap');
 $xmlWriter->writeElement('loc', "https://toko.ua$lang_ua/sitemap-groups.xml");
 $xmlWriter->endElement();
-
 
 for ($i = 1; $i <= $doc_nom; $i++) {
     if (file_exists(RDD . "$lang_ua/sitemap-groups-manufactures-$i.xml")) {

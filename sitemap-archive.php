@@ -1,0 +1,47 @@
+<?php
+
+$xmlWriter = new XMLWriter();
+$xmlWriter->openMemory();
+
+define('RDD', dirname (__FILE__));
+
+$names = [
+    RDD . "/sitemap-pages.xml",
+    RDD . "/sitemap-cars.xml",
+    RDD . "/sitemap-groups.xml"
+];
+foreach (glob(RDD . "/sitemap-groups-params-*.*") as $file) {
+    $names[] = $file;
+}
+foreach (glob(RDD . "/sitemap-groups-manufactures-*.*") as $file) {
+    $names[] = $file;
+}
+foreach (glob(RDD . "/sitemap-groups-manufactures-params-*.*") as $file) {
+    $names[] = $file;
+}
+
+unlink(RDD . "/sitemap.xml");
+
+$xmlWriter->startDocument('1.0', 'UTF-8');
+$xmlWriter->startElement('sitemapindex');
+$xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+foreach ($names as $file) {
+    if (file_exists($file)) {
+        $data = file_get_contents($file);
+        $gzdata = gzencode($data);
+        $new_file = str_replace(".xml", ".xml.gz", $file);
+        file_put_contents($new_file, $gzdata);
+        unlink($file);
+
+        $new_path = str_replace("/var/www/toko.ua/", "https://toko.ua/", $new_file);
+
+        $xmlWriter->startElement('sitemap');
+        $xmlWriter->writeElement('loc', $new_path);
+        $xmlWriter->endElement();
+    }
+}
+
+$xmlWriter->endElement();
+file_put_contents(RDD . "/sitemap.xml", $xmlWriter->flush(true), FILE_APPEND);
+$xmlWriter->endDocument();
