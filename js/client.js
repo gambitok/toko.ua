@@ -222,7 +222,7 @@ function showProfileAccount() {
 function showProfileOrders() {
     window.history.pushState("orders", "Profile", "/profile/orders/");
     $("#radio_orders").prop("checked", true);
-    $("#profile_orders").html("<div class=\"loader\"></div>");
+    $("#profile_orders").html($("#profile-loader").html());
     JsHttpRequest.query(folder,{'w':'showProfileOrders'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#profile_orders").html(result.content);
@@ -231,7 +231,7 @@ function showProfileOrders() {
 
 function showProfileOrdersArts(dp_id, order_id) {
     $("#radio_orders_arts").prop("checked", true);
-    $("#profile_orders").html("<div class=\"loader\"></div>");
+    $("#profile_orders").html($("#profile-loader").html());
     JsHttpRequest.query(folder,{'w':'showProfileOrdersArts', 'dp_id':dp_id, 'order_id':order_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#profile_orders").html(result.content);

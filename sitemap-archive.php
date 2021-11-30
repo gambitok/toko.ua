@@ -5,22 +5,26 @@ $xmlWriter->openMemory();
 
 define('RDD', dirname (__FILE__));
 
+$lang = "";
+
 $names = [
-    RDD . "/sitemap-pages.xml",
-    RDD . "/sitemap-cars.xml",
-    RDD . "/sitemap-groups.xml"
+    RDD . "$lang/sitemap-pages.xml",
+    RDD . "$lang/sitemap-cars.xml",
+    RDD . "$lang/sitemap-groups.xml"
 ];
-foreach (glob(RDD . "/sitemap-groups-params-*.*") as $file) {
+foreach (glob(RDD . "$lang/sitemap-groups-params-*.*") as $file) {
     $names[] = $file;
 }
-foreach (glob(RDD . "/sitemap-groups-manufactures-*.*") as $file) {
+foreach (glob(RDD . "$lang/sitemap-groups-manufactures-*.*") as $file) {
     $names[] = $file;
 }
-foreach (glob(RDD . "/sitemap-groups-manufactures-params-*.*") as $file) {
+foreach (glob(RDD . "$lang/sitemap-groups-manufactures-params-*.*") as $file) {
     $names[] = $file;
 }
 
-unlink(RDD . "/sitemap.xml");
+$names = array_unique($names);
+
+unlink(RDD . "$lang/sitemap.xml");
 
 $xmlWriter->startDocument('1.0', 'UTF-8');
 $xmlWriter->startElement('sitemapindex');
@@ -34,7 +38,7 @@ foreach ($names as $file) {
         file_put_contents($new_file, $gzdata);
         unlink($file);
 
-        $new_path = str_replace("/var/www/toko.ua/", "https://toko.ua/", $new_file);
+        $new_path = str_replace("/var/www/toko.ua$lang/", "https://toko.ua$lang/", $new_file);
 
         $xmlWriter->startElement('sitemap');
         $xmlWriter->writeElement('loc', $new_path);
@@ -43,5 +47,5 @@ foreach ($names as $file) {
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "/sitemap.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "$lang/sitemap.xml", $xmlWriter->flush(true), FILE_APPEND);
 $xmlWriter->endDocument();

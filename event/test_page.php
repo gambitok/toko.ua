@@ -1,8 +1,9 @@
 <?php
 
-$r = $db->query("SELECT `caption_utf` FROM `new_lang_wdv_utf` WHERE `id` = 1 LIMIT 1;");
+$date = date("Y-m-d H:i:s");
+$date_sel = date("Y-m-d H:i:s", (strtotime("-15 day" , strtotime($date))));
 
-print($db->result($r, 0, "caption_utf"));
+print($date_sel);
 
 
 

@@ -368,7 +368,7 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_basket}", $articleData["basket"], $form);
 
         $article_info_form = $this->getArticleInfoForm($art_id, 0, 1);
-        $form = str_replace("{art_info}", ($article_info_form != "") ? $article_info_form : $this->err1 , $form);
+        $form = str_replace("{art_info}", ($article_info_form != "") ? $article_info_form : $this->err1, $form);
 
         $brand_form = $this->showBrandForm($brand_id);
         $form = str_replace("{brand_info}", ($brand_form != "") ? $brand_form : $this->err1, $form);
@@ -383,7 +383,10 @@ class FormClass extends CatalogueClass
         $form = str_replace("{stock}", $articleData["real_stock"], $form);
 
         $main_article_photo = $this->getArticlePhoto($art_id);
-        $form = str_replace("{art_main_image}", ($main_article_photo == "") ? $this->noPhoto : "https://toko.ua/uploads/images/catalogue/" . $main_article_photo, $form);
+        $form = str_replace("{art_main_image}", ($main_article_photo == "")
+            ? $this->noPhoto
+            : "https://toko.ua/uploads/images/catalogue/" . $main_article_photo
+        , $form);
         $form = str_replace("{article_brand_photo}", $this->showBrandPhoto($brand_id)["logo_name"], $form);
         $form = str_replace("{article_brand_class}", $this->showBrandPhoto($brand_id)["logo_class"], $form);
 
@@ -402,7 +405,10 @@ class FormClass extends CatalogueClass
         $form_photo = $this->getHtmlForm("article/shit");
         $form_photo = str_replace("{images_slide}", $dataPhoto["slide"], $form_photo);
         $form_photo = str_replace("{images_thumbnail}", $dataPhoto["thumbnail"], $form_photo);
-        $form = str_replace("{art_images}", ($dataPhoto["status"] == 1) ? $form_photo : "<div><img style=\"display: block; margin: 0 auto; width: 100%;\" itemprop=\"image\" alt=\"$article_nr_displ\" src=\"$this->noPhoto\"></div>", $form);
+        $form = str_replace("{art_images}", ($dataPhoto["status"] == 1)
+            ? $form_photo
+            : "<div><img style=\"display: block; margin: 0 auto; width: 100%;\" itemprop=\"image\" alt=\"$article_nr_displ\" src=\"$this->noPhoto\"></div>"
+        , $form);
         $form = str_replace("{applicable_form}", $this->getApplicableForm($art_id, $auto_typ_id), $form);
         $form = str_replace("{article_info_row}", $article_info_row, $form);
         $form = str_replace("{article_name}", "$brand_name $article_nr_displ", $form);
@@ -410,11 +416,16 @@ class FormClass extends CatalogueClass
         $form = str_replace("{loader_form}", $this->drawLoader(), $form);
         $form = $this->replaceLang($form);
 
-        $title = $h1 . " {seo_title_article}";
-
         $breadcrumbs = $this->getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id);
 
-        $description = $this->replaceLang("{seo_article_title}");
+//        $title = $h1 . " {seo_title_article}";
+        $title = "{site_products_title}";
+        $title = $this->replaceLang($title);
+        $title = str_replace("{h1_text}", $h1, $title);
+        $title = str_replace("{price_text}", $articleData["price"], $title);
+
+//        $description = $this->replaceLang("{seo_article_title}");
+        $description = $this->replaceLang("{site_products_description}");
         $description = str_replace("{h1_text}", $h1, $description);
 
         return compact("form", "title", "description", "breadcrumbs", "real_stock");

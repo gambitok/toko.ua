@@ -359,11 +359,12 @@ class ProfileClass extends ClientClass
         $client = new ClientClass();
         $form = $this->getHtmlForm("profile/profile_orders");
         $user_id = $this->getUser();
-        $where = "`client_user_id` = $user_id";
         $k = $summ = 0;
         $list = "";
 
-        $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE $where AND `dp_id` > 0;");
+        $date_sel = date("Y-m-d H:i:s", (strtotime("-15 day" , strtotime(date("Y-m-d H:i:s")))));
+
+        $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE `client_user_id` = $user_id AND `dp_id` > 0 AND `data` > '$date_sel' ORDER BY `data` DESC;");
         $nn = $db->num_rows($rr);
         for ($ii = 1; $ii <= $nn; $ii++) {
             $dp_id = $db->result($rr, $ii - 1, "dp_id");
@@ -428,7 +429,7 @@ class ProfileClass extends ClientClass
             }
         }
 
-        $r2 = $db->query("SELECT * FROM `orders_new` WHERE $where AND `dp_id` = 0 AND `status` = 1;");
+        $r2 = $db->query("SELECT * FROM `orders_new` WHERE `client_user_id` = $user_id AND `dp_id` = 0 AND `status` = 1 AND `data` > '$date_sel' ORDER BY `data` DESC;");
         $n2 = $db->num_rows($r2);
         for ($i = 1; $i <= $n2; $i++) {
             $id = $db->result($r2, $i - 1, "id");
@@ -465,6 +466,8 @@ class ProfileClass extends ClientClass
 
     /*
      * show orders (DP) items in client profile
+     * dp_check: dp_id
+     * order_check:
      * */
     public function showProfileOrdersArts($dp_check, $order_check)
     {
@@ -477,26 +480,19 @@ class ProfileClass extends ClientClass
         $form = $this->getHtmlForm("profile/profile_orders_arts");
         $user_id = $this->getUser();
         $client_id = $this->getClient();
+        $date_sel = date("Y-m-d H:i:s", (strtotime("-15 day" , strtotime(date("Y-m-d H:i:s")))));
 
-        if ($dp_check != "") {
-            $dp_arr = explode(",", $dp_check);
-        } else {
-            $dp_arr = $this->getDpClient();
-        }
+        $dp_arr = ($dp_check != "") ? explode(",", $dp_check) : $this->getDpClient();
 
         // Dp orders arts
         if ($order_check == "") {
             for ($jj = 0; $jj < count($dp_arr); $jj++) {
                 $nedp = false;
                 $dp_value = $dp_arr[$jj];
-                if ($dp_check != "") {
-                    $where_dp_client = "WHERE `id` = '$dp_value' AND `client_id` = $client_id";
-                } else {
-                    $where_dp_client = "WHERE `client_id` = $client_id";
-                }
+                $where_dp_client = ($dp_check != "") ? "WHERE `id` = '$dp_value' AND `client_id` = $client_id" : "WHERE `client_id` = $client_id";
+
                 $r = $db->query("SELECT `id`, `prefix` FROM `J_DP` $where_dp_client;");
                 $ndp = $db->num_rows($r);
-
                 if ($ndp > 0) {
                     $dp_id = $db->result($r, 0, "id") + 0;
                     if ($dp_check != "") {
@@ -580,7 +576,7 @@ class ProfileClass extends ClientClass
         // Site orders arts
         if ($dp_check == "") {
             $where_order = ($order_check != "") ? "AND `id` = '$order_check'" : "";
-            $r = $db->query("SELECT `id`, `cash_id` FROM `orders_new` WHERE `client_user_id` = $user_id AND `dp_id` = 0 AND `status` = 1 $where_order;");
+            $r = $db->query("SELECT `id`, `cash_id` FROM `orders_new` WHERE `client_user_id` = $user_id AND `dp_id` = 0 AND `status` = 1 $where_order AND `data` > '$date_sel' ORDER BY `data` DESC;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $order_id = $db->result($r, $i - 1, "id") + 0;
@@ -610,6 +606,7 @@ class ProfileClass extends ClientClass
                 }
             }
         }
+
         $form = str_replace("{orders_range}", $list, $form);
         $form = $this->replaceLang($form);
         return $form;
