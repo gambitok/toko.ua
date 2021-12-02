@@ -563,11 +563,13 @@ class AutoClass extends CatalogueClass
 
         $catalog = new CatalogueClass();
 
-        if (empty($groups)) {
-            $form = "";
-        } else {
-            $form = $catalog->getCatalogColList($mfa_link, $model_link, $heads, $cats, $groups);
-        }
+//        if (empty($groups)) {
+//            $form = "";
+//        } else {
+//            $form = $catalog->getCatalogColList($mfa_link, $model_link, $heads, $cats, $groups);
+//        }
+
+        $form = $catalog->getCatalogColList($mfa_link, $model_link, $heads, $cats);
 
         return $form;
     }
