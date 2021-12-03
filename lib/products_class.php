@@ -21,7 +21,7 @@ class ProductsClass extends CatalogueClass
     {
         $title = "";
         $description = "";
-        $meta_tag = "";
+        $meta_tag = "123";
         $automan = new AutoClass();
         list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
         $h1 = $automan->getCarsTitle($mfa_id, $model);

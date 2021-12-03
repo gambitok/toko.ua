@@ -722,6 +722,27 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    public function getReviewsMetaTags($state_id = 0)
+    {
+        if ($state_id == 0) {
+            $text = $this->replaceLang("{site_reviews}");
+            $text = str_replace("{h1_text}", "{review_state_cap}", $text);
+            $url_text = $this->getSiteLink() . $this->reviews_link . "/";
+            $img_text = "";
+        } else {
+            $dataReview = $this->getReviewsData($state_id);
+            $text = $dataReview["title"];
+            $url_text = $dataReview["url"];
+            $img_text = $dataReview["img"];
+        }
+
+        $form = $this->getHtmlForm("article/social");
+        $form = str_replace("{h1_meta_tag}", $text, $form);
+        $form = str_replace("{url_meta_tag}", $url_text, $form);
+        $form = str_replace("{main_image_cap}", $img_text, $form);
+        return $form;
+    }
+
     public function getReviewsData($state_id)
     {
         $state_id = $this->getUrlNumber($state_id);
@@ -732,9 +753,11 @@ class MenuClass extends CatalogueClass
         $title = $db->result($r, 0, "TITLE_$postfix");
         $title_ru = $db->result($r, 0, "TITLE_RU");
         $text = $db->result($r, 0, "TEXT_$postfix");
+        $img_file = $db->result($r, 0, "IMG");
         $format_title = $this->formatUrlText($title_ru);
         $url = $this->getSiteLink() . "$this->reviews_link/state/$state_id/$format_title/";
-        return compact("title", "text", "date", "url");
+        $img = "https://portal.myparts.pro/uploads/images/saved/$img_file";
+        return compact("title", "text", "date", "url", "img");
     }
 
     /*
@@ -753,15 +776,15 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    public function getReviewsMetaTags($state_id)
-    {
-        $reviewsData = $this->getReviewsData($state_id);
-        $form = $this->getHtmlForm("article/social");
-        $form = str_replace("{h1_meta_tag}", $reviewsData["title"], $form);
-        $form = str_replace("{url_meta_tag}", $reviewsData["url"], $form);
-        $form = str_replace("{main_image_cap}", "", $form);
-        return $form;
-    }
+//    public function getReviewsMetaTags($state_id)
+//    {
+//        $reviewsData = $this->getReviewsData($state_id);
+//        $form = $this->getHtmlForm("article/social");
+//        $form = str_replace("{h1_meta_tag}", $reviewsData["title"], $form);
+//        $form = str_replace("{url_meta_tag}", $reviewsData["url"], $form);
+//        $form = str_replace("{main_image_cap}", "", $form);
+//        return $form;
+//    }
     
     public function replaceTextTags($text, $h1_text = "")
     {

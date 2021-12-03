@@ -2,12 +2,12 @@
 
 $link = $catalogue->getUrlString(findLinks()[1]);
 $title = "";
+$state_id = findLinks()[2];
 if ($link == "") {
     $content = str_replace("{main_window}", $menu->showReviews() . $showform->getHistoryArts(), $content);
     $title = $catalogue->replaceLang("{site_reviews}");
     $title = str_replace("{h1_text}", "{review_state_cap}", $title);
 } elseif ($link == "state") {
-    $state_id = findLinks()[2];
     $content = str_replace("{main_window}", $menu->getReviewsState($state_id) . $showform->getHistoryArts(), $content);
     $content = str_replace("{meta_social_tag}", $menu->getReviewsMetaTags($state_id), $content);
     $title = $catalogue->replaceLang("{site_reviews}");
@@ -15,3 +15,4 @@ if ($link == "") {
 }
 $content = str_replace("{site_title}", $title, $content);
 $content = str_replace("{site_description}", "", $content);
+$content = str_replace("{meta_social_tag}", $menu->getReviewsMetaTags($state_id), $content);

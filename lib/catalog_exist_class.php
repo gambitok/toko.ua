@@ -1053,6 +1053,7 @@ class CatalogExistClass extends CatalogueClass
 
         $check_group = $this->checkTable($group_id);
         $query_limit = ""; $query = "";
+//        $query_min = "";
         $arts = [];
         if ($check_group) {
             if (empty($filters)) {
@@ -1062,6 +1063,11 @@ class CatalogExistClass extends CatalogueClass
                 WHERE 1 $where_mfa $where_link_arts
                 GROUP BY t.art_id
                 $where_sort";
+//                $query_min = "SELECT t.art_id, t.price FROM `$table` t
+//                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
+//                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+//                WHERE 1 $where_mfa $where_link_arts
+//                ORDER BY t.price ASC LIMIT 1;";
             } else {
                 $where = $this->getFiltersWhere($params);
                 $query = "SELECT t.art_id FROM `$table` t
@@ -1070,9 +1076,19 @@ class CatalogExistClass extends CatalogueClass
                 WHERE 1 $where $where_mfa $where_link_arts
                 GROUP BY t.art_id
                 $where_sort";
+//                $query_min = "SELECT t.art_id, t.price FROM `$table` t
+//                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
+//                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+//                WHERE 1 $where $where_mfa $where_link_arts
+//                ORDER BY t.price ASC LIMIT 1;";
             }
             $query_limit = "$query $limit ;";
         }
+
+//        $r = $dbc->query($query_min);
+//        $art_min_id = $dbc->result($r, 0, "art_id");
+//        $min_price = $this->getArticlePriceStorage($art_min_id);
+//        var_dump($min_price);
 
         $r = $dbc->query($query_limit);
         $n = $dbc->num_rows($r);
@@ -1121,12 +1137,14 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{filter_count}", "$filters_count", $form);
             $form = str_replace("{parts_sort}", $this->getPartsSortForm($sort, $source_link), $form);
             $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
+
             $filterData = $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $where_mfa, $where_link_arts);
             $form = str_replace("{parts_params}", $filterData["form"], $form);
 
             $breadcrumbsData = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $h1_text, $source_link, $mfa_id));
             $breadcrumbs_script = $breadcrumbsData["script"];
             $form = str_replace("{parts_breadcrumbs}", $breadcrumbsData["form"], $form);
+
             $form = str_replace("{status_auto}", $status_auto, $form);
             $form = str_replace("{filters_count}", $filters_count, $form);
             $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);

@@ -1,5 +1,44 @@
 <?php
 
+//function getMainRedirects($router)
+//{
+//    $catalogue = new CatalogueClass();
+//
+//    switch ($router) {
+//        case "article":
+//        {
+//            $linka = findLinks();
+//            $article_search = $catalogue->getUrlString($linka[1]);
+//            $brand = $catalogue->getUrlString($linka[2]);
+//            $art_id = $catalogue->getUrlNumber($linka[3]);
+//            $link = $catalogue->getSiteLink() . "products/" . $article_search . "-" . $brand . "-" . $art_id . "/";
+//
+//            header("Location: $link", TRUE, 301);
+//            break;
+//        }
+//        case "details":
+//        {
+//            $link = $catalogue->getUrlString(findLinks()[0]);
+//            $result = explode($link . "/", $_SERVER["REQUEST_URI"], 2);
+//            $link = ltrim($result[1]);
+//
+//            header("Location: $link", TRUE, 301);
+//            break;
+//        }
+//        case "pattern" :
+//        {
+//            $link = $catalogue->getUrlString(findLinks()[0]);
+//            $result = explode($link . "/", $_SERVER["REQUEST_URI"], 2);
+//            $link = ltrim($result[1]);
+//
+//            header("Location: /catalog/$link", TRUE, 301);
+//            break;
+//        }
+//    }
+//
+//    return true;
+//}
+
 function setCookies()
 {
     session_start();
