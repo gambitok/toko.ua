@@ -501,77 +501,130 @@ class AutoClass extends CatalogueClass
         return true;
     }
 
-    public function showMfaCacheGroups($mfa_id, $model, $mfa_link, $model_link)
+    public function getCatalogCacheCol($mfa_id, $model, $mfa_link, $model_link)
     {
-        $mfa_id = $this->getUrlNumber($mfa_id);
-        $model = $this->getUrlString($model);
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
-        $where = "1";
-        if ($model != "") {
-            $where = "`model` = '$model'";
-        }
 
-        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_MFA` WHERE `mfa_id` = $mfa_id AND $where GROUP BY `group_id`;");
-        $n = $dbc->num_rows($r);
-        $groups = [];
-        for ($i = 1; $i <= $n; $i++) {
-            $group_id = $dbc->result($r, $i - 1, "group_id");
-            $groups[] = $group_id;
-        }
-        $r2 = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS_AUTO` = 1 OR `STATUS_AUTO` = 2;");
-        $n2 = $db->num_rows($r2);
-        $groups2 = [];
-        for ($i = 1; $i <= $n2; $i++) {
-            $group_id = $db->result($r2, $i - 1, "GROUP_ID");
-            $groups2[] = $group_id;
-        }
-        $arr = array_merge($groups, $groups2);
-        $arr = array_unique($arr);
-
-        $hh = [];
-        if (!empty($arr)) {
-            $groups_str = implode(",", $arr);
-            $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` IN ($groups_str);");
-            $n = $db->num_rows($r);
-            for ($i = 1; $i <= $n; $i++) {
-                $head_id = $db->result($r, $i - 1, "HEAD_ID");
-                $cat_id = $db->result($r, $i - 1, "CAT_ID");
-                $group_id = $db->result($r, $i - 1, "GROUP_ID");
-                $hh[$head_id][$cat_id][] = $group_id;
-            }
-        }
-
-        $heads = $cats = $groups = [];
-
-        foreach ($hh as $head_id => $cc) {
-            $heads[] = $head_id;
-            if (!empty($cc)) {
-                $cats[] = 0;
-            }
-            foreach ($cc as $cat_id => $gg) {
-                $cats[] = $cat_id;
-                foreach ($gg as $group_id) {
-                    $groups[] = $group_id;
+        $where_mfa = "1";
+        if ($mfa_link != "") {
+            if ($mfa_id > 0) {
+                $where_mfa = " `mfa_id` = $mfa_id";
+                if ($model != "") {
+                    $where_mfa .= " AND `model` = '$model'";
                 }
             }
         }
 
-        $heads = array_unique($heads);
-        $cats = array_unique($cats);
-        $groups = array_unique($groups);
+        $groups = [];
+        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_AVAILABLE_MFA` WHERE $where_mfa ;");
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $dbc->result($r, $i - 1, "group_id");
+            $groups[] = $group_id;
+        }
 
-        $catalog = new CatalogueClass();
+        $groups_str = implode(",", $groups);
+        $arr = [];
+        $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID`, `POPULAR` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` IN ($groups_str);");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $head_id    = $db->result($r, $i - 1, "HEAD_ID");
+            $cat_id     = $db->result($r, $i - 1, "CAT_ID");
+            $group_id   = $db->result($r, $i - 1, "GROUP_ID");
+            $popular    = $db->result($r, $i - 1, "POPULAR");
 
-//        if (empty($groups)) {
-//            $form = "";
-//        } else {
-//            $form = $catalog->getCatalogColList($mfa_link, $model_link, $heads, $cats, $groups);
-//        }
+            $arr[$head_id][$cat_id][] = $group_id;
+            if ($popular == 1) {
+                $arr[$head_id][0][] = $group_id;
+            }
+        }
 
-        $form = $catalog->getCatalogColList($mfa_link, $model_link, $heads, $cats);
+        return $this->getCatalogCacheColShow($arr, $mfa_link, $model_link);
+    }
 
-        return $form;
+    public function getCatalogCacheColShow($arr, $mfa_link, $model_link)
+    {
+        $list = "";
+        $nophoto = $this->noPhoto;
+
+        foreach ($arr as $head_id => $cats) {
+            $head_name  = $this->getHeadRowName($head_id);
+            $head_img   = $this->getHeadRowImage($head_id);
+            $head_text  = $this->getHeadRowText($head_id);
+            $head_link  = $this->getHeadRowLink($head_id);
+
+            $list .= "
+            <div class=\"tree-heads__item\">
+                <input type=\"checkbox\" id=\"toggle-head-$head_id\">
+                <label for=\"toggle-head-$head_id\">
+                    <div id=\"tree_head-$head_id\" class=\"tree-heads__item-header\">
+                        <div class=\"tree-heads__item-text\">
+                            <div class=\"tree-heads__item-title\">
+                                $head_name 
+                            </div>
+                            <div class=\"tree-heads__item-descr\">
+                                $head_text
+                            </div>
+                        </div>
+                        <div class=\"tree-heads__item-image\">
+                            <img data-src=\"/uploads/images/group_tree_head/$head_img\" class=\"lazy\" alt=\"$head_name\" src=\"$nophoto\">
+                        </div>
+                    </div>
+                </label>
+                <div class=\"tree-cat\" style=\"display: none;\">";
+
+            foreach ($cats as $cat_id => $groups) {
+                $cat_name   = $this->getCatRowName($cat_id);
+                $cat_link   = $this->getCatRowLink($cat_id);
+                $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$cat_name</a>";
+                if ($cat_id == 0) {
+                    $link = "
+                    <span>
+                        <span style=\"color: #f44438; margin-right: 5px;\">&bull;</span>
+                        $cat_name 
+                    </span>";
+                }
+                $list .= "
+                <div class=\"tree-cat__item\">
+                    <div class=\"tree-cat__item-title\">
+                        $link
+                    </div>
+                    <div class=\"tree-group\">";
+
+                foreach ($groups as $group_id) {
+                    $group_name = $this->getGroupRowText($group_id);
+                    $group_link = $this->getGroupRowLink($group_id);
+                    $group_img  = $this->getGroupRowImage($group_id);
+                    $status_typ = $this->getGroupRowStatusAuto($group_id);
+
+                    $link = "";
+                    if ($status_typ != 2) {
+                        if ($mfa_link != "") {
+                            $link .= "auto/$mfa_link/";
+                            if ($model_link != "") {
+                                $link .= "$model_link/";
+                            }
+                        }
+                    }
+
+                    $list .= "
+                    <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$link\" class=\"tree-group__item\">
+                        <div class=\"tree-group__item-image\">
+                            <img data-src=\"/images/tree-group/$group_img\" class=\"lazy\" alt=\"$group_name\">
+                        </div>
+                        <div class=\"tree-group__item-text\">
+                            <span>$group_name</span>
+                        </div>
+                    </a>";
+                }
+
+                $list .= "</div></div>";
+            }
+
+            $list .= "</div></div>";
+        }
+        return $list;
     }
 
     /*
@@ -579,17 +632,16 @@ class AutoClass extends CatalogueClass
      * */
     public function getCarsSeoContent($mfa_link, $mod_link = "")
     {
-        $form = $this->getHtmlForm("cars/seo_content");
         $mfa_id = $this->getMfaLink($mfa_link);
-        if ($mfa_link == "") {
-            $mfa_id = "";
-        }
-        $model = $this->getModLink($mod_link);
+        $mfa_id = ($mfa_link == "") ? "" : $mfa_id;
+        $model  = $this->getModLink($mod_link);
         if ($model == "") {
-            $form = str_replace("{seo_list}", $this->getCarsModelList($mfa_id) . $this->showMfaCacheGroups($mfa_id, $model, $mfa_link, $mod_link), $form);
+            $mfa_list = $this->getCarsModelList($mfa_id) . $this->getCatalogCacheCol($mfa_id, $model, $mfa_link, $mod_link);
         } else {
-            $form = str_replace("{seo_list}", $this->showMfaCacheGroups($mfa_id, $model, $mfa_link, $mod_link), $form);
+            $mfa_list = $this->getCatalogCacheCol($mfa_id, $model, $mfa_link, $mod_link);
         }
+        $form = $this->getHtmlForm("cars/seo_content");
+        $form = str_replace("{seo_list}", $mfa_list, $form);
         $form = str_replace("{seo_header}", "", $form);
         return $form;
     }

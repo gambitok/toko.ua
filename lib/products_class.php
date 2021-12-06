@@ -19,9 +19,10 @@ class ProductsClass extends CatalogueClass
 
     public function getCarsForm($mfa_link, $mod_link)
     {
+        $status = 1;
         $title = "";
         $description = "";
-        $meta_tag = "123";
+        $meta_tag = "";
         $automan = new AutoClass();
         list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
         $h1 = $automan->getCarsTitle($mfa_id, $model);
@@ -32,17 +33,18 @@ class ProductsClass extends CatalogueClass
         $automan->getCarsMetaTags($mfa_id, $model, $h1);
         if ($mfa_id > 0) {
             $title = $this->replaceLang("{site_cars_mfa}");
-            $title = str_replace("{h1_text}", $h1, $title);
             $description = $this->replaceLang("{site_cars_mfa_description}");
-            $description = str_replace("{h1_text}", $h1, $description);
             if ($model != "") {
                 $title = $this->replaceLang("{site_cars_model}");
-                $title = str_replace("{h1_text}", $h1, $title);
                 $description = $this->replaceLang("{site_cars_model_description}");
-                $description = str_replace("{h1_text}", $h1, $description);
             }
+            $title = str_replace("{h1_text}", $h1, $title);
+            $description = str_replace("{h1_text}", $h1, $description);
         }
-        return compact("form", "title", "description", "meta_tag");
+        if ($mfa_id == 0 && $mfa_link != "") {
+            $status = 0;
+        }
+        return compact("form", "title", "description", "meta_tag", "status");
     }
 
     public function getCarsSearch($mfa_link = "", $mod_link = "", $group_id = 0)

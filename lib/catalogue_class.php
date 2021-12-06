@@ -2614,11 +2614,11 @@ class CatalogueClass
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
-                $head_id = $db->result($r, $i - 1, "HEAD_ID");
-                $head_name = $this->getHeadRowName($head_id);
-                $head_img = $this->getHeadRowImage($head_id);
-                $head_text = $this->getHeadRowText($head_id);
-                $head_content = $this->getCatalogColListCat($head_id, $mfa_link, $model_link, $cats, $groups, $brand_id);
+                $head_id    = $db->result($r, $i - 1, "HEAD_ID");
+                $head_name  = $this->getHeadRowName($head_id);
+                $head_img   = $this->getHeadRowImage($head_id);
+                $head_text  = $this->getHeadRowText($head_id);
+                $head_list  = $this->getCatalogColListCat($head_id, $mfa_link, $model_link, $cats, $groups, $brand_id);
 
                 $list .= "
                 <div class=\"tree-heads__item\">
@@ -2639,7 +2639,7 @@ class CatalogueClass
                         </div>
                     </label>
                     <div class=\"tree-cat\" style=\"display: none;\">
-                        $head_content
+                        $head_list
                     </div>
                 </div>";
             }
@@ -2667,15 +2667,17 @@ class CatalogueClass
         $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id AND $where ORDER BY `COL` ASC, `ROW` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $cat_id = $db->result($r, $i - 1, "CAT_ID");
-            $cat_name = $this->getCatRowName($cat_id);
-            $cat_link = $this->getCatRowLink($cat_id);
+            $cat_id     = $db->result($r, $i - 1, "CAT_ID");
+            $cat_name   = $this->getCatRowName($cat_id);
+            $cat_link   = $this->getCatRowLink($cat_id);
             $group_list = $this->getCatalogColListGroup($head_id, $cat_id, $mfa_link, $model_link, $groups, $brand_id);
-            $icon = "";
-            $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$icon $cat_name $brand_name</a>";
+            $link       = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$cat_name $brand_name</a>";
             if ($cat_id == 0) {
-                $icon = "<span style=\"color: #f44438; margin-right: 5px;\">&bull;</span>";
-                $link = "<span>$icon $cat_name $brand_name</span>";
+                $link = "
+                <span>
+                    <span style=\"color: #f44438; margin-right: 5px;\">&bull;</span>
+                    $cat_name $brand_name
+                </span>";
             }
             $list .= "
             <div class=\"tree-cat__item\">
@@ -2714,33 +2716,73 @@ class CatalogueClass
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
         $groups = [];
-        $where_1 = "1";
-        $where_2 = "1";
+        $where1 = "1";
+        $where2 = "1";
         if (!empty($groups_sel)) {
             $groups_sel_str = implode(",", $groups_sel);
-            $where_1 = "t2hcg.`GROUP_ID` IN ($groups_sel_str)";
-            $where_2 = "`GROUP_ID` IN ($groups_sel_str)";
-        }
-        $r = $db->query("SELECT t2hcg.`GROUP_ID`
-        FROM `T2_TREE_HCG_EXIST` t2hcg
-            LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON (t2g.GROUP_ID = t2hcg.GROUP_ID)
-        WHERE t2hcg.`HEAD_ID` = $head_id AND t2hcg.`CAT_ID` = $cat_id AND t2g.`STATUS` = 1 AND $where_1;");
-        $n = $db->num_rows($r);
-        $gg = [];
-        for ($i = 1; $i <= $n; $i++) {
-            $group_id = $dbc->result($r, $i - 1, "GROUP_ID");
-            $gg[] = $group_id;
+            $where1 = "t2hcg.`GROUP_ID` IN ($groups_sel_str)";
+            $where2 = "`GROUP_ID` IN ($groups_sel_str)";
         }
 
-        if ($cat_id == 0) {
-            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `POPULAR` = 1 AND $where_2;");
-            $n = $db->num_rows($r);
+//        if ($mfa_link != "") {
+//
+//            $automan = new AutoClass();
+//            list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $model_link);
+//            $where_mfa = "1";
+//            if ($mfa_id > 0) {
+//                $where_mfa = " AND exm.`mfa_id` = $mfa_id";
+//                if ($model != "") {
+//                    $where_mfa .= " AND exm.`model` = '$model'";
+//                }
+//            }
+//
+//            $gg = [];
+//            $r = $db->query("SELECT ex.GROUP_ID FROM (
+//                SELECT t2hcg.`GROUP_ID` FROM `T2_TREE_HCG_EXIST` t2hcg
+//                    LEFT JOIN toko_dba_cache.`EX_TABLE_TREE_AVAILABLE_MFA` exm ON (exm.group_id = t2hcg.GROUP_ID)
+//                WHERE t2hcg.`HEAD_ID` = $head_id AND t2hcg.`CAT_ID` = $cat_id $where_mfa
+//            ) as ex GROUP BY ex.GROUP_ID;");
+//            $n = $db->num_rows($r);
+//            for ($i = 1; $i <= $n; $i++) {
+//                $gg[] = $dbc->result($r, $i - 1, "GROUP_ID");
+//            }
+//
+//            if ($cat_id == 0) {
+//                $gg = [];
+//                $r = $db->query("SELECT ex.GROUP_ID FROM (
+//                    SELECT t2hcg.`GROUP_ID` FROM `T2_TREE_HCG_EXIST` t2hcg
+//                        LEFT JOIN toko_dba_cache.`EX_TABLE_TREE_AVAILABLE_MFA` exm ON (exm.group_id = t2hcg.GROUP_ID)
+//                    WHERE t2hcg.`HEAD_ID` = $head_id AND t2hcg.`POPULAR` = 1 $where_mfa
+//                ) as ex GROUP BY ex.GROUP_ID;");
+//                $n = $db->num_rows($r);
+//                for ($i = 1; $i <= $n; $i++) {
+//                    $gg[] = $dbc->result($r, $i - 1, "GROUP_ID");
+//                }
+//            }
+//
+//        } else {
+
             $gg = [];
+            $r = $db->query("SELECT t2hcg.`GROUP_ID`
+            FROM `T2_TREE_HCG_EXIST` t2hcg
+                LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON (t2g.GROUP_ID = t2hcg.GROUP_ID)
+            WHERE t2hcg.`HEAD_ID` = $head_id AND t2hcg.`CAT_ID` = $cat_id AND t2g.`STATUS` = 1 AND $where1;");
+            $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
-                $group_id = $dbc->result($r, $i - 1, "GROUP_ID");
-                $gg[] = $group_id;
+                $gg[] = $dbc->result($r, $i - 1, "GROUP_ID");
             }
-        }
+
+            if ($cat_id == 0) {
+                $gg = [];
+                $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `POPULAR` = 1 AND $where2;");
+                $n = $db->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    $gg[] = $dbc->result($r, $i - 1, "GROUP_ID");
+                }
+            }
+
+//        }
+
 
         $where_gg = "1";
         if (!empty($gg)) {
@@ -2750,12 +2792,12 @@ class CatalogueClass
         $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE $where_gg GROUP BY `group_id`;");
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $group_id = $dbc->result($r, $i - 1, "group_id");
+            $group_id   = $dbc->result($r, $i - 1, "group_id");
             $group_name = $this->getGroupRowText($group_id);
             $group_link = $this->getGroupRowLink($group_id);
-            $group_image = $this->getGroupRowImage($group_id);
-            $status_auto = $this->getGroupRowStatusAuto($group_id);
-            $groups[] = compact("group_name", "group_link", "group_image", "status_auto");
+            $group_img  = $this->getGroupRowImage($group_id);
+            $status_typ = $this->getGroupRowStatusAuto($group_id);
+            $groups[]   = compact("group_name", "group_link", "group_img", "status_typ");
         }
 
         return $this->getCatalogColListGroupList($groups, $mfa_link, $model_link, $brand_id);
@@ -2771,11 +2813,11 @@ class CatalogueClass
         foreach ($groups as $value) {
             $group_name = $value["group_name"];
             $group_link = $value["group_link"];
-            $group_image = $value["group_image"];
-            $status_auto = $value["status_auto"];
-            $link = "";
+            $group_img  = $value["group_img"];
+            $status_typ = $value["status_typ"];
 
-            if ($status_auto != 2) {
+            $link = "";
+            if ($status_typ != 2) {
                 if ($mfa_link != "") {
                     $link .= "auto/$mfa_link/";
                     if ($model_link != "") {
@@ -2785,13 +2827,12 @@ class CatalogueClass
             }
 
             if ($brand_id > 0) {
-                $brand_link = $this->getBrandLink($brand_id);
-                $link .= "brandy=$brand_link/";
+                $link .= "brandy=" . $this->getBrandLink($brand_id) . "/";
             }
             $list .= "
             <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$link\" class=\"tree-group__item\">
                 <div class=\"tree-group__item-image\">
-                    <img data-src=\"/images/tree-group/$group_image\" class=\"lazy\" alt=\"$group_name\">
+                    <img data-src=\"/images/tree-group/$group_img\" class=\"lazy\" alt=\"$group_name\">
                 </div>
                 <div class=\"tree-group__item-text\">
                     <span>$group_name $brand_name</span>

@@ -432,6 +432,7 @@ class MenuClass extends CatalogueClass
             <span>{choose_office}:</span>
             <a onClick=\"showRegionForm();\">
                 <span id=\"region_select\">
+                    <span class=\"fas fa-map-marker-alt\"></span>
                     <span>$region ($address)</span>
                 </span>
             </a>";

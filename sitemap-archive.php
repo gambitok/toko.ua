@@ -5,7 +5,7 @@ $xmlWriter->openMemory();
 
 define('RDD', dirname (__FILE__));
 
-$lang = "";
+$lang = "/ua-uk";
 
 $names = [
     RDD . "$lang/sitemap-pages.xml",
