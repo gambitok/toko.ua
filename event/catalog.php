@@ -1,38 +1,34 @@
 <?php
 
-$redirect_status = 0;
-$redirect_type = 0;
-$redirect_link = "";
-
 ini_set('memory_limit', '2048M');
-$linka = findLinks();
 
-$site_name = $catalogue->getUrlString($linka[0]);
-$router = $catalogue->getUrlString($linka[1]);
-$router_2 = $catalogue->getUrlString($linka[2]);
-$router_3 = $catalogue->getUrlString($linka[3]);
-$router_4 = $catalogue->getUrlString($linka[4]);
-$router_5 = $catalogue->getUrlString($linka[5]);
-$page = $catalogue->getUrlNumber($_GET["page"]);
-
-$path_from = $site_name . "/" . $router . "/";
-
-$source_link = $catalogue->getSiteLink() . implode("/", $linka) . "/";
-
-$sort = $_GET['sort'];
+$linka      = findLinks();
+$red_status = 0;
+$red_type   = 0;
+$red_link   = "";
+$sort       = $catalogue->getUrlString($_GET["sort"]);
+$site_name  = $catalogue->getUrlString($linka[0]);
+$router     = $catalogue->getUrlString($linka[1]);
+$router_2   = $catalogue->getUrlString($linka[2]);
+$router_3   = $catalogue->getUrlString($linka[3]);
+$router_4   = $catalogue->getUrlString($linka[4]);
+$router_5   = $catalogue->getUrlString($linka[5]);
+$page       = $catalogue->getUrlNumber($_GET["page"]);
+$path_from  = $site_name . "/" . $router . "/";
+$src_link   = $catalogue->getSiteLink() . implode("/", $linka) . "/";
 
 if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
-    $redirect_status = 1;
-    $redirect_type = 301;
-    $redirect_link = $catalogue->getCatalogOldRedirectLink($linka)["redirect_link"];
+    $red_status = 1;
+    $red_type   = 301;
+    $red_link   = $catalogue->getCatalogOldRedirectLink($linka)["redirect_link"];
 }
 elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
-    $mfa_link = $router_2;
+    $mfa_link   = $router_2;
     $model_link = $router_3;
-    $path_to = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
-    $redirect_status = 1;
-    $redirect_type = 301;
-    $redirect_link = "$path_to";
+    $path_to    = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
+    $red_status = 1;
+    $red_type   = 301;
+    $red_link   = "$path_to";
 } else {
     $str_linka = $linka;
     unset($str_linka[0]);
@@ -55,30 +51,31 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             if ($filters == "auto") {
                 $filters = [];
             }
-            $mfa_link = $router_3;
-            $model_link = $router_4;
-            $model_id_link = $router_5;
+            $mfa_link       = $router_3;
+            $model_link     = $router_4;
+            $model_id_link  = $router_5;
 
             $mfa_id = 0;
             $model = "";
             $model_id = 0;
+
             if ($mfa_link != "") {
                 $mfa_id = $automan->getMfaLink($mfa_link);
                 if ($mfa_id == 0) {
-                    $redirect_status = 1;
-                    $redirect_type = 404;
+                    $red_status = 1;
+                    $red_type = 404;
                     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
                 }
                 if ($model_link != "") {
                     if ($model_link == "rav4") {
-                        $redirect_status = 1;
-                        $redirect_type = 301;
-                        $redirect_link = $catalog_exist->getSiteLink() . $catalog_exist->catalog_link . "/$router/" . $linka[2] . "/$router_3/rav-4/";
+                        $red_status = 1;
+                        $red_type = 301;
+                        $red_link = $catalog_exist->getSiteLink() . $catalog_exist->catalog_link . "/$router/" . $linka[2] . "/$router_3/rav-4/";
                     } else {
                         $model = $automan->getModLink($model_link);
                         if ($model == "") {
-                            $redirect_status = 1;
-                            $redirect_type = 404;
+                            $red_status = 1;
+                            $red_type = 404;
                             $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
                         }
                         if ($model != "") {
@@ -93,14 +90,15 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                 list($check_status, $check_link) = $catalog_exist->checRedirects($filters);
 
                 if ($check_status > 0) {
-                    $redirect_status = 1;
-                    $redirect_type = 301;
+                    $red_status = 1;
+                    $red_type   = 301;
                     $group_link = $catalog_exist->getGroupRowLink($group_id);
-                    $redirect_link = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$group_link/" . $check_link . "/";
+                    $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$group_link/" . $check_link . "/";
+
                     if ($mfa_link != "") {
-                        $redirect_link .= "$mfa_link/";
+                        $red_link .= "$mfa_link/";
                         if ($model_link != "") {
-                            $redirect_link .= "$model_link/";
+                            $red_link .= "$model_link/";
                         }
                     }
                 }
@@ -128,14 +126,14 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             $status_auto_type = $catalogue->getUrlNumber($_COOKIE["status_auto_type"]);
             ($status_auto_type != NULL) ?: $status_auto_type = 0;
 
-            $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $source_link, $sort);
+            $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $src_link, $sort);
 
             if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
                 $max_page = $catalog_form["pages_count"];
                 $path_to = $catalog_exist->getSiteLink() . ltrim(findUrl(), "/") . "?page=$max_page";
-                $redirect_status = 1;
-                $redirect_type = 301;
-                $redirect_link = "$path_to";
+                $red_status = 1;
+                $red_type = 301;
+                $red_link = "$path_to";
             }
 
             $content = str_replace("{main_window}", $catalog_form["form"] . $showform->getHistoryArts(), $content);
@@ -167,27 +165,27 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
         }
 
         if ($router_2 == "clutch%20" || $router_2 == "clutch ") {
-            $redirect_status = 1;
-            $redirect_type = 301;
-            $redirect_link = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/stceplenie_i_transmissiia/clutch/";
+            $red_status = 1;
+            $red_type = 301;
+            $red_link = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/stceplenie_i_transmissiia/clutch/";
         }
 
         /*
          * No Head and No Group
          * */
         if (empty($head_id) && empty($group_id)) {
-            $redirect_status = 1;
-            $redirect_type = 404;
+            $red_status = 1;
+            $red_type = 404;
             $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
         }
     }
 }
 
-if ($redirect_status) {
-    if ($redirect_type == 404) {
+if ($red_status) {
+    if ($red_type == 404) {
         header("HTTP/1.0 404 Not Found");
     }
-    if ($redirect_type == 301) {
-        header("Location: $redirect_link", TRUE, 301);
+    if ($red_type == 301) {
+        header("Location: $red_link", TRUE, 301);
     }
 }

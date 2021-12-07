@@ -2466,14 +2466,14 @@ class CatalogExistClass extends CatalogueClass
                     foreach ($values as $value_id) {
                         if ($value_id > 0) {
                             $r = $dbc->query("SELECT tm.mfa_id, tm.model
-                    FROM `EX_TABLE_TREE_MFA_$group_id` tm
-                        LEFT JOIN `EX_TABLE_TREE_PARAMS_$group_id` tp ON tp.art_id = tm.art_id
-                    WHERE `param_$param_id` = '$value_id' OR `param_$param_id` LIKE '$value_id,%' OR `param_$param_id` LIKE '%,$value_id' OR `param_$param_id` LIKE '%,$value_id,%';");
+                            FROM `EX_TABLE_TREE_MFA_$group_id` tm
+                                LEFT JOIN `EX_TABLE_TREE_PARAMS_$group_id` tp ON tp.art_id = tm.art_id
+                            WHERE `param_$param_id` = '$value_id' OR `param_$param_id` LIKE '$value_id,%' OR `param_$param_id` LIKE '%,$value_id' OR `param_$param_id` LIKE '%,$value_id,%';");
                             $n = $dbc->num_rows($r);
                             if ($n > 0) {
                                 for ($i = 1; $i <= $n; $i++) {
                                     $mfa_id = $dbc->result($r, $i - 1, "mfa_id");
-                                    $model = $dbc->result($r, $i - 1, "model");
+                                    $model  = $dbc->result($r, $i - 1, "model");
                                     $arr_groups_models_params[$group_id][$param_id][$value_id][$mfa_id][] = $model;
                                 }
                             }
