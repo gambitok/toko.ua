@@ -100,7 +100,7 @@ class FormClass extends CatalogueClass
         $brand_id = $this->getUrlNumber($brand_id);
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
-        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id GROUP BY `group_id`;");
+        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id AND `price` > 0 GROUP BY `group_id`;");
         $n = $dbc->num_rows($r);
         $groups = [];
         for ($i = 1; $i <= $n; $i++) {
@@ -108,37 +108,29 @@ class FormClass extends CatalogueClass
             $groups[] = $group_id;
         }
 
-        $hh = [];
+        $arr = [];
         if (!empty($groups)) {
             $groups_str = implode(",", $groups);
-            $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` IN ($groups_str);");
+            $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID`, `POPULAR` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` IN ($groups_str);");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
-                $head_id = $db->result($r, $i - 1, "HEAD_ID");
-                $cat_id = $db->result($r, $i - 1, "CAT_ID");
-                $group_id = $db->result($r, $i - 1, "GROUP_ID");
-                $hh[$head_id][$cat_id][] = $group_id;
-            }
-        }
+                $head_id    = $db->result($r, $i - 1, "HEAD_ID");
+                $cat_id     = $db->result($r, $i - 1, "CAT_ID");
+                $group_id   = $db->result($r, $i - 1, "GROUP_ID");
+                $popular    = $db->result($r, $i - 1, "POPULAR");
+                $head_stat  = $this->getHeadRowStatus($head_id);
 
-        $heads = $cats = $groups = [];
-
-        foreach ($hh as $head_id => $cc) {
-            $heads[] = $head_id;
-            foreach ($cc as $cat_id => $gg) {
-                $cats[] = $cat_id;
-                foreach ($gg as $group_id) {
-                    $groups[] = $group_id;
+                if ($head_stat) {
+                    $arr[$head_id][$cat_id][] = $group_id;
+                    if ($popular == 1) {
+                        $arr[$head_id][0][] = $group_id;
+                    }
                 }
             }
         }
 
-        $heads  = array_unique($heads);
-        $cats   = array_unique($cats);
-        $groups = array_unique($groups);
-
-        $catalog = new CatalogueClass();
-        return $catalog->getCatalogColList("", "", $heads, $cats, $groups, $brand_id);
+        $automan = new AutoClass();
+        return $automan->getCatalogCacheColShow($arr, "", "", $brand_id);
     }
 
     /*

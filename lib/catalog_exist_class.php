@@ -1030,14 +1030,15 @@ class CatalogExistClass extends CatalogueClass
         $typ_id = $this->getCookieAuto();
         $automan = new AutoClass();
         $dbc = DbSingleton::getTokoCacheDb();
-        $table = "EX_TABLE_TREE_$group_id";
-        $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
-        $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
-        $limit = $this->getSearchLimit($page);
 
-        $group_text = $this->getGroupRowName($group_id);
-        $where_mfa = $this->getMfaWhere($mfa_id, $model, $status_auto, $status_auto_type);
-        $where_link_arts = $this->getArtsLinksWhere($status_auto, $status_auto_type, $typ_id);
+        $table          = "EX_TABLE_TREE_$group_id";
+        $table_mfa      = "EX_TABLE_TREE_MFA_$group_id";
+        $table_params   = "EX_TABLE_TREE_PARAMS_$group_id";
+        $limit          = $this->getSearchLimit($page);
+
+        $group_text     = $this->getGroupRowName($group_id);
+        $where_mfa      = $this->getMfaWhere($mfa_id, $model, $status_auto, $status_auto_type);
+        $where_link_art = $this->getArtsLinksWhere($status_auto, $status_auto_type, $typ_id);
 
         $where_sort = "";
         if ($sort == "asc") {
@@ -1048,41 +1049,42 @@ class CatalogExistClass extends CatalogueClass
         }
 
         $check_group = $this->checkTable($group_id);
-        $query_limit = ""; $query = "";
-        $query_min = "";
+        $query_limit = $query = $query_min = "";
+
         $arts = [];
         if ($check_group) {
             if (empty($filters)) {
                 $query = "SELECT t.art_id FROM `$table` t
                     LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
                     LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-                WHERE 1 $where_mfa $where_link_arts
+                WHERE 1 $where_mfa $where_link_art
                 GROUP BY t.art_id
                 $where_sort";
                 $query_min = "SELECT t.art_id, t.price FROM `$table` t
                     LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
                     LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-                WHERE t.price > 0 AND 1 $where_mfa $where_link_arts
+                WHERE t.price > 0 AND 1 $where_mfa $where_link_art
                 ORDER BY t.price ASC LIMIT 1;";
             } else {
                 $where = $this->getFiltersWhere($params);
                 $query = "SELECT t.art_id FROM `$table` t
                     LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
                     LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-                WHERE 1 $where $where_mfa $where_link_arts
+                WHERE 1 $where $where_mfa $where_link_art
                 GROUP BY t.art_id
                 $where_sort";
                 $query_min = "SELECT t.art_id, t.price FROM `$table` t
                     LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
                     LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-                WHERE t.price > 0 AND 1 $where $where_mfa $where_link_arts
+                WHERE t.price > 0 AND 1 $where $where_mfa $where_link_art
                 ORDER BY t.price ASC LIMIT 1;";
             }
             $query_limit = "$query $limit ;";
         }
+
         $r = $dbc->query($query_min);
         $art_min_id = $dbc->result($r, 0, "art_id");
-        $min_price = $this->getArticlePriceStorage($art_min_id);
+        $min_price  = $this->getArticlePriceStorage($art_min_id);
 
         $r = $dbc->query($query_limit);
         $n = $dbc->num_rows($r);
@@ -1132,7 +1134,7 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_sort}", $this->getPartsSortForm($sort, $source_link), $form);
             $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
 
-            $filterData = $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $where_mfa, $where_link_arts);
+            $filterData = $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $where_mfa, $where_link_art);
             $form = str_replace("{parts_params}", $filterData["form"], $form);
 
             $breadcrumbsData = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $h1_text, $source_link, $mfa_id));
@@ -1371,6 +1373,8 @@ class CatalogExistClass extends CatalogueClass
             foreach ($arr as $param_id => $values) {
                 $param_name = $this->getGroupParamName($param_id);
                 if (!empty($values)) {
+                    $items = [];
+
                     $list_params .= "
                     <div class=\"hidden-list\">
                         <div class=\"hidden-list-title\">$param_name</div>
@@ -1378,7 +1382,6 @@ class CatalogExistClass extends CatalogueClass
                             <input type=\"text\" class=\"text-filter\" onkeyup=\"textParamSearch('$param_id')\" data-attr=\"$param_id\" placeholder=\"{search_by_name}\">
                         </div>
                         <div class=\"hidden-list-content\" data-attr=\"$param_id\">";
-                    $items = [];
                     foreach ($values as $value_id) {
                         $value_name = $this->getGroupValueName($value_id, $param_id);
                         $checked = (in_array($value_id, $params[$param_id]));
@@ -1404,8 +1407,9 @@ class CatalogExistClass extends CatalogueClass
 
                     foreach ($items as $value_id => $item) {
                         $value_name = $item["value_name"];
-                        $link = $item["link"];
-                        $checked = $item["checked"];
+                        $link       = $item["link"];
+                        $checked    = $item["checked"];
+
                         $checked_label = "<span class=\"fas fa-square unchecked\"></span>";
                         if ($checked) {
                             $checked_label = "<span class=\"fas fa-check-square checked\"></span>";
@@ -1457,16 +1461,19 @@ class CatalogExistClass extends CatalogueClass
                         $count_params++;
                         $param_name = $this->getGroupParamName($param_id);
                         if ($count_params == 1) {
-                            $list_params .= "<span>{seo_catalog_filters_cap_1} $filters_h1 {seo_catalog_filters_cap_2} $param_name: ";
+                            $list_params .= "
+                            <span>{seo_catalog_filters_cap_1} $filters_h1 {seo_catalog_filters_cap_2} $param_name: ";
                         } else {
-                            $list_params .= "<span>$filters_h1 $param_name: ";
+                            $list_params .= "
+                            <span>$filters_h1 $param_name: ";
                         }
                         foreach ($values as $value_id) {
                             $value_name = $this->getGroupValueName($value_id, $param_id);
                             $link = $this->getPartsFilterLinks($group_id, $params, $param_id, $value_id, 0, "");
                             $checked = (in_array($value_id, $params[$param_id]));
                             if (!$checked) {
-                                $list_params .= "<a href=\"$link\">$value_name</a>, ";
+                                $list_params .= "
+                                <a href=\"$link\">$value_name</a>, ";
                             }
                         }
                         $list_params = rtrim($list_params, ", ");
@@ -1485,9 +1492,10 @@ class CatalogExistClass extends CatalogueClass
     public function getFiltersParamValues($group_id, $param_id, $where = "", $where_mfa = "", $where_link_arts = "")
     {
         $dbc = DbSingleton::getTokoCacheDb();
-        $table = "EX_TABLE_TREE_$group_id";
-        $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
-        $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
+
+        $table          = "EX_TABLE_TREE_$group_id";
+        $table_mfa      = "EX_TABLE_TREE_MFA_$group_id";
+        $table_params   = "EX_TABLE_TREE_PARAMS_$group_id";
 
         $value_arr = [];
         $r = $dbc->query("SELECT tp.*, t.brand_id as brand_cur_id 
@@ -1600,6 +1608,7 @@ class CatalogExistClass extends CatalogueClass
                 if ($status_auto_type == 0) {
                     $car_checked = "<i class=\"fas fa-circle unchecked\"></i>";
                     $all_checked = "<i class=\"fas fa-check-circle checked\"></i>";
+
                     $where_link_arts = "";
                     $typ_arts = $this->getPartsCatalogueAuto($typ_id);
                     if (!empty($typ_arts)) {
@@ -1612,6 +1621,7 @@ class CatalogExistClass extends CatalogueClass
                 if ($status_auto_type == 1) {
                     $car_checked = "<i class=\"fas fa-check-circle checked\"></i>";
                     $all_checked = "<i class=\"fas fa-circle unchecked\"></i>";
+
                     $count = $this->getPartsCountGroup($group_id, $params);
                     $all_count = "($count)";
                 }

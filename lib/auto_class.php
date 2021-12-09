@@ -577,10 +577,15 @@ class AutoClass extends CatalogueClass
         return $this->getCatalogCacheColShow($arr, $mfa_link, $model_link);
     }
 
-    public function getCatalogCacheColShow($arr, $mfa_link, $model_link)
+    public function getCatalogCacheColShow($arr, $mfa_link, $model_link, $brand_id = 0)
     {
         $list = "";
         $nophoto = $this->noPhoto;
+
+        $brand_name = "";
+        if ($brand_id > 0) {
+            $brand_name = $this->getBrandName($brand_id);
+        }
 
         foreach ($arr as $head_id => $cats) {
             $head_name  = $this->getHeadRowName($head_id);
@@ -595,7 +600,7 @@ class AutoClass extends CatalogueClass
                     <div id=\"tree_head-$head_id\" class=\"tree-heads__item-header\">
                         <div class=\"tree-heads__item-text\">
                             <div class=\"tree-heads__item-title\">
-                                $head_name 
+                                $head_name $brand_name
                             </div>
                             <div class=\"tree-heads__item-descr\">
                                 $head_text
@@ -613,12 +618,12 @@ class AutoClass extends CatalogueClass
                 $cat_name   = $this->getCatRowName($cat_id);
                 $cat_link   = $this->getCatRowLink($cat_id);
 
-                $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$cat_name</a>";
+                $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$cat_name $brand_name</a>";
                 if ($cat_id == 0) {
                     $link = "
                     <span>
                         <span style=\"color: #f44438; margin-right: 5px;\">&bull;</span>
-                        $cat_name 
+                        $cat_name $brand_name 
                     </span>";
                 }
 
@@ -636,9 +641,21 @@ class AutoClass extends CatalogueClass
                     $status_typ = $this->getGroupRowStatusAuto($group_id);
 
                     $link = "";
+
+                    //https://toko.ua/catalog/amortizatory-stojki-podveski/brandy=autox/kia/sportage/
+                    if ($brand_id > 0) {
+                        $brand_link = $this->getBrandLink($brand_id);
+                        $link .= "brandy=$brand_link/";
+                    }
+
                     if ($status_typ != 2) {
                         if ($mfa_link != "") {
-                            $link .= "auto/$mfa_link/";
+                            $link = "auto/";
+                            if ($brand_id > 0) {
+                                $brand_link = $this->getBrandLink($brand_id);
+                                $link = "brandy=$brand_link/";
+                            }
+                            $link .= "$mfa_link/";
                             if ($model_link != "") {
                                 $link .= "$model_link/";
                             }
@@ -648,10 +665,10 @@ class AutoClass extends CatalogueClass
                     $list .= "
                     <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$link\" class=\"tree-group__item\">
                         <div class=\"tree-group__item-image\">
-                            <img data-src=\"/images/tree-group/$group_img\" class=\"lazy\" alt=\"$group_name\">
+                            <img data-src=\"/images/tree-group/$group_img\" class=\"lazy\" alt=\"$group_name $brand_name\">
                         </div>
                         <div class=\"tree-group__item-text\">
-                            <span>$group_name</span>
+                            <span>$group_name $brand_name</span>
                         </div>
                     </a>";
                 }
