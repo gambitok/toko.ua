@@ -1049,7 +1049,7 @@ class CatalogExistClass extends CatalogueClass
 
         $check_group = $this->checkTable($group_id);
         $query_limit = ""; $query = "";
-//        $query_min = "";
+        $query_min = "";
         $arts = [];
         if ($check_group) {
             if (empty($filters)) {
@@ -1059,11 +1059,11 @@ class CatalogExistClass extends CatalogueClass
                 WHERE 1 $where_mfa $where_link_arts
                 GROUP BY t.art_id
                 $where_sort";
-//                $query_min = "SELECT t.art_id, t.price FROM `$table` t
-//                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
-//                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-//                WHERE 1 $where_mfa $where_link_arts
-//                ORDER BY t.price ASC LIMIT 1;";
+                $query_min = "SELECT t.art_id, t.price FROM `$table` t
+                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
+                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+                WHERE t.price > 0 AND 1 $where_mfa $where_link_arts
+                ORDER BY t.price ASC LIMIT 1;";
             } else {
                 $where = $this->getFiltersWhere($params);
                 $query = "SELECT t.art_id FROM `$table` t
@@ -1072,19 +1072,17 @@ class CatalogExistClass extends CatalogueClass
                 WHERE 1 $where $where_mfa $where_link_arts
                 GROUP BY t.art_id
                 $where_sort";
-//                $query_min = "SELECT t.art_id, t.price FROM `$table` t
-//                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
-//                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-//                WHERE 1 $where $where_mfa $where_link_arts
-//                ORDER BY t.price ASC LIMIT 1;";
+                $query_min = "SELECT t.art_id, t.price FROM `$table` t
+                    LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
+                    LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+                WHERE t.price > 0 AND 1 $where $where_mfa $where_link_arts
+                ORDER BY t.price ASC LIMIT 1;";
             }
             $query_limit = "$query $limit ;";
         }
-
-//        $r = $dbc->query($query_min);
-//        $art_min_id = $dbc->result($r, 0, "art_id");
-//        $min_price = $this->getArticlePriceStorage($art_min_id);
-//        var_dump($min_price);
+        $r = $dbc->query($query_min);
+        $art_min_id = $dbc->result($r, 0, "art_id");
+        $min_price = $this->getArticlePriceStorage($art_min_id);
 
         $r = $dbc->query($query_limit);
         $n = $dbc->num_rows($r);
@@ -1164,6 +1162,19 @@ class CatalogExistClass extends CatalogueClass
             }
         }
 
+        $group_link = $this->getGroupRowLink($group_id);
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_SEO_TITLE` WHERE `ROUTER` = 'catalog' AND `LINK` = '$group_link' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $postfix = $this->getLangPostfix($this->getLanguage());
+            $filters_title = $this->replaceLang($db->result($r, 0, "TITLE_$postfix"));
+            $filters_title = str_replace("{h1_text}", $h1_text, $filters_title);
+            $description = $this->replaceLang($db->result($r, 0, "DESCR_$postfix"));
+            $description = str_replace("{h1_text}", $h1_text, $description);
+            $description = str_replace("{price_text}", $min_price, $description);
+        }
+
         return array(
             "form"          => $form,
             "title"         => $filters_title,
@@ -1192,8 +1203,7 @@ class CatalogExistClass extends CatalogueClass
             <option value='1' $selected2>{sort_price_asc}</option>
             <option value='2' $selected3>{sort_price_desc}</option>
         </select>";
-        $list = $this->replaceLang($list);
-        return $list;
+        return $this->replaceLang($list);
     }
 
     public function drawLoader()

@@ -1747,7 +1747,7 @@ class ShopClass extends CatalogueClass
     {
         $list = "<option value=\"0\">{not_chosen}</option>";
         $list = $this->replaceLang($list);
-        $np = new NovaPoshtaApi2('4a18892255b3c9a8e7ef4813c790e75f');
+        $np = new NovaPoshtaApi2('e52c020f392e0da179684b87cdbbbf05');
         $arr = $np->getWarehouses($ref)['data'];
         foreach ($arr as $val) {
             $name = iconv("UTF-8", "windows-1251", $val["Description"]);
