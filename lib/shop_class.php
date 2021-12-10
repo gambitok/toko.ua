@@ -942,12 +942,12 @@ class ShopClass extends CatalogueClass
         $payment    = $this->getUrlNumber($payment);
 
         $delivery_type_text = "";
-        $street = $delivery_type["street"];
-        $house = $delivery_type["house"];
-        $porch = $delivery_type["porch"];
-        $department = $delivery_type["department"];
-        $delivery_express = $delivery_type["delivery_express"];
-        $delivery_express_department = $delivery_type["delivery_express_department"];
+        $street             = $delivery_type["street"];
+        $house              = $delivery_type["house"];
+        $porch              = $delivery_type["porch"];
+        $department         = $delivery_type["department"];
+        $del_express        = $delivery_type["delivery_express"];
+        $del_express_dep    = $delivery_type["delivery_express_department"];
 
         if ($porch != "") {
             $porch = ", {entrance_cap} $porch";
@@ -958,12 +958,12 @@ class ShopClass extends CatalogueClass
         if ($department != "undefined" && $department != "0") {
             $delivery_type_text .= "<div>{department_cap}: $department</div>";
         }
-        if ($delivery_express != "undefined") {
-            $delivery_express_text  = $this->getDepartmentExpressName($delivery_express);
+        if ($del_express != "undefined") {
+            $delivery_express_text  = $this->getDepartmentExpressName($del_express);
             $delivery_type_text     .= "<div>{delivery_type_7}: $delivery_express_text</div>";
         }
-        if ($delivery_express_department != "undefined") {
-            $delivery_type_text .= "<div>{department_cap}: $delivery_express_department</div>";
+        if ($del_express_dep != "undefined") {
+            $delivery_type_text .= "<div>{department_cap}: $del_express_dep</div>";
         }
 
         if ($delivery == 1) {

@@ -464,7 +464,7 @@ class CatalogExistClass extends CatalogueClass
         FROM `T2_SUPPL_IMPORT` t2si
             LEFT JOIN `T2_ARTICLES` t2a ON (t2a.ART_ID = t2si.art_id)
             LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
-        WHERE t2si.art_id > 0 AND t2si.stock_suppl > 0 AND cs.visible = 1
+        WHERE t2si.art_id > 0 AND cs.visible = 1 AND t2si.stock_suppl > 0 
         GROUP BY t2si.art_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {

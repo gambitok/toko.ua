@@ -2,18 +2,6 @@
 
 trait Variables
 {
-
-    /*
-     * get secret article
-     * add zero to first digit in string
-     * */
-//    public function getSecretString($str)
-//    {
-//        preg_match('/\d+/', $str, $matches);
-//        $pos = strpos($str, $matches[0]);
-//        return substr_replace($str, '0', $pos, 0);
-//    }
-
     /*
      * Format Article
      * */
@@ -255,8 +243,8 @@ trait Variables
      * */
     public function getSaleInvoiceName($invoice_id)
     {
-        $db = DbSingleton::getDbm();
         $invoice_id = $this->getUrlNumber($invoice_id);
+        $db = DbSingleton::getDbm();
         $name = "";
         $r = $db->query("SELECT `prefix`, `doc_nom` FROM `J_SALE_INVOICE` WHERE `status` = 1 AND `id` = $invoice_id LIMIT 1;");
         $n = $db->num_rows($r);
@@ -272,10 +260,10 @@ trait Variables
      * */
     public function getJPayName($jpay_id)
     {
+        $jpay_id = $this->getUrlNumber($jpay_id);
         $db = DbSingleton::getDbm();
         $name = "";
         $pay_type_id = 0;
-        $jpay_id = $this->getUrlNumber($jpay_id);
         $r = $db->query("SELECT p.*, m.mcaption as pay_type_name 
         FROM `J_PAY` p 
             LEFT JOIN `manual` m ON (m.id = p.pay_type_id AND m.`key` = 'pay_type_id') 
@@ -409,9 +397,9 @@ trait Variables
 
     public function getSearchMessages()
     {
-        $error = "<h5 class=\"error_message\">$this->err1</h5>";
-        $list = "";
-        $jsFilterModel = "catalogueFilter();";
+        $error          = "<h5 class=\"error_message\">$this->err1</h5>";
+        $list           = "";
+        $jsFilterModel  = "catalogueFilter();";
         return array($error, $jsFilterModel, $list);
     }
 
