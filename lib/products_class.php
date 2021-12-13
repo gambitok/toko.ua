@@ -55,10 +55,10 @@ class ProductsClass extends CatalogueClass
 
     public function getCarsSearch($mfa_link = "", $mod_link = "", $group_id = 0)
     {
-        $automan = new AutoClass();
         $form = $this->getHtmlForm("cars/cars");
 
         if ($mfa_link != "") {
+            $automan    = new AutoClass();
             $mfa_id     = $automan->getMfaLink($mfa_link);
             $mfa_brand  = $automan->getMfaBrand($mfa_id);
             $list_model = $this->getCarsSearchContent("manuf", $mfa_id, $group_id)[0];
@@ -81,6 +81,7 @@ class ProductsClass extends CatalogueClass
         $form = str_replace("{selected_manuf}", 0, $form);
         $form = str_replace("{selected_model}", 0, $form);
         $form = str_replace("{active_nav}", "", $form);
+
         return $this->replaceLang($form);
     }
 
@@ -207,6 +208,7 @@ class ProductsClass extends CatalogueClass
         // BODY (MODEL_ID)
         if ($type == "years") {
             list($mfa_id, $model, $year) = explode("_", $value);
+
             $mfa_id = $this->getUrlNumber($mfa_id);
             $model  = $this->getUrlString($model);
             $year   = $this->getUrlNumber($year);
@@ -264,6 +266,7 @@ class ProductsClass extends CatalogueClass
         // ENGINE
         if ($type == "bodyc") {
             $mod_id = $this->getUrlNumber($value);
+
             $r = $db->query("SELECT COUNT(`TYP_ID`) as count_types, `TYP_ID`, `VOLUME_CM`, `FUEL_ID`, `TYP_KW_FROM`, `TYP_HP_FROM` 
             FROM `T_types` 
             WHERE `TYP_MOD_ID` = $mod_id AND `ACTIVE` = 1 
@@ -271,13 +274,14 @@ class ProductsClass extends CatalogueClass
             ORDER BY `VOLUME_CM`, `FUEL_ID`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
-                $typ_id = $db->result($r, $i - 1, "TYP_ID");
-                $count_types = $db->result($r, $i - 1, "count_types");
-                $volume_cm = $db->result($r, $i - 1, "VOLUME_CM");
-                $fuel_id = $db->result($r, $i - 1, "FUEL_ID");
-                $fuel_text = $this->getFuelName($fuel_id);
-                $fuel_cap = $mod_id . "_" . $volume_cm . "_" . $fuel_id;
-                $onclick = ($count_types == 1) ? "finishGarage('$typ_id', '$group_link')" : "toggleCarsTab(this)";
+                $typ_id     = $db->result($r, $i - 1, "TYP_ID");
+                $count_type = $db->result($r, $i - 1, "count_types");
+                $volume_cm  = $db->result($r, $i - 1, "VOLUME_CM");
+                $fuel_id    = $db->result($r, $i - 1, "FUEL_ID");
+                $fuel_text  = $this->getFuelName($fuel_id);
+                $fuel_cap   = $mod_id . "_" . $volume_cm . "_" . $fuel_id;
+                $onclick    = ($count_type == 1) ? "finishGarage('$typ_id', '$group_link')" : "toggleCarsTab(this)";
+
                 $list .= "
                 <div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"$onclick\">$volume_cm $fuel_text</div>";
             }
@@ -290,6 +294,7 @@ class ProductsClass extends CatalogueClass
         // MODIFICATION
         if ($type == "engin") {
             list($mod_id, $volume_cm, $fuel_id) = explode("_", $value);
+
             $mod_id     = $this->getUrlNumber($mod_id);
             $volume_cm  = $this->getUrlString($volume_cm);
             $fuel_id    = $this->getUrlNumber($fuel_id);

@@ -45,41 +45,49 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
          * */
         $group_id = $catalog_exist->getGroupExistId($router);
         if (!empty($group_id)) {
-            $group_id = $catalog_exist->getUrlNumber($group_id);
-
-            $filters = $linka[2];
-            if ($filters == "auto") {
-                $filters = [];
-            }
+            $group_id       = $catalog_exist->getUrlNumber($group_id);
+            $filters        = $linka[2];
+            $filters        = ($filters == "auto") ? [] : $filters;
             $mfa_link       = $router_3;
             $model_link     = $router_4;
             $model_id_link  = $router_5;
-
-            $mfa_id = 0;
-            $model = "";
-            $model_id = 0;
+            $mfa_id         = 0;
+            $model          = "";
+            $model_id       = 0;
 
             if ($mfa_link != "") {
                 $mfa_id = $automan->getMfaLink($mfa_link);
+
                 if ($mfa_id == 0) {
                     $red_status = 1;
-                    $red_type = 404;
-                    $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                    $red_type   = 404;
+                    $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
                 }
+
                 if ($model_link != "") {
                     if ($model_link == "rav4") {
                         $red_status = 1;
-                        $red_type = 301;
-                        $red_link = $catalog_exist->getSiteLink() . $catalog_exist->catalog_link . "/$router/" . $linka[2] . "/$router_3/rav-4/";
+                        $red_type   = 301;
+                        $red_link   = $catalog_exist->getSiteLink() . $catalog_exist->catalog_link . "/$router/" . $linka[2] . "/$router_3/rav-4/";
                     } else {
                         $model = $automan->getModLink($model_link);
+
                         if ($model == "") {
                             $red_status = 1;
-                            $red_type = 404;
-                            $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                            $red_type   = 404;
+                            $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
                         }
+
                         if ($model != "") {
                             $model_id = $automan->getModIdLink($model_id_link);
+
+                            if ($model_id_link != "") {
+                                if (!$model_id) {
+                                    $red_status = 1;
+                                    $red_type   = 404;
+                                    $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                                }
+                            }
                         }
                     }
                 }
@@ -129,11 +137,11 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $src_link, $sort);
 
             if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
-                $max_page = $catalog_form["pages_count"];
-                $path_to = $catalog_exist->getSiteLink() . ltrim(findUrl(), "/") . "?page=$max_page";
+                $max_page   = $catalog_form["pages_count"];
+                $path_to    = $catalog_exist->getSiteLink() . ltrim(findUrl(), "/") . "?page=$max_page";
                 $red_status = 1;
-                $red_type = 301;
-                $red_link = "$path_to";
+                $red_type   = 301;
+                $red_link   = "$path_to";
             }
 
             $content = str_replace("{main_window}", $catalog_form["form"] . $showform->getHistoryArts(), $content);

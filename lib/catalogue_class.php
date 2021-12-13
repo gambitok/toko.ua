@@ -3256,6 +3256,19 @@ class CatalogueClass
         return $model_link;
     }
 
+    public function getModelIDLink($model_id)
+    {
+        $model_id = $this->getUrlNumber($model_id);
+        $db = DbSingleton::getTokoDb();
+        $model_id_link = "";
+        $r = $db->query("SELECT `TEX_TEXT_link` FROM `T_models` WHERE `MOD_ID` = $model_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $model_id_link = $db->result($r, 0, "TEX_TEXT_link");
+        }
+        return $model_id_link;
+    }
+
     public function getParamLink($param_id)
     {
         $param_id = $this->getUrlNumber($param_id);
