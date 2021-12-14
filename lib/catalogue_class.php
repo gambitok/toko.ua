@@ -2973,6 +2973,7 @@ class CatalogueClass
             $cat_id = $db->result($r, $i - 1, "CAT_ID");
             $col    = $db->result($r, $i - 1, "COL");
             $row    = $db->result($r, $i - 1, "ROW");
+
             $arr[$col][$row] = $cat_id;
         }
 
@@ -2983,6 +2984,7 @@ class CatalogueClass
             foreach ($arr as $col_id => $rows) {
                 $list .= "
                 <div class=\"tree-block__col\" style=\"width: calc(100% / $max_col);\">";
+
                 foreach ($rows as $row_id => $cat_id) {
                     $cat_name   = $this->getCatRowName($cat_id);
                     $group_list = $this->getTreeConsGroupList($head_id, $cat_id);
@@ -2995,6 +2997,7 @@ class CatalogueClass
                         $href = $this->getSiteLink();
                         $icon = "<span style=\"margin-right: 5px; color: #f44438;\">&bull;</span>";
                     }
+
                     $list .= "
                     <div>
                         <div class=\"tree-item\">
@@ -3034,11 +3037,13 @@ class CatalogueClass
                     $link .= "$model_link/";
                 }
             }
+
             $list .= "
             <div class=\"tree-item-list__element\">
                 <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$link\">$group_name</a>
             </div>";
         }
+
         if ($cat_id == 0) {
             $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `POPULAR` = 1;");
             $n = $db->num_rows($r);
@@ -3054,6 +3059,7 @@ class CatalogueClass
                         $link .= "$model_link/";
                     }
                 }
+
                 $list .= "
                 <div class=\"tree-item-list__element\">
                     <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$link\">$group_name</a>
@@ -3073,7 +3079,9 @@ class CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $group_id   = $db->result($r, $i - 1, "GROUP_ID");
             $group_name = $db->result($r, $i - 1, "TEX_RU");
-            $list       .= "<option value=\"$group_id\">$group_name</option>";
+
+            $list .= "
+            <option value=\"$group_id\">$group_name</option>";
         }
         return $list;
     }
@@ -3082,14 +3090,17 @@ class CatalogueClass
     public function getGroupsListValues($group_id = 0)
     {
         $db = DbSingleton::getTokoDb();
-        $list = "<option value='0'>-не вибрано-</option>";
+        $list = "
+        <option value='0'>-не вибрано-</option>";
         $r = $db->query("SELECT `VALUE_ID`, `VALUE_NAME`, `PARAM_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id ORDER BY `VALUE_NAME` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $value_id   = $db->result($r, $i - 1, "VALUE_ID");
             $param_id   = $db->result($r, $i - 1, "PARAM_ID");
             $value_name = $db->result($r, $i - 1, "VALUE_NAME");
-            $list       .= "<option value=\"$value_id\" data-value-param=\"$param_id\">$value_name</option>";
+
+            $list .= "
+            <option value=\"$value_id\" data-value-param=\"$param_id\">$value_name</option>";
         }
         return $list;
     }
@@ -3134,6 +3145,7 @@ class CatalogueClass
                         $link       = "https://toko.ua/catalog/$link_cat/";
                         $seo_status = intval($this->checkSeoText("catalog", $link_cat));
                         $count++;
+
                         $list .= "
                         <tr>
                             <td>$count</td>
@@ -3156,6 +3168,7 @@ class CatalogueClass
                 $link       = "https://toko.ua/catalog/$link_cat/";
                 $seo_status = intval($this->checkSeoText("catalog", $link));
                 $count++;
+
                 $list .= "    
                 <tr>
                     <td>$count</td>
@@ -3180,6 +3193,7 @@ class CatalogueClass
                         $link       = "https://toko.ua/catalog/$link_cat/";
                         $seo_status = intval($this->checkSeoText("catalog", $link));
                         $count++;
+
                         $list .= "
                         <tr>
                             <td>$count</td>
@@ -3208,6 +3222,7 @@ class CatalogueClass
                         $link       = "https://toko.ua/catalog/$link_cat/";
                         $seo_status = intval($this->checkSeoText("catalog", $link));
                         $count++;
+
                         $list .= "
                         <tr>
                             <td>$count</td>
@@ -3303,6 +3318,7 @@ class CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $kours = new ExRateClass();
+
         $client_id = $client->getClientByUser($user_id);
         $tpoint_user_id = $client->getTpointUser($client_id);
         $cur = $client->getClientCurrency($client_id);
@@ -3387,12 +3403,11 @@ class CatalogueClass
         $n = $dbm->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
-                $user = $db->result($r, $i - 1, "user_id");
-                $filename = $user . "/" . $dbm->result($r, $i - 1, "filename");
+                $user       = $db->result($r, $i - 1, "user_id");
+                $filename   = $user . "/" . $dbm->result($r, $i - 1, "filename");
 
                 $csv = "";
-                $list = $this->getPriceList();
-                foreach ($list as $record) {
+                foreach ($this->getPriceList() as $record) {
                     foreach ($record as $rec) {
                         $csv .= $rec . ';';
                     }
@@ -3459,6 +3474,8 @@ class CatalogueClass
                 $i++;
                 $photo  = $value["photo"];
                 $type   = $value["type"];
+                $status = 1;
+
                 $slide .= "
                 <div class=\"sp-slide\">
                     <img class=\"sp-image\" 
@@ -3466,6 +3483,7 @@ class CatalogueClass
                         alt=\"$h1 - {photo_card_cap} #$i\"
                         title=\"$h1 - {photo_card_cap} #$i\"/>
                 </div>";
+
                 $thumbnail .= "
                 <div class=\"sp-thumbnail\">
                     <div class=\"sp-thumbnail-image-container\">
@@ -3474,12 +3492,11 @@ class CatalogueClass
                             alt=\"$h1 - {photo_card_cap} #$i\"/>
                     </div>
                 </div>";
-                $status = 1;
             }
         } else {
-            $slide = "";
-            $thumbnail = "";
-            $status = 0;
+            $slide      = "";
+            $thumbnail  = "";
+            $status     = 0;
         }
         return array(
             "slide"     => $slide,
@@ -3631,11 +3648,13 @@ class CatalogueClass
                     $type_id    = $db->result($r, $i - 1, "TYPE_ID");
                     $str_count  = $db->result($r, $i - 1, "str_count");
                     $k          = $key_id . "_" . $type_id;
+
                     if (!array_key_exists($k, $new)) {
                         $new[$k] = ["key_id" => $key_id, "type_id" => $type_id, "str_count" => $str_count];
                     } else {
                         $new[$k]["str_count"] += $str_count;
                     }
+
                     if (!in_array($key, $new[$k]["key"])) {
                         $new[$k]["key"][] = $key;
                         $m[] = $key;
@@ -3654,6 +3673,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $showform = new FormClass();
+
         $list = $list1 = $list2 = $list3 = "";
         if ($text == "") {
             $list = $showform->showHistoryList();
@@ -3677,6 +3697,7 @@ class CatalogueClass
                 $display_nr = $db->result($r, $i - 1, "DISPLAY_NR");
                 $brand_name = $this->getBrandName($brand_id);
                 $brand_link = $this->getBrandLink($brand_id);
+
                 if ($min_kind == "0") {
                     $format_name    = $this->getFormatAticle($display_nr);
                     $article_name   = $this->getArticleName($art_id);
@@ -3687,6 +3708,7 @@ class CatalogueClass
                     $link           = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";
                     $str            = "$brand_name $display_nr";
                 }
+
                 $list1 .= "<li>
                     <a href='$link'>$str </a>
                 </li>";

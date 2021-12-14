@@ -35,21 +35,22 @@ class ShopClass extends CatalogueClass
         $r = $db->query("SELECT * FROM `basket` WHERE $where ORDER BY `date_create` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $brow = "";
-            $bprow = "";
-            $location = "location.href='" . $this->getSiteLink() . "$this->order_link/';";
-            $location_fast = "finishFastOrder('input_phone2');";
+            $brow           = "";
+            $bprow          = "";
+            $location       = "location.href='" . $this->getSiteLink() . "$this->order_link/';";
+            $location_fast  = "finishFastOrder('input_phone2');";
+
             for ($i = 1; $i <= $n; $i++) {
-                $art_id = $db->result($r, $i - 1, "art_id");
-                $brand_id = $db->result($r, $i - 1, "brand_id");
-                $suppl_id = $db->result($r, $i - 1, "suppl_id");
-                $amount = $db->result($r, $i - 1, "amount");
-                $stock = $db->result($r, $i - 1, "stock");
-                $storage_id = $db->result($r, $i - 1, "storage_id");
-                $date_create = $db->result($r, $i - 1, "date_create");
-                $status = $db->result($r, $i - 1, "status");
+                $art_id         = $db->result($r, $i - 1, "art_id");
+                $brand_id       = $db->result($r, $i - 1, "brand_id");
+                $suppl_id       = $db->result($r, $i - 1, "suppl_id");
+                $amount         = $db->result($r, $i - 1, "amount");
+                $stock          = $db->result($r, $i - 1, "stock");
+                $storage_id     = $db->result($r, $i - 1, "storage_id");
+                $date_create    = $db->result($r, $i - 1, "date_create");
+                $status         = $db->result($r, $i - 1, "status");
                 $status_checked = $db->result($r, $i - 1, "status_checked");
-                $price = $db->result($r, $i - 1, "price");
+                $price          = $db->result($r, $i - 1, "price");
 
                 // PRICE
                 $price = $exrate->getKoursPrice($price, $cur);
@@ -61,10 +62,11 @@ class ShopClass extends CatalogueClass
                     $full_price = $client->getClientPriceRounding($client_id, $full_price);
                 }
 
-                $data = compact("art_id", "brand_id", "suppl_id", "amount", "price", "full_price", "stock", "storage_id", "date_create", "status", "status_checked", "cur");
-                $brow .= $this->showBasketRows($data);
-                $bprow .= $this->showBasketRows($data, 1);
-                $sum_total += $full_price;
+                $data       = compact("art_id", "brand_id", "suppl_id", "amount", "price", "full_price", "stock", "storage_id", "date_create", "status", "status_checked", "cur");
+                $brow       .= $this->showBasketRows($data);
+                $bprow      .= $this->showBasketRows($data, 1);
+                $sum_total  += $full_price;
+
                 if ($status_checked) {
                     $sum_checked += $full_price;
                     $count_checked += 1;
@@ -138,7 +140,7 @@ class ShopClass extends CatalogueClass
         $flagData   = $showform->getCountryFlag($brand_id);
         $country_nm = $flag =  "";
         if ($flagData != false) {
-            $flag = "<img class=\"flag flag-" . $flagData["flag"] . " flag-search\">";
+            $flag       = "<img class=\"flag flag-" . $flagData["flag"] . " flag-search\">";
             $country_nm = "{brand_manuf}: " . $flagData["country"];
         }
 
@@ -1065,10 +1067,8 @@ class ShopClass extends CatalogueClass
 
         $summ = $price * $amount;
 
-        $db->query("INSERT INTO `orders_new` 
-            (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `comment`, `order_info_id`, `price_summ`) 
-        VALUES 
-            ($order_id, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '', '', '$phone', '', '', 0, '$summ');");
+        $db->query("INSERT INTO `orders_new` (`id`, `client_id`, `client_user_id`, `cookie_id`, `tpoint_id`, `cash_id`, `name`, `email`, `phone`, `region`, `comment`, `order_info_id`, `price_summ`) 
+        VALUES ($order_id, $client_id, $user_id, '$cookie', $tpoint_id, $cash_id, '', '', '$phone', '', '', 0, '$summ');");
 
         $db->query("INSERT INTO `orders_str_new` (`order_id`, `suppl_id`, `storage_id`, `art_id`, `brand_id`, `amount`, `price`, `summ`, `status_action`) 
         VALUES ($order_id, $suppl_id, $storage_id, $art_id, $brand_id, '$amount', '$price', '$summ', $status_action);");
@@ -1507,9 +1507,8 @@ class ShopClass extends CatalogueClass
         $exrate = new ExRateClass();
         $client = new ClientClass();
 
-        $cur        = $this->getCurrentExrate();
-        $cur_cap    = $this->getSymbolExrate($cur);
-        $price      = $price_cur = 0;
+        $cur    = $this->getCurrentExrate();
+        $price  = $price_cur = 0;
 
         // NOVA POSHTA
         if ($delivery_id == 4) {
@@ -1525,7 +1524,7 @@ class ShopClass extends CatalogueClass
         }
 
         if ($price_cur > 0) {
-            $del_cap = "$price_cur $cur_cap";
+            $del_cap = "$price_cur " . $this->getSymbolExrate($cur);;
         } else {
             $del_cap = "{free_cap}";
         }
@@ -1572,7 +1571,11 @@ class ShopClass extends CatalogueClass
         // real discount procent
         $real_discount = round((($price_discount / $price) - 1) * 100, 2);
 
-        return array("discount" => $discount, "price_discount" => $price_discount, "real_discount" => $real_discount);
+        return array(
+            "discount"          => $discount,
+            "price_discount"    => $price_discount,
+            "real_discount"     => $real_discount
+        );
     }
 
     public function getOrderSummCur()
@@ -1581,7 +1584,6 @@ class ShopClass extends CatalogueClass
         $client = new ClientClass();
         $exrate = new ExRateClass();
 
-        $client_id  = $this->getClient();
         $cur        = $this->getCurrentExrate();
         $where      = $client->getClientWhere();
         $order_sum  = 0;
@@ -1595,7 +1597,7 @@ class ShopClass extends CatalogueClass
                 $price  = $exrate->getKoursPrice($price, $cur);
 
                 if ($cur == 1) {
-                    $price = $client->getClientPriceRounding($client_id, $price);
+                    $price = $client->getClientPriceRounding($this->getClient(), $price);
                 }
                 $full_price = $price * $amount;
                 $order_sum  += $full_price;
@@ -1618,8 +1620,7 @@ class ShopClass extends CatalogueClass
         $where      = $client->getClientWhere();
         $cur        = $this->getCurrentExrate();
         $cur_cap    = $this->getSymbolExrate($cur);
-        $sum_total  = $bonus_total = $order_sum = 0;
-        $order_sum  = $this->getOrderSummCur();
+        $sum_total  = $bonus_total = 0;
         $list       = "";
 
         $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked` = 1 ORDER BY `date_create` DESC;");
@@ -1649,7 +1650,7 @@ class ShopClass extends CatalogueClass
                 $price_cap  = "$full_price $cur_cap";
 
                 if ($bonus_status) {
-                    $discountData   = $this->getBonusDiscount($order_sum, $bonus_summ, $full_price);
+                    $discountData   = $this->getBonusDiscount($this->getOrderSummCur(), $bonus_summ, $full_price);
                     $discount       = $discountData["discount"];
                     $price_discount = $discountData["price_discount"];
                     $real_discount  = $discountData["real_discount"];
@@ -1708,6 +1709,7 @@ class ShopClass extends CatalogueClass
 
         $lang_id = $this->getLanguage();
         $postfix = $where_user_city = $list = "";
+
         if ($lang_id == 1 || $lang_id == 3) {
             $postfix = "_RU";
         }
@@ -1799,8 +1801,7 @@ class ShopClass extends CatalogueClass
      * */
     public function getNovaPoshtaWarehousesSelect($ref, $department_ref)
     {
-        $list = "<option value=\"0\">{not_chosen}</option>";
-        $list = $this->replaceLang($list);
+        $list = $this->replaceLang("<option value=\"0\">{not_chosen}</option>");
         $np = new NovaPoshtaApi2('e52c020f392e0da179684b87cdbbbf05');
         $arr = $np->getWarehouses($ref)['data'];
         foreach ($arr as $val) {

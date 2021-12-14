@@ -6,9 +6,9 @@ class ProfileClass extends ClientClass
     use Helper;
     use Variables;
 
-    public $page_signin = "signin/";
-    public $page_profile = "profile/orders/";
-    public $page_registration = "registration/";
+    public $page_signin         = "signin/";
+    public $page_profile        = "profile/orders/";
+    public $page_registration   = "registration/";
 
     /*
      * get profile left navigation
@@ -46,8 +46,9 @@ class ProfileClass extends ClientClass
     public function getSpecialOffers()
     {
         $db = DbSingleton::getDbm();
-        $user_id = $this->getUser();
-        $client_id = $this->getClient();
+
+        $user_id    = $this->getUser();
+        $client_id  = $this->getClient();
         $categories = [];
 
         $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id;");
@@ -110,6 +111,7 @@ class ProfileClass extends ClientClass
 
         $r = $dbt->query("SELECT COUNT(`id`) as count_ids FROM `news` WHERE `data` > '$update_news' AND `lang_id` = $lang_id AND `status` = 1;");
         $n = $dbt->result($r, 0, "count_ids");
+
         $counter = ($user_id > 0 && $n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
         return "
         <li class=\"authorization-item\">
@@ -305,6 +307,7 @@ class ProfileClass extends ClientClass
                     $storage_sel_string     .= "$storage_select_cap: $amount_select_bug {amount_abbr}. <br>";
                 }
             }
+
             $list = "
             {your_order}: $amount {amount_abbr}. <br>
             {rejection_cap}: $amount_bug {amount_abbr}. <br>
@@ -342,8 +345,8 @@ class ProfileClass extends ClientClass
      * */
     public function checkOrderUser($order_id, $user_id)
     {
-        $order_id = $this->getUrlNumber($order_id);
-        $user_id = $this->getUrlNumber($user_id);
+        $order_id   = $this->getUrlNumber($order_id);
+        $user_id    = $this->getUrlNumber($user_id);
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT COUNT(`id`) as kilk FROM `orders_new` WHERE `id` = $order_id AND `client_user_id` = $user_id;");
         return $db->result($r, 0, "kilk");
@@ -495,9 +498,10 @@ class ProfileClass extends ClientClass
      * */
     public function showProfileOrdersArts($dp_check, $order_check)
     {
+        $dp_check       = $this->getUrlNumber($dp_check);
+        $order_check    = $this->getUrlNumber($order_check);
+
         $db = DbSingleton::getDbm();
-        $dp_check = $this->getUrlNumber($dp_check);
-        $order_check = $this->getUrlNumber($order_check);
         $kours = new ExRateClass();
 
         $list       = "";
@@ -641,11 +645,12 @@ class ProfileClass extends ClientClass
 
     public function showProfileCheck($data_from = "", $data_to = "")
     {
-        $data_from = $this->getNameString($data_from);
-        $data_to = $this->getNameString($data_to);
         $db = DbSingleton::getDbm();
         $kours = new ExRateClass();
         $client = new ClientClass();
+
+        $data_from  = $this->getNameString($data_from);
+        $data_to    = $this->getNameString($data_to);
 
         if ($data_from == 0 || $data_from == "") {
             $data_from = date("Y-m-01");

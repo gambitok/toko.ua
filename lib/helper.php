@@ -252,6 +252,7 @@ trait Helper
         $mas3       = [0, 5, 6, 7, 8, 9];
         $mas4       = [11, 12, 13, 14, 15, 16, 17, 18, 19];
         $mod        = $i % 10;
+
         if (in_array($mod, $mas1)) {
             $caption = $caption_1;
         }
@@ -278,6 +279,7 @@ trait Helper
         $mas3       = [0, 5, 6, 7, 8, 9];
         $mas4       = [11, 12, 13, 14, 15, 16, 17, 18, 19];
         $mod        = $i % 10;
+
         if (in_array($mod, $mas1)) {
             $caption = $caption_1;
         }

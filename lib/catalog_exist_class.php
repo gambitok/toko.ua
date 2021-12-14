@@ -462,7 +462,7 @@ class CatalogExistClass extends CatalogueClass
         $dbc->query("TRUNCATE TABLE `$table_available_mfa`;");
 
         //  AND t2si.stock_suppl > 0
-        $r = $db->query("SELECT t2si.art_id, t2a.BRAND_ID
+        $r = $db->query("SELECT t2si.art_id, t2a.BRAND_ID, IFNULL(t2si.stock_suppl, 0) as AMOUNT
         FROM `T2_SUPPL_IMPORT` t2si
             LEFT JOIN `T2_ARTICLES` t2a ON (t2a.ART_ID = t2si.art_id)
             LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
@@ -472,15 +472,17 @@ class CatalogExistClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id     = $db->result($r, $i - 1, "art_id");
             $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
+            $amount     = $db->result($r, $i - 1, "AMOUNT");
             $price      = $this->getArticlePriceStorage($art_id);
             $price      = $kours->getKoursPrice($price, 2);
+            $price      = ($amount == 0) ? 0 : $price;
 
             $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
             $count_add++;
         }
 
         // AND t2asc.AMOUNT > 0
-        $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID
+        $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, IFNULL(t2asc.AMOUNT, 0) as AMOUNT
         FROM `T2_ARTICLES` t2a
             LEFT JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
         WHERE t2a.ART_ID > 0 
@@ -489,8 +491,10 @@ class CatalogExistClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id     = $db->result($r, $i - 1, "ART_ID");
             $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
+            $amount     = $db->result($r, $i - 1, "AMOUNT");
             $price      = $this->getArticlePrice($art_id);
             $price      = $kours->getKoursPrice($price, 2);
+            $price      = ($amount == 0) ? 0 : $price;
 
             $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
             $count_add++;
@@ -498,7 +502,7 @@ class CatalogExistClass extends CatalogueClass
 
         // fixed brand_id = 0 in T2_SUPPL_IMPORT
         $db->query("UPDATE `T2_SUPPL_IMPORT` t2si
-            INNER JOIN toko_dba_cache.`EX_TABLE_TREE` ex (ON ex.art_id = t2si.art_id)
+            INNER JOIN toko_dba_cache.`EX_TABLE_TREE` ex ON (ex.art_id = t2si.art_id)
         SET t2si.art_id = 0
         WHERE ex.brand_id = 0;");
 
@@ -530,6 +534,7 @@ class CatalogExistClass extends CatalogueClass
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
         $table_available = "EX_TABLE_TREE_AVAILABLE";
+
         $dbc->query("CREATE TABLE IF NOT EXISTS `$table` 
         (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -1049,12 +1054,12 @@ class CatalogExistClass extends CatalogueClass
         $where_mfa      = $this->getMfaWhere($mfa_id, $model, $status_auto, $status_auto_type);
         $where_link_art = $this->getArtsLinksWhere($status_auto, $status_auto_type, $typ_id);
 
-        $where_sort = "";
+        $where_sort = "ORDER BY t.price = 0, t.id ASC";
         if ($sort == "asc") {
-            $where_sort = "ORDER BY t.price ASC";
+            $where_sort = "ORDER BY t.price = 0, t.price ASC";
         }
         if ($sort == "desc") {
-            $where_sort = "ORDER BY t.price DESC";
+            $where_sort = "ORDER BY t.price = 0, t.price DESC";
         }
 
         $check_group = $this->checkTable($group_id);
@@ -1069,6 +1074,7 @@ class CatalogExistClass extends CatalogueClass
                 WHERE 1 $where_mfa $where_link_art
                 GROUP BY t.art_id
                 $where_sort";
+
                 $query_min = "SELECT t.art_id, t.price FROM `$table` t
                     LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
                     LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
@@ -1082,6 +1088,7 @@ class CatalogExistClass extends CatalogueClass
                 WHERE 1 $where $where_mfa $where_link_art
                 GROUP BY t.art_id
                 $where_sort";
+
                 $query_min = "SELECT t.art_id, t.price FROM `$table` t
                     LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
                     LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
