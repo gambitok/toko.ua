@@ -441,6 +441,7 @@ class CatalogExistClass extends CatalogueClass
         $kours = new ExRateClass();
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
+
         $table = "EX_TABLE_TREE";
         $table_available = "EX_TABLE_TREE_AVAILABLE";
         $table_available_mfa = "EX_TABLE_TREE_AVAILABLE_MFA";
@@ -461,66 +462,113 @@ class CatalogExistClass extends CatalogueClass
         $dbc->query("TRUNCATE TABLE `$table_available`;");
         $dbc->query("TRUNCATE TABLE `$table_available_mfa`;");
 
-        //  AND t2si.stock_suppl > 0
-        $r = $db->query("SELECT t2si.art_id, t2a.BRAND_ID, IFNULL(t2si.stock_suppl, 0) as AMOUNT
-        FROM `T2_SUPPL_IMPORT` t2si
-            LEFT JOIN `T2_ARTICLES` t2a ON (t2a.ART_ID = t2si.art_id)
-            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
-        WHERE t2si.art_id > 0 AND cs.visible = 1
-        GROUP BY t2si.art_id;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id     = $db->result($r, $i - 1, "art_id");
-            $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
-            $amount     = $db->result($r, $i - 1, "AMOUNT");
-            $price      = $this->getArticlePriceStorage($art_id);
-            $price      = $kours->getKoursPrice($price, 2);
-            $price      = ($amount == 0) ? 0 : $price;
-
-            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
-            $count_add++;
-        }
-
-        // AND t2asc.AMOUNT > 0
-        $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, IFNULL(t2asc.AMOUNT, 0) as AMOUNT
-        FROM `T2_ARTICLES` t2a
-            LEFT JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
-        WHERE t2a.ART_ID > 0 
-        GROUP BY t2a.art_id;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id     = $db->result($r, $i - 1, "ART_ID");
-            $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
-            $amount     = $db->result($r, $i - 1, "AMOUNT");
-            $price      = $this->getArticlePrice($art_id);
-            $price      = $kours->getKoursPrice($price, 2);
-            $price      = ($amount == 0) ? 0 : $price;
-
-            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
-            $count_add++;
-        }
-
-        // fixed brand_id = 0 in T2_SUPPL_IMPORT
-        $db->query("UPDATE `T2_SUPPL_IMPORT` t2si
-            INNER JOIN toko_dba_cache.`EX_TABLE_TREE` ex ON (ex.art_id = t2si.art_id)
-        SET t2si.art_id = 0
-        WHERE ex.brand_id = 0;");
-
-        // fixed brand_id = 0 in T2_SUPPL_ARTICLES_IMPORT
-        $db->query("DELETE t2sai
-        FROM `T2_SUPPL_ARTICLES_IMPORT` t2sai
-            INNER JOIN toko_dba_cache.`EX_TABLE_TREE` ex ON (ex.art_id = t2sai.art_id)
-        WHERE ex.brand_id = 0;");
-
-        // deleted nulls
-        $dbc->query("DELETE FROM `$table` WHERE `brand_id` = 0;");
-
         $dbc->query("INSERT INTO `$table_available` (`art_id`, `brand_id`, `group_id`, `price`, `status`)
-        SELECT ex.art_id, ex.brand_id, tt.group_id, ex.price, ex.status 
-        FROM `$table` ex
-            LEFT JOIN toko_dba.`T2_TREE_ARTS_EXIST` tt ON (tt.ART_ID = ex.art_id)
-        WHERE tt.group_id IS NOT NULL
-        GROUP BY ex.art_id, tt.group_id;");
+        SELECT ex.ART_ID, ex.BRAND_ID, ex.GROUP_ID, 0, 1
+            FROM toko_dba.`T2_TREE_ARTS_EXIST` ex 
+        WHERE ex.GROUP_ID IS NOT NULL
+        GROUP BY ex.ART_ID, ex.GROUP_ID;");
+
+//        $r = $db->query("SELECT t2si.art_id, IFNULL(t2si.stock_suppl, 0) as AMOUNT
+//        FROM `T2_SUPPL_IMPORT` t2si
+//            LEFT JOIN `T2_ARTICLES` t2a ON (t2a.ART_ID = t2si.art_id)
+//            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
+//        WHERE t2si.art_id > 0 AND cs.visible = 1
+//        GROUP BY t2si.art_id;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $db->result($r, $i - 1, "art_id");
+//            $amount = $db->result($r, $i - 1, "AMOUNT");
+//            if ($amount == 0) {
+//                $price = 0;
+//            } else {
+//                $price = $this->getArticlePriceStorage($art_id);
+//                $price = $kours->getKoursPrice($price, 2);
+//            }
+//
+//            $dbc->query("UPDATE `$table_available` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
+//            $count_add++;
+//        }
+//
+//        $r = $db->query("SELECT t2a.ART_ID, IFNULL(t2asc.AMOUNT, 0) as AMOUNT
+//        FROM `T2_ARTICLES` t2a
+//            LEFT JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
+//        WHERE t2a.ART_ID > 0
+//        GROUP BY t2a.art_id;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $db->result($r, $i - 1, "ART_ID");
+//            $amount = $db->result($r, $i - 1, "AMOUNT");
+//            if ($amount == 0) {
+//                $price = 0;
+//            } else {
+//                $price = $this->getArticlePriceStorage($art_id);
+//                $price = $kours->getKoursPrice($price, 2);
+//            }
+//
+//            $dbc->query("UPDATE `$table_available` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
+//            $count_add++;
+//        }
+
+//        //  AND t2si.stock_suppl > 0
+//        $r = $db->query("SELECT t2si.art_id, t2a.BRAND_ID, IFNULL(t2si.stock_suppl, 0) as AMOUNT
+//        FROM `T2_SUPPL_IMPORT` t2si
+//            LEFT JOIN `T2_ARTICLES` t2a ON (t2a.ART_ID = t2si.art_id)
+//            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
+//        WHERE t2si.art_id > 0 AND cs.visible = 1
+//        GROUP BY t2si.art_id;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id     = $db->result($r, $i - 1, "art_id");
+//            $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
+//            $amount     = $db->result($r, $i - 1, "AMOUNT");
+//            $price      = $this->getArticlePriceStorage($art_id);
+//            $price      = $kours->getKoursPrice($price, 2);
+//            $price      = ($amount == 0) ? 0 : $price;
+//
+//            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
+//            $count_add++;
+//        }
+//
+//        // AND t2asc.AMOUNT > 0
+//        $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, IFNULL(t2asc.AMOUNT, 0) as AMOUNT
+//        FROM `T2_ARTICLES` t2a
+//            LEFT JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
+//        WHERE t2a.ART_ID > 0
+//        GROUP BY t2a.art_id;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id     = $db->result($r, $i - 1, "ART_ID");
+//            $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
+//            $amount     = $db->result($r, $i - 1, "AMOUNT");
+//            $price      = $this->getArticlePrice($art_id);
+//            $price      = $kours->getKoursPrice($price, 2);
+//            $price      = ($amount == 0) ? 0 : $price;
+//
+//            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
+//            $count_add++;
+//        }
+
+//        // fixed brand_id = 0 in T2_SUPPL_IMPORT
+//        $db->query("UPDATE `T2_SUPPL_IMPORT` t2si
+//            INNER JOIN toko_dba_cache.`EX_TABLE_TREE` ex ON (ex.art_id = t2si.art_id)
+//        SET t2si.art_id = 0
+//        WHERE ex.brand_id = 0;");
+//
+//        // fixed brand_id = 0 in T2_SUPPL_ARTICLES_IMPORT
+//        $db->query("DELETE t2sai
+//        FROM `T2_SUPPL_ARTICLES_IMPORT` t2sai
+//            INNER JOIN toko_dba_cache.`EX_TABLE_TREE` ex ON (ex.art_id = t2sai.art_id)
+//        WHERE ex.brand_id = 0;");
+//
+//        // deleted nulls
+//        $dbc->query("DELETE FROM `$table` WHERE `brand_id` = 0;");
+//
+//        $dbc->query("INSERT INTO `$table_available` (`art_id`, `brand_id`, `group_id`, `price`, `status`)
+//        SELECT ex.art_id, ex.brand_id, tt.group_id, ex.price, ex.status
+//        FROM `$table` ex
+//            LEFT JOIN toko_dba.`T2_TREE_ARTS_EXIST` tt ON (tt.ART_ID = ex.art_id)
+//        WHERE tt.group_id IS NOT NULL
+//        GROUP BY ex.art_id, tt.group_id;");
 
         return "ADDED: $count_add";
     }
