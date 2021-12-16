@@ -262,6 +262,7 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function initPartsParamsTable($group_id)
     {
+        $start = microtime(true);
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
 
@@ -382,35 +383,34 @@ class CatalogExistClass extends CatalogueClass
 
         $dbc->query("ALTER TABLE `$table_params` ADD INDEX `art_id` (`art_id`);");
 
-        return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
+        $time = microtime(true) - $start;
+        print ("RUN TIME $group_id: $time (params) \n");
+
+        return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del \n";
     }
 
     public function getArticlePriceStorage($art_id)
     {
-        $db = DbSingleton::getTokoDb();
         $art_id = $this->getUrlNumber($art_id);
+        $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $kours = new ExRateClass();
         $cur = $this->getCurrentExrate();
 
-        $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
+        $r = $db->query("SELECT t2asc.STORAGE_ID as storage_id, 0 as suppl_id
         FROM `T2_ARTICLES` t2a
-            LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
-            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
-            LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
-        WHERE t2a.ART_ID IN ($art_id) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) AND (t2asc.AMOUNT != NULL OR t2asc.AMOUNT != 0)
+            LEFT JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
+        WHERE t2a.ART_ID IN ($art_id) AND (t2asc.AMOUNT != NULL OR t2asc.AMOUNT != 0)
         GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
         UNION ALL
-        SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2si.stock_suppl, t2si.client_storage_id, t2si.suppl_id, t2si.return_delay
+        SELECT t2si.client_storage_id as storage_id, t2si.suppl_id as suppl_id
         FROM `T2_ARTICLES` t2a
-            LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
-            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
-            LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
-        WHERE t2a.ART_ID IN ($art_id) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) AND (t2si.stock_suppl != NULL OR t2si.stock_suppl != 0)
+            LEFT JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
+        WHERE t2a.ART_ID IN ($art_id)  AND (t2si.stock_suppl != NULL OR t2si.stock_suppl != 0)
         GROUP BY t2a.ART_ID, t2si.client_storage_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $suppl_id = $db->result($r, $i - 1, "suppl_id");
+            $suppl_id   = $db->result($r, $i - 1, "suppl_id");
             $storage_id = $db->result($r, $i - 1, "storage_id");
 
             $price = $this->getArticlePrice($art_id);
@@ -422,8 +422,9 @@ class CatalogExistClass extends CatalogueClass
                 $price = $client->getClientPriceRounding($this->getClient(), $price);
             }
 
-            if ($price > 0)
+            if ($price > 0) {
                 $arr[] = $price;
+            }
         }
 
         sort($arr);
@@ -442,135 +443,90 @@ class CatalogExistClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
 
-        $table = "EX_TABLE_TREE";
-        $table_available = "EX_TABLE_TREE_AVAILABLE";
-        $table_available_mfa = "EX_TABLE_TREE_AVAILABLE_MFA";
         $count_add = 0;
 
-        $dbc->query("CREATE TABLE IF NOT EXISTS `$table` 
-        (
-            `id` INT(11) NOT NULL AUTO_INCREMENT,
-            `art_id` INT(11) NOT NULL,
-            `group_id` SMALLINT(4),
-            `brand_id` INT(11),
-            `price` FLOAT,
-            `status` TINYINT(2),
-            PRIMARY KEY (`id`)
-        ) ENGINE = MYISAM;");
+        $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE`;");
+        $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_MFA`;");
 
-        $dbc->query("TRUNCATE TABLE `$table`;");
-        $dbc->query("TRUNCATE TABLE `$table_available`;");
-        $dbc->query("TRUNCATE TABLE `$table_available_mfa`;");
-
-        $dbc->query("INSERT INTO `$table_available` (`art_id`, `brand_id`, `group_id`, `price`, `status`)
+        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE` (`art_id`, `brand_id`, `group_id`, `price`, `status`)
         SELECT ex.ART_ID, ex.BRAND_ID, ex.GROUP_ID, 0, 1
             FROM toko_dba.`T2_TREE_ARTS_EXIST` ex 
         WHERE ex.GROUP_ID IS NOT NULL
         GROUP BY ex.ART_ID, ex.GROUP_ID;");
 
-//        $r = $db->query("SELECT t2si.art_id, IFNULL(t2si.stock_suppl, 0) as AMOUNT
-//        FROM `T2_SUPPL_IMPORT` t2si
-//            LEFT JOIN `T2_ARTICLES` t2a ON (t2a.ART_ID = t2si.art_id)
-//            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
-//        WHERE t2si.art_id > 0 AND cs.visible = 1
-//        GROUP BY t2si.art_id;");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id = $db->result($r, $i - 1, "art_id");
-//            $amount = $db->result($r, $i - 1, "AMOUNT");
-//            if ($amount == 0) {
-//                $price = 0;
-//            } else {
-//                $price = $this->getArticlePriceStorage($art_id);
-//                $price = $kours->getKoursPrice($price, 2);
-//            }
-//
-//            $dbc->query("UPDATE `$table_available` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
-//            $count_add++;
-//        }
-//
-//        $r = $db->query("SELECT t2a.ART_ID, IFNULL(t2asc.AMOUNT, 0) as AMOUNT
-//        FROM `T2_ARTICLES` t2a
-//            LEFT JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
-//        WHERE t2a.ART_ID > 0
-//        GROUP BY t2a.art_id;");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id = $db->result($r, $i - 1, "ART_ID");
-//            $amount = $db->result($r, $i - 1, "AMOUNT");
-//            if ($amount == 0) {
-//                $price = 0;
-//            } else {
-//                $price = $this->getArticlePriceStorage($art_id);
-//                $price = $kours->getKoursPrice($price, 2);
-//            }
-//
-//            $dbc->query("UPDATE `$table_available` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
-//            $count_add++;
-//        }
+        $r = $db->query("SELECT t2si.art_id
+        FROM `T2_SUPPL_IMPORT` t2si
+            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
+        WHERE t2si.art_id > 0 AND cs.visible = 1
+        GROUP BY t2si.art_id;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "art_id");
+            $price  = $this->getArticlePriceStorage($art_id);
+            $price  = $kours->getKoursPrice($price, 2);
 
-//        //  AND t2si.stock_suppl > 0
-//        $r = $db->query("SELECT t2si.art_id, t2a.BRAND_ID, IFNULL(t2si.stock_suppl, 0) as AMOUNT
-//        FROM `T2_SUPPL_IMPORT` t2si
-//            LEFT JOIN `T2_ARTICLES` t2a ON (t2a.ART_ID = t2si.art_id)
-//            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
-//        WHERE t2si.art_id > 0 AND cs.visible = 1
-//        GROUP BY t2si.art_id;");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id     = $db->result($r, $i - 1, "art_id");
-//            $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
-//            $amount     = $db->result($r, $i - 1, "AMOUNT");
-//            $price      = $this->getArticlePriceStorage($art_id);
-//            $price      = $kours->getKoursPrice($price, 2);
-//            $price      = ($amount == 0) ? 0 : $price;
-//
-//            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
-//            $count_add++;
-//        }
-//
-//        // AND t2asc.AMOUNT > 0
-//        $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, IFNULL(t2asc.AMOUNT, 0) as AMOUNT
-//        FROM `T2_ARTICLES` t2a
-//            LEFT JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
-//        WHERE t2a.ART_ID > 0
-//        GROUP BY t2a.art_id;");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $art_id     = $db->result($r, $i - 1, "ART_ID");
-//            $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
-//            $amount     = $db->result($r, $i - 1, "AMOUNT");
-//            $price      = $this->getArticlePrice($art_id);
-//            $price      = $kours->getKoursPrice($price, 2);
-//            $price      = ($amount == 0) ? 0 : $price;
-//
-//            $dbc->query("INSERT INTO `$table` (`art_id`, `group_id`, `brand_id`, `price`, `status`) VALUES ('$art_id', '0', '$brand_id', '$price', 1);");
-//            $count_add++;
-//        }
+            $dbc->query("UPDATE `EX_TABLE_TREE_AVAILABLE` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
+            $count_add++;
+        }
 
-//        // fixed brand_id = 0 in T2_SUPPL_IMPORT
-//        $db->query("UPDATE `T2_SUPPL_IMPORT` t2si
-//            INNER JOIN toko_dba_cache.`EX_TABLE_TREE` ex ON (ex.art_id = t2si.art_id)
-//        SET t2si.art_id = 0
-//        WHERE ex.brand_id = 0;");
-//
-//        // fixed brand_id = 0 in T2_SUPPL_ARTICLES_IMPORT
-//        $db->query("DELETE t2sai
-//        FROM `T2_SUPPL_ARTICLES_IMPORT` t2sai
-//            INNER JOIN toko_dba_cache.`EX_TABLE_TREE` ex ON (ex.art_id = t2sai.art_id)
-//        WHERE ex.brand_id = 0;");
-//
-//        // deleted nulls
-//        $dbc->query("DELETE FROM `$table` WHERE `brand_id` = 0;");
-//
-//        $dbc->query("INSERT INTO `$table_available` (`art_id`, `brand_id`, `group_id`, `price`, `status`)
-//        SELECT ex.art_id, ex.brand_id, tt.group_id, ex.price, ex.status
-//        FROM `$table` ex
-//            LEFT JOIN toko_dba.`T2_TREE_ARTS_EXIST` tt ON (tt.ART_ID = ex.art_id)
-//        WHERE tt.group_id IS NOT NULL
-//        GROUP BY ex.art_id, tt.group_id;");
+        $r = $db->query("SELECT t2asc.ART_ID 
+        FROM `T2_ARTICLES_STRORAGE` t2asc
+        WHERE t2asc.AMOUNT > 0
+        GROUP BY t2asc.ART_ID;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
+            $price  = $this->getArticlePriceStorage($art_id);
+            $price  = $kours->getKoursPrice($price, 2);
+
+            $dbc->query("UPDATE `EX_TABLE_TREE_AVAILABLE` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
+            $count_add++;
+        }
+
+        //EX_TABLE_TREE_AVAILABLE_GROUP
+        $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_GROUP`;");
+        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`)
+        SELECT ex.group_id, 1
+            FROM `EX_TABLE_TREE_AVAILABLE` ex 
+        WHERE ex.`group_id` IN (
+            SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `price` > 0
+        )
+        GROUP BY ex.group_id;");
 
         return "ADDED: $count_add";
+    }
+
+    public function getArticleStorage($group_id, $art_id)
+    {
+        $result = 0;
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT t2si.art_id
+        FROM `T2_SUPPL_IMPORT` t2si
+            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
+        WHERE cs.visible = 1 AND t2si.art_id = $art_id
+        GROUP BY t2si.art_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $result = 1;
+        } else {
+            $r = $db->query("SELECT t2asc.ART_ID
+            FROM `T2_ARTICLES_STRORAGE` t2asc
+            WHERE t2asc.AMOUNT > 0 AND t2asc.ART_ID = $art_id
+            GROUP BY t2asc.ART_ID LIMIT 1;");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $result = 1;
+            }
+        }
+        if ($result > 0) {
+            $dbc = DbSingleton::getTokoCacheDb();
+            $table = "EX_TABLE_TREE_$group_id";
+            $kours = new ExRateClass();
+            $price = $this->getArticlePriceStorage($art_id);
+            $price = $kours->getKoursPrice($price, 2);
+            $dbc->query("UPDATE `$table` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
+        }
+        return true;
     }
 
     /*
@@ -578,10 +534,10 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function initPartsTable($group_id)
     {
-        $db = DbSingleton::getTokoDb();
+        $start = microtime(true);
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
-        $table_available = "EX_TABLE_TREE_AVAILABLE";
+        $count_add = 0;
 
         $dbc->query("CREATE TABLE IF NOT EXISTS `$table` 
         (
@@ -594,18 +550,66 @@ class CatalogExistClass extends CatalogueClass
         ) ENGINE = MYISAM;");
         $dbc->query("TRUNCATE TABLE `$table`;");
 
+//        $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `price`, `status`)
+//            SELECT `art_id`, `brand_id`, `price`, `status` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` = $group_id;");
+
+        $time = microtime(true) - $start;
+        print ("Run time $group_id before price: $time \n ");
+
         $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `price`, `status`)
-            SELECT `art_id`, `brand_id`, `price`, `status` FROM `$table_available` WHERE `group_id` = $group_id;");
+            SELECT `ART_ID`, `BRAND_ID`, 0, 1 FROM toko_dba.`T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` = $group_id;");
 
-        $dbc->query("ALTER TABLE `$table` ADD INDEX `art_id` (`art_id`);");
-
-        $r = $dbc->query("SELECT `id` FROM `$table` WHERE 1;");
+        $r = $dbc->query("SELECT `art_id` FROM `$table` WHERE 1;");
         $n = $dbc->num_rows($r);
-        if ($n > 0) {
-            $db->query("UPDATE `T2_TREE_GROUP_EXIST` SET `STATUS_CACHE` = 1 WHERE `GROUP_ID` = $group_id LIMIT 1;");
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $dbc->result($r, $i - 1, "art_id");
+            $this->getArticleStorage($group_id, $art_id);
+            $count_add++;
         }
 
-        return "UPDATED $group_id";
+        $time = microtime(true) - $start;
+        print ("Run time $group_id after price: $time \n ");
+
+//        $r = $db->query("SELECT t2si.art_id
+//        FROM `T2_SUPPL_IMPORT` t2si
+//            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
+//        WHERE t2si.art_id > 0 AND cs.visible = 1
+//        GROUP BY t2si.art_id;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $db->result($r, $i - 1, "art_id");
+//            $price  = $this->getArticlePriceStorage($art_id);
+//            $price  = $kours->getKoursPrice($price, 2);
+//
+//            $dbc->query("UPDATE `$table` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
+//            $count_add++;
+//        }
+//
+//        $r = $db->query("SELECT t2asc.ART_ID
+//        FROM `T2_ARTICLES_STRORAGE` t2asc
+//        WHERE t2asc.AMOUNT > 0
+//        GROUP BY t2asc.ART_ID;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $db->result($r, $i - 1, "ART_ID");
+//            $price  = $this->getArticlePriceStorage($art_id);
+//            $price  = $kours->getKoursPrice($price, 2);
+//
+//            $dbc->query("UPDATE `$table` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
+//            $count_add++;
+//        }
+
+        /////////////////
+
+//        $dbc->query("ALTER TABLE `$table` ADD INDEX `art_id` (`art_id`);");
+
+//        $r = $dbc->query("SELECT `id` FROM `$table` WHERE 1;");
+//        $n = $dbc->num_rows($r);
+//        if ($n > 0) {
+//            $db->query("UPDATE `T2_TREE_GROUP_EXIST` SET `STATUS_CACHE` = 1 WHERE `GROUP_ID` = $group_id LIMIT 1;");
+//        }
+
+        return "UPDATED $group_id (with prices: $count_add) \n";
     }
 
     /*
@@ -613,6 +617,7 @@ class CatalogExistClass extends CatalogueClass
      * */
     public function initPartsMfaTable($group_id)
     {
+        $start = microtime(true);
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
 
@@ -679,8 +684,10 @@ class CatalogExistClass extends CatalogueClass
         $dbc->query("DELETE FROM `$table_mfa` WHERE `status` = 0;");
 
         $dbc->query("ALTER TABLE `$table_mfa` ADD INDEX `art_id` (`art_id`);");
+        $time = microtime(true) - $start;
+        print ("RUN TIME $group_id: $time (mfa) \n");
 
-        return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del";
+        return "UPDATED: $count_upd, ADDED: $count_add, DELETED: $count_del \n";
     }
 
     public function getCatalogBreadCrumb($group_id, $params, $filters_h1, $source_link, $mfa_id)
@@ -1219,14 +1226,16 @@ class CatalogExistClass extends CatalogueClass
         $max_pages_count = intval(ceil($count / $this->products_on_page));
 
         $description = $this->replaceLang("{site_catalog_group_description}");
-        $description = str_replace("{h1_text}", "$h1_text $pager", $description);
+        $description = str_replace("{h1_text}", "$h1_text", $description);
+        $description .= $pager;
 
         if (!empty($filters)) {
             list($count_brands) = $this->getCatalogParamsCount($params);
             if ($count_brands > 0) {
                 $description = $this->replaceLang("{site_catalog_brand_description}");
-                $description = str_replace("{h1_text}", "$h1_text $pager", $description);
+                $description = str_replace("{h1_text}", "$h1_text", $description);
                 $description = str_replace("{h1_parrent}", $group_text, $description);
+                $description .= $pager;
             }
         }
 
@@ -1238,10 +1247,12 @@ class CatalogExistClass extends CatalogueClass
         if ($n > 0) {
             $postfix = $this->getLangPostfix($this->getLanguage());
             $filters_title = $this->replaceLang($db->result($r, 0, "TITLE_$postfix"));
-            $filters_title = str_replace("{h1_text}", $h1_text, $filters_title);
+            $filters_title = str_replace("{h1_text}", "$h1_text", $filters_title);
+            $filters_title .= $pager;
             $description = $this->replaceLang($db->result($r, 0, "DESCR_$postfix"));
-            $description = str_replace("{h1_text}", $h1_text, $description);
+            $description = str_replace("{h1_text}", "$h1_text", $description);
             $description = str_replace("{price_text}", $min_price, $description);
+            $description .= $pager;
         }
 
         return array(
@@ -2531,12 +2542,11 @@ class CatalogExistClass extends CatalogueClass
          * sitemap-groups-manufactures
          * sitemap-groups-params
          * */
-
         $arr_groups = [];
         $arr_groups_models = [];
         $arr_groups_params = [];
 
-        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `status` = 1 GROUP BY `group_id`;");
+        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_GROUP` WHERE 1;");
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id = intval($db->result($r, $i - 1, "group_id"));
@@ -2564,7 +2574,6 @@ class CatalogExistClass extends CatalogueClass
         /*
          * sitemap-groups-manufactures-params
          * */
-
         $arr_groups_models_params = [];
 
         foreach ($arr_groups_params as $group_id => $params) {
@@ -2593,7 +2602,6 @@ class CatalogExistClass extends CatalogueClass
         /*
          * sitemap-pages
          * */
-
         $arr_modules = [];
 
         $r = $db->query("SELECT `MODULE` FROM `T2_MODULES` WHERE `STATUS` = 1;");
@@ -2606,7 +2614,6 @@ class CatalogExistClass extends CatalogueClass
         /*
          * sitemap-cars
          * */
-
         $arr_cars = [];
 
         $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID` ASC;");

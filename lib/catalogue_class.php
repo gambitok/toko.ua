@@ -2748,6 +2748,7 @@ class CatalogueClass
                 $head_name  = $this->getHeadRowName($head_id);
                 $head_img   = $this->getHeadRowImage($head_id);
                 $head_text  = $this->getHeadRowText($head_id);
+
                 $head_list  = $this->getCatalogColListCat($head_id, $mfa_link, $model_link, $cats, $groups, $brand_id);
 
                 $list .= "
@@ -2801,6 +2802,7 @@ class CatalogueClass
             $cat_id     = $db->result($r, $i - 1, "CAT_ID");
             $cat_name   = $this->getCatRowName($cat_id);
             $cat_link   = $this->getCatRowLink($cat_id);
+
             $group_list = $this->getCatalogColListGroup($head_id, $cat_id, $mfa_link, $model_link, $groups, $brand_id);
 
             $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$cat_name $brand_name</a>";
@@ -2881,7 +2883,7 @@ class CatalogueClass
             $where_gg = "`group_id` IN (" . implode(",", $gg) . ")";
         }
 
-        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE $where_gg GROUP BY `group_id`;");
+        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_GROUP` WHERE $where_gg;");
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id   = $dbc->result($r, $i - 1, "group_id");

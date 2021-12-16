@@ -20,6 +20,7 @@ $content = str_replace("{catalogue_banner}", $showform->getCarsBanner(), $conten
 
 // Каталог запчастей
 $content = str_replace("{select_det_group}", $catalogue->getCatalogColList(), $content);
+
 $content = str_replace("{select_auto_group}", $automan->getAutoMfaModelList(), $content);
 
 // Контакты

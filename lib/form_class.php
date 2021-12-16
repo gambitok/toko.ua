@@ -101,7 +101,8 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
 
-        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id AND `price` > 0 GROUP BY `group_id`;");
+//        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id AND `price` > 0 GROUP BY `group_id`;");
+        $r = $dbc->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id GROUP BY `GROUP_ID`;");
         $n = $dbc->num_rows($r);
         $groups = [];
         for ($i = 1; $i <= $n; $i++) {
@@ -549,10 +550,11 @@ class FormClass extends CatalogueClass
             $group_id = $catalog->getArticleGroupExist($art_id);
             $form = str_replace("{Main_Category_H1}", $this->getSeoLinkCatalog($group_id), $form);
 
-            $r = $dbc->query("SELECT `art_id`, `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id ORDER BY RAND() LIMIT 1;");
-            $art_id_sel     = $db->result($r, 0, "art_id");
-            $brand_id_sel   = $db->result($r, 0, "brand_id");
-            $group_id_sel   = $db->result($r, 0, "group_id");
+//            $r = $dbc->query("SELECT `art_id`, `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id ORDER BY RAND() LIMIT 1;");
+            $r = $dbc->query("SELECT `ART_ID`, `BRAND_ID`, `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` != $group_id ORDER BY RAND() LIMIT 1;");
+            $art_id_sel     = $db->result($r, 0, "ART_ID");
+            $brand_id_sel   = $db->result($r, 0, "BRAND_ID");
+            $group_id_sel   = $db->result($r, 0, "GROUP_ID");
             $form = str_replace("{Product_1}", $this->getSeoLinkArticle($art_id_sel, $brand_id_sel), $form);
 
             $group_id_sel_name = $this->getGroupRowName($group_id_sel);
@@ -560,13 +562,14 @@ class FormClass extends CatalogueClass
             $parrent_group = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_id_sel_link/\">$group_id_sel_name</a>";
             $form = str_replace("{Product_Category_H1}", $parrent_group, $form);
 
-            $r = $dbc->query("SELECT `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id AND `group_id` != $group_id_sel ORDER BY RAND() LIMIT 2;");
+//            $r = $dbc->query("SELECT `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id AND `group_id` != $group_id_sel ORDER BY RAND() LIMIT 2;");
+            $r = $dbc->query("SELECT `BRAND_ID`, `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` != $group_id AND `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 2;");
             $n = $dbc->num_rows($r);
             $arr = [];
             for ($i = 1; $i <= $n; $i++) {
                 $arr[] = [
-                    "group_id" => $dbc->result($r, $i - 1, "group_id"),
-                    "brand_id" => $dbc->result($r, $i - 1, "brand_id")
+                    "group_id" => $dbc->result($r, $i - 1, "GROUP_ID"),
+                    "brand_id" => $dbc->result($r, $i - 1, "BRAND_ID")
                 ];
             }
 
@@ -574,18 +577,21 @@ class FormClass extends CatalogueClass
             $form = str_replace("{Tags_brand_2}", $this->getSeoLinkCatalog($arr[1]["group_id"], $arr[1]["brand_id"]), $form);
 
             $brand_id_sel1 = $arr[0]["brand_id"];
-            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
-            $group_id_sel = $dbc->result($r, 0, "group_id");
+//            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
+            $r = $dbc->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
+            $group_id_sel = $dbc->result($r, 0, "GROUP_ID");
             $form = str_replace("{Cat_random1}", $this->getSeoLinkCatalog($group_id_sel), $form);
 
-            $r = $dbc->query("SELECT `art_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` = $group_id_sel ORDER BY RAND() LIMIT 1;");
-            $art_id_sel = $db->result($r, 0, "art_id");
-            $brand_id_sel = $db->result($r, 0, "brand_id");
+//            $r = $dbc->query("SELECT `art_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` = $group_id_sel ORDER BY RAND() LIMIT 1;");
+            $r = $dbc->query("SELECT `ART_ID`, `BRAND_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` = $group_id_sel ORDER BY RAND() LIMIT 1;");
+            $art_id_sel = $db->result($r, 0, "ART_ID");
+            $brand_id_sel = $db->result($r, 0, "BRAND_ID");
             $form = str_replace("{GET_PAGE_H2}", $this->getSeoLinkArticle($art_id_sel, $brand_id_sel), $form);
 
             $brand_id_sel2 = $arr[1]["brand_id"];
-            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
-            $group_id_sel2 = $dbc->result($r, 0, "group_id");
+//            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
+            $r = $dbc->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
+            $group_id_sel2 = $dbc->result($r, 0, "GROUP_ID");
             $form = str_replace("{Cat_random2}", $this->getSeoLinkCatalog($group_id_sel2), $form);
 
             $r = $db->query("SELECT `CITY_NAME` FROM `SEO_LISTING_CITY` ORDER BY RAND() LIMIT 1;");
@@ -1459,7 +1465,7 @@ class FormClass extends CatalogueClass
         $arr = [];
 
         $gg = [];
-        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `status` = 1 GROUP BY `group_id`;");
+        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_GROUP` WHERE `status` = 1;");
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id = $dbc->result($r, $i - 1, "group_id");
