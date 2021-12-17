@@ -99,14 +99,14 @@ class FormClass extends CatalogueClass
     {
         $brand_id = $this->getUrlNumber($brand_id);
         $db = DbSingleton::getTokoDb();
-        $dbc = DbSingleton::getTokoCacheDb();
+//        $dbc = DbSingleton::getTokoCacheDb();
 
 //        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id AND `price` > 0 GROUP BY `group_id`;");
-        $r = $dbc->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id GROUP BY `GROUP_ID`;");
-        $n = $dbc->num_rows($r);
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id GROUP BY `GROUP_ID`;");
+        $n = $db->num_rows($r);
         $groups = [];
         for ($i = 1; $i <= $n; $i++) {
-            $group_id = $dbc->result($r, $i - 1, "group_id");
+            $group_id = $db->result($r, $i - 1, "GROUP_ID");
             $groups[] = $group_id;
         }
 
@@ -531,7 +531,7 @@ class FormClass extends CatalogueClass
     public function getArticleSeoText($art_id, $h1)
     {
         $db = DbSingleton::getTokoDb();
-        $dbc = DbSingleton::getTokoCacheDb();
+//        $dbc = DbSingleton::getTokoCacheDb();
         $catalog = new CatalogueClass();
         $r = $db->query("SELECT `TEXT` FROM `SEO_STR_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
         $n = $db->num_rows($r);
@@ -551,7 +551,7 @@ class FormClass extends CatalogueClass
             $form = str_replace("{Main_Category_H1}", $this->getSeoLinkCatalog($group_id), $form);
 
 //            $r = $dbc->query("SELECT `art_id`, `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id ORDER BY RAND() LIMIT 1;");
-            $r = $dbc->query("SELECT `ART_ID`, `BRAND_ID`, `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` != $group_id ORDER BY RAND() LIMIT 1;");
+            $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` != $group_id ORDER BY RAND() LIMIT 1;");
             $art_id_sel     = $db->result($r, 0, "ART_ID");
             $brand_id_sel   = $db->result($r, 0, "BRAND_ID");
             $group_id_sel   = $db->result($r, 0, "GROUP_ID");
@@ -559,17 +559,18 @@ class FormClass extends CatalogueClass
 
             $group_id_sel_name = $this->getGroupRowName($group_id_sel);
             $group_id_sel_link = $this->getGroupRowLink($group_id_sel);
-            $parrent_group = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_id_sel_link/\">$group_id_sel_name</a>";
+            $parrent_group = "
+            <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_id_sel_link/\">$group_id_sel_name</a>";
             $form = str_replace("{Product_Category_H1}", $parrent_group, $form);
 
 //            $r = $dbc->query("SELECT `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id AND `group_id` != $group_id_sel ORDER BY RAND() LIMIT 2;");
-            $r = $dbc->query("SELECT `BRAND_ID`, `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` != $group_id AND `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 2;");
-            $n = $dbc->num_rows($r);
+            $r = $db->query("SELECT `BRAND_ID`, `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` != $group_id AND `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 2;");
+            $n = $db->num_rows($r);
             $arr = [];
             for ($i = 1; $i <= $n; $i++) {
                 $arr[] = [
-                    "group_id" => $dbc->result($r, $i - 1, "GROUP_ID"),
-                    "brand_id" => $dbc->result($r, $i - 1, "BRAND_ID")
+                    "group_id" => $db->result($r, $i - 1, "GROUP_ID"),
+                    "brand_id" => $db->result($r, $i - 1, "BRAND_ID")
                 ];
             }
 
@@ -578,20 +579,20 @@ class FormClass extends CatalogueClass
 
             $brand_id_sel1 = $arr[0]["brand_id"];
 //            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
-            $r = $dbc->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
-            $group_id_sel = $dbc->result($r, 0, "GROUP_ID");
+            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
+            $group_id_sel = $db->result($r, 0, "GROUP_ID");
             $form = str_replace("{Cat_random1}", $this->getSeoLinkCatalog($group_id_sel), $form);
 
 //            $r = $dbc->query("SELECT `art_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` = $group_id_sel ORDER BY RAND() LIMIT 1;");
-            $r = $dbc->query("SELECT `ART_ID`, `BRAND_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` = $group_id_sel ORDER BY RAND() LIMIT 1;");
-            $art_id_sel = $db->result($r, 0, "ART_ID");
-            $brand_id_sel = $db->result($r, 0, "BRAND_ID");
+            $r = $db->query("SELECT `ART_ID`, `BRAND_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` = $group_id_sel ORDER BY RAND() LIMIT 1;");
+            $art_id_sel     = $db->result($r, 0, "ART_ID");
+            $brand_id_sel   = $db->result($r, 0, "BRAND_ID");
             $form = str_replace("{GET_PAGE_H2}", $this->getSeoLinkArticle($art_id_sel, $brand_id_sel), $form);
 
             $brand_id_sel2 = $arr[1]["brand_id"];
 //            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
-            $r = $dbc->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
-            $group_id_sel2 = $dbc->result($r, 0, "GROUP_ID");
+            $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
+            $group_id_sel2 = $db->result($r, 0, "GROUP_ID");
             $form = str_replace("{Cat_random2}", $this->getSeoLinkCatalog($group_id_sel2), $form);
 
             $r = $db->query("SELECT `CITY_NAME` FROM `SEO_LISTING_CITY` ORDER BY RAND() LIMIT 1;");
@@ -678,13 +679,13 @@ class FormClass extends CatalogueClass
 
     public function getDeliveryData($tpoint, $storage_id, $suppl_id)
     {
-        $deliveryData = $this->getTpointDeliveryInfo($tpoint, $storage_id);
-        $delivery_days = $deliveryData["days"];
-        $delivery_short_info = $deliveryData["short"];
+        $deliveryData           = $this->getTpointDeliveryInfo($tpoint, $storage_id);
+        $delivery_days          = $deliveryData["days"];
+        $delivery_short_info    = $deliveryData["short"];
         if ($suppl_id != 0) {
-            $deliveryData = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
-            $delivery_days = $deliveryData["days"];
-            $delivery_short_info = $deliveryData["short"];
+            $deliveryData           = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
+            $delivery_days          = $deliveryData["days"];
+            $delivery_short_info    = $deliveryData["short"];
         }
         return array($delivery_days, $delivery_short_info);
     }
@@ -697,10 +698,11 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $art_id = $this->getUrlNumber($art_id);
         $client = new ClientClass();
-        $kours = new ExRateClass();
-        $tpoint = $this->getTpointID();
-        $cur = $this->getCurrentExrate();
-        $cur_cap = $kours->getKoursCaptionLang($cur);
+        $kours  = new ExRateClass();
+
+        $tpoint     = $this->getTpointID();
+        $cur        = $this->getCurrentExrate();
+        $cur_cap    = $kours->getKoursCaptionLang($cur);
 
         $arr = [];
         $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
@@ -720,13 +722,13 @@ class FormClass extends CatalogueClass
         GROUP BY t2a.ART_ID, t2si.client_storage_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $article_nr_displ = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
-            $brand_id = $db->result($r, $i - 1, "BRAND_ID");
-            $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
-            $article_name = $db->result($r, $i - 1, "NAME");
-            $suppl_id = $db->result($r, $i - 1, "suppl_id");
-            $stock = intval($db->result($r, $i - 1, "AMOUNT"));
-            $storage_id = $db->result($r, $i - 1, "storage_id");
+            $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+            $brand_id           = $db->result($r, $i - 1, "BRAND_ID");
+            $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
+            $article_name       = $db->result($r, $i - 1, "NAME");
+            $suppl_id           = $db->result($r, $i - 1, "suppl_id");
+            $stock              = intval($db->result($r, $i - 1, "AMOUNT"));
+            $storage_id         = $db->result($r, $i - 1, "storage_id");
 
             $price = $this->getArticlePrice($art_id);
             if ($suppl_id != 0) {
@@ -747,7 +749,7 @@ class FormClass extends CatalogueClass
             $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
 
             if ($price > 0)
-                $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "stock", "real_stock", "delivery_short_info", "price", "cur_cap", "delivery_days", "basket", "storage_id", "suppl_id");
+                $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "stock", "real_stock", "delivery_short_info", "price", "delivery_days", "basket", "storage_id", "suppl_id");
         }
 
         $arr = $this->multiSort($arr, "delivery_days", "price");
@@ -760,7 +762,6 @@ class FormClass extends CatalogueClass
         $real_stock             = $arr[0]["real_stock"];
         $delivery_short_info    = $arr[0]["delivery_short_info"];
         $price                  = $arr[0]["price"];
-        $cur_cap                = $arr[0]["cur_cap"];
         $delivery_days          = $arr[0]["delivery_days"];
         $basket                 = $arr[0]["basket"];
         $suppl_id               = $arr[0]["suppl_id"];

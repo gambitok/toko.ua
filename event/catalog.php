@@ -54,6 +54,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             $mfa_id         = 0;
             $model          = "";
             $model_id       = 0;
+            $params         = [];
 
             if ($mfa_link != "") {
                 $mfa_id = $automan->getMfaLink($mfa_link);
@@ -93,7 +94,6 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                 }
             }
 
-            $params = [];
             if (!empty($filters)) {
                 list($check_status, $check_link) = $catalog_exist->checRedirects($filters);
 
@@ -135,6 +135,8 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             ($status_auto_type != NULL) ?: $status_auto_type = 0;
 
             $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $src_link, $sort);
+
+//            var_dump($catalog_form["time"]);
 
             if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
                 $max_page   = $catalog_form["pages_count"];

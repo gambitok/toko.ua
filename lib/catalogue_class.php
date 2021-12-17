@@ -709,6 +709,8 @@ class CatalogueClass
                 }
 
                 // sort like: first = min delivery, second = min price, else = default
+                // if (min price == 0  && have price > 0) {vivesti min price}
+                // if (min price == 0 && dont have price > 0) {vivesti 0}
                 $temp_arr = $this->sortByMinStock($temp_arr);
 
 //                usort($temp_arr, "cmpPrice");
@@ -2993,18 +2995,17 @@ class CatalogueClass
                     $head_link  = $this->getHeadRowLink($head_id);
                     $cat_link   = $this->getCatRowLink($cat_id);
                     $href       = $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/";
+                    $link       = "<a href=\"$href\">$cat_name</a>";
 
-                    $icon = "";
                     if ($cat_id == 0) {
-                        $href = $this->getSiteLink();
-                        $icon = "<span style=\"margin-right: 5px; color: #f44438;\">&bull;</span>";
+                        $link = "<span style=\"color: #228b94; display: block; font-size: 16px; font-weight: 700; padding-bottom: 15px;\"><span style=\"margin-right: 5px; color: #f44438;\">&bull;</span>$cat_name</span>";
                     }
 
                     $list .= "
                     <div>
                         <div class=\"tree-item\">
                             <div class=\"tree-item-title\">
-                                <a href=\"$href\">$icon$cat_name</a>
+                                $link
                             </div>
                             <div class=\"tree-item-list\">$group_list</div>
                         </div>
@@ -3258,6 +3259,21 @@ class CatalogueClass
             $mfa_link = $db->result($r, 0, "MFA_BRAND_LINK");
         }
         return $mfa_link;
+    }
+
+    public function getMfaData($mfa_id)
+    {
+        $mfa_id = $this->getUrlNumber($mfa_id);
+        $db = DbSingleton::getTokoDb();
+        $mfa_brand = "";
+        $mfa_link = "";
+        $r = $db->query("SELECT `MFA_BRAND`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $mfa_brand = $db->result($r, 0, "MFA_BRAND");
+            $mfa_link = $db->result($r, 0, "MFA_BRAND_LINK");
+        }
+        return compact("mfa_brand", "mfa_link");
     }
 
     public function getModelLink($model)
