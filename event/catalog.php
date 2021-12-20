@@ -136,8 +136,6 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
 
             $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $src_link, $sort);
 
-//            var_dump($catalog_form["time"]);
-
             if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
                 $max_page   = $catalog_form["pages_count"];
                 $path_to    = $catalog_exist->getSiteLink() . ltrim(findUrl(), "/") . "?page=$max_page";

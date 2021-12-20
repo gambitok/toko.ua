@@ -495,7 +495,6 @@ class CatalogExistClass extends CatalogueClass
     public function getArticleStorage($group_id, $arts)
     {
         $db = DbSingleton::getTokoDb();
-
         if (!empty($arts)) {
             $where_arts = implode(",", $arts);
             $r = $db->query("
@@ -517,31 +516,12 @@ class CatalogExistClass extends CatalogueClass
                 $kours = new ExRateClass();
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id = $db->result($r, $i - 1, "art_id");
-                    $price = $this->getArticlePriceStorage($art_id);
-                    $price = $kours->getKoursPrice($price, 2);
+                    $price  = $this->getArticlePriceStorage($art_id);
+                    $price  = $kours->getKoursPrice($price, 2);
                     $dbc->query("UPDATE `$table` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
                 }
             }
         }
-
-//        $r = $db->query("SELECT t2si.art_id
-//        FROM `T2_SUPPL_IMPORT` t2si
-//            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
-//        WHERE cs.visible = 1 AND t2si.art_id = $art_id
-//        GROUP BY t2si.art_id LIMIT 1;");
-//        $n = $db->num_rows($r);
-//        if ($n > 0) {
-//            $result = 1;
-//        } else {
-//            $r = $db->query("SELECT t2asc.ART_ID
-//            FROM `T2_ARTICLES_STRORAGE` t2asc
-//            WHERE t2asc.AMOUNT > 0 AND t2asc.ART_ID = $art_id
-//            GROUP BY t2asc.ART_ID LIMIT 1;");
-//            $n = $db->num_rows($r);
-//            if ($n > 0) {
-//                $result = 1;
-//            }
-//        }
         return true;
     }
 
@@ -553,7 +533,6 @@ class CatalogExistClass extends CatalogueClass
         $start = microtime(true);
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
-        $count_add = 0;
 
         $dbc->query("CREATE TABLE IF NOT EXISTS `$table` 
         (
@@ -753,7 +732,7 @@ class CatalogExistClass extends CatalogueClass
     public function getPartsPaginationForm($n, $page, $sort = 0)
     {
         $prefix = ($sort != "") ? "?sort=$sort&" : "?";
-        $count = $this->products_on_page;
+        $count  = $this->products_on_page;
         $pages_count = ceil($n / $count);
         if ($n < $count) {
             $pages_count = 1;
@@ -770,12 +749,12 @@ class CatalogExistClass extends CatalogueClass
 
             if ($page < $min_count) {
                 for ($i = 1; $i <= $min_count; $i++) {
-                    $active = ($i == $page) ? "active" : "";
-                    $link = ($i > 1) ? $prefix . "page=$i" : ".";
+                    $active     = ($i == $page) ? "active" : "";
+                    $link       = ($i > 1) ? $prefix . "page=$i" : ".";
                     $pagination .= $this->getPaginRow($i, $link, $active);
                 }
                 $pagination .= $this->getPaginRow("...", "#");
-                $link = ($pages_count > 1) ? $prefix . "page=$pages_count" : ".";
+                $link       = ($pages_count > 1) ? $prefix . "page=$pages_count" : ".";
                 $pagination .= $this->getPaginRow($pages_count, $link);
             }
 
@@ -840,9 +819,11 @@ class CatalogExistClass extends CatalogueClass
                 $param_link             = $params_item_str[0];
                 $params_item_values     = $params_item_str[1];
                 $params_item_values_arr = explode(",", $params_item_values);
+
                 foreach ($params_item_values_arr as $value_link) {
                     $param_id = $this->getGroupParamID($group_id, $param_link);
                     $value_id = $this->getGroupValueID($group_id, $param_id, $value_link);
+
                     if ($value_id != 0) {
                         $params[$param_id][] = $value_id;
                     }
@@ -875,9 +856,10 @@ class CatalogExistClass extends CatalogueClass
         if (!empty($filters)) {
             $params_arr = explode(";", $filters);
             foreach ($params_arr as $params_item) {
-                $params_item_str = explode("=", $params_item);
-                $params_item_values = $params_item_str[1];
+                $params_item_str        = explode("=", $params_item);
+                $params_item_values     = $params_item_str[1];
                 $params_item_values_arr = explode(",", $params_item_values);
+
                 foreach ($params_item_values_arr as $value_link) {
                     if (in_array($value_link, $arr)) {
                         $status++;
