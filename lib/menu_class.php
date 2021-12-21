@@ -1018,4 +1018,36 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
+    public function getFooterForm()
+    {
+        $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
+
+        $list1 = "<ul class=\"list-inline\">";
+        $list2 = "<ul class=\"list-inline\">";
+        $r = $db->query("SELECT * FROM `T2_SEO_FOOTER` WHERE 1 ORDER BY `TEXT_RU` ASC LIMIT 0,20;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $router = $db->result($r, $i - 1, "ROUTER");
+            $link   = $db->result($r, $i - 1, "LINK");
+            $text   = $db->result($r, $i - 1, "TEXT_$postfix");
+
+            if ($i <= 10) {
+                $list1 .= "
+                <li><a href=\"" . $this->getSiteLink() . "$router/$link/\"> $text</a></li>";
+            }
+            if ($i > 10 && $i <= 20) {
+                $list2 .= "
+                <li><a href=\"" . $this->getSiteLink() . "$router/$link/\"> $text</a></li>";
+            }
+        }
+        $list1 .= "</ul>";
+        $list2 .= "</ul>";
+
+        $form = getHtmlForm("main/footer");
+        $form = str_replace("{popular_catalogs_list1}", $list1, $form);
+        $form = str_replace("{popular_catalogs_list2}", $list2, $form);
+        return $form;
+    }
+
 }

@@ -28,7 +28,7 @@ include_once(RDD . "/event/menu.php");
 
 // Main HEAD HTML
 $content = str_replace("{navigation_content}", $catalogue->getSiteNavigation(), $content);
-$content = str_replace("{footer_content}", getHtmlForm("main/footer"), $content);
+$content = str_replace("{footer_content}", $menu->getFooterForm(), $content);
 $content = str_replace("{anchor_contacts_content}", getHtmlForm("main/anchor-contacts"), $content);
 
 $content = str_replace("{site_main_link}", $catalogue->getSiteLink(), $content);
