@@ -2070,6 +2070,7 @@ class CatalogueClass
         $tpoint = $this->getTpointID();
         $client_id = $this->getClient();
         $price = 0;
+
         list(, , $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat) = $this->getDpClientPriceLevels($client_id);
         $r = $dbt->query("SELECT t2si.price_usd 
         FROM `T2_ARTICLES` t2a 
@@ -2080,7 +2081,9 @@ class CatalogueClass
             $suppl_price_usd = floatval($dbt->result($r, 0, "price_usd"));
             list($price_in_vat, $show_in_vat, $price_add_vat) = $this->getSupplVatConditions($suppl_id);
             $price_suppl = $suppl_price_usd;
+
             list($suppl_margin_fm, $suppl_delivery_fm, $suppl_margin2_fm) = $this->getTpointSupplFm($tpoint, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl);
+
             if ($suppl_margin_fm > 0) {
                 $price = ($price_suppl + $price_suppl * $suppl_margin_fm / 100) - $price_suppl;
                 if ($price > $suppl_delivery_fm) {
@@ -2089,9 +2092,11 @@ class CatalogueClass
                 if ($price <= $suppl_delivery_fm) {
                     $price = $price_suppl + $price_suppl * $suppl_margin2_fm / 100 + $suppl_delivery_fm;
                 }
+
                 if ($margin_price_suppl_lvl > 0 && $margin_price_suppl_lvl != "") {
                     $price = $price + $price * $margin_price_suppl_lvl / 100;
                 }
+
                 if ($client_vat == 1) {
                     if ($price_in_vat == 0 && $show_in_vat == 1 && $price_add_vat == 1) {
                         $price = $price + $price * 20 / 100;
