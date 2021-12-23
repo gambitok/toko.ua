@@ -99,9 +99,7 @@ class FormClass extends CatalogueClass
     {
         $brand_id = $this->getUrlNumber($brand_id);
         $db = DbSingleton::getTokoDb();
-//        $dbc = DbSingleton::getTokoCacheDb();
 
-//        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id AND `price` > 0 GROUP BY `group_id`;");
         $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id GROUP BY `GROUP_ID`;");
         $n = $db->num_rows($r);
         $groups = [];

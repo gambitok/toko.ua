@@ -433,64 +433,64 @@ class CatalogExistClass extends CatalogueClass
     /*
      * init main table
      * */
-    public function initMainTable()
-    {
-        $kours = new ExRateClass();
-        $db = DbSingleton::getTokoDb();
-        $dbc = DbSingleton::getTokoCacheDb();
-
-        $count_add = 0;
-
-        $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE`;");
-        $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_MFA`;");
-
-        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE` (`art_id`, `brand_id`, `group_id`, `price`, `status`)
-        SELECT ex.ART_ID, ex.BRAND_ID, ex.GROUP_ID, 0, 1
-            FROM toko_dba.`T2_TREE_ARTS_EXIST` ex 
-        WHERE ex.GROUP_ID IS NOT NULL
-        GROUP BY ex.ART_ID, ex.GROUP_ID;");
-
-        $r = $db->query("SELECT t2si.art_id
-        FROM `T2_SUPPL_IMPORT` t2si
-            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
-        WHERE t2si.art_id > 0 AND cs.visible = 1
-        GROUP BY t2si.art_id;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id = $db->result($r, $i - 1, "art_id");
-            $price  = $this->getArticlePriceStorage($art_id);
-            $price  = $kours->getKoursPrice($price, 2);
-
-            $dbc->query("UPDATE `EX_TABLE_TREE_AVAILABLE` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
-            $count_add++;
-        }
-
-        $r = $db->query("SELECT t2asc.ART_ID 
-        FROM `T2_ARTICLES_STRORAGE` t2asc
-        WHERE t2asc.AMOUNT > 0
-        GROUP BY t2asc.ART_ID;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id = $db->result($r, $i - 1, "ART_ID");
-            $price  = $this->getArticlePriceStorage($art_id);
-            $price  = $kours->getKoursPrice($price, 2);
-
-            $dbc->query("UPDATE `EX_TABLE_TREE_AVAILABLE` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
-            $count_add++;
-        }
-
-        //EX_TABLE_TREE_AVAILABLE_GROUP
-        $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_GROUP`;");
-        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`)
-        SELECT ex.group_id, 1
-            FROM `EX_TABLE_TREE_AVAILABLE` ex 
-        WHERE ex.`group_id` IN (
-            SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `price` > 0
-        )
-        GROUP BY ex.group_id;");
-
-        return "ADDED: $count_add";
-    }
+//    public function initMainTable()
+//    {
+//        $kours = new ExRateClass();
+//        $db = DbSingleton::getTokoDb();
+//        $dbc = DbSingleton::getTokoCacheDb();
+//
+//        $count_add = 0;
+//
+//        $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE`;");
+//        $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_MFA`;");
+//
+//        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE` (`art_id`, `brand_id`, `group_id`, `price`, `status`)
+//        SELECT ex.ART_ID, ex.BRAND_ID, ex.GROUP_ID, 0, 1
+//            FROM toko_dba.`T2_TREE_ARTS_EXIST` ex
+//        WHERE ex.GROUP_ID IS NOT NULL
+//        GROUP BY ex.ART_ID, ex.GROUP_ID;");
+//
+//        $r = $db->query("SELECT t2si.art_id
+//        FROM `T2_SUPPL_IMPORT` t2si
+//            LEFT JOIN myparts_dba.`A_CLIENTS_STORAGE` cs ON (cs.id = t2si.client_storage_id)
+//        WHERE t2si.art_id > 0 AND cs.visible = 1
+//        GROUP BY t2si.art_id;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $db->result($r, $i - 1, "art_id");
+//            $price  = $this->getArticlePriceStorage($art_id);
+//            $price  = $kours->getKoursPrice($price, 2);
+//
+//            $dbc->query("UPDATE `EX_TABLE_TREE_AVAILABLE` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
+//            $count_add++;
+//        }
+//
+//        $r = $db->query("SELECT t2asc.ART_ID
+//        FROM `T2_ARTICLES_STRORAGE` t2asc
+//        WHERE t2asc.AMOUNT > 0
+//        GROUP BY t2asc.ART_ID;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id = $db->result($r, $i - 1, "ART_ID");
+//            $price  = $this->getArticlePriceStorage($art_id);
+//            $price  = $kours->getKoursPrice($price, 2);
+//
+//            $dbc->query("UPDATE `EX_TABLE_TREE_AVAILABLE` SET `price` = '$price', `status` = 1 WHERE `art_id` = $art_id LIMIT 1;");
+//            $count_add++;
+//        }
+//
+//        //EX_TABLE_TREE_AVAILABLE_GROUP
+//        $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_GROUP`;");
+//        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`)
+//        SELECT ex.group_id, 1
+//            FROM `EX_TABLE_TREE_AVAILABLE` ex
+//        WHERE ex.`group_id` IN (
+//            SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `price` > 0
+//        )
+//        GROUP BY ex.group_id;");
+//
+//        return "ADDED: $count_add";
+//    }
 
     public function getArticleStorage($group_id, $arts)
     {
@@ -614,6 +614,8 @@ class CatalogExistClass extends CatalogueClass
             $dbc->query("UPDATE `$table_mfa` SET `status` = 0 WHERE 1;");
         }
 
+        $dbc->query("TRUNCATE TABLE `$table_mfa`;");
+
         $dbc->query("CREATE TABLE IF NOT EXISTS `$table_mfa` 
         (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -628,15 +630,13 @@ class CatalogExistClass extends CatalogueClass
         foreach ($arts as $art_id => $mfa_ids) {
             foreach ($mfa_ids as $mfa_id => $models) {
                 foreach ($models as $model) {
-                    $r = $dbc->query("SELECT COUNT(`art_id`) as count_art FROM `$table_mfa` WHERE `art_id` = $art_id AND `mfa_id` = $mfa_id AND `model` = '$model';");
-                    $n = $dbc->result($r, 0, "count_art") + 0;
-                    if ($n == 0) {
+//                    $r = $dbc->query("SELECT COUNT(`art_id`) as count_art FROM `$table_mfa` WHERE `art_id` = $art_id AND `mfa_id` = $mfa_id AND `model` = '$model';");
+//                    $n = $dbc->result($r, 0, "count_art") + 0;
+//                    if ($n == 0) {
                         $dbc->query("INSERT INTO `$table_mfa` (`art_id`, `mfa_id`, `model`, `status`) VALUES ($art_id, $mfa_id, '$model', 1);");
-                    } else {
-                        $dbc->query("UPDATE `$table_mfa` SET `status` = 1 WHERE `art_id` = $art_id;");
-                    }
-                    $count_add++;
-                    $dbc->query("INSERT INTO `$table_available_mfa` (`group_id`, `art_id`, `mfa_id`, `model`, `status`) VALUES ($group_id, $art_id, $mfa_id, '$model', 1);");
+                        $count_add++;
+                        $dbc->query("INSERT INTO `$table_available_mfa` (`group_id`, `art_id`, `mfa_id`, `model`, `status`) VALUES ($group_id, $art_id, $mfa_id, '$model', 1);");
+//                    }
                 }
             }
         }
@@ -1113,6 +1113,8 @@ class CatalogExistClass extends CatalogueClass
             }
             $query_limit = "$query $limit ";
         }
+
+//        var_dump($query_limit);
 
         $r = $dbc->query($query_min);
         $art_min_id = $dbc->result($r, 0, "art_id");
@@ -1904,7 +1906,7 @@ class CatalogExistClass extends CatalogueClass
             </div>";
         }
 
-        $list .= $this->getGroupCarMfaList($group_id, $mfa_id_sel);
+        $list .= $this->getGroupCarMfaList($group_id, $mfa_id_sel, 1);
 
         $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
         $form = str_replace("{seo_auto_title}", "", $form);
@@ -1983,7 +1985,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * get MFA ID list
      * */
-    public function getGroupCarMfaList($group_id, $mfa_id_sel = 0)
+    public function getGroupCarMfaList($group_id, $mfa_id_sel = 0, $status = 0)
     {
         $group_id   = $this->getUrlNumber($group_id);
         $mfa_id_sel = $this->getUrlNumber($mfa_id_sel);
@@ -2010,16 +2012,23 @@ class CatalogExistClass extends CatalogueClass
             $det_cap .= " {on_cap}";
         }
 
+        $where = "1";
+        if ($status > 0) {
+            $where = "exmf.`mfa_id` = $mfa_id_sel";
+        }
+
         if ($this->checkTableMfa($group_id) > 0) {
 
             $mfas = [];
             $r = $dbc->query("SELECT exmf.`mfa_id`, exmf.`model`
             FROM `EX_TABLE_TREE_MFA_$group_id` exmf
+            WHERE $where
             GROUP BY exmf.`mfa_id`, exmf.`model`;");
             $n = $dbc->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $mfa_id     = $dbc->result($r, $i - 1, "mfa_id");
                 $model      = $dbc->result($r, $i - 1, "model");
+
                 $mfas[$mfa_id][] = $model;
             }
 

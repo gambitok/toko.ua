@@ -612,13 +612,16 @@ class AutoClass extends CatalogueClass
                     </div>
                 </label>
                 <div class=\"tree-cat\" style=\"display: none;\">";
+
             ksort($cats);
 
             foreach ($cats as $cat_id => $groups) {
                 $cat_name   = $this->getCatRowName($cat_id);
                 $cat_link   = $this->getCatRowLink($cat_id);
 
-                $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$cat_name $brand_name</a>";
+                $link = "
+                <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/\">$cat_name $brand_name</a>";
+
                 if ($cat_id == 0) {
                     $link = "
                     <span>
@@ -673,10 +676,12 @@ class AutoClass extends CatalogueClass
                     </a>";
                 }
 
-                $list .= "</div></div>";
+                $list .= "
+                </div></div>";
             }
 
-            $list .= "</div></div>";
+            $list .= "
+            </div></div>";
         }
         return $list;
     }
@@ -795,7 +800,8 @@ class AutoClass extends CatalogueClass
                 </a>";
             }
 
-            $list .= "</div>";
+            $list .= "
+            </div>";
         }
 
         $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
