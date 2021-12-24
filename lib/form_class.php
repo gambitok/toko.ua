@@ -529,8 +529,8 @@ class FormClass extends CatalogueClass
     public function getArticleSeoText($art_id, $h1)
     {
         $db = DbSingleton::getTokoDb();
-//        $dbc = DbSingleton::getTokoCacheDb();
         $catalog = new CatalogueClass();
+
         $r = $db->query("SELECT `TEXT` FROM `SEO_STR_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
@@ -548,7 +548,6 @@ class FormClass extends CatalogueClass
             $group_id = $catalog->getArticleGroupExist($art_id);
             $form = str_replace("{Main_Category_H1}", $this->getSeoLinkCatalog($group_id), $form);
 
-//            $r = $dbc->query("SELECT `art_id`, `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id ORDER BY RAND() LIMIT 1;");
             $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` != $group_id ORDER BY RAND() LIMIT 1;");
             $art_id_sel     = $db->result($r, 0, "ART_ID");
             $brand_id_sel   = $db->result($r, 0, "BRAND_ID");
@@ -561,7 +560,6 @@ class FormClass extends CatalogueClass
             <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_id_sel_link/\">$group_id_sel_name</a>";
             $form = str_replace("{Product_Category_H1}", $parrent_group, $form);
 
-//            $r = $dbc->query("SELECT `brand_id`, `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` != $group_id AND `group_id` != $group_id_sel ORDER BY RAND() LIMIT 2;");
             $r = $db->query("SELECT `BRAND_ID`, `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` != $group_id AND `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 2;");
             $n = $db->num_rows($r);
             $arr = [];
@@ -576,19 +574,16 @@ class FormClass extends CatalogueClass
             $form = str_replace("{Tags_brand_2}", $this->getSeoLinkCatalog($arr[1]["group_id"], $arr[1]["brand_id"]), $form);
 
             $brand_id_sel1 = $arr[0]["brand_id"];
-//            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
             $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id_sel1 ORDER BY RAND() LIMIT 1;");
             $group_id_sel = $db->result($r, 0, "GROUP_ID");
             $form = str_replace("{Cat_random1}", $this->getSeoLinkCatalog($group_id_sel), $form);
 
-//            $r = $dbc->query("SELECT `art_id`, `brand_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `group_id` = $group_id_sel ORDER BY RAND() LIMIT 1;");
             $r = $db->query("SELECT `ART_ID`, `BRAND_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` = $group_id_sel ORDER BY RAND() LIMIT 1;");
             $art_id_sel     = $db->result($r, 0, "ART_ID");
             $brand_id_sel   = $db->result($r, 0, "BRAND_ID");
             $form = str_replace("{GET_PAGE_H2}", $this->getSeoLinkArticle($art_id_sel, $brand_id_sel), $form);
 
             $brand_id_sel2 = $arr[1]["brand_id"];
-//            $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE` WHERE `brand_id` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
             $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id_sel2 ORDER BY RAND() LIMIT 1;");
             $group_id_sel2 = $db->result($r, 0, "GROUP_ID");
             $form = str_replace("{Cat_random2}", $this->getSeoLinkCatalog($group_id_sel2), $form);

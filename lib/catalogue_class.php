@@ -508,8 +508,10 @@ class CatalogueClass
             }
         }
 
+        $new_arts = [];
         foreach ($arts as $mas_key => $mas_val) {
             $arts[$mas_key] = $this->multiSort($arts[$mas_key], "delivery_days", "price");
+            $new_arts[$mas_key] = $arts[$mas_key][0];
         }
 
         return $arts;
