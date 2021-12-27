@@ -82,24 +82,24 @@ class CatalogueClass
         }
         $art_id_str = implode(",", $art_ids);
 
-        $form = $this->getHtmlForm("search/form");
-        $search_main = $this->getHtmlForm("search/main");
+        $form           = $this->getHtmlForm("search/form");
+        $search_main    = $this->getHtmlForm("search/main");
         $search_filters = $this->getHtmlForm("search/filters");
-        $search_brands = $this->getHtmlForm("search/brands");
+        $search_brands  = $this->getHtmlForm("search/brands");
 
         list($list, $list_brand, $filters) = $this->searchList($art_id_str, 0, $article_nr_search, $brand_nr_search);
 
         // if found something
         if (($list_brand) && ($filters)) {
-            $colon = "col-lg-9 col-12 pad0";
-            $colon_filter = "col-lg-3 col-12";
+            $colon          = "col-lg-9 col-12 pad0";
+            $colon_filter   = "col-lg-3 col-12";
         } else {
-            $colon = "col-lg-12 col-12 pad0";
-            $colon_filter = "none";
-            $search_main = str_replace("{currency}", "", $search_main);
-            $search_main = str_replace("{products_view}", "", $search_main);
-            $form = str_replace("{cat_search_filters}", "", $form);
-            $form = str_replace("{cat_search_brands}", "", $form);
+            $colon          = "col-lg-12 col-12 pad0";
+            $colon_filter   = "none";
+            $search_main    = str_replace("{currency}", "", $search_main);
+            $search_main    = str_replace("{products_view}", "", $search_main);
+            $form           = str_replace("{cat_search_filters}", "", $form);
+            $form           = str_replace("{cat_search_brands}", "", $form);
         }
 
         //colon
@@ -137,14 +137,15 @@ class CatalogueClass
     * */
     public function getCatalogListFilter($article_nr_search, $brand_nr_search, $brand_filter, $cur, $price_f, $deliv_f, $order_value)
     {
-        $article_nr_search = $this->getNameString($article_nr_search);
-        $brand_nr_search = $this->getNameString($brand_nr_search);
-        $cur = $this->getUrlNumber($cur);
-        $order_value = $this->getUrlNumber($order_value);
-        $brand_nr_search = $this->getUrlNumber($brand_nr_search);
-        $db = DbSingleton::getTokoDb();
-        $art_ids = [];
+        $article_nr_search  = $this->getNameString($article_nr_search);
+        $brand_nr_search    = $this->getNameString($brand_nr_search);
+        $cur                = $this->getUrlNumber($cur);
+        $order_value        = $this->getUrlNumber($order_value);
+        $brand_nr_search    = $this->getUrlNumber($brand_nr_search);
 
+        $db = DbSingleton::getTokoDb();
+
+        $art_ids = [];
         $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
@@ -158,26 +159,19 @@ class CatalogueClass
         $art_id_str = implode(",", $art_ids);
 
         $brand_filter = json_decode($brand_filter);
-        if (count($brand_filter) > 1) {
-            $brand_filter = implode(",", $brand_filter);
-        } else {
-            $brand_filter = "";
-        }
+        $brand_filter = (count($brand_filter) > 1) ? implode(",", $brand_filter) : "";
+
         $exp_price = explode(",", $price_f);
         $exp_deliv = explode(",", $deliv_f);
 
         list($list, $filters, $list_brand, $current_value) = $this->searchListFilter($art_id_str, $article_nr_search, $brand_filter, $cur, $exp_price[0], $exp_price[1], $exp_deliv[0], $exp_deliv[1], $brand_nr_search, $order_value);
 
-        $search_main = $this->getHtmlForm("search/main");
-        $search_filters = $this->getHtmlForm("search/filters");
-        $search_brands = $this->getHtmlForm("search/brands");
-        $search_main = $this->getSearchMain($search_main, $article_nr_search, $brand_nr_search, $list, $cur);
-        $search_main = $this->replaceLang($search_main);
-        $search_filters = $this->getSearchFilters($search_filters, $filters, $cur, $current_value);
-        $search_filters = $this->replaceLang($search_filters);
-        $search_brands = str_replace("{brands_list}", $list_brand, $search_brands);
-        $search_brands = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
-        $search_brands = $this->replaceLang($search_brands);
+        $search_main    = $this->replaceLang($this->getSearchMain($this->getHtmlForm("search/main"), $article_nr_search, $brand_nr_search, $list, $cur));
+        $search_filters = $this->replaceLang($this->getSearchFilters($this->getHtmlForm("search/filters"), $filters, $cur, $current_value));
+        $search_brands  = $this->getHtmlForm("search/brands");
+        $search_brands  = str_replace("{brands_list}", $list_brand, $search_brands);
+        $search_brands  = str_replace("{brands_display}", ($list_brand == "") ? "none" : "", $search_brands);
+        $search_brands  = $this->replaceLang($search_brands);
 
         return array($search_main, $search_filters, $search_brands, $filters["max_price"]);
     }
@@ -194,9 +188,9 @@ class CatalogueClass
         $exist_brand_link = $result = $list = "";
         $mas = [];
 
-        $form = $this->getHtmlForm("search/brand_options_form");
-        $form_brand = $this->getHtmlForm("search/brand_options_list");
-        $search_form = $this->getHtmlForm("search/brand_options");
+        $form           = $this->getHtmlForm("search/brand_options_form");
+        $form_brand     = $this->getHtmlForm("search/brand_options_list");
+        $search_form    = $this->getHtmlForm("search/brand_options");
 
         $r = $db->query("SELECT t2c.ART_ID, t2c.BRAND_ID, t2c.SEARCH_NUMBER, t2c.DISPLAY_NR, t2c.KIND, t2c.RELATION, t2b.BRAND_NAME, t2b.BRAND_LINK, IFNULL(t2n.NAME,'') as NAME 
         FROM `T2_CROSS` t2c 
@@ -453,8 +447,6 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
 
-        $arts = [];
-
         $kours = new ExRateClass();
         $client = new ClientClass();
 
@@ -462,6 +454,7 @@ class CatalogueClass
         $tpoint_id  = $this->getTpointID();
         $cur        = $this->getCurrentExrate();
 
+        $arts = [];
         $r = $db->query("SELECT `ART_ID`, `AMOUNT`, `STORAGE_ID`
             FROM `T2_ARTICLES_STRORAGE`
             WHERE `ART_ID` IN ($where_art_id_str) GROUP BY `ART_ID`, `STORAGE_ID`;");
@@ -508,11 +501,11 @@ class CatalogueClass
             }
         }
 
-        $new_arts = [];
-        foreach ($arts as $mas_key => $mas_val) {
-            $arts[$mas_key] = $this->multiSort($arts[$mas_key], "delivery_days", "price");
-            $new_arts[$mas_key] = $arts[$mas_key][0];
-        }
+//        $new_arts = [];
+//        foreach ($arts as $mas_key => $mas_val) {
+//            $arts[$mas_key] = $this->multiSort($arts[$mas_key], "delivery_days", "price");
+//            $new_arts[$mas_key] = $arts[$mas_key][0];
+//        }
 
         return $arts;
     }
@@ -1849,10 +1842,9 @@ class CatalogueClass
 
     public function getFaqForm()
     {
-        $form = $this->getHtmlForm("faq/request-card");
-        $form = "<div class=\"col-lg-4 col-12 pad0\"><div class=\"article-card\">$form</div></div>";
-        $form = $this->replaceLang($form);
-        return $form;
+        $form = "
+        <div class=\"col-lg-4 col-12 pad0\"><div class=\"article-card\">" . $this->getHtmlForm("faq/request-card") . "</div></div>";
+        return $this->replaceLang($form);
     }
 
     public function getFaqSocialsForm()
@@ -2477,41 +2469,6 @@ class CatalogueClass
      * sorted by min stock AND min price
      * */
     public function sortByMinStock($mas)
-    {
-        $min_key = $pred_key = 0;
-        $min_pr = 99999999;
-        foreach ($mas as $mas_key => $mas_val) {
-            foreach ($mas_val as $key => $val) {
-                if ($min_key != 0) {
-                    if ($mas[$pred_key][0]["price"] > $mas[$pred_key][$min_key]["price"] && $mas[$pred_key][0]["delivery_days"] > $mas[$pred_key][$min_key]["delivery_days"]) {
-                        $null_key = 0;
-                    } else {
-                        $null_key = 1;
-                    }
-                    if (isset($mas[$pred_key][$min_key])) {
-                        $temp = $mas[$pred_key][$min_key];
-                        $mas[$pred_key][$min_key] = $mas[$pred_key][$null_key];
-                        $mas[$pred_key][$null_key] = $temp;
-                    }
-                    $min_key = 0;
-                }
-                if ($val["price"] != 0) {
-                    if ($val["price"] < $min_pr) {
-                        $min_pr = $val["price"];
-                        $min_key = $key;
-                    }
-                }
-            }
-            $pred_key = $mas_key;
-            $min_pr = 99999999;
-        }
-        return $mas;
-    }
-
-    /*
- * sorted by min stock AND min price
- * */
-    public function sortByMinStock2($mas)
     {
         $min_key = $pred_key = 0;
         $min_pr = 99999999;

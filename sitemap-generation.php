@@ -714,3 +714,5 @@ $xmlWriter->endDocument();
 $time = microtime(true) - $start;
 print "RUN TIME: " . $time;
 
+require_once (RDD . "/sitemap-archive.php");
+require_once (RDD . "/sitemap-archive-uk.php");

@@ -14,11 +14,15 @@ class CatalogExistClass extends CatalogueClass
     /*
      * HEAD EXIST
      * */
-    public function getHeadExistID($group_id)
+    public function getHeadExistID($group_id, $status = 0)
     {
         $db = DbSingleton::getTokoDb();
         $head_id = 0;
-        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
+        $where = "";
+        if ($status > 0) {
+            $where = " AND `POPULAR` = 1";
+        }
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` = $group_id $where LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $head_id = $db->result($r, 0, "HEAD_ID");
@@ -466,6 +470,23 @@ class CatalogExistClass extends CatalogueClass
         return true;
     }
 
+    public function initPartsAvailableTables($group_id)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $table = "EX_TABLE_TREE_$group_id";
+        $r = $dbc->query("SELECT `brand_id` FROM `$table` WHERE 1 GROUP BY `brand_id`;");
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $brand_id   = $dbc->result($r, $i - 1, "brand_id");
+
+            $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_BRANDS` (`group_id`, `brand_id`, `status`) 
+            SELECT $group_id, $brand_id, 1 FROM DUAL 
+            WHERE NOT EXISTS (SELECT 1 FROM `EX_TABLE_TREE_AVAILABLE_BRANDS` 
+                  WHERE `group_id` = $group_id AND `brand_id` = $brand_id AND `status` = 1 LIMIT 1)");
+        }
+        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`) VALUES ($group_id, 1);");
+    }
+
     /*
      * create group table
      * */
@@ -494,11 +515,11 @@ class CatalogExistClass extends CatalogueClass
         SELECT `ART_ID`, `BRAND_ID`, 0, 1 FROM toko_dba.`T2_TREE_ARTS_EXIST` WHERE `GROUP_ID` = $group_id;");
 
         $arts = [];
-        $r = $dbc->query("SELECT `art_id` FROM `$table` WHERE 1;");
+        $r = $dbc->query("SELECT `art_id`, `brand_id` FROM `$table` WHERE 1;");
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $art_id = $dbc->result($r, $i - 1, "art_id");
-            $arts[] = $art_id;
+            $art_id     = $dbc->result($r, $i - 1, "art_id");
+            $arts[]     = $art_id;
         }
 
         // 2. set prices
@@ -578,8 +599,8 @@ class CatalogExistClass extends CatalogueClass
 
         $dbc->query("DELETE FROM `$table_mfa` WHERE `status` = 0;");
 
-        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_MFA` (`group_id`, `mfa_id`, `model`, `status`)
-        SELECT $group_id, `mfa_id`, `model`, 1 FROM `$table_mfa` WHERE 1 GROUP BY `mfa_id`, `model`;");
+        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_MFA` (`art_id`, `group_id`, `mfa_id`, `model`, `status`)
+        SELECT `art_id`, $group_id, `mfa_id`, `model`, 1 FROM `$table_mfa` WHERE 1 GROUP BY `mfa_id`, `model`;");
 
         $dbc->query("ALTER TABLE `$table_mfa` ADD INDEX `art_id` (`art_id`);");
 
@@ -1123,7 +1144,7 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $params, $status_auto, $status_auto_type, $typ_id, $mfa_id, $model, $model_id), $form);
 
             // 0.15
-            $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $params, $h1_text, $mfa_id, $model, $status_auto, $status_auto_type, $typ_id), $form);
+            $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $params, $source_link, $h1_text, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $typ_id), $form);
             $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
         }
 
@@ -1161,7 +1182,7 @@ class CatalogExistClass extends CatalogueClass
 
         return array(
             "form"          => $form,
-            "title"         => $filters_title,
+                "title"         => $filters_title,
             "h1"            => $h1_text,
             "pages_count"   => $max_pages_count,
             "description"   => $description,
@@ -1742,6 +1763,32 @@ class CatalogExistClass extends CatalogueClass
         return $db->result($r, 0, "TYPE_BODY");
     }
 
+    public function getCatalogSeoModsList($model_id)
+    {
+        $list = "";
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TYP_KW_FROM`, `TYP_HP_FROM`, `TYP_CCM`, `FUEL_ID`, `ENG_Cod`, `TYP_MMT_TEXT`,
+        CASE WHEN TYP_PCON_START = 0 THEN '' ELSE TYP_PCON_START END AS TYP_PCON_START,
+        CASE WHEN TYP_PCON_END = 0 THEN '' ELSE TYP_PCON_END END AS TYP_PCON_END
+        FROM `T_types` 
+        WHERE `TYP_MOD_ID` = $model_id AND `ACTIVE` = 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            for ($i = 1; $i <= $n; $i++) {
+                $kw_from    = $db->result($r, $i - 1, "TYP_KW_FROM");
+                $hp_from    = $db->result($r, $i - 1, "TYP_HP_FROM");
+                $ccm        = $db->result($r, $i - 1, "TYP_CCM");
+                $fuel       = $db->result($r, $i - 1, "FUEL_ID");
+                $eng_cod    = $db->result($r, $i - 1, "ENG_Cod");
+                $fuel       = $this->getFuelName($fuel);
+
+                $list .= "
+                <li>$fuel $eng_cod, $ccm cm3, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}</li>";
+            }
+        }
+        return $list;
+    }
+
     public function getCatalogSeoCarsList($mfa_id, $model)
     {
         $list = "";
@@ -1754,7 +1801,7 @@ class CatalogExistClass extends CatalogueClass
             WHERE `MOD_MFA_ID` = $mfa_id AND `Model` = '$model';");
             $n = $db->num_rows($r);
             if ($n > 0) {
-                $list = "<ul class='list-inline'>";
+                $list = "<ol>";
                 for ($i = 1; $i <= $n; $i++) {
                     $mod_id     = $db->result($r, $i - 1, "MOD_ID");
                     $text       = $db->result($r, $i - 1, "TEX_TEXT");
@@ -1766,11 +1813,10 @@ class CatalogExistClass extends CatalogueClass
 
                     $list .= "
                     <li>
-                        $text
-                        <br>
-                        {model_number_type}: $body_name
-                        <br>
-                        {year_issue}: $d_start - $d_end
+                        $text - $body_name, {was_issued} {with_cap} $d_start {to_cap} $d_end:
+                        <ul>
+                        " . $this->getCatalogSeoModsList($mod_id) . "
+                        </ul>
                     </li>";
                 }
                 $list .= "</ul>";
@@ -1779,59 +1825,79 @@ class CatalogExistClass extends CatalogueClass
         return $list;
     }
 
-    public function getCatalogMfaModelInfo($mfa_id = 0, $model = "")
+    public function getCatalogMfaModelInfo($mfa_id, $model = "")
     {
-        $list = "";
-        if ($mfa_id > 0) {
-            $mfaData = $this->getMfaData($mfa_id);
-            $link = $this->getSiteLink() . $this->cars_link .  "/" . $mfaData["mfa_link"] . "/";
-            $text = $mfaData["mfa_brand"];
-            if ($model != "") {
-                $model_link = $this->getModelLink($model);
-                $link = $this->getSiteLink() . $this->cars_link .  "/" . $mfaData["mfa_link"] . "/" . $model_link . "/";
-                $text .= " $model";
-            }
-            $list = "<a href='$link'>$text</a>";
+        $mfaData = $this->getMfaData($mfa_id);
+        $link = $this->getSiteLink() . $this->cars_link .  "/" . $mfaData["mfa_link"] . "/";
+        $text = $mfaData["mfa_brand"];
+        if ($model != "") {
+            $model_link = $this->getModelLink($model);
+            $link       = $this->getSiteLink() . $this->cars_link .  "/" . $mfaData["mfa_link"] . "/" . $model_link . "/";
+            $text       .= " $model";
         }
-        return $list;
+        return "<a href='$link'>$text</a>";
     }
 
-    public function getCatalogSeoFiltersGenerate($group_id, $h1_text, $mfa_id = 0, $model = "")
+    public function getCatalogSeoFiltersGenerate($group_id, $h1_text, $mfa_id, $model = "")
     {
         $text = "";
         $db = DbSingleton::getTokoDb();
+
+        $group_name = $this->getGroupRowName($group_id);
         $group_link = $this->getGroupRowLink($group_id);
-        $r = $db->query("SELECT * FROM `T2_SEO_GENERATE` WHERE `ROUTER` = 'catalog' AND `LINK` = '$group_link' LIMIT 1;");
+        $main_link  = $this->getSiteLink() . $this->catalog_link . "/" . $group_link . "/";
+
+        $head_id    = $this->getHeadExistID($group_id, 1);
+        $head_name  = $this->getHeadExistName($head_id);
+        $head_link  = $this->getSiteLink() . $this->catalog_link . "/" . $this->getHeadExistLink($head_id) . "/";
+        $postfix    = $this->getLangPostfix($this->getLanguage());
+
+        $r = $db->query("SELECT `TEXT_$postfix` FROM `T2_SEO_GENERATE` WHERE `ROUTER` = 'catalog' AND `LINK` = '$group_link' LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $postfix = $this->getLangPostfix($this->getLanguage());
             $text = $db->result($r, 0, "TEXT_$postfix");
             $text = str_replace("{GET_PAGE_H1}", $h1_text, $text);
             $text = str_replace("{MarkaMFA_Model}", $this->getCatalogMfaModelInfo($mfa_id, $model), $text);
-            $text = str_replace("{Main_Category_H1}", "<a href='/'></a>", $text);
-            $text = str_replace("{Main_Category_H1_Main_Category_H1}", "<a href='/'></a>", $text);
+            $text = str_replace("{Main_Category_H1}", "<a href='$main_link'>$group_name</a>", $text);
+            $text = str_replace("{Main_Category_H1_Main_Category_H1}", "<a href='$head_link'>$head_name</a>", $text);
             $text = str_replace("{Cars_List}", $this->getCatalogSeoCarsList($mfa_id, $model), $text);
         }
         return $text;
     }
 
+    public function checkCatalogueSeoText($source_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'catalog' AND `LINK` = '$source_link' LIMIT 1;");
+        $n = $db->num_rows($r);
+        return ($n > 0);
+    }
+
     /*
      * show products seo form
      * */
-    public function getPartsCatalogueSeo($group_id, $page = 1, $params = [], $h1_text = "", $mfa_id = 0, $model = "", $status_auto = 0, $status_auto_type = 0, $typ_id = 0)
+    public function getPartsCatalogueSeo($group_id, $page = 1, $params = [], $source_link = "", $h1_text = "", $mfa_id = 0, $model = "", $model_id = 0, $status_auto = 0, $status_auto_type = 0, $typ_id = 0)
     {
         $menu = new MenuClass();
         $form = $this->getHtmlForm("catalog_exist/seo");
         if ($page <= 1) {
             if ($status_auto == 0 || ($status_auto == 1 && $status_auto_type == 0)) {
+                //SEO GENERATE
+                $source_link = str_replace($this->getSiteLink() . $this->catalog_link . "/", "", $source_link);
+                $source_link = rtrim($source_link, "/");
+
+                if ($mfa_id > 0 && !$this->checkCatalogueSeoText($source_link) && $model_id == 0) {
+                    $list_filters = $this->getCatalogSeoFiltersGenerate($group_id, $h1_text, $mfa_id, $model);
+                    $form = str_replace("{seo_generate}", $list_filters, $form);
+                    $form = str_replace("{seo_generate_style}", ($list_filters == "") ? "none" : "", $form);
+                }
+
                 // SEO filters
                 if ($typ_id == "" || ($status_auto == 1 && $status_auto_type == 0)) {
                     if (!empty($params)) {
                         $list_filters = $this->getCatalogSeoFiltersForm($group_id, $params);
                         $form = str_replace("{seo_filters}", $list_filters, $form);
-                        if ($list_filters == "") {
-                            $list_filters = $this->getCatalogSeoFiltersGenerate($group_id, $h1_text, $mfa_id, $model);
-                        }
                         $form = str_replace("{seo_filters_style}", ($list_filters == "") ? "none" : "", $form);
                     }
                 }
@@ -1859,6 +1925,8 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace("{seo_popular}", "", $form);
         $form = str_replace("{seo_style}", "none", $form);
         $form = str_replace("{seo_filters_style}", "none", $form);
+        $form = str_replace("{seo_generate}", "", $form);
+        $form = str_replace("{seo_generate_style}", "none", $form);
         return $this->replaceLang($form);
     }
 
@@ -2234,133 +2302,133 @@ class CatalogExistClass extends CatalogueClass
     /*
      * catalog title cache
      * */
-    public function getCatalogTitleCache($str)
-    {
-        $str = $this->getUrlString($str);
-        $db = DbSingleton::getTokoDb();
-        $postfix = $this->getLangPostfix($this->getLanguage());
-        $title = "";
-        $r = $db->query("SELECT `TITLE_$postfix` FROM `T2_TITLES` WHERE `ROUTER` = '$this->catalog_link' AND `LINK` = '$str' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $title = $db->result($r, 0, "TITLE_$postfix");
-        }
-        return $title;
-    }
+//    public function getCatalogTitleCache($str)
+//    {
+//        $str = $this->getUrlString($str);
+//        $db = DbSingleton::getTokoDb();
+//        $postfix = $this->getLangPostfix($this->getLanguage());
+//        $title = "";
+//        $r = $db->query("SELECT `TITLE_$postfix` FROM `T2_TITLES` WHERE `ROUTER` = '$this->catalog_link' AND `LINK` = '$str' LIMIT 1;");
+//        $n = $db->num_rows($r);
+//        if ($n > 0) {
+//            $title = $db->result($r, 0, "TITLE_$postfix");
+//        }
+//        return $title;
+//    }
 
     /*
      * catalog title
      * */
-    public function getCatalogTitle($group_id, $params = [], $h1_text = "", $mfa_id = 0, $model = "")
-    {
-        $automan = new AutoClass();
-        $text = "$h1_text | ";
-        $brand_name = "";
-
-        // 1 - group_name
-        if ($mfa_id == 0 && $model == "" && empty($params)) {
-            $text .= $this->replaceLang("{seo_new_tilte_1}");
-        }
-
-        // 1.1
-        if ($mfa_id == 0 && $model == "" && count($params) > 2) {
-            $text = "$h1_text | ";
-            $text .= $this->replaceLang("{seo_new_tilte_1}");
-        }
-
-        // 2 - group_name/auto/mfa/
-        if ($mfa_id > 0 && $model == "" && empty($params)) {
-            $text .= $this->replaceLang("{seo_new_tilte_2}");
-        }
-
-        // 3 - group_name/auto/mfa/model/
-        if ($mfa_id > 0 && $model != "" && empty($params)) {
-            $text .= $this->replaceLang("{seo_new_tilte_3}");
-            $text = str_replace("{mfnm}", $automan->getMfaBrand($mfa_id), $text);
-        }
-
-        // 4 - group_name/filters/mfa/model/
-        if (!empty($params)) {
-            //if brand
-            if (array_key_exists(0, $params)) {
-                // 1 brand
-                if (count($params) == 1) {
-                    if ($mfa_id == 0) {
-                        // 1 brand + auto
-                        $text .= $this->replaceLang("{seo_new_tilte_4}");
-                    } else {
-                        // 1 brand + mfa model
-                        $text .= $this->replaceLang("{seo_new_tilte_5}");
-                        $text = str_replace("{mfnm}", $automan->getMfaBrand($mfa_id), $text);
-                    }
-                    $text = str_replace("{brnm}", $brand_name, $text);
-                }
-                // 1 brand + 1 param
-                if (count($params) == 2) {
-                    if ($mfa_id == 0) {
-                        // 1 brand + 1 param + auto
-                        $text .= $this->replaceLang("{seo_new_tilte_8}");
-                    } else {
-                        // 1 brand + 1 param + mfa model
-                        $text .= $this->replaceLang("{seo_new_tilte_7}");
-                        $text = str_replace("{mfnm}", $automan->getMfaBrand($mfa_id), $text);
-                    }
-                    $text = str_replace("{brnm}", $brand_name, $text);
-                    foreach ($params as $param_id => $values) {
-                        foreach ($values as $value_id) {
-                            if (count($values) == 1) {
-                                $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
-                                if ($value_h1_name != "") {
-                                    $text = str_replace("{grnm}", $value_h1_name, $text);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            // 1 param
-            elseif (count($params) == 1) {
-                if ($mfa_id == 0) {
-                    // 1 param + auto
-                    $text .= $this->replaceLang("{seo_new_tilte_1}");
-                }
-                // 1 param + mfa model
-                elseif ($model == "") {
-                    $text .= $this->replaceLang("{seo_new_tilte_2}");
-                    foreach ($params as $param_id => $values) {
-                        foreach ($values as $value_id) {
-                            $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
-                            if (count($values) == 1) {
-                                if ($value_h1_name != "") {
-                                    $text = str_replace("{grnm}", $value_h1_name, $text);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    $text .= $this->replaceLang("{seo_new_tilte_3}");
-                    $text = str_replace("{mfnm}", $automan->getMfaBrand($mfa_id), $text);
-                    foreach ($params as $param_id => $values) {
-                        foreach ($values as $value_id) {
-                            $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
-                            if (count($values) == 1) {
-                                if ($value_h1_name != "") {
-                                    $text = str_replace("{grnm}", $value_h1_name, $text);
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                $text = "$h1_text | ";
-                $text .= $this->replaceLang("{seo_new_tilte_1}");
-            }
-        }
-
-        $text = str_replace("{grnm}", $this->getGroupRowName($group_id), $text);
-
-        return $this->replaceLang($text);
-    }
+//    public function getCatalogTitle($group_id, $params = [], $h1_text = "", $mfa_id = 0, $model = "")
+//    {
+//        $automan = new AutoClass();
+//        $text = "$h1_text | ";
+//        $brand_name = "";
+//
+//        // 1 - group_name
+//        if ($mfa_id == 0 && $model == "" && empty($params)) {
+//            $text .= $this->replaceLang("{seo_new_tilte_1}");
+//        }
+//
+//        // 1.1
+//        if ($mfa_id == 0 && $model == "" && count($params) > 2) {
+//            $text = "$h1_text | ";
+//            $text .= $this->replaceLang("{seo_new_tilte_1}");
+//        }
+//
+//        // 2 - group_name/auto/mfa/
+//        if ($mfa_id > 0 && $model == "" && empty($params)) {
+//            $text .= $this->replaceLang("{seo_new_tilte_2}");
+//        }
+//
+//        // 3 - group_name/auto/mfa/model/
+//        if ($mfa_id > 0 && $model != "" && empty($params)) {
+//            $text .= $this->replaceLang("{seo_new_tilte_3}");
+//            $text = str_replace("{mfnm}", $automan->getMfaBrand($mfa_id), $text);
+//        }
+//
+//        // 4 - group_name/filters/mfa/model/
+//        if (!empty($params)) {
+//            //if brand
+//            if (array_key_exists(0, $params)) {
+//                // 1 brand
+//                if (count($params) == 1) {
+//                    if ($mfa_id == 0) {
+//                        // 1 brand + auto
+//                        $text .= $this->replaceLang("{seo_new_tilte_4}");
+//                    } else {
+//                        // 1 brand + mfa model
+//                        $text .= $this->replaceLang("{seo_new_tilte_5}");
+//                        $text = str_replace("{mfnm}", $automan->getMfaBrand($mfa_id), $text);
+//                    }
+//                    $text = str_replace("{brnm}", $brand_name, $text);
+//                }
+//                // 1 brand + 1 param
+//                if (count($params) == 2) {
+//                    if ($mfa_id == 0) {
+//                        // 1 brand + 1 param + auto
+//                        $text .= $this->replaceLang("{seo_new_tilte_8}");
+//                    } else {
+//                        // 1 brand + 1 param + mfa model
+//                        $text .= $this->replaceLang("{seo_new_tilte_7}");
+//                        $text = str_replace("{mfnm}", $automan->getMfaBrand($mfa_id), $text);
+//                    }
+//                    $text = str_replace("{brnm}", $brand_name, $text);
+//                    foreach ($params as $param_id => $values) {
+//                        foreach ($values as $value_id) {
+//                            if (count($values) == 1) {
+//                                $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
+//                                if ($value_h1_name != "") {
+//                                    $text = str_replace("{grnm}", $value_h1_name, $text);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            // 1 param
+//            elseif (count($params) == 1) {
+//                if ($mfa_id == 0) {
+//                    // 1 param + auto
+//                    $text .= $this->replaceLang("{seo_new_tilte_1}");
+//                }
+//                // 1 param + mfa model
+//                elseif ($model == "") {
+//                    $text .= $this->replaceLang("{seo_new_tilte_2}");
+//                    foreach ($params as $param_id => $values) {
+//                        foreach ($values as $value_id) {
+//                            $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
+//                            if (count($values) == 1) {
+//                                if ($value_h1_name != "") {
+//                                    $text = str_replace("{grnm}", $value_h1_name, $text);
+//                                }
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    $text .= $this->replaceLang("{seo_new_tilte_3}");
+//                    $text = str_replace("{mfnm}", $automan->getMfaBrand($mfa_id), $text);
+//                    foreach ($params as $param_id => $values) {
+//                        foreach ($values as $value_id) {
+//                            $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
+//                            if (count($values) == 1) {
+//                                if ($value_h1_name != "") {
+//                                    $text = str_replace("{grnm}", $value_h1_name, $text);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            } else {
+//                $text = "$h1_text | ";
+//                $text .= $this->replaceLang("{seo_new_tilte_1}");
+//            }
+//        }
+//
+//        $text = str_replace("{grnm}", $this->getGroupRowName($group_id), $text);
+//
+//        return $this->replaceLang($text);
+//    }
 
     public function getPartsCatalogueStates($group_id)
     {
