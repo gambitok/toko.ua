@@ -312,8 +312,9 @@ class FormClass extends CatalogueClass
             $delivery_short_info = "
             <span class='delivery-green'>{send_done}</span>";
         }
+        $real_stock = $articleData["real_stock"];
 
-        if ($articleData["real_stock"] === NULL) {
+        if ($real_stock === NULL) {
             $article_info_row = $this->getHtmlForm("article/soldout");
             $article_nr_displ = $this->getArticleDispl($art_id);
             $brand_id = $this->getArticleBrand($art_id);
@@ -335,7 +336,7 @@ class FormClass extends CatalogueClass
             $article_info_row = $this->getHtmlForm("article/row");
             $article_info_row = str_replace("{art_price}", $articleData["price"], $article_info_row);
             $article_info_row = str_replace("{art_cur}", $articleData["currency"], $article_info_row);
-            $article_info_row = str_replace("{art_stock}", $articleData["real_stock"], $article_info_row);
+            $article_info_row = str_replace("{art_stock}", $real_stock, $article_info_row);
             $article_info_row = str_replace("{art_del}", $delivery_short_info, $article_info_row);
             $article_search = $this->getArticleSearch($art_id);
             $brand_link = $this->getBrandLink($brand_id);
@@ -382,7 +383,7 @@ class FormClass extends CatalogueClass
         $form = str_replace("{brand_id}", $brand_id, $form);
         $form = str_replace("{suppl_id}", $articleData["suppl_id"], $form);
         $form = str_replace("{storage_id}", $articleData["storage_id"], $form);
-        $form = str_replace("{stock}", $articleData["real_stock"], $form);
+        $form = str_replace("{stock}", $real_stock, $form);
 
         $main_article_photo = $this->getArticlePhoto($art_id);
         $form = str_replace("{art_main_image}", ($main_article_photo == "")

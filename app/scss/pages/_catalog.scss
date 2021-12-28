@@ -833,6 +833,11 @@
         display: block!important;
         font-size: 11px;
         padding: 4px;
+
+        &.dnone {
+            padding: 0;
+            height: 0;
+        }
         span:before {
             content: url(/images/icons/car-white.png);
             position: relative;

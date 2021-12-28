@@ -1074,8 +1074,6 @@ class CatalogExistClass extends CatalogueClass
             $query_limit = "$query $limit ";
         }
 
-//        var_dump($query_limit);
-
         $r = $dbc->query($query_min);
         $art_min_id = $dbc->result($r, 0, "art_id");
         $min_price  = $this->getArticlePriceStorage($art_min_id);
@@ -1767,7 +1765,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $list = "";
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TYP_KW_FROM`, `TYP_HP_FROM`, `TYP_CCM`, `FUEL_ID`, `ENG_Cod`, `TYP_MMT_TEXT`,
+        $r = $db->query("SELECT `TYP_KW_FROM`, `TYP_HP_FROM`, `TYP_CCM`, `VOLUME_CM`, `FUEL_ID`, `TYP_MMT_TEXT`,
         CASE WHEN TYP_PCON_START = 0 THEN '' ELSE TYP_PCON_START END AS TYP_PCON_START,
         CASE WHEN TYP_PCON_END = 0 THEN '' ELSE TYP_PCON_END END AS TYP_PCON_END
         FROM `T_types` 
@@ -1777,13 +1775,14 @@ class CatalogExistClass extends CatalogueClass
             for ($i = 1; $i <= $n; $i++) {
                 $kw_from    = $db->result($r, $i - 1, "TYP_KW_FROM");
                 $hp_from    = $db->result($r, $i - 1, "TYP_HP_FROM");
-                $ccm        = $db->result($r, $i - 1, "TYP_CCM");
-                $fuel       = $db->result($r, $i - 1, "FUEL_ID");
-                $eng_cod    = $db->result($r, $i - 1, "ENG_Cod");
-                $fuel       = $this->getFuelName($fuel);
+                $ccm        = $db->result($r, $i - 1, "VOLUME_CM");
+                if ($ccm == "") {
+                    $ccm = $db->result($r, $i - 1, "TYP_CCM");
+                }
+                $fuel       = $this->getFuelName($db->result($r, $i - 1, "FUEL_ID"));
 
                 $list .= "
-                <li>$fuel $eng_cod, $ccm cm3, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}</li>";
+                <li>$fuel, $ccm cm3, $hp_from {horse_power_cap} / $kw_from {kilo_wat_cap}</li>";
             }
         }
         return $list;
@@ -1796,30 +1795,38 @@ class CatalogExistClass extends CatalogueClass
         if ($mfa_id > 0 && $model != "") {
             $r = $db->query("SELECT `MOD_ID`, `TEX_TEXT`, 
             CASE WHEN MOD_PCON_START = 0 THEN '' ELSE MOD_PCON_START END AS MOD_PCON_START,
-            CASE WHEN MOD_PCON_END = 0 THEN '{cur_time_min}' ELSE MOD_PCON_END END AS MOD_PCON_END 
+            CASE WHEN MOD_PCON_END = 0 THEN '' ELSE MOD_PCON_END END AS MOD_PCON_END 
             FROM `T_models`
-            WHERE `MOD_MFA_ID` = $mfa_id AND `Model` = '$model';");
+            WHERE `MOD_MFA_ID` = $mfa_id AND `Model` = '$model'
+            ORDER BY `MOD_PCON_START` ASC;");
             $n = $db->num_rows($r);
             if ($n > 0) {
-                $list = "<ol>";
+                $list = "
+                <ol>";
                 for ($i = 1; $i <= $n; $i++) {
                     $mod_id     = $db->result($r, $i - 1, "MOD_ID");
                     $text       = $db->result($r, $i - 1, "TEX_TEXT");
-                    $d_start    = $db->result($r, 0, "MOD_PCON_START");
+                    $d_start    = $db->result($r, $i - 1, "MOD_PCON_START");
                     $d_start    = substr($d_start, 0, 4);
-                    $d_end      = $db->result($r, 0, "MOD_PCON_END");
-                    $d_end      = substr($d_end, 0, 4);
+                    $d_end      = $db->result($r, $i - 1, "MOD_PCON_END");
+                    if ($d_end == "") {
+                        $year_text = "{begin_produce_cap} $d_start";
+                    } else {
+                        $d_end = substr($d_end, 0, 4);
+                        $year_text = "{was_issued} {with_cap} $d_start {to_cap} $d_end";
+                    }
                     $body_name  = $this->getBodyInfo($mod_id);
 
                     $list .= "
                     <li>
-                        $text - $body_name, {was_issued} {with_cap} $d_start {to_cap} $d_end:
+                        $text - $body_name, $year_text:
                         <ul>
                         " . $this->getCatalogSeoModsList($mod_id) . "
                         </ul>
                     </li>";
                 }
-                $list .= "</ul>";
+                $list .= "
+                </ul>";
             }
         }
         return $list;
@@ -1838,7 +1845,34 @@ class CatalogExistClass extends CatalogueClass
         return "<a href='$link'>$text</a>";
     }
 
-    public function getCatalogSeoFiltersGenerate($group_id, $h1_text, $mfa_id, $model = "")
+    public function getParamsLink($params)
+    {
+        $link = "";
+
+        foreach ($params as $param_id => $values) {
+            if ($param_id == 0) {
+                $param_link = "brandy";
+            } else {
+                $param_link = $this->getParamLink($param_id);
+            }
+            $link .= "$param_link=";
+            foreach ($values as $value_id) {
+                if ($param_id == 0) {
+                    $value_link = $this->getBrandLink($value_id);
+                } else {
+                    $value_link = $this->getValueLink($value_id);
+                }
+                $link .= "$value_link,";
+            }
+            $link = rtrim($link, ",");
+            $link .= ";";
+        }
+        $link = rtrim($link, ";");
+
+        return $link;
+    }
+
+    public function getCatalogSeoFiltersGenerate($group_id, $params, $h1_text, $mfa_id, $model = "")
     {
         $text = "";
         $db = DbSingleton::getTokoDb();
@@ -1852,8 +1886,53 @@ class CatalogExistClass extends CatalogueClass
         $head_link  = $this->getSiteLink() . $this->catalog_link . "/" . $this->getHeadExistLink($head_id) . "/";
         $postfix    = $this->getLangPostfix($this->getLanguage());
 
-        $r = $db->query("SELECT `TEXT_$postfix` FROM `T2_SEO_GENERATE` WHERE `ROUTER` = 'catalog' AND `LINK` = '$group_link' LIMIT 1;");
-        $n = $db->num_rows($r);
+        $n = 0;
+        if (empty($params)) {
+            $r = $db->query("SELECT `TEXT_$postfix` FROM `T2_SEO_GENERATE` WHERE `ROUTER` = 'catalog' AND `LINK` = '$group_link' LIMIT 1;");
+            $n = $db->num_rows($r);
+        } else {
+
+            if (count($params) == 2) {
+                $param_ids = array_keys($params);
+                if (in_array(0, $param_ids)) {
+
+                    $param_ids1 = $param_ids[0];
+                    $value_ids1 = $params[$param_ids1];
+                    $param_ids2 = $param_ids[1];
+                    $value_ids2 = $params[$param_ids2];
+
+                    if (count($value_ids1) == 1 && count($value_ids2) == 1) {
+
+                        $where = "'$group_link/" . $this->getParamsLink($params) . "'";
+                        $r = $db->query("SELECT `TEXT_$postfix` FROM `T2_SEO_GENERATE` WHERE `ROUTER` = 'catalog' AND `LINK` = $where LIMIT 1;");
+                        $n = $db->num_rows($r);
+
+                        if ($n == 0) {
+                            $r = $db->query("SELECT `TEXT_$postfix` FROM `T2_SEO_GENERATE` WHERE `ROUTER` = 'catalog' AND `LINK` = '$group_link' LIMIT 1;");
+                            $n = $db->num_rows($r);
+                        }
+                    }
+                }
+            }
+
+            if (count($params) == 1) {
+                $param_ids = array_keys($params)[0];
+                $value_ids = $params[$param_ids];
+                if (count($value_ids) == 1) {
+
+                    $where = "'$group_link/" . $this->getParamsLink($params) . "'";
+                    $r = $db->query("SELECT `TEXT_$postfix` FROM `T2_SEO_GENERATE` WHERE `ROUTER` = 'catalog' AND `LINK` = $where LIMIT 1;");
+                    $n = $db->num_rows($r);
+
+                    if ($n == 0) {
+                        $r = $db->query("SELECT `TEXT_$postfix` FROM `T2_SEO_GENERATE` WHERE `ROUTER` = 'catalog' AND `LINK` = '$group_link' LIMIT 1;");
+                        $n = $db->num_rows($r);
+                    }
+                }
+            }
+
+        }
+
         if ($n > 0) {
             $text = $db->result($r, 0, "TEXT_$postfix");
             $text = str_replace("{GET_PAGE_H1}", $h1_text, $text);
@@ -1888,7 +1967,7 @@ class CatalogExistClass extends CatalogueClass
                 $source_link = rtrim($source_link, "/");
 
                 if ($mfa_id > 0 && !$this->checkCatalogueSeoText($source_link) && $model_id == 0) {
-                    $list_filters = $this->getCatalogSeoFiltersGenerate($group_id, $h1_text, $mfa_id, $model);
+                    $list_filters = $this->getCatalogSeoFiltersGenerate($group_id, $params, $h1_text, $mfa_id, $model);
                     $form = str_replace("{seo_generate}", $list_filters, $form);
                     $form = str_replace("{seo_generate_style}", ($list_filters == "") ? "none" : "", $form);
                 }
