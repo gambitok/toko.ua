@@ -201,7 +201,7 @@ class AutoClass extends CatalogueClass
     {
         $mod_id = $this->getUrlNumber($mod_id);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = '$mod_id' LIMIT 1;");
+        $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = $mod_id LIMIT 1;");
         return $db->result($r, 0, "TEX_TEXT");
     }
 

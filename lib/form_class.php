@@ -101,13 +101,6 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
 
-//        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `BRAND_ID` = $brand_id GROUP BY `GROUP_ID`;");
-//        $n = $db->num_rows($r);
-//        $groups = [];
-//        for ($i = 1; $i <= $n; $i++) {
-//            $group_id = $db->result($r, $i - 1, "GROUP_ID");
-//            $groups[] = $group_id;
-//        }
         $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_BRANDS` WHERE `brand_id` = $brand_id GROUP BY `group_id`;");
         $n = $dbc->num_rows($r);
         $groups = [];
@@ -655,15 +648,15 @@ class FormClass extends CatalogueClass
             "link" => $catalog->getSiteLink() . "$catalog->catalog_link/"
         ];
 
-        $group_id = $catalog->getArticleGroupExist($art_id);
-        $brand_name = $catalog->getBrandName($brand_id);
-        $brand_link = $catalog->getBrandLink($brand_id);
-        $article_name = $this->getArticleName($art_id);
+        $group_id       = $catalog->getArticleGroupExist($art_id);
+        $brand_name     = $catalog->getBrandName($brand_id);
+        $brand_link     = $catalog->getBrandLink($brand_id);
+        $article_name   = $this->getArticleName($art_id);
 
         if ($group_id > 0) {
-            $head_id = $catalog_exist->getHeadExistID($group_id);
-            $head_name = $catalog_exist->getHeadExistName($head_id);
-            $head_link = $catalog_exist->getHeadExistLink($head_id);
+            $head_id    = $catalog_exist->getHeadExistID($group_id);
+            $head_name  = $catalog_exist->getHeadExistName($head_id);
+            $head_link  = $catalog_exist->getHeadExistLink($head_id);
 
             $arr[] = [
                 "name" => "$head_name",
@@ -684,10 +677,9 @@ class FormClass extends CatalogueClass
             ];
         }
 
-        $article_text = "$article_name $brand_name $article_nr_displ";
-
-        $format_article_search = $this->getFormatAticle($article_nr_displ);
-        $format_brand_name = $this->getFormatBrand($this->getBrandName($brand_id));
+        $article_text           = "$article_name $brand_name $article_nr_displ";
+        $format_article_search  = $this->getFormatAticle($article_nr_displ);
+        $format_brand_name      = $this->getFormatBrand($this->getBrandName($brand_id));
 
         $arr[] = [
             "name" => "$article_text",
@@ -903,10 +895,10 @@ class FormClass extends CatalogueClass
         $list = $client->getClientHistory();
         $result = "";
         for ($i = 0; $i < count($list); $i++) {
-            $col = $i + 1;
-            $article_nr_displ = $list[$i]["article_nr_displ"];
-            $brand = $list[$i]["brand"];
-            $brand_link = $list[$i]["brand_link"];
+            $col                = $i + 1;
+            $article_nr_displ   = $list[$i]["article_nr_displ"];
+            $brand              = $list[$i]["brand"];
+            $brand_link         = $list[$i]["brand_link"];
             $result .= "
             <li>$col. <a href=\"" . $this->getSiteLink() . "$this->search_link/$article_nr_displ/$brand_link/\">$article_nr_displ ($brand)</a></li>";
         }
@@ -922,15 +914,16 @@ class FormClass extends CatalogueClass
     public function showHistoryList()
     {
         $client = new ClientClass();
-        $cat = new CatalogueClass();
+        $catalog = new CatalogueClass();
         $list = $client->getClientHistory();
         $list_history = "";
         for ($i = 0; $i < count($list); $i++) {
-            $id = $list[$i]["id"];
-            $article_nr_displ = $list[$i]["article_nr_displ"];
-            $format_article = $cat->getFormatAticle($article_nr_displ);
-            $brand = $list[$i]["brand"];
-            $brand_link = $list[$i]["brand_link"];
+            $id                 = $list[$i]["id"];
+            $article_nr_displ   = $list[$i]["article_nr_displ"];
+            $format_article     = $catalog->getFormatAticle($article_nr_displ);
+            $brand              = $list[$i]["brand"];
+            $brand_link         = $list[$i]["brand_link"];
+
             $history_form = $this->getHtmlForm("history/card");
             $history_form = str_replace("{history_id}", $id, $history_form);
             $history_form = str_replace("{history_link}", "" . $this->getSiteLink() . "$this->search_link/$format_article/$brand_link/", $history_form);
@@ -1036,7 +1029,7 @@ class FormClass extends CatalogueClass
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $photo_link = $db->result($r, $i - 1, "photo_link");
-                $link = "https://toko.ua/uploads/images/certificates/$photo_link";
+                $link       = "https://toko.ua/uploads/images/certificates/$photo_link";
                 array_push($arr, $link);
             }
         }
@@ -1534,7 +1527,8 @@ class FormClass extends CatalogueClass
             $arr[$head_id][$cat_id][] = $group_id;
         }
 
-        $list .= "<ul>";
+        $list .= "
+        <ul>";
         $site_link .= $this->catalog_link . "/";
         foreach ($arr as $head_id => $cats) {
             if (!empty($cats)) {

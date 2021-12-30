@@ -32,17 +32,17 @@ $db = DbSingleton::getTokoDb();
 $dbm = DbSingleton::getDbm();
 $dbc = DbSingleton::getTokoCacheDb();
 
-$showform = new FormClass();
-$catalogue = new CatalogueClass();
-$prod = new ProductsClass();
-$automan = new AutoClass();
-$menu = new MenuClass();
-$shop = new ShopClass();
-$client = new ClientClass();
-$kours = new ExRateClass();
-$profile = new ProfileClass();
-$language = new LangClass();
-$catalog_exist = new CatalogExistClass();
+$showform       = new FormClass();
+$catalogue      = new CatalogueClass();
+$prod           = new ProductsClass();
+$automan        = new AutoClass();
+$menu           = new MenuClass();
+$shop           = new ShopClass();
+$client         = new ClientClass();
+$kours          = new ExRateClass();
+$profile        = new ProfileClass();
+$language       = new LangClass();
+$catalog_exist  = new CatalogExistClass();
 
 //set cookies for user
 setCookies();

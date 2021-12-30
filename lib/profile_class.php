@@ -74,7 +74,7 @@ class ProfileClass extends ClientClass
         $r = $db->query("SELECT `update_actions` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
         $update_actions = $db->result($r, 0, "update_actions");
 
-        $r = $db->query("SELECT * FROM `ACTION_CLIENTS` WHERE `timestamp` > '$update_actions 00:00:00' AND `status` = 1;");
+        $r = $db->query("SELECT 1 FROM `ACTION_CLIENTS` WHERE `timestamp` > '$update_actions 00:00:00' AND `status` = 1;");
         $n = $db->num_rows($r);
 
         $counter = ($n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
@@ -155,7 +155,7 @@ class ProfileClass extends ClientClass
     public function getClientBonus($client_id)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT * FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID` = $client_id;");
+        $r = $db->query("SELECT 1 FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID` = $client_id;");
         $n = $db->num_rows($r);
         return ($n > 0);
     }
@@ -209,7 +209,7 @@ class ProfileClass extends ClientClass
         $dp_id = $this->getUrlNumber($dp_id);
         $db = DbSingleton::getDbm();
 
-        $r = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id` = $dp_id;");
+        $r = $db->query("SELECT 1 FROM `J_DP_STR` WHERE `dp_id` = $dp_id;");
         $n = $db->num_rows($r);
         return ($n > 0);
     }
@@ -865,7 +865,7 @@ class ProfileClass extends ClientClass
         $visible    = "style=\"display:none;\"";
         $history_fr = "";
 
-        $r = $db->query("SELECT * FROM `cron_task_prices` WHERE `user_id` = $user_id AND `status` = 1;");
+        $r = $db->query("SELECT 1 FROM `cron_task_prices` WHERE `user_id` = $user_id AND `status` = 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
             $disable = "";
@@ -874,7 +874,8 @@ class ProfileClass extends ClientClass
         $filename = scandir(RDD . "/uploads/$user_id")[2];
         if ($filename != "") {
             $file = "$this->uploads/$user_id/" . $filename;
-            $list = "<a class=\"btn btn-primary\" href=\"$file\" download $visible><span class='fa fa-download'></span> Download $filename</a><br>";
+            $list = "
+            <a class=\"btn btn-primary\" href=\"$file\" download $visible><span class='fa fa-download'></span> Download $filename</a><br>";
         } else {
             $list = "";
         }

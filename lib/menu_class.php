@@ -112,15 +112,15 @@ class MenuClass extends CatalogueClass
         }
 
         $r = $db->query("SELECT `caption`, `desc`, `data` FROM `news` WHERE `id` = $state_id;");
-        $title          = $db->result($r, 0, "caption");
-        $title          = ($title == "") ? $this->replaceLang("{news_one_cap}" . "-$state_id") : $title;
-        $text           = $db->result($r, 0, "desc");
-        $date           = $db->result($r, 0, "data");
-        $img_file_name  = $this->getNewsImage($state_id);
-        $img_file       = "/uploads/images/news/$language_id/$state_id/" . $img_file_name;
-        $img            = ($img_file_name != "") ? "<p><img itemprop=\"image\" src=\"$img_file\" alt=\"state\"></p>" : "";
-        $format_title   = $this->formatUrlText($title);
-        $url            = $this->getSiteLink() . "$this->news_link/state/$state_id/$format_title/";
+        $title      = $db->result($r, 0, "caption");
+        $title      = ($title == "") ? $this->replaceLang("{news_one_cap}" . "-$state_id") : $title;
+        $text       = $db->result($r, 0, "desc");
+        $date       = $db->result($r, 0, "data");
+        $img_fname  = $this->getNewsImage($state_id);
+        $img_file   = "/uploads/images/news/$language_id/$state_id/" . $img_fname;
+        $img        = ($img_fname != "") ? "<p><img itemprop=\"image\" src=\"$img_file\" alt=\"state\"></p>" : "";
+        $ftitle     = $this->formatUrlText($title);
+        $url        = $this->getSiteLink() . "$this->news_link/state/$state_id/$ftitle/";
 
         return compact("title", "date", "img_file", "img", "text", "url");
     }
@@ -324,7 +324,8 @@ class MenuClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $id     = $db->result($r, $i - 1, "ID");
             $name   = $db->result($r, $i - 1, "NAME");
-            $list   .= "<option value=\"$id\">$name</option>";
+            $list   .= "
+            <option value=\"$id\">$name</option>";
         }
         return $list;
     }
@@ -381,7 +382,8 @@ class MenuClass extends CatalogueClass
                     <span class=\"radiomark\"></span>
                 </label>";
             }
-            $list .= "</form>";
+            $list .= "
+            </form>";
         }
         return $list;
     }
@@ -420,7 +422,8 @@ class MenuClass extends CatalogueClass
                     <span class=\"radiomark-phone\"></span>
                 </label>";
             }
-            $list .= "</form>";
+            $list .= "
+            </form>";
         }
         return $list;
     }
@@ -651,7 +654,8 @@ class MenuClass extends CatalogueClass
                     </a>
                 </li>";
             }
-            $list_address .= "</ul></div>";
+            $list_address .= "
+            </ul></div>";
         }
         $form = $this->getHtmlForm("menu/contacts_bottom");
         $form = str_replace("{list_phone}", $list_phone, $form);
@@ -1023,8 +1027,10 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
 
-        $list1 = "<ul class=\"list-inline\">";
-        $list2 = "<ul class=\"list-inline\">";
+        $list1 = "
+        <ul class=\"list-inline\">";
+        $list2 = "
+        <ul class=\"list-inline\">";
         $r = $db->query("SELECT * FROM `T2_SEO_FOOTER` WHERE 1 ORDER BY `TEXT_RU` ASC LIMIT 0,20;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1041,8 +1047,10 @@ class MenuClass extends CatalogueClass
                 <li><a href=\"" . $this->getSiteLink() . "$router/$link/\"> $text</a></li>";
             }
         }
-        $list1 .= "</ul>";
-        $list2 .= "</ul>";
+        $list1 .= "
+        </ul>";
+        $list2 .= "
+        </ul>";
 
         $form = getHtmlForm("main/footer");
         $form = str_replace("{popular_catalogs_list1}", $list1, $form);
