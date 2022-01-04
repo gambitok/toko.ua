@@ -9,11 +9,9 @@ if ($client->checkUnRegClient()) {
     $content = str_replace("{profile_orders}", $profile->showProfileOrders(), $content);
     $content = str_replace("{profile_file_list}", $profile->showPriceList(), $content);
 
-    $linksData = findLinks();
-    $panel = $catalogue->getUrlString($linksData[1]);
-    if ($panel == "") {
-        $panel = "account";
-    }
+    $panel = $catalogue->getUrlString(findLinks()[1]);
+    $panel = ($panel == "") ? "account" : $panel;
+
     $content = str_replace("{profile-$panel}", "in active", $content);
 
     if ($client->getClientPriceList()) {

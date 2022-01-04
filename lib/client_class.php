@@ -38,11 +38,8 @@ class ClientClass
             $_SESSION["user_id"] = $this->default_user;
         }
 
-        $client_id = $_SESSION["client_id"];
-        $user_id = $_SESSION["user_id"];
-
-        $client_id = $this->getUrlNumber($client_id);
-        $user_id = $this->getUrlNumber($user_id);
+        $client_id  = $this->getUrlNumber($_SESSION["client_id"]);
+        $user_id    = $this->getUrlNumber($_SESSION["user_id"]);
 
         return array($client_id, $user_id);
     }
@@ -91,8 +88,8 @@ class ClientClass
      * */
     public function getClientWhere()
     {
-        $user_id = $this->getUser();
-        $cookie_id = $this->getSessionID();
+        $user_id    = $this->getUser();
+        $cookie_id  = $this->getSessionID();
         return ($user_id == 0)
             ? "`cookie_id` = '$cookie_id' AND `client_id` = 0"
             : "`client_id` = $user_id";
@@ -139,7 +136,7 @@ class ClientClass
     {
         $db = DbSingleton::getTokoDb();
         $typ_id = "";
-        $where = "`client_id` = $client_id AND `user_id` = $user_id";
+        $where  = "`client_id` = $client_id AND `user_id` = $user_id";
         $r = $db->query("SELECT `typ_id` FROM `AUTO_GARAGE` WHERE $where AND `status` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
@@ -342,26 +339,28 @@ class ClientClass
     /*
      * save registration
      * */
-    public function saveRegistration($phone, $pass, $email, $name, $client_category, $city_id, $tpoint_id, $mailing)
+    public function saveRegistration($phone, $pass, $email, $name, $client_cat, $city_id, $tpoint_id, $mailing)
     {
         $db = DbSingleton::getDbm();
-        $phone = $this->formatValidPhone($this->getUrlString($phone));
-        $pass = $this->getUrlString($pass);
-        $email = $this->getUrlString($email);
-        $name = $this->getUrlString($name);
-        $client_category = $this->getUrlString($client_category);
-        $city_id = $this->getUrlNumber($city_id);
-        $tpoint_id = $this->getUrlNumber($tpoint_id);
-        $mailing = $this->getUrlNumber($mailing);
-        $mailing = ($mailing) ? 1 : 0;
-        $client_id = $this->getClientByTpoint($tpoint_id);
-        $date = date("Y-m-d H:i:s");
+
+        $phone      = $this->formatValidPhone($this->getUrlString($phone));
+        $pass       = $this->getUrlString($pass);
+        $email      = $this->getUrlString($email);
+        $name       = $this->getUrlString($name);
+        $client_cat = $this->getUrlString($client_cat);
+        $city_id    = $this->getUrlNumber($city_id);
+        $tpoint_id  = $this->getUrlNumber($tpoint_id);
+        $mailing    = $this->getUrlNumber($mailing);
+        $mailing    = ($mailing) ? 1 : 0;
+        $client_id  = $this->getClientByTpoint($tpoint_id);
+        $date       = date("Y-m-d H:i:s");
+
         list($region, $state, $country) = $this->getLocationCity($city_id);
-        if ($client_category == "") {
-            $client_category = $this->default_client_category;
+        if ($client_cat == "") {
+            $client_cat = $this->default_client_category;
         }
 
-        if ($client_category == $this->default_client_category) {
+        if ($client_cat == $this->default_client_category) {
             // REGISTRATION AS CLIENT
             $this->addRetailClient($client_id, $phone, $name, $city_id, $email, $pass, $this->default_client_category);
         } else {
@@ -370,7 +369,7 @@ class ClientClass
             $n = $db->num_rows($r);
             if ($n == 0) {
                 $db->query("INSERT INTO `A_CLIENTS_USERS_RETAIL` (`name`, `email`, `phone`, `pass`, `client_id`, `client_category`, `data`, `country_id`, `state_id`, `region_id`, `city_id`, `mailing`, `status`) 
-                VALUES ('$name', '$email', '$phone', '$pass', $client_id, '$client_category', '$date', $country, $state, $region, $city_id, $mailing, $this->status_user_retail);");
+                VALUES ('$name', '$email', '$phone', '$pass', $client_id, '$client_cat', '$date', $country, $state, $region, $city_id, $mailing, $this->status_user_retail);");
             } else {
                 $db->query("UPDATE `A_CLIENTS_USERS_RETAIL` SET `pass` = '$pass', `email` = '$email', `name` = '$name' WHERE `phone` = '$phone' LIMIT 1;");
             }
@@ -477,8 +476,9 @@ class ClientClass
     public function checkRegClient($phone, $type = 0)
     {
         $db = DbSingleton::getDbm();
-        $phone = $this->formatValidPhone($phone);
-        $type = $this->getUrlNumber($type);
+
+        $phone  = $this->formatValidPhone($phone);
+        $type   = $this->getUrlNumber($type);
 
         $r = $db->query("SELECT `client_id`, `phone`, `pass` FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
@@ -556,10 +556,13 @@ class ClientClass
         for ($i = 1; $i <= $n; $i++) {
             $storage_id = $db->result($r, $i - 1, "storage_id");
             $local      = $db->result($r, $i - 1, "local");
+
             ($local == "41") ? array_push($storage_local, $storage_id) : array_push($storage_remote, $storage_id);
         }
-        $storage_local = implode(",", $storage_local);
+
+        $storage_local  = implode(",", $storage_local);
         $storage_remote = implode(",", $storage_remote);
+
         return array($storage_local, $storage_remote);
     }
 
@@ -658,17 +661,17 @@ class ClientClass
         $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getDbm();
         $dbt = DbSingleton::getTokoDb();
+
         $r = $db->query("SELECT `pass` FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n == 0) {
             $r = $db->query("SELECT `pass` FROM `A_CLIENTS_USERS_RETAIL` WHERE `phone` = '$phone' AND `status` = $this->status_user_retail LIMIT 1;");
         }
-        $password = $db->result($r, 0, "pass");
-        $message = "Vash login: $phone, vash parol: $password. Spasibo, chto Vy s nami! (www.toko.ua)";
+        $password   = $db->result($r, 0, "pass");
+        $message    = "Vash login: $phone, vash parol: $password. Spasibo, chto Vy s nami! (www.toko.ua)";
         $dbt->query("INSERT INTO `sms_journal` (`phone`, `sign`, `message`, `status`) VALUES ('$phone', 'TOKO.UA', '$message', '1');");
-        $list = "<div class=\"col-12\">{sms_sent}</div>";
-        $list = $this->replaceLang($list);
-        return $list;
+
+        return $this->replaceLang("<div class=\"col-12\">{sms_sent}</div>");
     }
 
     /*
@@ -679,8 +682,10 @@ class ClientClass
         $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getDbm();
         $dbt = DbSingleton::getTokoDb();
-        $password = rand(1000, 9999);
-        $message = "Vvedite kod: $password";
+
+        $password   = rand(1000, 9999);
+        $message    = "Vvedite kod: $password";
+
         $db->query("INSERT INTO `phone_validation` (`phone`, `password`, `status`) VALUES ('$phone', '$password', '0');");
         $dbt->query("INSERT INTO `sms_journal` (`phone`, `sign`, `message`, `status`) VALUES ('$phone', 'TOKO.UA', '$message', '1');");
         return $password;
@@ -999,14 +1004,13 @@ class ClientClass
             $brand_name = $this->getBrandName($brand_id);
 
             if ($brand_name != "") {
-                $history[$col] =
-                    [
-                        "id"                => $id,
-                        "article_nr_displ"  => $art_nr_ds,
-                        "brand_id"          => $brand_id,
-                        "brand"             => $brand_name,
-                        "brand_link"        => $brand_link
-                    ];
+                $history[$col] = [
+                    "id"                => $id,
+                    "article_nr_displ"  => $art_nr_ds,
+                    "brand_id"          => $brand_id,
+                    "brand"             => $brand_name,
+                    "brand_link"        => $brand_link
+                ];
                 $col++;
             }
         }
@@ -1035,11 +1039,10 @@ class ClientClass
             $art_id = $db->result($r, $i - 1, "art_id");
 
             if ($art_id > 0) {
-                $history[$col] =
-                    [
-                        "id"        => $id,
-                        "art_id"    => $art_id,
-                    ];
+                $history[$col] = [
+                    "id"        => $id,
+                    "art_id"    => $art_id
+                ];
                 $col++;
             }
         }
@@ -1093,15 +1096,17 @@ class ClientClass
      * */
     public function setClientRequest($phone, $vin = "", $text = "", $status = 0)
     {
-        $phone = $this->formatValidPhone($phone);
-        $vin = $this->getUrlNumber($vin);
-        $text = $this->getNameString($text);
         $db = DbSingleton::getTokoDb();
-        $data_create = date("Y-m-d H:i:s");
+
+        $phone      = $this->formatValidPhone($phone);
+        $vin        = $this->getUrlNumber($vin);
+        $text       = $this->getNameString($text);
+        $date_start = date("Y-m-d H:i:s");
+
         if (($phone == "") || (strlen($vin) != $this->vin_len && $status == 1) || (!$this->validateOperator($phone))) {
             return false;
         } else {
-            $db->query("INSERT INTO `T2_QUESTIONS` (`PHONE`, `VIN`, `TEXT` , `DATA_CREATE`) VALUES ('$phone', '$vin', '$text', '$data_create');");
+            $db->query("INSERT INTO `T2_QUESTIONS` (`PHONE`, `VIN`, `TEXT` , `DATA_CREATE`) VALUES ('$phone', '$vin', '$text', '$date_start');");
             return true;
         }
     }
@@ -1172,7 +1177,7 @@ class ClientClass
         if ($this->checkRegClient($phone)) {
             // get CLIENT
             $clientData = $this->getClientUserbyPhone($phone);
-            $client_id = $clientData["client_id"];
+            $client_id  = $clientData["client_id"];
             // check if roznica
             if ($this->checkRetailClientCategory($client_id)) {
                 // check if have BONUS already
@@ -1184,7 +1189,7 @@ class ClientClass
         } else {
             // reg CLIENT
             $clientData = $this->addRetailClient($this->getClientData(), $phone);
-            $client_id = $clientData["client_id"];
+            $client_id  = $clientData["client_id"];
             // add BONUS
             $this->addClientBonus($client_id, $bonus);
         }

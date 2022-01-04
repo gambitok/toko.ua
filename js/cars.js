@@ -213,8 +213,7 @@ function setActiveCar() {
 * if car already chosen
 * */
 function showCarsForm() {
-    let form = "cars";
-    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
+    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':"cars"},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modals").append(result.content);
             $("#CarsForm").modal("show");

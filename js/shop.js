@@ -9,8 +9,10 @@ function stayInOrder() {
 function showNotify(title, text, type_text) {
     JsHttpRequest.query(folder,{ 'w': 'changeLangAlert', 'message':text, 'title':title },
         function (result, errors){ if (errors) {} if (result){
-            let title_notify = "<b>" + result.content[1] + "</b>";
-            let text_notify = result.content[0];
+
+            let title_notify    = "<b>" + result.content[1] + "</b>";
+            let text_notify     = result.content[0];
+
             $.notify({
                 icon: "glyphicon glyphicon-star",
                 title: title_notify,
@@ -27,8 +29,8 @@ function showNotify(title, text, type_text) {
 }
 
 function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
-    let count_id = $("#count_" + id);
-    let count = count_id.val();
+    let count_id    = $("#count_" + id);
+    let count       = count_id.val();
 
     // for single product
     if (id == 'one') {
@@ -70,16 +72,19 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
 
 function moveToBasket(id, art_id, brand_id, count, stock, storage_id, suppl_id) {
     let basket_count_id = $("#basket_count_" + id);
+
     JsHttpRequest.query(folder,{'w':'moveToBasket', 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            let old_count = parseInt(result["old_amount"]);
-            let art_name = result["art_name"];
-            let all_count = old_count + parseInt(count);
-            let message = count + " {amount_abbr}. ";
+            let old_count   = parseInt(result["old_amount"]);
+            let art_name    = result["art_name"];
+            let all_count   = old_count + parseInt(count);
+            let message     = count + " {amount_abbr}. ";
             let message_all = "";
+
             if (old_count > 0) {
                 message_all = "<br><b>{total_basket_cap}:</b> " + all_count + " {amount_abbr}.";
             }
+
             showNotify("{done_cap}:", "{art_cap} '" + art_name + "' - " + message + " {added_to_basket}!" + message_all, "success");
             showBasketStatus();
             showBasketForm();
@@ -236,9 +241,10 @@ function showBasketStatus() {
 function finishFastOrder(name, status = 0) {
     $("#input_phone").val("");
     validateForm("phone", "input");
-    //let input_phone = $("#input_phone2");
+
     let input_phone = $("#" + name);
-    let phone = input_phone.val();
+    let phone       = input_phone.val();
+
     if (!validationInput(name)) {
         let text = "{input_valid_phone}";
         showAlertModal(text, "{error_cap}", 0);
@@ -277,12 +283,13 @@ function addFastOrder() {
     if (count_one !== undefined) {
         count = count_one;
     }
-    let art_id = $("#art_id").val();
-    let brand_id = $("#brand_id").val();
-    let suppl_id = $("#suppl_id").val();
-    let storage_id = $("#storage_id").val();
-    let phone = $("#input_phone_article").val();
-    let stock = $("#stock").val();
+
+    let art_id      = $("#art_id").val();
+    let brand_id    = $("#brand_id").val();
+    let suppl_id    = $("#suppl_id").val();
+    let storage_id  = $("#storage_id").val();
+    let phone       = $("#input_phone_article").val();
+    let stock       = $("#stock").val();
 
     if (count > stock) {
         showAlertModal("{too_much}", "{error_cap}", 0);
@@ -296,18 +303,20 @@ function addFastOrder() {
 
 function showFastOrder(phone, status = 0) {
     if (status === 1) {
-        let art_id = $("#art_id").val();
-        let brand_id = $("#brand_id").val();
-        let stock = $("#stock").val();
-        let storage_id = $("#storage_id").val();
-        let suppl_id = $("#suppl_id").val();
-        let count = 1;
+        let art_id      = $("#art_id").val();
+        let brand_id    = $("#brand_id").val();
+        let stock       = $("#stock").val();
+        let storage_id  = $("#storage_id").val();
+        let suppl_id    = $("#suppl_id").val();
+        let count       = 1;
+
         JsHttpRequest.query(folder,{'w':'saveFastOrderBasket', 'phone':phone, 'art_id':art_id, 'brand_id':brand_id, 'count':count, 'stock':stock, 'storage_id':storage_id, 'suppl_id':suppl_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 location.href = result.content;
             }}, true);
 
     } else {
+
         JsHttpRequest.query(folder,{'w':'finish_fast_order', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 location.href = result.content;
@@ -326,6 +335,7 @@ function closeOrderArtUpdate(dp_id, art_id, order_id) {
 
 function updateOrderArt() {
     let order_id = $("#order_id").val();
+
     JsHttpRequest.query(folder,{'w':'updateOrderArt', 'order_id':order_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             showProfileOrders();
@@ -364,6 +374,7 @@ function validationInput(name) {
 
 function validationInputPhone() {
     let phone = $("#input_phone_article").val();
+
     JsHttpRequest.query(folder,{'w':'validateOperator', 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content === false) {

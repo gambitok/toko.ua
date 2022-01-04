@@ -20,8 +20,8 @@ class LangClass
             $lang_id = $this->getUrlNumber($_COOKIE["lang_id"]);
             if (empty($lang_id)) {
                 $lang_id = $this->default_lang_id;
-                $_SESSION["lang_id"] = $lang_id;
-                $_COOKIE["lang_id"] = $lang_id;
+                $_SESSION["lang_id"]    = $lang_id;
+                $_COOKIE["lang_id"]     = $lang_id;
             } else {
                 $_SESSION["lang_id"] = $lang_id;
             }
@@ -65,24 +65,23 @@ class LangClass
     public function getLanguageMenuList($sel_id)
     {
         $db = DbSingleton::getTokoDb();
+
         $list = "";
         $link = ltrim($_SERVER["REQUEST_URI"], "/");
-
         $link = "/" . $link;
-
         $link = str_replace("/uk/", "", $link);
         $link = str_replace("/en/", "", $link);
+
         $r = $db->query("SELECT `id`, `abr` FROM `new_lang` WHERE 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $lang_id = $db->result($r, $i - 1, "id");
-            $lang_abr = $db->result($r, $i - 1, "abr");
-            $active = ($lang_id == $sel_id) ? "menu-language__item-active" : "";
-            $postfix = $this->getLangIDPrefix($lang_id);
-            $http = "https://";
-            $url = "toko.ua/$postfix" . $link;
-            $url = str_replace("//", "/", $url);
-            $url = $http . $url;
+            $lang_id    = $db->result($r, $i - 1, "id");
+            $lang_abr   = $db->result($r, $i - 1, "abr");
+            $active     = ($lang_id == $sel_id) ? "menu-language__item-active" : "";
+            $url        = "toko.ua/" . $this->getLangIDPrefix($lang_id) . $link;
+            $url        = str_replace("//", "/", $url);
+            $url        = "https://" . $url;
+
             $list .= "
             <div class=\"menu-language__item $active\">
                 <a href=\"$url\">$lang_abr</a>
@@ -163,10 +162,10 @@ class LangClass
      * */
     public function changeLangAlert($message, $title)
     {
-        $message = $this->getNameString($message);
-        $title = $this->getNameString($title);
-        $message = $this->replaceLangData($message);
-        $title = $this->replaceLangData($title);
+        $message    = $this->getNameString($message);
+        $title      = $this->getNameString($title);
+        $message    = $this->replaceLangData($message);
+        $title      = $this->replaceLangData($title);
         return array($message, $title);
     }
 

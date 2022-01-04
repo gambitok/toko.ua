@@ -157,9 +157,10 @@ function setCityDepartments() {
 // GET DELIVERY BLOCK
 function getOrderDeliveryBlock() {
     $(".orders-block-row-delivery").each(function () {
+        let block       = $(this);
         let delivery_id = $(this).attr("data-tab-delivery");
-        let city_id = $("#user_city").select2("val");
-        let block = $(this);
+        let city_id     = $("#user_city").select2("val");
+
         block.removeClass("orders-block-row-hidden");
         JsHttpRequest.query(folder,{'w':'getOrderDeliveryBlock', 'delivery_id':delivery_id, 'city_id':city_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -180,9 +181,10 @@ function getOrderDeliveryBlock() {
 function getOrderPaymentBlock() {
     let status = "1";
     $(".orders-block-row-payment").each(function () {
-        let block = $(this);
-        let payment_id = block.attr("data-tab-payment");
+        let block       = $(this);
+        let payment_id  = block.attr("data-tab-payment");
         let delivery_id = $("input[name='user_delivery']:checked").attr("data-id-delivery");
+
         block.removeClass("orders-block-row-hidden");
         block.find("label").find("input[type='radio']").prop("checked", false);
         JsHttpRequest.query(folder,{'w':'getOrderPaymentBlock', 'payment_id':payment_id, 'delivery_id':delivery_id},
@@ -199,6 +201,7 @@ function getOrderPaymentBlock() {
 // SET ADDRESS OF TPOINT (by CITY)
 function setCityAddress() {
     let city_id = $("#user_city").select2("val");
+
     JsHttpRequest.query(folder,{'w':'setCityAddress', 'city_id':city_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             $("#tpoint_address").html(result.content);
@@ -212,6 +215,7 @@ function uncheckRadioDelivery() {
         $(this).find("div").removeClass("orders-block-row-display");
     });
 }
+
 function uncheckRadioPayment() {
     $(".orders-block-row-payment").each(function () {
         $(this).find("label").find("input[type='radio']").prop("checked", false);
@@ -242,7 +246,9 @@ function editFields() {
 function showOrderInfo() {
     $("#order_info_max").removeClass("none");
     $("#order_info_min_circle").removeClass("orders-header__round-fill");
+
     let text = "{order_contacts_cap}";
+
     JsHttpRequest.query(folder,{'w':'changeLangJs', 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             $("#order_info_min").html(result.content);
@@ -253,9 +259,11 @@ function showOrderInfo() {
 function hideOrderInfo() {
     $("#order_info_max").addClass("none");
     $("#order_info_min_circle").addClass("orders-header__round-fill");
-    let name = $("#user_name").val();
-    let phone = $("#user_phone").val();
-    let city = $("#user_city").select2("data")[0].text;
+
+    let name    = $("#user_name").val();
+    let phone   = $("#user_phone").val();
+    let city    = $("#user_city").select2("data")[0].text;
+
     JsHttpRequest.query(folder,{'w':'hideOrderInfo', 'name':name, 'phone':phone, 'city':city},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             $("#order_info_min").html(result.content);
@@ -264,16 +272,17 @@ function hideOrderInfo() {
 
 // GET DELIVERY INFO FIELDS
 function getDeliveryTypeFields(delivery_id) {
-    let div = $("div[data-tab-delivery='" + delivery_id + "']");
-    let street = div.find("div").find("input[name='street']").val();
-    let house = div.find("div").find("input[name='house']").val();
-    let porch = div.find("div").find("input[name='porch']").val();
-    let data_department = div.find("select[name='department']").select2("data");
-    let data_express = div.find("select[name='delivery_express']").select2("data");
-    let delivery_express_department = div.find("div").find("input[name='delivery_express_department']").val();
-    let department = "0";
-    let department_id = "0";
-    let delivery_express = "0";
+    let div                 = $("div[data-tab-delivery='" + delivery_id + "']");
+    let street              = div.find("div").find("input[name='street']").val();
+    let house               = div.find("div").find("input[name='house']").val();
+    let porch               = div.find("div").find("input[name='porch']").val();
+    let data_department     = div.find("select[name='department']").select2("data");
+    let data_express        = div.find("select[name='delivery_express']").select2("data");
+    let express_department  = div.find("div").find("input[name='delivery_express_department']").val();
+    let department          = "0";
+    let department_id       = "0";
+    let delivery_express    = "0";
+
     if (data_department !== undefined) {
         department = data_department[0].text;
         department_id = data_department[0].value;
@@ -281,20 +290,22 @@ function getDeliveryTypeFields(delivery_id) {
     if (data_express !== undefined) {
         delivery_express = data_express[0].value;
     }
-    let arr = [];
-    arr["street"] = street;
-    arr["house"] = house;
-    arr["porch"] = porch;
-    arr["department"] = department;
-    arr["department_id"] = department_id;
-    arr["delivery_express"] = delivery_express;
-    arr["delivery_express_department"] = delivery_express_department;
+
+    let arr                             = [];
+    arr["street"]                       = street;
+    arr["house"]                        = house;
+    arr["porch"]                        = porch;
+    arr["department"]                   = department;
+    arr["department_id"]                = department_id;
+    arr["delivery_express"]             = delivery_express;
+    arr["delivery_express_department"]  = express_department;
     return arr;
 }
 
 // SET DELIVERY EXPRESS CAPTION
 function setDeliveryExpressDepartment() {
     let delivery_express = $("#delivery_express option:selected").val();
+
     JsHttpRequest.query(folder,{'w':'setDeliveryExpressDepartment', 'delivery_express':delivery_express},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             $("#delivery_express_department").html(result.content);
@@ -303,9 +314,11 @@ function setDeliveryExpressDepartment() {
 
 // GET BASKET ORDER FORM
 function getBasketOrder() {
-    let bonus_status = $("#bonus_status").prop("checked");
     $("#orders-basket").html("");
-    let delivery_id = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
+
+    let bonus_status    = $("#bonus_status").prop("checked");
+    let delivery_id     = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
+
     JsHttpRequest.query(folder,{'w':'getBasketOrder', 'delivery_id':delivery_id, 'bonus_status':bonus_status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             $("#orders-basket").html(result.content);
@@ -318,8 +331,9 @@ function getBasketOrder() {
 
 // VALID INFO FIELDS
 function validInfoFields() {
-    let valid = 0;
+    let valid       = 0;
     let valid_field = $(".valid_field");
+
     valid_field.each(function() {
         let data_attr = $(this).attr("data-attr");
         // INPUT TEXT FIELD
@@ -435,14 +449,15 @@ function validOrder() {
 
 // SHOW ORDER DATA
 function validFullOrder() {
-    let name = $("#user_name").val();
-    let phone = $("#user_phone").val();
-    let city = $("#user_city").select2("val");
-    let delivery = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
-    let delivery_type = getDeliveryTypeFields(delivery);
-    let payment = $("input[name ='user_payment']:checked").attr("data-id-payment");
-    let email = $("#user_email").val();
-    let comment = $("#user_comment").val();
+    let name            = $("#user_name").val();
+    let phone           = $("#user_phone").val();
+    let city            = $("#user_city").select2("val");
+    let delivery        = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
+    let delivery_type   = getDeliveryTypeFields(delivery);
+    let payment         = $("input[name ='user_payment']:checked").attr("data-id-payment");
+    let email           = $("#user_email").val();
+    let comment         = $("#user_comment").val();
+
     JsHttpRequest.query(folder,{'w':'validOrder', 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             $("#OrderModal").modal("show");
@@ -452,28 +467,29 @@ function validFullOrder() {
 
 // FINISH ORDER
 function saveOrder() {
-    let user_id = $("#order_user_id").val();
-    let name = $("#user_name").val();
-    let phone = $("#user_phone").val();
-    let city = $("#user_city").select2("val");
-    let delivery = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
-    let delivery_type = getDeliveryTypeFields(delivery);
-    let payment = $("input[name ='user_payment']:checked").attr("data-id-payment");
-    let email = $("#user_email").val();
-    let comment = $("#user_comment").val();
-    let recipient_name = $("#user_recipient_name").val();
+    let user_id         = $("#order_user_id").val();
+    let name            = $("#user_name").val();
+    let phone           = $("#user_phone").val();
+    let city            = $("#user_city").select2("val");
+    let delivery        = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
+    let delivery_type   = getDeliveryTypeFields(delivery);
+    let payment         = $("input[name ='user_payment']:checked").attr("data-id-payment");
+    let email           = $("#user_email").val();
+    let comment         = $("#user_comment").val();
+    let recipient_name  = $("#user_recipient_name").val();
     let recipient_phone = $("#user_recipient_phone").val();
-    let bonus_status = $("#bonus_status").prop("checked");
+    let bonus_status    = $("#bonus_status").prop("checked");
+
     if (bonus_status === undefined) {
         bonus_status = 0;
     }
 
     JsHttpRequest.query(folder,{'w':'saveOrder', 'user_id':user_id, 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment, 'recipient_name':recipient_name, 'recipient_phone':recipient_phone, 'bonus_status':bonus_status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            let order_id = result.content[0];
-            let user_id = result.content[1];
+            let order_id    = result.content[0];
+            let user_id     = result.content[1];
             let user_status = result.content[2];
-            location.href = window.location.href  + "/?order_id=" + order_id + "&user_id=" + user_id + "&user_status=" + user_status;
+            location.href   = window.location.href  + "/?order_id=" + order_id + "&user_id=" + user_id + "&user_status=" + user_status;
         }}, true);
 }
 
@@ -492,12 +508,13 @@ function dropClientOrderInfo(id) {
 function setClientOrderInfo(id) {
     JsHttpRequest.query(folder,{'w':'setClientOrderInfo', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            let arr = result.content;
-            let city_id = arr["city_id"];
-            let delivery_id = arr["delivery_id"];
-            let payment_id = arr["payment_id"];
-            let delivery_info = arr["delivery_info"];
-            let recipient_name = arr["recipient_name"];
+
+            let arr             = result.content;
+            let city_id         = arr["city_id"];
+            let delivery_id     = arr["delivery_id"];
+            let payment_id      = arr["payment_id"];
+            let delivery_info   = arr["delivery_info"];
+            let recipient_name  = arr["recipient_name"];
             let recipient_phone = arr["recipient_phone"];
 
             if (recipient_name === "" && recipient_phone === "") {
@@ -559,6 +576,7 @@ function setClientOrderInfo(id) {
 // GET USER SAVED DATA (by CITY)
 function getUserSavedData(user_id) {
     let city = $("#user_city").select2("val");
+
     JsHttpRequest.query(folder,{'w':'getUserSavedData', 'user_id':user_id, 'city':city},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             if (result.status == 1) {
@@ -579,9 +597,10 @@ function ordersUserToggle() {
 /*==== ORDER DONE ====*/
 function saveOrderClient() {
     let user_id = $("#order_user_id").val();
-    let name = $("#user_name").val();
-    let email = $("#user_email").val();
-    let pass = $("#user_pass").val();
+    let name    = $("#user_name").val();
+    let email   = $("#user_email").val();
+    let pass    = $("#user_pass").val();
+
     JsHttpRequest.query(folder,{'w':'saveOrderClient', 'user_id':user_id, 'name':name, 'email':email, 'pass':pass},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             location.href = result.content;
@@ -590,6 +609,7 @@ function saveOrderClient() {
 
 function loginOrderClient() {
     let user_id = $("#order_user_id").val();
+
     JsHttpRequest.query(folder,{'w':'loginOrderClient', 'user_id':user_id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             location.href = result.content;

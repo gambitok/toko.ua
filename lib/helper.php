@@ -168,7 +168,8 @@ trait Helper
             if ($caption == "") {
                 $caption = $db->result($r, $i - 1, "mcaption");
             }
-            $options .= "<option value=\"$id\">$caption</option>";
+            $options .= "
+            <option value=\"$id\">$caption</option>";
         }
         return $options;
     }
@@ -465,7 +466,7 @@ trait Helper
                         <a href=\"$link\" rel=\"v:url\" property=\"v:title\">$name</a>$icon
                     </li>";
                 } else {
-                    $list .= "$name";
+                    $list .= $name;
                 }
 
                 $script_list .= "

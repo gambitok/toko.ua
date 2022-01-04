@@ -58,7 +58,7 @@ function getContent($content)
 function checkLangVariable($variable)
 {
     $db = DbSingleton::getTokoDb();
-    $r = $db->query("SELECT * FROM `new_lang_wd` WHERE `variable` = '$variable' LIMIT 1;");
+    $r = $db->query("SELECT 1 FROM `new_lang_wd` WHERE `variable` = '$variable' LIMIT 1;");
     $n = $db->num_rows($r);
     return ($n > 0);
 }

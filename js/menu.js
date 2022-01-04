@@ -113,7 +113,7 @@ function showGarageForm() {
             }}, true);
     } else {
         let form_garage = $("#garage_cars_form");
-        let form_cars = $("#cars_form-selected");
+        let form_cars   = $("#cars_form-selected");
         form_garage.html("<div class=\"spinner-border\"></div>");
         form_garage.html(form_cars.html());
         form_cars.html("");
@@ -122,7 +122,7 @@ function showGarageForm() {
 
 function hideGarageForm() {
     let form_garage = $("#garage_cars_form");
-    let form_cars = $("#cars_form-selected");
+    let form_cars   = $("#cars_form-selected");
     if (form_cars.length == 0) {
         //
     } else {
@@ -152,13 +152,13 @@ function rotateIcon(a) {
 }
 
 function saveSellForm() {
-    let company_input = $("#reg_company"), company = company_input.val();
-    let name_input = $("#reg_name"), name = name_input.val();
-    let phone_input = $("#reg_phone"), phone = phone_input.val();
-    let email_input = $("#reg_email"), email = email_input.val();
-    let upload_file = $("#upload_image"), file_id = upload_file.text();
-    let city_id = $("#user_city option:selected").val();
-    let comment_input = $("#reg_comment"), comment = comment_input.val();
+    let company_input   = $("#reg_company"), company = company_input.val();
+    let name_input      = $("#reg_name"), name = name_input.val();
+    let phone_input     = $("#reg_phone"), phone = phone_input.val();
+    let email_input     = $("#reg_email"), email = email_input.val();
+    let upload_file     = $("#upload_image"), file_id = upload_file.text();
+    let city_id         = $("#user_city option:selected").val();
+    let comment_input   = $("#reg_comment"), comment = comment_input.val();
 
     if (company === "") {
         company_input.addClass("required_input");
@@ -226,8 +226,9 @@ function closeHideNavigation() {
 }
 
 function getSpecialOffersList() {
-    let template_id = $("#special_offers_filter option:selected").val();
-    let update_actions = $("#special_offers_update").val();
+    let template_id     = $("#special_offers_filter option:selected").val();
+    let update_actions  = $("#special_offers_update").val();
+
     JsHttpRequest.query(folder,{'w':'getSpecialOffersList', 'template_id':template_id, 'update_actions':update_actions},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#special_offers_range").html(result.content);
@@ -236,9 +237,10 @@ function getSpecialOffersList() {
 }
 
 function validateBonusPhone() {
-    let phone = $("#phone").val();
-    let password = $("#sms_code").val();
-    JsHttpRequest.query(folder,{ 'w': 'endValidation', 'phone':phone, 'password':password},
+    let phone   = $("#phone").val();
+    let pass    = $("#sms_code").val();
+
+    JsHttpRequest.query(folder,{ 'w': 'endValidation', 'phone':phone, 'password':pass},
         function (result, errors){ if (errors) {} if (result){
             if (result.content === true) {
                 finishBonusPhone(phone, 1);

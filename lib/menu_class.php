@@ -1031,7 +1031,8 @@ class MenuClass extends CatalogueClass
         <ul class=\"list-inline\">";
         $list2 = "
         <ul class=\"list-inline\">";
-        $r = $db->query("SELECT * FROM `T2_SEO_FOOTER` WHERE 1 ORDER BY `TEXT_RU` ASC LIMIT 0,20;");
+
+        $r = $db->query("SELECT `ROUTER`, `LINK`, `TEXT_$postfix` FROM `T2_SEO_FOOTER` WHERE 1 ORDER BY `TEXT_RU` ASC LIMIT 0,20;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $router = $db->result($r, $i - 1, "ROUTER");

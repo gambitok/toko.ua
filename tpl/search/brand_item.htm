@@ -2,11 +2,11 @@
     <div class="side-brands-item__text">
         <label class="container_check">
             <span class="check-brand__text">{val_brand}</span>
-            <input class="check-brand {main_brand_class}" value="{val_brand}" id="brand_{brand_id}" name="{brand_id}" type="checkbox" onClick="{jsFilterModel}" {checked}>
+            <input class="check-brand {main_brand_class}" value="{val_brand}" id="brand_{brand_id}" name="{brand_id}" type="checkbox" onClick="catalogFilter();" {checked}>
             <span class="checkmark"></span>
         </label>
     </div>
     <div class="side-brands-item__price">
-        <span>{from_cap} {min_price} {currency_cap}</span>
+        <span>{from_cap} {min_price} {cur_cap}</span>
     </div>
 </div>

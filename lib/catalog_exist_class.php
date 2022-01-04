@@ -1827,7 +1827,7 @@ class CatalogExistClass extends CatalogueClass
         return $list;
     }
 
-    public function getCatalogMfaModelInfo($mfa_id, $model = "")
+    public function getCatalogMfaModelInfo($mfa_id, $model = "", $status = 0)
     {
         $mfaData = $this->getMfaData($mfa_id);
         $link = $this->getSiteLink() . $this->cars_link .  "/" . $mfaData["mfa_link"] . "/";
@@ -1837,7 +1837,7 @@ class CatalogExistClass extends CatalogueClass
             $link       = $this->getSiteLink() . $this->cars_link .  "/" . $mfaData["mfa_link"] . "/" . $model_link . "/";
             $text       .= " $model";
         }
-        return "<a href='$link'>$text</a>";
+        return ($status == 0) ? $text : "<a href='$link'>$text</a>";
     }
 
     public function getParamsLink($params)
@@ -1926,9 +1926,13 @@ class CatalogExistClass extends CatalogueClass
         if ($n > 0) {
             $text = $db->result($r, 0, "TEXT_$postfix");
             $text = str_replace("{GET_PAGE_H1}", $h1_text, $text);
+            $text = str_replace("{GET_PAGE_H1_LINK}", $h1_text, $text);
             $text = str_replace("{MarkaMFA_Model}", $this->getCatalogMfaModelInfo($mfa_id, $model), $text);
-            $text = str_replace("{Main_Category_H1}", "<a href='$main_link'>$group_name</a>", $text);
-            $text = str_replace("{Main_Category_H1_Main_Category_H1}", "<a href='$head_link'>$head_name</a>", $text);
+            $text = str_replace("{MarkaMFA_Model_LINK}", $this->getCatalogMfaModelInfo($mfa_id, $model, 1), $text);
+            $text = str_replace("{Main_Category_H1}", $group_name, $text);
+            $text = str_replace("{Main_Category_H1_LINK}", "<a href='$main_link'>$group_name</a>", $text);
+            $text = str_replace("{Main_Category_H1_Main_Category_H1}", $head_name, $text);
+            $text = str_replace("{Main_Category_H1_Main_Category_H1_LINK}", "<a href='$head_link'>$head_name</a>", $text);
             $text = str_replace("{Cars_List}", $this->getCatalogSeoCarsList($mfa_id, $model), $text);
         }
         return $text;
@@ -2093,12 +2097,10 @@ class CatalogExistClass extends CatalogueClass
         $link = "$this->catalog_link";
 
         if ($group_id > 0) {
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
-            $link       .= "/$group_link/auto";
-            $det_cap    = $group_name . " {on_cap}";
+            $link       .= "/" . $this->getGroupRowLink($group_id) . "/auto";
+            $det_cap    = $this->getGroupRowName($group_id) . " {on_cap}";
         } else {
-            $det_cap = "{details_on_cap}";
+            $det_cap    = "{details_on_cap}";
         }
 
         if ($this->checkTableMfa($group_id) > 0) {

@@ -38,8 +38,8 @@ function setPriceList() {
 
 function saveProfileForm() {
     let phone_input = $("#reg_phone"), phone = phone_input.val();
-    let pass_input = $("#reg_password"), pass = pass_input.val();
-    let name_input = $("#reg_name"), name = name_input.val();
+    let pass_input  = $("#reg_password"), pass = pass_input.val();
+    let name_input  = $("#reg_name"), name = name_input.val();
     let email_input = $("#reg_email"), email = email_input.val();
 
     if (phone === "") {
@@ -78,10 +78,10 @@ function saveProfileForm() {
 
 function saveRegistrationForm() {
     let phone_input = $("#reg_phone"), phone = phone_input.val();
-    let pass_input = $("#reg_password"), pass = pass_input.val();
+    let pass_input  = $("#reg_password"), pass = pass_input.val();
     let pass2_input = $("#reg_repassword"), pass2 = pass2_input.val();
-    let name_input = $("#reg_name"), name = name_input.val();
-    let city_id = $("#user_city option:selected").val();
+    let name_input  = $("#reg_name"), name = name_input.val();
+    let city_id     = $("#user_city option:selected").val();
 
     if (phone === "") {
         phone_input.addClass("required_input");
@@ -125,28 +125,28 @@ function saveRegistrationForm() {
 }
 
 function saveRegistration() {
-    let phone = $("#reg_phone").val();
-    let pass = $("#reg_password").val();
-    let email = $("#reg_email").val();
-    let name = $("#reg_name").val();
-    let client_category = $("#reg_category option:selected").val();
-    let city_id = $("#user_city option:selected").val();
-    let tpoint_id = $("#reg_tpoint option:selected").val();
-    let mailing = $("#reg_mailing").prop("checked");
-    JsHttpRequest.query(folder,{'w':'saveRegistration', 'phone':phone, 'pass':pass, 'email':email, 'name':name, 'client_category':client_category, 'city_id':city_id, 'tpoint_id':tpoint_id, 'mailing':mailing},
+    let phone       = $("#reg_phone").val();
+    let pass        = $("#reg_password").val();
+    let email       = $("#reg_email").val();
+    let name        = $("#reg_name").val();
+    let client_cat  = $("#reg_category option:selected").val();
+    let city_id     = $("#user_city option:selected").val();
+    let tpoint_id   = $("#reg_tpoint option:selected").val();
+    let mailing     = $("#reg_mailing").prop("checked");
+    JsHttpRequest.query(folder,{'w':'saveRegistration', 'phone':phone, 'pass':pass, 'email':email, 'name':name, 'client_category':client_cat, 'city_id':city_id, 'tpoint_id':tpoint_id, 'mailing':mailing},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            let text = "{success_registered}!<br>{phone_cap}:" + phone;
-            showAlertModal(text, "{done_cap}", 1, loginFormParams);
+            showAlertModal("{success_registered}!<br>{phone_cap}:" + phone, "{done_cap}", 1, loginFormParams);
         }}, true);
 }
 
 function loginForm() {
-    let login = $("#userlogin").val();
-    let password = $("#userpassword").val();
-    if (login === "" || password === "") {
+    let login   = $("#userlogin").val();
+    let pass    = $("#userpassword").val();
+
+    if (login === "" || pass === "") {
         showAlertModal("{input_all_data}!", "{error_cap}", 0, focusPhone);
     } else {
-        JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
+        JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':pass},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content === false) {
                     showAlertModal("{user_not_logged}!", "{error_cap}", 0);
@@ -158,12 +158,13 @@ function loginForm() {
 }
 
 function signInForm() {
-    let login = $("#userlogin2").val();
-    let password = $("#userpassword2").val();
-    if (login === "" || password === "") {
+    let login   = $("#userlogin2").val();
+    let pass    = $("#userpassword2").val();
+
+    if (login === "" || pass === "") {
         showAlertModal("{input_all_data}!", "{error_cap}", 0);
     } else {
-        JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
+        JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':pass},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content === false) {
                     showAlertModal("{user_not_logged}!", "{error_cap}", 0);
@@ -175,12 +176,13 @@ function signInForm() {
 }
 
 function loginFormParams() {
-    let login = $("#reg_phone").val();
-    let password = $("#reg_password").val();
-    if (login === "" || password === "") {
+    let login   = $("#reg_phone").val();
+    let pass    = $("#reg_password").val();
+
+    if (login === "" || pass === "") {
         showAlertModal("{input_all_data}!","{error_cap}",0);
     } else {
-        JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':password},
+        JsHttpRequest.query(folder,{'w':'loginClient', 'login':login, 'password':pass},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content===false) {
                     showAlertModal("{user_not_logged}!", "{error_cap}", 0);
@@ -199,10 +201,11 @@ function logoutForm() {
 }
 
 function saveProfile() {
-    let phone = $("#reg_phone").val();
-    let pass = $("#reg_password").val();
-    let email = $("#reg_email").val();
-    let name = $("#reg_name").val();
+    let phone   = $("#reg_phone").val();
+    let pass    = $("#reg_password").val();
+    let email   = $("#reg_email").val();
+    let name    = $("#reg_name").val();
+
     JsHttpRequest.query(folder,{'w':'saveProfile', 'phone':phone, 'pass':pass, 'email':email, 'name':name},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             showNotify("{done_cap}:", "{data_saved}!", "success");
@@ -240,8 +243,10 @@ function showProfileOrdersArts(dp_id, order_id) {
 
 function showProfileCheckForm() {
     window.history.pushState("check", "Profile", "/profile/check/");
-    let data_start = $("#saldo_data_start").val(); if (data_start===undefined) data_start=0;
-    let data_end = $("#saldo_data_end").val(); if (data_end===undefined) data_end=0;
+
+    let data_start  = $("#saldo_data_start").val(); if (data_start === undefined) data_start = 0;
+    let data_end    = $("#saldo_data_end").val(); if (data_end === undefined) data_end = 0;
+
     $("#check_block").html("<div class=\"loader\"></div>");
     JsHttpRequest.query(folder,{'w':'showProfileCheckForm', 'data_start':data_start, 'data_end':data_end},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -260,13 +265,13 @@ function showProfilePrice() {
 
 function recoverPassword() {
     let phone = $("#recover_phone").val();
+
     JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content !== false) {
                 recoverPasswordNext();
             } else {
-                let text = "{user_not_logged}!";
-                showAlertModal(text, "{error_cap}", 0);
+                showAlertModal("{user_not_logged}!", "{error_cap}", 0);
             }
         }
     });
@@ -274,6 +279,7 @@ function recoverPassword() {
 
 function recoverPasswordNext() {
     let phone = $("#recover_phone").val();
+
     JsHttpRequest.query(folder,{'w':'recoverPassword', 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#recover_block").html(result.content);

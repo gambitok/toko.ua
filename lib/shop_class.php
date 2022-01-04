@@ -281,26 +281,21 @@ class ShopClass extends CatalogueClass
     {
         $showform = new FormClass();
 
-        $article        = $showform->getArticleInfo($art_id);
-        $art_nr_ds      = $article["article_nr_displ"];
-        $brand_id       = $article["brand_id"];
-        $brand_name     = $article["brand_name"];
-        $article_name   = $article["article_name"];
-        $price          = $article["price"];
-        $basket         = $article["basket"];
-        $currency       = $article["currency"];
+        $articleData    = $showform->getArticleInfo($art_id);
+        $art_nr_ds      = $articleData["article_nr_displ"];
         $format_name    = $this->getFormatAticle($art_nr_ds);
-        $brand_link     = $this->getBrandLink($brand_id);
+        $brand_link     = $this->getBrandLink($articleData["brand_id"]);
 
         $form = $this->getHtmlForm("orders/proposed_card");
-        $form = str_replace("{basket}", $basket, $form);
+        $form = str_replace("{basket}", $articleData["basket"], $form);
         $form = str_replace("{article_nr_displ}", $art_nr_ds, $form);
-        $form = str_replace("{name}", $article_name, $form);
-        $form = str_replace("{brand_name}", $brand_name, $form);
-        $form = str_replace("{price}", $price, $form);
+        $form = str_replace("{name}", $articleData["article_name"], $form);
+        $form = str_replace("{brand_name}", $articleData["brand_name"], $form);
+        $form = str_replace("{price}", $articleData["price"], $form);
         $form = str_replace("{image}", $showform->getArticleActivePhoto($art_id), $form);
-        $form = str_replace("{currency}", $currency, $form);
+        $form = str_replace("{currency}", $articleData["currency"], $form);
         $form = str_replace("{page_proposed_link}", $this->getSiteLink() . "$this->products_link/$format_name-$brand_link-$art_id/", $form);
+
         return $form;
     }
 
@@ -316,7 +311,7 @@ class ShopClass extends CatalogueClass
         $storage_id = $this->getUrlNumber($storage_id);
         $suppl_id   = $this->getUrlNumber($suppl_id);
 
-        $db = DbSingleton::getTokoDb();
+        $db         = DbSingleton::getTokoDb();
         $client     = new ClientClass();
         $exrate     = new ExRateClass();
         $showform   = new FormClass();
@@ -345,8 +340,7 @@ class ShopClass extends CatalogueClass
             }
         }
 
-        $tpoint_id = $this->getTpointID();
-        list($delivery_days, $delivery_short_info) = $showform->getDeliveryData($tpoint_id, $storage_id, $suppl_id);
+        list($delivery_days, $delivery_short_info) = $showform->getDeliveryData($this->getTpointID(), $storage_id, $suppl_id);
         $delivery_short_info = $this->replaceLang($delivery_short_info);
 
         if ($n > 0) {
@@ -410,7 +404,7 @@ class ShopClass extends CatalogueClass
         $client = new ClientClass();
 
         $where = $client->getClientWhere();
-        $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked` = 1;");
+        $r = $db->query("SELECT 1 FROM `basket` WHERE $where AND `status_checked` = 1;");
         $n = $db->num_rows($r);
         return ($n > 0);
     }
@@ -523,7 +517,7 @@ class ShopClass extends CatalogueClass
 
         if ($bonus_summ > 0) {
             $order_sum = $this->getOrderSummCur();
-            $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked` = 1;");
+            $r = $dbt->query("SELECT `id`, `price` FROM `basket` WHERE $where AND `status_checked` = 1;");
             $n = $dbt->num_rows($r);
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
@@ -564,12 +558,13 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getDbm();
         $dbt = DbSingleton::getTokoDb();
         $client = new ClientClass();
+
         $sum = 0;
         $where = $client->getClientWhere();
-        $r = $dbt->query("SELECT * FROM `basket` WHERE $where AND `status_checked` = 1;");
+        $r = $dbt->query("SELECT `id`, `art_id`, `brand_id`, `amount`, `price`, `discount`, `suppl_id`, `storage_id`, `status_action` FROM `basket` WHERE $where AND `status_checked` = 1;");
         $n = $dbt->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $id             = $dbt->result($r, $i - 1, "id") + 0;
+            $id             = $dbt->result($r, $i - 1, "id");
             $art_id         = $dbt->result($r, $i - 1, "art_id");
             $brand_id       = $dbt->result($r, $i - 1, "brand_id");
             $amount         = $dbt->result($r, $i - 1, "amount");
@@ -577,7 +572,7 @@ class ShopClass extends CatalogueClass
             $discount       = $dbt->result($r, $i - 1, "discount");
             $suppl_id       = $dbt->result($r, $i - 1, "suppl_id");
             $storage_id     = $dbt->result($r, $i - 1, "storage_id");
-            $status_action  = $db->result($r, $i - 1, "status_action");
+            $status_action  = $dbt->result($r, $i - 1, "status_action");
             $full_price     = $price * $amount;
             $sum            += $full_price;
 
@@ -1623,7 +1618,7 @@ class ShopClass extends CatalogueClass
         $sum_total  = $bonus_total = 0;
         $list       = "";
 
-        $r = $db->query("SELECT * FROM `basket` WHERE $where AND `status_checked` = 1 ORDER BY `date_create` DESC;");
+        $r = $db->query("SELECT `art_id`, `brand_id`, `price`, `amount` FROM `basket` WHERE $where AND `status_checked` = 1 ORDER BY `date_create` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
@@ -1745,7 +1740,8 @@ class ShopClass extends CatalogueClass
             $postfix = "_RU";
         }
 
-        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR$postfix` LIKE \"$search_text%\" ORDER BY `CITY_NAME$postfix`;");
+        $r = $db->query("SELECT `CITY_ID`, `CITY_NAME$postfix`, `REGION_NAME$postfix`, `STATE_NAME$postfix` FROM `T2_LOCATION` 
+        WHERE `CITY_NAME_CLEAR$postfix` LIKE \"$search_text%\" ORDER BY `CITY_NAME$postfix`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $city_id        = $db->result($r, $i - 1, "CITY_ID");

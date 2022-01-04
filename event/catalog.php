@@ -30,6 +30,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $red_type   = 301;
     $red_link   = "$path_to";
 } else {
+
     $str_linka = $linka;
     unset($str_linka[0]);
     $str_linka = implode("/", $str_linka);
@@ -114,6 +115,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                 $params = $catalog_exist->getCheckedFilters($group_id, $filters);
 
                 list($count_brands, $count_params, $count_values) = $catalog_exist->getCatalogParamsCount($params);
+
                 if ($count_values > 0) {
                     $content = str_replace("{meta_noindex}", '
                         <meta name="robots" content="noindex, nofollow">
@@ -121,6 +123,7 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
                         <meta name="yandex" content="noindex, nofollow">
                     ', $content);
                 }
+
                 $content = str_replace("{seoshield_formulas}", "
                     <!--ss_selected_filters_info|FilterName|FilterValue-->
                     <!--seoshield_formulas--fil-traciya-->
@@ -174,8 +177,8 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
 
         if ($router_2 == "clutch%20" || $router_2 == "clutch ") {
             $red_status = 1;
-            $red_type = 301;
-            $red_link = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/stceplenie_i_transmissiia/clutch/";
+            $red_type   = 301;
+            $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/stceplenie_i_transmissiia/clutch/";
         }
 
         /*
@@ -183,8 +186,8 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
          * */
         if (empty($head_id) && empty($group_id)) {
             $red_status = 1;
-            $red_type = 404;
-            $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+            $red_type   = 404;
+            $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
         }
     }
 }

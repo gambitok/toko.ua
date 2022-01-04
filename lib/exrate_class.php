@@ -15,14 +15,17 @@ class ExRateClass
     public function getCurrentKours()
     {
         session_start();
-        $currency = $this->getUrlNumber($_COOKIE["currency"]);
-        if ($currency == "" || $currency == 0) {
-            $currency = $this->getUrlNumber($_SESSION["currency"]);
+        $cur = $this->getUrlNumber($_COOKIE["currency"]);
+
+        if ($cur == "" || $cur == 0) {
+            $cur = $this->getUrlNumber($_SESSION["currency"]);
         }
-        if ($currency == "" || $currency == 0) {
-            $currency = 1;
+
+        if ($cur == "" || $cur == 0) {
+            $cur = 1;
         }
-        return $currency;
+
+        return $cur;
     }
 
     /*

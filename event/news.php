@@ -14,13 +14,16 @@ if (findLinks()[3] == "grafС–k-roboti-na-novorС–chnС–-svyata" || findLi
 
 if ($link == "") {
     $content = str_replace("{main_window}", $menu->showNews() . $showform->getHistoryArts(), $content);
+
     $title = $catalogue->replaceLang("{site_news}");
     $title = str_replace("{h1_text}", "{news_cap}", $title);
 }
 elseif ($link == "state") {
     $state_id = findLinks()[2];
+
 	$content = str_replace("{main_window}", $menu->showNewsState($state_id) . $showform->getHistoryArts(), $content);
     $content = str_replace("{meta_social_tag}", $menu->getNewsMetaTags($state_id), $content);
+
     $title = $catalogue->replaceLang("{site_news}");
     $title = str_replace("{h1_text}", $menu->getNewsData($state_id)["title"], $title);
 }

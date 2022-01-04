@@ -1,6 +1,7 @@
 <?php
 
 $linka = findLinks();
+
 $mfa_link = $catalogue->getUrlString($linka[1]);
 $mod_link = $catalogue->getUrlString($linka[2]);
 

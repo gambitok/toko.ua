@@ -399,8 +399,7 @@ trait Variables
     {
         $error          = "<h5 class=\"error_message\">$this->err1</h5>";
         $list           = "";
-        $jsFilterModel  = "catalogueFilter();";
-        return array($error, $jsFilterModel, $list);
+        return array($error, $list);
     }
 
     /*

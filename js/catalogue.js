@@ -7,8 +7,7 @@ function navigateTo(id) {
 
 // Modal `Region`
 function showRegionForm() {
-    let form = "region";
-    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
+    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':"region"},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modals").append(result.content);
             $("#RegionForm").modal("show");
@@ -18,8 +17,7 @@ function showRegionForm() {
 
 // Modal `Help` in Catalogs
 function showPhoneForm() {
-    let form = "help";
-    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':form},
+    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':"help"},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#modals").append(result.content);
             $("#HelpForm2").modal("show");
@@ -37,10 +35,12 @@ function showStorage(art_id) {
 // SEARCH (by ARTICLE_DISPLAY / ARTICLE_SEARCH)
 function artSearch(input_name) {
     let art = $("#" + input_name).val();
+
     art = art.replace(/\s+/g, '');
     art = art.replace(/\.+/g, '');
     art = art.replace(/\-+/g, '');
     art = art.replace(/\//g, '');
+
     if (art === "" || art === undefined) {
         showNotify("{error_cap}:", "{input_art_first}!", "danger");
         $("#" + input_name).focus();
@@ -61,6 +61,7 @@ function selectRegion(id) {
 
 function shortSearchList() {
     let art_id = $("#art_id").val();
+
     JsHttpRequest.query(folder,{'w':'shortSearchList', 'art_id':art_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#analogs_form").html(result.content);
@@ -70,6 +71,7 @@ function shortSearchList() {
 
 function shortArticleOE() {
     let art_id = $("#art_id").val();
+
     JsHttpRequest.query(folder,{'w':'shortArticleOE', 'art_id':art_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#oe_form").html(result.content);
@@ -78,6 +80,7 @@ function shortArticleOE() {
 
 function shortArticleApplicable() {
     let art_id = $("#art_id").val();
+
     JsHttpRequest.query(folder,{'w':'shortArticleApplicable', 'art_id':art_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#applicable_form").html(result.content);
@@ -114,14 +117,15 @@ function showPhotoGallery(ref) {
 
 // SEARCH CATALOG FILTER
 function catalogueFilter(order) {
-    let art = $("#art_value").val();
-    let brand = $("#brand_value").val();
+    let art     = $("#art_value").val();
+    let brand   = $("#brand_value").val();
 
     $(".check-brand").each(function () {
         if ($(this).hasClass("main-brand") === false) {
             $(this).attr("disabled", true);
         }
     });
+
     let brands = [];
     $("input[type=checkbox]").each(function () {
         if (this.checked) {
@@ -134,9 +138,10 @@ function catalogueFilter(order) {
     if (isNaN(cur)) {
         cur = 1;
     }
+
     let cur_old = parseInt($("#cur_value").val());
-    let price = $("#filter-price").val();
-    let deliv = $("#filter-delivery").val();
+    let price   = $("#filter-price").val();
+    let deliv   = $("#filter-delivery").val();
 
     JsHttpRequest.query(folder,{'w':'getCatalogListFilter', 'art':art, 'brand':brand, 'bb':bb, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -165,9 +170,9 @@ function catalogueFilter(order) {
 
             $(".js-example-basic-single").select2();
 
-            var max_price = parseInt(result.content[3]);
-            var value = input_price.data("slider").getValue();
-            var value_dd = input_delivery.data("slider").getValue();
+            let max_price   = parseInt(result.content[3]);
+            let value       = input_price.data("slider").getValue();
+            let value_dd    = input_delivery.data("slider").getValue();
 
             $("#filter-max-price").html(max_price);
             input_price.attr("data-slider-max", max_price);
@@ -177,13 +182,13 @@ function catalogueFilter(order) {
             if (value[1] > max_price) {
                 value[1] = max_price;
             }
-            var max_min = value[0] + "," + value[1];
+            let max_min = value[0] + "," + value[1];
             input_price.attr("data-slider-value", max_min);
             $("#price_val").html(max_min);
             $("#price_val_min").val(value[0]);
             $("#price_val_max").val(value[1]);
 
-            var max_min_dd = value_dd[0] + "," + value_dd[1];
+            let max_min_dd = value_dd[0] + "," + value_dd[1];
             input_delivery.attr("data-slider-value", max_min_dd);
             $("#dd_val").html(max_min_dd);
             $("#dd_val_min").val(value_dd[0]);
@@ -351,9 +356,10 @@ function changeBasketCount(status, id) {
 
 function changeActionCount(i, action_price, action_amount) {
     let true_amount = $("#count_" + i).val();
-    let true_price = $("#true_price_" + i).val();
-    let true_kours = $("#true_kours_" + i).val();
-    let price = $("#price_" + i);
+    let true_price  = $("#true_price_" + i).val();
+    let true_kours  = $("#true_kours_" + i).val();
+    let price       = $("#price_" + i);
+
     if (parseInt(true_amount) >= parseInt(action_amount)) {
         price.text(action_price + " " + true_kours);
         price.prepend("<span id='price_out_" + i + "' class='span-outline'>" + true_price + " " + true_kours + "</span><br>");
@@ -376,7 +382,8 @@ function toggleProductView(ds) {
 
 function setCatalogFilters() {
     let cat_filters = $("#catalog-filters");
-    let filters = cat_filters.html();
+    let filters     = cat_filters.html();
+
     if (filters != "") {
         $("#menu-catalog-content").html(filters);
         cat_filters.html("");
@@ -384,10 +391,11 @@ function setCatalogFilters() {
 }
 
 function setClientRequest() {
-    let phone = $("#help-phone").val(); if ($("#help-phone").length === 0) phone = "";
-    let vin = $("#help-vin").val(); if ($("#help-vin").length === 0) vin = "";
-    let text = $("#help-text").val(); if ($("#help-text").length === 0) text = "";
-    let status = 0;
+    let phone   = $("#help-phone").val(); if ($("#help-phone").length === 0) phone = "";
+    let vin     = $("#help-vin").val(); if ($("#help-vin").length === 0) vin = "";
+    let text    = $("#help-text").val(); if ($("#help-text").length === 0) text = "";
+    let status  = 0;
+
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors) { if (errors) {alert(errors);} if (result) {
             if (result.content === false) {
@@ -399,10 +407,11 @@ function setClientRequest() {
 }
 
 function setClientRequestFaq() {
-    let phone = $("#faq-phone").val(); if ($("#faq-phone").length === 0) phone = "";
-    let vin = $("#faq-vin").val(); if ($("#faq-vin").length === 0) vin = "";
-    let text = $("#faq-text").val(); if ($("#faq-text").length === 0) text = "";
-    let status = 0;
+    let phone   = $("#faq-phone").val(); if ($("#faq-phone").length === 0) phone = "";
+    let vin     = $("#faq-vin").val(); if ($("#faq-vin").length === 0) vin = "";
+    let text    = $("#faq-text").val(); if ($("#faq-text").length === 0) text = "";
+    let status  = 0;
+
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors) { if (errors) {alert(errors);} if (result) {
             if (result.content === false) {
@@ -414,10 +423,11 @@ function setClientRequestFaq() {
 }
 
 function setClientRequestCard() {
-    let phone = $("#help-phone-2").val(); if ($("#help-phone-2").length === 0) phone = "";
-    let vin = $("#help-vin-2").val(); if ($("#help-vin-2").length === 0) vin = "";
-    let text = $("#help-text-2").val(); if ($("#help-text-2").length === 0) text = "";
-    let status = 1;
+    let phone   = $("#help-phone-2").val(); if ($("#help-phone-2").length === 0) phone = "";
+    let vin     = $("#help-vin-2").val(); if ($("#help-vin-2").length === 0) vin = "";
+    let text    = $("#help-text-2").val(); if ($("#help-text-2").length === 0) text = "";
+    let status  = 1;
+
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             if (result.content === false) {
@@ -430,9 +440,10 @@ function setClientRequestCard() {
 }
 
 function setClientRequest2() {
-    let phone = $("#req-phone").val(); if ($("#req-phone").length === 0) phone = "";
-    let vin = $("#req-vin").val(); if ($("#req-vin").length === 0) vin = "";
-    let text = $("#req-text").val(); if ($("#req-text").length === 0) text = "";
+    let phone   = $("#req-phone").val(); if ($("#req-phone").length === 0) phone = "";
+    let vin     = $("#req-vin").val(); if ($("#req-vin").length === 0) vin = "";
+    let text    = $("#req-text").val(); if ($("#req-text").length === 0) text = "";
+
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             if (result.content === false) {
@@ -444,9 +455,10 @@ function setClientRequest2() {
 }
 
 function setClientRequest3() {
-    let phone = $("#req-phone-seo").val(); if ($("#req-phone-seo").length === 0) phone = "";
-    let vin = $("#req-vin-seo").val(); if ($("#req-vin-seo").length === 0) vin = "";
-    let text = $("#req-text-seo").val(); if ($("#req-text-seo").length === 0) text = "";
+    let phone   = $("#req-phone-seo").val(); if ($("#req-phone-seo").length === 0) phone = "";
+    let vin     = $("#req-vin-seo").val(); if ($("#req-vin-seo").length === 0) vin = "";
+    let text    = $("#req-text-seo").val(); if ($("#req-text-seo").length === 0) text = "";
+
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             if (result.content === false) {
@@ -459,6 +471,7 @@ function setClientRequest3() {
 
 function setClientRequestDone() {
     $("#request-card").html("");
+
     JsHttpRequest.query(folder,{'w':'setClientRequestDone'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#request-card").html(result.content);
@@ -467,7 +480,9 @@ function setClientRequestDone() {
 
 function updateBasketCount(status) {
     getBasketId();
+
     let basket_id = parseInt($("#basket_id").val());
+
     JsHttpRequest.query(folder,{'w':'updateBasketCount', 'basket_id':basket_id, 'status':status},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             let answer = result["answer"];
@@ -487,20 +502,23 @@ function updateBasketCount(status) {
 
 function moveBasketButton() {
     $(".btn-buy").parent(".buy-form__button").toggleClass("buy-form__button-hidden").next(".buy-form__input").toggleClass("buy-form__input-hidden");
-    let id = "one";
-    let art_id = $("#art_id").val();
-    let brand_id = $("#brand_id").val();
-    let stock = $("#stock").val();
-    let storage_id = $("#storage_id").val();
-    let suppl_id = $("#suppl_id").val();
+
+    let id          = "one";
+    let art_id      = $("#art_id").val();
+    let brand_id    = $("#brand_id").val();
+    let stock       = $("#stock").val();
+    let storage_id  = $("#storage_id").val();
+    let suppl_id    = $("#suppl_id").val();
+
     moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id);
     getBasketId();
 }
 
 function getBasketId() {
-    let art_id = $("#art_id").val();
-    let storage_id = $("#storage_id").val();
-    let suppl_id = $("#suppl_id").val();
+    let art_id      = $("#art_id").val();
+    let storage_id  = $("#storage_id").val();
+    let suppl_id    = $("#suppl_id").val();
+
     JsHttpRequest.query(folder,{'w':'getBasketId', 'art_id':art_id, 'suppl_id':suppl_id, 'storage_id':storage_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             let basket_id = result.content;
@@ -510,8 +528,10 @@ function getBasketId() {
 
 function updateBasketCountChange() {
     getBasketId();
-    let basket_id = parseInt($("#basket_id").val());
-    let amount = $("#count_1").val();
+
+    let basket_id   = parseInt($("#basket_id").val());
+    let amount      = $("#count_1").val();
+
     JsHttpRequest.query(folder,{'w':'updateBasketCountChange', 'basket_id':basket_id, 'amount':amount},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             let answer = result["answer"];
@@ -531,6 +551,7 @@ function updateBasketCountChange() {
 
 function showSearchDropdown() {
     let text = $("#search_input").val();
+
     JsHttpRequest.query(folder,{'w':'showSearchDropdown', 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#search_input_dropdown").html(result.content);
@@ -539,6 +560,7 @@ function showSearchDropdown() {
 
 function showSearchDropdown2() {
     let text_input = $("#search-mobile").val();
+
     JsHttpRequest.query(folder,{'w':'showSearchDropdown2', 'text_input':text_input},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#search-dropdown").html(result.content);

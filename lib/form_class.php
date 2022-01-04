@@ -254,6 +254,7 @@ class FormClass extends CatalogueClass
     public function getArticleForm($art_id)
     {
         $art_id = $this->getUrlNumber($art_id);
+
         $auto = new AutoClass();
         $shop = new ShopClass();
         $prod = new ProductsClass();
@@ -273,74 +274,66 @@ class FormClass extends CatalogueClass
         $form = str_replace("{article_cars}", $prod->getCarsSelectUser(), $form);
         $form = str_replace("{product_barcode}", $this->getBarcode($art_id), $form);
 
-        $articleData = $this->getArticleInfo($art_id);
-        $article_nr_displ = $articleData["article_nr_displ"];
-        $brand_id = $articleData["brand_id"];
-        $brand_name = $articleData["brand_name"];
-        $article_name = $articleData["article_name"];
+        $articleData    = $this->getArticleInfo($art_id);
+        $art_nr_ds      = $articleData["article_nr_displ"];
+        $brand_id       = $articleData["brand_id"];
+        $brand_name     = $articleData["brand_name"];
+        $article_name   = $articleData["article_name"];
+        $real_stock     = $articleData["real_stock"];
+        $h1             = "$article_name $brand_name $art_nr_ds";
 
-        $h1 = "$article_name $brand_name $article_nr_displ";
-
-        $brand_link = "";
         $flagData = $this->getCountryFlag($brand_id);
         if ($flagData !== false) {
-            $flag = $flagData["flag"];
-            $country_name = $flagData["country"];
-            $form = str_replace("{country_name}", $country_name, $form);
-            $form = str_replace("{brand_link}", $brand_link, $form);
-            $form = str_replace("{flag_name}", $flag, $form);
+            $form = str_replace("{country_name}", $flagData["country"], $form);
+            $form = str_replace("{brand_link}", "", $form);
+            $form = str_replace("{flag_name}", $flagData["flag"], $form);
             $form = str_replace("{flag_visible}", "", $form);
         } else {
             $form = str_replace("{country_name}", $brand_name, $form);
-            $form = str_replace("{brand_link}", $brand_link, $form);
+            $form = str_replace("{brand_link}", "", $form);
         }
 
-        $basket_id = 0;
-        $basket_count = 1;
-        $buy_class_btn = "";
-        $buy_class_input = "";
+        $basket_id          = 0;
+        $basket_count       = 1;
+        $buy_class_btn      = $buy_class_input = "";
+
         $delivery_short_info = $articleData["delivery"];
         $delivery_short_info = str_replace("<br>", " ", $delivery_short_info);
         if ($articleData["delivery_days"] == 0 && $articleData["suppl_id"] == 0) {
             $delivery_short_info = "
             <span class='delivery-green'>{send_done}</span>";
         }
-        $real_stock = $articleData["real_stock"];
 
         if ($real_stock === NULL) {
-            $article_info_row = $this->getHtmlForm("article/soldout");
-            $article_nr_displ = $this->getArticleDispl($art_id);
-            $brand_id = $this->getArticleBrand($art_id);
-            $art_name = $this->getBrandName($brand_id) . " " . $article_nr_displ;
-            $h1 = $this->getArticleName($art_id) . " $art_name";
+            $art_nr_ds  = $this->getArticleDispl($art_id);
+            $brand_id   = $this->getArticleBrand($art_id);
+            $art_name   = $this->getBrandName($brand_id) . " " . $art_nr_ds;
+            $h1         = $this->getArticleName($art_id) . " $art_name";
+
             $form = str_replace("{article_name}", $art_name, $form);
             $form = str_replace("{article_header}", $h1, $form);
-            $form = str_replace("{art_name}", $article_nr_displ, $form);
+            $form = str_replace("{art_name}", $art_nr_ds, $form);
             $form = str_replace("{article_style}", "none", $form);
+
             $delivery_short_info = "
             <div>
                 <img src=\"/images/sold.webp\" alt=\"soldout\" style=\"
-                width: 120px;
-                height: 100px;
-                display: block;
-                margin: 0 auto;\">
+                    width: 120px;
+                    height: 100px;
+                    display: block;
+                    margin: 0 auto;\">
             </div>";
+
+            $article_info_row = $this->getHtmlForm("article/soldout");
         } else {
+            $client = new ClientClass();
             $article_info_row = $this->getHtmlForm("article/row");
             $article_info_row = str_replace("{art_price}", $articleData["price"], $article_info_row);
             $article_info_row = str_replace("{art_cur}", $articleData["currency"], $article_info_row);
             $article_info_row = str_replace("{art_stock}", $real_stock, $article_info_row);
             $article_info_row = str_replace("{art_del}", $delivery_short_info, $article_info_row);
-            $article_search = $this->getArticleSearch($art_id);
-            $brand_link = $this->getBrandLink($brand_id);
-            $article_info_row = str_replace("{page_product_link}", $this->getSiteLink() . $this->products_link . "/$article_search" . "-$brand_link" . "-$art_id/", $article_info_row);
-
-            $client = new ClientClass();
-            $client_phone = "";
-            if ($this->getUser() > 0) {
-                $client_phone = $client->getClientInfo($this->getClient(), $this->getUser())["phone"];
-            }
-            $article_info_row = str_replace("{user_phone}", $client_phone, $article_info_row);
+            $article_info_row = str_replace("{page_product_link}", $this->getSiteLink() . $this->products_link . "/" . $this->getArticleSearch($art_id) . "-" . $this->getBrandLink($brand_id) . "-$art_id/", $article_info_row);
+            $article_info_row = str_replace("{user_phone}", ($this->getUser() > 0) ? $client->getClientInfo($this->getClient(), $this->getUser())["phone"] : "", $article_info_row);
 
             $basket_count = $shop->getBasketArticleAmount($art_id, $articleData["storage_id"]);
             if ($basket_count == 0) {
@@ -350,14 +343,15 @@ class FormClass extends CatalogueClass
                 $basket_id = $this->getBasketId($art_id, $articleData["storage_id"]);
             }
         }
+
         $article_info_row = str_replace("{article_card_amount}", $basket_count, $article_info_row);
         $article_info_row = str_replace("{article_card_basket_id}", $basket_id, $article_info_row);
         $article_info_row = str_replace("{buy_class_btn}", $buy_class_btn, $article_info_row);
         $article_info_row = str_replace("{buy_class_input}", $buy_class_input, $article_info_row);
 
         $form = str_replace("{art_id}", $art_id, $form);
-        $form = str_replace("{art_name}", $article_nr_displ, $form);
-        $form = str_replace("{art_format_name}", $this->getFormatAticle($article_nr_displ), $form);
+        $form = str_replace("{art_name}", $art_nr_ds, $form);
+        $form = str_replace("{art_format_name}", $this->getFormatAticle($art_nr_ds), $form);
         $form = str_replace("{art_brand_id}", $brand_id, $form);
         $form = str_replace("{art_brand_name}", $brand_name, $form);
         $form = str_replace("{art_text}", $article_name, $form);
@@ -379,12 +373,10 @@ class FormClass extends CatalogueClass
         $form = str_replace("{stock}", $real_stock, $form);
 
         $main_article_photo = $this->getArticlePhoto($art_id);
-        $form = str_replace("{art_main_image}", ($main_article_photo == "")
-            ? $this->noPhoto
-            : "https://toko.ua/uploads/images/catalogue/" . $main_article_photo
-        , $form);
-        $form = str_replace("{article_brand_photo}", $this->showBrandPhoto($brand_id)["logo_name"], $form);
-        $form = str_replace("{article_brand_class}", $this->showBrandPhoto($brand_id)["logo_class"], $form);
+        $show_article_photo = $this->showBrandPhoto($brand_id);
+        $form = str_replace("{art_main_image}", ($main_article_photo == "") ? $this->noPhoto : "https://toko.ua/uploads/images/catalogue/" . $main_article_photo, $form);
+        $form = str_replace("{article_brand_photo}", $show_article_photo["logo_name"], $form);
+        $form = str_replace("{article_brand_class}", $show_article_photo["logo_class"], $form);
 
         $hidden_form = $this->getHtmlForm("article/row-hidden");
         $hidden_form = str_replace("{art_price}", $articleData["price"], $hidden_form);
@@ -402,19 +394,16 @@ class FormClass extends CatalogueClass
         $form_photo = str_replace("{images_slide}", $dataPhoto["slide"], $form_photo);
         $form_photo = str_replace("{images_thumbnail}", $dataPhoto["thumbnail"], $form_photo);
 
-        $form = str_replace("{art_images}", ($dataPhoto["status"] == 1)
-            ? $form_photo
-            : "<div><img style=\"display: block; margin: 0 auto; width: 100%;\" itemprop=\"image\" alt=\"$article_nr_displ\" src=\"$this->noPhoto\"></div>"
-        , $form);
+        $form = str_replace("{art_images}", ($dataPhoto["status"] == 1) ? $form_photo : "<div><img style=\"display: block; margin: 0 auto; width: 100%;\" itemprop=\"image\" alt=\"$art_nr_ds\" src=\"$this->noPhoto\"></div>", $form);
 
         $form = str_replace("{applicable_form}", $this->getApplicableForm($art_id, $auto_typ_id), $form);
         $form = str_replace("{article_info_row}", $article_info_row, $form);
-        $form = str_replace("{article_name}", "$brand_name $article_nr_displ", $form);
+        $form = str_replace("{article_name}", "$brand_name $art_nr_ds", $form);
         $form = str_replace("{article_header}", "$h1", $form);
         $form = str_replace("{loader_form}", $this->drawLoader(), $form);
         $form = $this->replaceLang($form);
 
-        $breadcrumbs = $this->getArticleBreadCrumb($art_id, $article_nr_displ, $brand_id);
+        $breadcrumbs = $this->getArticleBreadCrumb($art_id, $art_nr_ds, $brand_id);
 
         $title = "{site_products_title}";
         $title = $this->replaceLang($title);
@@ -444,6 +433,7 @@ class FormClass extends CatalogueClass
         } else {
             $form = "";
         }
+
         return $form;
     }
 
@@ -454,25 +444,19 @@ class FormClass extends CatalogueClass
     {
         $showform = new FormClass();
 
-        $articleData        = $showform->getArticleInfo($art_id);
-        $article_nr_displ   = $articleData["article_nr_displ"];
-        $brand_id           = $articleData["brand_id"];
-        $brand_name         = $articleData["brand_name"];
-        $article_name       = $articleData["article_name"];
-        $price              = $articleData["price"];
-        $basket             = $articleData["basket"];
-        $currency           = $articleData["currency"];
-        $format_name        = $this->getFormatAticle($article_nr_displ);
-        $brand_link         = $this->getBrandLink($brand_id);
+        $articleData    = $showform->getArticleInfo($art_id);
+        $art_nr_ds      = $articleData["article_nr_displ"];
+        $format_name    = $this->getFormatAticle($art_nr_ds);
+        $brand_link     = $this->getBrandLink($articleData["brand_id"]);
 
         $form = $this->getHtmlForm("article/history_card");
-        $form = str_replace("{basket}", $basket, $form);
-        $form = str_replace("{article_nr_displ}", $article_nr_displ, $form);
-        $form = str_replace("{name}", $article_name, $form);
-        $form = str_replace("{brand_name}", $brand_name, $form);
-        $form = str_replace("{price}", $price, $form);
+        $form = str_replace("{basket}", $articleData["basket"], $form);
+        $form = str_replace("{article_nr_displ}", $art_nr_ds, $form);
+        $form = str_replace("{name}", $articleData["article_name"], $form);
+        $form = str_replace("{brand_name}", $articleData["brand_name"], $form);
+        $form = str_replace("{price}", $articleData["price"], $form);
         $form = str_replace("{image}", $showform->getArticleActivePhoto($art_id), $form);
-        $form = str_replace("{currency}", $currency, $form);
+        $form = str_replace("{currency}", $articleData["currency"], $form);
         $form = str_replace("{page_proposed_link}", $this->getSiteLink() . "$this->products_link/$format_name-$brand_link-$art_id/", $form);
         return $form;
     }
@@ -712,11 +696,9 @@ class FormClass extends CatalogueClass
         $client = new ClientClass();
         $kours  = new ExRateClass();
 
-        $tpoint     = $this->getTpointID();
-        $cur        = $this->getCurrentExrate();
-        $cur_cap    = $kours->getKoursCaptionLang($cur);
-
+        $cur = $this->getCurrentExrate();
         $arr = [];
+
         $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
         FROM `T2_ARTICLES` t2a
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
@@ -751,7 +733,7 @@ class FormClass extends CatalogueClass
                 $price = $client->getClientPriceRounding($this->getClient(), $price);
             }
 
-            list($delivery_days, $delivery_short_info) = $this->getDeliveryData($tpoint, $storage_id, $suppl_id);
+            list($delivery_days, $delivery_short_info) = $this->getDeliveryData($this->getTpointID(), $storage_id, $suppl_id);
 
             $real_stock = $stock;
             if ($stock > 10) {
@@ -788,7 +770,7 @@ class FormClass extends CatalogueClass
             "real_stock"        => $real_stock,
             "delivery"          => $delivery_short_info,
             "price"             => $price,
-            "currency"          => $cur_cap,
+            "currency"          => $kours->getKoursCaptionLang($cur),
             "delivery_days"     => $delivery_days,
             "basket"            => $basket,
             "suppl_id"          => $suppl_id,
@@ -834,7 +816,7 @@ class FormClass extends CatalogueClass
             $cur_eur = $kours->getKours("euro");
             $list = "
             <input id=\"radio_uah\" type=\"radio\" name=\"cur\" value=\"1\" $ch1 onclick=\"$jsFilter\">
-                <label for=\"radio_uah\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{currency_cap}: &#xA USD - $cur_usd &#xA EURO - $cur_eur\">{uah_cap}</label>
+                <label for=\"radio_uah\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{cur_cap}: &#xA USD - $cur_usd &#xA EURO - $cur_eur\">{uah_cap}</label>
             $cash_add";
         } else {
             $list = "";
@@ -895,16 +877,19 @@ class FormClass extends CatalogueClass
         $list = $client->getClientHistory();
         $result = "";
         for ($i = 0; $i < count($list); $i++) {
-            $col                = $i + 1;
-            $article_nr_displ   = $list[$i]["article_nr_displ"];
-            $brand              = $list[$i]["brand"];
-            $brand_link         = $list[$i]["brand_link"];
+            $col        = $i + 1;
+            $art_nr_ds  = $list[$i]["article_nr_displ"];
+            $brand_name = $list[$i]["brand"];
+            $brand_link = $list[$i]["brand_link"];
+
             $result .= "
-            <li>$col. <a href=\"" . $this->getSiteLink() . "$this->search_link/$article_nr_displ/$brand_link/\">$article_nr_displ ($brand)</a></li>";
+            <li>$col. <a href=\"" . $this->getSiteLink() . "$this->search_link/$art_nr_ds/$brand_link/\">$art_nr_ds ($brand_name)</a></li>";
         }
         !empty($list) ?: $result .= "<p>{empty_history}</p>";
+
         $form = $this->getHtmlForm("menu/history_block");
         $form = str_replace("{history_block}", $result, $form);
+
         return $form;
     }
 
@@ -918,17 +903,17 @@ class FormClass extends CatalogueClass
         $list = $client->getClientHistory();
         $list_history = "";
         for ($i = 0; $i < count($list); $i++) {
-            $id                 = $list[$i]["id"];
-            $article_nr_displ   = $list[$i]["article_nr_displ"];
-            $format_article     = $catalog->getFormatAticle($article_nr_displ);
-            $brand              = $list[$i]["brand"];
-            $brand_link         = $list[$i]["brand_link"];
+            $id             = $list[$i]["id"];
+            $art_nr_ds      = $list[$i]["article_nr_displ"];
+            $format_article = $catalog->getFormatAticle($art_nr_ds);
+            $brand          = $list[$i]["brand"];
+            $brand_link     = $list[$i]["brand_link"];
 
             $history_form = $this->getHtmlForm("history/card");
             $history_form = str_replace("{history_id}", $id, $history_form);
             $history_form = str_replace("{history_link}", "" . $this->getSiteLink() . "$this->search_link/$format_article/$brand_link/", $history_form);
             $history_form = str_replace("{history_brand}", $brand, $history_form);
-            $history_form = str_replace("{history_article}", $article_nr_displ, $history_form);
+            $history_form = str_replace("{history_article}", $art_nr_ds, $history_form);
             $list_history .= $history_form;
             if ($i == $this->max_history_count) break;
         }
@@ -1028,8 +1013,7 @@ class FormClass extends CatalogueClass
             $r = $db->query("SELECT `photo_link` FROM `T2_CERTIFICATES` WHERE `brand_id` = $brand_id AND `date_from` <= '$date_cur' AND `date_to` >= '$date_cur' AND `status` = 1;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
-                $photo_link = $db->result($r, $i - 1, "photo_link");
-                $link       = "https://toko.ua/uploads/images/certificates/$photo_link";
+                $link = "https://toko.ua/uploads/images/certificates/" . $db->result($r, $i - 1, "photo_link");
                 array_push($arr, $link);
             }
         }
@@ -1052,8 +1036,7 @@ class FormClass extends CatalogueClass
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $photo_name = trim($db->result($r, $i - 1, "PHOTO_NAME"));
-            $link = "$this->uploads_link/$photo_name";
+            $link = "$this->uploads_link/" . trim($db->result($r, $i - 1, "PHOTO_NAME"));
             array_push($arr, $link);
         }
 
@@ -1148,6 +1131,7 @@ class FormClass extends CatalogueClass
                 </div>
             </div>";
         }
+
         if ($n == 0) {
             $gallery = "
             <div class=\"row\">
@@ -1187,6 +1171,7 @@ class FormClass extends CatalogueClass
             $info = "
             <div style=\"border: 1px solid #e9e9e9; border-radius: .25em; padding: 10px;\">$info</div>";
         }
+
         $applicability  = $this->getArticleApplForm($art_id);
         $originals      = $this->getOriginalNumbers($art_id);
 
@@ -1204,7 +1189,9 @@ class FormClass extends CatalogueClass
                 $applicability
                 <div id=\"info3_more\"></div>
             </div>
-            <div class=\"tab-pane fade\" id=\"nav-3\" role=\"tabpanel\" aria-labelledby=\"nav-3-tab\">$originals</div>
+            <div class=\"tab-pane fade\" id=\"nav-3\" role=\"tabpanel\" aria-labelledby=\"nav-3-tab\">
+                $originals
+            </div>
         </div>";
 
         return $this->replaceLang($form);
@@ -1229,6 +1216,7 @@ class FormClass extends CatalogueClass
 
         $title = "
         <span class=\"text-dark bold\">$brand_name</span> $art_nr_ds";
+
         $form = $this->getHtmlForm("modals/form_info");
         $form = str_replace("{info-main__photo}", $this->showPhotoGallery($art_id), $form);
         $form = str_replace("{info-main__parameters}", $this->getArticleInfoForm($art_id), $form);
@@ -1257,7 +1245,7 @@ class FormClass extends CatalogueClass
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
 
-        $list = "";
+        $list = $this->err1;
         $r = $db->query("SELECT man.MFA_ID, man.MFA_BRAND 
         FROM `T_types` tt 
             INNER JOIN `T_models` tm ON (tm.MOD_ID = tt.TYP_MOD_ID) 
@@ -1269,15 +1257,14 @@ class FormClass extends CatalogueClass
         ORDER BY man.MFA_BRAND ASC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
+            $list = "";
             for ($i = 1; $i <= $n; $i++) {
                 $brand_id   = $db->result($r, $i - 1, "MFA_ID");
-                $brand      = $db->result($r, $i - 1, "MFA_BRAND");
+                $brand_name = $db->result($r, $i - 1, "MFA_BRAND");
 
                 $list .= "
-                <a class=\"info__applicability-checked\" onclick='getArticleApplModelForm(\"$art_id\", \"$brand_id\", this)'><i class=\"fas fa-car\"></i>$brand</a>";
+                <a class=\"info__applicability-checked\" onclick='getArticleApplModelForm(\"$art_id\", \"$brand_id\", this)'><i class=\"fas fa-car\"></i>$brand_name</a>";
             }
-        } else {
-            $list = $this->err1;
         }
         return $list;
     }

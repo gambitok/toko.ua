@@ -180,14 +180,6 @@ $(document).ready(function() {
         if (top < limit1) { tgl(true); } else { tgl(false); }
     });
 
-    // fixed top search
-    // var $wind = $(window), $fixedup = $(".ancor"), limit2 = 240;
-    // function tglup (state) { $fixedup.toggleClass("hidden", state); }
-    // $wind.on("scroll", function () {
-    //     var topd = $wind.scrollTop();
-    //     if (topd < limit2) { tglup(true); } else { tglup(false); }
-    // });
-
     // Adaptive navigation
     $(".bar").bigSlide({
         menu: ('#menu')
