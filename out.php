@@ -27,8 +27,9 @@ elseif (file_exists(RDD . "/event/$path.php")) {
 include_once(RDD . "/event/menu.php");
 
 // Main HEAD HTML
+$site_link = findLinks()[0];
 $content = str_replace("{navigation_content}", $catalogue->getSiteNavigation(), $content);
-$content = str_replace("{footer_content}", $menu->getFooterForm(), $content);
+$content = str_replace("{footer_content}", $menu->getFooterForm($site_link), $content);
 $content = str_replace("{anchor_contacts_content}", getHtmlForm("main/anchor-contacts"), $content);
 
 $content = str_replace("{site_main_link}", $catalogue->getSiteLink(), $content);

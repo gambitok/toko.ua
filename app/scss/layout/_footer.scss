@@ -71,6 +71,32 @@
     }
 }
 
+.city {
+    &-nav {
+        .nav {
+            background: #292929;
+            .nav-item {
+                background: #292929;
+                border: 1px solid lightgray;
+                border-radius: 0.25em;
+                color: lightgray;
+                margin-right: 5px;
+                padding: 5px 10px;
+            }
+            .nav-item.active {
+                background: #292929;
+                border: 1px solid #fff;
+                border-radius: 0.25em;
+                color: #fff;
+            }
+        }
+    }
+    &-tab {
+        color: #fff;
+        padding: 15px;
+    }
+}
+
 //.ancor {
 //    color: #000;
 //    left: 85%;

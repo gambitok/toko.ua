@@ -549,7 +549,7 @@ class CatalogueClass
             $new_arts[$art_id]["article_name"]      = $article_name;
         }
 
-        var_dump($new_arts[1344590]);
+//        var_dump($new_arts[1344590]);
 
         return $new_arts;
     }
