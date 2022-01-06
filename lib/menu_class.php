@@ -1060,8 +1060,10 @@ class MenuClass extends CatalogueClass
         if ($site_link == "test_page") {
             $list = $this->getHtmlForm("main/footer_cities");
             $list = str_replace("{top_categories_list}", $this->getTopCategories(), $list);
-            $list = str_replace("{top_goods_list}", $this->getTopGoods(), $list);
+//            $list = str_replace("{top_goods_list}", $this->getTopGoods(), $list);
             $list = str_replace("{top_tags_list}", $this->getTopTags(), $list);
+            $list = str_replace("{top_cities_list}", $this->getTopCities(), $list);
+            $list = str_replace("{top_orders_list}", $this->getTopOrders(), $list);
             $form = str_replace("{footer_cities}", $list, $form);
         }
 
@@ -1119,6 +1121,42 @@ class MenuClass extends CatalogueClass
 
             $list .= "
             <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a></li>";
+        }
+        $list .= "</ul>";
+        return $list;
+    }
+
+    public function getTopCities()
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "<ul class='list-inline'>";
+        $r = $db->query("SELECT `CITY_NAME` FROM `T2_CITY` WHERE 1 ORDER BY RAND() LIMIT 32;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $city_name = $db->result($r, $i - 1, "CITY_NAME");
+
+            $list .= "
+            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/?city=$city_name/\">$city_name</a></li>";
+        }
+        $list .= "</ul>";
+        return $list;
+    }
+
+    public function getTopOrders()
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "<ul class='list-inline'>";
+        $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY RAND() LIMIT 32;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_name = $db->result($r, $i - 1, "TEX_RU");
+            $group_link = $db->result($r, $i - 1, "TEX_LINK");
+
+            $r2 = $db->query("SELECT `CITY_NAME` FROM `T2_CITY` WHERE 1 ORDER BY RAND() LIMIT 1;");
+            $city_name = $db->result($r2, 0, "CITY_NAME");
+
+            $list .= "
+            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name {in_cap} $city_name</a></li>";
         }
         $list .= "</ul>";
         return $list;
