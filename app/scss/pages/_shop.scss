@@ -577,3 +577,103 @@
     }
 }
 
+.dropcity {
+    border: 1px solid darkgray;
+    padding :10px;
+    width: 300px;
+
+    &:active {
+        border-color: black;
+    }
+    &:hover {
+        border-color: black;
+    }
+
+    &-drop {
+        display: none;
+        &-active {
+            display: block;
+        }
+    }
+
+    &-checked {
+        &__text {
+
+        }
+    }
+    &-search {
+        input {
+
+        }
+    }
+    &-list {
+        &__item {
+
+        }
+    }
+}
+
+.select3 {
+    border: 1px solid darkgray;
+    width: 300px;
+    &-selected {
+        cursor: pointer;
+        display: block;
+        padding: 10px;
+        position: relative;
+        &:after {
+            background: white;
+            content: "";
+            border-color: #888 transparent transparent transparent;
+            border-style: solid;
+            border-width: 5px 4px 0 4px;
+            height: 0;
+            left: calc(100% - 10px);
+            margin-left: -4px;
+            margin-top: -2px;
+            position: absolute;
+            top: 50%;
+            width: 0;
+        }
+    }
+    &-form {
+        border-top: 1px solid darkgray;
+    }
+    &-search {
+        padding: 5px;
+        input {
+            border: 1px solid darkgray;
+            padding: 5px;
+            width: 100%;
+        }
+    }
+    &-list {
+        list-style: none;
+        max-height: 100px;
+        overflow-y: auto;
+        &__item {
+            color: black;
+            padding: 5px;
+            &:hover {
+                background: darkgrey;
+                color: white;
+                cursor: pointer;
+            }
+            &-active {
+                background: darkcyan;
+                color: white;
+            }
+        }
+    }
+    input[type="checkbox"] {
+        display: none;
+        & ~ div {
+            display: none;
+        }
+        &:checked {
+            & ~ div {
+                display: block;
+            }
+        }
+    }
+}

@@ -10,7 +10,10 @@ $(document).ready(function() {
     // INIT CITY
     let user_city = $("#user_city");
     if (user_city.length !== 0) {
-        user_city.select2({ language: { searching: function() { return "Something else..."; } }, matcher: function () { return 23; } });
+        user_city.select2({
+            language:           { searching: function() { return "Something else..."; } },
+            matcher:            function () { return 23; }
+        });
         if (user_city.select2("val") > 0) {
             setCityVal();
         }
@@ -119,20 +122,22 @@ function getCityVal() {
                         for (var i = 1; i <= len; i++) {
                             var id_city = Object.entries(mas[i])[0][1];
                             var value_city = Object.entries(mas[i])[1][1];
-                            addOption(id_city, value_city);
+                            var data_foo = Object.entries(mas[i])[2][1];
+                            addOption(id_city, value_city, data_foo);
                         }
                     }}, true);
             }
         }
     }
 }
-function addOption(id_city, value_city) {
-    let select_city = $("#user_city");
-    if (select_city.find("option[value='" + id_city + "']").length) {
+function addOption(id_city, value_city, data_foo) {
+    let user_city = $("#user_city");
+    if (user_city.find("option[value='" + id_city + "']").length) {
         //
     } else {
         let newOption = new Option(value_city, id_city, false, false);
-        select_city.append(newOption).val(null).trigger('change');
+        $(newOption).attr('data-foo', data_foo);
+        user_city.append(newOption).val(null).trigger('change');
     }
 }
 

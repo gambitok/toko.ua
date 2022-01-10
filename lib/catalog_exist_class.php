@@ -1013,6 +1013,7 @@ class CatalogExistClass extends CatalogueClass
 
         $typ_id = $this->getCookieAuto();
         $automan = new AutoClass();
+        $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
 
         $table          = "EX_TABLE_TREE_$group_id";
@@ -1075,8 +1076,7 @@ class CatalogExistClass extends CatalogueClass
         $r = $dbc->query($query_limit);
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $art_id = $dbc->result($r, $i - 1, "art_id");
-            array_push($arts, $art_id);
+            array_push($arts, $dbc->result($r, $i - 1, "art_id"));
         }
 
         $art_id_str = implode(",", array_unique($arts));
@@ -1128,6 +1128,7 @@ class CatalogExistClass extends CatalogueClass
 
             $breadcrumbsData    = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $h1_text, $source_link, $mfa_id));
             $breadcrumbs_script = $breadcrumbsData["script"];
+
             $form = str_replace("{parts_breadcrumbs}", $breadcrumbsData["form"], $form);
             $form = str_replace("{status_auto}", $status_auto, $form);
             $form = str_replace("{filters_count}", $filters_count, $form);
@@ -1157,8 +1158,7 @@ class CatalogExistClass extends CatalogueClass
         }
 
         $group_link = $this->getGroupRowLink($group_id);
-        $db = DbSingleton::getTokoDb();
-        $postfix = $this->getLangPostfix($this->getLanguage());
+        $postfix    = $this->getLangPostfix($this->getLanguage());
 
         $r = $db->query("SELECT `TITLE_$postfix`, `DESCR_$postfix` FROM `T2_SEO_TITLE` WHERE `ROUTER` = 'catalog' AND `LINK` = '$group_link' LIMIT 1;");
         $n = $db->num_rows($r);
@@ -1166,6 +1166,7 @@ class CatalogExistClass extends CatalogueClass
             $filters_title = $this->replaceLang($db->result($r, 0, "TITLE_$postfix"));
             $filters_title = str_replace("{h1_text}", "$h1_text", $filters_title);
             $filters_title .= $pager;
+
             $description = $this->replaceLang($db->result($r, 0, "DESCR_$postfix"));
             $description = str_replace("{h1_text}", "$h1_text", $description);
             $description = str_replace("{price_text}", $min_price, $description);
@@ -1186,6 +1187,7 @@ class CatalogExistClass extends CatalogueClass
     public function getPartsSortForm($sort, $source_link)
     {
         $selected1 = $selected2 = $selected3 = "";
+
         if ($sort == "0") {
             $selected1 = "selected='selected'";
         }
@@ -1195,12 +1197,14 @@ class CatalogExistClass extends CatalogueClass
         elseif ($sort == "desc") {
             $selected3 = "selected='selected'";
         }
+
         $list = "
         <select id='cat-products-sort' onchange=\"getPartsSortForm('$source_link');\">
             <option value='0' $selected1>-</option>
             <option value='1' $selected2>{sort_price_asc}</option>
             <option value='2' $selected3>{sort_price_desc}</option>
         </select>";
+
         return $this->replaceLang($list);
     }
 
@@ -1221,6 +1225,7 @@ class CatalogExistClass extends CatalogueClass
         $count_values = 0;
         if (!empty($params)) {
             $count_values = 0;
+
             foreach ($params as $param_id => $values) {
                 foreach ($values as $value_id) {
                     $count_values++;
@@ -1231,6 +1236,7 @@ class CatalogExistClass extends CatalogueClass
                     <a href=\"$link\" class=\"btn btn-sm\">$value_name &times;</a>";
                 }
             }
+
             if ($count_values > 1) {
                 $group_link = $this->getGroupRowLink($group_id);
                 $car_link   = "$this->catalog_link/$group_link/";
@@ -1473,15 +1479,18 @@ class CatalogExistClass extends CatalogueClass
                             $list_params .= "
                             <span>$filters_h1 $param_name: ";
                         }
+
                         foreach ($values as $value_id) {
                             $value_name = $this->getGroupValueName($value_id, $param_id);
                             $link       = $this->getPartsFilterLinks($group_id, $params, $param_id, $value_id, 0, "");
                             $checked    = (in_array($value_id, $params[$param_id]));
+
                             if (!$checked) {
                                 $list_params .= "
                                 <a href=\"$link\">$value_name</a>, ";
                             }
                         }
+
                         $list_params = rtrim($list_params, ", ");
                         $list_params .= ". </span><br>";
                     }
@@ -1574,6 +1583,7 @@ class CatalogExistClass extends CatalogueClass
 
         $group_link = $this->getGroupRowLink($group_id);
         $list = $this->getSiteLink() . "$this->catalog_link/";
+
         if ($group_id > 0) {
             $list .= "$group_link/";
             if ($link != "") {
@@ -1648,9 +1658,10 @@ class CatalogExistClass extends CatalogueClass
 
             elseif ($mfa_id > 0) {
                 $car_checked = $all_checked = $car_count = $all_count = "";
-                $mfa_name = $automan->getMfaBrand($mfa_id);
-                $model_id_name = $automan->getModIdName($model_id);
-                $typ_text = "$mfa_name $model $model_id_name";
+
+                $mfa_name       = $automan->getMfaBrand($mfa_id);
+                $model_id_name  = $automan->getModIdName($model_id);
+                $typ_text       = "$mfa_name $model $model_id_name";
 
                 if ($status_auto_type == 0) {
                     $car_checked = "<i class=\"fas fa-circle unchecked\"></i>";
@@ -1738,6 +1749,7 @@ class CatalogExistClass extends CatalogueClass
             $filters_h1_2 = $this->getCatalogH1($group_id, $params_2);
             $list .= $this->getPartsFiltersForm2($group_id, $params_2, $filters_h1_2);
         }
+
         if (count($params) == 1) {
             $sel_param_id = array_keys($params)[0];
             $filters_h1 = $this->getCatalogH1($group_id, $params);
@@ -1772,6 +1784,7 @@ class CatalogExistClass extends CatalogueClass
                 $hp_from    = $db->result($r, $i - 1, "TYP_HP_FROM");
                 $ccm        = $db->result($r, $i - 1, "VOLUME_CM");
                 $fuel       = $this->getFuelName($db->result($r, $i - 1, "FUEL_ID"));
+
                 if ($ccm == "") {
                     $ccm = $db->result($r, $i - 1, "TYP_CCM");
                 }
@@ -1832,11 +1845,13 @@ class CatalogExistClass extends CatalogueClass
         $mfaData = $this->getMfaData($mfa_id);
         $link = $this->getSiteLink() . $this->cars_link .  "/" . $mfaData["mfa_link"] . "/";
         $text = $mfaData["mfa_brand"];
+
         if ($model != "") {
             $model_link = $this->getModelLink($model);
             $link       = $this->getSiteLink() . $this->cars_link .  "/" . $mfaData["mfa_link"] . "/" . $model_link . "/";
             $text       .= " $model";
         }
+
         return ($status == 0) ? $text : "<a href='$link'>$text</a>";
     }
 

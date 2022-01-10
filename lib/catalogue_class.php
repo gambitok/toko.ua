@@ -155,9 +155,9 @@ class CatalogueClass
         ORDER BY t2n.NAME ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $art_id = $db->result($r, $i - 1, "ART_ID");
-            array_push($art_ids, $art_id);
+            array_push($art_ids, $db->result($r, $i - 1, "ART_ID"));
         }
+
         $art_id_str = implode(",", $art_ids);
 
         $brand_filter = json_decode($brand_filter);
@@ -201,6 +201,7 @@ class CatalogueClass
         WHERE t2c.SEARCH_NUMBER = '$article_search' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) 
         GROUP BY t2c.BRAND_ID;");
         $n = $db->num_rows($r);
+
         if ($article_search != "") {
             for ($i = 1; $i <= $n; $i++) {
                 $art_id     = $db->result($r, $i - 1, "ART_ID");
@@ -215,8 +216,8 @@ class CatalogueClass
                 if ($count == 0) {
                     $count_zero++;
                 } else {
-                    $exist_search_number = strtolower($search_nr);
-                    $exist_brand_link = $brand_link;
+                    $exist_search_number    = strtolower($search_nr);
+                    $exist_brand_link       = $brand_link;
                 }
                 $mas[$i] = compact("search_nr", "art_nr_ds", "brand_id", "brand_name", "brand_link", "count", "art_name", "art_id");
             }
@@ -231,7 +232,9 @@ class CatalogueClass
                 $count      = $mas[$i]["count"];
                 $art_name   = $mas[$i]["art_name"];
                 $photo_name = $showform->getArticleActivePhoto($mas[$i]["art_id"]);
-                $link       = ($count == 0) ? "showAlertModal(\"{brand_no_offer} `$art_nr_ds/$brand_name`\",\"{sorry_cap}\");" : "location.href=\"" . $this->getSiteLink() . "$this->search_link/$search_nr/$brand_link/\";";
+                $link       = ($count == 0)
+                    ? "showAlertModal(\"{brand_no_offer} `$art_nr_ds/$brand_name`\",\"{sorry_cap}\");"
+                    : "location.href=\"" . $this->getSiteLink() . "$this->search_link/$search_nr/$brand_link/\";";
 
                 $list .= "
                 <tr onclick='$link'>
@@ -322,6 +325,7 @@ class CatalogueClass
     public function countBrandItems($article_nr_search, $brand_id)
     {
         $db = DbSingleton::getTokoDb();
+
         $art_ids    = [];
         $brand_id   = $this->getUrlNumber($brand_id);
 
@@ -3995,6 +3999,34 @@ class CatalogueClass
         }
 
         return $this->replaceLang($list);
+    }
+
+    public function getSearchCityForm()
+    {
+        $form = $this->getHtmlForm("orders/city_dropdown");
+        $form = str_replace("{selected_id}", 0, $form);
+        $form = str_replace("{selected_name}", "-Not selected-", $form);
+        $form = str_replace("{select_list}", $this->getSearchCityList(), $form);
+        return $form;
+    }
+
+    public function getSearchCityList()
+    {
+        $list = "";
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE 1;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $city_id = $db->result($r, $i - 1, "CITY_ID");
+            $city_name1 = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
+            $city_name2 = $db->result($r, $i - 1, "CITY_NAME_CLEAR_RU");
+            $city_name = $city_name1;
+            $city_fname = "$city_name1 $city_name2";
+
+            $list .= "
+            <li class=\"select3-list__item\" data-id=\"$city_id\" data-text=\"$city_fname\">$city_name</li>";
+        }
+        return $list;
     }
 
 }

@@ -1060,7 +1060,7 @@ class MenuClass extends CatalogueClass
         if ($site_link == "test_page") {
             $list = $this->getHtmlForm("main/footer_cities");
             $list = str_replace("{top_categories_list}", $this->getTopCategories(), $list);
-//            $list = str_replace("{top_goods_list}", $this->getTopGoods(), $list);
+            $list = str_replace("{top_goods_list}", "", $list);
             $list = str_replace("{top_tags_list}", $this->getTopTags(), $list);
             $list = str_replace("{top_cities_list}", $this->getTopCities(), $list);
             $list = str_replace("{top_orders_list}", $this->getTopOrders(), $list);
@@ -1074,7 +1074,8 @@ class MenuClass extends CatalogueClass
     public function getTopGoods()
     {
         $db = DbSingleton::getTokoDb();
-        $list = "<ul class='list-inline'>";
+        $list = "
+        <ul class='list-inline'>";
         $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE 1 ORDER BY RAND() LIMIT 32;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1082,20 +1083,23 @@ class MenuClass extends CatalogueClass
             $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
             $brand_name = $this->getBrandName($brand_id);
             $art_nr_ds  = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+
             $format_name        = $this->getFormatAticle($art_nr_ds);
             $format_brand_link  = $this->getBrandLink($brand_id);
 
             $list .= "
             <li><a href=\"" . $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/\">$art_nr_ds $brand_name</a></li>";
         }
-        $list .= "</ul>";
+        $list .= "
+        </ul>";
         return $list;
     }
 
     public function getTopTags()
     {
         $db = DbSingleton::getTokoDb();
-        $list = "<ul class='list-inline'>";
+        $list = "
+        <ul class='list-inline'>";
         $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY RAND() LIMIT 32;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1105,15 +1109,17 @@ class MenuClass extends CatalogueClass
             $list .= "
             <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a></li>";
         }
-        $list .= "</ul>";
+        $list .= "
+        </ul>";
         return $list;
     }
 
     public function getTopCategories()
     {
         $db = DbSingleton::getTokoDb();
-        $list = "<ul class='list-inline'>";
-        $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY RAND() LIMIT 32;");
+        $list = "
+        <ul class='list-inline'>";
+        $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 AND `STATUS_CACHE` = 1 ORDER BY RAND() LIMIT 32;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_name = $db->result($r, $i - 1, "TEX_RU");
@@ -1122,43 +1128,48 @@ class MenuClass extends CatalogueClass
             $list .= "
             <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a></li>";
         }
-        $list .= "</ul>";
+        $list .= "
+        </ul>";
         return $list;
     }
 
     public function getTopCities()
     {
         $db = DbSingleton::getTokoDb();
-        $list = "<ul class='list-inline'>";
-        $r = $db->query("SELECT `CITY_NAME` FROM `T2_CITY` WHERE 1 ORDER BY RAND() LIMIT 32;");
+        $list = "
+        <ul class='list-inline'>";
+        $r = $db->query("SELECT `CITY_NAME_CLEAR` FROM `T2_LOCATION` WHERE 1 ORDER BY RAND() LIMIT 32;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $city_name = $db->result($r, $i - 1, "CITY_NAME");
+            $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
 
             $list .= "
-            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/?city=$city_name/\">$city_name</a></li>";
+            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/?city=$city_name/\">{details_in_cap} $city_name</a></li>";
         }
-        $list .= "</ul>";
+        $list .= "
+        </ul>";
         return $list;
     }
 
     public function getTopOrders()
     {
         $db = DbSingleton::getTokoDb();
-        $list = "<ul class='list-inline'>";
+        $list = "
+        <ul class='list-inline'>";
         $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY RAND() LIMIT 32;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_name = $db->result($r, $i - 1, "TEX_RU");
             $group_link = $db->result($r, $i - 1, "TEX_LINK");
 
-            $r2 = $db->query("SELECT `CITY_NAME` FROM `T2_CITY` WHERE 1 ORDER BY RAND() LIMIT 1;");
-            $city_name = $db->result($r2, 0, "CITY_NAME");
+            $r2 = $db->query("SELECT `CITY_NAME_CLEAR` FROM `T2_LOCATION` WHERE 1 ORDER BY RAND() LIMIT 1;");
+            $city_name = $db->result($r2, 0, "CITY_NAME_CLEAR");
 
             $list .= "
             <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name {in_cap} $city_name</a></li>";
         }
-        $list .= "</ul>";
+        $list .= "
+        </ul>";
         return $list;
     }
 

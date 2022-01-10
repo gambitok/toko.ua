@@ -1712,15 +1712,18 @@ class ShopClass extends CatalogueClass
             $where_user_city = "OR `CITY_ID` = $user_city";
         }
 
-        $r = $db->query("SELECT `CITY_ID`, `CITY_NAME_CLEAR$postfix` FROM `T2_LOCATION` WHERE `REGION_NAME` = '' $where_user_city ORDER BY `CITY_NAME$postfix` ASC;");
+        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `REGION_NAME` = '' $where_user_city ORDER BY `CITY_NAME$postfix` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $city_id    = $db->result($r, $i - 1, "CITY_ID");
-            $city_name  = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
-            $sel        = ($user_city > 0 && $user_city == $city_id) ? "selected" : "";
+            $city_id        = $db->result($r, $i - 1, "CITY_ID");
+            $city_name1     = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
+            $city_name2     = $db->result($r, $i - 1, "CITY_NAME_CLEAR_RU");
+            $city_name      = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
+            $city_name_foo  = "$city_name1 - $city_name2";
+            $sel            = ($user_city > 0 && $user_city == $city_id) ? "selected" : "";
 
             $list .= "
-            <option value=\"$city_id\" $sel>$city_name</option>";
+            <option value=\"$city_id\" data-foo=\"$city_name\" $sel>$city_name_foo</option>";
         }
         return $list;
     }
@@ -1740,16 +1743,25 @@ class ShopClass extends CatalogueClass
             $postfix = "_RU";
         }
 
-        $r = $db->query("SELECT `CITY_ID`, `CITY_NAME$postfix`, `REGION_NAME$postfix`, `STATE_NAME$postfix` FROM `T2_LOCATION` 
-        WHERE `CITY_NAME_CLEAR$postfix` LIKE \"$search_text%\" ORDER BY `CITY_NAME$postfix`;");
+        $r = $db->query("SELECT * FROM `T2_LOCATION` 
+        WHERE `CITY_NAME_CLEAR` LIKE \"$search_text%\" OR `CITY_NAME_CLEAR_RU` LIKE \"$search_text%\" ORDER BY `CITY_NAME$postfix`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $city_id        = $db->result($r, $i - 1, "CITY_ID");
-            $city_name      = $db->result($r, $i - 1, "CITY_NAME$postfix");
-            $region_name    = $db->result($r, $i - 1, "REGION_NAME$postfix");
-            $state_name     = $db->result($r, $i - 1, "STATE_NAME$postfix");
+            $city_name      = $db->result($r, $i - 1, "CITY_NAME");
+            $city_name_ru   = $db->result($r, $i - 1, "CITY_NAME_RU");
+            $region_name    = $db->result($r, $i - 1, "REGION_NAME");
+            $region_name_ru = $db->result($r, $i - 1, "REGION_NAME_RU");
+            $state_name     = $db->result($r, $i - 1, "STATE_NAME");
+            $state_name_ru  = $db->result($r, $i - 1, "STATE_NAME_RU");
+            $value_foo      = "$city_name ($state_name обл., $region_name р-он) - $city_name_ru ($state_name_ru обл., $region_name_ru р-он)";
             $city_cap       = "$city_name ($state_name обл., $region_name р-он)";
-            $mas[$i]        = ["id" => $city_id, "value" => $city_cap];
+
+            if ($lang_id == 1 || $lang_id == 3) {
+                $city_cap = "$city_name_ru ($state_name_ru обл., $region_name_ru р-он)";
+            }
+
+            $mas[$i]        = ["id" => $city_id, "value" => $value_foo, "data-foo" => $city_cap];
         }
         return $mas;
     }
