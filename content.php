@@ -8,6 +8,7 @@ require_once (RDD . "/lib/helper.php");
 require_once (RDD . "/lib/variables.php");
 require_once (RDD . "/lib/DbSingleton.php");
 require_once (RDD . "/lib/catalogue_class.php");
+require_once (RDD . "/lib/search_class.php");
 require_once (RDD . "/lib/form_class.php");
 require_once (RDD . "/lib/products_class.php");
 require_once (RDD . "/lib/menu_class.php");
@@ -23,6 +24,7 @@ require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 session_start();
 $JsHttpRequest = new JsHttpRequest("windows-1251");
 $catalog = new CatalogueClass();
+$search = new SearchClass();
 $menu = new MenuClass();
 $client = new ClientClass();
 $lang = new LangClass();
@@ -62,11 +64,11 @@ if ($_REQUEST["w"] == "shortSearchList") {
     $GLOBALS['_RESULT'] = array("content" => $shop->shortSearchList($_REQUEST["art_id"]));
 }
 
-if ($_REQUEST["w"] == "shortArticleOE") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->getOriginalNumbers($_REQUEST["art_id"]));
+if ($_REQUEST["w"] == "getOriginalNumbers") {
+    $GLOBALS['_RESULT'] = array("content" => $showform->getOriginalNumbers($_REQUEST["art_id"]));
 }
 
-if ($_REQUEST["w"] == "shortArticleApplicable") {
+if ($_REQUEST["w"] == "getArticleApplicableForm") {
     $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplicableForm($_REQUEST["art_id"]));
 }
 
@@ -146,15 +148,23 @@ if ($_REQUEST["w"] == "hideOrderInfo") {
 /*==== CATALOG ====*/
 
 if ($_REQUEST["w"] == "showSearchDropdown") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->showSearchDropdown($_REQUEST["text"]));
+    $GLOBALS['_RESULT'] = array("content" => $search->showSearchDropdown($_REQUEST["text"]));
 }
 
 if ($_REQUEST["w"] == "showSearchDropdown2") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->showSearchDropdown($_REQUEST["text_input"]));
+    $GLOBALS['_RESULT'] = array("content" => $search->showSearchDropdown($_REQUEST["text_input"]));
 }
 
 if ($_REQUEST["w"] == "getCatalogueLink") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogueLink($_REQUEST["article_nr_search"]));
+}
+
+if ($_REQUEST["w"] == "searchCity") {
+    $GLOBALS['_RESULT'] = array("content" => $shop->searchCity($_REQUEST["text"]));
+}
+
+if ($_REQUEST["w"] == "searchCityMain") {
+    $GLOBALS['_RESULT'] = array("content" => $shop->searchCityMain());
 }
 
 if ($_REQUEST["w"] == "getCatalogListFilter") {
@@ -175,7 +185,7 @@ if ($_REQUEST["w"] == "showGarageForm") {
     $GLOBALS['_RESULT'] = array("content" => $automan->showGarageForm());
 }
 
-if ($_REQUEST["w"] == "updateGarageStatus") {
+if ($_REQUEST["w"] == "getGarageAutoCount") {
     $GLOBALS['_RESULT'] = array("content" => $automan->getGarageAutoCount());
 }
 
@@ -196,10 +206,6 @@ if ($_REQUEST["w"] == "saveSellerForm") {
 if ($_REQUEST["w"] == "getSellerImage") {
     $GLOBALS['_RESULT'] = array("content" => $menu->getSellerImage());
 }
-
-//if ($_REQUEST["w"] == "getRegionSelect") {
-//    $GLOBALS['_RESULT'] = array("content" => $menu->getRegionSelect());
-//}
 
 if ($_REQUEST["w"] == "setTpoint") {
     $GLOBALS['_RESULT'] = array("content" => $client->setTpoint($_REQUEST["id"]));
@@ -223,7 +229,7 @@ if ($_REQUEST["w"] == "showInfoForm") {
     $GLOBALS['_RESULT'] = array("content" => $showform->showInfoForm($_REQUEST["art_id"]));
 }
 
-if ($_REQUEST["w"] == "showPhotoForm") {
+if ($_REQUEST["w"] == "showPhotoGallery") {
     $GLOBALS['_RESULT'] = array("content" => $showform->showPhotoGallery($_REQUEST["ref"]));
 }
 
@@ -259,14 +265,14 @@ if ($_REQUEST["w"] == "logoutClient") {
 }
 
 if ($_REQUEST["w"] == "saveProfile") {
-    $GLOBALS['_RESULT'] = array("content" => $client->updateProfile($_REQUEST["phone"], $_REQUEST["pass"], $_REQUEST["email"], $_REQUEST["name"]));
+    $GLOBALS['_RESULT'] = array("content" => $client->saveProfile($_REQUEST["phone"], $_REQUEST["pass"], $_REQUEST["email"], $_REQUEST["name"]));
 }
 
 if ($_REQUEST["w"] == "saveRegistration") {
     $GLOBALS['_RESULT'] = array("content" => $client->saveRegistration($_REQUEST["phone"], $_REQUEST["pass"], $_REQUEST["email"], $_REQUEST["name"], $_REQUEST["client_category"], $_REQUEST["city_id"], $_REQUEST["tpoint_id"], $_REQUEST["mailing"]));
 }
 
-if ($_REQUEST["w"] == "check_reg_client") {
+if ($_REQUEST["w"] == "checkRegClient") {
     $GLOBALS['_RESULT'] = array("content" => $client->checkRegClient($_REQUEST["phone"], $_REQUEST["type"]));
 }
 
@@ -286,16 +292,16 @@ if ($_REQUEST["w"] == "endValidation") {
     $GLOBALS['_RESULT'] = array("content" => $client->endValidation($_REQUEST["phone"], $_REQUEST["password"]));
 }
 
-if ($_REQUEST["w"] == "toggleProductView") {
-    $GLOBALS['_RESULT'] = array("content" => $client->toggleProductView($_REQUEST["ds"]));
-}
+//if ($_REQUEST["w"] == "toggleProductView") {
+//    $GLOBALS['_RESULT'] = array("content" => $client->toggleProductView($_REQUEST["ds"]));
+//}
 
 if ($_REQUEST["w"] == "finishBonusPhone") {
     $GLOBALS['_RESULT'] = array("content" => $client->finishBonusPhone($_REQUEST["phone"], $_REQUEST["bonus"]));
 }
 
 if ($_REQUEST["w"] == "showProfileCheckForm") {
-    $GLOBALS['_RESULT'] = array("content" => $profile->showProfileCheck($_REQUEST["data_start"], $_REQUEST["data_end"]));
+    $GLOBALS['_RESULT'] = array("content" => $profile->showProfileCheckForm($_REQUEST["data_start"], $_REQUEST["data_end"]));
 }
 
 /*==== LANGUAGE ====*/
@@ -327,7 +333,7 @@ if ($_REQUEST["w"] == "checkBasketItem") {
     $GLOBALS['_RESULT'] = array("content" => $shop->checkBasketItem($_REQUEST["art_id"], $_REQUEST["storage_id"], $_REQUEST["status"]));
 }
 
-if ($_REQUEST["w"] == "finish_fast_order") {
+if ($_REQUEST["w"] == "saveFastOrder") {
     $GLOBALS['_RESULT'] = array("content" => $shop->saveFastOrder($_REQUEST["phone"]));
 }
 
@@ -335,7 +341,7 @@ if ($_REQUEST["w"] == "saveFastOrderBasket") {
     $GLOBALS['_RESULT'] = array("content" => $shop->saveFastOrderBasket($_REQUEST["phone"], $_REQUEST["art_id"], $_REQUEST["brand_id"], $_REQUEST["count"], $_REQUEST["stock"], $_REQUEST["storage_id"], $_REQUEST["suppl_id"]));
 }
 
-if ($_REQUEST["w"] == "add_fast_order") {
+if ($_REQUEST["w"] == "addFastOrder") {
     $GLOBALS['_RESULT'] = array("content" => $shop->addFastOrder($_REQUEST["phone"], $_REQUEST["art_id"], $_REQUEST["brand_id"], $_REQUEST["suppl_id"], $_REQUEST["storage_id"], $_REQUEST["amount"]));
 }
 
@@ -355,7 +361,7 @@ if ($_REQUEST["w"] == "updateBasketStatus") {
     $GLOBALS['_RESULT'] = array("content" => $shop->countBasket());
 }
 
-if ($_REQUEST["w"] == "get_city_list") {
+if ($_REQUEST["w"] == "showCityForm") {
     $GLOBALS['_RESULT'] = array("content" => $showform->showCityForm($_REQUEST["city_like"]));
 }
 
@@ -418,12 +424,11 @@ if ($_REQUEST["w"] == "getHeaderContent") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->getHeaderContent($_REQUEST["head_id"]));
 }
 
-
 if ($_REQUEST["w"] == "getGroupsListValues") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->getGroupsListValues($_REQUEST["group_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $menu->getGroupsListValues($_REQUEST["group_id"]));
 }
 
 if ($_REQUEST["w"] == "getGroupsLinks") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->getGroupsLinks($_REQUEST["group_id"],$_REQUEST["param_id"],$_REQUEST["value_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $menu->getGroupsLinks($_REQUEST["group_id"],$_REQUEST["param_id"],$_REQUEST["value_id"]));
 }
 

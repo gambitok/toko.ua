@@ -471,4 +471,159 @@ trait Variables
         return $format_text;
     }
 
+    /*
+     * Get Kind of brand
+     * */
+    public function getBrandType($brand_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `KIND` FROM `T2_BRANDS` WHERE `BRAND_ID` = $brand_id LIMIT 1;");
+        $kind = $db->result($r, 0, "KIND");
+        return ($kind == 3);
+    }
+
+    /*
+     * check if art_id is original
+     * */
+    public function checkOriginalEquipment($art_id, $search_number)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `SEARCH_NUMBER` FROM `T2_CROSS` WHERE `ART_ID` = $art_id AND `KIND` = 3 AND `RELATION` = 0;");
+        $n = $db->num_rows($r);
+        $nom = 0;
+        for ($i = 1; $i <= $n; $i++) {
+            $number = $db->result($r, $i - 1, "SEARCH_NUMBER");
+            if ($search_number == $number) {
+                $nom++;
+            }
+        }
+        return ($nom > 0);
+    }
+
+    /*
+     * Check relation from t2_cross
+     * */
+    public function checkAnalogTypes($art_id, $article_nr_search, $relation_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_CROSS` 
+        WHERE `ART_ID` = $art_id AND `SEARCH_NUMBER` LIKE '$article_nr_search' AND `KIND` IN (3,4) AND `RELATION` = $relation_id;");
+        $n = $db->result($r, 0, `count_arts`);
+        return ($n > 0);
+    }
+
+    public function getFaqForm()
+    {
+        $form = "
+        <div class=\"col-lg-4 col-12 pad0\"><div class=\"article-card\">" . $this->getHtmlForm("faq/request-card") . "</div></div>";
+        return $this->replaceLang($form);
+    }
+
+    public function getFaqSocialsForm()
+    {
+        $form = $this->getHtmlForm("faq/request-socials");
+        $form = $this->replaceLang($form);
+        return $form;
+    }
+
+    public function setClientRequestDone()
+    {
+        $form = $this->getHtmlForm("faq/request-done");
+        $form = $this->replaceLang($form);
+        return $form;
+    }
+
+//    public function checkMfa($mfa_link)
+//    {
+//        $mfa_id = 0;
+//        $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' AND `ACTIVE` = 1 LIMIT 1;");
+//        $n = $db->num_rows($r);
+//        if ($n > 0) {
+//            $mfa_id = $db->result($r, 0, "MFA_ID");
+//        }
+//        return $mfa_id;
+//    }
+//
+//    public function checkModel($mfa_id, $model_link)
+//    {
+//        $model = "";
+//        if ($mfa_id > 0) {
+//            $db = DbSingleton::getTokoDb();
+//            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link` = '$model_link' AND `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 LIMIT 1;");
+//            $n = $db->num_rows($r);
+//            if ($n > 0) {
+//                $model = $db->result($r, 0, "Model");
+//            }
+//        }
+//        return $model;
+//    }
+
+//    public function testLinks()
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT `LINK` FROM `T_TEST_LINKS`;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $link = $db->result($r, $i - 1, "LINK");
+//            $arr = explode("/", $link);
+//
+//            $status = 0;
+//            $router = $arr[1];
+//
+//            if ($router == "") {
+//                $status = 1;
+//            }
+//
+//            if ($router == "cars") {
+//                $mfa_link = $arr[2]; $mfa_id = 0;
+//                $model_link = $arr[3]; $model = "";
+//                if ($mfa_link != "") {
+//                    $mfa_id = $this->checkMfa($mfa_link);
+//                    if ($model_link != "") {
+//                        $model = $this->checkModel($mfa_id, $model_link);
+//                    }
+//                }
+//                if ($mfa_link != "" && $model_link == "") {
+//                    if ($mfa_id > 0) {
+//                        $status = 1;
+//                    } else {
+//                        $status = 0;
+//                    }
+//                }
+//                elseif ($mfa_link != "" && $model_link != "") {
+//                    if ($model != "") {
+//                        $status = 1;
+//                    } else {
+//                        $status = 0;
+//                    }
+//                }
+//
+//            }
+//
+//            $db->query("UPDATE `T_TEST_LINKS` SET `STATUS` = $status WHERE `LINK` = '$link' LIMIT 1;");
+//        }
+//        return 0;
+//    }
+
+    /*
+     * type_id = 1 : group_id
+     * type_id = 2 : cat_id
+     * type_id = 3 : head_id
+     * */
+//    public function initKeywords()
+//    {
+//        $db = DbSingleton::getTokoDb();
+//        $r = $db->query("SELECT `HEAD_ID`, `TEX_RU`, `TEX_UA` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $group_id = $db->result($r, $i - 1, "HEAD_ID");
+//            $text_ru = $db->result($r, $i - 1, "TEX_RU");
+//            $text_ua = $db->result($r, $i - 1, "TEX_UA");
+//            $db->query("INSERT INTO `T2_TREE_KEYWORDS` (`KEY_ID`, `TYPE_ID`, `KEYWORD`) VALUES ($group_id, 3, \"$text_ru\");");
+//            $db->query("INSERT INTO `T2_TREE_KEYWORDS` (`KEY_ID`, `TYPE_ID`, `KEYWORD`) VALUES ($group_id, 3, \"$text_ua\");");
+//        }
+//        return true;
+//    }
+
 }

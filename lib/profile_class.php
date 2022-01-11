@@ -643,7 +643,7 @@ class ProfileClass extends ClientClass
         return $form;
     }
 
-    public function showProfileCheck($data_from = "", $data_to = "")
+    public function showProfileCheckForm($data_from = "", $data_to = "")
     {
         $db = DbSingleton::getDbm();
         $kours = new ExRateClass();
@@ -824,7 +824,7 @@ class ProfileClass extends ClientClass
         }
     }
 
-    public function getPriceList()
+    public function getPriceProfileList()
     {
         $catalogue = new CatalogueClass();
 
@@ -955,6 +955,48 @@ class ProfileClass extends ClientClass
             <option value=\"$id\">$region ($addres)</option>";
         }
         return $options;
+    }
+
+    /*
+    * download prices
+    * */
+    public function downloadPrices()
+    {
+        $db = DbSingleton::getTokoDb();
+        $dbm = DbSingleton::getDbm();
+
+        $r = $dbm->query("SELECT `user_id`, `date`, `filename` FROM `cron_task_prices` WHERE `status` = 1;");
+        $n = $dbm->num_rows($r);
+        if ($n > 0) {
+            for ($i = 1; $i <= $n; $i++) {
+                $user_id    = $db->result($r, $i - 1, "user_id");
+                $filename   = $user_id . "/" . $dbm->result($r, $i - 1, "filename");
+
+                $csv = "";
+                foreach ($this->getPriceProfileList() as $record) {
+                    foreach ($record as $rec) {
+                        $csv .= $rec . ';';
+                    }
+                    $csv .= "\n";
+                }
+
+                if (!file_exists(RDD . "/uploads/$user_id")) {
+                    mkdir(RDD . "/uploads/$user_id", 0777, true);
+                }
+                elseif (file_exists(RDD . "/uploads/$user_id/")) {
+                    foreach (glob(RDD . "/uploads/$user_id/*") as $file) {
+                        unlink($file);
+                    }
+                }
+
+                $csv_handler = fopen(RDD . "/uploads/$filename", 'w') or die("Can't create file");
+                fwrite($csv_handler, $csv);
+                fclose($csv_handler);
+                $date_end = date("Y-m-d H:i:s");
+                $dbm->query("UPDATE `cron_task_prices` SET `status` = 2, `date_end` = '$date_end' WHERE `user_id` = $user_id AND `status` = 1;");
+            }
+        }
+        return true;
     }
 
 }

@@ -251,7 +251,7 @@ function finishFastOrder(name, status = 0) {
         return true;
     }
     else {
-        JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
+        JsHttpRequest.query(folder,{'w':'checkRegClient', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content !== false) {
                     let text = "{user_already_logged}!<br>{phone_cap}: " + result.content[0];
@@ -294,7 +294,7 @@ function addFastOrder() {
     if (count > stock) {
         showAlertModal("{too_much}", "{error_cap}", 0);
     } else {
-        JsHttpRequest.query(folder,{'w':'add_fast_order', 'phone':phone, 'art_id':art_id, 'brand_id':brand_id, 'suppl_id':suppl_id, 'storage_id':storage_id, 'amount':count},
+        JsHttpRequest.query(folder,{'w':'addFastOrder', 'phone':phone, 'art_id':art_id, 'brand_id':brand_id, 'suppl_id':suppl_id, 'storage_id':storage_id, 'amount':count},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 location.href = result.content;
             }}, true);
@@ -317,7 +317,7 @@ function showFastOrder(phone, status = 0) {
 
     } else {
 
-        JsHttpRequest.query(folder,{'w':'finish_fast_order', 'phone':phone},
+        JsHttpRequest.query(folder,{'w':'saveFastOrder', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 location.href = result.content;
             }}, true);

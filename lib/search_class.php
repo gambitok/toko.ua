@@ -1,0 +1,1142 @@
+<?php
+
+class SearchClass extends CatalogueClass
+{
+
+    use Helper;
+    use Variables;
+
+    /*
+     * SEARCH FORM
+     * */
+    public function getSearchList($article_nr_search)
+    {
+        $db = DbSingleton::getTokoDb();
+        $article_search = "";
+        $brand_id = 0;
+        $article_nr_search = $this->getUrlString($article_nr_search);
+        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search' GROUP BY `BRAND_ID`;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $article_search = $db->result($r, $i - 1, "SEARCH_NUMBER");
+            $brand_id       = $db->result($r, $i - 1, "BRAND_ID");
+        }
+        if ($n == 1) {
+            return $this->getCatalogList($article_search, $brand_id);
+        } else {
+            return $this->getSearchResult($article_search, $article_nr_search);
+        }
+    }
+
+    /*
+     * SEARCH ERROR FORM
+     * */
+    public function getSearchResult($article_search, $article_nr_search)
+    {
+        if ($article_search != "") {
+            $form = $this->getBrandList($article_search, $article_nr_search);
+        } else {
+            $list = $this->showSearchDropdown($article_nr_search);
+            if ($list == "") {
+                $form = $this->getHtmlForm("error/search_unknown");
+            } else {
+                $form = $this->getHtmlForm("search/search_catalog");
+                $form = str_replace("{search_query}", $article_nr_search, $form);
+                $form = str_replace("{search_range}", $list, $form);
+            }
+        }
+        return $form;
+    }
+
+    /*
+     * SEARCH BRAND FORM
+     * */
+    public function getBrandList($article_search, $article_nr_search)
+    {
+        $db = DbSingleton::getTokoDb();
+        $showform = new FormClass();
+
+        $count_zero = $exist_search_number = 0;
+        $exist_brand_link = $result = $list = "";
+        $mas = [];
+
+        $form           = $this->getHtmlForm("search/brand_options_form");
+        $form_brand     = $this->getHtmlForm("search/brand_options_list");
+        $search_form    = $this->getHtmlForm("search/brand_options");
+
+        $r = $db->query("SELECT t2c.ART_ID, t2c.BRAND_ID, t2c.SEARCH_NUMBER, t2c.DISPLAY_NR, t2c.KIND, t2c.RELATION, t2b.BRAND_NAME, t2b.BRAND_LINK, IFNULL(t2n.NAME,'') as NAME 
+        FROM `T2_CROSS` t2c 
+            LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID) 	
+            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
+        WHERE t2c.SEARCH_NUMBER = '$article_search' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) 
+        GROUP BY t2c.BRAND_ID;");
+        $n = $db->num_rows($r);
+
+        if ($article_search != "") {
+            for ($i = 1; $i <= $n; $i++) {
+                $art_id     = $db->result($r, $i - 1, "ART_ID");
+                $search_nr  = $db->result($r, $i - 1, "SEARCH_NUMBER");
+                $art_nr_ds  = $db->result($r, $i - 1, "DISPLAY_NR");
+                $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
+                $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
+                $brand_link = $db->result($r, $i - 1, "BRAND_LINK");
+                $art_name   = $db->result($r, $i - 1, "NAME");
+                $count      = $this->countBrandItems($search_nr, $brand_id);
+
+                if ($count == 0) {
+                    $count_zero++;
+                } else {
+                    $exist_search_number    = strtolower($search_nr);
+                    $exist_brand_link       = $brand_link;
+                }
+                $mas[$i] = compact("search_nr", "art_nr_ds", "brand_id", "brand_name", "brand_link", "count", "art_name", "art_id");
+            }
+            $nophoto = $this->noPhoto;
+            usort($mas, "myBrandCmp");
+
+            for ($i = 0; $i < $n; $i++) {
+                $search_nr  = strtolower($mas[$i]["search_nr"]);
+                $art_nr_ds  = $mas[$i]["art_nr_ds"];
+                $brand_name = $mas[$i]["brand_name"];
+                $brand_link = $mas[$i]["brand_link"];
+                $count      = $mas[$i]["count"];
+                $art_name   = $mas[$i]["art_name"];
+                $photo_name = $showform->getArticleActivePhoto($mas[$i]["art_id"]);
+                $link       = ($count == 0)
+                    ? "showAlertModal(\"{brand_no_offer} `$art_nr_ds/$brand_name`\",\"{sorry_cap}\");"
+                    : "location.href=\"" . $this->getSiteLink() . "$this->search_link/$search_nr/$brand_link/\";";
+
+                $list .= "
+                <tr onclick='$link'>
+                    <td class=\"minify\">
+                        <img itemprop=\"image\" data-src=\"$photo_name\" class=\"lazy\" alt=\"$art_nr_ds\" src=\"$nophoto\">
+                    </td>
+                    <td>$art_nr_ds</td>
+                    <td>$brand_name</td>
+                    <td>$art_name</td>
+                    <td>$count</td>
+                </tr>";
+            }
+            $form_brand = str_replace("{brand_list}", $list, $form_brand);
+        } else {
+            $search_form = str_replace("{search_results}", "{offers_request}", $search_form);
+            $search_form = str_replace("{search_result_index}", "<br><span class=\"span-search text-uppercase\">{search_result_for} <b class=\"span-dark-red\">$article_nr_search</b> {nothing_found}</span>
+            <br><br><p class=\"span-search\">{check_the_data}</p>", $search_form);
+            $search_form = str_replace("{search_result}", "", $search_form);
+        }
+
+        $search_form = str_replace("{search_results}", "{choose_brand_manuf}", $search_form);
+        $search_form = str_replace("{search_result_index}", "<span class=\"span-brand-search\">{search_request} <b>$article_search</b> {search_result_for_end}</span>", $search_form);
+        $search_form = str_replace("{art}", $result, $search_form);
+        $search_form = str_replace("{currency}", "", $search_form);
+        $search_form = str_replace("{products_view}", "", $search_form);
+        $search_form = str_replace("{search_result}", $form_brand, $search_form);
+
+        $form = str_replace("{search_filters}", "", $form);
+        $form = str_replace("{search_form}", $search_form, $form);
+
+        if ($count_zero == ($n - 1)) {
+            header("Location: " . $this->getSiteLink() . "$this->search_link/$exist_search_number/$exist_brand_link/");
+        }
+
+        return $form;
+    }
+
+    /*
+     * SEARCH COUNT BY BRAND
+     * */
+    public function countBrandItems($article_nr_search, $brand_id)
+    {
+        $db = DbSingleton::getTokoDb();
+
+        $art_ids    = [];
+        $brand_id   = $this->getUrlNumber($brand_id);
+
+        $r = $db->query("SELECT t2c.ART_ID 
+        FROM `T2_CROSS` t2c
+            LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID)
+            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_id AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END);");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            array_push($art_ids, $db->result($r, $i - 1, "ART_ID"));
+        }
+        $art_id_str = implode(",", $art_ids);
+
+        return $this->searchListCount($art_id_str, $article_nr_search, $brand_id);
+    }
+
+    public function searchListCount($where_art_id_str, $article_nr_search = "", $brand_nr_search = "")
+    {
+        $db = DbSingleton::getTokoDb();
+        $kours = new ExRateClass();
+        $client = new ClientClass();
+
+        $client_id  = $this->getClient();
+        $tpoint_id  = $this->getTpointID();
+        $cur        = $this->getCurrentExrate();
+
+        session_start();
+        $temp_key  = session_id();
+        $mas = [];
+        $count = 0;
+
+        if ($where_art_id_str != "") {
+            $this->createTemporarySearchTable($temp_key);
+            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
+            $n = $db->num_rows($r);
+
+            if ($n > 0) {
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id             = $db->result($r, $i - 1, "ART_ID");
+                    $brand_id           = $db->result($r, $i - 1, "BRAND_ID");
+                    $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
+                    $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+                    $article_name       = $db->result($r, $i - 1, "NAME");
+                    $suppl_id           = $db->result($r, $i - 1, "suppl_id");
+                    $stock              = intval($db->result($r, $i - 1, "AMOUNT"));
+                    $storage_id         = $db->result($r, $i - 1, "storage_id");
+                    $return_days        = $db->result($r, $i - 1, "return_delay");
+                    $format_name        = $this->getFormatAticle($article_nr_displ);
+
+                    $price = $this->getArticlePrice($art_id);
+                    if ($suppl_id != 0) {
+                        $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+                    }
+                    $price = $kours->getKoursPrice($price, $cur);
+                    if ($cur == 1) {
+                        $price = $client->getClientPriceRounding($client_id, $price);
+                    }
+
+                    $deliveryData           = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
+                    $delivery_info          = $deliveryData["info"];
+                    $delivery_days          = $deliveryData["days"];
+                    $delivery_short_info    = $deliveryData["short"];
+
+                    if ($suppl_id != 0) {
+                        $deliveryData           = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
+                        $delivery_info          = $deliveryData["info"];
+                        $delivery_days          = $deliveryData["days"];
+                        $delivery_short_info    = $deliveryData["short"];
+                    }
+
+                    if (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search) {
+                        $status = 2;
+                    } else {
+                        $status = ($suppl_id == 0) ? 1 : 0;
+                    }
+
+                    if ($price != 0 || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
+                        if ($stock > 0 || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
+                            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+                                $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
+                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', '$article_name', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
+                            }
+                        }
+                    }
+                }
+
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ` ASC;");
+                $n = $db->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id                 = $db->result($r, $i - 1, "art_id");
+                    $article_nr_displ       = $db->result($r, $i - 1, "article_nr_displ");
+                    $brand_id               = $db->result($r, $i - 1, "brand_id");
+                    $brand_name             = $db->result($r, $i - 1, "brand_name");
+                    $article_name           = $db->result($r, $i - 1, "article_name");
+                    $delivery_days          = $db->result($r, $i - 1, "delivery_days");
+                    $delivery_info          = $db->result($r, $i - 1, "delivery_info");
+                    $delivery_short_info    = $db->result($r, $i - 1, "delivery_short_info");
+                    $stock                  = $db->result($r, $i - 1, "stock");
+                    $price                  = $db->result($r, $i - 1, "price");
+                    $suppl_id               = $db->result($r, $i - 1, "suppl_id");
+                    $storage_id             = $db->result($r, $i - 1, "storage_id");
+                    $return_days            = $db->result($r, $i - 1, "return_days");
+                    $status                 = $db->result($r, $i - 1, "status");
+
+                    $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+                }
+
+                $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$temp_key`;");
+
+                $mas = $this->deleteEmptyPosition($mas);
+                $mas = $this->deleteSupplPosition($mas);
+                $mas = $this->deleteRepeatPosition($mas);
+
+                foreach ($mas as $mas_key => $mas_val) {
+                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "delivery_days", "price");
+                }
+
+                $mas = $this->sortByMinStock($mas);
+            }
+
+            $count = count($mas);
+        }
+
+        return $count;
+    }
+
+    /*
+     * SEARCH TEXT INPUT
+     * */
+    public function getSearchMatches($text)
+    {
+        $text = mb_strtolower($text, 'windows-1251');
+        $max_word = 4;
+        $arr = [];
+
+        if ($text != "") {
+            $text_arr = explode(" ", $text);
+            $i = 0;
+            foreach ($text_arr as $value) {
+                $i++;
+                if (mb_strlen($value) > 1) {
+                    $arr[$i][] = $value;
+                    if (mb_strlen($value) > $max_word) {
+                        $format_value = substr($value, 0, mb_strlen($value) - 2);
+                        $arr[$i][] = $format_value;
+                    }
+                }
+            }
+        }
+
+        $db = DbSingleton::getTokoDb();
+        $new = $m = [];
+
+        foreach ($arr as $key => $values) {
+            foreach ($values as $value) {
+                $r = $db->query("
+                SELECT `ID`, `KEY_ID`, `TYPE_ID`, `KEYWORD`, substrCount(LOWER(`KEYWORD`), '$value') as str_count 
+                FROM `T2_TREE_KEYWORDS` 
+                WHERE `ID` IN (
+                    SELECT `ID` FROM `T2_TREE_KEYWORDS` GROUP BY `KEY_ID`, `TYPE_ID`
+                ) GROUP BY `ID` HAVING str_count > 0;");
+                $n = $db->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    $key_id     = $db->result($r, $i - 1, "KEY_ID");
+                    $type_id    = $db->result($r, $i - 1, "TYPE_ID");
+                    $str_count  = $db->result($r, $i - 1, "str_count");
+                    $k          = $key_id . "_" . $type_id;
+
+                    if (!array_key_exists($k, $new)) {
+                        $new[$k] = ["key_id" => $key_id, "type_id" => $type_id, "str_count" => $str_count];
+                    } else {
+                        $new[$k]["str_count"] += $str_count;
+                    }
+
+                    if (!in_array($key, $new[$k]["key"])) {
+                        $new[$k]["key"][] = $key;
+                        $m[] = $key;
+                    }
+                }
+            }
+        }
+
+        $max_matches = count(array_unique($m));
+        uasort($new, "keywordCmp");
+
+        return array($new, $max_matches);
+    }
+
+    /*
+     * SEARCH TEXT INPUT
+     * */
+    public function showSearchDropdown($text)
+    {
+        $db = DbSingleton::getTokoDb();
+        $showform = new FormClass();
+
+        $list = $list1 = $list2 = $list3 = "";
+        if ($text == "") {
+            $list = $showform->showHistoryList();
+        }
+
+        if ($text != "" && mb_strlen($text) > 1) {
+            $text = $this->getUrlString($text);
+            $format_text = $text;
+            $format_text = str_replace(str_split(' -,+\/:*?"<>|_'), "", $format_text);
+
+            $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `DISPLAY_NR`, MIN(`KIND`) as min_kind 
+            FROM `T2_CROSS` 
+            WHERE `SEARCH_NUMBER` = '$format_text' 
+            GROUP BY `BRAND_ID` 
+            ORDER BY `min_kind`;");
+            $n1 = $db->num_rows($r);
+            for ($i = 1; $i <= $n1; $i++) {
+                $art_id     = $db->result($r, $i - 1, "ART_ID");
+                $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
+                $min_kind   = $db->result($r, $i - 1, "min_kind");
+                $display_nr = $db->result($r, $i - 1, "DISPLAY_NR");
+                $brand_name = $this->getBrandName($brand_id);
+                $brand_link = $this->getBrandLink($brand_id);
+
+                if ($min_kind == "0") {
+                    $format_name    = $this->getFormatAticle($display_nr);
+                    $article_name   = $this->getArticleName($art_id);
+                    $link           = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";
+                    $str            = "$brand_name $display_nr $article_name";
+                } else {
+                    $format_name    = $this->getFormatAticle($display_nr);
+                    $link           = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";
+                    $str            = "$brand_name $display_nr";
+                }
+
+                $list1 .= "
+                <li>
+                    <a href='$link'>$str </a>
+                </li>";
+            }
+
+            $text = str_replace(str_split('+\/:*?"<>|'), "", $text);
+            list($arr, $max_matches) = $this->getSearchMatches($text);
+
+            $n = count($arr);
+            foreach ($arr as $value) {
+                $key_id     = $value["key_id"];
+                $type_id    = $value["type_id"];
+                $key        = $value["key"];
+
+                if (count($key) >= $max_matches) {
+                    if ($type_id == 1) {
+                        $key_name   = $this->getGroupRowText($key_id);
+                        $key_link   = $this->getGroupRowLink($key_id);
+                        $link       = $this->getSiteLink() . $this->catalog_link . "/" . $key_link . "/";
+
+                        $list2 .= "
+                        <li>
+                            <a href='$link'>$key_name</a>
+                        <li>";
+                    }
+                    elseif ($type_id == 2) {
+                        $catData = $this->getCatRowData($key_id);
+                        $key_name   = $catData["cat_name"];
+                        $key_link   = $catData["cat_link"];
+                        $head_id    = $this->getHeadCatRow($key_id);
+                        $head_link  = $this->getHeadRowLink($head_id);
+                        $link       = $this->getSiteLink() . $this->catalog_link . "/" . $head_link . "/" . $key_link . "/";
+
+                        $list3 .= "
+                        <li>
+                            <a href='$link'>$key_name</a>
+                        <li>";
+                    }
+                    elseif ($type_id == 3) {
+                        $key_name   = $this->getHeadRowName($key_id);
+                        $key_link   = $this->getHeadRowLink($key_id);
+                        $link       = $this->getSiteLink() . $this->catalog_link . "/" . $key_link . "/";
+
+                        $list3 .= "
+                        <li>
+                            <a href='$link'>$key_name</a>
+                        <li>";
+                    }
+                }
+            }
+            if ($n > 0 || $n1 > 0) {
+                if ($n1 > 0) {
+                    $list .= "
+                     <div class='search-block'>
+                        <div class='search-block-header'>
+                            <img src='/images/icons/search/number_result.svg' alt='number'>
+                            <span class='search-block-header__item'>{search_accurate}</span>
+                        </div>
+                        <ul class='search-block-content'>
+                            $list1
+                        </ul>
+                    </div>";
+                }
+                if ($n > 0) {
+                    if ($list2 != "") {
+                        $list .= "
+                        <div class='search-block'>
+                            <div class='search-block-header'>
+                                <img src='/images/icons/search/categories_result.svg' alt='groups'>   
+                                <span class='search-block-header__item'>{category_cap}</span>
+                            </div>
+                            <ul class='search-block-content'>
+                                $list2
+                            </ul>
+                        </div>";
+                    }
+                    if ($list3 != "") {
+                        $list .= "
+                        <div class='search-block'>
+                            <div class='search-block-header'>
+                                <img src='/images/icons/search/groups_result.svg' alt='categories'>   
+                                <span class='search-block-header__item'>{sections_groups}</span>
+                            </div>
+                            <ul class='search-block-content'>
+                                $list3
+                            </ul>
+                        </div>";
+                    }
+                }
+            } else {
+                $list = "";
+            }
+        }
+
+        return $this->replaceLang($list);
+    }
+
+    /*
+  * CATALOG HEADER DRAW
+  * */
+    public function drawHeaderSearchList($view = 0, $order = "")
+    {
+        $sort1 = $sort2 = $sort3 = $sort4 = "fa-sort";
+
+        switch ($order) {
+            case "delivery_days":
+                $sort2 = "fa-sort-alpha-down";
+                break;
+            case "stock":
+                $sort3 = "fa-sort-alpha-down";
+                break;
+            case "price":
+                $sort4 = "fa-sort-alpha-down";
+                break;
+            case "article_nr_displ" :
+            default:
+                $sort1 = "fa-sort-alpha-down";
+                break;
+        }
+
+        $form = $this->getHtmlForm("search/header");
+        $form = str_replace("{cat_sort_1}", $sort1, $form);
+        $form = str_replace("{cat_sort_2}", $sort2, $form);
+        $form = str_replace("{cat_sort_3}", $sort3, $form);
+        $form = str_replace("{cat_sort_4}", $sort4, $form);
+        $form = str_replace("{cat_storage_info}", "{storage_full_info}", $form);
+        $form = str_replace("{cat_product_view}", (!$view) ? "" : "none", $form);
+
+        return $form;
+    }
+
+    /*
+     * CATALOG
+     * */
+    public function searchList($where_art_id_str, $article_nr_search = "", $brand_nr_search = "")
+    {
+        $db = DbSingleton::getTokoDb();
+        $kours = new ExRateClass();
+        $client = new ClientClass();
+
+        $client_id  = $this->getClient();
+        $tpoint_id  = $this->getTpointID();
+        $cur        = $this->getCurrentExrate();
+
+        session_start();
+        $temp_key               = session_id();
+        $mas                    = $filters = $brands = [];
+        $list_brand             = "";
+        $art_id_search          = 0;
+        $filters["max_price"]   = $filters["max_dd"] = $main_brand = 0;
+        $filters["min_price"]   = 99999999;
+
+        if ($article_nr_search != "") {
+            $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
+        }
+
+        list($error, $list) = $this->getSearchMessages();
+
+        if ($where_art_id_str != "") {
+            $this->createTemporarySearchTable($temp_key);
+
+            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
+            $n = $db->num_rows($r);
+
+            if ($n > 0) {
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id             = $db->result($r, $i - 1, "ART_ID");
+                    $brand_id           = $db->result($r, $i - 1, "BRAND_ID");
+                    $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
+                    $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+                    $article_name       = $db->result($r, $i - 1, "NAME");
+                    $suppl_id           = $db->result($r, $i - 1, "suppl_id");
+                    $stock              = intval($db->result($r, $i - 1, "AMOUNT"));
+                    $storage_id         = $db->result($r, $i - 1, "storage_id");
+                    $return_days        = $db->result($r, $i - 1, "return_delay");
+                    $format_name        = $this->getFormatAticle($article_nr_displ);
+
+                    // price
+                    $price = $this->getArticlePrice($art_id);
+                    if ($suppl_id != 0) {
+                        $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+                    }
+                    $price = $kours->getKoursPrice($price, $cur);
+                    if ($cur == 1) {
+                        $price = $client->getClientPriceRounding($client_id, $price);
+                    }
+                    $filter_price = $price;
+
+                    // delivery
+                    $deliveryData           = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
+                    $delivery_info          = $deliveryData["info"];
+                    $delivery_days          = $deliveryData["days"];
+                    $delivery_short_info    = $deliveryData["short"];
+
+                    if ($suppl_id != 0) {
+                        $deliveryData           = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
+                        $delivery_info          = $deliveryData["info"];
+                        $delivery_days          = $deliveryData["days"];
+                        $delivery_short_info    = $deliveryData["short"];
+                    }
+
+                    // filters
+                    if ($filter_price > $filters["max_price"]) {
+                        $filters["max_price"] = ceil($filter_price);
+                    }
+                    if ($filter_price < $filters["min_price"]) {
+                        $filters["min_price"] = ceil($filter_price);
+                    }
+                    if ($delivery_days > $filters["max_dd"]) {
+                        $filters["max_dd"] = $delivery_days;
+                    }
+
+                    // ORDER BY search art and suppl_id
+                    if (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search) {
+                        $status = 2;
+                    } else {
+                        $status = ($suppl_id == 0) ? 1 : 0;
+                    }
+
+                    // show articles with suppl_id=0 or with price!=0 and stock!=0
+                    if ($price != 0 || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
+                        if ($stock > 0 || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
+                            // visible suppl storage
+                            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+                                $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
+                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', '$article_name', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
+
+                                if ($art_id == $art_id_search) {
+                                    $main_brand = $brand_id;
+                                }
+
+                                if ($brand_name != "") {
+                                    if ($stock > 0 && $price > 0) {
+                                        $brands[$art_id]["brand_name"]  = $brand_name;
+                                        $brands[$art_id]["brand_id"]    = $brand_id;
+
+                                        if (!empty($brands[$art_id]["price"])) {
+                                            if ($price < $brands[$art_id]["price"]) {
+                                                $brands[$art_id]["price"] = $price;
+                                            }
+                                        } else {
+                                            $brands[$art_id]["price"] = $price;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ` ASC;");
+                $n = $db->num_rows($r);
+
+                if ($n == 1) {
+                    $stock = $db->result($r, 0, "stock");
+                    $price = $db->result($r, 0, "price");
+                    if ($stock == 0 && $price == 0) {
+                        $list = $this->getHtmlForm("error/nothing_found");
+                        $list = str_replace("{error_nothing_found}", $this->err1, $list);
+                        return array($list, "", "", 0);
+                    }
+                }
+
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id                 = $db->result($r, $i - 1, "art_id");
+                    $article_nr_displ       = $db->result($r, $i - 1, "article_nr_displ");
+                    $brand_id               = $db->result($r, $i - 1, "brand_id");
+                    $brand_name             = $db->result($r, $i - 1, "brand_name");
+                    $article_name           = $db->result($r, $i - 1, "article_name");
+                    $delivery_days          = $db->result($r, $i - 1, "delivery_days");
+                    $delivery_info          = $db->result($r, $i - 1, "delivery_info");
+                    $delivery_short_info    = $db->result($r, $i - 1, "delivery_short_info");
+                    $stock                  = $db->result($r, $i - 1, "stock");
+                    $price                  = $db->result($r, $i - 1, "price");
+                    $suppl_id               = $db->result($r, $i - 1, "suppl_id");
+                    $storage_id             = $db->result($r, $i - 1, "storage_id");
+                    $return_days            = $db->result($r, $i - 1, "return_days");
+                    $status                 = $db->result($r, $i - 1, "status");
+
+                    $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+                }
+
+                // delete temp table
+                $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$temp_key`;");
+
+                // get filter brand list
+                $list_brand = $this->getListBrand($brands, $main_brand, $cur);
+
+                // delete empty stocks and prices
+                $mas = $this->deleteEmptyPosition($mas);
+                $mas = $this->deleteSupplPosition($mas);
+                $mas = $this->deleteRepeatPosition($mas);
+
+                if (empty($mas)) {
+                    $list = $this->getHtmlForm("error/nothing_found");
+                    $list = str_replace("{error_nothing_found}", $this->err1, $list);
+                    return array($list, "", "", 0);
+                }
+
+                // sort by delivery and price
+                foreach ($mas as $mas_key => $mas_val) {
+                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "delivery_days", "price");
+                }
+
+                // sort like: first = min delivery, second = min price, else = default
+                $mas = $this->sortByMinStock($mas);
+
+                // show other storages
+                $other_storages = $this->showOtherStorages($mas, $cur, 0);
+
+                // show search list
+                $list = $this->outSearchList3($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages);
+            }
+
+            if (count($mas) < 1) {
+                $list                   = $error;
+                $list_brand             = "";
+                $filters                = [];
+                $filters["max_price"]   = 0;
+                $filters["max_dd"]      = 0;
+            }
+
+        }
+        return array($list, $list_brand, $filters);
+    }
+
+    /*
+     * CATALOG FILTER
+     * */
+    public function searchListFilter($where_art_id_str, $article_nr_search, $brand_filter, $cur, $price_min, $price_max, $del_min, $del_max, $brand_nr_search, $order_value)
+    {
+        $db = DbSingleton::getTokoDb();
+        $kours = new ExRateClass();
+        $client = new ClientClass();
+
+        session_start();
+        setcookie("currency", $cur);
+        $_SESSION["currency"] = $cur;
+
+        $view       = $client->getProductView();
+        $client_id  = $this->getClient();
+        $tpoint_id  = $this->getTpointID();
+        $mas        = $filters = $brands = $current_value = array();
+        $error      = $this->replaceLang("<h5 class=\"error_message\">$this->err1</h5>");
+        $list       = "$error";
+        $list_brand = "";
+
+        $filters["max_price"] = $filters["max_dd"] = $main_brand = $art_id_search = 0;
+
+        if ($article_nr_search != "") {
+            $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
+        }
+        $where_brands = $this->getFiltersSearch($brand_filter);
+
+        if ($where_art_id_str != "") {
+            $articlePrices      = $this->getArticlePrices($where_art_id_str);
+            $deliverInfo        = $this->getTpointDeliveryInfos($tpoint_id, $where_art_id_str);
+            $articleSupplPrices = $this->getArticleSupplPrices($where_art_id_str);
+            $supplDeliverInfo   = $this->getTpointSupplDeliveriesInfo($tpoint_id);
+
+            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands);
+            $n = $db->num_rows($r);
+
+            if ($where_brands == "") {
+                $rs = $r;
+                $ns = $n;
+            } else {
+                $rs = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
+                $ns = $db->num_rows($rs);
+            }
+
+            if ($ns > 0) {
+                // filters with default search
+                for ($i = 1; $i <= $ns; $i++) {
+                    $art_id             = $db->result($rs, $i - 1, "ART_ID");
+                    $brand_id           = $db->result($rs, $i - 1, "BRAND_ID");
+                    $brand_name         = $db->result($rs, $i - 1, "BRAND_NAME");
+                    $article_nr_displ   = $db->result($rs, $i - 1, "ARTICLE_NR_DISPL");
+                    $stock              = intval($db->result($rs, $i - 1, "AMOUNT"));
+                    $suppl_id           = $db->result($rs, $i - 1, "suppl_id");
+                    $storage_id         = $db->result($rs, $i - 1, "storage_id");
+                    $format_name        = $this->getFormatAticle($article_nr_displ);
+
+                    $price          = $articlePrices[$art_id] ?? 0;
+                    $delivery_days  = $deliverInfo[$storage_id]["delivery_days"] ?? 0;
+
+                    if ($suppl_id != 0) {
+                        $price          = $articleSupplPrices[$art_id][$suppl_id][$storage_id];
+                        $deliveryData   = $supplDeliverInfo[$suppl_id][$storage_id] ?? [
+                                "info"                  => $this->err2,
+                                "delivery_days"         => 0,
+                                "delivery_short_info"   => $this->err2
+                            ];
+                        $delivery_days = $deliveryData["delivery_days"];
+                    }
+
+                    $price = $kours->getKoursPrice($price, $cur);
+                    if ($cur == 1) {
+                        $price = $client->getClientPriceRounding($client_id, $price);
+                    }
+                    $filter_price = $price;
+
+                    if ($filter_price > $filters["max_price"]) {
+                        $filters["max_price"] = ceil($filter_price);
+                    }
+                    if ($delivery_days > $filters["max_dd"]) {
+                        $filters["max_dd"] = $delivery_days;
+                    }
+
+                    if ($price != 0 || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
+                        if ($stock > 0 || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
+                            if ($art_id == $art_id_search) {
+                                $main_brand = $brand_id;
+                            }
+                            if ($brand_name != "") {
+                                if ($stock > 0 && $price > 0) {
+                                    $brands[$art_id]["brand_name"]  = $brand_name;
+                                    $brands[$art_id]["brand_id"]    = $brand_id;
+
+                                    if (!empty($brands[$art_id]["price"])) {
+                                        if ($price < $brands[$art_id]["price"]) {
+                                            $brands[$art_id]["price"] = $price;
+                                        }
+                                    } else {
+                                        $brands[$art_id]["price"] = $price;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // get filter brand list
+            $list_brand = $this->getListBrand($brands, $main_brand, $cur, $brand_filter);
+
+            if ($n > 0) {
+                for ($i = 1; $i <= $n; $i++) {
+                    $art_id             = $db->result($r, $i - 1, "ART_ID");
+                    $brand_id           = $db->result($r, $i - 1, "BRAND_ID");
+                    $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
+                    $suppl_id           = $db->result($r, $i - 1, "suppl_id");
+                    $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+                    $article_name       = $db->result($r, $i - 1, "NAME");
+                    $return_days        = $db->result($r, $i - 1, "return_delay");
+                    $stock              = intval($db->result($r, $i - 1, "AMOUNT"));
+                    $storage_id         = $db->result($r, $i - 1, "storage_id");
+                    $format_name        = $this->getFormatAticle($article_nr_displ);
+
+                    $price = $articlePrices[$art_id] ?? 0;
+                    if ($suppl_id != 0) {
+                        $price = $articleSupplPrices[$art_id][$suppl_id][$storage_id];
+                    }
+                    $price = $kours->getKoursPrice($price, $cur);
+                    if ($cur == 1) {
+                        $price = $client->getClientPriceRounding($client_id, $price);
+                    }
+                    $filter_price = $price;
+
+                    $delivery_info          = $deliverInfo[$storage_id]["info"];
+                    $delivery_days          = $deliverInfo[$storage_id]["delivery_days"];
+                    $delivery_short_info    = $deliverInfo[$storage_id]["delivery_short_info"];
+
+                    if ($suppl_id != 0) {
+                        $deliveryData = $supplDeliverInfo[$suppl_id][$storage_id] ?? [
+                                "info"                  => $this->err2,
+                                "delivery_days"         => 0,
+                                "delivery_short_info"   => $this->err2
+                            ];
+                        $delivery_info          = $deliveryData["info"];
+                        $delivery_days          = $deliveryData["delivery_days"];
+                        $delivery_short_info    = $deliveryData["delivery_short_info"];
+                    }
+
+                    if ($filter_price > $filters["max_price"]) {
+                        $filters["max_price"] = ceil($filter_price);
+                    }
+                    $current_value["min_price"] = $price_min;
+                    $current_value["max_price"] = $price_max;
+                    $current_value["min_dd"]    = $del_min;
+                    $current_value["max_dd"]    = $del_max;
+
+                    if (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search) {
+                        $status = 2;
+                    } else {
+                        $status = ($suppl_id == 0) ? 1 : 0;
+                    }
+
+                    if (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search) {
+                        $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+                    }
+                    elseif ($stock > 0) {
+                        if ($price >= $price_min && $price <= $price_max && $delivery_days >= $del_min && $delivery_days <= $del_max) {
+                            $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+                        }
+                    }
+                }
+
+                // delete empty stocks and prices
+                $mas = $this->deleteEmptyPosition($mas);
+                $mas = $this->deleteSupplPosition($mas);
+                $mas = $this->deleteRepeatPosition($mas);
+
+                if (empty($mas)) {
+                    $list = $this->getHtmlForm("error/nothing_found");
+                    $list = str_replace("{error_nothing_found}", $this->err1, $list);
+                    return array($list, "", "", 0);
+                }
+
+                // sort by delivery and price
+                foreach ($mas as $mas_key => $mas_val) {
+                    $mas[$mas_key] = $this->multiSort($mas[$mas_key], "delivery_days", "price");
+                }
+
+                // sort like: first = min delivery, second = min price, else = default
+                $mas = $this->sortByMinStock($mas);
+
+                // show other storages
+                $other_storages = $this->showOtherStorages($mas, $cur, $view);
+
+                // show search list
+                FormClass::cacheArticlesPhotos($where_art_id_str);
+                FormClass::cacheInfoTemplates($where_art_id_str);
+                $list = $this->outSearchList3($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $order_value);
+            }
+
+            if (count($mas) == 0) {
+                $list = "$error";
+            }
+        }
+
+        return array($list, $filters, $list_brand, $current_value);
+    }
+
+    public function outSearchList3($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $order_value = "")
+    {
+        $cont   = $other_storages["content"];
+        $class  = $other_storages["class"];
+        $hide   = $other_storages["hide"];
+        $border = $other_storages["border"];
+        $none   = $other_storages["none"];
+
+        $i = 0;
+        if (!empty($mas)) {
+            $list = $this->drawHeaderSearchList(0, $order_value) . $list;
+
+            foreach ($mas as $mas_key => $mas_val) {
+                foreach ($mas_val as $key => $val) {
+                    $art_id     = $mas_key;
+                    $art_nr_ds  = $val["article_nr_displ"];
+                    $brand_id   = $val["brand_id"];
+                    $brand_name = $val["brand_name"];
+                    $art_name   = $val["article_name"];
+                    $stock      = $val["stock"];
+                    $del_info   = $val["delivery_info"];
+                    $price      = $val["price"];
+                    $del_days   = $val["delivery_days"];
+                    $del_short  = $val["delivery_short_info"];
+                    $suppl_id   = $val["suppl_id"];
+                    $ret_days   = $val["return_days"];
+                    $storage_id = $val["storage_id"];
+                    $os         = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
+
+                    $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                    $i++;
+                }
+            }
+
+            $list .= "</div>";
+        } else {
+            $list = "$error";
+        }
+
+        return $list;
+    }
+
+    public function printSearchList3($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $delivery_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id)
+    {
+        $showform   = new FormClass();
+        $kours      = new ExRateClass();
+        $client     = new ClientClass();
+        $shop       = new ShopClass();
+
+        $cur                = $this->getCurrentExrate();
+        $kours_cap          = $this->getSymbolExrate($cur);
+        $format_name        = $this->getFormatAticle($article_nr_displ);
+        $format_brand_link  = $this->getBrandLink($brand_id);
+        $return_days_alt    = $return_days_img = "";
+
+        if ($suppl_id > 0) {
+            if ($return_days == 0) {
+                $return_days_alt = "{no_exchange}";
+                $return_days_img = $this->images . "/exchange/exchange2.png";
+            }
+            elseif ($return_days == 14) {
+                $return_days_alt = "";
+                $return_days_img = "";
+            }
+            elseif ($return_days >= 15) {
+                $return_days_alt = "{return_within} $return_days {days_cap}";
+                $return_days_img = $this->images . "/exchange/exchange1.png";
+            } else {
+                $return_days_alt = "{return_within} $return_days {days_cap}";
+                $return_days_img = $this->images . "/exchange/exchange3.png";
+            }
+        }
+
+        if (!($this->checkActionPrice($art_id))) {
+            $action_form    = "";
+            $action_count   = "";
+        }
+        else {
+            list(, $action_amount, $action_price, $action_max_amount, $action_data) = $this->checkActionPrice($art_id);
+            $action_price = $kours->getKoursFromUSA($action_price, $cur);
+            if ($cur == 1) {
+                $action_price = $client->getClientPriceRounding($this->getClient(), $action_price);
+            }
+            $action_form = $this->getHtmlForm("search/action_box");
+            $action_form = str_replace("{action_price}", $action_price, $action_form);
+            $action_form = str_replace("{action_amount}", $action_amount, $action_form);
+            $action_form = str_replace("{action_data}", ($action_data > 0) ? date("d.m.Y", strtotime($action_data)) : "{indefinitely_cap}", $action_form);
+            $action_form = str_replace("{action_max_amount}", ($action_max_amount > 0) ? "{yes_cap}" : "{no_cap}", $action_form);
+            $action_form = str_replace("{cur_cap}", $kours_cap, $action_form);
+            $action_count = "oninput=\"changeActionCount('$id', '$action_price', '$action_amount');\"";
+        }
+
+        $form = $this->getHtmlForm("product_card");
+
+        $form = str_replace("{product_i}", $id, $form);
+        $form = str_replace("{art_id}", $art_id, $form);
+        $form = str_replace("{brand_id}", $brand_id, $form);
+        $form = str_replace("{product_name}", $article_nr_displ, $form);
+        $form = str_replace("{product_brand}", $brand_name, $form);
+//        $form = str_replace("{product_format_name}", $format_name, $form);
+//        $form = str_replace("{product_format_brand}", $this->getFormatBrand($brand_name), $form);
+        $form = str_replace("{page_product_link}", $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/", $form);
+//        $form = str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
+
+        $product_text = ($article_name == "") ? "{details_name_cap}" : $article_name;
+        $format_product_text = ($article_name == "") ? "{details_name_cap}" : $this->formatArticleName($article_name);
+
+        $form = str_replace("{product_text}", $product_text, $form);
+        $form = str_replace("{format_product_text}", $format_product_text, $form);
+        $form = str_replace("{product_stock}", ($suppl_id == 0) ? ($stock > 10 ? ">10" : $stock) : $stock, $form);
+        $form = str_replace("{product_real_stock}", $stock, $form);
+        $form = str_replace("{product_storage_id}", $storage_id, $form);
+        $form = str_replace("{product_suppl_id}", $suppl_id, $form);
+
+        $form = str_replace("{return_days_img}", $return_days_img, $form);
+        $form = str_replace("{return_days_alt}", $return_days_alt, $form);
+        $form = str_replace("{return_display}", ($return_days == 14 || $return_days_img == "") ? "none" : "", $form);
+
+        $form = str_replace("{photo_src}", $showform->getArticleActivePhoto($art_id), $form);
+        $form = str_replace("{photo_display}", $this->checkPhoto($art_id) ? "" : "none", $form);
+        $form = str_replace("{product_main_photo}", ($showform->getArticlePhoto($art_id) == "") ? $this->noPhoto : $showform->getArticlePhoto($art_id), $form);
+
+        $delivery_info = str_replace('"', "", $delivery_info);
+        $form = str_replace("{product_del}", $delivery_info, $form);
+        $form = str_replace("{product_dd}", $delivery_days, $form);
+        $form = str_replace("{product_delivery_class}", "", $form);
+        $delivery_short_info = str_replace("<br>", " ", $delivery_short_info);
+        if ($delivery_days == 0 && $suppl_id == 0) {
+            $delivery_short_info = "<span class='delivery-green'>{send_done}</span>";
+        }
+        $form = str_replace("{product_delivery_short_info}", $delivery_short_info, $form);
+
+        $form = str_replace("{product_price}", $price . " $kours_cap", $form);
+        $form = str_replace("{product_true_price}", $price, $form);
+        $form = str_replace("{product_kours_cap}", $kours_cap, $form);
+
+        $form = str_replace("{product_action}", $action_form, $form);
+        $form = str_replace("{product_action_count}", $action_count, $form);
+        $form = str_replace("{product_title_del}", str_replace("<br>", " ", $delivery_info), $form);
+        $form = str_replace("{analog_display}", (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && ($brand_id == $brand_nr_search)) ? "none" : "", $form);
+        $form = str_replace("{product_barcode}", $this->getBarcode($art_id), $form);
+
+        $form = str_replace("{style_border}", $os["border"], $form);
+        $form = str_replace("{style_class}", $os["class"], $form);
+        $form = str_replace("{style_none}", $os["none"], $form);
+        $form = str_replace("{style_hide}", $os["hide"], $form);
+
+        $flagData = $showform->getCountryFlag($brand_id);
+        $form = str_replace("{country_display}", (!$flagData) ? "none" : "", $form);
+        $form = str_replace("{flag_image}", $flagData["flag"], $form);
+        $form = str_replace("{country_name}", $flagData["country"], $form);
+        $form = str_replace("{instock}", ($suppl_id == 0) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "", $form);
+        $form = str_replace("{index_type}", $this->getIndexTypeImage($art_id, $article_nr_search, $article_nr_displ, $format_name, $brand_id, $brand_nr_search), $form);
+//        $form = str_replace("{count_users}", $client->getUsersCount(), $form);
+//        $form = str_replace("{data_today}", date("Y-m-d"), $form);
+        $form = str_replace("{tpoint_full_name}", ($suppl_id == 0) ? $client->getArticleStorageTPoint($storage_id) : "", $form);
+
+        $form = str_replace("{product_info}", $showform->getArticleInfoForm($art_id, 1), $form);
+//        $form = str_replace("{product_button}", ($price == 0) ? "none" : "", $form);
+
+//        $photoData = $showform->getArticleCatalogPhoto($art_id, $brand_id);
+//        $form = str_replace("{product_image}", $photoData["photo_name"], $form);
+//        $form = str_replace("{product_image_class}", ($photoData["status"] == 0) ? "" : "filter-bw", $form);
+
+//        $form = str_replace("{product_title}", "$article_name $brand_name $article_nr_displ", $form);
+
+        $basket_amount = $shop->getBasketArticleAmount($art_id, $storage_id);
+        $form = str_replace("{basket_amount}", ($basket_amount > 0) ? "{site_basket}: $basket_amount {amount_abbr}." : "", $form);
+
+//        if ($this->checkT2Link($this->getCookieAuto(), $art_id)) {
+//            $form = str_replace("{product_auto_appl}", "{is_applicable}", $form);
+//        } else {
+//            $form = str_replace("{product_auto_appl}", "", $form);
+//        }
+
+//        if ($stock == "0") {
+//            $form = str_replace("{price_row_status}", "none", $form);
+//            $form = str_replace("{soldout_row_status}", "", $form);
+//        }
+
+//        if ($status) {
+//            $form = str_replace("{price_row_status}", "", $form);
+//            $form = str_replace("{soldout_row_status}", "none", $form);
+//        } else {
+//            $form = str_replace("{price_row_status}", "none", $form);
+//            $form = str_replace("{soldout_row_status}", "", $form);
+//        }
+
+//        $auto_typ_id = $this->getCookieAuto();
+//        if ($auto_typ_id != "") {
+//            if ($this->checkT2Link($auto_typ_id, $art_id)) {
+//                $form = str_replace("{applicable_display}", "applicable-active", $form);
+//                $form = str_replace("{applicable_display_text}", "{is_applicable}", $form);
+//                $form = str_replace("{applicable_onclick}", "", $form);
+//            } else {
+//                $form = str_replace("{applicable_display}", "", $form);
+//                $form = str_replace("{applicable_display_text}", "{is_didnt_applicable}", $form);
+//                $form = str_replace("{applicable_onclick}", "", $form);
+//            }
+//        }
+
+//        $form = str_replace("{applicable_display}", "", $form);
+//        $form = str_replace("{applicable_display_text}", "{is_not_applicable}", $form);
+//        $form = str_replace("{applicable_onclick}", "toggleNavMob();", $form);
+
+        $list = "$form";
+        $list .= $os["content"];
+
+        $list = $this->replaceLang($list);
+
+        return $list;
+    }
+
+}
+
+function keywordCmp($a, $b) {
+    if ($a["str_count"] == $b["str_count"]) return 0;
+    return $a["str_count"] < $b["str_count"] ? 1 : -1;
+}
+
+function myBrandCmp($a, $b) {
+    if ($a["count"] == $b["count"]) return 0;
+    return $a["count"] < $b["count"] ? 1 : -1;
+}

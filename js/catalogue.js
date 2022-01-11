@@ -72,7 +72,7 @@ function shortSearchList() {
 function shortArticleOE() {
     let art_id = $("#art_id").val();
 
-    JsHttpRequest.query(folder,{'w':'shortArticleOE', 'art_id':art_id},
+    JsHttpRequest.query(folder,{'w':'getOriginalNumbers', 'art_id':art_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#oe_form").html(result.content);
         }}, true);
@@ -81,7 +81,7 @@ function shortArticleOE() {
 function shortArticleApplicable() {
     let art_id = $("#art_id").val();
 
-    JsHttpRequest.query(folder,{'w':'shortArticleApplicable', 'art_id':art_id},
+    JsHttpRequest.query(folder,{'w':'getArticleApplicableForm', 'art_id':art_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#applicable_form").html(result.content);
         }}, true);
@@ -108,7 +108,7 @@ function showInfoForm(art_id) {
 
 // Modal `Photo Gallery`
 function showPhotoGallery(ref) {
-    JsHttpRequest.query(folder,{'w':'showPhotoForm', 'ref':ref},
+    JsHttpRequest.query(folder,{'w':'showPhotoGallery', 'ref':ref},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             $("#photo_gallery").html(result.content);
             $("#PhotoForm").modal("toggle");
@@ -308,7 +308,7 @@ function deleteAutoGarage(auto_id) {
 // UPDATE GARAGE STATUS
 function showGarageStatus() {
     let status1 = $("#garage_status");
-    JsHttpRequest.query(folder,{'w':'updateGarageStatus'},
+    JsHttpRequest.query(folder,{'w':'getGarageAutoCount'},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content[0] !== "") {
                 status1.addClass("show").removeClass("none").html(result.content);
@@ -370,15 +370,15 @@ function changeActionCount(i, action_price, action_amount) {
 }
 
 // TOGGLE VIEW (CARD / TABLE)
-function toggleProductView(ds) {
-    JsHttpRequest.query(folder,{ 'w': 'toggleProductView', 'ds':ds},
-        function (result, errors){ if (errors) {} if (result){
-            let type_search = $("#type_search").val();
-            if (type_search === "1") {
-                catalogueFilter();
-            }
-        }}, true);
-}
+// function toggleProductView(ds) {
+//     JsHttpRequest.query(folder,{ 'w': 'toggleProductView', 'ds':ds},
+//         function (result, errors){ if (errors) {} if (result){
+//             let type_search = $("#type_search").val();
+//             if (type_search === "1") {
+//                 catalogueFilter();
+//             }
+//         }}, true);
+// }
 
 function setCatalogFilters() {
     let cat_filters = $("#catalog-filters");

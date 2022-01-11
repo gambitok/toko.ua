@@ -1823,4 +1823,91 @@ class ShopClass extends CatalogueClass
         return $list;
     }
 
+
+    public function getSearchCityForm()
+    {
+        $form = $this->getHtmlForm("orders/city_dropdown");
+        $form = str_replace("{selected_id}", 0, $form);
+        $form = str_replace("{selected_name}", "-{not_chosen}-", $form);
+        $form = str_replace("{select_list}", $this->searchCityMain(), $form);
+        return $form;
+    }
+
+    public function searchCityMain()
+    {
+        $lang_id = $this->getLanguage();
+        $postfix = "";
+        if ($lang_id == 1 || $lang_id == 3) {
+            $postfix = "_RU";
+        }
+        $list = "";
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `STATUS` = 1 ORDER BY `CITY_NAME_CLEAR_RU` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $city_id = $db->result($r, $i - 1, "CITY_ID");
+            $city_name1 = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
+            $city_name2 = $db->result($r, $i - 1, "CITY_NAME_CLEAR_RU");
+
+            $region_name = $db->result($r, $i - 1, "REGION_NAME");
+            $region_name2 = $db->result($r, $i - 1, "REGION_NAME_RU");
+            $state_name = $db->result($r, $i - 1, "STATE_NAME");
+            $state_name2 = $db->result($r, $i - 1, "STATE_NAME_RU");
+
+            if ($region_name == "") {
+                $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
+                $city_fname = "$city_name1 $city_name2";
+            } else {
+                $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix") . " ($state_name обл., $region_name р-он)";
+                $city_fname = "$city_name1 ($state_name обл., $region_name р-он) - $city_name2 ($state_name2 обл., $region_name2 р-он)";
+            }
+
+            $list .= "
+            <li class=\"select3-list__item\" data-id=\"$city_id\" data-text=\"$city_fname\" data-name=\"$city_name\" onclick=\"selectCity(this);\">$city_name</li>";
+        }
+        return $list;
+    }
+
+    public function searchCity($text)
+    {
+        $lang_id = $this->getLanguage();
+        $postfix = "";
+        if ($lang_id == 1 || $lang_id == 3) {
+            $postfix = "_RU";
+        }
+        $list = "";
+        $text = $this->getNameString($text);
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR` LIKE \"$text%\" OR `CITY_NAME_CLEAR_RU` LIKE \"$text%\" ORDER BY `STATUS` DESC, `CITY_ID` ASC;");
+        $n = $db->num_rows($r);
+
+        if ($n > 0) {
+            for ($i = 1; $i <= $n; $i++) {
+                $city_id = $db->result($r, $i - 1, "CITY_ID");
+                $city_name1 = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
+                $city_name2 = $db->result($r, $i - 1, "CITY_NAME_CLEAR_RU");
+
+                $region_name = $db->result($r, $i - 1, "REGION_NAME");
+                $region_name2 = $db->result($r, $i - 1, "REGION_NAME_RU");
+                $state_name = $db->result($r, $i - 1, "STATE_NAME");
+                $state_name2 = $db->result($r, $i - 1, "STATE_NAME_RU");
+
+                if ($region_name == "") {
+                    $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
+                    $city_fname = "$city_name1 $city_name2";
+                } else {
+                    $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix") . " ($state_name обл., $region_name р-он)";
+                    $city_fname = "$city_name1 ($state_name обл., $region_name р-он) - $city_name2 ($state_name2 обл., $region_name2 р-он)";
+                }
+
+                $list .= "
+            <li class=\"select3-list__item\" data-id=\"$city_id\" data-text=\"$city_fname\" data-name=\"$city_name\" onclick=\"selectCity(this);\">$city_name</li>";
+            }
+        } else {
+            $list = $this->replaceLang("<li class=\"select3-list__item\">-{nothing_found}-</li>");
+        }
+
+        return $list;
+    }
+
 }

@@ -2519,6 +2519,7 @@ class CatalogExistClass extends CatalogueClass
 
     public function getPartsCatalogueStates($group_id)
     {
+        $menu = new MenuClass();
         $db = DbSingleton::getTokoDb();
         $list = "";
         if ($group_id > 0) {
@@ -2537,7 +2538,7 @@ class CatalogExistClass extends CatalogueClass
             for ($i = 1; $i <= $n; $i++) {
                 $review_id      = $db->result($r, $i - 1, "ID");
                 $review_title   = $db->result($r, $i - 1, "TITLE_$postfix");
-                $transcript     = $this->formatUrlText($review_title);
+                $transcript     = $menu->formatUrlText($review_title);
                 $link           = "/reviews/state/$review_id/$transcript/";
                 $list .= "
                 <div class=\"reviews-list__item\">
@@ -2598,11 +2599,12 @@ class CatalogExistClass extends CatalogueClass
             ];
 
             if ($cat_id > 0) {
-                $cat_name = $this->getCatRowName($cat_id);
+                $catData = $this->getCatRowData($cat_id);
+                $cat_name   = $catData["cat_name"];
+                $cat_link   = $catData["cat_link"];
                 if ($head_id == 1) {
                     $cat_name .= " - " . $this->getHeadRowName($head_id);
                 }
-                $cat_link = $this->getCatRowLink($cat_id);
                 $arr[] = [
                     "name" => "$cat_name",
                     "link" => $this->getSiteLink() . "$this->catalog_link/$head_link/$cat_link/"
@@ -2638,7 +2640,7 @@ class CatalogExistClass extends CatalogueClass
 
     public function showGroupCatForm($head_id, $cat_id)
     {
-        $h1_text = $this->getCatRowName($cat_id);
+        $h1_text = $this->getCatRowData($cat_id)["cat_name"];
         if ($head_id == 1) {
             $h1_text .= " - " . $this->getHeadRowName($head_id);
         }

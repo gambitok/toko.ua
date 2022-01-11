@@ -321,7 +321,7 @@ class ClientClass
     /*
      * edit profile data
      * */
-    public function updateProfile($phone, $pass, $email, $name)
+    public function saveProfile($phone, $pass, $email, $name)
     {
         $db = DbSingleton::getDbm();
         $phone  = $this->getUrlString($phone);
@@ -802,16 +802,16 @@ class ClientClass
      * setting the type of display of goods
      * Session: 'display_status'
      * */
-    public function toggleProductView($ds)
-    {
-        $ds = $this->getUrlNumber($ds);
-        session_start();
-        $_SESSION["display_status"] = $ds;
-        if ($ds != 0 && $ds != 1) {
-            $_SESSION["display_status"] = 0;
-        }
-        return $_SESSION["display_status"];
-    }
+//    public function toggleProductView($ds)
+//    {
+//        $ds = $this->getUrlNumber($ds);
+//        session_start();
+//        $_SESSION["display_status"] = $ds;
+//        if ($ds != 0 && $ds != 1) {
+//            $_SESSION["display_status"] = 0;
+//        }
+//        return $_SESSION["display_status"];
+//    }
 
     /*
      * getting the type of display of goods

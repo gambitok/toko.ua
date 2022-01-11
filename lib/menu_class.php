@@ -964,7 +964,7 @@ class MenuClass extends CatalogueClass
                 $list .= "
                 <div class=\"menu-bar-cat\">";
                 foreach ($arr as $cat_id => $groups) {
-                    $cat_name = $this->getCatRowName($cat_id);
+                    $cat_name = $this->getCatRowData($cat_id)["cat_name"];
                     $icon = "";
                     if ($cat_id == 0) {
                         $icon = "<span style=\"color: #f44438; margin-right: 5px;\">o</span>";
@@ -1171,6 +1171,217 @@ class MenuClass extends CatalogueClass
         $list .= "
         </ul>";
         return $list;
+    }
+
+    // get catalog links
+    public function getGroupsList()
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+        $r = $db->query("SELECT `GROUP_ID`, `TEX_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY `TEX_RU` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id   = $db->result($r, $i - 1, "GROUP_ID");
+            $group_name = $db->result($r, $i - 1, "TEX_RU");
+
+            $list .= "
+            <option value=\"$group_id\">$group_name</option>";
+        }
+        return $list;
+    }
+    public function getGroupsListValues($group_id = 0)
+    {
+        $db = DbSingleton::getTokoDb();
+        $list = "
+        <option value='0'>-не вибрано-</option>";
+        $r = $db->query("SELECT `VALUE_ID`, `VALUE_NAME`, `PARAM_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id ORDER BY `VALUE_NAME` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $value_id   = $db->result($r, $i - 1, "VALUE_ID");
+            $param_id   = $db->result($r, $i - 1, "PARAM_ID");
+            $value_name = $db->result($r, $i - 1, "VALUE_NAME");
+
+            $list .= "
+            <option value=\"$value_id\" data-value-param=\"$param_id\">$value_name</option>";
+        }
+        return $list;
+    }
+    public function getGroupsLinks($group_id = 0, $param_id = 0, $value_id = 0)
+    {
+        $dbc = DbSingleton::getTokoCacheDb();
+        $group_link = $this->getGroupRowLink($group_id);
+        $list = "";
+        $count = 0;
+        if ($group_id > 0) {
+            $list = "
+            <table class='table'>";
+            $list .= "
+            <thead><tr>
+                <th>#</th>
+                <th>link</th>
+                <th>count</th>
+                <th>seo</th>
+            </tr></thead><tbody>";
+
+            if ($value_id == 0) {
+                $r = $dbc->query("SELECT `mfa_id`, `model`, COUNT(`art_id`) as count_arts  FROM `EX_TABLE_TREE_MFA_$group_id` WHERE 1 GROUP BY `mfa_id`, `model`;");
+                $n = $dbc->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    $mfa_id = $dbc->result($r, $i - 1, "mfa_id");
+                    $model = $dbc->result($r, $i - 1, "model");
+                    $count_arts = $dbc->result($r, $i - 1, "count_arts");
+
+                    if ($mfa_id > 0) {
+                        $mfa_link   = $this->getManufactureLink($mfa_id);
+                        $model_link = $this->getModelLink($model);
+                        $link_cat   = "$group_link/auto/$mfa_link/$model_link";
+                        $link       = "https://toko.ua/catalog/$link_cat/";
+                        $seo_status = intval($this->checkSeoText("catalog", $link_cat));
+                        $count++;
+
+                        $list .= "
+                        <tr>
+                            <td>$count</td>
+                            <td>$link</td>
+                            <td>$count_arts</td>
+                            <td>$seo_status</td>
+                        </tr>";
+                    }
+                }
+            } else {
+                $param_link = $this->getParamLink($param_id);
+                $value_link = $this->getValueLink($value_id);
+
+                $r = $dbc->query("SELECT COUNT(tm.`art_id`) as count_arts 
+                FROM `EX_TABLE_TREE_PARAMS_$group_id` tp
+                    LEFT JOIN `EX_TABLE_TREE_$group_id` tm ON (tm.art_id = tp.art_id)
+                WHERE (tp.`param_$param_id` = '$value_id' OR tp.`param_$param_id` LIKE '%,$value_id%' OR tp.`param_$param_id` LIKE '%$value_id,%');");
+                $count_arts = $dbc->result($r, 0, "count_arts");
+                $link_cat   = "$group_link/$param_link=$value_link";
+                $link       = "https://toko.ua/catalog/$link_cat/";
+                $seo_status = intval($this->checkSeoText("catalog", $link));
+                $count++;
+
+                $list .= "    
+                <tr>
+                    <td>$count</td>
+                    <td>$link</td>
+                    <td>$count_arts</td>
+                    <td>$seo_status</td>
+                </tr>";
+
+                $r = $dbc->query("SELECT tm.`mfa_id`, COUNT(tm.`art_id`) as count_arts 
+                FROM `EX_TABLE_TREE_PARAMS_$group_id` tp
+                    LEFT JOIN `EX_TABLE_TREE_MFA_$group_id` tm ON (tm.art_id = tp.art_id)
+                WHERE (tp.`param_$param_id` = '$value_id' OR tp.`param_$param_id` LIKE '%,$value_id%' OR tp.`param_$param_id` LIKE '%$value_id,%')
+                GROUP BY tm.`mfa_id`;");
+                $n = $dbc->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    $mfa_id     = $dbc->result($r, $i - 1, "mfa_id");
+                    $count_arts = $dbc->result($r, $i - 1, "count_arts");
+
+                    if ($mfa_id > 0) {
+                        $mfa_link   = $this->getManufactureLink($mfa_id);
+                        $link_cat   = "$group_link/$param_link=$value_link/$mfa_link";
+                        $link       = "https://toko.ua/catalog/$link_cat/";
+                        $seo_status = intval($this->checkSeoText("catalog", $link));
+                        $count++;
+
+                        $list .= "
+                        <tr>
+                            <td>$count</td>
+                            <td>$link</td>
+                            <td>$count_arts</td>
+                            <td>$seo_status</td>
+                        </tr>";
+                    }
+                }
+
+                $r = $dbc->query("SELECT tm.`mfa_id`, tm.`model`, COUNT(tm.`art_id`) as count_arts 
+                FROM `EX_TABLE_TREE_PARAMS_$group_id` tp
+                    LEFT JOIN `EX_TABLE_TREE_MFA_$group_id` tm ON (tm.art_id = tp.art_id)
+                WHERE (tp.`param_$param_id` = '$value_id' OR tp.`param_$param_id` LIKE '%,$value_id%' OR tp.`param_$param_id` LIKE '%$value_id,%')
+                GROUP BY tm.`mfa_id`, tm.`model`;");
+                $n = $dbc->num_rows($r);
+                for ($i = 1; $i <= $n; $i++) {
+                    $mfa_id     = $dbc->result($r, $i - 1, "mfa_id");
+                    $model      = $dbc->result($r, $i - 1, "model");
+                    $count_arts = $dbc->result($r, $i - 1, "count_arts");
+
+                    if ($mfa_id > 0) {
+                        $mfa_link   = $this->getManufactureLink($mfa_id);
+                        $model_link = $this->getModelLink($model);
+                        $link_cat   = "$group_link/$param_link=$value_link/$mfa_link/$model_link";
+                        $link       = "https://toko.ua/catalog/$link_cat/";
+                        $seo_status = intval($this->checkSeoText("catalog", $link));
+                        $count++;
+
+                        $list .= "
+                        <tr>
+                            <td>$count</td>
+                            <td>$link</td>
+                            <td>$count_arts</td>
+                            <td>$seo_status</td>
+                        </tr>";
+                    }
+                }
+            }
+
+            if ($count == 0) {
+                $list .= "
+                <tr><td colspan='4'>" . $this->replaceLang('{nothing_found}') . "</td></tr>";
+            }
+
+            $list .= "
+            </tbody></table>";
+        }
+        return $list;
+    }
+
+    /*
+     * Tree List Headers
+     * */
+    public function getSiteNavigation()
+    {
+        $db = DbSingleton::getTokoDb();
+        $form = $this->getHtmlForm("main/navigation");
+        $list = "";
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $head_id    = $db->result($r, $i - 1, "HEAD_ID");
+            $head_name  = $this->getHeadRowName($head_id);
+            $head_link  = $this->getHeadRowLink($head_id);
+
+            $list .= "
+            <li class=\"header-nav__li\" data-nav-id=\"$head_id\">
+                <a rel=\"noopener\" href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/\">$head_name</a>
+            </li>";
+        }
+        $form = str_replace("{catalog_range}", $list, $form);
+        return $form;
+    }
+
+    public function checkSeoText($router, $link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `CONTENT_RU` FROM `T2_SEO_TEXT` WHERE `ROUTER` = '$router' AND `LINK` = '$link' LIMIT 1;");
+        $content_ru = $db->result($r, 0, "CONTENT_RU");
+        return ($content_ru != "");
+    }
+
+    /*
+    * format text for URL
+    * */
+    public function formatUrlText($str)
+    {
+        $format_text = mb_convert_encoding($str, "UTF-8", "Windows-1251");
+        $format_text = $this->translit($format_text);
+        $format_text = str_replace(str_split('.,+-\/:*?"<>|_'), "", $format_text);
+        $format_text = str_replace(" ", "-", $format_text);
+        $format_text = str_replace("'", "", $format_text);
+        $format_text = mb_strtolower($format_text);
+        return $format_text;
     }
 
 }

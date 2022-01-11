@@ -64,7 +64,7 @@ function saveProfileForm() {
     }
 
     if ((phone !== "") && (pass !== "") && (name !== "") && (email !== "")) {
-        JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone, 'type':1},
+        JsHttpRequest.query(folder,{'w':'checkRegClient', 'phone':phone, 'type':1},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 if (result.content !== false) {
                     let text = "{user_already_logged}!<br>{phone_cap}: " + result.content[0];
@@ -110,7 +110,7 @@ function saveRegistrationForm() {
     }
 
     if ((phone !== "") && (pass !== "") && (pass === pass2) && (name !== "") && (city_id !== undefined)) {
-        JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
+        JsHttpRequest.query(folder,{'w':'checkRegClient', 'phone':phone},
             function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content !== false) {
                 let text = "{user_already_logged}!<br>{client_login}: " + result.content[0];
@@ -266,7 +266,7 @@ function showProfilePrice() {
 function recoverPassword() {
     let phone = $("#recover_phone").val();
 
-    JsHttpRequest.query(folder,{'w':'check_reg_client', 'phone':phone},
+    JsHttpRequest.query(folder,{'w':'checkRegClient', 'phone':phone},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             if (result.content !== false) {
                 recoverPasswordNext();

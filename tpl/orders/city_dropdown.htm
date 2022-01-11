@@ -5,7 +5,7 @@
         <input type="checkbox" id="select3">
         <div class="select3-form">
             <div class="select3-search">
-                <input type="text" placeholder="Input something...">
+                <input type="text" id="select3-search" onkeyup="searchCity()" placeholder="{search_cap}.." title="{search_cap}..">
             </div>
             <ul id="select3-list" class="select3-list">
                 {select_list}
@@ -15,7 +15,64 @@
 </div>
 
 <script>
+    // function myFunction() {
+    //     var input, filter, ul, li, i, txtValue;
+    //     input = document.getElementById("select3-search");
+    //     filter = input.value.toUpperCase();
+    //     ul = document.getElementById("select3-list");
+    //     li = ul.getElementsByTagName("li");
+    //     for (i = 0; i < li.length; i++) {
+    //         // a = li[i].getElementsByTagName("a")[0];
+    //         // txtValue = a.textContent || a.innerText;
+    //         txtValue = li[i].getAttribute("data-text");
+    //
+    //         if (txtValue.toUpperCase().indexOf(filter) > -1) {
+    //             li[i].style.display = "";
+    //         } else {
+    //             li[i].style.display = "none";
+    //         }
+    //     }
+    // }
 
+    function searchCity() {
+        let text = $("#select3-search").val();
+        let len  = text.length;
+        if (len === 0) {
+            JsHttpRequest.query(folder, {'w': 'searchCityMain'},
+                function (result, errors) {
+                    if (errors) {
+                        alert(errors);
+                    }
+                    if (result) {
+                        $("#select3-list").html(result.content);
+                    }
+                }, true);
+        }
+
+        if (len > 2) {
+            JsHttpRequest.query(folder, {'w': 'searchCity', 'text': text},
+                function (result, errors) {
+                    if (errors) {
+                        alert(errors);
+                    }
+                    if (result) {
+                        $("#select3-list").html(result.content);
+                    }
+                }, true);
+        }
+    }
+
+    function selectCity(el) {
+        let city_id = $(el).attr("data-id");
+        let city_name = $(el).attr("data-name");
+        // $(".select3-list__item").each(function () {
+        //     $(this).removeClass("select3-list__item-active");
+        // });
+        // el.addClass("select3-list__item-active");
+        $("#select3-selected").val(city_id);
+        $("#select3-label").text(city_name);
+        $("#select3").trigger('click');
+    }
 </script>
 
 

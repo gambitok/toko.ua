@@ -416,6 +416,79 @@ class FormClass extends CatalogueClass
         return compact("form", "title", "description", "breadcrumbs", "real_stock");
     }
 
+    public function getSlideProPhoto($art_id, $brand_id, $h1)
+    {
+        $db = DbSingleton::getTokoDb();
+        $status = 0;
+        $slide = $thumbnail = "";
+        $arr = [];
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` 
+        WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `ID` ASC;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $photo = $db->result($r, $i - 1, "PHOTO_NAME");
+            if ($photo != "") {
+                $arr[] = [
+                    "type"  => "catalogue",
+                    "photo" => $photo
+                ];
+            }
+        }
+
+        $client = new ClientClass();
+        $nn = 0;
+        if ($client->checkRetailClientCategory($this->getClient()) && $brand_id > 0) {
+            $date_cur = date("Y-m-d");
+            $r = $db->query("SELECT `photo_link` FROM `T2_CERTIFICATES` 
+            WHERE `brand_id` = $brand_id AND `date_from` <= '$date_cur' AND `date_to` >= '$date_cur' AND `status` = 1;");
+            $nn = $db->num_rows($r);
+            for ($i = 1; $i <= $nn; $i++) {
+                $photo = $db->result($r, $i - 1, "photo_link");
+                $arr[] = [
+                    "type"  => "certificates",
+                    "photo" => $photo
+                ];
+            }
+        }
+
+        if ($n > 0 || $nn > 0) {
+            $i = 0;
+            foreach ($arr as $value) {
+                $i++;
+                $photo  = $value["photo"];
+                $type   = $value["type"];
+                $status = 1;
+
+                $slide .= "
+                <div class=\"sp-slide\">
+                    <img class=\"sp-image\" 
+                        src=\"https://toko.ua/resize_image.php?image=$photo&w=633&h=0&type=$type\"
+                        alt=\"$h1 - {photo_card_cap} #$i\"
+                        title=\"$h1 - {photo_card_cap} #$i\"/>
+                </div>";
+
+                $thumbnail .= "
+                <div class=\"sp-thumbnail\">
+                    <div class=\"sp-thumbnail-image-container\">
+                        <img class=\"sp-image sp-thumbnail-image\" 
+                            src=\"https://toko.ua/resize_image.php?image=$photo&w=100&h=80&type=$type\"
+                            alt=\"$h1 - {photo_card_cap} #$i\"/>
+                    </div>
+                </div>";
+            }
+        } else {
+            $slide      = "";
+            $thumbnail  = "";
+            $status     = 0;
+        }
+
+        return array(
+            "slide"     => $slide,
+            "thumbnail" => $thumbnail,
+            "status"    => $status
+        );
+    }
+
     public function getHistoryArts()
     {
         $client = new ClientClass();
@@ -1197,6 +1270,53 @@ class FormClass extends CatalogueClass
         return $this->replaceLang($form);
     }
 
+    /*
+    * get original numbers form
+    * */
+    public function getOriginalNumbers($art_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT t2c.DISPLAY_NR, t2b.BRAND_NAME 
+        FROM `T2_CROSS` t2c
+            LEFT JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID)
+        WHERE t2c.KIND = 3 AND t2c.RELATION = 0 AND t2c.ART_ID = $art_id;");
+        $n = $db->num_rows($r);
+        $arr = [];
+        if ($n > 0) {
+            for ($i = 1; $i <= $n; $i++) {
+                $art_name   = $db->result($r, $i - 1, "DISPLAY_NR");
+                $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
+                $arr[$brand_name][$i] = $art_name;
+            }
+            $list = "
+            <div class=\"info__numbers\">
+                <div class=\"row info__numbers-title\">
+                    <div class=\"col-3\">{brand_cap}</div>
+                    <div class=\"col-9\">{art_cap}</div>
+                </div>";
+            $i = 1;
+            foreach ($arr as $key => $values) {
+                $list .= "<div class=\"row info__numbers-row\">
+                    <div class=\"col-3 info__numbers-row-auto\">" . $key . "</div>
+                    <div class=\"col-9 info__numbers-row-article\">";
+                foreach ($values as $value) {
+                    $format_value = str_replace(str_split('.,+-\/:*?"<>| '), "", $value);
+                    $list .= "<a target=\"_blank\" href=\"" . $this->getSiteLink() . "$this->search_link/$format_value/\">$value</a>";
+                    $i++;
+                    if ($i <= count($values)) {
+                        $list .= ", ";
+                    }
+                }
+                $list .= "</div></div>";
+                $i = 1;
+            }
+            $list .= "</div>";
+        } else {
+            $list = $this->err1;
+        }
+        return $this->replaceLang($list);
+    }
+
     public function drawLoader()
     {
         $form = $this->getHtmlForm("cars/loader-gear");
@@ -1526,8 +1646,9 @@ class FormClass extends CatalogueClass
                 <li><a href=\"$site_link$head_link/\">$head_name</a><ul>";
                 foreach ($cats as $cat_id => $groups) {
                     if (!empty($groups)) {
-                        $cat_name = $this->getCatRowName($cat_id);
-                        $cat_link = $this->getCatRowLink($cat_id);
+                        $catData = $this->getCatRowData($cat_id);
+                        $cat_name   = $catData["cat_name"];
+                        $cat_link   = $catData["cat_link"];
 
                         $list .= "
                         <li><a href=\"$site_link$head_link/$cat_link/\">$cat_name</a><ul>";

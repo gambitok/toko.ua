@@ -13,6 +13,7 @@ require_once (RDD . "/lib/access.php");                       //get access site
 require_once (RDD . "/lib/helper.php");                       //helper
 require_once (RDD . "/lib/variables.php");                    //variables
 require_once (RDD . "/lib/catalogue_class.php");              //catalogue search
+require_once (RDD . "/lib/search_class.php");              //catalogue search
 require_once (RDD . "/lib/form_class.php");                   //show forms
 require_once (RDD . "/lib/products_class.php");               //products search
 require_once (RDD . "/lib/auto_class.php");                   //auto search
@@ -34,6 +35,7 @@ $dbc = DbSingleton::getTokoCacheDb();
 
 $showform       = new FormClass();
 $catalogue      = new CatalogueClass();
+$search         = new SearchClass();
 $prod           = new ProductsClass();
 $automan        = new AutoClass();
 $menu           = new MenuClass();

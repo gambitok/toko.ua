@@ -1,3 +1,3 @@
 <?php
 
-$catalogue->downloadPrices();
+$profile->downloadPrices();

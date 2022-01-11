@@ -187,7 +187,7 @@
     }
 
     function sendSelect2(city_like,trig,a) {
-        JsHttpRequest.query(folder,{'w':'get_city_list', 'city_like':city_like},
+        JsHttpRequest.query(folder,{'w':'showCityForm', 'city_like':city_like},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 $("#select_city").append(result.content);
                 var mas=result.content;
