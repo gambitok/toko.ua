@@ -693,7 +693,7 @@ class SearchClass extends CatalogueClass
                 $other_storages = $this->showOtherStorages($mas, $cur, 0);
 
                 // show search list
-                $list = $this->outSearchList3($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages);
+                $list = $this->outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages);
             }
 
             if (count($mas) < 1) {
@@ -916,7 +916,7 @@ class SearchClass extends CatalogueClass
         return array($list, $filters, $list_brand, $current_value);
     }
 
-    public function outSearchList3($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $order_value = "")
+    public function outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $order_value = "")
     {
         $cont   = $other_storages["content"];
         $class  = $other_storages["class"];
@@ -926,27 +926,57 @@ class SearchClass extends CatalogueClass
 
         $i = 0;
         if (!empty($mas)) {
-            $list = $this->drawHeaderSearchList(0, $order_value) . $list;
+
+            $list .= "<div class='container'>";
+            foreach ($mas as $mas_key => $mas_val) {
+                if ($mas_key == $art_id_search) {
+                    foreach ($mas_val as $val) {
+                        $art_id     = $mas_key;
+                        $art_nr_ds  = $val["article_nr_displ"];
+                        $brand_id   = $val["brand_id"];
+                        $brand_name = $val["brand_name"];
+                        $art_name   = $val["article_name"];
+                        $stock      = $val["stock"];
+                        $del_info   = $val["delivery_info"];
+                        $price      = $val["price"];
+                        $del_days   = $val["delivery_days"];
+                        $del_short  = $val["delivery_short_info"];
+                        $suppl_id   = $val["suppl_id"];
+                        $ret_days   = $val["return_days"];
+                        $storage_id = $val["storage_id"];
+                        $os         = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
+
+                        $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $art_id_search, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                        $i++;
+                    }
+                }
+            }
+
+            $list .= "</div>";
+
+            $list .= $this->drawHeaderSearchList(0, $order_value) . $list;
 
             foreach ($mas as $mas_key => $mas_val) {
-                foreach ($mas_val as $key => $val) {
-                    $art_id     = $mas_key;
-                    $art_nr_ds  = $val["article_nr_displ"];
-                    $brand_id   = $val["brand_id"];
-                    $brand_name = $val["brand_name"];
-                    $art_name   = $val["article_name"];
-                    $stock      = $val["stock"];
-                    $del_info   = $val["delivery_info"];
-                    $price      = $val["price"];
-                    $del_days   = $val["delivery_days"];
-                    $del_short  = $val["delivery_short_info"];
-                    $suppl_id   = $val["suppl_id"];
-                    $ret_days   = $val["return_days"];
-                    $storage_id = $val["storage_id"];
-                    $os         = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
+                if ($mas_key != $art_id_search) {
+                    foreach ($mas_val as $val) {
+                        $art_id     = $mas_key;
+                        $art_nr_ds  = $val["article_nr_displ"];
+                        $brand_id   = $val["brand_id"];
+                        $brand_name = $val["brand_name"];
+                        $art_name   = $val["article_name"];
+                        $stock      = $val["stock"];
+                        $del_info   = $val["delivery_info"];
+                        $price      = $val["price"];
+                        $del_days   = $val["delivery_days"];
+                        $del_short  = $val["delivery_short_info"];
+                        $suppl_id   = $val["suppl_id"];
+                        $ret_days   = $val["return_days"];
+                        $storage_id = $val["storage_id"];
+                        $os         = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
 
-                    $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
-                    $i++;
+                        $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $art_id_search, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                        $i++;
+                    }
                 }
             }
 
@@ -958,7 +988,7 @@ class SearchClass extends CatalogueClass
         return $list;
     }
 
-    public function printSearchList3($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $delivery_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id)
+    public function printSearchList3($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $delivery_info, $stock, $price, $art_id_search, $article_nr_search, $brand_nr_search, $os, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id)
     {
         $showform   = new FormClass();
         $kours      = new ExRateClass();
