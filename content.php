@@ -168,7 +168,7 @@ if ($_REQUEST["w"] == "searchCityMain") {
 }
 
 if ($_REQUEST["w"] == "getCatalogListFilter") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogListFilter($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["cur"], $_REQUEST["price"], $_REQUEST["deliv"], $_REQUEST["order"]));
+    $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogListFilter($_REQUEST["art"], $_REQUEST["brand"], $_REQUEST["bb"], $_REQUEST["price"], $_REQUEST["deliv"]));
 }
 
 /*==== GARAGE ====*/

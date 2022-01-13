@@ -917,7 +917,7 @@ class MenuClass extends CatalogueClass
 
         $list = "";
         if (empty($head_id_sel)) {
-            $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
+            $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $list = $this->getHtmlForm("bar/main");
@@ -942,7 +942,7 @@ class MenuClass extends CatalogueClass
             FROM `T2_TREE_CONSTRUCTOR_STR` cs
                 LEFT JOIN `T2_TREE_HCG_EXIST` he ON (he.HEAD_ID = cs.HEAD_ID AND he.CAT_ID = cs.CAT_ID)
                 LEFT JOIN `T2_TREE_GROUP_EXIST` ge ON (ge.GROUP_ID = he.GROUP_ID)
-            WHERE cs.`CAT_ID` > 0 AND ge.`STATUS` = 1 AND cs.`HEAD_ID` = $head_id_sel
+            WHERE cs.`CAT_ID` > 0 AND cs.`STATUS` = 1 AND ge.`STATUS` = 1 AND cs.`HEAD_ID` = $head_id_sel
             ORDER BY he.`POPULAR` DESC, he.`CAT_ID` ASC, he.`GROUP_ID` ASC;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
@@ -1346,7 +1346,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("main/navigation");
         $list = "";
-        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE 1 ORDER BY `POSITION` ASC;");
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $head_id    = $db->result($r, $i - 1, "HEAD_ID");

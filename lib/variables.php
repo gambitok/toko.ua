@@ -133,16 +133,30 @@ trait Variables
     {
         $db = DbSingleton::getTokoDb();
         $article_nr_displ = $article_nr_search;
+        $brand_id = $brand_nr_search;
+
         $where_brand = "";
         if ($brand_nr_search > 0) {
             $where_brand = "AND `BRAND_ID` = $brand_nr_search";
         }
+
         $r = $db->query("SELECT `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` = '$article_nr_search' $where_brand LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $article_nr_displ = $db->result($r, 0, "ARTICLE_NR_DISPL");
         }
-        return $article_nr_displ;
+
+        if ($n == 0) {
+            $r2 = $db->query("SELECT `DISPLAY_NR` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search' $where_brand LIMIT 1;");
+            $n2 = $db->num_rows($r2);
+            if ($n2 > 0) {
+                $article_nr_displ = $db->result($r2, 0, "DISPLAY_NR");
+            }
+        }
+
+        $brand = $this->getBrandName($brand_id);
+
+        return array("art" => $article_nr_displ, "brand" => $brand);
     }
 
     /*
@@ -155,6 +169,7 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $art_id = 0;
         $where_brand = ($brand_id > 0) ? " AND `BRAND_ID` = $brand_id" : "";
+
         if ($article_nr_search != "") {
             $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` = '$article_nr_search' $where_brand;");
             $n = $db->num_rows($r);
@@ -314,52 +329,6 @@ trait Variables
             $doc_nom = $db->result($r, 0, "doc_nom");
         }
         return $prefix . "-" . $doc_nom;
-    }
-
-    /*
-     * get catalog search link
-     * from ARTICLE_NR_SEARCH
-     * */
-    public function getCatalogueLink($article_nr_search)
-    {
-        $article_nr_search = $this->getUrlString($article_nr_search);
-        $article_nr_search = mb_strtolower($article_nr_search);
-
-        $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search' GROUP BY `BRAND_ID`;");
-        $n = $db->num_rows($r);
-
-        if ($n == 1) {
-            $brand_id   = $db->result($r, 0, "BRAND_ID");
-            $brand_link = $this->getBrandLink($brand_id);
-
-            $link = $this->getSiteLink() . "$this->search_link/$article_nr_search/$brand_link";
-        } else {
-            $count_zero = 0;
-            $exist_search_number = $exist_brand_link = "";
-
-            for ($i = 1; $i <= $n; $i++) {
-                $article_search = $db->result($r, $i - 1, "SEARCH_NUMBER");
-                $brand_id       = $db->result($r, $i - 1, "BRAND_ID");
-                $count          = $this->countBrandItems($article_search, $brand_id);
-
-                if ($count == 0) {
-                    $count_zero++;
-                } else {
-                    $exist_search_number    = strtolower($article_search);
-                    $exist_brand_link       = $this->getBrandLink($brand_id);;
-                }
-            }
-
-            if ($count_zero == ($n - 1)) {
-                $link = $this->getSiteLink() . "$this->search_link/$exist_search_number/$exist_brand_link/";
-            } else {
-                $link = $this->getSiteLink() . "$this->search_link/$exist_search_number/";
-            }
-
-        }
-
-        return $link;
     }
 
 //    public function getCatalogueBrandLink2($article_nr_search)

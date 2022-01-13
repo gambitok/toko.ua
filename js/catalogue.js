@@ -116,7 +116,7 @@ function showPhotoGallery(ref) {
 }
 
 // SEARCH CATALOG FILTER
-function catalogueFilter(order) {
+function catalogueFilter() {
     let art     = $("#art_value").val();
     let brand   = $("#brand_value").val();
 
@@ -132,18 +132,11 @@ function catalogueFilter(order) {
             brands.push($(this).attr("name"));
         }
     });
-    let bb = JSON.stringify(brands);
-
-    let cur = parseInt($(".radio-group input[name=cur]:checked").attr("value"));
-    if (isNaN(cur)) {
-        cur = 1;
-    }
-
-    let cur_old = parseInt($("#cur_value").val());
+    let bb      = JSON.stringify(brands);
     let price   = $("#filter-price").val();
     let deliv   = $("#filter-delivery").val();
 
-    JsHttpRequest.query(folder,{'w':'getCatalogListFilter', 'art':art, 'brand':brand, 'bb':bb, 'cur':cur, 'price':price, 'deliv':deliv, 'order':order},
+    JsHttpRequest.query(folder,{'w':'getCatalogListFilter', 'art':art, 'brand':brand, 'bb':bb, 'price':price, 'deliv':deliv},
         function (result, errors){ if (errors) {alert(errors);} if (result){
 
             $("#cat_search_main").html(result.content[0]);
@@ -194,25 +187,7 @@ function catalogueFilter(order) {
             $("#dd_val_min").val(value_dd[0]);
             $("#dd_val_max").val(value_dd[1]);
 
-            if (cur !== cur_old) {
-                value[1] = max_price;
-                value[0] = 0;
-                input_price.slider("refresh");
-                $("#filter-max-price").html(max_price);
-                input_price.attr("data-slider-max", max_price);
-                input_price.slider("setAttribute", "max", max_price);
-                max_min = value[0] + "," + value[1];
-                input_price.attr("data-slider-value", max_min);
-                $("#price_val").html(max_min);
-                $("#price_val_min").val(value[0]);
-                $("#price_val_max").val(value[1]);
-                $("#cur_value").val(cur);
-                input_price.slider("setValue", value);
-                catalogueFilter(order);
-            }
-
             input_price.slider("setValue", value);
-            $("#cur_value").val(cur);
 
             $(".check-brand").each(function () {
                 if ($(this).hasClass("main-brand") === false) {

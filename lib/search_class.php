@@ -165,7 +165,6 @@ class SearchClass extends CatalogueClass
 
         return $this->searchListCount($art_id_str, $article_nr_search, $brand_id);
     }
-
     public function searchListCount($where_art_id_str, $article_nr_search = "", $brand_nr_search = "")
     {
         $db = DbSingleton::getTokoDb();
@@ -183,7 +182,7 @@ class SearchClass extends CatalogueClass
 
         if ($where_art_id_str != "") {
             $this->createTemporarySearchTable($temp_key);
-            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
+            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search);
             $n = $db->num_rows($r);
 
             if ($n > 0) {
@@ -408,7 +407,7 @@ class SearchClass extends CatalogueClass
                         <li>";
                     }
                     elseif ($type_id == 2) {
-                        $catData = $this->getCatRowData($key_id);
+                        $catData    = $this->getCatRowData($key_id);
                         $key_name   = $catData["cat_name"];
                         $key_link   = $catData["cat_link"];
                         $head_id    = $this->getHeadCatRow($key_id);
@@ -480,40 +479,6 @@ class SearchClass extends CatalogueClass
     }
 
     /*
-  * CATALOG HEADER DRAW
-  * */
-    public function drawHeaderSearchList($view = 0, $order = "")
-    {
-        $sort1 = $sort2 = $sort3 = $sort4 = "fa-sort";
-
-        switch ($order) {
-            case "delivery_days":
-                $sort2 = "fa-sort-alpha-down";
-                break;
-            case "stock":
-                $sort3 = "fa-sort-alpha-down";
-                break;
-            case "price":
-                $sort4 = "fa-sort-alpha-down";
-                break;
-            case "article_nr_displ" :
-            default:
-                $sort1 = "fa-sort-alpha-down";
-                break;
-        }
-
-        $form = $this->getHtmlForm("search/header");
-        $form = str_replace("{cat_sort_1}", $sort1, $form);
-        $form = str_replace("{cat_sort_2}", $sort2, $form);
-        $form = str_replace("{cat_sort_3}", $sort3, $form);
-        $form = str_replace("{cat_sort_4}", $sort4, $form);
-        $form = str_replace("{cat_storage_info}", "{storage_full_info}", $form);
-        $form = str_replace("{cat_product_view}", (!$view) ? "" : "none", $form);
-
-        return $form;
-    }
-
-    /*
      * CATALOG
      * */
     public function searchList($where_art_id_str, $article_nr_search = "", $brand_nr_search = "")
@@ -543,7 +508,7 @@ class SearchClass extends CatalogueClass
         if ($where_art_id_str != "") {
             $this->createTemporarySearchTable($temp_key);
 
-            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
+            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search);
             $n = $db->num_rows($r);
 
             if ($n > 0) {
@@ -671,9 +636,13 @@ class SearchClass extends CatalogueClass
                 $list_brand = $this->getListBrand($brands, $main_brand, $cur);
 
                 // delete empty stocks and prices
-                $mas = $this->deleteEmptyPosition($mas);
-                $mas = $this->deleteSupplPosition($mas);
-                $mas = $this->deleteRepeatPosition($mas);
+//                $mas = $this->deleteEmptyPosition($mas);
+//                $mas = $this->deleteSupplPosition($mas);
+//                $mas = $this->deleteRepeatPosition($mas);
+
+                if (!empty($mas[$art_id_search])) {
+                    $mas[$art_id_search] = $this->deleteEmptyPositionMain($mas[$art_id_search]);
+                }
 
                 if (empty($mas)) {
                     $list = $this->getHtmlForm("error/nothing_found");
@@ -711,30 +680,30 @@ class SearchClass extends CatalogueClass
     /*
      * CATALOG FILTER
      * */
-    public function searchListFilter($where_art_id_str, $article_nr_search, $brand_filter, $cur, $price_min, $price_max, $del_min, $del_max, $brand_nr_search, $order_value)
+    public function searchListFilter($where_art_id_str, $article_nr_search, $brand_filter, $cur, $price_min, $price_max, $del_min, $del_max, $brand_nr_search)
     {
         $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
         $client = new ClientClass();
 
-        session_start();
-        setcookie("currency", $cur);
-        $_SESSION["currency"] = $cur;
-
-        $view       = $client->getProductView();
         $client_id  = $this->getClient();
         $tpoint_id  = $this->getTpointID();
         $mas        = $filters = $brands = $current_value = array();
         $error      = $this->replaceLang("<h5 class=\"error_message\">$this->err1</h5>");
-        $list       = "$error";
-        $list_brand = "";
+        $list       = $list_brand = "";
 
         $filters["max_price"] = $filters["max_dd"] = $main_brand = $art_id_search = 0;
 
         if ($article_nr_search != "") {
             $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
         }
-        $where_brands = $this->getFiltersSearch($brand_filter);
+
+        if ($brand_filter != "") {
+            $brand_filter = str_replace("'", "", $brand_filter);
+            $where_brands = " AND t2a.BRAND_ID IN ($brand_filter) ";
+        } else {
+            $where_brands = "";
+        }
 
         if ($where_art_id_str != "") {
             $articlePrices      = $this->getArticlePrices($where_art_id_str);
@@ -749,7 +718,7 @@ class SearchClass extends CatalogueClass
                 $rs = $r;
                 $ns = $n;
             } else {
-                $rs = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "");
+                $rs = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search);
                 $ns = $db->num_rows($rs);
             }
 
@@ -880,10 +849,9 @@ class SearchClass extends CatalogueClass
                     }
                 }
 
-                // delete empty stocks and prices
-                $mas = $this->deleteEmptyPosition($mas);
-                $mas = $this->deleteSupplPosition($mas);
-                $mas = $this->deleteRepeatPosition($mas);
+                if (!empty($mas[$art_id_search])) {
+                    $mas[$art_id_search] = $this->deleteEmptyPositionMain($mas[$art_id_search]);
+                }
 
                 if (empty($mas)) {
                     $list = $this->getHtmlForm("error/nothing_found");
@@ -900,12 +868,12 @@ class SearchClass extends CatalogueClass
                 $mas = $this->sortByMinStock($mas);
 
                 // show other storages
-                $other_storages = $this->showOtherStorages($mas, $cur, $view);
+                $other_storages = $this->showOtherStorages($mas, $cur, 0);
 
                 // show search list
                 FormClass::cacheArticlesPhotos($where_art_id_str);
                 FormClass::cacheInfoTemplates($where_art_id_str);
-                $list = $this->outSearchList3($list, $error, $mas, $article_nr_search, $brand_nr_search, $other_storages, $order_value);
+                $list = $this->outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages);
             }
 
             if (count($mas) == 0) {
@@ -916,7 +884,7 @@ class SearchClass extends CatalogueClass
         return array($list, $filters, $list_brand, $current_value);
     }
 
-    public function outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $order_value = "")
+    public function outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages)
     {
         $cont   = $other_storages["content"];
         $class  = $other_storages["class"];
@@ -924,12 +892,14 @@ class SearchClass extends CatalogueClass
         $border = $other_storages["border"];
         $none   = $other_storages["none"];
 
+        $list_target = "";
+        $style_target = "none";
         $i = 0;
         if (!empty($mas)) {
 
-            $list .= "<div class='container'>";
             foreach ($mas as $mas_key => $mas_val) {
                 if ($mas_key == $art_id_search) {
+                    $style_target = "";
                     foreach ($mas_val as $val) {
                         $art_id     = $mas_key;
                         $art_nr_ds  = $val["article_nr_displ"];
@@ -946,15 +916,11 @@ class SearchClass extends CatalogueClass
                         $storage_id = $val["storage_id"];
                         $os         = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
 
-                        $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $art_id_search, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                        $list_target .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
                         $i++;
                     }
                 }
             }
-
-            $list .= "</div>";
-
-            $list .= $this->drawHeaderSearchList(0, $order_value) . $list;
 
             foreach ($mas as $mas_key => $mas_val) {
                 if ($mas_key != $art_id_search) {
@@ -974,21 +940,28 @@ class SearchClass extends CatalogueClass
                         $storage_id = $val["storage_id"];
                         $os         = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
 
-                        $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $art_id_search, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                        $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
                         $i++;
                     }
                 }
             }
 
-            $list .= "</div>";
         } else {
             $list = "$error";
         }
 
-        return $list;
+        $form = $this->getHtmlForm("catalog_exist/search");
+        $dataArt = $this->getArtDispl($article_nr_search, $brand_nr_search);
+        $form = str_replace("{article_nr_displ}", $dataArt["art"], $form);
+        $form = str_replace("{brand_name}", $dataArt["brand"], $form);
+        $form = str_replace("{search_target_class}", $style_target, $form);
+        $form = str_replace("{search_target_list}", $list_target, $form);
+        $form = str_replace("{search_list}", $list, $form);
+
+        return $form;
     }
 
-    public function printSearchList3($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $delivery_info, $stock, $price, $art_id_search, $article_nr_search, $brand_nr_search, $os, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id)
+    public function printSearchList3($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $delivery_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id)
     {
         $showform   = new FormClass();
         $kours      = new ExRateClass();
@@ -1097,7 +1070,7 @@ class SearchClass extends CatalogueClass
         $form = str_replace("{country_display}", (!$flagData) ? "none" : "", $form);
         $form = str_replace("{flag_image}", $flagData["flag"], $form);
         $form = str_replace("{country_name}", $flagData["country"], $form);
-        $form = str_replace("{instock}", ($suppl_id == 0) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "", $form);
+        $form = str_replace("{instock}", ($suppl_id == 0 && $stock > 0) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "", $form);
         $form = str_replace("{index_type}", $this->getIndexTypeImage($art_id, $article_nr_search, $article_nr_displ, $format_name, $brand_id, $brand_nr_search), $form);
 //        $form = str_replace("{count_users}", $client->getUsersCount(), $form);
 //        $form = str_replace("{data_today}", date("Y-m-d"), $form);
@@ -1114,6 +1087,7 @@ class SearchClass extends CatalogueClass
 
         $basket_amount = $shop->getBasketArticleAmount($art_id, $storage_id);
         $form = str_replace("{basket_amount}", ($basket_amount > 0) ? "{site_basket}: $basket_amount {amount_abbr}." : "", $form);
+        $form = str_replace("{pvisibility}", ($stock > 0 && $price > 0) ? "" : "dvisibility0", $form);
 
 //        if ($this->checkT2Link($this->getCookieAuto(), $art_id)) {
 //            $form = str_replace("{product_auto_appl}", "{is_applicable}", $form);

@@ -49,12 +49,12 @@
         </div>
     </div>
 
-    <div class="col-lg-2 col-4 tables__delivery {product_delivery_class}">
+    <div class="col-lg-2 col-4 tables__delivery {product_delivery_class} {pvisibility}">
         <span class="tooltips" data-toggle="tooltip" data-placement="bottom" title="{product_del}" data-html="true">{product_delivery_short_info}</span>
         <br><img class="search__return {return_display}" itemprop="image" src="{return_days_img}" alt="{return_days_alt}" title="{return_days_alt}">
     </div>
 
-    <div class="col-lg-1 col-2 tables__stock" style="padding: 0!important;">
+    <div class="col-lg-1 col-2 tables__stock {pvisibility}" style="padding: 0!important;">
         <span class="tooltips" data-toggle="tooltip" data-placement="bottom" title="{tpoint_full_name}">{product_stock} {amount_abbr}.</span><br>
         {instock}
         <div itemprop="offers" itemtype="http://schema.org/AggregateOffer" itemscope class="dnone">
@@ -99,7 +99,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-4 tables__box-buy">
+            <div class="col-lg-6 col-4 tables__box-buy {pvisibility}">
                 <div class="buy-cart-group tables__count">
                     <div id="basket_count_{product_i}" style="font-size: 12px;">{basket_amount}</div>
                     <div class="input-group input-group-sm">
