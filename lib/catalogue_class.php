@@ -219,7 +219,7 @@ class CatalogueClass
     /*
      * CATALOG ARTS LIST
      * */
-    public function getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands = "")
+    public function getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands = "", $nulls = 0)
     {
         $db = DbSingleton::getTokoDb();
 
@@ -239,6 +239,15 @@ class CatalogueClass
         $where_art_id_str = rtrim($where_art_id_str, ",");
         $where_art_id_str = str_replace("'", "", $where_art_id_str);
 
+        if (!$nulls) {
+            $where_storage1 = "AND ((t2asc.AMOUNT != NULL OR t2asc.AMOUNT != 0) OR (t2a.`ARTICLE_NR_SEARCH` = '$article_nr_search' AND t2a.`BRAND_ID` = $brand_nr_search))";
+            $where_storage2 = "AND ((t2si.stock_suppl != NULL OR t2si.stock_suppl != 0) OR (t2a.`ARTICLE_NR_SEARCH` = '$article_nr_search' AND t2a.`BRAND_ID` = $brand_nr_search))";
+        }
+        if ($nulls) {
+            $where_storage1 = "";
+            $where_storage2 = "";
+        }
+
         $r = "";
         if ($where_art_id_str != "") {
             $r = $db->query("
@@ -250,7 +259,7 @@ class CatalogueClass
             WHERE t2a.ART_ID IN ($where_art_id_str) 
                 AND t2b.`VISIBLE` = '1' 
                 AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) 
-                AND ((t2asc.AMOUNT != NULL OR t2asc.AMOUNT != 0) OR (t2a.`ARTICLE_NR_SEARCH` = '$article_nr_search' AND t2a.`BRAND_ID` = $brand_nr_search)) 
+                $where_storage1
                 $where_brands 
             GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
             UNION ALL
@@ -262,7 +271,7 @@ class CatalogueClass
             WHERE t2a.ART_ID IN ($where_art_id_str) 
                 AND t2b.`VISIBLE` = '1' 
                 AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) 
-                AND ((t2si.stock_suppl != NULL OR t2si.stock_suppl != 0) OR (t2a.`ARTICLE_NR_SEARCH` = '$article_nr_search' AND t2a.`BRAND_ID` = $brand_nr_search)) 
+                $where_storage2
                 $where_brands 
             GROUP BY t2a.ART_ID, t2si.client_storage_id;");
         }
@@ -1772,6 +1781,29 @@ class CatalogueClass
         return $price;
     }
 
+    public function deleteEmptyNulls($mas)
+    {
+        $arr = [];
+        foreach ($mas as $mas_key => $mas_val) {
+            foreach ($mas_val as $key => $val) {
+                if ($val["stock"] == 0) {
+                    $arr[$mas_key][0] = $mas[$mas_key][$key];
+                    unset($mas[$mas_key][$key]);
+                }
+                elseif ($val["price"] == 0) {
+                    $arr[$mas_key][0] = $mas[$mas_key][$key];
+                    unset($mas[$mas_key][$key]);
+                }
+            }
+        }
+        foreach ($mas as $mas_key => $mas_val) {
+            if (empty($mas_val)) {
+                unset($mas[$mas_key]);
+            }
+        }
+        return array($mas, $arr);
+    }
+
     /*
      * delete article from list with price = 0 OR stock = 0
      * */
@@ -2143,8 +2175,8 @@ class CatalogueClass
         } else {
             $postfix = $this->getLangPostfix($this->getLanguage());
             $r = $db->query("SELECT `TEX_$postfix`, `TEX_LINK` FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID` = $cat_id LIMIT 1;");
-            $cat_name = $db->result($r, 0, "TEX_LINK");
-            $cat_link = $db->result($r, 0, "TEX_$postfix");
+            $cat_link = $db->result($r, 0, "TEX_LINK");
+            $cat_name = $db->result($r, 0, "TEX_$postfix");
         }
         return compact("cat_name", "cat_link");
     }

@@ -2557,10 +2557,12 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $head_id = 0;
-        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HEAD_EXIST` WHERE `TEX_LINK` = '$head_link' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $head_id = $db->result($r, 0, "HEAD_ID");
+        if ($head_link != "") {
+            $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_HEAD_EXIST` WHERE `TEX_LINK` = '$head_link' AND `STATUS` = 1 LIMIT 1;");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $head_id = $db->result($r, 0, "HEAD_ID");
+            }
         }
         return $head_id;
     }
@@ -2569,10 +2571,12 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $cat_id = 0;
-        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CAT_EXIST` WHERE `TEX_LINK` = '$cat_link' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $cat_id = $db->result($r, 0, "CAT_ID");
+        if ($cat_link != "") {
+            $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CAT_EXIST` WHERE `TEX_LINK` = '$cat_link' AND `STATUS` = 1 LIMIT 1;");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $cat_id = $db->result($r, 0, "CAT_ID");
+            }
         }
         return $cat_id;
     }

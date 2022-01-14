@@ -134,29 +134,32 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $article_nr_displ = $article_nr_search;
         $brand_id = $brand_nr_search;
+        $art_id = 0;
 
         $where_brand = "";
         if ($brand_nr_search > 0) {
             $where_brand = "AND `BRAND_ID` = $brand_nr_search";
         }
 
-        $r = $db->query("SELECT `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` = '$article_nr_search' $where_brand LIMIT 1;");
+        $r = $db->query("SELECT `ART_ID`, `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` = '$article_nr_search' $where_brand LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
+            $art_id = $db->result($r, 0, "ART_ID");
             $article_nr_displ = $db->result($r, 0, "ARTICLE_NR_DISPL");
         }
 
         if ($n == 0) {
-            $r2 = $db->query("SELECT `DISPLAY_NR` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search' $where_brand LIMIT 1;");
+            $r2 = $db->query("SELECT  `ART_ID`, `DISPLAY_NR` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search' $where_brand LIMIT 1;");
             $n2 = $db->num_rows($r2);
             if ($n2 > 0) {
+                $art_id = $db->result($r2, 0, "ART_ID");
                 $article_nr_displ = $db->result($r2, 0, "DISPLAY_NR");
             }
         }
 
         $brand = $this->getBrandName($brand_id);
 
-        return array("art" => $article_nr_displ, "brand" => $brand);
+        return array("art" => $article_nr_displ, "brand" => $brand, "brand_id" => $brand_id, "art_id" => $art_id);
     }
 
     /*

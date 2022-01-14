@@ -40,7 +40,8 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
      * */
     if ($router == "") {
         $content = str_replace("{main_window}", "<div><h1>{site_catalog}</h1></div>" . $catalogue->getCatalogColList() . $showform->getHistoryArts(), $content);
-    } else {
+    }
+    else {
         /*
          * Catalog with Group
          * */
@@ -160,11 +161,12 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
         $head_id = $catalog_exist->getGroupHeadExistId($router);
         if (!empty($head_id)) {
             $cat_id = $catalog_exist->getGroupCatExistId($router_2);
+
             if (empty($cat_id)) {
-                //Header
+                // Header
                 $catalogData = $catalog_exist->showGroupHeadForm($head_id);
             } else {
-                //Category
+                // Category
                 $catalogData = $catalog_exist->showGroupCatForm($head_id, $cat_id);
             }
             $content = str_replace("{main_window}", $catalogData["form"] . $showform->getHistoryArts(), $content);

@@ -478,6 +478,19 @@ class SearchClass extends CatalogueClass
         return $this->replaceLang($list);
     }
 
+    public function getUserStatusNulls($user_id)
+    {
+        $status = 0;
+        $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT `status_nulls` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $status = $db->result($r, 0, "status_nulls");
+        }
+
+        return $status;
+    }
+
     /*
      * CATALOG
      * */
@@ -486,6 +499,12 @@ class SearchClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
         $client = new ClientClass();
+
+        $nulls = 0;
+        $mas_nulls = [];
+        if ($this->getUserStatusNulls($this->getUser())) {
+            $nulls = 1;
+        }
 
         $client_id  = $this->getClient();
         $tpoint_id  = $this->getTpointID();
@@ -508,7 +527,7 @@ class SearchClass extends CatalogueClass
         if ($where_art_id_str != "") {
             $this->createTemporarySearchTable($temp_key);
 
-            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search);
+            $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", $nulls);
             $n = $db->num_rows($r);
 
             if ($n > 0) {
@@ -567,8 +586,8 @@ class SearchClass extends CatalogueClass
                     }
 
                     // show articles with suppl_id=0 or with price!=0 and stock!=0
-                    if ($price != 0 || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
-                        if ($stock > 0 || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
+                    if (($price != 0 || $nulls == 1) || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
+                        if (($stock > 0 || $nulls == 1) || (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && $brand_id == $brand_nr_search)) {
                             // visible suppl storage
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                                 $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
@@ -579,7 +598,7 @@ class SearchClass extends CatalogueClass
                                 }
 
                                 if ($brand_name != "") {
-                                    if ($stock > 0 && $price > 0) {
+                                    if (($stock > 0 && $price > 0) || $nulls == 1) {
                                         $brands[$art_id]["brand_name"]  = $brand_name;
                                         $brands[$art_id]["brand_id"]    = $brand_id;
 
@@ -603,7 +622,7 @@ class SearchClass extends CatalogueClass
                 if ($n == 1) {
                     $stock = $db->result($r, 0, "stock");
                     $price = $db->result($r, 0, "price");
-                    if ($stock == 0 && $price == 0) {
+                    if (($stock == 0 && $price == 0) || $nulls == 1) {
                         $list = $this->getHtmlForm("error/nothing_found");
                         $list = str_replace("{error_nothing_found}", $this->err1, $list);
                         return array($list, "", "", 0);
@@ -632,22 +651,20 @@ class SearchClass extends CatalogueClass
                 // delete temp table
                 $db->query("DROP TEMPORARY TABLE IF EXISTS `TEMP_ARTICLES_$temp_key`;");
 
-                // get filter brand list
-                $list_brand = $this->getListBrand($brands, $main_brand, $cur);
-
-                // delete empty stocks and prices
-//                $mas = $this->deleteEmptyPosition($mas);
-//                $mas = $this->deleteSupplPosition($mas);
-//                $mas = $this->deleteRepeatPosition($mas);
-
-                if (!empty($mas[$art_id_search])) {
-                    $mas[$art_id_search] = $this->deleteEmptyPositionMain($mas[$art_id_search]);
-                }
-
                 if (empty($mas)) {
                     $list = $this->getHtmlForm("error/nothing_found");
                     $list = str_replace("{error_nothing_found}", $this->err1, $list);
                     return array($list, "", "", 0);
+                }
+
+                // sort selected art
+                if (!empty($mas[$art_id_search])) {
+                    $mas[$art_id_search] = $this->deleteEmptyPositionMain($mas[$art_id_search]);
+                }
+
+                // delete nulls
+                if ($nulls) {
+                    list($mas, $mas_nulls) = $this->deleteEmptyNulls($mas);
                 }
 
                 // sort by delivery and price
@@ -658,11 +675,19 @@ class SearchClass extends CatalogueClass
                 // sort like: first = min delivery, second = min price, else = default
                 $mas = $this->sortByMinStock($mas);
 
+                // $mas[$art_id1][0] = ['suppl_id' => 1]
+                // $mas[$art_id2][0] = ['suppl_id' => 0]
+
+                $mas = $this->sortSuppls($mas);
+
                 // show other storages
                 $other_storages = $this->showOtherStorages($mas, $cur, 0);
 
                 // show search list
-                $list = $this->outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages);
+                $list = $this->outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $nulls, $mas_nulls);
+
+                // get filter brand list
+                $list_brand = $this->getListBrand($brands, $main_brand, $cur);
             }
 
             if (count($mas) < 1) {
@@ -675,6 +700,28 @@ class SearchClass extends CatalogueClass
 
         }
         return array($list, $list_brand, $filters);
+    }
+
+    public function sortSuppls($mas)
+    {
+        $arr = []; $mas2 = [];
+        foreach ($mas as $mas_key => $mas_val) {
+            $i = 0;
+            foreach ($mas_val as $key => $val) {
+                if ($i == 0) {
+                    $arr[$mas_key] = $val["suppl_id"];
+                }
+                $i++;
+            }
+        }
+        asort($arr);
+        $arr = array_keys($arr);
+
+        foreach ($arr as $val) {
+            $mas2[$val] = $mas[$val];
+        }
+
+        return $mas2;
     }
 
     /*
@@ -884,7 +931,7 @@ class SearchClass extends CatalogueClass
         return array($list, $filters, $list_brand, $current_value);
     }
 
-    public function outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages)
+    public function outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $nulls = 0, $mas_nulls = [])
     {
         $cont   = $other_storages["content"];
         $class  = $other_storages["class"];
@@ -892,14 +939,24 @@ class SearchClass extends CatalogueClass
         $border = $other_storages["border"];
         $none   = $other_storages["none"];
 
+        $form = $this->getHtmlForm("catalog_exist/search");
+        $dataArt = $this->getArtDispl($article_nr_search, $brand_nr_search);
+        $form = str_replace("{article_nr_displ}", $dataArt["art"], $form);
+        $form = str_replace("{brand_name}", $dataArt["brand"], $form);
+
         $list_target = "";
         $style_target = "none";
         $i = 0;
+        $check = 0;
+
         if (!empty($mas)) {
 
             foreach ($mas as $mas_key => $mas_val) {
                 if ($mas_key == $art_id_search) {
-                    $style_target = "";
+
+                    $style_target   = "";
+                    $check          = 1;
+
                     foreach ($mas_val as $val) {
                         $art_id     = $mas_key;
                         $art_nr_ds  = $val["article_nr_displ"];
@@ -914,12 +971,24 @@ class SearchClass extends CatalogueClass
                         $suppl_id   = $val["suppl_id"];
                         $ret_days   = $val["return_days"];
                         $storage_id = $val["storage_id"];
-                        $os         = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
 
-                        $list_target .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                        if (($stock > 0 && $price > 0)) {
+                            $os             = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
+                            $list_target    .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                        } elseif ($i == 1) {
+                            $os             = ["content" => "", "class" => "", "hide" => "", "border" => "border-line", "none" => "dvisibility"];
+                            $list_target    .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                        }
+
                         $i++;
                     }
                 }
+            }
+
+            if ($check == 0) {
+                $style_target   = "";
+                $os             = ["content" => "", "class" => "", "hide" => "", "border" => "border-line", "none" => "dvisibility"];
+                $list_target    .= $this->printSearchList3($i, $dataArt["art_id"], $dataArt["art"], $dataArt["brand_id"], $dataArt["brand"], "", "", 0, 0, $article_nr_search, $brand_nr_search, $os, 0, 0, 0, "", 0);
             }
 
             foreach ($mas as $mas_key => $mas_val) {
@@ -946,14 +1015,35 @@ class SearchClass extends CatalogueClass
                 }
             }
 
+            if ($nulls) {
+                foreach ($mas_nulls as $mas_key => $mas_val) {
+                    foreach ($mas_val as $val) {
+                        $art_id     = $mas_key;
+                        $art_nr_ds  = $val["article_nr_displ"];
+                        $brand_id   = $val["brand_id"];
+                        $brand_name = $val["brand_name"];
+                        $art_name   = $val["article_name"];
+                        $stock      = $val["stock"];
+                        $del_info   = $val["delivery_info"];
+                        $price      = $val["price"];
+                        $del_days   = $val["delivery_days"];
+                        $del_short  = $val["delivery_short_info"];
+                        $suppl_id   = $val["suppl_id"];
+                        $ret_days   = $val["return_days"];
+                        $storage_id = $val["storage_id"];
+                        $os         = ["content" => "", "class" => "", "hide" => "", "border" => "border-line", "none" => "dvisibility"];
+
+                        $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                        $i++;
+                    }
+                }
+            }
+
         } else {
             $list = "$error";
         }
 
-        $form = $this->getHtmlForm("catalog_exist/search");
-        $dataArt = $this->getArtDispl($article_nr_search, $brand_nr_search);
-        $form = str_replace("{article_nr_displ}", $dataArt["art"], $form);
-        $form = str_replace("{brand_name}", $dataArt["brand"], $form);
+
         $form = str_replace("{search_target_class}", $style_target, $form);
         $form = str_replace("{search_target_list}", $list_target, $form);
         $form = str_replace("{search_list}", $list, $form);
@@ -1020,7 +1110,7 @@ class SearchClass extends CatalogueClass
         $form = str_replace("{product_brand}", $brand_name, $form);
 //        $form = str_replace("{product_format_name}", $format_name, $form);
 //        $form = str_replace("{product_format_brand}", $this->getFormatBrand($brand_name), $form);
-        $form = str_replace("{page_product_link}", $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/", $form);
+        $form = str_replace("{page_product_link}", ($stock == 0 && $price == 0) ? "" : $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/", $form);
 //        $form = str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
 
         $product_text = ($article_name == "") ? "{details_name_cap}" : $article_name;
@@ -1084,10 +1174,13 @@ class SearchClass extends CatalogueClass
 //        $form = str_replace("{product_image_class}", ($photoData["status"] == 0) ? "" : "filter-bw", $form);
 
 //        $form = str_replace("{product_title}", "$article_name $brand_name $article_nr_displ", $form);
+        $form = str_replace("{del_class}", "", $form);
 
         $basket_amount = $shop->getBasketArticleAmount($art_id, $storage_id);
         $form = str_replace("{basket_amount}", ($basket_amount > 0) ? "{site_basket}: $basket_amount {amount_abbr}." : "", $form);
         $form = str_replace("{pvisibility}", ($stock > 0 && $price > 0) ? "" : "dvisibility0", $form);
+        $form = str_replace("{pvisibility_price}", ($stock == 0 && $price == 0) ? "dvisibility0" : "", $form);
+        $form = str_replace("{pvisibility_info}", ($stock == 0 && $price == 0) ? "dvisibility0" : "", $form);
 
 //        if ($this->checkT2Link($this->getCookieAuto(), $art_id)) {
 //            $form = str_replace("{product_auto_appl}", "{is_applicable}", $form);
