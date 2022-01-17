@@ -1144,52 +1144,52 @@ class CatalogueClass
     public function printSearchList($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $delivery_info, $stock, $price, $article_nr_search, $ll, $class, $hide, $border, $none, $brand_nr_search, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id, $status, $view = 0, $status_auto = 0, $mfa_id = 0, $model = "")
     {
         $showform   = new FormClass();
-        $kours      = new ExRateClass();
-        $client     = new ClientClass();
-        $shop       = new ShopClass();
+//        $kours      = new ExRateClass();
+//        $client     = new ClientClass();
+//        $shop       = new ShopClass();
         $automan    = new AutoClass();
 
         $cur                = $this->getCurrentExrate();
         $kours_cap          = $this->getSymbolExrate($cur);
         $format_name        = $this->getFormatAticle($article_nr_displ);
-        $format_brand_name  = $this->getFormatBrand($brand_name);
+//        $format_brand_name  = $this->getFormatBrand($brand_name);
         $format_brand_link  = $this->getBrandLink($brand_id);
-        $return_days_alt    = $return_days_img = "";
+//        $return_days_alt    = $return_days_img = "";
 
-        if ($suppl_id > 0) {
-            if ($return_days == 0) {
-                $return_days_alt = "{no_exchange}";
-                $return_days_img = $this->images . "/exchange/exchange2.png";
-            }
-            elseif ($return_days == 14) {
-                $return_days_alt = "";
-                $return_days_img = "";
-            }
-            elseif ($return_days >= 15) {
-                $return_days_alt = "{return_within} $return_days {days_cap}";
-                $return_days_img = $this->images . "/exchange/exchange1.png";
-            } else {
-                $return_days_alt = "{return_within} $return_days {days_cap}";
-                $return_days_img = $this->images . "/exchange/exchange3.png";
-            }
-        }
-        if (!($this->checkActionPrice($art_id))) {
-            $action_form = "";
-            $action_count = "";
-        } else {
-            list(, $action_amount, $action_price, $action_max_amount, $action_data) = $this->checkActionPrice($art_id);
-            $action_price = $kours->getKoursFromUSA($action_price, $cur);
-            if ($cur == 1) {
-                $action_price = $client->getClientPriceRounding($this->getClient(), $action_price);
-            }
-            $action_form = $this->getHtmlForm("search/action_box");
-            $action_form = str_replace("{action_price}", $action_price, $action_form);
-            $action_form = str_replace("{action_amount}", $action_amount, $action_form);
-            $action_form = str_replace("{action_data}", ($action_data > 0) ? date("d.m.Y", strtotime($action_data)) : "{indefinitely_cap}", $action_form);
-            $action_form = str_replace("{action_max_amount}", ($action_max_amount > 0) ? "{yes_cap}" : "{no_cap}", $action_form);
-            $action_form = str_replace("{cur_cap}", $kours_cap, $action_form);
-            $action_count = "oninput=\"changeActionCount('$id', '$action_price', '$action_amount');\"";
-        }
+//        if ($suppl_id > 0) {
+//            if ($return_days == 0) {
+//                $return_days_alt = "{no_exchange}";
+//                $return_days_img = $this->images . "/exchange/exchange2.png";
+//            }
+//            elseif ($return_days == 14) {
+//                $return_days_alt = "";
+//                $return_days_img = "";
+//            }
+//            elseif ($return_days >= 15) {
+//                $return_days_alt = "{return_within} $return_days {days_cap}";
+//                $return_days_img = $this->images . "/exchange/exchange1.png";
+//            } else {
+//                $return_days_alt = "{return_within} $return_days {days_cap}";
+//                $return_days_img = $this->images . "/exchange/exchange3.png";
+//            }
+//        }
+//        if (!($this->checkActionPrice($art_id))) {
+//            $action_form = "";
+//            $action_count = "";
+//        } else {
+//            list(, $action_amount, $action_price, $action_max_amount, $action_data) = $this->checkActionPrice($art_id);
+//            $action_price = $kours->getKoursFromUSA($action_price, $cur);
+//            if ($cur == 1) {
+//                $action_price = $client->getClientPriceRounding($this->getClient(), $action_price);
+//            }
+//            $action_form = $this->getHtmlForm("search/action_box");
+//            $action_form = str_replace("{action_price}", $action_price, $action_form);
+//            $action_form = str_replace("{action_amount}", $action_amount, $action_form);
+//            $action_form = str_replace("{action_data}", ($action_data > 0) ? date("d.m.Y", strtotime($action_data)) : "{indefinitely_cap}", $action_form);
+//            $action_form = str_replace("{action_max_amount}", ($action_max_amount > 0) ? "{yes_cap}" : "{no_cap}", $action_form);
+//            $action_form = str_replace("{cur_cap}", $kours_cap, $action_form);
+//            $action_count = "oninput=\"changeActionCount('$id', '$action_price', '$action_amount');\"";
+//        }
 
         $form = ($view) ? $this->getHtmlForm("article_card") : $this->getHtmlForm("product_card");
 
@@ -1198,10 +1198,10 @@ class CatalogueClass
         $form = str_replace("{brand_id}", $brand_id, $form);
         $form = str_replace("{product_name}", $article_nr_displ, $form);
         $form = str_replace("{product_brand}", $brand_name, $form);
-        $form = str_replace("{product_format_name}", $format_name, $form);
-        $form = str_replace("{product_format_brand}", $format_brand_name, $form);
+//        $form = str_replace("{product_format_name}", $format_name, $form);
+//        $form = str_replace("{product_format_brand}", $format_brand_name, $form);
         $form = str_replace("{page_product_link}", $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/", $form);
-        $form = str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
+//        $form = str_replace("{product_brand_link}", $this->getBrandLink($brand_id), $form);
 
         $product_text = ($article_name == "") ? "{details_name_cap}" : $article_name;
         $format_product_text = ($article_name == "") ? "{details_name_cap}" : $this->formatArticleName($article_name);
@@ -1226,17 +1226,17 @@ class CatalogueClass
         $form = str_replace("{product_storage_id}", $storage_id, $form);
         $form = str_replace("{product_suppl_id}", $suppl_id, $form);
 
-        $form = str_replace("{return_days_img}", $return_days_img, $form);
-        $form = str_replace("{return_days_alt}", $return_days_alt, $form);
-        $form = str_replace("{return_display}", ($return_days == 14 || $return_days_img == "") ? "none" : "", $form);
+//        $form = str_replace("{return_days_img}", $return_days_img, $form);
+//        $form = str_replace("{return_days_alt}", $return_days_alt, $form);
+//        $form = str_replace("{return_display}", ($return_days == 14 || $return_days_img == "") ? "none" : "", $form);
 
-        $form = str_replace("{photo_src}", $showform->getArticleActivePhoto($art_id), $form);
-        $form = str_replace("{photo_display}", $this->checkPhoto($art_id) ? "" : "none", $form);
-        $form = str_replace("{product_main_photo}", ($showform->getArticlePhoto($art_id) == "") ? $this->noPhoto : $showform->getArticlePhoto($art_id), $form);
+//        $form = str_replace("{photo_src}", $showform->getArticleActivePhoto($art_id), $form);
+//        $form = str_replace("{photo_display}", $this->checkPhoto($art_id) ? "" : "none", $form);
+//        $form = str_replace("{product_main_photo}", ($showform->getArticlePhoto($art_id) == "") ? $this->noPhoto : $showform->getArticlePhoto($art_id), $form);
 
-        $delivery_info = str_replace('"', "", $delivery_info);
-        $form = str_replace("{product_del}", $delivery_info, $form);
-        $form = str_replace("{product_dd}", $delivery_days, $form);
+//        $delivery_info = str_replace('"', "", $delivery_info);
+//        $form = str_replace("{product_del}", $delivery_info, $form);
+//        $form = str_replace("{product_dd}", $delivery_days, $form);
         $form = str_replace("{product_delivery_class}", "", $form);
         $delivery_short_info = str_replace("<br>", " ", $delivery_short_info);
         if ($delivery_days == 0 && $suppl_id == 0) {
@@ -1244,30 +1244,30 @@ class CatalogueClass
         }
         $form = str_replace("{product_delivery_short_info}", $delivery_short_info, $form);
 
-        $form = str_replace("{product_price}", $price . " $kours_cap", $form);
+//        $form = str_replace("{product_price}", $price . " $kours_cap", $form);
         $form = str_replace("{product_true_price}", $price, $form);
         $form = str_replace("{product_kours_cap}", $kours_cap, $form);
 
-        $form = str_replace("{product_action}", $action_form, $form);
-        $form = str_replace("{product_action_count}", $action_count, $form);
-        $form = str_replace("{product_title_del}", str_replace("<br>", " ", $delivery_info), $form);
-        $form = str_replace("{analog_display}", (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && ($brand_id == $brand_nr_search)) ? "none" : "", $form);
-        $form = str_replace("{product_barcode}", $this->getBarcode($art_id), $form);
+//        $form = str_replace("{product_action}", $action_form, $form);
+//        $form = str_replace("{product_action_count}", $action_count, $form);
+//        $form = str_replace("{product_title_del}", str_replace("<br>", " ", $delivery_info), $form);
+//        $form = str_replace("{analog_display}", (($article_nr_displ == $article_nr_search || $format_name == $article_nr_search) && ($brand_id == $brand_nr_search)) ? "none" : "", $form);
+//        $form = str_replace("{product_barcode}", $this->getBarcode($art_id), $form);
 
-        $form = str_replace("{style_border}", $border, $form);
-        $form = str_replace("{style_class}", $class, $form);
-        $form = str_replace("{style_none}", $none, $form);
-        $form = str_replace("{style_hide}", $hide, $form);
+//        $form = str_replace("{style_border}", $border, $form);
+//        $form = str_replace("{style_class}", $class, $form);
+//        $form = str_replace("{style_none}", $none, $form);
+//        $form = str_replace("{style_hide}", $hide, $form);
 
         $flagData = $showform->getCountryFlag($brand_id);
         $form = str_replace("{country_display}", (!$flagData) ? "none" : "", $form);
         $form = str_replace("{flag_image}", $flagData["flag"], $form);
         $form = str_replace("{country_name}", $flagData["country"], $form);
-        $form = str_replace("{instock}", ($suppl_id == 0) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "", $form);
-        $form = str_replace("{index_type}", $this->getIndexTypeImage($art_id, $article_nr_search, $article_nr_displ, $format_name, $brand_id, $brand_nr_search), $form);
-        $form = str_replace("{count_users}", $client->getUsersCount(), $form);
-        $form = str_replace("{data_today}", date("Y-m-d"), $form);
-        $form = str_replace("{tpoint_full_name}", ($suppl_id == 0) ? $client->getArticleStorageTPoint($storage_id) : "", $form);
+//        $form = str_replace("{instock}", ($suppl_id == 0) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "", $form);
+//        $form = str_replace("{index_type}", $this->getIndexTypeImage($art_id, $article_nr_search, $article_nr_displ, $format_name, $brand_id, $brand_nr_search), $form);
+//        $form = str_replace("{count_users}", $client->getUsersCount(), $form);
+//        $form = str_replace("{data_today}", date("Y-m-d"), $form);
+//        $form = str_replace("{tpoint_full_name}", ($suppl_id == 0) ? $client->getArticleStorageTPoint($storage_id) : "", $form);
 
         $form = str_replace("{product_info}", $showform->getArticleInfoForm($art_id, 1), $form);
         $form = str_replace("{product_button}", ($price == 0) ? "none" : "", $form);
@@ -1278,14 +1278,14 @@ class CatalogueClass
 
         $form = str_replace("{product_title}", "$article_name $brand_name $article_nr_displ", $form);
 
-        $basket_amount = $shop->getBasketArticleAmount($art_id, $storage_id);
-        $form = str_replace("{basket_amount}", ($basket_amount > 0) ? "{site_basket}: $basket_amount {amount_abbr}." : "", $form);
+//        $basket_amount = $shop->getBasketArticleAmount($art_id, $storage_id);
+//        $form = str_replace("{basket_amount}", ($basket_amount > 0) ? "{site_basket}: $basket_amount {amount_abbr}." : "", $form);
 
-        if ($this->checkT2Link($this->getCookieAuto(), $art_id)) {
-            $form = str_replace("{product_auto_appl}", "{is_applicable}", $form);
-        } else {
-            $form = str_replace("{product_auto_appl}", "", $form);
-        }
+//        if ($this->checkT2Link($this->getCookieAuto(), $art_id)) {
+//            $form = str_replace("{product_auto_appl}", "{is_applicable}", $form);
+//        } else {
+//            $form = str_replace("{product_auto_appl}", "", $form);
+//        }
 
         if ($stock == "0") {
             $form = str_replace("{price_row_status}", "none", $form);
@@ -1976,49 +1976,77 @@ class CatalogueClass
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
                 $art_id = $mas_key;
+
                 if (in_array($art_id, $checkarray)) {
+
                     if ($val["price"] < $preprice) {
+
                         if ($double > 0) {
+
                             if (isset($ll[$i - 1])) {
                                 $ll[$i - 1] = "";
                             }
+
                             if ($min_price > $val["price"]) {
                                 $min_price = $val["price"];
                             }
+
                             if (!$view) {
                                 $ll[$i] = "
                                 <div class=\"row tables__row show_hidden\">
-                                    <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage('$art_id');\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $cur_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
-                                    <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\"><span class=\"span-grey\">{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
+                                    <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage('$art_id');\">
+                                        {more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $cur_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i>
+                                    </a>
+                                    <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\">
+                                        <span class=\"span-grey\">{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i>
+                                    </a>
                                 </div>";
                             } else {
-                                $ll[$i] = "<a href=\"" . $this->getSiteLink() . "$this->search_link/{content_search_number}/{content_brand_link}/\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $cur_cap</span> ></a>";
+                                $ll[$i] = "
+                                <a href=\"" . $this->getSiteLink() . "$this->search_link/{content_search_number}/{content_brand_link}/\">
+                                    {more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $cur_cap</span> >
+                                </a>";
                             }
+
                             $hide[$i]   = "none";
                             $class[$i]  = "$art_id-hide";
                         }
+
                     } else {
+
                         if (isset($ll[$i - 1])) {
                             $ll[$i - 1] = "";
                         }
+
                         if ($min_price > $val["price"]) {
                             $min_price = $val["price"];
                         }
+
                         if (!$view) {
                             $ll[$i] = "
                             <div class=\"row tables__row show_hidden\">
-                                <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage('$art_id');\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $cur_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i></a>
-                                <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\"><span class=\"span-grey\">{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i></a>
+                                <a id=\"fa-$art_id\" class=\"show_more\" onClick=\"showStorage('$art_id');\">
+                                    {more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $cur_cap</span> <i class=\"rotate_anime fas fa-chevron-down\"></i>
+                                </a>
+                                <a id=\"fas-$art_id\" class=\"show_more none\" onClick=\"showStorage('$art_id');\">
+                                    <span class=\"span-grey\">{collapse_cap}</span> <i class=\"rotate_anime fas fa-chevron-up\"></i>
+                                </a>
                             </div>";
                         } else {
-                            $ll[$i] = "<a href=\"" . $this->getSiteLink() . "$this->search_link/{content_search_number}/{content_brand_link}/\">{more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $cur_cap</span> ></i></a>";
+                            $ll[$i] = "
+                            <a href=\"" . $this->getSiteLink() . "$this->search_link/{content_search_number}/{content_brand_link}/\">
+                                {more_cap} <span class=\"span-grey\">$j " . $this->getOfferCap($j) . "</span> {from_cap} <span class=\"span-dark-red\">$min_price $cur_cap</span> ></i>
+                            </a>";
                         }
+
                         $hide[$i]   = "none";
                         $class[$i]  = "$art_id-hide";
                     }
+
                     $none[$i]   = "dvisibility0";
                     $border[$i] = "border-dashed";
                     $double++;
+
                 } else {
                     $hide[$i]   = "";
                     $none[$i]   = "dvisibility";
@@ -2027,6 +2055,7 @@ class CatalogueClass
                     $double     = 0;
                     $preprice   = $val["price"];
                 }
+
                 array_push($checkarray, $art_id);
                 $i++;
                 $j++;

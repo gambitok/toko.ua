@@ -678,7 +678,7 @@ class SearchClass extends CatalogueClass
                 // $mas[$art_id1][0] = ['suppl_id' => 1]
                 // $mas[$art_id2][0] = ['suppl_id' => 0]
 
-                $mas = $this->sortSuppls($mas);
+                $mas = $this->sortSuppls($mas, $art_id_search);
 
                 // show other storages
                 $other_storages = $this->showOtherStorages($mas, $cur, 0);
@@ -702,9 +702,18 @@ class SearchClass extends CatalogueClass
         return array($list, $list_brand, $filters);
     }
 
-    public function sortSuppls($mas)
+    /*
+     * search position on top
+     * sort - our position on top
+     * delete suppls if we have our positions with `in_stock`
+     * */
+    public function sortSuppls($mas, $art_id_search)
     {
         $arr = []; $mas2 = [];
+
+        $mas_search = $mas[$art_id_search];
+        unset($mas[$art_id_search]);
+
         foreach ($mas as $mas_key => $mas_val) {
             $i = 0;
             foreach ($mas_val as $key => $val) {
@@ -714,8 +723,28 @@ class SearchClass extends CatalogueClass
                 $i++;
             }
         }
+
+        $del_arts = [];
+        foreach ($mas as $mas_key => $mas_val) {
+            $i = 0;
+            foreach ($mas_val as $key => $val) {
+                if ($i == 0 && $val["suppl_id"] == 0 && $val["stock"] > 0 && count($mas_val) > 1) {
+                    $del_arts[] = $mas_key;
+                }
+            }
+        }
+        foreach ($del_arts as $art_id) {
+            foreach ($mas[$art_id] as $key => $val) {
+                if ($val["suppl_id"] > 0) {
+                    unset($mas[$art_id][$key]);
+                }
+            }
+        }
+
         asort($arr);
         $arr = array_keys($arr);
+
+        $mas2[$art_id_search] = $mas_search;
 
         foreach ($arr as $val) {
             $mas2[$val] = $mas[$val];
@@ -944,45 +973,43 @@ class SearchClass extends CatalogueClass
         $form = str_replace("{article_nr_displ}", $dataArt["art"], $form);
         $form = str_replace("{brand_name}", $dataArt["brand"], $form);
 
-        $list_target = "";
-        $style_target = "none";
-        $i = 0;
-        $check = 0;
+        $list_target    = "";
+        $style_target   = "none";
+        $i              = 0;
+        $check          = 0;
 
         if (!empty($mas)) {
 
-            foreach ($mas as $mas_key => $mas_val) {
-                if ($mas_key == $art_id_search) {
+            if (!empty($mas[$art_id_search])) {
+                $style_target   = "";
+                $check          = 1;
+            }
 
-                    $style_target   = "";
-                    $check          = 1;
+            foreach ($mas[$art_id_search] as $val) {
+                $art_id     = $art_id_search;
+                $art_nr_ds  = $val["article_nr_displ"];
+                $brand_id   = $val["brand_id"];
+                $brand_name = $val["brand_name"];
+                $art_name   = $val["article_name"];
+                $stock      = $val["stock"];
+                $del_info   = $val["delivery_info"];
+                $price      = $val["price"];
+                $del_days   = $val["delivery_days"];
+                $del_short  = $val["delivery_short_info"];
+                $suppl_id   = $val["suppl_id"];
+                $ret_days   = $val["return_days"];
+                $storage_id = $val["storage_id"];
 
-                    foreach ($mas_val as $val) {
-                        $art_id     = $mas_key;
-                        $art_nr_ds  = $val["article_nr_displ"];
-                        $brand_id   = $val["brand_id"];
-                        $brand_name = $val["brand_name"];
-                        $art_name   = $val["article_name"];
-                        $stock      = $val["stock"];
-                        $del_info   = $val["delivery_info"];
-                        $price      = $val["price"];
-                        $del_days   = $val["delivery_days"];
-                        $del_short  = $val["delivery_short_info"];
-                        $suppl_id   = $val["suppl_id"];
-                        $ret_days   = $val["return_days"];
-                        $storage_id = $val["storage_id"];
-
-                        if (($stock > 0 && $price > 0)) {
-                            $os             = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
-                            $list_target    .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
-                        } elseif ($i == 1) {
-                            $os             = ["content" => "", "class" => "", "hide" => "", "border" => "border-line", "none" => "dvisibility"];
-                            $list_target    .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
-                        }
-
-                        $i++;
-                    }
+                if (($stock > 0 && $price > 0)) {
+                    $os             = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
+                    $list_target    .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
                 }
+                elseif ($i == 1) {
+                    $os             = ["content" => "", "class" => "", "hide" => "", "border" => "border-line", "none" => "dvisibility"];
+                    $list_target    .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                }
+
+                $i++;
             }
 
             if ($check == 0) {
