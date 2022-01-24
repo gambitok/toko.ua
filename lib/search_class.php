@@ -724,8 +724,17 @@ class SearchClass extends CatalogueClass
             }
         }
 
+        asort($arr);
+        $arr = array_keys($arr);
+
+        $mas2[$art_id_search] = $mas_search;
+
+        foreach ($arr as $val) {
+            $mas2[$val] = $mas[$val];
+        }
+
         $del_arts = [];
-        foreach ($mas as $mas_key => $mas_val) {
+        foreach ($mas2 as $mas_key => $mas_val) {
             $i = 0;
             foreach ($mas_val as $key => $val) {
                 if ($i == 0 && $val["suppl_id"] == 0 && $val["stock"] > 0 && count($mas_val) > 1) {
@@ -734,20 +743,11 @@ class SearchClass extends CatalogueClass
             }
         }
         foreach ($del_arts as $art_id) {
-            foreach ($mas[$art_id] as $key => $val) {
+            foreach ($mas2[$art_id] as $key => $val) {
                 if ($val["suppl_id"] > 0) {
-                    unset($mas[$art_id][$key]);
+                    unset($mas2[$art_id][$key]);
                 }
             }
-        }
-
-        asort($arr);
-        $arr = array_keys($arr);
-
-        $mas2[$art_id_search] = $mas_search;
-
-        foreach ($arr as $val) {
-            $mas2[$val] = $mas[$val];
         }
 
         return $mas2;
