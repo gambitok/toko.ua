@@ -795,6 +795,8 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID` = $state_id;");
         $postfix    = $this->getLangPostfix($this->getLanguage());
         $date       = $db->result($r, 0, "DATA");
+        $site_title = $db->result($r, 0, "T_RU$postfix");
+        $site_descr = $db->result($r, 0, "D_RU$postfix");
         $title      = $db->result($r, 0, "TITLE_$postfix");
         $title_ru   = $db->result($r, 0, "TITLE_RU");
         $text       = $db->result($r, 0, "TEXT_$postfix");
@@ -802,7 +804,7 @@ class MenuClass extends CatalogueClass
         $title_frmt = $this->formatUrlText($title_ru);
         $url        = $this->getSiteLink() . "$this->reviews_link/state/$state_id/$title_frmt/";
         $img        = "https://portal.myparts.pro/uploads/images/saved/$img_file";
-        return compact("title", "text", "date", "url", "img");
+        return compact("title", "text", "date", "url", "img", "site_title", "site_descr");
     }
 
     /*
