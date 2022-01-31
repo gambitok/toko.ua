@@ -795,8 +795,8 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID` = $state_id;");
         $postfix    = $this->getLangPostfix($this->getLanguage());
         $date       = $db->result($r, 0, "DATA");
-        $site_title = $db->result($r, 0, "T_RU$postfix");
-        $site_descr = $db->result($r, 0, "D_RU$postfix");
+        $site_title = $db->result($r, 0, "T_$postfix");
+        $site_descr = $db->result($r, 0, "D_$postfix");
         $title      = $db->result($r, 0, "TITLE_$postfix");
         $title_ru   = $db->result($r, 0, "TITLE_RU");
         $text       = $db->result($r, 0, "TEXT_$postfix");

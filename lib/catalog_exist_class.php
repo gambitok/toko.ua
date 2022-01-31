@@ -1243,7 +1243,7 @@ class CatalogExistClass extends CatalogueClass
 
                 if ($mfa_id > 0) {
                     $mfa_link   = $this->getManufactureLink($mfa_id);
-                    $car_link   .= "$mfa_link/";
+                    $car_link   .= "auto/$mfa_link/";
                 }
                 if ($model != "") {
                     $model_link = $this->getModelLink($model);
