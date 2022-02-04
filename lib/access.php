@@ -572,17 +572,27 @@ function getSeoTextForm()
     $catalogue = new CatalogueClass();
     $page = $catalogue->getUrlNumber($_GET["page"]);
     $postfix = $catalogue->getLangPostfix($catalogue->getLanguage());
+
     if ($router == "") {
         $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = '/' LIMIT 1;";
     }
+
     if ($router == "cars") {
         $link = $str_linka;
         $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'cars' AND `LINK` = '$link' LIMIT 1;";
     }
+
     if ($router == "catalog") {
         $link = $str_linka;
+        $city_link = $catalogue->getUrlString($_GET["city"]);
+        if ($city_link != "") {
+            if ($catalogue->checkCityLink($city_link)) {
+                $link .= "/?city=$city_link";
+            }
+        }
         $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'catalog' AND `LINK` = '$link' LIMIT 1;";
     }
+
     $r = $db->query($query);
     $n = $db->num_rows($r);
     if ($n > 0) {

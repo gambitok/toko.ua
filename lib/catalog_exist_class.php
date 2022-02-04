@@ -197,6 +197,30 @@ class CatalogExistClass extends CatalogueClass
         return $value_h1;
     }
 
+    public function getGroupValueInfo($value_id)
+    {
+        $value_id = $this->getUrlNumber($value_id);
+        $db = DbSingleton::getTokoDb();
+
+        $param_id   = 0;
+        $param_name = "";
+        $param_link = "";
+        $value_name = "";
+        $value_link = "";
+
+        $r = $db->query("SELECT `PARAM_ID`, `VALUE_NAME`, `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $param_id   = $db->result($r, 0, "PARAM_ID");
+            $param_name = $this->getGroupParamName($param_id);
+            $param_link = $this->getGroupParamLink($param_id);
+            $value_name = $db->result($r, 0, "VALUE_NAME");
+            $value_link = $db->result($r, 0, "VALUE_LINK");
+        }
+
+        return compact("param_id", "param_name", "param_link", "value_name", "value_link");
+    }
+
     /*
      * get products limit
      * */
@@ -2603,7 +2627,7 @@ class CatalogExistClass extends CatalogueClass
             ];
 
             if ($cat_id > 0) {
-                $catData = $this->getCatRowData($cat_id);
+                $catData    = $this->getCatRowData($cat_id);
                 $cat_name   = $catData["cat_name"];
                 $cat_link   = $catData["cat_link"];
                 if ($head_id == 1) {
@@ -2733,7 +2757,7 @@ class CatalogExistClass extends CatalogueClass
                     $n1 = $dbc->num_rows($r1);
                     for ($i1 = 1; $i1 <= $n1; $i1++) {
                         $mfa_id = $dbc->result($r1, $i1 - 1, "mfa_id");
-                        $model = $dbc->result($r1, $i1 - 1, "model");
+                        $model  = $dbc->result($r1, $i1 - 1, "model");
                         $arr_groups_models[$group_id][$mfa_id][] = $model;
                     }
                 }

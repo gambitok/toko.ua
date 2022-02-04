@@ -1062,8 +1062,7 @@ class MenuClass extends CatalogueClass
         if ($site_link == "test_page") {
             $list = $this->getHtmlForm("main/footer_cities");
             $list = str_replace("{top_categories_list}", $this->getTopCategories(), $list);
-            $list = str_replace("{top_goods_list}", "", $list);
-            $list = str_replace("{top_tags_list}", $this->getTopTags(), $list);
+            $list = str_replace("{top_goods_list}", $this->getTopGoods(), $list);
             $list = str_replace("{top_cities_list}", $this->getTopCities(), $list);
             $list = str_replace("{top_orders_list}", $this->getTopOrders(), $list);
             $form = str_replace("{footer_cities}", $list, $form);
@@ -1078,60 +1077,131 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "
         <ul class='list-inline'>";
-        $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE 1 ORDER BY RAND() LIMIT 32;");
+
+        $arts = [];
+        $r = $db->query("SELECT `ART_ID` FROM `T2_FUTER_A` WHERE 1 ORDER BY RAND() LIMIT 32;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "ART_ID");
+            $arts[] = $art_id;
+        }
+
+        $arts = implode(",", $arts);
+
+        $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE `ART_ID` IN ($arts);");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id     = $db->result($r, $i - 1, "ART_ID");
             $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
             $brand_name = $this->getBrandName($brand_id);
             $art_nr_ds  = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+            $art_name   = $this->getArticleName($art_id);
 
             $format_name        = $this->getFormatAticle($art_nr_ds);
             $format_brand_link  = $this->getBrandLink($brand_id);
 
             $list .= "
-            <li><a href=\"" . $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/\">$art_nr_ds $brand_name</a></li>";
+            <li><a href=\"" . $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/\">$art_name $brand_name $art_nr_ds</a></li>";
         }
         $list .= "
         </ul>";
         return $list;
     }
 
-    public function getTopTags()
+    public function getTopCategories($group_id_sel = 0)
     {
+        $catalog_exist = new CatalogExistClass();
         $db = DbSingleton::getTokoDb();
-        $list = "
+        $list = "";
+
+        $list .= "
         <ul class='list-inline'>";
-        $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY RAND() LIMIT 32;");
+        $r = $db->query("SELECT `GROUP_ID`, `VALUE_ID` FROM `T2_FUTER_GV` WHERE `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $group_name = $db->result($r, $i - 1, "TEX_RU");
-            $group_link = $db->result($r, $i - 1, "TEX_LINK");
+            $group_id = $db->result($r, $i - 1, "GROUP_ID");
+            $value_id = $db->result($r, $i - 1, "VALUE_ID");
+
+            $text_link = "";
+            if ($value_id > 0) {
+                $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
+                $param_link = $dataValue["param_link"];
+                $value_link = $dataValue["value_link"];
+                $text_link  = "$param_link=$value_link/";
+            }
+
+            $group_name = $this->getGroupRowName($group_id);
+            $group_link = $this->getGroupRowLink($group_id);
 
             $list .= "
-            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a></li>";
+            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$text_link\">$group_name</a></li>";
         }
         $list .= "
         </ul>";
-        return $list;
-    }
 
-    public function getTopCategories()
-    {
-        $db = DbSingleton::getTokoDb();
-        $list = "
+        $list .= "
         <ul class='list-inline'>";
-        $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 AND `STATUS_CACHE` = 1 ORDER BY RAND() LIMIT 32;");
+        $r = $db->query("SELECT `GROUP_ID`, `VALUE_ID`, `BRAND_ID` FROM `T2_FUTER_GVB` WHERE `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $group_name = $db->result($r, $i - 1, "TEX_RU");
-            $group_link = $db->result($r, $i - 1, "TEX_LINK");
+            $group_id   = $db->result($r, $i - 1, "GROUP_ID");
+            $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
+            $brand_link = $this->getBrandLink($brand_id);
+            $brand_name = $this->getBrandName($brand_id);
+            $value_id   = $db->result($r, $i - 1, "VALUE_ID");
+
+            $text_link = "brandy=$brand_link";
+            if ($value_id > 0) {
+                $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
+                $param_link = $dataValue["param_link"];
+                $value_link = $dataValue["value_link"];
+                $text_link  .= ";$param_link=$value_link/";
+            } else {
+                $text_link .= "/";
+            }
+
+            $group_name = $this->getGroupRowName($group_id);
+            $group_link = $this->getGroupRowLink($group_id);
 
             $list .= "
-            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a></li>";
+            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$text_link\">$group_name $brand_name</a></li>";
         }
         $list .= "
         </ul>";
+
+        $list .= "
+        <ul class='list-inline'>";
+        $r = $db->query("SELECT `GROUP_ID`, `VALUE_ID`, `MFA_ID`, `MODEL` FROM `T2_FUTER_GVMM` WHERE `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 10;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id   = $db->result($r, $i - 1, "GROUP_ID");
+            $value_id   = $db->result($r, $i - 1, "VALUE_ID");
+            $mfa_id     = $db->result($r, $i - 1, "MFA_ID");
+            $model      = $db->result($r, $i - 1, "MODEL");
+
+            $text_link = "";
+            if ($value_id > 0) {
+                $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
+                $param_link = $dataValue["param_link"];
+                $value_link = $dataValue["value_link"];
+                $text_link  = "$param_link=$value_link/";
+            }
+
+            $dataMfa    = $this->getMfaData($mfa_id);
+            $mfa_name   = $dataMfa["mfa_brand"];
+            $mfa_link   = $dataMfa["mfa_link"];
+            $model_link = $this->getModelLink($model);
+            $text_link  .= "$mfa_link/$model_link/";
+
+            $group_name = $this->getGroupRowName($group_id);
+            $group_link = $this->getGroupRowLink($group_id);
+
+            $list .= "
+            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$text_link\">$group_name {on_cap} $mfa_name $model</a></li>";
+        }
+        $list .= "
+        </ul>";
+
         return $list;
     }
 
@@ -1140,38 +1210,146 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "
         <ul class='list-inline'>";
-        $r = $db->query("SELECT `CITY_NAME_CLEAR` FROM `T2_LOCATION` WHERE 1 ORDER BY RAND() LIMIT 32;");
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT `LINK_NAME`, `CITY_NAME_$postfix` FROM `SEO_LISTING_CITY` WHERE 1 ORDER BY RAND() LIMIT 32;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
+            $city_link = $db->result($r, $i - 1, "LINK_NAME");
+            $city_name = $db->result($r, $i - 1, "CITY_NAME_$postfix");
 
             $list .= "
-            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/?city=$city_name/\">{details_in_cap} $city_name</a></li>";
+            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/?city=$city_link\">$city_name</a></li>";
         }
         $list .= "
         </ul>";
         return $list;
     }
 
-    public function getTopOrders()
+    public function getRandomCity()
     {
         $db = DbSingleton::getTokoDb();
-        $list = "
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT `LINK_NAME`, `CITY_NAME_IN_$postfix` FROM `SEO_LISTING_CITY` WHERE 1 ORDER BY RAND() LIMIT 1;");
+        $city_name = $db->result($r, 0, "CITY_NAME_IN_$postfix");
+        $city_link = $db->result($r, 0, "LINK_NAME");
+        return compact("city_name", "city_link");
+    }
+
+    public function getTopOrders($group_id_sel = 0)
+    {
+        $catalog_exist = new CatalogExistClass();
+        $db = DbSingleton::getTokoDb();
+        $list = "";
+
+        $list .= "
         <ul class='list-inline'>";
-        $r = $db->query("SELECT * FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY RAND() LIMIT 32;");
+        $r = $db->query("SELECT `GROUP_ID`, `VALUE_ID` FROM `T2_FUTER_GV` WHERE `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $group_name = $db->result($r, $i - 1, "TEX_RU");
-            $group_link = $db->result($r, $i - 1, "TEX_LINK");
+            $group_id = $db->result($r, $i - 1, "GROUP_ID");
+            $value_id = $db->result($r, $i - 1, "VALUE_ID");
 
-            $r2 = $db->query("SELECT `CITY_NAME_CLEAR` FROM `T2_LOCATION` WHERE 1 ORDER BY RAND() LIMIT 1;");
-            $city_name = $db->result($r2, 0, "CITY_NAME_CLEAR");
+            $text_link = "";
+            if ($value_id > 0) {
+                $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
+                $param_link = $dataValue["param_link"];
+                $value_link = $dataValue["value_link"];
+                $text_link  = "$param_link=$value_link/";
+            }
+
+            $group_name = $this->getGroupRowName($group_id);
+            $group_link = $this->getGroupRowLink($group_id);
+
+            $dataCity = $this->getRandomCity();
+            $city_name = $dataCity["city_name"];
+            $city_link = $dataCity["city_link"];
+            $text_link .= "?city=$city_link";
+
+            $text = "{buy_cap} " . mb_strtolower("$group_name " . $this->replaceLang("{in_cap}"), 'windows-1251') . " $city_name";
 
             $list .= "
-            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name {in_cap} $city_name</a></li>";
+            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$text_link\">$text</a></li>";
         }
         $list .= "
         </ul>";
+
+        $list .= "
+        <ul class='list-inline'>";
+        $r = $db->query("SELECT `GROUP_ID`, `VALUE_ID`, `BRAND_ID` FROM `T2_FUTER_GVB` WHERE `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 10;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id   = $db->result($r, $i - 1, "GROUP_ID");
+            $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
+            $brand_link = $this->getBrandLink($brand_id);
+            $brand_name = $this->getBrandName($brand_id);
+            $value_id   = $db->result($r, $i - 1, "VALUE_ID");
+
+            $text_link = "brandy=$brand_link";
+            if ($value_id > 0) {
+                $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
+                $param_link = $dataValue["param_link"];
+                $value_link = $dataValue["value_link"];
+                $text_link  .= ";$param_link=$value_link/";
+            } else {
+                $text_link .= "/";
+            }
+
+            $group_name = $this->getGroupRowName($group_id);
+            $group_link = $this->getGroupRowLink($group_id);
+
+            $dataCity = $this->getRandomCity();
+            $city_name = $dataCity["city_name"];
+            $city_link = $dataCity["city_link"];
+            $text_link .= "?city=$city_link";
+
+            $text = "{buy_cap} " . mb_strtolower("$group_name ", 'windows-1251') . "$brand_name " . mb_strtolower($this->replaceLang("{in_cap}"), 'windows-1251') . " $city_name";
+
+            $list .= "
+            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$text_link\">$text</a></li>";
+        }
+        $list .= "
+        </ul>";
+
+        $list .= "
+        <ul class='list-inline'>";
+        $r = $db->query("SELECT `GROUP_ID`, `VALUE_ID`, `MFA_ID`, `MODEL` FROM `T2_FUTER_GVMM` WHERE `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 10;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id   = $db->result($r, $i - 1, "GROUP_ID");
+            $value_id   = $db->result($r, $i - 1, "VALUE_ID");
+            $mfa_id     = $db->result($r, $i - 1, "MFA_ID");
+            $model      = $db->result($r, $i - 1, "MODEL");
+
+            $text_link = "";
+            if ($value_id > 0) {
+                $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
+                $param_link = $dataValue["param_link"];
+                $value_link = $dataValue["value_link"];
+                $text_link  = "$param_link=$value_link/";
+            }
+
+            $dataMfa    = $this->getMfaData($mfa_id);
+            $mfa_name   = $dataMfa["mfa_brand"];
+            $mfa_link   = $dataMfa["mfa_link"];
+            $model_link = $this->getModelLink($model);
+            $text_link  .= "$mfa_link/$model_link/";
+
+            $group_name = $this->getGroupRowName($group_id);
+            $group_link = $this->getGroupRowLink($group_id);
+
+            $dataCity = $this->getRandomCity();
+            $city_name = $dataCity["city_name"];
+            $city_link = $dataCity["city_link"];
+            $text_link .= "?city=$city_link";
+
+            $text = "{buy_cap} " . mb_strtolower("$group_name {on_cap} ", 'windows-1251') . "$mfa_name $model " . mb_strtolower($this->replaceLang("{in_cap}"), 'windows-1251') . " $city_name";
+
+            $list .= "
+            <li><a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/$text_link\">$text</a></li>";
+        }
+        $list .= "
+        </ul>";
+
         return $list;
     }
 

@@ -488,4 +488,20 @@ trait Helper
         return compact("form", "script");
     }
 
+    public function checkCityLink($city_link)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `ID` FROM `SEO_LISTING_CITY` WHERE `LINK_NAME` = '$city_link' LIMIT 1;");
+        $n = $db->num_rows($r);
+        return ($n > 0);
+    }
+
+    public function getCityNameIn($city_link, $prefix = "CITY_NAME_")
+    {
+        $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT `$prefix$postfix` FROM `SEO_LISTING_CITY` WHERE `LINK_NAME` = '$city_link' LIMIT 1;");
+        return $db->result($r, 0, "$prefix$postfix");
+    }
+
 }

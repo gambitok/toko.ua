@@ -11,17 +11,17 @@
 //header('Content-Type: application/x-yaml');
 //echo $openapi;
 
-require(RDD . "/checkbox-php/vendor/autoload.php");
-
-$config = new \igorbunov\Checkbox\Config([
-    \igorbunov\Checkbox\Config::API_URL => 'https://api.checkbox.in.ua/api/v1',
-    \igorbunov\Checkbox\Config::LOGIN => 'test_2hww3xtdc',
-    \igorbunov\Checkbox\Config::PASSWORD => 'test_2hww3xtdc', //or
-//    \igorbunov\Checkbox\Config::PINCODE => 7219781348,
-    \igorbunov\Checkbox\Config::LICENSE_KEY => 'testa3e8f4fa24b4a2fbdac576b3'
-]);
-
-$api = new \igorbunov\Checkbox\CheckboxJsonApi($config);
-$api->signInCashier();
-
-//$api->signOutCashier();
+//require(RDD . "/checkbox-php/vendor/autoload.php");
+//
+//$config = new \igorbunov\Checkbox\Config([
+//    \igorbunov\Checkbox\Config::API_URL => 'https://api.checkbox.in.ua/api/v1',
+//    \igorbunov\Checkbox\Config::LOGIN => 'test_2hww3xtdc',
+//    \igorbunov\Checkbox\Config::PASSWORD => 'test_2hww3xtdc', //or
+////    \igorbunov\Checkbox\Config::PINCODE => 7219781348,
+//    \igorbunov\Checkbox\Config::LICENSE_KEY => 'testa3e8f4fa24b4a2fbdac576b3'
+//]);
+//
+//$api = new \igorbunov\Checkbox\CheckboxJsonApi($config);
+//$api->signInCashier();
+//
+////$api->signOutCashier();

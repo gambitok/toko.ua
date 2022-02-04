@@ -7,6 +7,7 @@ $red_status = 0;
 $red_type   = 0;
 $red_link   = "";
 $sort       = $catalogue->getUrlString($_GET["sort"]);
+$city_link  = $catalogue->getUrlString($_GET["city"]);
 $site_name  = $catalogue->getUrlString($linka[0]);
 $router     = $catalogue->getUrlString($linka[1]);
 $router_2   = $catalogue->getUrlString($linka[2]);
@@ -39,7 +40,24 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
      * Catalog
      * */
     if ($router == "") {
-        $content = str_replace("{main_window}", "<div><h1>{site_catalog}</h1></div>" . $catalogue->getCatalogColList() . $showform->getHistoryArts(), $content);
+
+        $h1 = "<div style='padding: 15px;'><h1>{site_catalog}</h1></div>";
+        if ($city_link != "") {
+            if ($catalogue->checkCityLink($city_link)) {
+                $city_name_in   = $catalogue->getCityNameIn($city_link, "CITY_NAME_IN_");
+                $city_name      = $catalogue->getCityNameIn($city_link, "CITY_NAME_");
+                $h1             = "<div style='padding: 15px;'><h1>{details_in_cap} $city_name_in</h1></div>";
+                $title          = $catalogue->replaceLang("{site_catalog_title_city}");
+                $title          = str_replace("{CITY_NAME_RU}", $city_name, $title);
+                $description    = $catalogue->replaceLang("{site_catalog_descr_city}");
+                $description    = str_replace("{CITY_NAME_IN_RU}", $city_name_in, $description);
+
+                $content = str_replace("{site_title}", $title, $content);
+                $content = str_replace("{site_description}", $description, $content);
+            }
+        }
+
+        $content = str_replace("{main_window}", $h1 . $catalogue->getCatalogColList() . $showform->getHistoryArts(), $content);
     }
     else {
         /*
