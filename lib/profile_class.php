@@ -643,6 +643,77 @@ class ProfileClass extends ClientClass
         return $form;
     }
 
+    //doc_type: 1-income, 2-move, 3-sale, 4-back client, 5-back suppl, 6-write_off
+    public function showProfileDocs($td_id, $doc_id, $doc_type_id)
+    {
+        $db = DbSingleton::getDbm();
+        switch ($doc_type_id) {
+            case 1: {
+                $table = "J_SALE_INVOICE";
+                $table_str = "invoice_id";
+                $price_str = "price_end";
+                break;
+            }
+            case 5: {
+                $table = "J_BACK_CLIENTS";
+                $table_str = "back_id";
+                $price_str = "price";
+                break;
+            }
+            default: {
+                $table = "";
+                $table_str = "";
+                break;
+            }
+        }
+
+        $list = "";
+
+        if ($table != "") {
+            $table = $table . "_STR";
+
+            $r = $db->query("SELECT * FROM `$table` WHERE `$table_str` = $doc_id;");
+            $n = $db->num_rows($r);
+
+            $idd = "td-" . $td_id;
+
+            $list .= "<tr id='$idd'><td colspan='9'><table>
+            <tr style='background: #e1e7ec'>
+                <td>#</td>
+                <td>{art_cap}</td>
+                <td>{caption_cap}</td>
+                <td>{amount_cap}</td>
+                <td>{price_cap}</td>
+                <td>{summ_cap}</td>
+            </tr>";
+
+            for ($i = 1; $i <= $n; $i++) {
+                $art_id     = $db->result($r, $i - 1, "art_id");
+                $art_nr_ds  = $db->result($r, $i - 1, "article_nr_displ");
+                $art_name   = $this->getArticleName($art_id);
+                $amount     = $db->result($r, $i - 1, "amount");
+                $price      = $db->result($r, $i - 1, "$price_str");
+                $sum        = $db->result($r, $i - 1, "summ");
+
+                $list .= "
+                <tr style='background: #e1e7ec'>
+                    <td>$i</td>
+                    <td>$art_nr_ds</td>
+                    <td>$art_name</td>
+                    <td>$amount</td>
+                    <td>$price</td>
+                    <td>$sum</td>
+                </tr>";
+            }
+            $list .= "</table></td></tr>";
+
+        }
+
+        $list = $this->replaceLang($list);
+
+        return $list;
+    }
+
     public function showProfileCheckForm($data_from = "", $data_to = "")
     {
         $db = DbSingleton::getDbm();
@@ -665,13 +736,14 @@ class ProfileClass extends ClientClass
         $saldo_end      = number_format((float)$saldo_end, 2, '.', '');
         $list           = "";
 
-        $r = $db->query("SELECT b.*, mc.abr as cash_name, pmc.abr 
+        $r = $db->query("SELECT b.*, mc.abr as cash_name, pmc.abr as cash_abr
         FROM `B_CLIENT_BALANS_JOURNAL` b 
 			LEFT JOIN `CASH` mc ON (mc.id = b.cash_id) 
 			LEFT JOIN `CASH` pmc ON (pmc.id = b.pay_cash_id) 
         WHERE b.client_id = $client_id AND b.data >= '$data_from 00:00:00' AND b.data <= '$data_to 23:59:59' 
         ORDER BY b.id ASC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $data           = $db->result($r, $i - 1, "data");
@@ -682,22 +754,26 @@ class ProfileClass extends ClientClass
                 $balans_after   = $db->result($r, $i - 1, "balans_after");
                 $doc_type_id    = $db->result($r, $i - 1, "doc_type_id");
                 $doc_id         = $db->result($r, $i - 1, "doc_id");
-                $pay_cash_name  = $db->result($r, $i - 1, "pmc.abr");
+                $pay_cash_name  = $db->result($r, $i - 1, "cash_abr");
                 $pay_summ       = $db->result($r, $i - 1, "pay_summ");
 
                 $document_name = "";
+
                 if ($doc_type_id == 1) {
                     $document_name = $this->getSaleInvoiceName($doc_id);
                 }
+
                 if ($doc_type_id == 2) {
                     list($jpay_doc_type_id, $document_name) = $this->getJPayName($doc_id);
                     if ($jpay_doc_type_id == 99) {
                         $summ = "";
                     }
                 }
+
                 if ($doc_type_id == 3) {
                     $document_name = $this->getJPayName($doc_id)[1];
                 }
+
                 if ($doc_type_id == 5) {
                     $document_name = $this->getBackClientsName($doc_id);
                 }
@@ -713,7 +789,7 @@ class ProfileClass extends ClientClass
                 }
 
                 $list .= "
-                <tr class='text-center'>
+                <tr id='tr-$i' class='text-center pointer' onclick='showProfileDocs($i, $doc_id, $doc_type_id);'>
                     <td>$i</td>
                     <td>$data</td>
                     <td>$cash_name</td>
@@ -725,7 +801,9 @@ class ProfileClass extends ClientClass
                     <td>$pay_summ $pay_cash_name</td>
                 </tr>";
             }
+
             $saldo_end = round($balans_after, 2);
+
         } else {
             $list = "
             <tr>
@@ -733,6 +811,7 @@ class ProfileClass extends ClientClass
             </tr>
             </table>";
         }
+
         if ($n == 0) {
             $r = $db->query("SELECT `balans_after` FROM `B_CLIENT_BALANS_JOURNAL` WHERE `client_id` = $client_id ORDER BY `data` DESC LIMIT 1;");
             $balans_after = $db->result($r, 0, "balans_after");
@@ -752,6 +831,7 @@ class ProfileClass extends ClientClass
         elseif ($saldo_start > 0) {
             $saldo_start_cap = " (<span class=\"span-green\">{prepayment}</span>)";
         }
+
         $form = str_replace("{saldo_start_data}", $saldo_start . " " . $kours->getKoursCaption($saldo_cash_id) . $saldo_start_cap, $form);
         $form = str_replace("{saldo_start_date}", $saldo_data_start, $form);
 
@@ -762,10 +842,12 @@ class ProfileClass extends ClientClass
         elseif ($saldo_end > 0) {
             $saldo_end_cap = " (<span class=\"span-green\">{prepayment}</span>)";
         }
+
         $form = str_replace("{saldo_end_data}", $saldo_end . " " . $kours->getKoursCaption($saldo_cash_id) . $saldo_end_cap, $form);
         $form = str_replace("{saldo_end_date}", $saldo_data_end, $form);
         $form = str_replace("{profile_check_range}", $list, $form);
         $form = $this->replaceLang($form);
+
         return $form;
     }
 

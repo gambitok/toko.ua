@@ -56,6 +56,10 @@ if ($_REQUEST["w"] == "showProfileOrdersArts") {
     $GLOBALS['_RESULT'] = array("content" => $profile->showProfileOrdersArts($_REQUEST["dp_id"], $_REQUEST["order_id"]));
 }
 
+if ($_REQUEST["w"] == "showProfileDocs") {
+    $GLOBALS['_RESULT'] = array("content" => $profile->showProfileDocs($_REQUEST["td_id"], $_REQUEST["doc_id"], $_REQUEST["doc_type_id"]));
+}
+
 if ($_REQUEST["w"] == "showBasketMinForm") {
     $GLOBALS['_RESULT'] = array("content" => $shop->showBasketForm());
 }

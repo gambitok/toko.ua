@@ -254,6 +254,18 @@ function showProfileCheckForm() {
         }}, true);
 }
 
+function showProfileDocs(td_id, doc_id, doc_type_id) {
+    let aa = $("#td-" + td_id);
+    if (aa.length === 1) {
+        aa.remove();
+    } else {
+        JsHttpRequest.query(folder,{'w':'showProfileDocs', 'td_id':td_id, 'doc_id':doc_id, 'doc_type_id':doc_type_id},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                $("#tr-" + td_id).after(result.content);
+            }}, true);
+    }
+}
+
 function showProfilePrice() {
     window.history.pushState("price", "Profile", "/profile/price/");
     $("#profile_file_list").html("<div class=\"loader\"></div>");
