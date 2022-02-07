@@ -207,8 +207,9 @@ class CatalogExistClass extends CatalogueClass
         $param_link = "";
         $value_name = "";
         $value_link = "";
+        $postfix    = $this->getLangPostfix($this->getLanguage());
 
-        $r = $db->query("SELECT `PARAM_ID`, `VALUE_NAME`, `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
+        $r = $db->query("SELECT `PARAM_ID`, `VALUE_NAME`, `VALUE_H1_$postfix`, `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $param_id   = $db->result($r, 0, "PARAM_ID");
@@ -216,9 +217,10 @@ class CatalogExistClass extends CatalogueClass
             $param_link = $this->getGroupParamLink($param_id);
             $value_name = $db->result($r, 0, "VALUE_NAME");
             $value_link = $db->result($r, 0, "VALUE_LINK");
+            $value_h1   = $db->result($r, 0, "VALUE_H1_$postfix");
         }
 
-        return compact("param_id", "param_name", "param_link", "value_name", "value_link");
+        return compact("param_id", "param_name", "param_link", "value_name", "value_link", "value_h1");
     }
 
     /*

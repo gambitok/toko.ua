@@ -26,10 +26,12 @@ elseif (file_exists(RDD . "/event/$path.php")) {
 }
 include_once(RDD . "/event/menu.php");
 
+$router = findLinks()[0];
+$site_link = findUrl();
+
 // Main HEAD HTML
-$site_link = findLinks()[0];
 $content = str_replace("{navigation_content}", $menu->getSiteNavigation(), $content);
-$content = str_replace("{footer_content}", $menu->getFooterForm($site_link), $content);
+$content = str_replace("{footer_content}", $menu->getFooterForm($router, $site_link), $content);
 $content = str_replace("{anchor_contacts_content}", getHtmlForm("main/anchor-contacts"), $content);
 
 $content = str_replace("{site_main_link}", $catalogue->getSiteLink(), $content);
@@ -44,7 +46,8 @@ $content = str_replace("{site_script_breadcrumbs}", $breadData[1], $content);
 $content = str_replace("{main_site_breadcrumbs}", $breadData[0], $content);
 $content = str_replace("{site_page_pagination}", "", $content);
 $content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
-$content = str_replace("{seo_footers_block}", "<!--footers_block-->", $content);
+//$content = str_replace("{seo_footers_block}", "<!--footers_block-->", $content);
+$content = str_replace("{seo_footers_block}", "", $content);
 $content = str_replace("{site_console}", "", $content);
 $content = str_replace("{seoshield_formulas}", "", $content);
 

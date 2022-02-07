@@ -665,7 +665,7 @@ class FormClass extends CatalogueClass
             $group_id_sel2 = $db->result($r, 0, "GROUP_ID");
             $form = str_replace("{Cat_random2}", $this->getSeoLinkCatalog($group_id_sel2), $form);
 
-            $r = $db->query("SELECT `CITY_NAME` FROM `SEO_LISTING_CITY` ORDER BY RAND() LIMIT 1;");
+            $r = $db->query("SELECT `CITY_NAME_RU` FROM `SEO_LISTING_CITY` ORDER BY RAND() LIMIT 1;");
             $random_city = $db->result($r, 0, "CITY_NAME");
             $form = str_replace("{Geo_nominative}", $random_city, $form);
 

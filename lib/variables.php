@@ -60,6 +60,26 @@ trait Variables
     }
 
     /*
+     * ART_ID => ARTICLE_NAME
+     * */
+    public function getArticleNameLang($art_id)
+    {
+        $art_id = $this->getUrlNumber($art_id);
+        $db = DbSingleton::getTokoDb();
+        $name = "";
+        $language = new LangClass();
+        $lang_id = $language->getOldLanguage($this->getLanguage());
+        if ($art_id > 0) {
+            $r = $db->query("SELECT `NAME` FROM `T2_NAMES` WHERE `ART_ID` = $art_id AND `LANG_ID` = $lang_id LIMIT 1;");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $name = $db->result($r, 0, "NAME");
+            }
+        }
+        return $name;
+    }
+
+    /*
      * ART_ID => ARTICLE_NR_SEARCH
      * */
     public function getArticleSearch($art_id)
