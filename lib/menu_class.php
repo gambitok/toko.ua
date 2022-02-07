@@ -1060,49 +1060,47 @@ class MenuClass extends CatalogueClass
         $form = str_replace("{popular_catalogs_list1}", $list1, $form);
         $form = str_replace("{popular_catalogs_list2}", $list2, $form);
 
-        $group_id_sel = 0;
-        $art_id_sel = 0;
-        $city_id_sel = 0;
-
-        if ($router_sel == "catalog") {
-            $catalog_exist = new CatalogExistClass();
-            $group_id_sel = $catalog_exist->getGroupExistId(findLinks()[1]);
-            $city_id_sel = $this->getUrlNumber($_GET["city"]);
-        }
-
-        if ($router_sel == "products") {
-            $art_id_sel = intval(substr(findLinks()[1], strrpos(findLinks()[1], "-") + 1));
-        }
-
-        $r = $db->query("SELECT * FROM `T2_FOOTER_ARCHIVE` WHERE `LINK` = '$site_link' LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $top_cities = $db->result($r, 0, "SEO_CITY");
-            $top_cats   = $db->result($r, 0, "SEO_CAT");
-            $top_goods  = $db->result($r, 0, "SEO_GOOD");
-            $top_order  = $db->result($r, 0, "SEO_ORDER");
-        } else {
-            $top_cities = $this->replaceLang($this->getTopCities($city_id_sel));
-            $top_cats   = $this->replaceLang($this->getTopCategories($group_id_sel));
-            $top_goods  = $this->replaceLang($this->getTopGoods($art_id_sel));
-            $top_order  = $this->replaceLang($this->getTopOrders($group_id_sel));
-
-            $top_cities = str_replace('"', "'", $top_cities);
-            $top_cats = str_replace('"', "'", $top_cats);
-            $top_goods = str_replace('"', "'", $top_goods);
-            $top_order = str_replace('"', "'", $top_order);
-
-            $db->query("INSERT INTO `T2_FOOTER_ARCHIVE` (`LINK`, `SEO_CITY`, `SEO_CAT`, `SEO_GOOD`, `SEO_ORDER`) VALUES (\"$site_link\", \"$top_cities\", \"$top_cats\", \"$top_goods\", \"$top_order\");");
-        }
-
-//        if ($router_sel == "test_page") {
-            $list = $this->getHtmlForm("main/footer_cities");
-            $list = str_replace("{top_cities_list}", $top_cities, $list);
-            $list = str_replace("{top_categories_list}", $top_cats, $list);
-            $list = str_replace("{top_goods_list}", $top_goods, $list);
-            $list = str_replace("{top_orders_list}", $top_order, $list);
-            $form = str_replace("{footer_cities}", $list, $form);
+//        $group_id_sel = 0;
+//        $art_id_sel = 0;
+//        $city_id_sel = 0;
+//
+//        if ($router_sel == "catalog") {
+//            $catalog_exist = new CatalogExistClass();
+//            $group_id_sel = $catalog_exist->getGroupExistId(findLinks()[1]);
+//            $city_id_sel = $this->getUrlNumber($_GET["city"]);
 //        }
+//
+//        if ($router_sel == "products") {
+//            $art_id_sel = intval(substr(findLinks()[1], strrpos(findLinks()[1], "-") + 1));
+//        }
+
+//        $r = $db->query("SELECT * FROM `T2_FOOTER_ARCHIVE` WHERE `LINK` = '$site_link' LIMIT 1;");
+//        $n = $db->num_rows($r);
+//        if ($n > 0) {
+//            $top_cities = $db->result($r, 0, "SEO_CITY");
+//            $top_cats   = $db->result($r, 0, "SEO_CAT");
+//            $top_goods  = $db->result($r, 0, "SEO_GOOD");
+//            $top_order  = $db->result($r, 0, "SEO_ORDER");
+//        } else {
+//            $top_cities = $this->replaceLang($this->getTopCities($city_id_sel));
+//            $top_cats   = $this->replaceLang($this->getTopCategories($group_id_sel));
+//            $top_goods  = $this->replaceLang($this->getTopGoods($art_id_sel));
+//            $top_order  = $this->replaceLang($this->getTopOrders($group_id_sel));
+//
+//            $top_cities = str_replace('"', "'", $top_cities);
+//            $top_cats = str_replace('"', "'", $top_cats);
+//            $top_goods = str_replace('"', "'", $top_goods);
+//            $top_order = str_replace('"', "'", $top_order);
+//
+//            $db->query("INSERT INTO `T2_FOOTER_ARCHIVE` (`LINK`, `SEO_CITY`, `SEO_CAT`, `SEO_GOOD`, `SEO_ORDER`) VALUES (\"$site_link\", \"$top_cities\", \"$top_cats\", \"$top_goods\", \"$top_order\");");
+//        }
+//
+//            $list = $this->getHtmlForm("main/footer_cities");
+//            $list = str_replace("{top_cities_list}", $top_cities, $list);
+//            $list = str_replace("{top_categories_list}", $top_cats, $list);
+//            $list = str_replace("{top_goods_list}", $top_goods, $list);
+//            $list = str_replace("{top_orders_list}", $top_order, $list);
+//            $form = str_replace("{footer_cities}", $list, $form);
 
         $form = str_replace("{footer_cities}", "", $form);
         return $form;
