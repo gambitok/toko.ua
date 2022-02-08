@@ -106,8 +106,11 @@
         color: #fff;
         padding: 15px;
         a {
-            color: #fff;
-            font-size: 14px;
+            color: #a9a9a9;
+            font-size: 13px;
+            &:hover {
+                color: #fff;
+            }
         }
     }
 }

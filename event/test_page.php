@@ -25,3 +25,15 @@
 //$api->signInCashier();
 //
 ////$api->signOutCashier();
+///
+
+$link   = "https://toko.ua/catalog/diski-tormoznye-schity-tormoznyh-diskov/brandy=abe;vid-detali=disk-tormoznoy/";
+$out    = bin2hex($link);
+$dec    = hexdec($out);
+$in     = hex2bin($out);
+
+$db->query("INSERT INTO `T2_FOOTER_ARCHIVE2` (`LINK`, `HEXDEC`) VALUES ('text', '$dec');");
+
+var_dump($out);
+var_dump($dec);
+var_dump($in);
