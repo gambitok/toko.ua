@@ -590,6 +590,8 @@ function getSeoTextForm()
                 $link .= "/?city=$city_link";
             }
         }
+        $link = ltrim($link, "/");
+
         $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'catalog' AND `LINK` = '$link' LIMIT 1;";
     }
 

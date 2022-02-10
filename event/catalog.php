@@ -26,12 +26,11 @@ if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
 elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $mfa_link   = $router_2;
     $model_link = $router_3;
-    $path_to    = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
     $red_status = 1;
     $red_type   = 301;
-    $red_link   = "$path_to";
-} else {
-
+    $red_link   = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
+}
+else {
     $str_linka = $linka;
     unset($str_linka[0]);
     $str_linka = implode("/", $str_linka);
@@ -40,9 +39,20 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
      * Catalog
      * */
     if ($router == "") {
-
         $h1 = "<div style='padding: 15px;'><h1>{site_catalog}</h1></div>";
         if ($city_link != "") {
+
+            // redirect /?city=kiev/
+            $check_link = $_SERVER['REQUEST_URI'];
+            $s = substr($check_link, -1);
+            if ($s == "/") {
+                $check_link = ltrim($check_link, "/");
+                $check_link = rtrim($check_link, "/");
+                $red_status = 1;
+                $red_type   = 301;
+                $red_link   = $catalogue->getSiteLink() . $check_link;
+            }
+
             if ($catalogue->checkCityLink($city_link)) {
                 $city_name_in   = $catalogue->getCityNameIn($city_link, "CITY_NAME_IN_");
                 $city_name      = $catalogue->getCityNameIn($city_link, "CITY_NAME_");
@@ -60,6 +70,14 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
         $content = str_replace("{main_window}", $h1 . $catalogue->getCatalogColList() . $showform->getHistoryArts(), $content);
     }
     else {
+
+        // GROUP_ID + CITY
+        if ($city_link != "") {
+            $red_status = 1;
+            $red_type   = 404;
+            $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+        }
+
         /*
          * Catalog with Group
          * */
@@ -115,7 +133,13 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
             }
 
             if (!empty($filters)) {
-                list($check_status, $check_link) = $catalog_exist->checRedirects($filters);
+                list($check_status, $check_link, $check_status_error) = $catalog_exist->checRedirects($filters);
+
+                if ($check_status_error > 0) {
+                    $red_status = 1;
+                    $red_type   = 404;
+                    $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                }
 
                 if ($check_status > 0) {
                     $red_status = 1;

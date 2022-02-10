@@ -504,7 +504,9 @@ class CatalogExistClass extends CatalogueClass
             WHERE NOT EXISTS (SELECT 1 FROM `EX_TABLE_TREE_AVAILABLE_BRANDS` 
                   WHERE `group_id` = $group_id AND `brand_id` = $brand_id AND `status` = 1 LIMIT 1)");
         }
-        $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`) VALUES ($group_id, 1);");
+        if ($n > 0) {
+            $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`) VALUES ($group_id, 1);");
+        }
     }
 
     /*
@@ -839,7 +841,6 @@ class CatalogExistClass extends CatalogueClass
                 $params_item_str        = explode("=", $params_item);
                 $params_item_values     = $params_item_str[1];
                 $params_item_values_arr = explode(",", $params_item_values);
-
                 foreach ($params_item_values_arr as $value_link) {
                     if (in_array($value_link, $arr)) {
                         $status++;
@@ -849,7 +850,12 @@ class CatalogExistClass extends CatalogueClass
             }
         }
 
-        return array($status, $filters);
+        $status_error = 0;
+        if (!empty($filters) && $filters != "auto" && $status == 0 && strpos($filters, "=") === false) {
+            $status_error = 1;
+        }
+
+        return array($status, $filters, $status_error);
     }
 
     /*
