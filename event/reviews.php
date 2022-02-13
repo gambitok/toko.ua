@@ -1,5 +1,9 @@
 <?php
 
+$red_status = 0;
+$red_type   = 0;
+$red_link   = "";
+
 $link = $catalogue->getUrlString(findLinks()[1]);
 $title = $description = "";
 $state_id = findLinks()[2];
@@ -16,6 +20,11 @@ elseif ($link == "state") {
     $title = $catalogue->replaceLang("{site_reviews}");
     $title = str_replace("{h1_text}", ($dataReview["site_title"] == "") ? $dataReview["title"] : $dataReview["site_title"], $title);
     $description = $dataReview["site_descr"];
+}
+else {
+    $red_status = 1;
+    $red_type   = 404;
+    $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
 }
 
 $content = str_replace("{site_title}", $title, $content);

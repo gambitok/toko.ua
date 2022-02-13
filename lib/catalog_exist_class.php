@@ -496,6 +496,7 @@ class CatalogExistClass extends CatalogueClass
         $table = "EX_TABLE_TREE_$group_id";
         $r = $dbc->query("SELECT `brand_id` FROM `$table` WHERE 1 GROUP BY `brand_id`;");
         $n = $dbc->num_rows($r);
+        $list = "n = $n\n";
         for ($i = 1; $i <= $n; $i++) {
             $brand_id   = $dbc->result($r, $i - 1, "brand_id");
 
@@ -503,10 +504,13 @@ class CatalogExistClass extends CatalogueClass
             SELECT $group_id, $brand_id, 1 FROM DUAL 
             WHERE NOT EXISTS (SELECT 1 FROM `EX_TABLE_TREE_AVAILABLE_BRANDS` 
                   WHERE `group_id` = $group_id AND `brand_id` = $brand_id AND `status` = 1 LIMIT 1)");
+
+            $list .= "added group $group_id \n";
         }
         if ($n > 0) {
             $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`) VALUES ($group_id, 1);");
         }
+        return "$list";
     }
 
     /*
