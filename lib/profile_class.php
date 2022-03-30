@@ -958,8 +958,11 @@ class ProfileClass extends ClientClass
             $file = "$this->uploads/$user_id/" . $filename;
             $list = "
             <a class=\"btn btn-primary\" href=\"$file\" download $visible><span class='fa fa-download'></span> Download $filename</a><br>";
+            $list_excel = "
+            <a class=\"btn btn-primary\" href=\"https://toko.ua/cron/excel.php/?user=$user_id\"  $visible><span class='fa fa-download'></span> Download Excel </a><br>";
         } else {
             $list = "";
+            $list_excel = "";
         }
 
         $r = $db->query("SELECT `filename`, `date`, `date_end`, `status` FROM `cron_task_prices` WHERE `user_id` = $user_id ORDER BY `date` DESC;");
@@ -989,6 +992,7 @@ class ProfileClass extends ClientClass
             $history_fr = str_replace("{price_range}", $table, $history_fr);
         }
         $form = str_replace("{price_download}", $list, $form);
+        $form = str_replace("{price_download_excel}", $list_excel, $form);
         $form = str_replace("{price_disabled}", $disable, $form);
         $form = str_replace("{price_history}", $history_fr, $form);
         $form = $this->replaceLang($form);

@@ -10,7 +10,7 @@ class ClientClass
     public $status_user_retail      = 145;
     public $default_client_id       = 26;
     public $default_user            = 0;
-    public $default_tpoint          = 2;
+    public $default_tpoint          = 1;
     public $default_currency        = 1;
     public $default_client_category = 140;
     public $vin_len                 = 17;
@@ -422,9 +422,9 @@ class ClientClass
     public function getTpoint($client_id = 0)
     {
         $db = DbSingleton::getDbm();
-        if ($client_id == 0) {
-            $client_id = $this->getClientData()[0];
-        }
+//        if ($client_id == 0) {
+//            $client_id = $this->getClientData()[0];
+//        }
         $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id;");
         $tpoint_id = $db->result($r, 0, "tpoint_id");
         if ($tpoint_id == "" || $tpoint_id == 0) {

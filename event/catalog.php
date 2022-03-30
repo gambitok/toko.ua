@@ -64,6 +64,10 @@ else {
 
                 $content = str_replace("{site_title}", $title, $content);
                 $content = str_replace("{site_description}", $description, $content);
+            } else {
+                $red_status = 1;
+                $red_type   = 404;
+                $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
             }
         }
 

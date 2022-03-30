@@ -165,6 +165,7 @@ class SearchClass extends CatalogueClass
 
         return $this->searchListCount($art_id_str, $article_nr_search, $brand_id);
     }
+
     public function searchListCount($where_art_id_str, $article_nr_search = "", $brand_nr_search = "")
     {
         $db = DbSingleton::getTokoDb();
@@ -368,14 +369,13 @@ class SearchClass extends CatalogueClass
                 $display_nr = $db->result($r, $i - 1, "DISPLAY_NR");
                 $brand_name = $this->getBrandName($brand_id);
                 $brand_link = $this->getBrandLink($brand_id);
+                $format_name = $this->getFormatAticle($display_nr);
 
                 if ($min_kind == "0") {
-                    $format_name    = $this->getFormatAticle($display_nr);
                     $article_name   = $this->getArticleName($art_id);
                     $link           = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";
                     $str            = "$brand_name $display_nr $article_name";
                 } else {
-                    $format_name    = $this->getFormatAticle($display_nr);
                     $link           = $this->getSiteLink() . $this->search_link . "/" . $format_name . "/" . $brand_link . "/";
                     $str            = "$brand_name $display_nr";
                 }
@@ -431,6 +431,7 @@ class SearchClass extends CatalogueClass
                     }
                 }
             }
+
             if ($n > 0 || $n1 > 0) {
                 if ($n1 > 0) {
                     $list .= "
@@ -444,6 +445,7 @@ class SearchClass extends CatalogueClass
                         </ul>
                     </div>";
                 }
+
                 if ($n > 0) {
                     if ($list2 != "") {
                         $list .= "
@@ -492,6 +494,74 @@ class SearchClass extends CatalogueClass
     }
 
     /*
+     * search position on top
+     * sort - our position on top
+     * delete suppl if we have our positions with `in_stock`
+     * */
+    public function sortSuppls($mas, $art_id_search)
+    {
+        $arr = []; $mas2 = [];
+
+        $mas_search = $mas[$art_id_search];
+        unset($mas[$art_id_search]);
+
+        foreach ($mas as $mas_key => $mas_val) {
+            $i = 0;
+            foreach ($mas_val as $key => $val) {
+                if ($i == 0) {
+                    $arr[$mas_key] = $val["suppl_id"];
+                }
+                $i++;
+            }
+        }
+
+        asort($arr);
+        $arr = array_keys($arr);
+
+        $mas2[$art_id_search] = $mas_search;
+
+        foreach ($arr as $val) {
+            $mas2[$val] = $mas[$val];
+        }
+
+        $del_arts = [];
+        foreach ($mas2 as $mas_key => $mas_val) {
+            $i = 0;
+            foreach ($mas_val as $key => $val) {
+                if ($i == 0 && $val["suppl_id"] == 0 && $val["stock"] > 0 && count($mas_val) > 1) {
+                    $del_arts[] = $mas_key;
+                }
+            }
+        }
+        foreach ($del_arts as $art_id) {
+            foreach ($mas2[$art_id] as $key => $val) {
+                if ($val["suppl_id"] > 0) {
+                    unset($mas2[$art_id][$key]);
+                }
+            }
+        }
+
+        return $mas2;
+    }
+
+    public function getRealStock($art_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `ID` FROM `T2_ARTICLES_PRICE_STOCK` WHERE `ART_ID` = $art_id LIMIT 1;");
+        $n1 = $db->num_rows($r);
+
+        $r = $db->query("SELECT `ID` FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID` = $art_id LIMIT 1;");
+        $n2 = $db->num_rows($r);
+
+        $res = 0;
+        if ($n1 > 0 || $n2 > 0) {
+            $res = 1;
+        }
+
+        return $res;
+    }
+
+    /*
      * CATALOG
      * */
     public function searchList($where_art_id_str, $article_nr_search = "", $brand_nr_search = "")
@@ -529,7 +599,6 @@ class SearchClass extends CatalogueClass
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", $nulls);
             $n = $db->num_rows($r);
-
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id             = $db->result($r, $i - 1, "ART_ID");
@@ -539,6 +608,7 @@ class SearchClass extends CatalogueClass
                     $article_name       = $db->result($r, $i - 1, "NAME");
                     $suppl_id           = $db->result($r, $i - 1, "suppl_id");
                     $stock              = intval($db->result($r, $i - 1, "AMOUNT"));
+//                    $stock              = $this->getRealStock($art_id) ? $stock : 0;
                     $storage_id         = $db->result($r, $i - 1, "storage_id");
                     $return_days        = $db->result($r, $i - 1, "return_delay");
                     $format_name        = $this->getFormatAticle($article_nr_displ);
@@ -619,15 +689,15 @@ class SearchClass extends CatalogueClass
                 $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ` ASC;");
                 $n = $db->num_rows($r);
 
-                if ($n == 1) {
-                    $stock = $db->result($r, 0, "stock");
-                    $price = $db->result($r, 0, "price");
-                    if (($stock == 0 && $price == 0) || $nulls == 1) {
-                        $list = $this->getHtmlForm("error/nothing_found");
-                        $list = str_replace("{error_nothing_found}", $this->err1, $list);
-                        return array($list, "", "", 0);
-                    }
-                }
+//                if ($n == 1) {
+//                    $stock = $db->result($r, 0, "stock");
+//                    $price = $db->result($r, 0, "price");
+//                    if (($stock == 0 && $price == 0) || $nulls == 1) {
+//                        $list = $this->getHtmlForm("error/nothing_found");
+//                        $list = str_replace("{error_nothing_found}", $this->err1, $list);
+//                        return array($list, "", "", 0);
+//                    }
+//                }
 
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id                 = $db->result($r, $i - 1, "art_id");
@@ -700,57 +770,6 @@ class SearchClass extends CatalogueClass
 
         }
         return array($list, $list_brand, $filters);
-    }
-
-    /*
-     * search position on top
-     * sort - our position on top
-     * delete suppls if we have our positions with `in_stock`
-     * */
-    public function sortSuppls($mas, $art_id_search)
-    {
-        $arr = []; $mas2 = [];
-
-        $mas_search = $mas[$art_id_search];
-        unset($mas[$art_id_search]);
-
-        foreach ($mas as $mas_key => $mas_val) {
-            $i = 0;
-            foreach ($mas_val as $key => $val) {
-                if ($i == 0) {
-                    $arr[$mas_key] = $val["suppl_id"];
-                }
-                $i++;
-            }
-        }
-
-        asort($arr);
-        $arr = array_keys($arr);
-
-        $mas2[$art_id_search] = $mas_search;
-
-        foreach ($arr as $val) {
-            $mas2[$val] = $mas[$val];
-        }
-
-        $del_arts = [];
-        foreach ($mas2 as $mas_key => $mas_val) {
-            $i = 0;
-            foreach ($mas_val as $key => $val) {
-                if ($i == 0 && $val["suppl_id"] == 0 && $val["stock"] > 0 && count($mas_val) > 1) {
-                    $del_arts[] = $mas_key;
-                }
-            }
-        }
-        foreach ($del_arts as $art_id) {
-            foreach ($mas2[$art_id] as $key => $val) {
-                if ($val["suppl_id"] > 0) {
-                    unset($mas2[$art_id][$key]);
-                }
-            }
-        }
-
-        return $mas2;
     }
 
     /*
@@ -975,6 +994,7 @@ class SearchClass extends CatalogueClass
 
         $list_target    = "";
         $style_target   = "none";
+        $style          = "";
         $i              = 0;
         $check          = 0;
 
@@ -1018,52 +1038,58 @@ class SearchClass extends CatalogueClass
                 $list_target    .= $this->printSearchList3($i, $dataArt["art_id"], $dataArt["art"], $dataArt["brand_id"], $dataArt["brand"], "", "", 0, 0, $article_nr_search, $brand_nr_search, $os, 0, 0, 0, "", 0);
             }
 
-            foreach ($mas as $mas_key => $mas_val) {
-                if ($mas_key != $art_id_search) {
-                    foreach ($mas_val as $val) {
-                        $art_id     = $mas_key;
-                        $art_nr_ds  = $val["article_nr_displ"];
-                        $brand_id   = $val["brand_id"];
-                        $brand_name = $val["brand_name"];
-                        $art_name   = $val["article_name"];
-                        $stock      = $val["stock"];
-                        $del_info   = $val["delivery_info"];
-                        $price      = $val["price"];
-                        $del_days   = $val["delivery_days"];
-                        $del_short  = $val["delivery_short_info"];
-                        $suppl_id   = $val["suppl_id"];
-                        $ret_days   = $val["return_days"];
-                        $storage_id = $val["storage_id"];
-                        $os         = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
+            // analogs
+            if (count($mas) > 1) {
+                $style = "";
+                foreach ($mas as $mas_key => $mas_val) {
+                    if ($mas_key != $art_id_search) {
+                        foreach ($mas_val as $val) {
+                            $art_id     = $mas_key;
+                            $art_nr_ds  = $val["article_nr_displ"];
+                            $brand_id   = $val["brand_id"];
+                            $brand_name = $val["brand_name"];
+                            $art_name   = $val["article_name"];
+                            $stock      = $val["stock"];
+                            $del_info   = $val["delivery_info"];
+                            $price      = $val["price"];
+                            $del_days   = $val["delivery_days"];
+                            $del_short  = $val["delivery_short_info"];
+                            $suppl_id   = $val["suppl_id"];
+                            $ret_days   = $val["return_days"];
+                            $storage_id = $val["storage_id"];
+                            $os         = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
 
-                        $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
-                        $i++;
+                            $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                            $i++;
+                        }
                     }
                 }
-            }
 
-            if ($nulls) {
-                foreach ($mas_nulls as $mas_key => $mas_val) {
-                    foreach ($mas_val as $val) {
-                        $art_id     = $mas_key;
-                        $art_nr_ds  = $val["article_nr_displ"];
-                        $brand_id   = $val["brand_id"];
-                        $brand_name = $val["brand_name"];
-                        $art_name   = $val["article_name"];
-                        $stock      = $val["stock"];
-                        $del_info   = $val["delivery_info"];
-                        $price      = $val["price"];
-                        $del_days   = $val["delivery_days"];
-                        $del_short  = $val["delivery_short_info"];
-                        $suppl_id   = $val["suppl_id"];
-                        $ret_days   = $val["return_days"];
-                        $storage_id = $val["storage_id"];
-                        $os         = ["content" => "", "class" => "", "hide" => "", "border" => "border-line", "none" => "dvisibility"];
+                if ($nulls) {
+                    foreach ($mas_nulls as $mas_key => $mas_val) {
+                        foreach ($mas_val as $val) {
+                            $art_id     = $mas_key;
+                            $art_nr_ds  = $val["article_nr_displ"];
+                            $brand_id   = $val["brand_id"];
+                            $brand_name = $val["brand_name"];
+                            $art_name   = $val["article_name"];
+                            $stock      = $val["stock"];
+                            $del_info   = $val["delivery_info"];
+                            $price      = $val["price"];
+                            $del_days   = $val["delivery_days"];
+                            $del_short  = $val["delivery_short_info"];
+                            $suppl_id   = $val["suppl_id"];
+                            $ret_days   = $val["return_days"];
+                            $storage_id = $val["storage_id"];
+                            $os         = ["content" => "", "class" => "", "hide" => "", "border" => "border-line", "none" => "dvisibility"];
 
-                        $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
-                        $i++;
+                            $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                            $i++;
+                        }
                     }
                 }
+            } else {
+                $style = "none";
             }
 
         } else {
@@ -1074,6 +1100,7 @@ class SearchClass extends CatalogueClass
         $form = str_replace("{search_target_class}", $style_target, $form);
         $form = str_replace("{search_target_list}", $list_target, $form);
         $form = str_replace("{search_list}", $list, $form);
+        $form = str_replace("{search_list_style}", $style, $form);
 
         return $form;
     }

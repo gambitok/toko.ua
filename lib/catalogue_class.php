@@ -29,7 +29,6 @@ class CatalogueClass
         $search = new SearchClass();
 
         $client->insertHistory($article_nr_search, $brand_nr_search);
-        //$client->toggleProductView(0);
         $cur = $this->getCurrentExrate();
 
         $art_ids = [];
@@ -379,10 +378,9 @@ class CatalogueClass
             $new_arts[$art_id]["article_name"]      = $article_name;
         }
 
-//        var_dump($new_arts[1344590]);
-
         return $new_arts;
     }
+
     public function getTemporarySearchTable2($where_art_id_str)
     {
         $db = DbSingleton::getTokoDb();
@@ -1083,7 +1081,7 @@ class CatalogueClass
         <img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_analog}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_analog} $article_nr_search $brand_name\">";
         // OE
         if ($this->checkOriginalEquipment($true_art_id, $format_name)) {
-            $image_analog = $this->images . "/tcdanalogs/OE.svg";
+            $image_analog = $this->images . "/tcdanalogs/oe.svg";
             $index_type = "
             <img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_original}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_original} $article_nr_search $brand_name\">";
         }
@@ -1111,7 +1109,7 @@ class CatalogueClass
             $index_type = "
             <img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_requested}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_requested} $article_nr_search $brand_name\">";
             if ($this->getBrandType($brand_id)) {
-                $image_analog = $this->images . "/tcdanalogs/OE.svg";
+                $image_analog = $this->images . "/tcdanalogs/oe.svg";
                 $index_type .= "
                 <img style=\"margin-left: 5px;\" data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_original}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_original} $article_nr_search $brand_name\">";
             }

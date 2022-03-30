@@ -891,15 +891,16 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $form = "";
 
-        $r = $db->query("SELECT `TEXT`, `STYLES`, `STATUS` FROM `T2_SITE_CONFIGS` WHERE `BLOCK` = 'site_warning_message' LIMIT 1;");
+        $r = $db->query("SELECT `TEXT`, `STYLES`, `STATUS` FROM `T2_SITE_CONFIGS` WHERE `BLOCK` = 'site_warning_message' AND `STATUS` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $text   = $db->result($r, 0, "TEXT");
             $styles = $db->result($r, 0, "STYLES");
             $status = $db->result($r, 0, "STATUS");
 
+            $text = $this->replaceLang($text);
             if ($status) {
-                $form = "		
+                $form = "
                 <div class=\"row dblock\" style='$styles'>
                     <span>$text</span>
                 </div>";
