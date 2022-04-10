@@ -817,11 +817,12 @@ class FormClass extends CatalogueClass
 
             $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
 
-            if ($price > 0)
+            if ($price > 0) {
                 $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "stock", "real_stock", "delivery_short_info", "price", "delivery_days", "basket", "storage_id", "suppl_id");
+            }
         }
 
-        $arr = $this->multiSort($arr, "delivery_days", "price");
+//        $arr = $this->multiSort($arr, "price", "delivery_days");
 
         $article_nr_displ       = $arr[0]["article_nr_displ"];
         $brand_id               = $arr[0]["brand_id"];

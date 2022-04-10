@@ -608,7 +608,6 @@ class SearchClass extends CatalogueClass
                     $article_name       = $db->result($r, $i - 1, "NAME");
                     $suppl_id           = $db->result($r, $i - 1, "suppl_id");
                     $stock              = intval($db->result($r, $i - 1, "AMOUNT"));
-//                    $stock              = $this->getRealStock($art_id) ? $stock : 0;
                     $storage_id         = $db->result($r, $i - 1, "storage_id");
                     $return_days        = $db->result($r, $i - 1, "return_delay");
                     $format_name        = $this->getFormatAticle($article_nr_displ);
