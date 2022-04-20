@@ -1,3 +1,4 @@
+
 function goHome() {
     location.href = "/";
 }
@@ -233,6 +234,45 @@ function showBasketStatus() {
                 status1.addClass("none").removeClass("show");
                 status3.addClass("none").removeClass("show");
                 status5.addClass("tool-status-hidden");
+            }
+        }}, true);
+}
+
+function letsFinishOrder(name, status = 0) {
+    $("#input_phone").val("");
+    validateForm("phone", "input");
+
+    let input_phone = $("#" + name);
+    let phone       = input_phone.val();
+
+    let dataArticle = {};
+    if (status === 1) {
+        dataArticle = {
+            'art_id':       $("#art_id").val(),
+            'brand_id':     $("#brand_id").val(),
+            'stock':        $("#stock").val(),
+            'storage_id':   $("#storage_id").val(),
+            'suppl_id':     $("#suppl_id").val(),
+            'count':        1
+        };
+    }
+
+    JsHttpRequest.query(folder,{'w':'letsFinishOrder', 'phone': phone, 'dataArticle': dataArticle},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            let answer  = result["answer"];
+            let text    = result["err"];
+            if (answer == 1) {
+                location.href = text;
+                //$("#BasketForm").modal("hide");
+            }
+            else if (answer == 2) {
+                showAlertModal(text, "{error_cap}", 0, showLoginForm);
+            }
+            else if (answer == 3) {
+                showAlertModal(text, "{error_cap}", 0);
+            }
+            else {
+                showAlertModal(text, "{error_cap}", 0);
             }
         }}, true);
 }

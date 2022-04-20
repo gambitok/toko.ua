@@ -373,10 +373,11 @@ function setClientRequest() {
 
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors) { if (errors) {alert(errors);} if (result) {
-            if (result.content === false) {
-                showNotify("{error_cap}:", "{phone_number_input}", "danger");
+            if (result["answer"] === false) {
+                showNotify("{error_cap}:", result["err"], "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
+                $("#btn_set_client_request").attr("disabled", true);
             }
         }}, true);
 }
@@ -389,8 +390,8 @@ function setClientRequestFaq() {
 
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors) { if (errors) {alert(errors);} if (result) {
-            if (result.content === false) {
-                showNotify("{error_cap}:", "{phone_number_input}", "danger");
+            if (result["answer"] === false) {
+                showNotify("{error_cap}:", result["err"], "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
             }
@@ -405,8 +406,9 @@ function setClientRequestCard() {
 
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            if (result.content === false) {
-                showNotify("{error_cap}:", "{phone_number_input}", "danger");
+            if (result["answer"] === false) {
+                console.log(result["err"]);
+                showNotify("{error_cap}:", result["err"], "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
                 setClientRequestDone();
@@ -421,8 +423,8 @@ function setClientRequest2() {
 
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            if (result.content === false) {
-                showNotify("{error_cap}:", "{input_all_data}", "danger");
+            if (result["answer"] === false) {
+                showNotify("{error_cap}:", result["err"], "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
             }
@@ -436,8 +438,8 @@ function setClientRequest3() {
 
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            if (result.content === false) {
-                showNotify("{error_cap}:", "{input_all_data}", "danger");
+            if (result["answer"] === false) {
+                showNotify("{error_cap}:", result["err"], "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
             }

@@ -469,6 +469,33 @@ class ClientClass
         return $db->result($r, 0, "full_name");
     }
 
+    public function validateRegistration($phone)
+    {
+        $db = DbSingleton::getDbm();
+
+        $answer = 0; $err = 0;
+
+        $phone  = $this->formatValidPhone($phone);
+        $r = $db->query("SELECT `phone` FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' AND `status` = $this->status_user LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $client_phone   = $db->result($r, 0, "phone");
+            $answer = 1;
+            $err = "$client_phone";
+        }
+
+        $user_id = $this->getUser();
+        if ($user_id > 0) {
+            $user_phone = $this->getClientPhone();
+            if ($phone === $user_phone) {
+                $answer = 0;
+                $err = "";
+            }
+        }
+
+        return array($answer, $err);
+    }
+
     /*
      * checking user authorization in the system
      * Table: myparts_dba.`A_CLIENTS_USERS`, myparts_dba.`A_CLIENTS_USERS_RETAIL`
@@ -819,15 +846,15 @@ class ClientClass
      * 0: list view
      * 1: card view
      * */
-    public function getProductView()
-    {
-        session_start();
-        $ds = $_SESSION["display_status"];
-        if ($ds != 0 && $ds != 1) {
-            $_SESSION["display_status"] = 0;
-        }
-        return $_SESSION["display_status"];
-    }
+//    public function getProductView()
+//    {
+//        session_start();
+//        $ds = $_SESSION["display_status"];
+//        if ($ds != 0 && $ds != 1) {
+//            $_SESSION["display_status"] = 0;
+//        }
+//        return $_SESSION["display_status"];
+//    }
 
     /*
      * checking clients action status
@@ -1104,11 +1131,25 @@ class ClientClass
         $date_start = date("Y-m-d H:i:s");
 
         if (($phone == "") || (strlen($vin) != $this->vin_len && $status == 1) || (!$this->validateOperator($phone))) {
-            return false;
+            $answer = false;
+            if ($phone == "") {
+                $err = "{phone_number_input}";
+            } elseif ($vin == "") {
+                $err = "{vin_number_input}";
+            } elseif (!$this->validateOperator($phone)) {
+                $err = "{sms_error_1}";
+            } elseif (strlen($vin) != $this->vin_len && $status == 1) {
+                $err = "{vin_error_1}";
+            } else {
+                $err = "{input_all_data}";
+            }
         } else {
             $db->query("INSERT INTO `T2_QUESTIONS` (`PHONE`, `VIN`, `TEXT` , `DATA_CREATE`) VALUES ('$phone', '$vin', '$text', '$date_start');");
-            return true;
+            $answer = true;
+            $err = "";
         }
+
+        return array($answer, $err);
     }
 
     /*

@@ -125,7 +125,8 @@ if ($_REQUEST["w"] == "loginOrderClient") {
 }
 
 if ($_REQUEST["w"] == "setClientRequest") {
-    $GLOBALS['_RESULT'] = array("content" => $client->setClientRequest($_REQUEST["phone"], $_REQUEST["vin"], $_REQUEST["text"], $_REQUEST["status"]));
+    list($answer, $err) = $client->setClientRequest($_REQUEST["phone"], $_REQUEST["vin"], $_REQUEST["text"], $_REQUEST["status"]);
+    $GLOBALS['_RESULT'] = array("answer" => $answer, "err" => $err);
 }
 
 if ($_REQUEST["w"] == "getUserSavedData") {
@@ -339,6 +340,11 @@ if ($_REQUEST["w"] == "checkBasketItem") {
 
 if ($_REQUEST["w"] == "saveFastOrder") {
     $GLOBALS['_RESULT'] = array("content" => $shop->saveFastOrder($_REQUEST["phone"]));
+}
+
+if ($_REQUEST["w"] == "letsFinishOrder") {
+    list($answer, $err) = $shop->letsFinishOrder($_REQUEST["phone"], $_REQUEST["dataArticle"]);
+    $GLOBALS['_RESULT'] = array("answer" => $answer, "err" => $err);
 }
 
 if ($_REQUEST["w"] == "saveFastOrderBasket") {

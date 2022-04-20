@@ -4,7 +4,7 @@
 
 //var_dump($catalogue->getCatalogueLink('oc90'));
 
-//$content = str_replace("{main_window}", $shop->getSearchCityForm(), $content);
+//$content = str_replace("{main_window}", $catalogue->getHtmlForm("test"), $content);
 
 //require(RDD . "/swagger-generator/vendor/autoload.php");
 //$openapi = \OpenApi\Generator::getVersion();

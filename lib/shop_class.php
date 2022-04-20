@@ -38,7 +38,7 @@ class ShopClass extends CatalogueClass
             $brow           = "";
             $bprow          = "";
             $location       = "location.href='" . $this->getSiteLink() . "$this->order_link/';";
-            $location_fast  = "finishFastOrder('input_phone2');";
+            $location_fast  = "letsFinishOrder('input_phone2', 0);";
 
             for ($i = 1; $i <= $n; $i++) {
                 $art_id         = $db->result($r, $i - 1, "art_id");
@@ -982,6 +982,43 @@ class ShopClass extends CatalogueClass
         return $form;
     }
 
+    public function letsFinishOrder($phone, $dataArticle)
+    {
+        $client = new ClientClass();
+
+        if ($client->validateOperator($phone)) {
+            $dataReg = $client->validateRegistration($phone);
+            if (!$dataReg[0]) {
+                if (!empty($dataArticle)) {
+                    $art_id     = $dataArticle["art_id"];
+                    $brand_id   = $dataArticle["brand_id"];
+                    $amount     = $dataArticle["count"];
+                    $stock      = $dataArticle["stock"];
+                    $storage_id = $dataArticle["storage_id"];
+                    $suppl_id   = $dataArticle["suppl_id"];
+
+                    $res = $this->saveFastOrderBasket($phone, $art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id);
+                } else {
+
+                    $res = $this->saveFastOrder($phone);
+                }
+
+                $answer = 1;
+                $err = $res;
+            } else {
+                $answer = 2;
+                $err = "{user_already_logged}!<br>{phone_cap}: " . $dataReg[1];
+            }
+        } else {
+            $answer = 3;
+            $err = "{check_phone_data}!";
+        }
+
+        $err = $this->replaceLang($err);
+
+        return array($answer, $err);
+    }
+
     public function saveFastOrderBasket($phone, $art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id)
     {
         $basket_amount = $this->getBasketArticleAmount($art_id, $storage_id);
@@ -1001,16 +1038,17 @@ class ShopClass extends CatalogueClass
         list(, $user_id) = $client->getAuthorizedUser($phone);
         $client_id = $client->getClientByUser($user_id);
         $user_status = 0;
+
         // CREATE CLIENT
         if ($user_id == 0) {
-            $clientData = $client->addRetailClient($this->getClient(), $phone);
-            $client_id = $clientData["client_id"];
-            $user_id = $clientData["user_id"];
-            $user_status = 1;
+            $clientData     = $client->addRetailClient($this->getClient(), $phone);
+            $client_id      = $clientData["client_id"];
+            $user_id        = $clientData["user_id"];
+            $user_status    = 1;
         }
-        $tpoint_id = $this->getTpointID();
-        $cookie = $this->getSessionID();
-        $cash_id = intval($client->getClientCurrency($client_id));
+        $tpoint_id  = $this->getTpointID();
+        $cookie     = $this->getSessionID();
+        $cash_id    = intval($client->getClientCurrency($client_id));
 
         // CREATE ORDER
         $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $tpoint_id, $cash_id, "", "", $phone, 0, "", 0, 0);
@@ -1028,14 +1066,14 @@ class ShopClass extends CatalogueClass
         list(, $user_id) = $client->getAuthorizedUser($phone);
         $client_id = $client->getClientByUser($user_id);
         $user_status = 0;
+
         // CREATE CLIENT
         if ($user_id == 0) {
-            $clientData = $client->addRetailClient($this->getClient(), $phone);
-            $client_id  = $clientData["client_id"];
-            $user_id    = $clientData["user_id"];
-            $user_status = 1;
+            $clientData     = $client->addRetailClient($this->getClient(), $phone);
+            $client_id      = $clientData["client_id"];
+            $user_id        = $clientData["user_id"];
+            $user_status    = 1;
         }
-
         $tpoint_id  = $this->getTpointID();
         $cookie     = $this->getSessionID();
         $cash_id    = intval($client->getClientCurrency($client_id));
@@ -1086,15 +1124,15 @@ class ShopClass extends CatalogueClass
         $recipient_phone    = $client->formatValidPhone($recipient_phone);
 
         if ($user_id == 0 || $user_id == "" || $user_id == "undefined") {
-            $user_id = $this->getUser();
-            $client_id = $this->getClient();
+            $user_id    = $this->getUser();
+            $client_id  = $this->getClient();
         } else {
             $client_id = $client->getClientByUser($user_id);
         }
-        $tpoint_id  = $this->getTpointID();
-        $cookie     = $this->getSessionID();
-        $cash_id    = intval($client->getClientCurrency($client_id));
-        $user_status = 0;
+        $tpoint_id      = $this->getTpointID();
+        $cookie         = $this->getSessionID();
+        $cash_id        = intval($client->getClientCurrency($client_id));
+        $user_status    = 0;
 
         $street             = $delivery_type["street"];
         $house              = $delivery_type["house"];
@@ -1338,6 +1376,7 @@ class ShopClass extends CatalogueClass
         $department_id = $delivery_type["department_id"]; // department ID
         $delivery_express = $delivery_type["delivery_express"]; // express ID
         $delivery_express_department = $delivery_type["delivery_express_department"];
+
         switch ($delivery) {
             case 4:
             {
@@ -1393,6 +1432,7 @@ class ShopClass extends CatalogueClass
                 break;
             }
         }
+
         return array($result, $fields);
     }
 
@@ -1519,7 +1559,7 @@ class ShopClass extends CatalogueClass
         }
 
         if ($price_cur > 0) {
-            $del_cap = "$price_cur " . $this->getSymbolExrate($cur);;
+            $del_cap = "$price_cur " . $this->getSymbolExrate($cur);
         } else {
             $del_cap = "{free_cap}";
         }
@@ -1552,19 +1592,19 @@ class ShopClass extends CatalogueClass
     public function getBonusDiscount($order_sum, $bonus_summ, $price)
     {
         // 10% procent fixed
-        $procent = 10;
+        $procent        = 10;
         // max promegut
-        $max_prom = $order_sum * ($procent / 100);
+        $max_prom       = $order_sum * ($procent / 100);
         // max vosmojnoe
-        $max_discount = ($max_prom <= $bonus_summ) ? $max_prom : $bonus_summ;
+        $max_discount   = ($max_prom <= $bonus_summ) ? $max_prom : $bonus_summ;
         // discount procent
-        $price_procent = round($price / $order_sum * 100);
+        $price_procent  = round($price / $order_sum * 100);
         // discount price
-        $discount = floor($price_procent * $max_discount / 100);
+        $discount       = floor($price_procent * $max_discount / 100);
         // price with discount
         $price_discount = ceil($price - $discount);
         // real discount procent
-        $real_discount = round((($price_discount / $price) - 1) * 100, 2);
+        $real_discount  = round((($price_discount / $price) - 1) * 100, 2);
 
         return array(
             "discount"          => $discount,
@@ -1761,7 +1801,7 @@ class ShopClass extends CatalogueClass
                 $city_cap = "$city_name_ru ($state_name_ru обл., $region_name_ru р-он)";
             }
 
-            $mas[$i]        = ["id" => $city_id, "value" => $value_foo, "data-foo" => $city_cap];
+            $mas[$i] = ["id" => $city_id, "value" => $value_foo, "data-foo" => $city_cap];
         }
         return $mas;
     }
@@ -1845,20 +1885,20 @@ class ShopClass extends CatalogueClass
         $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `STATUS` = 1 ORDER BY `CITY_NAME_CLEAR_RU` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $city_id = $db->result($r, $i - 1, "CITY_ID");
+            $city_id    = $db->result($r, $i - 1, "CITY_ID");
             $city_name1 = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
             $city_name2 = $db->result($r, $i - 1, "CITY_NAME_CLEAR_RU");
 
-            $region_name = $db->result($r, $i - 1, "REGION_NAME");
-            $region_name2 = $db->result($r, $i - 1, "REGION_NAME_RU");
-            $state_name = $db->result($r, $i - 1, "STATE_NAME");
-            $state_name2 = $db->result($r, $i - 1, "STATE_NAME_RU");
+            $region_name    = $db->result($r, $i - 1, "REGION_NAME");
+            $region_name2   = $db->result($r, $i - 1, "REGION_NAME_RU");
+            $state_name     = $db->result($r, $i - 1, "STATE_NAME");
+            $state_name2    = $db->result($r, $i - 1, "STATE_NAME_RU");
 
             if ($region_name == "") {
-                $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
+                $city_name  = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
                 $city_fname = "$city_name1 $city_name2";
             } else {
-                $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix") . " ($state_name обл., $region_name р-он)";
+                $city_name  = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix") . " ($state_name обл., $region_name р-он)";
                 $city_fname = "$city_name1 ($state_name обл., $region_name р-он) - $city_name2 ($state_name2 обл., $region_name2 р-он)";
             }
 
@@ -1883,25 +1923,25 @@ class ShopClass extends CatalogueClass
 
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
-                $city_id = $db->result($r, $i - 1, "CITY_ID");
+                $city_id    = $db->result($r, $i - 1, "CITY_ID");
                 $city_name1 = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
                 $city_name2 = $db->result($r, $i - 1, "CITY_NAME_CLEAR_RU");
 
-                $region_name = $db->result($r, $i - 1, "REGION_NAME");
-                $region_name2 = $db->result($r, $i - 1, "REGION_NAME_RU");
-                $state_name = $db->result($r, $i - 1, "STATE_NAME");
-                $state_name2 = $db->result($r, $i - 1, "STATE_NAME_RU");
+                $region_name    = $db->result($r, $i - 1, "REGION_NAME");
+                $region_name2   = $db->result($r, $i - 1, "REGION_NAME_RU");
+                $state_name     = $db->result($r, $i - 1, "STATE_NAME");
+                $state_name2    = $db->result($r, $i - 1, "STATE_NAME_RU");
 
                 if ($region_name == "") {
-                    $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
+                    $city_name  = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
                     $city_fname = "$city_name1 $city_name2";
                 } else {
-                    $city_name = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix") . " ($state_name обл., $region_name р-он)";
+                    $city_name  = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix") . " ($state_name обл., $region_name р-он)";
                     $city_fname = "$city_name1 ($state_name обл., $region_name р-он) - $city_name2 ($state_name2 обл., $region_name2 р-он)";
                 }
 
                 $list .= "
-            <li class=\"select3-list__item\" data-id=\"$city_id\" data-text=\"$city_fname\" data-name=\"$city_name\" onclick=\"selectCity(this);\">$city_name</li>";
+                <li class=\"select3-list__item\" data-id=\"$city_id\" data-text=\"$city_fname\" data-name=\"$city_name\" onclick=\"selectCity(this);\">$city_name</li>";
             }
         } else {
             $list = $this->replaceLang("<li class=\"select3-list__item\">-{nothing_found}-</li>");
