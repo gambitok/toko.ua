@@ -1122,6 +1122,7 @@ class ShopClass extends CatalogueClass
         $comment            = $this->getUrlString($comment);
         $recipient_name     = $this->getUrlString($recipient_name);
         $recipient_phone    = $client->formatValidPhone($recipient_phone);
+        $recipient_phone    = ($recipient_phone == 0) ? "" : $recipient_phone;
 
         if ($user_id == 0 || $user_id == "" || $user_id == "undefined") {
             $user_id    = $this->getUser();
