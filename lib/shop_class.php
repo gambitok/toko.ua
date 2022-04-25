@@ -1138,7 +1138,7 @@ class ShopClass extends CatalogueClass
         $house              = $delivery_type["house"];
         $porch              = $delivery_type["porch"];
         $department_id      = $delivery_type["department_id"];
-        $department_text    = $delivery_type["department"];
+        $department_text    = ($delivery_type["department"] == "0") ? "" : $delivery_type["department"];
         $delivery_express   = $delivery_type["delivery_express"];
         $express_info       = $delivery_type["delivery_express_department"];
 
@@ -1230,6 +1230,7 @@ class ShopClass extends CatalogueClass
         $house      = ($house == "undefined") ? "" : $house;
         $porch      = ($porch == "undefined") ? "" : $porch;
         $express_in = ($express_in == "undefined") ? "" : $express_in;
+        $department_text = ($department_text == "undefined" || $department_text == "0") ? "" : $department_text;
 
         $r = $db->query("SELECT `ID` FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID` = $client_id AND `USER_ID` = $user_id AND `CITY_ID` = $city_id AND `DELIVERY_ID` = $delivery_id AND `PAYMENT_ID` = $payment_id AND `DEL_STREET` = '$street' AND `DEL_HOUSE` = '$house' AND `DEL_PORCH` = '$porch' AND `DEL_DEPARTMENT` = '$department' AND `DEL_EXPRESS` = $express AND `DEL_EXPRESS_INFO` = '$express_in' LIMIT 1;");
         $n = $db->num_rows($r);
