@@ -1816,11 +1816,11 @@ class ShopClass extends CatalogueClass
         $city_id = $this->getUrlNumber($city_id);
         $db = DbSingleton::getTokoDb();
 
-        $list = "";
         $r = $db->query("SELECT `CITY_NAME_CLEAR`, `NEWPOST_AREA` FROM `T2_LOCATION` WHERE `CITY_ID` = $city_id LIMIT 1;");
         $city_name  = $db->result($r, 0, "CITY_NAME_CLEAR");
         $state_name = $db->result($r, 0, "NEWPOST_AREA");
 
+        $list = "";
         $r = $db->query("SELECT `CITY_REF`, `CITY_NAME`, `AREA_NAME` FROM `T2_CITY_NOVA` WHERE `CITY_NAME` LIKE \"$city_name%\" AND `AREA_NAME` LIKE \"$state_name%\";");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1851,9 +1851,10 @@ class ShopClass extends CatalogueClass
      * */
     public function getNovaPoshtaWarehousesSelect($ref, $department_ref)
     {
-        $list = $this->replaceLang("<option value=\"0\">{not_chosen}</option>");
-        $np = new NovaPoshtaApi2('e52c020f392e0da179684b87cdbbbf05');
-        $arr = $np->getWarehouses($ref)['data'];
+        $list   = $this->replaceLang("<option value=\"0\">{not_chosen}</option>");
+        $np     = new NovaPoshtaApi2('e52c020f392e0da179684b87cdbbbf05');
+        $arr    = $np->getWarehouses($ref)['data'];
+
         foreach ($arr as $val) {
             $name       = iconv("UTF-8", "windows-1251", $val["Description"]);
             $war_ref    = $val["Ref"];
@@ -1877,20 +1878,20 @@ class ShopClass extends CatalogueClass
 
     public function searchCityMain()
     {
+        $db = DbSingleton::getTokoDb();
         $lang_id = $this->getLanguage();
         $postfix = "";
         if ($lang_id == 1 || $lang_id == 3) {
             $postfix = "_RU";
         }
         $list = "";
-        $db = DbSingleton::getTokoDb();
+
         $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `STATUS` = 1 ORDER BY `CITY_NAME_CLEAR_RU` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $city_id    = $db->result($r, $i - 1, "CITY_ID");
-            $city_name1 = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
-            $city_name2 = $db->result($r, $i - 1, "CITY_NAME_CLEAR_RU");
-
+            $city_id        = $db->result($r, $i - 1, "CITY_ID");
+            $city_name1     = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
+            $city_name2     = $db->result($r, $i - 1, "CITY_NAME_CLEAR_RU");
             $region_name    = $db->result($r, $i - 1, "REGION_NAME");
             $region_name2   = $db->result($r, $i - 1, "REGION_NAME_RU");
             $state_name     = $db->result($r, $i - 1, "STATE_NAME");
@@ -1912,6 +1913,7 @@ class ShopClass extends CatalogueClass
 
     public function searchCity($text)
     {
+        $db = DbSingleton::getTokoDb();
         $lang_id = $this->getLanguage();
         $postfix = "";
         if ($lang_id == 1 || $lang_id == 3) {
@@ -1919,16 +1921,15 @@ class ShopClass extends CatalogueClass
         }
         $list = "";
         $text = $this->getNameString($text);
-        $db = DbSingleton::getTokoDb();
+
         $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR` LIKE \"$text%\" OR `CITY_NAME_CLEAR_RU` LIKE \"$text%\" ORDER BY `STATUS` DESC, `CITY_ID` ASC;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
-                $city_id    = $db->result($r, $i - 1, "CITY_ID");
-                $city_name1 = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
-                $city_name2 = $db->result($r, $i - 1, "CITY_NAME_CLEAR_RU");
-
+                $city_id        = $db->result($r, $i - 1, "CITY_ID");
+                $city_name1     = $db->result($r, $i - 1, "CITY_NAME_CLEAR");
+                $city_name2     = $db->result($r, $i - 1, "CITY_NAME_CLEAR_RU");
                 $region_name    = $db->result($r, $i - 1, "REGION_NAME");
                 $region_name2   = $db->result($r, $i - 1, "REGION_NAME_RU");
                 $state_name     = $db->result($r, $i - 1, "STATE_NAME");

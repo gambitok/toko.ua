@@ -394,6 +394,7 @@ function setClientRequestFaq() {
                 showNotify("{error_cap}:", result["err"], "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
+                $("#btn_set_client_request_faq").attr("disabled", true);
             }
         }}, true);
 }
@@ -412,6 +413,7 @@ function setClientRequestCard() {
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
                 setClientRequestDone();
+                $("#btn_set_client_request_card").attr("disabled", true);
             }
         }}, true);
 }
@@ -427,6 +429,7 @@ function setClientRequest2() {
                 showNotify("{error_cap}:", result["err"], "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
+                $("#btn_set_client_request2").attr("disabled", true);
             }
         }}, true);
 }
@@ -442,6 +445,7 @@ function setClientRequest3() {
                 showNotify("{error_cap}:", result["err"], "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
+                $("#btn_set_client_request3").attr("disabled", true);
             }
         }}, true);
 }

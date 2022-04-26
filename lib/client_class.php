@@ -942,16 +942,20 @@ class ClientClass
     {
         $db = DbSingleton::getTokoDb();
         session_start();
-        $ses = session_id();
-        $cookie = $this->getSessionID();
-        $date = date("Y-m-d H:i:s");
-        $client_id = $this->getClient();
-        $user_id = $this->getUser();
-        $art_id = $this->getArtID($article_nr_displ);
+
+        $ses        = session_id();
+        $cookie     = $this->getSessionID();
+        $date       = date("Y-m-d H:i:s");
+        $client_id  = $this->getClient();
+        $user_id    = $this->getUser();
+        $art_id     = $this->getArtID($article_nr_displ);
+
         if ($brand_id > 0) {
             $where = ($user_id == 0) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
+
             $r = $db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;");
             $k = $db->result($r, 0, "kilk");
+
             if ($k > $this->max_history_count) {
                 $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
                 $id = $db->result($r, 0, "id");
@@ -978,15 +982,19 @@ class ClientClass
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
         session_start();
-        $ses = session_id();
-        $cookie = $this->getSessionID();
-        $date = date("Y-m-d H:i:s");
-        $client_id = $this->getClient();
-        $user_id = $this->getUser();
+
+        $ses        = session_id();
+        $cookie     = $this->getSessionID();
+        $date       = date("Y-m-d H:i:s");
+        $client_id  = $this->getClient();
+        $user_id    = $this->getUser();
+
         if ($art_id > 0) {
             $where = ($user_id == 0) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
+
             $r = $db->query("SELECT COUNT(`id`) as kilk FROM `ARTS_HISTORY` WHERE $where;");
             $k = $db->result($r, 0, "kilk");
+
             if ($k > $this->max_history_count) {
                 $r = $db->query("SELECT `id` FROM `ARTS_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
                 $id = $db->result($r, 0, "id");
