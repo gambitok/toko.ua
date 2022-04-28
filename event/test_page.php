@@ -1,4 +1,12 @@
 <?php
+//$db = DbSingleton::getDbm();
+//$r = $db->query("SELECT `cash_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = 7123123 LIMIT 1;");
+//$n = $db->num_rows($r);
+//$cash_id = $db->result($r, 0, "cash_id");
+//if ($n === 0) {
+//    $cash_id = 1;
+//}
+//var_dump($cash_id);
 
 //$list = $catalogue->searchListCatalog2("1127857,1127760,1127727,1127747,1126756,1126663,116095526,116095581,1344821,1344590,1344591,1344651", 1);
 
@@ -38,4 +46,4 @@
 //var_dump($dec);
 //var_dump($in);
 
-$content =  $catalogue->getHtmlForm("test");
+//$content =  $catalogue->getHtmlForm("test");

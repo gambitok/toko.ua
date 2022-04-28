@@ -25,7 +25,7 @@ trait Helper
     {
         $form = "";
         $form_htm = RDD . "/tpl/$name.htm";
-        if (file_exists("$form_htm")) {
+        if (file_exists($form_htm)) {
             $form = file_get_contents($form_htm);
         }
         iconv('Windows-1251', 'UTF-8', $form);
@@ -38,16 +38,7 @@ trait Helper
      * */
     public function getUrlString($str)
     {
-        $str = str_replace("'",         "", $str);
-        $str = str_replace("`",         "", $str);
-        $str = str_replace(",",         "", $str);
-        $str = str_replace('"',         "", $str);
-        $str = str_replace("%22",       "", $str);
-        $str = str_replace("%27",       "", $str);
-        $str = str_replace("%60",       "", $str);
-        $str = str_replace("&nbsp;",    "", $str);
-        $str = str_replace("&rsquo;",   "", $str);
-        $str = str_replace("%20",       " ", $str);
+        $str = str_replace(array("'", "`", ",", '"', "%22", "%27", "%60", "&nbsp;", "&rsquo;", "%20"), array("", "", "", "", "", "", "", "", "", " "), $str);
         return $str;
     }
 
@@ -56,14 +47,7 @@ trait Helper
      * */
     public function getNameString($str)
     {
-        $str = str_replace("'",         "", $str);
-        $str = str_replace("`",         "", $str);
-        $str = str_replace('"',         "", $str);
-        $str = str_replace("%22",       "", $str);
-        $str = str_replace("%27",       "", $str);
-        $str = str_replace("%60",       "", $str);
-        $str = str_replace("&rsquo;",   "", $str);
-        $str = str_replace("%20",       " ", $str);
+        $str = str_replace(array("'", "`", '"', "%22", "%27", "%60", "&rsquo;", "%20"), array("", "", "", "", "", "", "", " "), $str);
         return $str;
     }
 
@@ -106,14 +90,12 @@ trait Helper
 
     public function getTpointID()
     {
-        $client = new ClientClass();
-        return $client->getTpoint();
+        return (new ClientClass())->getTpoint();
     }
 
     public function replaceLang($cont)
     {
-        $language = new LangClass();
-        return $language->replaceLangData($cont);
+        return (new LangClass())->replaceLangData($cont);
     }
 
     public function getSiteLink()
@@ -124,8 +106,7 @@ trait Helper
 
     public function getLanguage()
     {
-        $language = new LangClass();
-        return $language->getLanguageData();
+        return (new LangClass())->getLanguageData();
     }
 
     public function getLangPostfix($lang_id)
@@ -165,7 +146,7 @@ trait Helper
             $id = $db->result($r, $i - 1, "id");
             $rs = $db->query("SELECT `caption` FROM `A_CUSTOMERS_CATEGORIES` WHERE `manual_id` = $id AND `lang_id` = $lang_id LIMIT 1;");
             $caption = $db->result($rs, 0, "caption");
-            if ($caption == "") {
+            if ($caption === "") {
                 $caption = $db->result($r, $i - 1, "mcaption");
             }
             $options .= "
