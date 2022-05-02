@@ -11,8 +11,8 @@ define('RDD', dirname (__FILE__));
 
 require_once (RDD . "/lib/DbSingleton.php");
 require_once (RDD . "/lib/mysql_class.php");
-require_once (RDD . "/lib/helper.php");
-require_once (RDD . "/lib/variables.php");
+require_once (RDD . "/lib/Traits/Helper.php");
+require_once (RDD . "/lib/Traits/Variables.php");
 require_once (RDD . "/lib/catalogue_class.php");
 require_once (RDD . "/lib/catalog_exist_class.php");
 

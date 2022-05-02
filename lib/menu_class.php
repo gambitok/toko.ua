@@ -12,8 +12,7 @@ class MenuClass extends CatalogueClass
     public function getImages($content)
     {
         $dist = "/images/";
-        $content = str_replace("{image_logotype}", $dist . "logo.png", $content);
-        $content = str_replace("{image_logotype_phone}", $dist . "logo-phone.png", $content);
+        $content = str_replace(array("{image_logotype}", "{image_logotype_phone}"), array($dist . "logo.png", $dist . "logo-phone.png"), $content);
         return $content;
     }
 
@@ -28,7 +27,7 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT `caption` FROM `news` WHERE `id` = $state_id LIMIT 1;");
         $title = $db->result($r, 0, "caption");
         $title = str_replace(str_split('.+\/:*?"<>|!?'), "", $title);
-        $title = ($title == "") ? $this->replaceLang("{news_one_cap}" . "-$state_id") : $title;
+        $title = ($title === "") ? $this->replaceLang("{news_one_cap}" . "-$state_id") : $title;
         return $title;
     }
 
@@ -44,7 +43,7 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT `TITLE_$postfix` FROM `T2_REVIEWS` WHERE `ID` = $state_id LIMIT 1;");
         $title = $db->result($r, 0, "TITLE_$postfix");
         $title = str_replace(str_split('.+\/:*?"<>|!?'), "", $title);
-        $title = ($title == "") ? $this->replaceLang("{state_one_cap}" . "-$state_id") : $title;
+        $title = ($title === "") ? $this->replaceLang("{state_one_cap}" . "-$state_id") : $title;
         return $title;
     }
 
@@ -55,7 +54,7 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $language_id = $this->getLanguage();
-        if ($language_id == 2) {
+        if ($language_id === 2) {
             $language_id = 5;
         }
 
@@ -72,12 +71,12 @@ class MenuClass extends CatalogueClass
             for ($i = 1; $i <= $n; $i++) {
                 $state_id       = $db->result($r, $i - 1, "id");
                 $title          = $db->result($r, $i - 1, "caption");
-                $title          = ($title == "") ? $this->replaceLang("{news_one_cap}" . "-$state_id") : $title;
+                $title          = ($title === "") ? $this->replaceLang("{news_one_cap}" . "-$state_id") : $title;
                 $format_title   = $this->formatUrlText($title);
                 $short_desc     = $db->result($r, $i - 1, "short_desc");
                 $date           = $db->result($r, $i - 1, "data");
                 $img_file       = $this->getNewsImage($state_id);
-                $img            = ($img_file != "")
+                $img            = ($img_file !== "")
                     ? "<img itemprop=\"image\" class=\"lazy\" data-src=\"https://toko.ua/uploads/images/news/$language_id/$state_id/$img_file\" src=\"https://toko.ua$nophoto\" alt=\"image\">"
                     : "";
 
@@ -101,24 +100,24 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    public function getNewsData($state_id)
+    public function getNewsData($state_id): array
     {
         $state_id = $this->getUrlNumber($state_id);
         $db = DbSingleton::getTokoDb();
 
         $language_id = $this->getLanguage();
-        if ($language_id != 1) {
+        if ($language_id !== 1) {
             $language_id = 5;
         }
 
         $r = $db->query("SELECT `caption`, `desc`, `data` FROM `news` WHERE `id` = $state_id;");
         $title      = $db->result($r, 0, "caption");
-        $title      = ($title == "") ? $this->replaceLang("{news_one_cap}" . "-$state_id") : $title;
+        $title      = ($title === "") ? $this->replaceLang("{news_one_cap}" . "-$state_id") : $title;
         $text       = $db->result($r, 0, "desc");
         $date       = $db->result($r, 0, "data");
         $img_fname  = $this->getNewsImage($state_id);
         $img_file   = "/uploads/images/news/$language_id/$state_id/" . $img_fname;
-        $img        = ($img_fname != "") ? "<p><img itemprop=\"image\" src=\"$img_file\" alt=\"state\"></p>" : "";
+        $img        = ($img_fname !== "") ? "<p><img itemprop=\"image\" src=\"$img_file\" alt=\"state\"></p>" : "";
         $ftitle     = $this->formatUrlText($title);
         $url        = $this->getSiteLink() . "$this->news_link/state/$state_id/$ftitle/";
 
@@ -139,8 +138,7 @@ class MenuClass extends CatalogueClass
             <div itemprop=\"description\">" . $newsData['text'] . "</div>
         </div>";
         $form = $this->getHtmlForm("news/card");
-        $form = str_replace("{state_id}", $state_id, $form);
-        $form = str_replace("{state_info}", ($state_id > 0) ? $list : "<h1>$this->err1</h1>", $form);
+        $form = str_replace(array("{state_id}", "{state_info}"), array($state_id, ($state_id > 0) ? $list : "<h1>$this->err1</h1>"), $form);
         return $form;
     }
 
@@ -148,9 +146,7 @@ class MenuClass extends CatalogueClass
     {
         $newsData = $this->getNewsData($state_id);
         $form = $this->getHtmlForm("article/social");
-        $form = str_replace("{h1_meta_tag}", $newsData["title"], $form);
-        $form = str_replace("{url_meta_tag}", $newsData["url"], $form);
-        $form = str_replace("{main_image_cap}", $newsData["img_file"], $form);
+        $form = str_replace(array("{h1_meta_tag}", "{url_meta_tag}", "{main_image_cap}"), array($newsData["title"], $newsData["url"], $newsData["img_file"]), $form);
         return $form;
     }
 
@@ -161,16 +157,14 @@ class MenuClass extends CatalogueClass
     {
         $form = $this->getHtmlForm("menu/special_offers");
         list($list, $arts) = $this->getSpecialOffersList("", $update_actions);
-        $form = str_replace("{special_offers_update}", $update_actions, $form);
-        $form = str_replace("{special_offers_range}", $list, $form);
-        $form = str_replace("{special_offers_filter}", $this->getSpecialOffersFilterList($arts), $form);
+        $form = str_replace(array("{special_offers_update}", "{special_offers_range}", "{special_offers_filter}"), array($update_actions, $list, $this->getSpecialOffersFilterList($arts)), $form);
         return $form;
     }
 
     /*
      * show special offers list
      * */
-    public function getSpecialOffersList($template_id, $update_actions)
+    public function getSpecialOffersList($template_id, $update_actions): array
     {
         $template_id = $this->getUrlNumber($template_id);
         $update_actions = $this->getNameString($update_actions);
@@ -186,9 +180,9 @@ class MenuClass extends CatalogueClass
         $cur_data   = date("Y-m-d");
 
         $where_arts = "";
-        if ($template_id != "" && $template_id != "0") {
+        if ($template_id !== "" && $template_id !== 0) {
             $arts = $this->getGoodsGroupArts($template_id);
-            if ($arts != "") {
+            if ($arts !== "") {
                 $where_arts = "AND ac.art_id IN ($arts)";
             }
         }
@@ -219,10 +213,8 @@ class MenuClass extends CatalogueClass
                 $real_price = $kours->getKoursFromUAH($real_price, 2);
                 $discount   = round((($real_price - $price) * 100) / $real_price);
 
-                if ($update_actions != "") {
-                    if ($status && $timestamp > "$update_actions 00:00:00") {
-                        $status_new = 1;
-                    }
+                if (($update_actions !== "") && $status && $timestamp > "$update_actions 00:00:00") {
+                    $status_new = 1;
                 }
                 $arr[$i] = compact("status_new", "art_id", "art_nr_ds", "amount", "max_amount", "timestamp", "data", "status", "discount");
             }
@@ -307,13 +299,13 @@ class MenuClass extends CatalogueClass
     /*
      * show special offers list filter
      * */
-    public function getSpecialOffersFilterList($arts = "")
+    public function getSpecialOffersFilterList($arts = ""): string
     {
         $db = DbSingleton::getTokoDb();
 
         $list = "";
         $arts = trim($arts, ",");
-        $where_arts = ($arts != "") ? "WHERE t2gg.ART_ID IN ($arts)" : "";
+        $where_arts = ($arts !== "") ? "WHERE t2gg.ART_ID IN ($arts)" : "";
 
         $r = $db->query("SELECT gg.ID, gg.NAME 
         FROM `GOODS_GROUP` gg 
@@ -333,7 +325,7 @@ class MenuClass extends CatalogueClass
     /*
      * get arts from goods group
      * */
-    public function getGoodsGroupArts($template_id)
+    public function getGoodsGroupArts($template_id): string
     {
         $db = DbSingleton::getTokoDb();
         $arts = [];
@@ -350,7 +342,7 @@ class MenuClass extends CatalogueClass
     /*
      * GET T point Modal Form
      * */
-    public function getRegionList()
+    public function getRegionList(): string
     {
         $db = DbSingleton::getDbm();
 
@@ -375,7 +367,7 @@ class MenuClass extends CatalogueClass
                 $region     = $db->result($r, $i - 1, "full_name");
                 $address    = $db->result($r, $i - 1, "address");
 
-                ($tpoint_id == "") ?: ($ch = ($id == $tpoint_id) ? "checked='checked'" : "");
+                ($tpoint_id === "") ?: ($ch = ($id === $tpoint_id) ? "checked='checked'" : "");
                 $list .= "
                 <label class=\"container_radio\"> 
                     $region ($address)<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
@@ -391,7 +383,7 @@ class MenuClass extends CatalogueClass
     /*
      * get modal phone regions
      * */
-    public function getRegionListPhone()
+    public function getRegionListPhone(): string
     {
         $db = DbSingleton::getDbm();
 
@@ -415,7 +407,7 @@ class MenuClass extends CatalogueClass
                 $id     = $db->result($r, $i - 1, "id");
                 $region = $db->result($r, $i - 1, "full_name");
 
-                ($tpoint_id == "") ?: ($ch = ($id == $tpoint_id) ? "checked='checked'" : "");
+                ($tpoint_id === "") ?: ($ch = ($id === $tpoint_id) ? "checked='checked'" : "");
                 $list .= "
                 <label class=\"container_radio-phone\">
                     $region<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
@@ -478,10 +470,7 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $form_range = $this->getHtmlForm("menu/contacts_range");
-                $form_range = str_replace("{contact_title}", $db->result($r, $i - 1, "title"), $form_range);
-                $form_range = str_replace("{contact_address}", $db->result($r, $i - 1, "address"), $form_range);
-                $form_range = str_replace("{contact_schedule}", $db->result($r, $i - 1, "schedule"), $form_range);
-                $form_range = str_replace("{contact_phone}", $db->result($r, $i - 1, "phone"), $form_range);
+                $form_range = str_replace(array("{contact_title}", "{contact_address}", "{contact_schedule}", "{contact_phone}"), array($db->result($r, $i - 1, "title"), $db->result($r, $i - 1, "address"), $db->result($r, $i - 1, "schedule"), $db->result($r, $i - 1, "phone")), $form_range);
 
                 $list .= $form_range;
             }
@@ -497,7 +486,7 @@ class MenuClass extends CatalogueClass
         /*
          * get region select (registration)
          * */
-    public function getRegionForm($region = 0)
+    public function getRegionForm($region = 0): string
     {
         $db = DbSingleton::getTokoDb();
         $form = "";
@@ -505,9 +494,9 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT `STATE_ID`, `STATE_NAME` FROM `T2_STATE` ORDER BY `STATE_NAME` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $id         = $db->result($r, $i - 1, "STATE_ID");
+            $id         = (int)$db->result($r, $i - 1, "STATE_ID");
             $caption    = $db->result($r, $i - 1, "STATE_NAME");
-            $checked    = ($id == $region) ? "selected=\"selected\"" : "";
+            $checked    = ($id === $region) ? "selected=\"selected\"" : "";
 
             $form .= "
             <option value=\"$id\" $checked>$caption</option>";
@@ -518,20 +507,20 @@ class MenuClass extends CatalogueClass
     /*
      * get client type select (registration)
      * */
-    public function showTypeForm($org_type = "")
+    public function showTypeForm($org_type = ""): string
     {
         $db = DbSingleton::getDbm();
         $form = "";
-        if ($org_type == "" || $org_type == 0) {
+        if ($org_type === "" || $org_type === 0) {
             $org_type = 1;
         }
 
         $r = $db->query("SELECT `id`, `full_name` FROM `A_ORG_TYPE` ORDER BY `id` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $id         = $db->result($r, $i - 1, "id");
+            $id         = (int)$db->result($r, $i - 1, "id");
             $caption    = $db->result($r, $i - 1, "full_name");
-            $checked    = ($id == $org_type) ? "selected=\"selected\"" : "";
+            $checked    = ($id === $org_type) ? "selected=\"selected\"" : "";
 
             $form .= "
             <option value=\"$id\" $checked>$caption</option>";
@@ -546,7 +535,7 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $language_id = $this->getLanguage();
-        if ($language_id != 1) {
+        if ($language_id !== 1) {
             $language_id = 5;
         }
         $file = "";
@@ -579,7 +568,7 @@ class MenuClass extends CatalogueClass
             $list       .= $this->showPopularBrandsCard($image, $brand_name, $link);
         }
         $form = str_replace("{brands_range}", $list, $form);
-        if ($n == 0) {
+        if ($n === 0) {
             $form = "";
         }
         return $form;
@@ -588,9 +577,7 @@ class MenuClass extends CatalogueClass
     public function showPopularBrandsCard($image, $brand_name, $link)
     {
         $form = $this->getHtmlForm("brands/card");
-        $form = str_replace("{image}", $image, $form);
-        $form = str_replace("{brand_name}", $brand_name, $form);
-        $form = str_replace("{page_link}", $link, $form);
+        $form = str_replace(array("{image}", "{brand_name}", "{page_link}"), array($image, $brand_name, $link), $form);
         return $form;
     }
 
@@ -658,9 +645,7 @@ class MenuClass extends CatalogueClass
             </ul></div>";
         }
         $form = $this->getHtmlForm("menu/contacts_bottom");
-        $form = str_replace("{list_phone}", $list_phone, $form);
-        $form = str_replace("{list_email}", $list_email, $form);
-        $form = str_replace("{list_address}", $list_address, $form);
+        $form = str_replace(array("{list_phone}", "{list_email}", "{list_address}"), array($list_phone, $list_email, $list_address), $form);
         return $this->replaceLang($form);
     }
 
@@ -670,8 +655,7 @@ class MenuClass extends CatalogueClass
     public function showSellBlock()
     {
         $form = $this->getHtmlForm("sell/sell_form");
-        $form = str_replace("{terms_cap}", $this->getHtmlForm("sell/sell_cooperation"), $form);
-        $form = str_replace("{deal_cap}", $this->getHtmlForm("sell/sell_deal"), $form);
+        $form = str_replace(array("{terms_cap}", "{deal_cap}"), array($this->getHtmlForm("sell/sell_cooperation"), $this->getHtmlForm("sell/sell_deal")), $form);
         return $form;
     }
 
@@ -703,12 +687,12 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             $db->query("DELETE FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id` = '$cookie_id';");
         }
-        if (in_array($type, $format_arr) && $size <= $max_bytes) {
+        if ($size <= $max_bytes && in_array($type, $format_arr, true)) {
             $db->query("INSERT INTO `J_SUPPLIERS_COOPERATION` (`company`, `name`, `phone`, `email`, `city_id`, `commentary`, `file_id`, `status`) VALUES ('$company', '$name', '$phone', '$email', '$city_id', '$comment', '$file_name', 166);");
             return true;
-        } else {
-            return array($type, $size);
         }
+
+        return array($type, $size);
     }
 
     /*
@@ -725,11 +709,11 @@ class MenuClass extends CatalogueClass
     /*
      * get garage navigation link
      * */
-    public function getGarageLink()
+    public function getGarageLink(): string
     {
         $automan = new AutoClass();
         $garage_count = $automan->getGarageAutoCount();
-        return ($garage_count == "")
+        return ($garage_count === "")
             ? "href=\"" . $this->getSiteLink() . "$this->catalog_link/auto/\""
             : "onclick=\"showGarageForm();\"";
     }
@@ -768,7 +752,7 @@ class MenuClass extends CatalogueClass
 
     public function getReviewsMetaTags($state_id = 0)
     {
-        if ($state_id == 0) {
+        if ($state_id === 0) {
             $text       = $this->replaceLang("{site_reviews}");
             $text       = str_replace("{h1_text}", "{review_state_cap}", $text);
             $url_text   = $this->getSiteLink() . $this->reviews_link . "/";
@@ -781,13 +765,11 @@ class MenuClass extends CatalogueClass
         }
 
         $form = $this->getHtmlForm("article/social");
-        $form = str_replace("{h1_meta_tag}", $text, $form);
-        $form = str_replace("{url_meta_tag}", $url_text, $form);
-        $form = str_replace("{main_image_cap}", $img_text, $form);
+        $form = str_replace(array("{h1_meta_tag}", "{url_meta_tag}", "{main_image_cap}"), array($text, $url_text, $img_text), $form);
         return $form;
     }
 
-    public function getReviewsData($state_id)
+    public function getReviewsData($state_id): array
     {
         $state_id = $this->getUrlNumber($state_id);
         $db = DbSingleton::getTokoDb();
@@ -826,16 +808,15 @@ class MenuClass extends CatalogueClass
     
     public function replaceTextTags($text, $h1_text = "")
     {
-        $text = str_replace("<h1>", "", $text);
-        $text = str_replace("</h1>", "", $text);
+        $text = str_replace(array("<h1>", "</h1>"), "", $text);
 
-        if ($h1_text != "") {
+        if ($h1_text !== "") {
             $imgs = [];
 
             $text_end = $text;
             for ($i = 0; $i <= strlen($text); $i++) {
                 $pos_start = strpos($text_end, "<img", $i);
-                if ($text_end == substr($text_end, $pos_start)) {
+                if ($text_end === substr($text_end, $pos_start)) {
                     break;
                 }
                 $text_end   = substr($text_end, $pos_start);
@@ -853,7 +834,7 @@ class MenuClass extends CatalogueClass
                 } else {
                     $formate_img = $img;
                 }
-                $text = str_replace("$img", "$formate_img", $text);
+                $text = str_replace($img, $formate_img, $text);
             }
         }
 

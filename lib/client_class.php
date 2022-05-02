@@ -20,7 +20,7 @@ class ClientClass
     /*
      * get client data
      * */
-    public function getClientData()
+    public function getClientData(): array
     {
         $cookie_client_id = $this->getUrlNumber($_COOKIE["client_id"]);
         if ($cookie_client_id !== "") {
@@ -87,7 +87,7 @@ class ClientClass
     /*
      * get Client where (cookie and client_id)
      * */
-    public function getClientWhere()
+    public function getClientWhere(): string
     {
         $user_id    = $this->getUser();
         $cookie_id  = $this->getSessionID();
@@ -99,7 +99,7 @@ class ClientClass
     /*
      * only for A_CLIENTS_USERS
      * */
-    public function getClientPriceList()
+    public function getClientPriceList(): bool
     {
         $db = DbSingleton::getDbm();
         list($client_id, $user_id) = $this->getClientData();
@@ -112,7 +112,7 @@ class ClientClass
     /*
      * only for A_CLIENTS_USERS
      * */
-    public function getClientCheckList()
+    public function getClientCheckList(): bool
     {
         $db = DbSingleton::getDbm();
         list($client_id, $user_id) = $this->getClientData();
@@ -124,7 +124,7 @@ class ClientClass
     /*
      * check client registration
      * */
-    public function checkUnRegClient()
+    public function checkUnRegClient(): bool
     {
         $user_id = $this->getUser();
         return ($user_id === 0);
@@ -149,7 +149,7 @@ class ClientClass
     /*
      * format phone for Authorization
      * */
-    public function formatPhone($phone)
+    public function formatPhone($phone): string
     {
         $phone = $this->formatValidPhone($phone);
         $number = strlen($phone) - 9;
@@ -177,13 +177,13 @@ class ClientClass
     {
         $phone = str_replace(str_split("()+- "), "", $phone);
         $phone = substr($phone, -10);
-        return $this->getUrlNumber($phone);
+        return $phone;
     }
 
     /*
      * login client cookies
      * */
-    public function loginOrderClient($user_id)
+    public function loginOrderClient($user_id): string
     {
         $user_id = $this->getUrlNumber($user_id);
         $dbm = DbSingleton::getDbm();
@@ -221,7 +221,7 @@ class ClientClass
         return $user_id;
     }
 
-    public function setSessionUserData($client_id, $user_id)
+    public function setSessionUserData($client_id, $user_id): bool
     {
         $cash_id                = $this->getClientCurrency($client_id);
         $_SESSION["user_id"]    = $user_id;
@@ -240,7 +240,7 @@ class ClientClass
     /*
      * logout client profile
      * */
-    public function logoutClient()
+    public function logoutClient(): bool
     {
         $_SESSION["client_id"]  = $this->default_client_id;
         $_SESSION["user_id"]    = $this->default_user;
@@ -262,7 +262,7 @@ class ClientClass
     /*
      * drop basket in order
      * */
-    public function moveFromBasketToClient()
+    public function moveFromBasketToClient(): bool
     {
         $db = DbSingleton::getTokoDb();
         $user_id = $this->getUser();
@@ -291,7 +291,7 @@ class ClientClass
     /*
      * get client info
      * */
-    public function getClientInfo($client_id, $user_id)
+    public function getClientInfo($client_id, $user_id): array
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT acu.name as user_name, acu.email as user_email, acu.phone as user_phone, acu.pass, acu.client_id, acu.status as user_status, ac.* 
@@ -323,7 +323,7 @@ class ClientClass
     /*
      * edit profile data
      * */
-    public function saveProfile($phone, $pass, $email, $name)
+    public function saveProfile($phone, $pass, $email, $name): bool
     {
         $db = DbSingleton::getDbm();
         $phone  = $this->getUrlString($phone);
@@ -342,7 +342,7 @@ class ClientClass
     /*
      * save registration
      * */
-    public function saveRegistration($phone, $pass, $email, $name, $client_cat, $city_id, $tpoint_id, $mailing)
+    public function saveRegistration($phone, $pass, $email, $name, $client_cat, $city_id, $tpoint_id, $mailing): bool
     {
         $db = DbSingleton::getDbm();
 
@@ -393,12 +393,12 @@ class ClientClass
     /*
      * get Client default currency
      * */
-    public function getClientCurrency($client_id)
+    public function getClientCurrency($client_id): int
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `cash_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id LIMIT 1;");
         $n = $db->num_rows($r);
-        $cash_id = $db->result($r, 0, "cash_id");
+        $cash_id = (int)$db->result($r, 0, "cash_id");
         if ($n === 0) {
             $cash_id = $this->default_currency;
         }
@@ -408,7 +408,7 @@ class ClientClass
     /*
      * set TPOINT
      * */
-    public function setTpoint($tpoint_id)
+    public function setTpoint($tpoint_id): int
     {
         $tpoint_id = $this->getUrlNumber($tpoint_id);
         $client_id = $this->getClientByTpoint($tpoint_id);
@@ -422,15 +422,15 @@ class ClientClass
     /*
      * get TPOINT
      * */
-    public function getTpoint($client_id = 0)
+    public function getTpoint($client_id = 0): int
     {
         $db = DbSingleton::getDbm();
         if ($client_id === 0) {
             $client_id = $this->getClientData()[0];
         }
         $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id;");
-        $tpoint_id = $db->result($r, 0, "tpoint_id");
-        if ($tpoint_id === "" || $tpoint_id === 0) {
+        $tpoint_id = (int)$db->result($r, 0, "tpoint_id");
+        if ($tpoint_id === 0) {
             $tpoint_id = $this->default_tpoint;
         }
         return $tpoint_id;
@@ -439,7 +439,7 @@ class ClientClass
     /*
      * get TPOINT from CLIENT
      * */
-    public function getTpointUser($client_id)
+    public function getTpointUser($client_id): int
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id;");
@@ -447,13 +447,13 @@ class ClientClass
         if ($tpoint_id === "" || $tpoint_id === 0) {
             $tpoint_id = $this->default_tpoint;
         }
-        return $tpoint_id;
+        return (int)$tpoint_id;
     }
 
     /*
      * set default retail tpoint
      * */
-    public function setTpointRetail()
+    public function setTpointRetail(): bool
     {
         ($_SESSION["tpoint_id"] !== "" && $_SESSION["tpoint_id"] !== 0) ?: $_SESSION["tpoint_id"] = $this->default_tpoint;
         return true;
@@ -472,7 +472,7 @@ class ClientClass
         return $db->result($r, 0, "full_name");
     }
 
-    public function validateRegistration($phone)
+    public function validateRegistration($phone): array
     {
         $db = DbSingleton::getDbm();
 
@@ -541,7 +541,7 @@ class ClientClass
     /*
      * check reg phone
      * */
-    public function checkRegistration($phone)
+    public function checkRegistration($phone): bool
     {
         $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getDbm();
@@ -554,7 +554,7 @@ class ClientClass
      * validation of phone numbers by Ukrainian operators
      * Table: toko_dba.`mobile_operators`
     */
-    public function validateOperator($phone)
+    public function validateOperator($phone): bool
     {
         $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getTokoDb();
@@ -575,7 +575,7 @@ class ClientClass
     /*
      * get storage_id from Tpoint
      * */
-    public function getStorageByTpoint($tpoint_id)
+    public function getStorageByTpoint($tpoint_id): array
     {
         $db = DbSingleton::getTokoDb();
         $storage_local = $storage_remote = [];
@@ -598,7 +598,7 @@ class ClientClass
      * select all tpoints except the specified one
      * Table: toko_dba.`T_POINT`
     */
-    public function getOtherTpoints($tpoint_id_sel)
+    public function getOtherTpoints($tpoint_id_sel): array
     {
         $db = DbSingleton::getTokoDb();
         $tpoint_array = [];
@@ -661,7 +661,7 @@ class ClientClass
      * get location variables by city
      * Table: myparts_dba.`T2_CITY`, myparts_dba.`T2_REGION`, myparts_dba.`T2_STATE`, myparts_dba.`T2_COUNTRIES`
      * */
-    public function getLocationCity($city_id)
+    public function getLocationCity($city_id): array
     {
         $db = DbSingleton::getDbm();
         $region_id = $state_id = $country_id = 0;
@@ -705,7 +705,7 @@ class ClientClass
     /*
      * send SMS validation
      * */
-    public function validatePhone($phone)
+    public function validatePhone($phone): int
     {
         $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getDbm();
@@ -722,7 +722,7 @@ class ClientClass
     /*
      * finish phone validation
      * */
-    public function endValidation($phone, $password)
+    public function endValidation($phone, $password): bool
     {
         $phone = $this->formatValidPhone($phone);
         $password = $this->getNameString($password);
@@ -741,7 +741,7 @@ class ClientClass
      * Set CATEGORY
      * Set CONDITIONS
      * */
-    public function addRetailClient($tpoint_client_id, $phone, $name = "", $city_id = 0, $email = "", $pass = "", $client_category = 0)
+    public function addRetailClient($tpoint_client_id, $phone, $name = "", $city_id = 0, $email = "", $pass = "", $client_category = 0): array
     {
         $db = DbSingleton::getDbm();
         if ($name === "") {
@@ -777,12 +777,12 @@ class ClientClass
      * MOVE CLIENT CONDITION
      * add new client from existing
      * */
-    public function moveClientsConditionsRetail($tpoint_client_id, $client_id)
+    public function moveClientsConditionsRetail($tpoint_client_id, $client_id): bool
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $tpoint_client_id LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n == 1) {
+        $n = (int)$db->num_rows($r);
+        if ($n === 1) {
             $cash_id                = $db->result($r, 0, "cash_id");
             $country_cash_id        = $db->result($r, 0, "country_cash_id");
             $credit_cash_id         = $db->result($r, 0, "credit_cash_id");
@@ -807,7 +807,7 @@ class ClientClass
      * check client category
      * check if client shop
      * */
-    public function checkRetailClientCategory($client_id)
+    public function checkRetailClientCategory($client_id): bool
     {
         $db = DbSingleton::getDbm();
         $client_id = $this->getUrlNumber($client_id);
@@ -819,7 +819,7 @@ class ClientClass
     /*
      * get all users count
      * */
-    public function getUsersCount()
+    public function getUsersCount(): int
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `id` FROM `A_CLIENTS_USERS` WHERE `status` = 1;");
@@ -831,7 +831,7 @@ class ClientClass
      * Table: myparts_dba.`ACTION_CLIENTS_CATEGORY`
      * Cookie: 'action_status'
      * */
-    public function checkActionClients()
+    public function checkActionClients(): int
     {
         $db = DbSingleton::getDbm();
         $user_id = $this->getUser();
@@ -868,7 +868,7 @@ class ClientClass
      * Check if user authorized
      * by PHONE
      * */
-    public function getAuthorizedUser($phone)
+    public function getAuthorizedUser($phone): array
     {
         $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getDbm();
@@ -905,7 +905,7 @@ class ClientClass
     /*
      * Add History
      * */
-    public function insertHistory($article_nr_displ, $brand_id)
+    public function insertHistory($article_nr_displ, $brand_id): bool
     {
         $db = DbSingleton::getTokoDb();
         session_start();
@@ -944,7 +944,7 @@ class ClientClass
     /*
      * Add History by article
      * */
-    public function insertArtsHistory($art_id)
+    public function insertArtsHistory($art_id): bool
     {
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
@@ -983,7 +983,7 @@ class ClientClass
     /*
      * get user history
      * */
-    public function getClientHistory()
+    public function getClientHistory(): array
     {
         $db = DbSingleton::getTokoDb();
         $col = 0;
@@ -1022,7 +1022,7 @@ class ClientClass
     /*
      * get user history
      * */
-    public function getArtsHistory()
+    public function getArtsHistory(): array
     {
         $db = DbSingleton::getTokoDb();
         $col = 0;
@@ -1054,7 +1054,7 @@ class ClientClass
     /*
      * Delete Client
      * */
-    public function dropClient($client_id)
+    public function dropClient($client_id): string
     {
         $client_id = $this->getUrlNumber($client_id);
         $db = DbSingleton::getDbm();
@@ -1075,7 +1075,7 @@ class ClientClass
     /*
      * Get User Data + User Order Info
      * */
-    public function getClientUserData($user_id)
+    public function getClientUserData($user_id): array
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `name`, `phone`, `email` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
@@ -1096,7 +1096,7 @@ class ClientClass
      * CLIENT Requests
      * T2_QUESTIONS
      * */
-    public function setClientRequest($phone, $vin = "", $text = "", $status = 0)
+    public function setClientRequest($phone, $vin = "", $text = "", $status = 0): array
     {
         $db = DbSingleton::getTokoDb();
 
@@ -1114,7 +1114,7 @@ class ClientClass
                 $err = "{vin_number_input}";
             } elseif (!$this->validateOperator($phone)) {
                 $err = "{sms_error_1}";
-            } elseif (strlen($vin) !== $this->vin_len && $status === 1) {
+            } elseif ($status === 1 && strlen($vin) !== $this->vin_len) {
                 $err = "{vin_error_1}";
             } else {
                 $err = "{input_all_data}";
@@ -1131,7 +1131,7 @@ class ClientClass
     /*
      * get client_id / user_id from PHONE
      * */
-    public function getClientUserbyPhone($phone)
+    public function getClientUserbyPhone($phone): array
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `id`, `client_id` FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' LIMIT 1;");
@@ -1143,7 +1143,7 @@ class ClientClass
     /*
      * Client Bonus
      * */
-    public function checkClientBonus($client_id, $bonus = 1)
+    public function checkClientBonus($client_id, $bonus = 1): bool
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT 1 FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID` = $client_id AND `BONUS_ID` = $bonus LIMIT 1;");
@@ -1155,7 +1155,7 @@ class ClientClass
      * add Client bonus
      * if not exist
      * */
-    public function addClientBonus($client_id, $bonus = 1)
+    public function addClientBonus($client_id, $bonus = 1): bool
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT 1 FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID` = $client_id AND `BONUS_ID` = $bonus LIMIT 1;");

@@ -12,20 +12,20 @@ class ExRateClass
     /*
      * get current currency_id
      * */
-    public function getCurrentKours()
+    public function getCurrentKours(): int
     {
         session_start();
         $cur = $this->getUrlNumber($_COOKIE["currency"]);
 
-        if ($cur == "" || $cur == 0) {
+        if ($cur === "" || $cur === 0 || $cur === "0") {
             $cur = $this->getUrlNumber($_SESSION["currency"]);
         }
 
-        if ($cur == "" || $cur == 0) {
+        if ($cur === "" || $cur === 0 || $cur === "0") {
             $cur = 1;
         }
 
-        return $cur;
+        return (int)$cur;
     }
 
     /*
@@ -35,34 +35,37 @@ class ExRateClass
     public function getKours($val)
     {
         $db = DbSingleton::getDbm();
-        if ($val == "dollar") {
+        if ($val === "dollar") {
             if ($this->usdRate === null) {
                 $r = $db->query("SELECT `kours_value` FROM `J_KOURS` WHERE `cash_id` = 2 AND `in_use` = 1 LIMIT 1;");
                 $this->usdRate = number_format($db->result($r, 0, "kours_value"), 2, '.', '');
             }
             return $this->usdRate;
-        } elseif ($val == "euro") {
+        }
+
+        if ($val === "euro") {
             if ($this->euroRate === null) {
                 $r = $db->query("SELECT `kours_value` FROM `J_KOURS` WHERE `cash_id` = 3 AND `in_use` = 1 LIMIT 1;");
                 $this->euroRate = number_format($db->result($r, 0, "kours_value"), 2, '.', '');
             }
             return $this->euroRate;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     /*
      * get exchange rate price
      * from price & currency_id
      * */
-    public function getKoursPrice($price, $cur)
+    public function getKoursPrice($price, $cur): string
     {
-        if ($cur == 2) {
-            $price = $price / $this->getKours("dollar");
+        $cur = (int)$cur;
+        if ($cur === 2) {
+            $price /= $this->getKours("dollar");
             $price = number_format($price, 2, '.', '');
-        } elseif ($cur == 3) {
-            $price = $price / $this->getKours("euro");
+        } elseif ($cur === 3) {
+            $price /= $this->getKours("euro");
             $price = number_format($price, 2, '.', '');
         } elseif (is_float($price)) {
             $price = number_format($price, 2, '.', '');
@@ -74,12 +77,13 @@ class ExRateClass
      * get exchange rate price from usa
      * from price & currency_id
      * */
-    public function getKoursFromUSA($price, $cur)
+    public function getKoursFromUSA($price, $cur): string
     {
-        if ($cur == 1) {
-            $price = $price * $this->getKours("dollar");
+        $cur = (int)$cur;
+        if ($cur === 1) {
+            $price *= $this->getKours("dollar");
             $price = number_format($price, 2, '.', '');
-        } elseif ($cur == 3) {
+        } elseif ($cur === 3) {
             $price = ($price * $this->getKours("dollar")) / $this->getKours("euro");
             $price = number_format($price, 2, '.', '');
         } elseif (is_float($price)) {
@@ -92,13 +96,14 @@ class ExRateClass
      * get exchange rate price from usd
      * from price & currency_id
      * */
-    public function getKoursFromUAH($price, $cur)
+    public function getKoursFromUAH($price, $cur): string
     {
-        if ($cur == 2) {
-            $price = $price / $this->getKours("dollar");
+        $cur = (int)$cur;
+        if ($cur === 2) {
+            $price /= $this->getKours("dollar");
             $price = number_format($price, 2, '.', '');
-        } elseif ($cur == 3) {
-            $price = $price / $this->getKours("euro");
+        } elseif ($cur === 3) {
+            $price /= $this->getKours("euro");
             $price = number_format($price, 2, '.', '');
         } else {
             $price = number_format($price, 2, '.', '');
@@ -134,7 +139,7 @@ class ExRateClass
      * get exchange rate symbol
      * from currency_id
      * */
-    public function getKoursSymbol($cur)
+    public function getKoursSymbol($cur): string
     {
         switch ($cur) {
             case 2:

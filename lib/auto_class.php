@@ -17,12 +17,12 @@ class AutoClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_BRAND_TRANSLIT` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
         $mfa_translate = $db->result($r, 0, "MFA_BRAND_TRANSLIT");
-        $text = ($mfa_translate != "") ? "($mfa_translate)" : "";
+        $text = ($mfa_translate !== "") ? "($mfa_translate)" : "";
 
-        if ($model != "") {
+        if ($model !== "") {
             $r = $db->query("SELECT `Model_TRANSLIT` FROM `T_models` WHERE `Model` = '$model' AND `Model_TRANSLIT` != '' LIMIT 1;");
             $model_translate = $db->result($r, 0, "Model_TRANSLIT");
-            $text = ($model_translate != "") ? "($mfa_translate $model_translate)" : $text;
+            $text = ($model_translate !== "") ? "($mfa_translate $model_translate)" : $text;
         }
 
         return $text;
@@ -49,7 +49,7 @@ class AutoClass extends CatalogueClass
         $mfa_cap    = $db->result($r, 0, "MFA_BRAND");
         $car_cap    = "$mfa_cap $mod_cap $typ_cap";
 
-        if ($typ_id == 0) {
+        if ($typ_id === 0) {
             $car_cap = $this->replaceLang("{choose_spare}");
         }
         return $car_cap;
@@ -93,7 +93,7 @@ class AutoClass extends CatalogueClass
             $mfa_text = $db->result($r, 0, "MFA_BRAND");
         }
 
-        if ($model != "") {
+        if ($model !== "") {
             $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model` = '$model' LIMIT 1;");
             $model_text = $db->result($r, 0, "Model");
         }
@@ -122,12 +122,12 @@ class AutoClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $mfa_brand = $model = "";
 
-        if ($mfa_link != "") {
+        if ($mfa_link !== "") {
             $r = $db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' LIMIT 1;");
             $mfa_brand = $db->result($r, 0, "MFA_BRAND");
         }
 
-        if ($model_link != "") {
+        if ($model_link !== "") {
             $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link` = '$model_link' LIMIT 1;");
             $model = $db->result($r, 0, "Model");
         }
@@ -147,12 +147,12 @@ class AutoClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $mfa_id = $model = "";
 
-        if ($mfa_link != "") {
+        if ($mfa_link !== "") {
             $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' LIMIT 1;");
             $mfa_id = $db->result($r, 0, "MFA_ID");
         }
 
-        if ($model_link != "") {
+        if ($model_link !== "") {
             $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link` = '$model_link' LIMIT 1;");
             $model = $db->result($r, 0, "Model");
         }
@@ -181,7 +181,7 @@ class AutoClass extends CatalogueClass
         $mfa_link = $this->getUrlString($mfa_link);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' LIMIT 1;");
-        return intval($db->result($r, 0, "MFA_ID"));
+        return (int)$db->result($r, 0, "MFA_ID");
     }
 
     /*
@@ -238,7 +238,7 @@ class AutoClass extends CatalogueClass
             $mfa_image = $db->result($r, 0, "LOGO");
         }
 
-        if ($model != "") {
+        if ($model !== "") {
             $r = $db->query("SELECT `Car_pict` FROM `T_models` WHERE `Model` = '$model' ORDER BY `Active_pict` DESC LIMIT 1;");
             $model_image = $db->result($r, 0, "Car_pict");
         }
@@ -275,11 +275,11 @@ class AutoClass extends CatalogueClass
             $d_end      = $db->result($r, 0, "TYP_PCON_END");
             $fuel       = $this->getFuelName($fuel);
 
-            if (mb_strlen($d_start) == 6) {
+            if (mb_strlen($d_start) === 6) {
                 $d_start = substr($d_start, 0, 4) . "." . substr($d_start, 4, 2);
             }
 
-            if (mb_strlen($d_end) == 6) {
+            if (mb_strlen($d_end) === 6) {
                 $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
             }
 

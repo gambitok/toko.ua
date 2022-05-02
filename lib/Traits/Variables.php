@@ -16,9 +16,7 @@ trait Variables
      * */
     public function getFormatBrand($brand)
     {
-        $format_brand = str_replace("/", "-", $brand);
-        $format_brand = str_replace(" ", "%20", $format_brand);
-        return $format_brand;
+        return str_replace(array("/", " "), array("-", "%20"), $brand);
     }
 
     /*==== ARTICLE_ID ================================================================================================*/
@@ -53,7 +51,7 @@ trait Variables
                 $name = $db->result($r, 0, "NAME");
             }
         }
-        if ($name == "") {
+        if ($name === "") {
             $name = $this->replaceLang("{details_name_cap}");
         }
         return $name;
@@ -122,7 +120,7 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `BARCODE` FROM `T2_BARCODES` WHERE `ART_ID` = $art_id LIMIT 1;");
         $barcode = $db->result($r, 0, "BARCODE");
-        if ($barcode == "") {
+        if ($barcode === "") {
             $r = $db->query("SELECT MAX(`BARCODE`) as max_barcode FROM `T2_BARCODES`;");
             $barcode = $db->result($r, 0, "max_barcode") + 0;
         }
@@ -132,7 +130,7 @@ trait Variables
     /*
      * ART_ID + STORAGE => STOCK (PRICE LIST)
      * */
-    public function getStockStorage($art_id, $storage_id)
+    public function getStockStorage($art_id, $storage_id): int
     {
         $db = DbSingleton::getTokoDb();
         if (empty($storage_id)) {
@@ -141,7 +139,7 @@ trait Variables
         $r = $db->query("SELECT SUM(`AMOUNT`) as summ_amount FROM `T2_ARTICLES_STRORAGE`
         WHERE `ART_ID` = $art_id AND `STORAGE_ID` IN ($storage_id);");
         $n = $db->num_rows($r);
-        return ($n > 0) ? intval($db->result($r, 0, "summ_amount")) : 0;
+        return ($n > 0) ? (int)$db->result($r, 0, "summ_amount") : 0;
     }
 
     /*==== ARTICLE_NR ================================================================================================*/
@@ -149,7 +147,7 @@ trait Variables
     /*
      * ARTICLE_NR_SEARCH => ARTICLE_NR_DISPL
      * */
-    public function getArtDispl($article_nr_search, $brand_nr_search = 0)
+    public function getArtDispl($article_nr_search, $brand_nr_search = 0): array
     {
         $db = DbSingleton::getTokoDb();
         $article_nr_displ = $article_nr_search;
@@ -168,7 +166,7 @@ trait Variables
             $article_nr_displ = $db->result($r, 0, "ARTICLE_NR_DISPL");
         }
 
-        if ($n == 0) {
+        if ($n === 0) {
             $r2 = $db->query("SELECT  `ART_ID`, `DISPLAY_NR` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search' $where_brand LIMIT 1;");
             $n2 = $db->num_rows($r2);
             if ($n2 > 0) {
@@ -193,7 +191,7 @@ trait Variables
         $art_id = 0;
         $where_brand = ($brand_id > 0) ? " AND `BRAND_ID` = $brand_id" : "";
 
-        if ($article_nr_search != "") {
+        if ($article_nr_search !== "") {
             $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` = '$article_nr_search' $where_brand;");
             $n = $db->num_rows($r);
             if ($n > 0) {
@@ -230,14 +228,14 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `BRAND_NAME` FROM `T2_BRANDS` WHERE `BRAND_ID` = $brand_id LIMIT 1;");
         $n = $db->num_rows($r);
-        return ($n == 1) ? $db->result($r, 0, "BRAND_NAME") : 0;
+        return ($n === 1) ? $db->result($r, 0, "BRAND_NAME") : 0;
     }
 
     public function getBrandNameLink($brand)
     {
         $brand_id = 0;
         $brand = $this->getUrlString($brand);
-        if ($brand != "") {
+        if ($brand !== "") {
             $db = DbSingleton::getTokoDb();
             $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE BINARY `BRAND_LINK` = BINARY '$brand' LIMIT 1;");
             $n = $db->num_rows($r);
@@ -258,7 +256,7 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `BRAND_LINK` FROM `T2_BRANDS` WHERE `BRAND_ID` = $brand_id LIMIT 1;");
         $n = $db->num_rows($r);
-        return ($n == 1) ? $db->result($r, 0, "BRAND_LINK") : 0;
+        return ($n === 1) ? $db->result($r, 0, "BRAND_LINK") : 0;
     }
 
     /*==== VARIABLES =================================================================================================*/
@@ -279,14 +277,14 @@ trait Variables
      * get sale invoice name
      * from INVOICE_ID
      * */
-    public function getSaleInvoiceName($invoice_id)
+    public function getSaleInvoiceName($invoice_id): string
     {
         $invoice_id = $this->getUrlNumber($invoice_id);
         $db = DbSingleton::getDbm();
         $name = "";
         $r = $db->query("SELECT `prefix`, `doc_nom` FROM `J_SALE_INVOICE` WHERE `status` = 1 AND `id` = $invoice_id LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n == 1) {
+        if ($n === 1) {
             $name = $db->result($r, 0, "prefix") . "-" . $db->result($r, 0, "doc_nom");
         }
         return $name;
@@ -296,7 +294,7 @@ trait Variables
      * get jpay name
      * from JPAY_ID
      * */
-    public function getJPayName($jpay_id)
+    public function getJPayName($jpay_id): array
     {
         $jpay_id = $this->getUrlNumber($jpay_id);
         $db = DbSingleton::getDbm();
@@ -306,10 +304,10 @@ trait Variables
         FROM `J_PAY` p 
             LEFT JOIN `manual` m ON (m.id = p.pay_type_id AND m.`key` = 'pay_type_id') 
         WHERE p.status = 1 AND p.id = $jpay_id LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n == 1) {
-            $pay_type_id = $db->result($r, 0, "pay_type_id");
-            $name = $db->result($r, 0, "pay_type_name") . " #" . $db->result($r, 0, "doc_nom");
+        $n = (int)$db->num_rows($r);
+        if ($n === 1) {
+            $pay_type_id    = (int)$db->result($r, 0, "pay_type_id");
+            $name           = $db->result($r, 0, "pay_type_name") . " #" . $db->result($r, 0, "doc_nom");
         }
         return array($pay_type_id, $name);
     }
@@ -323,13 +321,13 @@ trait Variables
         $fuel_id = $this->getUrlNumber($fuel_id);
         $db = DbSingleton::getTokoDb();
         $lang_id = $this->getLanguage();
-        if ($lang_id == 1) {
+        if ($lang_id === 1) {
             $lang_id = 16;
         }
-        if ($lang_id == 2) {
+        if ($lang_id === 2) {
             $lang_id = 41;
         }
-        if ($lang_id == 3) {
+        if ($lang_id === 3) {
             $lang_id = 4;
         }
         $r = $db->query("SELECT `FUEL` FROM `T_types_fuel` WHERE `FUEL_ID` = $fuel_id AND `LANG_ID` = $lang_id LIMIT 1;");
@@ -340,14 +338,14 @@ trait Variables
      * get back clients name
      * from BACK_ID
      * */
-    public function getBackClientsName($back_id)
+    public function getBackClientsName($back_id): string
     {
         $back_id = $this->getUrlNumber($back_id);
         $db = DbSingleton::getDbm();
         $prefix = $doc_nom = "";
         $r = $db->query("SELECT `prefix`, `doc_nom` FROM `J_BACK_CLIENTS` WHERE `id` = $back_id LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n == 1) {
+        if ($n === 1) {
             $prefix = $db->result($r, 0, "prefix");
             $doc_nom = $db->result($r, 0, "doc_nom");
         }
@@ -368,16 +366,16 @@ trait Variables
 //        return $brand_link;
 //    }
 
-    public function getFiltersSearch($brand_filter)
-    {
-        if ($brand_filter != "") {
-            $brand_filter = str_replace("'", "", $brand_filter);
-            $where_brands = " AND t2a.BRAND_ID IN ($brand_filter) ";
-        } else {
-            $where_brands = "";
-        }
-        return $where_brands;
-    }
+//    public function getFiltersSearch($brand_filter)
+//    {
+//        if ($brand_filter !== "") {
+//            $brand_filter = str_replace("'", "", $brand_filter);
+//            $where_brands = " AND t2a.BRAND_ID IN ($brand_filter) ";
+//        } else {
+//            $where_brands = "";
+//        }
+//        return $where_brands;
+//    }
 
     /*
      * get delivery name
@@ -418,7 +416,7 @@ trait Variables
         return $name;
     }
 
-    public function getSearchMessages()
+    public function getSearchMessages(): array
     {
         $error          = "<h5 class=\"error_message\">$this->err1</h5>";
         $list           = "";
@@ -441,10 +439,10 @@ trait Variables
     /*
      * get Cookie Car
      * */
-    public function getCookieAuto()
+    public function getCookieAuto(): string
     {
         $auto_typ_id = $this->getUrlNumber($_COOKIE["auto_typ_id"]);
-        if ($auto_typ_id > 0 && $auto_typ_id != "") {
+        if ($auto_typ_id > 0 && $auto_typ_id !== "") {
             $typ_id = $auto_typ_id;
         } else {
             $typ_id = "";
@@ -452,7 +450,7 @@ trait Variables
         return $typ_id;
     }
 
-    public function formatArticleName($text, $max_symbols = 36)
+    public function formatArticleName($text, $max_symbols = 36): string
     {
         $dots = "...";
         if (strlen($text) > $max_symbols) {
@@ -466,18 +464,18 @@ trait Variables
     /*
      * Get Kind of brand
      * */
-    public function getBrandType($brand_id)
+    public function getBrandType($brand_id): bool
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `KIND` FROM `T2_BRANDS` WHERE `BRAND_ID` = $brand_id LIMIT 1;");
-        $kind = $db->result($r, 0, "KIND");
-        return ($kind == 3);
+        $kind = (int)$db->result($r, 0, "KIND");
+        return ($kind === 3);
     }
 
     /*
      * check if art_id is original
      * */
-    public function checkOriginalEquipment($art_id, $search_number)
+    public function checkOriginalEquipment($art_id, $search_number): bool
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `SEARCH_NUMBER` FROM `T2_CROSS` WHERE `ART_ID` = $art_id AND `KIND` = 3 AND `RELATION` = 0;");
@@ -485,7 +483,7 @@ trait Variables
         $nom = 0;
         for ($i = 1; $i <= $n; $i++) {
             $number = $db->result($r, $i - 1, "SEARCH_NUMBER");
-            if ($search_number == $number) {
+            if ($search_number === $number) {
                 $nom++;
             }
         }
@@ -495,12 +493,12 @@ trait Variables
     /*
      * Check relation from t2_cross
      * */
-    public function checkAnalogTypes($art_id, $article_nr_search, $relation_id)
+    public function checkAnalogTypes($art_id, $article_nr_search, $relation_id): bool
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_CROSS` 
         WHERE `ART_ID` = $art_id AND `SEARCH_NUMBER` LIKE '$article_nr_search' AND `KIND` IN (3,4) AND `RELATION` = $relation_id;");
-        $n = $db->result($r, 0, `count_arts`);
+        $n = $db->result($r, 0, "count_arts");
         return ($n > 0);
     }
 

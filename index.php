@@ -7,13 +7,13 @@ header('Content-Type: text/html; charset=windows-1251');
 $content = null;
 $title = "{site_title}";
 
-define('RDD', dirname (__FILE__));
+define('RDD', __DIR__);
 require_once (RDD . "/lib/DbSingleton.php");                  //database
 require_once (RDD . "/lib/access.php");                       //get access site
-require_once (RDD . "/lib/helper.php");                       //helper
-require_once (RDD . "/lib/variables.php");                    //variables
+require_once (RDD . "/lib/Traits/Helper.php");
+require_once (RDD . "/lib/Traits/Variables.php");
 require_once (RDD . "/lib/catalogue_class.php");              //catalogue search
-require_once (RDD . "/lib/search_class.php");              //catalogue search
+require_once (RDD . "/lib/search_class.php");                 //catalogue search
 require_once (RDD . "/lib/form_class.php");                   //show forms
 require_once (RDD . "/lib/products_class.php");               //products search
 require_once (RDD . "/lib/auto_class.php");                   //auto search
@@ -27,7 +27,6 @@ require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");   //ajax requests
 require_once (RDD . "/lib/class.phpmailer.php");
 require_once (RDD . "/lib/catalog_exist_class.php");
 require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
-require_once (RDD . "/lib/ukr-poshta-api/UkrPoshtaApi.php");
 
 $db = DbSingleton::getTokoDb();
 $dbm = DbSingleton::getDbm();
