@@ -183,7 +183,7 @@ trait Variables
     /*
      * ARTICLE_NR_SEARCH + BRAND_ID => ART_ID
      * */
-    public function getArticleId($article_nr_search, $brand_id)
+    public function getArticleId($article_nr_search, $brand_id): int
     {
         $brand_id = $this->getUrlNumber($brand_id);
         $article_nr_search = $this->getUrlString($article_nr_search);
@@ -195,9 +195,10 @@ trait Variables
             $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` = '$article_nr_search' $where_brand;");
             $n = $db->num_rows($r);
             if ($n > 0) {
-                $art_id = $db->result($r, 0, "ART_ID");
+                $art_id = (int)$db->result($r, 0, "ART_ID");
             }
         }
+
         return $art_id;
     }
 
@@ -439,11 +440,11 @@ trait Variables
     /*
      * get Cookie Car
      * */
-    public function getCookieAuto(): string
+    public function getCookieAuto()
     {
         $auto_typ_id = $this->getUrlNumber($_COOKIE["auto_typ_id"]);
         if ($auto_typ_id > 0 && $auto_typ_id !== "") {
-            $typ_id = $auto_typ_id;
+            $typ_id = (int)$auto_typ_id;
         } else {
             $typ_id = "";
         }

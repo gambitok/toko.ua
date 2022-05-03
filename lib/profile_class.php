@@ -3,9 +3,6 @@
 class ProfileClass extends ClientClass
 {
 
-    use Helper;
-    use Variables;
-
     public $page_signin         = "signin/";
     public $page_profile        = "profile/orders/";
     public $page_registration   = "registration/";
@@ -653,6 +650,7 @@ class ProfileClass extends ClientClass
             default: {
                 $table = "";
                 $table_str = "";
+                $price_str = "price";
                 break;
             }
         }
@@ -778,8 +776,9 @@ class ProfileClass extends ClientClass
                     $saldo_end += $kredit;
                 }
 
+                $onclick = "showProfileDocs($i, $doc_id, $doc_type_id);";
                 $list .= "
-                <tr id=\"tr-$i\" class=\"text-center pointer\" onclick=\"showProfileDocs($i, $doc_id, $doc_type_id);\">
+                <tr id=\"tr-$i\" class=\"text-center pointer\" onclick=\"$onclick\">
                     <td>$i</td>
                     <td>$data</td>
                     <td>$cash_name</td>
@@ -822,8 +821,7 @@ class ProfileClass extends ClientClass
             $saldo_start_cap = " (<span class=\"span-green\">{prepayment}</span>)";
         }
 
-        $form = str_replace("{saldo_start_data}", $saldo_start . " " . $kours->getKoursCaption($saldo_cash_id) . $saldo_start_cap, $form);
-        $form = str_replace("{saldo_start_date}", $saldo_data_start, $form);
+        $form = str_replace(array("{saldo_start_data}", "{saldo_start_date}"), array($saldo_start . " " . $kours->getKoursCaption($saldo_cash_id) . $saldo_start_cap, $saldo_data_start), $form);
 
         $saldo_data_end = date("Y-m-d");
         if ($saldo_end < 0) {
@@ -833,9 +831,7 @@ class ProfileClass extends ClientClass
             $saldo_end_cap = " (<span class=\"span-green\">{prepayment}</span>)";
         }
 
-        $form = str_replace("{saldo_end_data}", $saldo_end . " " . $kours->getKoursCaption($saldo_cash_id) . $saldo_end_cap, $form);
-        $form = str_replace("{saldo_end_date}", $saldo_data_end, $form);
-        $form = str_replace("{profile_check_range}", $list, $form);
+        $form = str_replace(array("{saldo_end_data}", "{saldo_end_date}", "{profile_check_range}"), array($saldo_end . " " . $kours->getKoursCaption($saldo_cash_id) . $saldo_end_cap, $saldo_data_end, $list), $form);
         $form = $this->replaceLang($form);
 
         return $form;
@@ -914,16 +910,19 @@ class ProfileClass extends ClientClass
             $csv .= "\n";
         }
         if (!file_exists(RDD . "/uploads/$user_id")) {
-            mkdir(RDD . "/uploads/$user_id", 0777, true);
+            if (!mkdir($concurrentDirectory = RDD . "/uploads/$user_id", 0777, true) && !is_dir($concurrentDirectory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
         }
         elseif (file_exists(RDD . "/uploads/$user_id/")) {
             foreach (glob(RDD . "/uploads/$user_id/*") as $file) {
                 unlink($file);
             }
         }
-        $csv_handler = fopen(RDD . "/uploads/$filedir", 'w') or die("Can't create file");
+        $csv_handler = fopen(RDD . "/uploads/$filedir", 'wb') or die("Can't create file");
         fwrite($csv_handler, $csv);
         fclose($csv_handler);
+
         return array($filename, $filedir);
     }
 
@@ -1050,7 +1049,9 @@ class ProfileClass extends ClientClass
                 }
 
                 if (!file_exists(RDD . "/uploads/$user_id")) {
-                    mkdir(RDD . "/uploads/$user_id", 0777, true);
+                    if (!mkdir($concurrentDirectory = RDD . "/uploads/$user_id", 0777, true) && !is_dir($concurrentDirectory)) {
+                        throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+                    }
                 }
                 elseif (file_exists(RDD . "/uploads/$user_id/")) {
                     foreach (glob(RDD . "/uploads/$user_id/*") as $file) {

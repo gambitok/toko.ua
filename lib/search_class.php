@@ -3,9 +3,6 @@
 class SearchClass extends CatalogueClass
 {
 
-    use Helper;
-    use Variables;
-
     /*
      * SEARCH FORM
      * */
@@ -749,6 +746,7 @@ class SearchClass extends CatalogueClass
             }
 
         }
+
         return array($list, $list_brand, $filters);
     }
 
@@ -800,8 +798,8 @@ class SearchClass extends CatalogueClass
             if ($ns > 0) {
                 // filters with default search
                 for ($i = 1; $i <= $ns; $i++) {
-                    $art_id             = $db->result($rs, $i - 1, "ART_ID");
-                    $brand_id           = $db->result($rs, $i - 1, "BRAND_ID");
+                    $art_id             = (int)$db->result($rs, $i - 1, "ART_ID");
+                    $brand_id           = (int)$db->result($rs, $i - 1, "BRAND_ID");
                     $brand_name         = $db->result($rs, $i - 1, "BRAND_NAME");
                     $article_nr_displ   = $db->result($rs, $i - 1, "ARTICLE_NR_DISPL");
                     $stock              = (int)$db->result($rs, $i - 1, "AMOUNT");
@@ -862,13 +860,13 @@ class SearchClass extends CatalogueClass
 
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
-                    $art_id             = $db->result($r, $i - 1, "ART_ID");
-                    $brand_id           = $db->result($r, $i - 1, "BRAND_ID");
+                    $art_id             = (int)$db->result($r, $i - 1, "ART_ID");
+                    $brand_id           = (int)$db->result($r, $i - 1, "BRAND_ID");
                     $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
                     $suppl_id           = (int)$db->result($r, $i - 1, "suppl_id");
                     $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
                     $article_name       = $db->result($r, $i - 1, "NAME");
-                    $return_days        = $db->result($r, $i - 1, "return_delay");
+                    $return_days        = (int)$db->result($r, $i - 1, "return_delay");
                     $stock              = (int)$db->result($r, $i - 1, "AMOUNT");
                     $storage_id         = (int)$db->result($r, $i - 1, "storage_id");
                     $format_name        = $this->getFormatAticle($article_nr_displ);
@@ -1090,7 +1088,7 @@ class SearchClass extends CatalogueClass
         $format_brand_link  = $this->getBrandLink($brand_id);
         $return_days_alt    = $return_days_img = "";
 
-        if ($suppl_id > 0) {
+        if ((int)$suppl_id > 0) {
             if ($return_days === 0) {
                 $return_days_alt = "{no_exchange}";
                 $return_days_img = $this->images . "/exchange/exchange2.png";
@@ -1125,35 +1123,37 @@ class SearchClass extends CatalogueClass
             $action_count = "oninput=\"changeActionCount('$id', '$action_price', '$action_amount');\"";
         }
 
-        $product_link = ((int)$stock === 0 && (float)$price === 0.0) ? "" : $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/";
+        $product_link = (empty($stock) && empty($price)) ? "" : $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/";
 
         $product_text = ($article_name === "") ? "{details_name_cap}" : $article_name;
         $format_product_text = ($article_name === "") ? "{details_name_cap}" : $this->formatArticleName($article_name);
 
         $product_stock = (int)$stock;
-        if (((int)$suppl_id === 0) && (int)$stock > 10) {
+        if (empty($suppl_id) && (int)$stock > 10) {
             $product_stock = ">10";
         }
 
         $flagData = $showform->getCountryFlag($brand_id);
         $flagClass = (!$flagData) ? "none" : "";
-        $instock = ((int)$suppl_id === 0 && (int)$stock > 0) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "";
+        $instock = (empty($suppl_id) && !empty($stock)) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "";
+
         $delivery_info = str_replace('"', "", $delivery_info);
         $delivery_short_info = str_replace("<br>", " ", $delivery_short_info);
-        if ((int)$delivery_days === 0 && (int)$suppl_id === 0) {
+        if (empty($delivery_days) && empty($suppl_id)) {
             $delivery_short_info = "<span class='delivery-green'>{send_done}</span>";
         }
-        $tpoint_fname = ((int)$suppl_id === 0) ? $client->getArticleStorageTPoint($storage_id) : "";
+
+        $tpoint_fname = (empty($suppl_id)) ? $client->getArticleStorageTPoint($storage_id) : "";
         $product_main_photo = ($showform->getArticlePhoto($art_id) === "") ? $this->noPhoto : $showform->getArticlePhoto($art_id);
         $analog_display = (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && ($brand_id === $brand_nr_search)) ? "none" : "";
 
         $basket_amount = $shop->getBasketArticleAmount($art_id, $storage_id);
         $basket_amount_cap = ($basket_amount > 0) ? "{site_basket}: $basket_amount {amount_abbr}." : "";
-        $pvisibility = ((int)$stock > 0 && (float)$price > 0) ? "" : "dvisibility0";
-        $pvisibility_price = (((int)$stock) === 0 && ((float)$price === 0.0)) ? "dvisibility0" : "";
-
-        $pvisibility_info = (((int)$stock) === 0 && ((float)$price === 0.0)) ? "dvisibility0" : "";
         $return_display = ($return_days === 14 || $return_days_img === "") ? "none" : "";
+
+        $pvisibility = (!empty($stock) && !empty($price)) ? "" : "dvisibility0";
+        $pvisibility_price = (empty($stock) && empty($price)) ? "dvisibility0" : "";
+        $pvisibility_info = (empty($stock) && empty($price)) ? "dvisibility0" : "";
 
         $form = $this->getHtmlForm("product_card");
         $form = str_replace("{product_i}", $id, $form);

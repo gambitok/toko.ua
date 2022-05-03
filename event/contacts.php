@@ -11,10 +11,10 @@ if (count(findLinks()) > 1) {
 }
 
 if ($red_status) {
-    if ($red_type == 404) {
+    if ($red_type === 404) {
         header("HTTP/1.0 404 Not Found");
     }
-    if ($red_type == 301) {
+    if ($red_type === 301) {
         header("Location: $red_link", TRUE, 301);
     }
 }

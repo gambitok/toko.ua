@@ -38,14 +38,14 @@ else {
     /*
      * Catalog
      * */
-    if ($router == "") {
+    if ($router === "") {
         $h1 = "<div style='padding: 15px;'><h1>{site_catalog}</h1></div>";
-        if ($city_link != "") {
+        if ($city_link !== "") {
 
             // redirect /?city=kiev/
             $check_link = $_SERVER['REQUEST_URI'];
             $s = substr($check_link, -1);
-            if ($s == "/") {
+            if ($s === "/") {
                 $check_link = ltrim($check_link, "/");
                 $check_link = rtrim($check_link, "/");
                 $red_status = 1;
@@ -76,7 +76,7 @@ else {
     else {
 
         // GROUP_ID + CITY
-        if ($city_link != "") {
+        if ($city_link !== "") {
             $red_status = 1;
             $red_type   = 404;
             $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
@@ -89,7 +89,7 @@ else {
         if (!empty($group_id)) {
             $group_id       = $catalog_exist->getUrlNumber($group_id);
             $filters        = $linka[2];
-            $filters        = ($filters == "auto") ? [] : $filters;
+            $filters        = ($filters === "auto") ? [] : $filters;
             $mfa_link       = $router_3;
             $model_link     = $router_4;
             $model_id_link  = $router_5;
@@ -98,38 +98,36 @@ else {
             $model_id       = 0;
             $params         = [];
 
-            if ($mfa_link != "") {
+            if ($mfa_link !== "") {
                 $mfa_id = $automan->getMfaLink($mfa_link);
 
-                if ($mfa_id == 0) {
+                if ($mfa_id === 0) {
                     $red_status = 1;
                     $red_type   = 404;
                     $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
                 }
 
-                if ($model_link != "") {
-                    if ($model_link == "rav4") {
+                if ($model_link !== "") {
+                    if ($model_link === "rav4") {
                         $red_status = 1;
                         $red_type   = 301;
                         $red_link   = $catalog_exist->getSiteLink() . $catalog_exist->catalog_link . "/$router/" . $linka[2] . "/$router_3/rav-4/";
                     } else {
                         $model = $automan->getModLink($model_link);
 
-                        if ($model == "") {
+                        if ($model === "") {
                             $red_status = 1;
                             $red_type   = 404;
                             $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
                         }
 
-                        if ($model != "") {
+                        if ($model !== "") {
                             $model_id = $automan->getModIdLink($model_id_link);
 
-                            if ($model_id_link != "") {
-                                if (!$model_id) {
-                                    $red_status = 1;
-                                    $red_type   = 404;
-                                    $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
-                                }
+                            if (($model_id_link !== "") && !$model_id) {
+                                $red_status = 1;
+                                $red_type   = 404;
+                                $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
                             }
                         }
                     }
@@ -151,9 +149,9 @@ else {
                     $group_link = $catalog_exist->getGroupRowLink($group_id);
                     $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$group_link/" . $check_link . "/";
 
-                    if ($mfa_link != "") {
+                    if ($mfa_link !== "") {
                         $red_link .= "$mfa_link/";
-                        if ($model_link != "") {
+                        if ($model_link !== "") {
                             $red_link .= "$model_link/";
                         }
                     }
@@ -177,12 +175,12 @@ else {
                 ", $content);
             }
 
-            ($page != NULL) ?: $page = 1;
+            (!empty($page)) ?: $page = 1;
 
             $status_auto = $catalog_exist->getGroupExistStatusAuto($group_id);
 
             $status_auto_type = $catalogue->getUrlNumber($_COOKIE["status_auto_type"]);
-            ($status_auto_type != NULL) ?: $status_auto_type = 0;
+            (!empty($status_auto_type)) ?: $status_auto_type = 0;
 
             $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $src_link, $sort);
 
@@ -191,7 +189,7 @@ else {
                 $path_to    = $catalog_exist->getSiteLink() . ltrim(findUrl(), "/") . "?page=$max_page";
                 $red_status = 1;
                 $red_type   = 301;
-                $red_link   = "$path_to";
+                $red_link   = $path_to;
             }
 
             $content = str_replace("{main_window}", $catalog_form["form"] . $showform->getHistoryArts(), $content);
@@ -223,7 +221,7 @@ else {
             $content = str_replace("{site_script_breadcrumbs}", $catalogData["script"], $content);
         }
 
-        if ($router_2 == "clutch%20" || $router_2 == "clutch ") {
+        if ($router_2 === "clutch%20" || $router_2 === "clutch ") {
             $red_status = 1;
             $red_type   = 301;
             $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/stceplenie_i_transmissiia/clutch/";
@@ -241,10 +239,10 @@ else {
 }
 
 if ($red_status) {
-    if ($red_type == 404) {
+    if ($red_type === 404) {
         header("HTTP/1.0 404 Not Found");
     }
-    if ($red_type == 301) {
+    if ($red_type === 301) {
         header("Location: $red_link", TRUE, 301);
     }
 }

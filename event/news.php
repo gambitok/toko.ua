@@ -11,18 +11,17 @@ $dbm->query("UPDATE `A_CLIENTS_USERS` SET `update_news` = '$today' WHERE `id` = 
 $link = $catalogue->getUrlString(findLinks()[1]);
 $title = "";
 
-if (findLinks()[3] == "grafС–k-roboti-na-novorС–chnС–-svyata" || findLinks()[3] == "graf%D0%A1%E2%80%93k-roboti-na-novor%D0%A1%E2%80%93chn%D0%A1%E2%80%93-svyata") {
+if (findLinks()[3] === "grafС–k-roboti-na-novorС–chnС–-svyata" || findLinks()[3] === "graf%D0%A1%E2%80%93k-roboti-na-novor%D0%A1%E2%80%93chn%D0%A1%E2%80%93-svyata") {
     $link = $catalogue->getSiteLink() . $catalogue->news_link . "/state/" . findLinks()[2] . "/grafik-roboti-na-novorichni-svyata/";
     header("Location: $link", TRUE, 301);
 }
 
-if ($link == "") {
+if ($link === "") {
     $content = str_replace("{main_window}", $menu->showNews() . $showform->getHistoryArts(), $content);
 
     $title = $catalogue->replaceLang("{site_news}");
     $title = str_replace("{h1_text}", "{news_cap}", $title);
-}
-elseif ($link == "state") {
+} elseif ($link === "state") {
     $state_id = findLinks()[2];
 
 	$content = str_replace("{main_window}", $menu->showNewsState($state_id) . $showform->getHistoryArts(), $content);
@@ -30,8 +29,7 @@ elseif ($link == "state") {
 
     $title = $catalogue->replaceLang("{site_news}");
     $title = str_replace("{h1_text}", $menu->getNewsData($state_id)["title"], $title);
-}
-else {
+} else {
     $red_status = 1;
     $red_type   = 404;
     $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);

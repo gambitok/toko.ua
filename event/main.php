@@ -2,7 +2,7 @@
 
 // REDIRECT OLD TOKO LINKS (dep=23)
 $w = $catalogue->getUrlString($_GET["w"]);
-if ($w == "modelfind") {
+if ($w === "modelfind") {
     $art = $catalogue->getUrlString($_GET["art"]);
     header("Location: /search/$art/", TRUE, 301);
 }

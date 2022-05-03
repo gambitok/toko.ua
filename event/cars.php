@@ -12,12 +12,12 @@ $title  = $formData["title"];
 $descr  = $formData["descr"];
 $meta   = $formData["meta_tag"];
 
-if ($formData["status"] == 1) {
+if ($formData["status"] === 1) {
     $content = str_replace("{main_window}", $form . $showform->getHistoryArts(), $content);
-    if ($title != "") {
+    if ($title !== "") {
         $content = str_replace("{site_title}", $title, $content);
     }
-    if ($descr != "") {
+    if ($descr !== "") {
         $content = str_replace("{site_description}", $descr, $content);
     }
     $content = str_replace("{meta_social_tag}", $meta, $content);

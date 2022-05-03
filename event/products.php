@@ -2,9 +2,9 @@
 
 $linka = findLinks();
 
-$art_id = intval(substr($linka[1], strrpos($linka[1], "-") + 1));
+$art_id = (int)substr($linka[1], strrpos($linka[1], "-") + 1);
 
-if ($catalogue->checkArticleExist($art_id) && $art_id > 0) {
+if ($art_id > 0 && $catalogue->checkArticleExist($art_id)) {
     $articleData = $showform->getArticleForm($art_id);
     $breadcrumbsData = $catalogue->getBreadCrumbForm($articleData["breadcrumbs"]);
 

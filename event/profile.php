@@ -10,7 +10,7 @@ if ($client->checkUnRegClient()) {
     $content = str_replace("{profile_file_list}", $profile->showPriceList(), $content);
 
     $panel = $catalogue->getUrlString(findLinks()[1]);
-    $panel = ($panel == "") ? "account" : $panel;
+    $panel = ($panel === "") ? "account" : $panel;
 
     $content = str_replace("{profile-$panel}", "in active", $content);
 

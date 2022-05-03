@@ -1,7 +1,7 @@
 <?php
 error_reporting(0);
 @ini_set('display_errors', false);
-define('RD', dirname (__FILE__));
+define('RD', __DIR__);
 date_default_timezone_set("Europe/Kiev");
 require_once (RD . "/lib/DbSingleton.php");
 require_once (RD . "/lib/catalogue_class.php");

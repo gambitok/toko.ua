@@ -2,7 +2,7 @@
 
 $user_id = $catalogue->getUser();
 
-if ($user_id == 0) {
+if (empty($user_id)) {
     header("Location: /signin", TRUE, 301);
 } else {
     $today = date("Y-m-d");

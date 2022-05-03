@@ -13,9 +13,13 @@ trait Helper
     /*
      * get cookie `session_id`
      * */
-    public function getSessionID()
+    public function getSessionID(): string
     {
-        return $this->getUrlString($_COOKIE["session_id"]);
+        $cookie_id = $this->getUrlString($_COOKIE["session_id"]);
+        if (empty($cookie_id)) {
+            $cookie_id = 0;
+        }
+        return $cookie_id;
     }
 
     /*
@@ -36,7 +40,7 @@ trait Helper
     /*
      * validate string URL
      * */
-    public function getUrlString($str)
+    public function getUrlString($str): string
     {
         $str = str_replace(array("'", "`", ",", '"', "%22", "%27", "%60", "&nbsp;", "&rsquo;", "%20"), array("", "", "", "", "", "", "", "", "", " "), $str);
         return $str;
@@ -45,7 +49,7 @@ trait Helper
     /*
      * validate string
      * */
-    public function getNameString($str)
+    public function getNameString($str): string
     {
         $str = str_replace(array("'", "`", '"', "%22", "%27", "%60", "&rsquo;", "%20"), array("", "", "", "", "", "", "", " "), $str);
         return $str;
@@ -54,7 +58,7 @@ trait Helper
     /*
      * validate number URL
      * */
-    public function getUrlNumber($number)
+    public function getUrlNumber($number): int
     {
         if (!is_numeric($number)) {
             $number = 0;
@@ -62,33 +66,31 @@ trait Helper
         return $number;
     }
 
-    public function getCurrentExrate()
+    public function getCurrentExrate(): int
     {
-        $exchange_rate = new ExRateClass();
-        return $exchange_rate->getCurrentKours();
+        return (new ExRateClass())->getCurrentKours();
     }
 
-    public function getSymbolExrate($cur)
+    public function getSymbolExrate($cur): string
     {
-        $exchange_rate = new ExRateClass();
-        return $exchange_rate->getKoursSymbol($cur);
+        return (new ExRateClass())->getKoursSymbol($cur);
     }
 
-    public function getClient()
+    public function getClient(): int
     {
         $client = new ClientClass();
         $clientData = $client->getClientData();
-        return $clientData[0];
+        return (int)$clientData[0];
     }
 
-    public function getUser()
+    public function getUser(): int
     {
         $client = new ClientClass();
         $clientData = $client->getClientData();
-        return $clientData[1];
+        return (int)$clientData[1];
     }
 
-    public function getTpointID()
+    public function getTpointID(): int
     {
         return (new ClientClass())->getTpoint();
     }
@@ -98,24 +100,24 @@ trait Helper
         return (new LangClass())->replaceLangData($cont);
     }
 
-    public function getSiteLink()
+    public function getSiteLink(): string
     {
         $language = new LangClass();
         return "https://toko.ua/" . $language->getLangIDPrefix($this->getLanguage());
     }
 
-    public function getLanguage()
+    public function getLanguage(): int
     {
         return (new LangClass())->getLanguageData();
     }
 
-    public function getLangPostfix($lang_id)
+    public function getLangPostfix($lang_id): string
     {
         $postfix = "RU";
-        if ($lang_id == 2) {
+        if ($lang_id === 2) {
             $postfix = "UA";
         }
-        if ($lang_id == 3) {
+        if ($lang_id === 3) {
             $postfix = "EN";
         }
         return $postfix;
@@ -135,7 +137,7 @@ trait Helper
         return $db->result($r, 0, "mcaption");
     }
 
-    public function getManualOptions($key)
+    public function getManualOptions($key): string
     {
         $db = DbSingleton::getDbm();
         $lang_id = $this->getLanguage();
@@ -143,10 +145,11 @@ trait Helper
         $r = $db->query("SELECT `id` FROM `manual` WHERE `key` = '$key' ORDER BY `mid` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $id = $db->result($r, $i - 1, "id");
-            $rs = $db->query("SELECT `caption` FROM `A_CUSTOMERS_CATEGORIES` WHERE `manual_id` = $id AND `lang_id` = $lang_id LIMIT 1;");
-            $caption = $db->result($rs, 0, "caption");
-            if ($caption === "") {
+            $id         = $db->result($r, $i - 1, "id");
+            $rs         = $db->query("SELECT `caption` FROM `A_CUSTOMERS_CATEGORIES` WHERE `manual_id` = $id AND `lang_id` = $lang_id LIMIT 1;");
+            $caption    = $db->result($rs, 0, "caption");
+
+            if (empty($caption)) {
                 $caption = $db->result($r, $i - 1, "mcaption");
             }
             $options .= "
@@ -206,7 +209,7 @@ trait Helper
      * set random password
      * set 4 numbers
      * */
-    public function randomPassword()
+    public function randomPassword(): string
     {
         // $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $kol = 4;
@@ -241,7 +244,7 @@ trait Helper
         if (in_array($mod, $mas2)) {
             $caption = $caption_2;
         }
-        if (in_array($mod, $mas3) || in_array($i, $mas4)) {
+        if (in_array($mod, $mas3) || in_array($i, $mas4, true)) {
             $caption = $caption_3;
         }
         $caption = $this->replaceLang($caption);
@@ -268,7 +271,7 @@ trait Helper
         if (in_array($mod, $mas2)) {
             $caption = $caption_2;
         }
-        if (in_array($mod, $mas3) || in_array($i, $mas4)) {
+        if (in_array($mod, $mas3) || in_array($i, $mas4, true)) {
             $caption = $caption_3;
         }
         $caption = $this->replaceLang($caption);
@@ -278,11 +281,11 @@ trait Helper
     /*
      * Check ART_ID in PHOTO
      * */
-    public function checkPhoto($ref)
+    public function checkPhoto($ref): bool
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT COUNT(`ART_ID`) as col FROM `T2_PHOTOS` WHERE `ART_ID` = $ref AND `ACTIVE` = 1;");
-        $n = intval($db->result($r, 0, "col"));
+        $n = (int)$db->result($r, 0, "col");
         return ($n > 0);
     }
 
@@ -291,9 +294,11 @@ trait Helper
      * */
     public function getStaticH1($uri)
     {
-        $static_h1 = "";
-        $static_data = include $_SERVER["DOCUMENT_ROOT"] . '/seoshield-client/data/static_meta.cache.php';
-        if (isset($static_data['//' . $_SERVER["HTTP_HOST"] . $uri])) {
+        $static_h1      = "";
+        $static_data    = include $_SERVER["DOCUMENT_ROOT"] . '/seoshield-client/data/static_meta.cache.php';
+        $static         = isset($static_data['//' . $_SERVER["HTTP_HOST"] . $uri]);
+
+        if ($static) {
             $static_h1 = $static_data['//' . $_SERVER["HTTP_HOST"] . $uri][2];
         }
         $static_h1 = iconv("UTF-8", "windows-1251", $static_h1);
@@ -303,21 +308,17 @@ trait Helper
     /*
      * check art_id in typ_id
      * */
-    public function checkT2Link($typ_id, $art_id)
+    public function checkT2Link($typ_id, $art_id): bool
     {
         $art_id = $this->getUrlNumber($art_id);
         $typ_id = $this->getUrlNumber($typ_id);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id AND `TYP_ID` = $typ_id LIMIT 1;");
         $n = $db->num_rows($r);
-        if ($n == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return $n !== 0;
     }
 
-    public function getCatalogOldRedirectLink($linka)
+    public function getCatalogOldRedirectLink($linka): array
     {
         $automan = new AutoClass();
         $catalog_exist = new CatalogExistClass();
@@ -328,13 +329,13 @@ trait Helper
 
         $group_id = $catalog_exist->getGroupExistId($linka[1]);
 
-        if ($group_id > 0 && $linka[2] != "auto" && strpos($linka[2], "brandy=") === false && $linka[2] != "") {
+        if (!empty($linka[2]) && $group_id > 0 && $linka[2] !== "auto" && strpos($linka[2], "brandy=") === false) {
             // 1 - mfa link
             $mfa_id = $automan->getMfaLink($linka[2]);
             if ($mfa_id > 0) {
                 $status = 1;
                 $redirect_link .= "auto/" . $linka[2] . "/";
-                if ($linka[3] != "") {
+                if (!empty($linka[3])) {
                     $redirect_link .= $linka[3] . "/";
                 }
             }
@@ -346,7 +347,7 @@ trait Helper
                 if ($mfa_id > 0) {
                     $status = 3;
                     $redirect_link .= $linka[3] . "/";
-                    if ($linka[4] != "") {
+                    if (!empty($linka[4])) {
                         $redirect_link .= $linka[4] . "/";
                     }
                 }
@@ -361,7 +362,7 @@ trait Helper
         );
     }
 
-    public function getCatalogRedirectLink($link, $mfa_link = "", $model_link = "")
+    public function getCatalogRedirectLink($link, $mfa_link = "", $model_link = ""): array
     {
         $automan = new AutoClass();
         $db = DbSingleton::getTokoDb();
@@ -373,21 +374,20 @@ trait Helper
             $status = 1;
             $redirect_link = $db->result($r, 0, "LINK_TO");
             $redirect_link = str_replace("https://toko.ua/", $this->getSiteLink(), $redirect_link);
-            if (substr($redirect_link, -1) != "/") {
+            if (substr($redirect_link, -1) !== "/") {
                 $redirect_link .= "/";
             }
         }
 
         $mfa_id = $automan->getMfaLink($mfa_link);
-        if ($mfa_id > 0) {
-            if ($mfa_link != "") {
-                if (!$this->checkCatalogRedirectFilters($redirect_link)) {
-                    $redirect_link .= "auto/";
-                }
-                $redirect_link .= "$mfa_link/";
-                if ($model_link != "") {
-                    $redirect_link .= "$model_link";
-                }
+
+        if (($mfa_id > 0) && !empty($mfa_link)) {
+            if (!$this->checkCatalogRedirectFilters($redirect_link)) {
+                $redirect_link .= "auto/";
+            }
+            $redirect_link .= "$mfa_link/";
+            if (!empty($model_link)) {
+                $redirect_link .= $model_link;
             }
         }
 
@@ -402,7 +402,7 @@ trait Helper
     /*
      * if status = 1 - link have filters
      * */
-    public function checkCatalogRedirectFilters($link, $path = "/catalog/")
+    public function checkCatalogRedirectFilters($link, $path = "/catalog/"): int
     {
         $str_len = strlen($path);
         $str_pos = strpos($link, $path);
@@ -418,7 +418,7 @@ trait Helper
         return $status;
     }
 
-    public function checkArticleExist($art_id)
+    public function checkArticleExist($art_id): bool
     {
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
@@ -427,21 +427,22 @@ trait Helper
         return ($n > 0);
     }
 
-    public function getBreadCrumbForm($breads)
+    public function getBreadCrumbForm($breads): array
     {
         $form = "";
         $script = "";
         if (!empty($breads)) {
-            $key = 0;
-            $list = "";
-            $script_list = "";
-            $icon = "<span> > </span>";
+            $key            = 0;
+            $list           = "";
+            $script_list    = "";
+            $icon           = "<span> > </span>";
+
             foreach ($breads as $bread) {
                 $key++;
                 $name = $bread["name"];
                 $link = $bread["link"];
 
-                if ($key != count($breads)) {
+                if ($key !== count($breads)) {
                     $list .= "
                     <li class=\"cat-products-bread__item\" typeof=\"v:Breadcrumb\">
                         <a href=\"$link\" rel=\"v:url\" property=\"v:title\">$name</a>$icon
@@ -469,7 +470,7 @@ trait Helper
         return compact("form", "script");
     }
 
-    public function checkCityLink($city_link)
+    public function checkCityLink($city_link): bool
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ID` FROM `SEO_LISTING_CITY` WHERE `LINK_NAME` = '$city_link' LIMIT 1;");

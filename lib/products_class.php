@@ -3,9 +3,6 @@
 class ProductsClass extends CatalogueClass
 {
 
-    use Helper;
-    use Variables;
-
     public function getCarsSelectUser($mfa_link = "", $mod_link = "", $group_id = 0)
     {
         if ($this->getCookieAuto() > 0) {

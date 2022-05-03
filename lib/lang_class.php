@@ -29,7 +29,7 @@ class LangClass
             $_COOKIE["lang_id"] = $lang_id;
         }
 
-        return (int)$lang_id;
+        return $lang_id;
     }
 
     /*
@@ -47,6 +47,7 @@ class LangClass
         if ($lang_id === 3) {
             $lang_id = 4;
         }
+
         return $lang_id;
     }
 
@@ -57,6 +58,7 @@ class LangClass
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `abr` FROM `new_lang` WHERE `id` = $lang_id LIMIT 1;");
+
         return $db->result($r, 0, "abr");
     }
 
@@ -87,6 +89,7 @@ class LangClass
                 <a href=\"$url\">$lang_abr</a>
             </div>";
         }
+
         return $list;
     }
 
@@ -100,6 +103,7 @@ class LangClass
         if ($lang_id === 3) {
             $pre = "en/";
         }
+
         return $pre;
     }
 
@@ -112,6 +116,7 @@ class LangClass
         $lang_id = $this->getUrlNumber($lang_id);
         $_SESSION["lang_id"] = $lang_id;
         setcookie("lang_id", $lang_id, time() + (86400 * 30), "/");
+
         return true;
     }
 
@@ -141,6 +146,7 @@ class LangClass
             $result = mysqli_fetch_all($r, MYSQLI_ASSOC);
             self::$langNames = array_column($result, 'caption', 'variable');
         }
+
         return self::$langNames[$code];
     }
 
@@ -157,6 +163,7 @@ class LangClass
         foreach (self::$langVariables as $langVariable) {
             $cont = str_replace("{" . $langVariable . "}", $this->getLanguageName($langVariable), $cont);
         }
+
         return $cont;
     }
 
@@ -169,6 +176,7 @@ class LangClass
         $title      = $this->getNameString($title);
         $message    = $this->replaceLangData($message);
         $title      = $this->replaceLangData($title);
+
         return array($message, $title);
     }
 
@@ -179,6 +187,7 @@ class LangClass
     {
         $text = $this->getNameString($text);
         $text = $this->replaceLangData($text);
+
         return $text;
     }
 

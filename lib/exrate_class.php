@@ -58,7 +58,7 @@ class ExRateClass
      * get exchange rate price
      * from price & currency_id
      * */
-    public function getKoursPrice($price, $cur): string
+    public function getKoursPrice($price, $cur): float
     {
         $cur = (int)$cur;
         if ($cur === 2) {
@@ -70,7 +70,8 @@ class ExRateClass
         } elseif (is_float($price)) {
             $price = number_format($price, 2, '.', '');
         }
-        return $price;
+
+        return (float)$price;
     }
 
     /*
