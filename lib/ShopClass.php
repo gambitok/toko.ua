@@ -764,16 +764,7 @@ class ShopClass extends CatalogueClass
         }
 
         $form = $this->getHtmlForm("orders/form");
-        $form = str_replace("{order_user_id}", $user_id, $form);
-        $form = str_replace("{order_delivery}", $this->getOrderDelivery(), $form);
-        $form = str_replace("{order_payment}", $this->getOrderPayment(), $form);
-        $form = str_replace("{user_city_main_list}", $this->getCitiesMainSelect($user_city), $form);
-        $form = str_replace("{user_name}", $user_name, $form);
-        $form = str_replace("{user_phone}", $user_phone, $form);
-        $form = str_replace("{user_email}", $user_email, $form);
-        $form = str_replace("{basket_range}", $this->getBasketOrder(), $form);
-        $form = str_replace("{order_user_status}", $status, $form);
-        $form = str_replace("{user_name_disable}", ($user_id > 0) ? "disabled" : "", $form);
+        $form = str_replace(array("{order_user_id}", "{order_delivery}", "{order_payment}", "{user_city_main_list}", "{user_name}", "{user_phone}", "{user_email}", "{basket_range}", "{order_user_status}", "{user_name_disable}"), array($user_id, $this->getOrderDelivery(), $this->getOrderPayment(), $this->getCitiesMainSelect($user_city), $user_name, $user_phone, $user_email, $this->getBasketOrder(), $status, ($user_id > 0) ? "disabled" : ""), $form);
         $form = $this->replaceLang($form);
 
         return $form;
@@ -1131,7 +1122,7 @@ class ShopClass extends CatalogueClass
         }
         $tpoint_id      = $this->getTpointID();
         $cookie         = $this->getSessionID();
-        $cash_id        = (int)$client->getClientCurrency($client_id);
+        $cash_id        = $client->getClientCurrency($client_id);
         $user_status    = 0;
 
         $street             = $delivery_type["street"];
@@ -1500,17 +1491,12 @@ class ShopClass extends CatalogueClass
 
         $form = $this->getHtmlForm("orders/basket");
         if ($delivery_id === 0) {
-            $form = str_replace("{basket_order_delivery_price}", "", $form);
-            $form = str_replace("{basket_order_price}", "", $form);
-            $form = str_replace("{basket_button_status}", "none", $form);
+            $form = str_replace(array("{basket_order_delivery_price}", "{basket_order_price}", "{basket_button_status}"), array("", "", "none"), $form);
         }
 
-        $form = str_replace("{basket_content}", $basket_range, $form);
-        $form = str_replace("{basket_full_price}", $basket_total_cap, $form);
-        $form = str_replace("{basket_order_delivery_price}", $delivery_total_text, $form);
-        $form = str_replace("{basket_order_price}", $this->getOrderTotal($total), $form);
-        $form = str_replace("{basket_button_status}", "", $form);
-        $form = str_replace("{basket_client_bonus}", ($bonus_summ > 0) ? $this->showClientBonusOrder($bonus_status, $bonus_total) : "", $form);
+        $basket_client_bonus = ($bonus_summ > 0) ? $this->showClientBonusOrder($bonus_status, $bonus_total) : "";
+
+        $form = str_replace(array("{basket_content}", "{basket_full_price}", "{basket_order_delivery_price}", "{basket_order_price}", "{basket_button_status}", "{basket_client_bonus}"), array($basket_range, $basket_total_cap, $delivery_total_text, $this->getOrderTotal($total), "", $basket_client_bonus), $form);
         $form = $this->replaceLang($form);
 
         return $form;

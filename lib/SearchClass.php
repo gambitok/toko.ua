@@ -177,15 +177,15 @@ class SearchClass extends CatalogueClass
 
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
-                    $art_id             = $db->result($r, $i - 1, "ART_ID");
-                    $brand_id           = $db->result($r, $i - 1, "BRAND_ID");
+                    $art_id             = (int)$db->result($r, $i - 1, "ART_ID");
+                    $brand_id           = (int)$db->result($r, $i - 1, "BRAND_ID");
                     $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
                     $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
                     $article_name       = $db->result($r, $i - 1, "NAME");
                     $suppl_id           = (int)$db->result($r, $i - 1, "suppl_id");
                     $stock              = (int)$db->result($r, $i - 1, "AMOUNT");
                     $storage_id         = (int)$db->result($r, $i - 1, "storage_id");
-                    $return_days        = $db->result($r, $i - 1, "return_delay");
+                    $return_days        = (int)$db->result($r, $i - 1, "return_delay");
                     $format_name        = $this->getFormatAticle($article_nr_displ);
 
                     $price = $this->getArticlePrice($art_id);
@@ -199,13 +199,13 @@ class SearchClass extends CatalogueClass
 
                     $deliveryData           = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
                     $delivery_info          = $deliveryData["info"];
-                    $delivery_days          = $deliveryData["days"];
+                    $delivery_days          = (int)$deliveryData["days"];
                     $delivery_short_info    = $deliveryData["short"];
 
                     if ($suppl_id > 0) {
                         $deliveryData           = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
                         $delivery_info          = $deliveryData["info"];
-                        $delivery_days          = $deliveryData["days"];
+                        $delivery_days          = (int)$deliveryData["days"];
                         $delivery_short_info    = $deliveryData["short"];
                     }
 
@@ -469,14 +469,14 @@ class SearchClass extends CatalogueClass
         return $this->replaceLang($list);
     }
 
-    public function getUserStatusNulls($user_id)
+    public function getUserStatusNulls($user_id): int
     {
         $status = 0;
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `status_nulls` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $status = $db->result($r, 0, "status_nulls");
+            $status = (int)$db->result($r, 0, "status_nulls");
         }
 
         return $status;
@@ -498,7 +498,7 @@ class SearchClass extends CatalogueClass
             $i = 0;
             foreach ($mas_val as $key => $val) {
                 if ($i === 0) {
-                    $arr[$mas_key] = $val["suppl_id"];
+                    $arr[$mas_key] = (int)$val["suppl_id"];
                 }
                 $i++;
             }
@@ -517,14 +517,15 @@ class SearchClass extends CatalogueClass
         foreach ($mas2 as $mas_key => $mas_val) {
             $i = 0;
             foreach ($mas_val as $key => $val) {
-                if ($i === 0 && $val["suppl_id"] === 0 && $val["stock"] > 0 && count($mas_val) > 1) {
+                if ($i === 0 && (int)$val["suppl_id"] === 0 && (int)$val["stock"] > 0 && count($mas_val) > 1) {
                     $del_arts[] = $mas_key;
                 }
             }
         }
+
         foreach ($del_arts as $art_id) {
             foreach ($mas2[$art_id] as $key => $val) {
-                if ($val["suppl_id"] > 0) {
+                if ((int)$val["suppl_id"] > 0) {
                     unset($mas2[$art_id][$key]);
                 }
             }
@@ -656,7 +657,7 @@ class SearchClass extends CatalogueClass
                                 }
 
                                 if ($brand_name !== "") {
-                                    if (($stock > 0 && $price > 0) || $nulls === 1) {
+                                    if (($stock > 0 && $price > 0) || ($nulls === 1 && $price > 0)) {
                                         $brands[$art_id]["brand_name"]  = $brand_name;
                                         $brands[$art_id]["brand_id"]    = $brand_id;
 
@@ -710,7 +711,7 @@ class SearchClass extends CatalogueClass
                 }
 
                 // delete nulls
-                if ($nulls) {
+                if ($nulls === 1) {
                     list($mas, $mas_nulls) = $this->deleteEmptyNulls($mas);
                 }
 
@@ -1036,7 +1037,7 @@ class SearchClass extends CatalogueClass
                     }
                 }
 
-                if ($nulls) {
+                if ($nulls === 1) {
                     foreach ($mas_nulls as $mas_key => $mas_val) {
                         foreach ($mas_val as $val) {
                             $art_id     = $mas_key;

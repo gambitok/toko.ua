@@ -4,7 +4,7 @@ error_reporting(0);
 define('RD', __DIR__);
 date_default_timezone_set("Europe/Kiev");
 require_once (RD . "/lib/DbSingleton.php");
-require_once (RD . "/lib/catalogue_class.php");
+require_once (RD . "/lib/CatalogueClass.php");
 $db = DbSingleton::getDbm();
 $catalogue = new CatalogueClass();
 

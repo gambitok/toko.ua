@@ -58,24 +58,19 @@ class ProductsClass extends CatalogueClass
             $mfa_brand  = $automan->getMfaBrand($mfa_id);
             $list_model = $this->getCarsSearchContent("manuf", $mfa_id, $group_id)[0];
 
-            $form = str_replace("{cars_models}", $list_model, $form);
-            $form = str_replace("{selected_manuf}", $mfa_id, $form);
-            $form = str_replace("{cars_manufacturer}", $mfa_brand, $form);
+            $form = str_replace(array("{cars_models}", "{selected_manuf}", "{cars_manufacturer}"), array($list_model, $mfa_id, $mfa_brand), $form);
 
             if ($mod_link !== "") {
                 $model = $automan->getModLink($mod_link);
+                $cars_content = $this->getCarsSearchContent("model", $mfa_id . "_" . $model, $group_id)[0];
 
-                $form = str_replace("{cars_years}", $this->getCarsSearchContent("model", $mfa_id . "_" . $model, $group_id)[0], $form);
-                $form = str_replace("{selected_model}", $mfa_id . "_" . $model, $form);
-                $form = str_replace("{cars_model}", $model, $form);
-                $form = str_replace("{active_nav}", "years", $form);
+                $form = str_replace(array("{cars_years}", "{selected_model}", "{cars_model}", "{active_nav}"), array($cars_content, $mfa_id . "_" . $model, $model, "years"), $form);
             }
+
             $form = str_replace("{active_nav}", "model", $form);
         }
-        $form = str_replace("{cars_manufactures}", $this->getCarsSearchContent()[0], $form);
-        $form = str_replace("{selected_manuf}", 0, $form);
-        $form = str_replace("{selected_model}", 0, $form);
-        $form = str_replace("{active_nav}", "", $form);
+
+        $form = str_replace(array("{cars_manufactures}", "{selected_manuf}", "{selected_model}", "{active_nav}"), array($this->getCarsSearchContent()[0], 0, 0, ""), $form);
 
         return $this->replaceLang($form);
     }

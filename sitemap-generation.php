@@ -13,8 +13,8 @@ require_once (RDD . "/lib/DbSingleton.php");
 require_once (RDD . "/lib/mysql_class.php");
 require_once (RDD . "/lib/Traits/Helper.php");
 require_once (RDD . "/lib/Traits/Variables.php");
-require_once (RDD . "/lib/catalogue_class.php");
-require_once (RDD . "/lib/catalog_exist_class.php");
+require_once (RDD . "/lib/CatalogueClass.php");
+require_once (RDD . "/lib/CatalogExistClass.php");
 
 $link = "https://toko.ua/";
 $lang = "";

@@ -12,20 +12,20 @@ require_once (RDD . "/lib/DbSingleton.php");                  //database
 require_once (RDD . "/lib/access.php");                       //get access site
 require_once (RDD . "/lib/Traits/Helper.php");
 require_once (RDD . "/lib/Traits/Variables.php");
-require_once (RDD . "/lib/catalogue_class.php");              //catalogue search
-require_once (RDD . "/lib/search_class.php");                 //catalogue search
-require_once (RDD . "/lib/form_class.php");                   //show forms
-require_once (RDD . "/lib/products_class.php");               //products search
-require_once (RDD . "/lib/auto_class.php");                   //auto search
-require_once (RDD . "/lib/menu_class.php");                   //site`s menu
-require_once (RDD . "/lib/shop_class.php");                   //market operations
-require_once (RDD . "/lib/client_class.php");                 //user configuration
-require_once (RDD . "/lib/profile_class.php");                //user configuration (profile form)
-require_once (RDD . "/lib/lang_class.php");                   //multilingual
-require_once (RDD . "/lib/exrate_class.php");                 //exchange rate
+require_once (RDD . "/lib/CatalogueClass.php");              //catalogue search
+require_once (RDD . "/lib/SearchClass.php");                 //catalogue search
+require_once (RDD . "/lib/FormClass.php");                   //show forms
+require_once (RDD . "/lib/ProductsClass.php");               //products search
+require_once (RDD . "/lib/AutoClass.php");                   //auto search
+require_once (RDD . "/lib/MenuClass.php");                   //site`s menu
+require_once (RDD . "/lib/ShopClass.php");                   //market operations
+require_once (RDD . "/lib/ClientClass.php");                 //user configuration
+require_once (RDD . "/lib/ProfileClass.php");                //user configuration (profile form)
+require_once (RDD . "/lib/LangClass.php");                   //multilingual
+require_once (RDD . "/lib/ExRateClass.php");                 //exchange rate
 require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");   //ajax requests
 require_once (RDD . "/lib/class.phpmailer.php");
-require_once (RDD . "/lib/catalog_exist_class.php");
+require_once (RDD . "/lib/CatalogExistClass.php");
 require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 
 $db = DbSingleton::getTokoDb();

@@ -695,7 +695,7 @@ class FormClass extends CatalogueClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
-            $brand_id           = $db->result($r, $i - 1, "BRAND_ID");
+            $brand_id           = (int)$db->result($r, $i - 1, "BRAND_ID");
             $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
             $article_name       = $db->result($r, $i - 1, "NAME");
             $suppl_id           = (int)$db->result($r, $i - 1, "suppl_id");
@@ -703,7 +703,7 @@ class FormClass extends CatalogueClass
             $storage_id         = (int)$db->result($r, $i - 1, "storage_id");
 
             $price = $this->getArticlePrice($art_id);
-            if ($suppl_id > 0) {
+            if (!empty($suppl_id)) {
                 $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
             }
             $price = $kours->getKoursPrice($price, $cur);
@@ -720,10 +720,12 @@ class FormClass extends CatalogueClass
 
             $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
 
-            if ($price > 0) {
+            if ($price > 0 && $stock > 0 && $this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                 $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "stock", "real_stock", "delivery_short_info", "price", "delivery_days", "basket", "storage_id", "suppl_id");
             }
         }
+
+        $arr = $this->multiSort($arr, "price", "delivery_days");
 
         $article_nr_displ       = $arr[0]["article_nr_displ"];
         $brand_id               = $arr[0]["brand_id"];

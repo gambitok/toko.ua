@@ -197,13 +197,11 @@ class CatalogueClass
         $where_art_id_str = rtrim($where_art_id_str, ",");
         $where_art_id_str = str_replace("'", "", $where_art_id_str);
 
-        if (!$nulls) {
+        $where_storage1 = "";
+        $where_storage2 = "";
+        if ($nulls === 0) {
             $where_storage1 = "AND ((t2asc.AMOUNT != NULL OR t2asc.AMOUNT != 0) OR (t2a.`ARTICLE_NR_SEARCH` = '$article_nr_search' AND t2a.`BRAND_ID` = $brand_nr_search))";
             $where_storage2 = "AND ((t2si.stock_suppl != NULL OR t2si.stock_suppl != 0) OR (t2a.`ARTICLE_NR_SEARCH` = '$article_nr_search' AND t2a.`BRAND_ID` = $brand_nr_search))";
-        }
-        if ($nulls) {
-            $where_storage1 = "";
-            $where_storage2 = "";
         }
 
         $r = "";
@@ -240,97 +238,97 @@ class CatalogueClass
     /*
      * SEARCH LIST *TEST*
      * */
-    public function getTempSearch($where_art_id_str): array
-    {
-        $db = DbSingleton::getTokoDb();
-
-        $kours = new ExRateClass();
-        $client = new ClientClass();
-
-        $client_id  = $this->getClient();
-        $tpoint_id  = $this->getTpointID();
-        $cur        = $this->getCurrentExrate();
-
-        $arts = [];
-        $r = $db->query("SELECT `ART_ID`, `AMOUNT`, `STORAGE_ID`
-        FROM `T2_ARTICLES_STRORAGE`
-        WHERE `ART_ID` IN ($where_art_id_str) GROUP BY `ART_ID`, `STORAGE_ID`;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id     = $db->result($r, $i - 1, "ART_ID");
-            $amount     = (int)$db->result($r, $i - 1, "AMOUNT");
-            $storage_id = $db->result($r, $i - 1, "STORAGE_ID");
-
-            $price = $this->getArticlePrice($art_id);
-            $price = $kours->getKoursPrice($price, $cur);
-            if ($cur === 1) {
-                $price = $client->getClientPriceRounding($client_id, $price);
-            }
-
-            $deliveryData   = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
-            $delivery_days  = $deliveryData["days"];
-
-            $arts[$art_id][] = ["stock" => $amount, "storage_id" => $storage_id, "suppl_id" => 0, "return_delay" => 0, "price" => $price, "delivery_days" => $delivery_days];
-        }
-
-        $r = $db->query("SELECT `art_id`, `stock_suppl`, `client_storage_id`, `suppl_id`, `return_delay`
-        FROM `T2_SUPPL_IMPORT`
-        WHERE `art_id` IN ($where_art_id_str) AND `status` = 1 GROUP BY `art_id`, `client_storage_id` ;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id     = $db->result($r, $i - 1, "art_id");
-            $amount     = (int)$db->result($r, $i - 1, "stock_suppl");
-            $storage_id = $db->result($r, $i - 1, "client_storage_id");
-            $suppl_id   = $db->result($r, $i - 1, "suppl_id");
-            $return     = $db->result($r, $i - 1, "return_delay");
-
-            $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
-            $price = $kours->getKoursPrice($price, $cur);
-            if ($cur === 1) {
-                $price = $client->getClientPriceRounding($client_id, $price);
-            }
-
-            $deliveryData   = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
-            $delivery_days  = $deliveryData["days"];
-            $delivery_info  = $deliveryData["info"];
-            $del_short_info = $deliveryData["short"];
-
-            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
-                $arts[$art_id][] = ["stock" => $amount, "storage_id" => $storage_id, "suppl_id" => $suppl_id, "return_delay" => $return, "price" => $price, "delivery_days" => $delivery_days, "delivery_info" => $delivery_info, "delivery_short_info" => $del_short_info];
-            }
-        }
-
-        $new_arts = [];
-        foreach ($arts as $mas_key => $mas_val) {
-            $arts[$mas_key]     = $this->multiSort($arts[$mas_key], "delivery_days", "price");
-            $new_arts[$mas_key] = $arts[$mas_key][0];
-        }
-
-        $where_art_id_new_str = implode(",", array_keys($new_arts));
-
-        $r = $db->query("SELECT t2a.`ART_ID`, t2a.`BRAND_ID`, t2a.`ARTICLE_NR_DISPL`, t2b.`BRAND_NAME`, IFNULL(t2n.`NAME`, '') as NAME
-        FROM `T2_ARTICLES` t2a
-            LEFT JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
-            LEFT JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
-        WHERE t2a.ART_ID IN ($where_art_id_new_str) 
-        AND t2b.`VISIBLE` = '1' 
-        AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END);");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $art_id             = $db->result($r, $i - 1, "ART_ID");
-            $brand_id           = $db->result($r, $i - 1, "BRAND_ID");
-            $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
-            $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
-            $article_name       = $db->result($r, $i - 1, "NAME");
-
-            $new_arts[$art_id]["brand_id"]          = $brand_id;
-            $new_arts[$art_id]["brand_name"]        = $brand_name;
-            $new_arts[$art_id]["article_nr_displ"]  = $article_nr_displ;
-            $new_arts[$art_id]["article_name"]      = $article_name;
-        }
-
-        return $new_arts;
-    }
+//    public function getTempSearch($where_art_id_str): array
+//    {
+//        $db = DbSingleton::getTokoDb();
+//
+//        $kours = new ExRateClass();
+//        $client = new ClientClass();
+//
+//        $client_id  = $this->getClient();
+//        $tpoint_id  = $this->getTpointID();
+//        $cur        = $this->getCurrentExrate();
+//
+//        $arts = [];
+//        $r = $db->query("SELECT `ART_ID`, `AMOUNT`, `STORAGE_ID`
+//        FROM `T2_ARTICLES_STRORAGE`
+//        WHERE `ART_ID` IN ($where_art_id_str) GROUP BY `ART_ID`, `STORAGE_ID`;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id     = $db->result($r, $i - 1, "ART_ID");
+//            $amount     = (int)$db->result($r, $i - 1, "AMOUNT");
+//            $storage_id = $db->result($r, $i - 1, "STORAGE_ID");
+//
+//            $price = $this->getArticlePrice($art_id);
+//            $price = $kours->getKoursPrice($price, $cur);
+//            if ($cur === 1) {
+//                $price = $client->getClientPriceRounding($client_id, $price);
+//            }
+//
+//            $deliveryData   = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
+//            $delivery_days  = $deliveryData["days"];
+//
+//            $arts[$art_id][] = ["stock" => $amount, "storage_id" => $storage_id, "suppl_id" => 0, "return_delay" => 0, "price" => $price, "delivery_days" => $delivery_days];
+//        }
+//
+//        $r = $db->query("SELECT `art_id`, `stock_suppl`, `client_storage_id`, `suppl_id`, `return_delay`
+//        FROM `T2_SUPPL_IMPORT`
+//        WHERE `art_id` IN ($where_art_id_str) AND `status` = 1 GROUP BY `art_id`, `client_storage_id` ;");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id     = $db->result($r, $i - 1, "art_id");
+//            $amount     = (int)$db->result($r, $i - 1, "stock_suppl");
+//            $storage_id = $db->result($r, $i - 1, "client_storage_id");
+//            $suppl_id   = $db->result($r, $i - 1, "suppl_id");
+//            $return     = $db->result($r, $i - 1, "return_delay");
+//
+//            $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
+//            $price = $kours->getKoursPrice($price, $cur);
+//            if ($cur === 1) {
+//                $price = $client->getClientPriceRounding($client_id, $price);
+//            }
+//
+//            $deliveryData   = $this->getTpointSupplDeliveryInfo($tpoint_id, $suppl_id, $storage_id);
+//            $delivery_days  = $deliveryData["days"];
+//            $delivery_info  = $deliveryData["info"];
+//            $del_short_info = $deliveryData["short"];
+//
+//            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+//                $arts[$art_id][] = ["stock" => $amount, "storage_id" => $storage_id, "suppl_id" => $suppl_id, "return_delay" => $return, "price" => $price, "delivery_days" => $delivery_days, "delivery_info" => $delivery_info, "delivery_short_info" => $del_short_info];
+//            }
+//        }
+//
+//        $new_arts = [];
+//        foreach ($arts as $mas_key => $mas_val) {
+//            $arts[$mas_key]     = $this->multiSort($arts[$mas_key], "delivery_days", "price");
+//            $new_arts[$mas_key] = $arts[$mas_key][0];
+//        }
+//
+//        $where_art_id_new_str = implode(",", array_keys($new_arts));
+//
+//        $r = $db->query("SELECT t2a.`ART_ID`, t2a.`BRAND_ID`, t2a.`ARTICLE_NR_DISPL`, t2b.`BRAND_NAME`, IFNULL(t2n.`NAME`, '') as NAME
+//        FROM `T2_ARTICLES` t2a
+//            LEFT JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
+//            LEFT JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
+//        WHERE t2a.ART_ID IN ($where_art_id_new_str)
+//        AND t2b.`VISIBLE` = '1'
+//        AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END);");
+//        $n = $db->num_rows($r);
+//        for ($i = 1; $i <= $n; $i++) {
+//            $art_id             = $db->result($r, $i - 1, "ART_ID");
+//            $brand_id           = $db->result($r, $i - 1, "BRAND_ID");
+//            $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
+//            $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
+//            $article_name       = $db->result($r, $i - 1, "NAME");
+//
+//            $new_arts[$art_id]["brand_id"]          = $brand_id;
+//            $new_arts[$art_id]["brand_name"]        = $brand_name;
+//            $new_arts[$art_id]["article_nr_displ"]  = $article_nr_displ;
+//            $new_arts[$art_id]["article_name"]      = $article_name;
+//        }
+//
+//        return $new_arts;
+//    }
 
     public function getTemporarySearchTable2($where_art_id_str)
     {
@@ -360,84 +358,84 @@ class CatalogueClass
         return $r;
     }
 
-    public function searchListCatalog2($where_art_id_str, $view = 0, $mfa_id = 0, $model = "", $status_auto = 0)
-    {
-        session_start();
-        $temp_key = session_id();
+//    public function searchListCatalog2($where_art_id_str, $view = 0, $mfa_id = 0, $model = "", $status_auto = 0)
+//    {
+//        session_start();
+//        $temp_key = session_id();
+//
+//        list($error, $list) = $this->getSearchMessages();
+//
+//        if ($where_art_id_str !== "") {
+//
+//            $this->createTemporarySearchTable($temp_key);
+//
+//            $mas = $this->getTempSearch($where_art_id_str);
+//
+//            if (count($mas) > 0) {
+//                if (empty($mas)) {
+//                    $list = $this->getHtmlForm("error/nothing_found");
+//                    $list = str_replace("{error_nothing_found}", $this->err1, $list);
+//                    return array($list, "", "", 0);
+//                }
+//                $list = $this->outSearchList2($list, $error, $mas, $view, 0, $status_auto, $mfa_id, $model);
+//            }
+//
+//            $count = count($mas);
+//            if ($count < 1) {
+//                $list = $error;
+//            }
+//
+//        }
+//
+//        return $list;
+//    }
 
-        list($error, $list) = $this->getSearchMessages();
-
-        if ($where_art_id_str !== "") {
-
-            $this->createTemporarySearchTable($temp_key);
-
-            $mas = $this->getTempSearch($where_art_id_str);
-
-            if (count($mas) > 0) {
-                if (empty($mas)) {
-                    $list = $this->getHtmlForm("error/nothing_found");
-                    $list = str_replace("{error_nothing_found}", $this->err1, $list);
-                    return array($list, "", "", 0);
-                }
-                $list = $this->outSearchList2($list, $error, $mas, $view, 0, $status_auto, $mfa_id, $model);
-            }
-
-            $count = count($mas);
-            if ($count < 1) {
-                $list = $error;
-            }
-
-        }
-
-        return $list;
-    }
-
-    public function outSearchList2($list, $error, $mas, $view, $saleout = 0, $status_auto = 0, $mfa_id = 0, $model = ""): string
-    {
-        (!$view) ?: $list .= "<div class=\"row\">";
-
-        $i = 0;
-        $faq_pos = (count($mas) >= $this->faq_card_count) ? $this->faq_card_count : count($mas);
-        $faq_socials_pos = (count($mas) >= $this->faq_socials_card_count) ? $this->faq_socials_card_count : count($mas);
-
-        if (!empty($mas)) {
-            foreach ($mas as $art_id => $val) {
-                $art_nr_ds  = $val["article_nr_displ"];
-                $brand_id   = $val["brand_id"];
-                $brand_name = $val["brand_name"];
-                $art_name   = $val["article_name"];
-                $stock      = $val["stock"];
-                $price      = $val["price"];
-                $del_days   = $val["delivery_days"];
-                $del_short  = $val["delivery_short_info"];
-                $suppl_id   = $val["suppl_id"];
-                $storage_id = $val["storage_id"];
-                $status     = ($saleout > 0) ? $val["status"] : 1;
-
-                if ((int)$status_auto === 0) {
-                    if ($view && ($i === $faq_pos)) {
-                        $faq_form = $this->getFaqForm();
-                        $list .= $faq_form;
-                    }
-                    if ($view && ($i === $faq_socials_pos)) {
-                        $faq_socials_form = $this->getFaqSocialsForm();
-                        $list .= $faq_socials_form;
-                    }
-                }
-
-                $list .= $this->printCatalogList($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $stock, $price, "", $suppl_id, $del_days, $del_short, $storage_id, $status, $view, $status_auto, $mfa_id, $model);
-                $i++;
-
-            }
-            $list .= "</div>";
-        } else {
-            $list = $error;
-        }
-
-        (!$view) ?: $list .= "</div>";
-
-        return $list;
-    }
+//    public function outSearchList2($list, $error, $mas, $view, $saleout = 0, $status_auto = 0, $mfa_id = 0, $model = ""): string
+//    {
+//        (!$view) ?: $list .= "<div class=\"row\">";
+//
+//        $i = 0;
+//        $faq_pos = (count($mas) >= $this->faq_card_count) ? $this->faq_card_count : count($mas);
+//        $faq_socials_pos = (count($mas) >= $this->faq_socials_card_count) ? $this->faq_socials_card_count : count($mas);
+//
+//        if (!empty($mas)) {
+//            foreach ($mas as $art_id => $val) {
+//                $art_nr_ds  = $val["article_nr_displ"];
+//                $brand_id   = $val["brand_id"];
+//                $brand_name = $val["brand_name"];
+//                $art_name   = $val["article_name"];
+//                $stock      = $val["stock"];
+//                $price      = $val["price"];
+//                $del_days   = $val["delivery_days"];
+//                $del_short  = $val["delivery_short_info"];
+//                $suppl_id   = $val["suppl_id"];
+//                $storage_id = $val["storage_id"];
+//                $status     = ($saleout > 0) ? $val["status"] : 1;
+//
+//                if ((int)$status_auto === 0) {
+//                    if ($view && ($i === $faq_pos)) {
+//                        $faq_form = $this->getFaqForm();
+//                        $list .= $faq_form;
+//                    }
+//                    if ($view && ($i === $faq_socials_pos)) {
+//                        $faq_socials_form = $this->getFaqSocialsForm();
+//                        $list .= $faq_socials_form;
+//                    }
+//                }
+//
+//                $list .= $this->printCatalogList($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $stock, $price, "", $suppl_id, $del_days, $del_short, $storage_id, $status, $view, $status_auto, $mfa_id, $model);
+//                $i++;
+//
+//            }
+//            $list .= "</div>";
+//        } else {
+//            $list = $error;
+//        }
+//
+//        (!$view) ?: $list .= "</div>";
+//
+//        return $list;
+//    }
 
     /*
      * CATALOG ORIGINAL NUMBERS
@@ -486,16 +484,19 @@ class CatalogueClass
         $unique_brands = $brand_array = array();
 
         usort($brands, "cmpPrice");
+
         // main brand first
         $brand_main_key = 0;
-        if ($main_brand !== 0) {
+        if ($main_brand > 0) {
             foreach ($brands as $key => $value) {
                 $brand_id = $value["brand_id"];
                 if ($main_brand === $brand_id) {
                     $brand_main_key = $key;
                 }
             }
-            $brands = array($brand_main_key => $brands[$brand_main_key]) + $brands;
+            if (!empty($brands)){
+                $brands = array($brand_main_key => $brands[$brand_main_key]) + $brands;
+            }
         }
 
         //get unique brands with min price
@@ -509,34 +510,35 @@ class CatalogueClass
             }
         }
 
-        foreach ($brands as $key => $value) {
-            $min_price  = $value["price"];
-            $brand_id   = $value["brand_id"];
-            $val_brand  = $value["brand_name"];
+        if (!empty($brands)) {
+            foreach ($brands as $key => $value) {
+                $min_price  = $value["price"];
+                $brand_id   = $value["brand_id"];
+                $val_brand  = $value["brand_name"];
 
-            if ($brand_filter !== "") {
-                $brand_array = explode(",", $brand_filter);
-                $checked = (in_array($brand_id, $brand_array, true)) ? "checked=\"checked\"" : "";
-            } else {
-                $checked = (in_array($main_brand, $brand_array, true)) ? "checked=\"checked\"" : "";
-            }
-
-            if ($brand_id !== "") {
-                if ($brand_id === $main_brand) {
-                    $checked = "checked=\"checked\" disabled=\"true\"";
-                    $main_brand_class = "main-brand";
+                if ($brand_filter !== "") {
+                    $brand_array = explode(",", $brand_filter);
+                    $checked = (in_array($brand_id, $brand_array, true)) ? "checked=\"checked\"" : "";
                 } else {
-                    $main_brand_class = "";
+                    $checked = (in_array($main_brand, $brand_array, true)) ? "checked=\"checked\"" : "";
                 }
-            }
 
-            $list_brand .= $this->getHtmlForm("search/brand_item");
-            $list_brand = str_replace(array("{val_brand}", "{brand_id}", "{main_brand_class}", "{checked}", "{min_price}", "{cur_cap}"), array($val_brand, $brand_id, $main_brand_class, $checked, $min_price, $this->getSymbolExrate($cur)), $list_brand);
+                if (!empty($brand_id)) {
+                    if ($brand_id === $main_brand) {
+                        $checked = "checked=\"checked\" disabled=\"true\"";
+                        $main_brand_class = "main-brand";
+                    } else {
+                        $main_brand_class = "";
+                    }
+                }
+
+                $list_brand .= $this->getHtmlForm("search/brand_item");
+                $list_brand = str_replace(array("{val_brand}", "{brand_id}", "{main_brand_class}", "{checked}", "{min_price}", "{cur_cap}"), array($val_brand, $brand_id, $main_brand_class, $checked, $min_price, $this->getSymbolExrate($cur)), $list_brand);
+            }
         }
 
         return $this->replaceLang($list_brand);
     }
-
     /*
      * CATALOG EXIST
      * */
@@ -565,15 +567,15 @@ class CatalogueClass
 
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
-                    $art_id             = $db->result($r, $i - 1, "ART_ID");
-                    $brand_id           = $db->result($r, $i - 1, "BRAND_ID");
+                    $art_id             = (int)$db->result($r, $i - 1, "ART_ID");
+                    $brand_id           = (int)$db->result($r, $i - 1, "BRAND_ID");
                     $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
                     $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
                     $article_name       = $db->result($r, $i - 1, "NAME");
-                    $suppl_id           = $db->result($r, $i - 1, "suppl_id");
+                    $suppl_id           = (int)$db->result($r, $i - 1, "suppl_id");
                     $stock              = (int)$db->result($r, $i - 1, "AMOUNT");
-                    $storage_id         = $db->result($r, $i - 1, "storage_id");
-                    $return_days        = $db->result($r, $i - 1, "return_delay");
+                    $storage_id         = (int)$db->result($r, $i - 1, "storage_id");
+                    $return_days        = (int)$db->result($r, $i - 1, "return_delay");
 
                     // price
                     $price = $this->getArticlePrice($art_id);
@@ -609,9 +611,9 @@ class CatalogueClass
                 $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ` ASC;");
                 $n = $db->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
-                    $art_id                 = $db->result($r, $i - 1, "art_id");
+                    $art_id                 = (int)$db->result($r, $i - 1, "art_id");
                     $article_nr_displ       = $db->result($r, $i - 1, "article_nr_displ");
-                    $brand_id               = $db->result($r, $i - 1, "brand_id");
+                    $brand_id               = (int)$db->result($r, $i - 1, "brand_id");
                     $brand_name             = $db->result($r, $i - 1, "brand_name");
                     $article_name           = $db->result($r, $i - 1, "article_name");
                     $delivery_days          = (int)$db->result($r, $i - 1, "delivery_days");
@@ -621,27 +623,27 @@ class CatalogueClass
                     $price                  = (float)$db->result($r, $i - 1, "price");
                     $suppl_id               = (int)$db->result($r, $i - 1, "suppl_id");
                     $storage_id             = (int)$db->result($r, $i - 1, "storage_id");
-                    $return_days            = $db->result($r, $i - 1, "return_days");
-                    $status                 = $db->result($r, $i - 1, "status");
+                    $return_days            = (int)$db->result($r, $i - 1, "return_days");
+                    $status                 = (int)$db->result($r, $i - 1, "status");
 
                     $temp_arr[] = compact("art_id", "article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
                 }
 
                 foreach ($temp_arr as $value) {
-                    $art_id                 = $value["art_id"];
+                    $art_id                 = (int)$value["art_id"];
                     $article_nr_displ       = $value["article_nr_displ"];
-                    $brand_id               = $value["brand_id"];
+                    $brand_id               = (int)$value["brand_id"];
                     $brand_name             = $value["brand_name"];
                     $article_name           = $value["article_name"];
-                    $delivery_days          = $value["delivery_days"];
+                    $delivery_days          = (int)$value["delivery_days"];
                     $delivery_info          = $value["delivery_info"];
                     $delivery_short_info    = $value["delivery_short_info"];
                     $stock                  = (int)$value["stock"];
                     $price                  = (float)$value["price"];
                     $suppl_id               = (int)$value["suppl_id"];
                     $storage_id             = (int)$value["storage_id"];
-                    $return_days            = $value["return_days"];
-                    $status                 = $value["status"];
+                    $return_days            = (int)$value["return_days"];
+                    $status                 = (int)$value["status"];
 
                     if (!isset($mas[$art_id])) {
                         $mas[$art_id][0] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
@@ -652,7 +654,7 @@ class CatalogueClass
                             $price > 0
                             && $stock > 0
                             && (
-                            (($price <= $mas[$art_id][0]["price"] && (int)$delivery_days === (int)$mas[$art_id][0]["delivery_days"]) || ((int)$delivery_days <= (int)$mas[$art_id][0]["delivery_days"] && $price === $mas[$art_id][0]["price"]))
+                            (($price <= $mas[$art_id][0]["price"] && $delivery_days === (int)$mas[$art_id][0]["delivery_days"]) || ($delivery_days <= (int)$mas[$art_id][0]["delivery_days"] && $price === $mas[$art_id][0]["price"]))
                             )
                         ) || (
                             $price > 0
@@ -685,6 +687,7 @@ class CatalogueClass
             }
 
         }
+
         return $list;
     }
 
@@ -772,7 +775,7 @@ class CatalogueClass
                     if (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search) {
                         $status = 2;
                     } else {
-                        $status = ((int)$suppl_id === 0) ? 1 : 0;
+                        $status = ($suppl_id === 0) ? 1 : 0;
                     }
 
                     // show articles with suppl_id=0 or with price!=0 and stock!=0
@@ -791,9 +794,10 @@ class CatalogueClass
                 $n = $db->num_rows($r);
 
                 if ($n === 1) {
-                    $stock = $db->result($r, 0, "stock");
-                    $price = $db->result($r, 0, "price");
-                    if ((int)$stock === 0 && (float)$price === 0.0) {
+                    $stock = (int)$db->result($r, 0, "stock");
+                    $price = (float)$db->result($r, 0, "price");
+
+                    if (empty($stock) && empty($price)) {
                         $list = $this->getHtmlForm("error/nothing_found");
                         $list = str_replace("{error_nothing_found}", $this->err1, $list);
                         return array($list, "", "", 0);
@@ -801,20 +805,20 @@ class CatalogueClass
                 }
 
                 for ($i = 1; $i <= $n; $i++) {
-                    $art_id                 = $db->result($r, $i - 1, "art_id");
+                    $art_id                 = (int)$db->result($r, $i - 1, "art_id");
                     $article_nr_displ       = $db->result($r, $i - 1, "article_nr_displ");
-                    $brand_id               = $db->result($r, $i - 1, "brand_id");
+                    $brand_id               = (int)$db->result($r, $i - 1, "brand_id");
                     $brand_name             = $db->result($r, $i - 1, "brand_name");
                     $article_name           = $db->result($r, $i - 1, "article_name");
-                    $delivery_days          = $db->result($r, $i - 1, "delivery_days");
+                    $delivery_days          = (int)$db->result($r, $i - 1, "delivery_days");
                     $delivery_info          = $db->result($r, $i - 1, "delivery_info");
                     $delivery_short_info    = $db->result($r, $i - 1, "delivery_short_info");
-                    $stock                  = $db->result($r, $i - 1, "stock");
-                    $price                  = $db->result($r, $i - 1, "price");
-                    $suppl_id               = $db->result($r, $i - 1, "suppl_id");
-                    $storage_id             = $db->result($r, $i - 1, "storage_id");
-                    $return_days            = $db->result($r, $i - 1, "return_days");
-                    $status                 = $db->result($r, $i - 1, "status");
+                    $stock                  = (int)$db->result($r, $i - 1, "stock");
+                    $price                  = (float)$db->result($r, $i - 1, "price");
+                    $suppl_id               = (int)$db->result($r, $i - 1, "suppl_id");
+                    $storage_id             = (int)$db->result($r, $i - 1, "storage_id");
+                    $return_days            = (int)$db->result($r, $i - 1, "return_days");
+                    $status                 = (int)$db->result($r, $i - 1, "status");
 
                     $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
                 }
@@ -847,6 +851,7 @@ class CatalogueClass
                 // show search list
                 $list = $this->outSearchList($list, $error, $mas, $other_storages, $view);
             }
+
             if (count($mas) < 1) {
                 $list = "";
             }
@@ -900,6 +905,7 @@ class CatalogueClass
         $client_id = $this->getClient();
         $price = 0;
         list(, , $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat) = $this->getDpClientPriceLevels($client_id);
+
         $r = $dbt->query("SELECT t2a.ART_ID, t2si.client_storage_id, t2si.price_usd, t2si.suppl_id, acvc.*, t2si.suppl_id, tpsf.margin, tpsf.delivery, tpsf.margin2 
         FROM `T2_ARTICLES` t2a 
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
@@ -955,6 +961,7 @@ class CatalogueClass
         ORDER BY tpdt.delivery_days ASC;");
         $delivers = mysqli_fetch_all($r, MYSQLI_ASSOC);
         $array = [];
+
         foreach ($delivers as $deliver) {
             $delivery_days  = (int)$deliver["delivery_days"];
             $time_from_del  = substr($deliver["time_from_del"], 0, -3);
@@ -984,6 +991,7 @@ class CatalogueClass
         $week_day = date("N");
         $cur_time = date("H:i:s");
         $result = [];
+
         $r = $db->query("SELECT `delivery_days`, `week_day`, `time_from_del`, `time_to_del`, `suppl_storage_id`, `suppl_id` 
         FROM `T_POINT_SUPPL_DELIVERY_TIME` 
         WHERE `status` = '1' AND `tpoint_id` = '$tpoint_id' AND `week_day` = '$week_day' AND `time_from` <= '$cur_time' AND `time_to` >= '$cur_time';");
@@ -1201,6 +1209,7 @@ class CatalogueClass
                 $form = str_replace("{applicable_onclick}", "", $form);
             }
         }
+
         if ((int)$status_auto === 1) {
             $form = str_replace("{applicable_display}", "dnone", $form);
         }
@@ -1487,6 +1496,7 @@ class CatalogueClass
             }
             $price = round($price, 2);
         }
+
         $cur_usd = $kours->getKours("dollar");
         $price *= $cur_usd;
         $price = $client->getClientPriceRounding($client_id, $price);
@@ -1509,6 +1519,7 @@ class CatalogueClass
             $mprice_suppl_lvl   = (float)$db->result($r, 0, "margin_price_suppl_lvl");
             $client_vat         = (int)$db->result($r, 0, "client_vat");
         }
+
         return array($price_lvl, $margin_price_lvl, $price_suppl_lvl, $mprice_suppl_lvl, $client_vat);
     }
 
@@ -1551,6 +1562,7 @@ class CatalogueClass
         $cur_time = date("H:i:s");
         $delivery_days = 0;
         $info = $short_info = "";
+
         $r = $db->query("SELECT `delivery_days`, `time_from_del`, `time_to_del` 
         FROM `T_POINT_DELIVERY_TIME`
         WHERE `status` = '1' AND `tpoint_id` = '$tpoint_id' AND `storage_id` = '$storage_id' AND `week_day` = '$week_day' AND `time_from` <= '$cur_time' AND `time_to` >= '$cur_time' 
@@ -1589,6 +1601,7 @@ class CatalogueClass
         $cur_time = date("H:i:s");
         $delivery_days = 0;
         $info = $short_info = "";
+
         $r = $db->query("SELECT `delivery_days`, `time_from_del`, `time_to_del` 
         FROM `T_POINT_SUPPL_DELIVERY_TIME` 
         WHERE `status` = '1' AND `tpoint_id` = '$tpoint_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `suppl_id` = '$suppl_id' AND `week_day` = '$week_day' 
@@ -1628,6 +1641,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $cash_id = 2;
+
         $r = $db->query("SELECT `cash_id` FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
@@ -1637,6 +1651,7 @@ class CatalogueClass
             $db->query("UPDATE `T2_ARTICLES_PRICE_RATING` SET `cash_id` = 2 WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
             $cash_id = 2;
         }
+
         return $cash_id;
     }
 
@@ -1706,6 +1721,7 @@ class CatalogueClass
     public function deleteEmptyPosition($mas)
     {
         $i = $count_suggest = 0;
+
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
                 if ($i === 0) {
@@ -1714,6 +1730,7 @@ class CatalogueClass
             }
             $i++;
         }
+
         $i = 0;
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
@@ -1728,6 +1745,7 @@ class CatalogueClass
             }
             $i++;
         }
+
         foreach ($mas as $mas_key => $mas_val) {
             if (empty($mas_val)) {
                 unset($mas[$mas_key]);
@@ -1773,6 +1791,7 @@ class CatalogueClass
                 }
             }
         }
+
         $array_toko = array_unique($array_toko);
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
@@ -1781,6 +1800,7 @@ class CatalogueClass
                 }
             }
         }
+
         foreach ($mas as $mas_key => $mas_val) {
             if (empty($mas_val)) {
                 unset($mas[$mas_key]);
@@ -1829,6 +1849,7 @@ class CatalogueClass
     {
         $min_key = $pred_key = 0;
         $min_pr = 99999999;
+
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
                 if ($min_key !== 0) {
@@ -2070,7 +2091,7 @@ class CatalogueClass
         $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id GROUP BY `CAT_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $cat_id     = $db->result($r, $i - 1, "CAT_ID");
+            $cat_id     = (int)$db->result($r, $i - 1, "CAT_ID");
             $cat_name   = $this->getCatRowData($cat_id)["cat_name"];
 
             if ($cat_id > 0) {
@@ -2156,11 +2177,10 @@ class CatalogueClass
         if ($n > 0) {
             $list = "";
             for ($i = 1; $i <= $n; $i++) {
-                $head_id    = $db->result($r, $i - 1, "HEAD_ID");
+                $head_id    = (int)$db->result($r, $i - 1, "HEAD_ID");
                 $head_name  = $this->getHeadRowName($head_id);
                 $head_img   = $this->getHeadRowImage($head_id);
                 $head_text  = $this->getHeadRowText($head_id);
-
                 $head_list  = $this->getCatalogColListCat($head_id);
 
                 $list .= "
@@ -2264,7 +2284,7 @@ class CatalogueClass
         $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_GROUP` WHERE $where_gg;");
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $group_id   = $dbc->result($r, $i - 1, "group_id");
+            $group_id   = (int)$dbc->result($r, $i - 1, "group_id");
             $group_name = $this->getGroupRowText($group_id);
             $group_link = $this->getGroupRowLink($group_id);
             $group_img  = $this->getGroupRowImage($group_id);
@@ -2353,7 +2373,9 @@ class CatalogueClass
             }
             $list .= "</div>";
         }
+
         $form = str_replace("{content_range}", $list, $form);
+
         return $form;
     }
     public function getTreeConsGroupList($head_id, $cat_id): string
@@ -2388,6 +2410,7 @@ class CatalogueClass
                 </div>";
             }
         }
+
         return $list;
     }
 
@@ -2401,6 +2424,7 @@ class CatalogueClass
         if ($n > 0) {
             $mfa_link = $db->result($r, 0, "MFA_BRAND_LINK");
         }
+
         return $mfa_link;
     }
     public function getMfaData($mfa_id): array
@@ -2414,6 +2438,7 @@ class CatalogueClass
             $mfa_brand  = $db->result($r, 0, "MFA_BRAND");
             $mfa_link   = $db->result($r, 0, "MFA_BRAND_LINK");
         }
+
         return compact("mfa_brand", "mfa_link");
     }
     public function getModelLink($model)
@@ -2426,6 +2451,7 @@ class CatalogueClass
         if ($n > 0) {
             $model_link = $db->result($r, 0, "Model_Link");
         }
+
         return $model_link;
     }
     public function getModelIDLink($model_id)
@@ -2438,6 +2464,7 @@ class CatalogueClass
         if ($n > 0) {
             $model_id_link = $db->result($r, 0, "TEX_TEXT_link");
         }
+
         return $model_id_link;
     }
 

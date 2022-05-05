@@ -50,7 +50,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * GROUP EXIST
      * */
-    public function getGroupExistId($group_link)
+    public function getGroupExistId($group_link): int
     {
         $db = DbSingleton::getTokoDb();
         $group_id = 0;
@@ -817,6 +817,7 @@ class CatalogExistClass extends CatalogueClass
                 }
             }
         }
+
         return $params;
     }
 
@@ -1045,7 +1046,6 @@ class CatalogExistClass extends CatalogueClass
     public function showPartsCatalogueParams($group_id, $page = 1, $filters = [], $params = [], $mfa_id = 0, $model = "", $model_id = 0, $status_auto = 0, $status_auto_type = 0, $source_link = "", $sort = 0): array
     {
         $time = "";
-        //$start = microtime(true);
 
         $typ_id = $this->getCookieAuto();
         $automan = new AutoClass();
@@ -1117,7 +1117,6 @@ class CatalogExistClass extends CatalogueClass
 
         $art_id_str = implode(",", array_unique($arts));
 
-        // 0.2
         $list = $this->searchListCatalog($art_id_str, 1, $mfa_id, $model, $status_auto);
 
         $count = $this->getPartsCount($group_id, $query);
@@ -1159,7 +1158,6 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_sort}", $this->getPartsSortForm($sort, $source_link), $form);
             $form = str_replace("{parts_pagination_list}", $pagination_form, $form);
 
-            // 0.11
             $form = str_replace("{parts_params}", $this->getPartsFiltersForm($group_id, $params, $mfa_id, $model, $model_id, $where_mfa, $where_link_art), $form);
 
             $breadcrumbsData    = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $h1_text, $source_link, $mfa_id));
@@ -1168,11 +1166,10 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{parts_breadcrumbs}", $breadcrumbsData["form"], $form);
             $form = str_replace("{status_auto}", $status_auto, $form);
             $form = str_replace("{filters_count}", $filters_count, $form);
-            $form = str_replace("{filters_style}", ($filters_count == 0) ? "none" : "", $form);
+            $form = str_replace("{filters_style}", ($filters_count === 0) ? "none" : "", $form);
             $form = str_replace("{parts_cars}", $this->drawLoader(), $form);
             $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $params, $status_auto, $status_auto_type, $typ_id, $mfa_id, $model, $model_id), $form);
 
-            // 0.15
             $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $params, $source_link, $h1_text, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $typ_id), $form);
             $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
         }
@@ -1994,7 +1991,7 @@ class CatalogExistClass extends CatalogueClass
                 $source_link = str_replace($this->getSiteLink() . $this->catalog_link . "/", "", $source_link);
                 $source_link = rtrim($source_link, "/");
 
-                if ($mfa_id > 0 && !$this->checkCatalogueSeoText($source_link) && $model_id === 0) {
+                if ($model_id === 0 && $mfa_id > 0 && !$this->checkCatalogueSeoText($source_link)) {
                     $list_filters = $this->getCatalogSeoFiltersGenerate($group_id, $params, $h1_text, $mfa_id, $model);
                     $form = str_replace(array("{seo_generate}", "{seo_generate_style}"), array($list_filters, ($list_filters === "") ? "none" : ""), $form);
                 }

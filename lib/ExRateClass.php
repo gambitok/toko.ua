@@ -25,7 +25,7 @@ class ExRateClass
             $cur = 1;
         }
 
-        return (int)$cur;
+        return $cur;
     }
 
     /*
