@@ -15,6 +15,7 @@ class ProfileClass extends ClientClass
         $client = new ClientClass();
         list($client_id, $user_id) = $client->getClientData();
         $name = $client->getClientInfo($client_id, $user_id)["name"];
+
         return ($user_id === 0)
             ? false
             : "{hello_cap}, <a href=\"" . $this->getSiteLink() . "$this->page_profile\">" . $name . "</a>";
@@ -27,12 +28,14 @@ class ProfileClass extends ClientClass
     {
         $form = $this->getHtmlForm("menu/profile_nav");
         $form = str_replace("{reg_link}", $this->getSiteLink() . $this->page_registration, $form);
+
         if ($this->getUser() === 0) {
             $form = str_replace("{reg_login}", "none", $form);
         } else {
             $form = str_replace("{reg_logout}", "none", $form);
         }
         $form = str_replace(array("{reg_login}", "{reg_logout}"), "", $form);
+
         return $form;
     }
 
@@ -85,6 +88,7 @@ class ProfileClass extends ClientClass
         } else {
             $info = "";
         }
+
         return $info;
     }
 
@@ -109,6 +113,7 @@ class ProfileClass extends ClientClass
         $n = $dbt->result($r, 0, "count_ids");
 
         $counter = ($user_id > 0 && $n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
+
         return "
         <li class=\"authorization-item\">
             <a href=\"" . $this->getSiteLink() . "news/\">
@@ -126,6 +131,7 @@ class ProfileClass extends ClientClass
             ? "<a href=\"" . $this->getSiteLink() . "$this->page_signin\">{authorization}</a>"
             : "<a href=\"" . $this->getSiteLink() . "$this->page_profile\">{profile}</a>";
         $info = $this->replaceLang($info);
+
         return $info;
     }
 
@@ -141,6 +147,7 @@ class ProfileClass extends ClientClass
         $form = $this->getHtmlForm("profile/profile");
         $form = str_replace(array("{client_name}", "{client_id}"), array($name, $client_id), $form);
         $form = $this->replaceLang($form);
+
         return $form;
     }
 
@@ -152,6 +159,7 @@ class ProfileClass extends ClientClass
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT 1 FROM `T2_BONUS_CLIENT` WHERE `CLIENT_ID` = $client_id;");
         $n = $db->num_rows($r);
+
         return ($n > 0);
     }
 
@@ -171,6 +179,7 @@ class ProfileClass extends ClientClass
         } else {
             $form = "";
         }
+
         return $form;
     }
 
@@ -187,6 +196,7 @@ class ProfileClass extends ClientClass
         $form = $this->getHtmlForm("profile/profile_account");
         $form = str_replace(array("{client_id}", "{client_phone}", "{client_password}", "{client_email}", "{client_name}", "{type_form}", "{client_country}", "{region_form}", "{client_city}", "{bonus_user}"), array($user_id, $clientData["phone"], $clientData["password"], $clientData["email"], $clientData["name"], $menu->showTypeForm($clientData["type"]), $clientData["country"], $menu->getRegionForm($clientData["region"]), $clientData["city"], $this->getClientBonus($client_id) ? $this->showClientBonus($client_id) : ""), $form);
         $form = $this->replaceLang($form);
+
         return $form;
     }
 
@@ -197,6 +207,7 @@ class ProfileClass extends ClientClass
 
         $r = $db->query("SELECT 1 FROM `J_DP_STR` WHERE `dp_id` = $dp_id;");
         $n = $db->num_rows($r);
+
         return ($n > 0);
     }
 
@@ -211,6 +222,7 @@ class ProfileClass extends ClientClass
             $select_id = $db->result($r, $i - 1, "id");
             $select_arr[] = $select_id;
         }
+
         return implode(",", $select_arr);
     }
 
@@ -233,6 +245,7 @@ class ProfileClass extends ClientClass
                 }
             }
         }
+
         return ($k > 0);
     }
 
@@ -256,6 +269,7 @@ class ProfileClass extends ClientClass
                 }
             }
         }
+
         return ($k > 0);
     }
 
@@ -303,7 +317,9 @@ class ProfileClass extends ClientClass
             {shipped_cap}: $amount_collect {amount_abbr}. <br>
             <input id=\"order_id\" type=\"hidden\" value=\"$order_id\">";
         }
+
         $list = $this->replaceLang($list);
+
         return $list;
     }
 
@@ -325,6 +341,7 @@ class ProfileClass extends ClientClass
         if ($status === 0) {
             $db->query("UPDATE `orders_new` SET `status_visible` = 1 WHERE `id` = $order_id;");
         }
+
         return $status;
     }
 
@@ -337,6 +354,7 @@ class ProfileClass extends ClientClass
         $user_id    = $this->getUrlNumber($user_id);
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT COUNT(`id`) as kilk FROM `orders_new` WHERE `id` = $order_id AND `client_user_id` = $user_id;");
+
         return $db->result($r, 0, "kilk");
     }
 
@@ -358,6 +376,7 @@ class ProfileClass extends ClientClass
                 $dp_arr[] = $jValue;
             }
         }
+
         return $dp_arr;
     }
 
@@ -415,6 +434,7 @@ class ProfileClass extends ClientClass
                     if ($price_summ === 0) {
                         $price_summ += (float)$db->result($r, 0, "summ");
                     }
+
                     if ($status_visible === 1 &&$this->checkSelectDpBug($dp_value)) {
                         $k++;
                     }
@@ -428,7 +448,7 @@ class ProfileClass extends ClientClass
 
             if ($summ > 0 && $id !== "") {
                 $list .= "
-                <tr class=\"$bg_bug pointer\" onclick='showProfileOrdersArts(\"$id\",\"\")'>
+                <tr class=\"$bg_bug pointer\" onclick=\"showProfileOrdersArts('$id','')\">
                     <td>$prefix-$id</td>
                     <td>$name</td>
                     <td>$date</td>
@@ -460,7 +480,7 @@ class ProfileClass extends ClientClass
             $cash_name  = $kours->getKoursCaption($cash_id);
 
             $list .= "
-            <tr class=\"pointer\" onclick='showProfileOrdersArts(\"\",\"$id\")'>
+            <tr class=\"pointer\" onclick=\"showProfileOrdersArts('','$id')\">
                 <td>{order_cap} #$id</td>
                 <td>$name</td>
                 <td>$date</td>
@@ -475,6 +495,7 @@ class ProfileClass extends ClientClass
 
         $form = str_replace("{orders_range}", $list, $form);
         $form = $this->replaceLang($form);
+
         return $form;
     }
 
@@ -496,10 +517,10 @@ class ProfileClass extends ClientClass
         $user_id    = $this->getUser();
         $client_id  = $this->getClient();
         $date_sel   = date("Y-m-d H:i:s", (strtotime("-15 day" , strtotime(date("Y-m-d H:i:s")))));
-        $dp_arr     = ($dp_check !== "") ? explode(",", $dp_check) : $this->getDpClient();
+        $dp_arr     = (!empty($dp_check)) ? explode(",", $dp_check) : $this->getDpClient();
 
         // Dp orders arts
-        if ($order_check === "") {
+        if (empty($order_check)) {
             foreach ($dp_arr as $jjValue) {
                 $nedp = false;
                 $dp_value = $jjValue;
@@ -507,6 +528,7 @@ class ProfileClass extends ClientClass
 
                 $r = $db->query("SELECT `id`, `prefix` FROM `J_DP` $where_dp_client;");
                 $ndp = $db->num_rows($r);
+
                 if ($ndp > 0) {
                     $dp_id  = $db->result($r, 0, "id") + 0;
                     $prefix = $db->result($r, 0, "prefix");
@@ -524,11 +546,13 @@ class ProfileClass extends ClientClass
                     $where_dp 
                     GROUP BY dp.art_id;");
                     $nstr = $db->num_rows($rstr);
+
                     if ($nstr === 0) {
                         $rstr = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id` = $dp_id GROUP BY `art_id`;");
                         $nstr = $db->num_rows($rstr);
                         $nedp = true;
                     }
+
                     for ($j = 1; $j <= $nstr; $j++) {
                         $order_id       = $db->result($rstr, $j - 1, "order_id");
                         $order_str_id   = $db->result($rstr, $j - 1, "order_str_id") + 0;
@@ -589,8 +613,8 @@ class ProfileClass extends ClientClass
         }
 
         // Site orders arts
-        if ($dp_check === "") {
-            $where_order = ($order_check !== "") ? "AND `id` = '$order_check'" : "";
+        if (empty($dp_check)) {
+            $where_order = (!empty($order_check)) ? "AND `id` = '$order_check'" : "";
 
             $r = $db->query("SELECT `id`, `cash_id` FROM `orders_new` WHERE `client_user_id` = $user_id AND `dp_id` = 0 AND `status` = 1 $where_order AND `data` > '$date_sel' ORDER BY `data` DESC;");
             $n = $db->num_rows($r);
@@ -627,6 +651,7 @@ class ProfileClass extends ClientClass
 
         $form = str_replace("{orders_range}", $list, $form);
         $form = $this->replaceLang($form);
+
         return $form;
     }
 
@@ -693,8 +718,8 @@ class ProfileClass extends ClientClass
                     <td>$sum</td>
                 </tr>";
             }
-            $list .= "</table></td></tr>";
 
+            $list .= "</table></td></tr>";
         }
 
         $list = $this->replaceLang($list);
@@ -846,11 +871,13 @@ class ProfileClass extends ClientClass
 
         $r = $db->query("SELECT `saldo_start`, `cash_id`, `data_start` FROM `B_CLIENT_BALANS_PERIOD` WHERE `client_id` = $client_id AND `data_start` = '" . date("Y-m-01", strtotime($data_from)) . "' LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n === 1) {
             $saldo_start = $db->result($r, 0, "saldo_start");
             $cash_id = $db->result($r, 0, "cash_id");
             $saldo_data_start = $db->result($r, 0, "data_start");
         }
+
         if ($n === 0) {
             $recursion++;
             if ($recursion < 12) {
@@ -865,8 +892,10 @@ class ProfileClass extends ClientClass
                 $recursion -= 2;
                 list($saldo_start, , $saldo_data_start) = $this->getClientBalansPeriodStart($client_id, $cash_id_sel, $data_from, $recursion);
             }
+
             $cash_id = $cash_id_sel;
         }
+
         return array($saldo_start, $cash_id, $saldo_data_start);
     }
 
@@ -889,6 +918,7 @@ class ProfileClass extends ClientClass
         }
 
         $db->query("INSERT INTO `cron_task_prices` (`user_id`, `filename`, `date`, `status`) VALUES ($user_id, '$filename', '$date', 1);");
+
         return "date-start: " . $date;
     }
 
@@ -941,7 +971,9 @@ class ProfileClass extends ClientClass
             $disable = "";
             $visible = "";
         }
+
         $filename = scandir(RDD . "/uploads/$user_id")[2];
+
         if ($filename !== "") {
             $file = "$this->uploads/$user_id/" . $filename;
             $list = "
@@ -968,6 +1000,7 @@ class ProfileClass extends ClientClass
                 if ($date_end === "0000-00-00 00:00:00") {
                     $date_end = "-";
                 }
+
                 $table .= "
                 <tr $current>
 					<td>$filename</td>
@@ -976,12 +1009,15 @@ class ProfileClass extends ClientClass
 					<td>$status_nm</td>
 				</tr>";
             }
+
             $history_fr = $this->getHtmlForm("profile/profile_price_table");
             $history_fr = str_replace("{price_range}", $table, $history_fr);
         }
-        $form       = $this->getHtmlForm("profile/profile_price_list");
+
+        $form = $this->getHtmlForm("profile/profile_price_list");
         $form = str_replace(array("{price_download}", "{price_download_excel}", "{price_disabled}", "{price_history}"), array($list, $list_excel, $disable, $history_fr), $form);
         $form = $this->replaceLang($form);
+
         return $form;
     }
 

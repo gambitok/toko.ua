@@ -127,6 +127,7 @@ class LangClass
     public function setSiteLang($lang_id): string
     {
         $this->setLangID($lang_id);
+
         return "https://toko.ua/" . $this->getLangIDPrefix($lang_id);
     }
 

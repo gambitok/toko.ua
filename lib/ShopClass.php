@@ -199,9 +199,9 @@ class ShopClass extends CatalogueClass
     {
         $exrate = new ExRateClass();
         $cur_cap = $this->getSymbolExrate($cur);
-        if (!($this->checkActionPrice($art_id))) {
-            $action = "";
-        } else {
+        $action = "";
+
+        if ($this->checkActionPrice($art_id)) {
             list(, $action_amount, $action_price) = $this->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price, $cur);
             $true_price = ($suppl_id === 0)
@@ -246,6 +246,7 @@ class ShopClass extends CatalogueClass
         } else {
             $arts = "";
         }
+
         return $arts;
     }
 
@@ -324,8 +325,7 @@ class ShopClass extends CatalogueClass
             $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
         }
 
-        if (!($this->checkActionPrice($art_id))) {
-        } else {
+        if ($this->checkActionPrice($art_id)) {
             list($action_id, $action_amount, $action_price) = $this->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price, 1); // to UAH
             if ($amount >= $action_amount) {
@@ -370,6 +370,7 @@ class ShopClass extends CatalogueClass
         $where = $client->getClientWhere();
         $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where LIMIT 1;");
         $n = $db->num_rows($r);
+
         return ($n > 0) ? (int)$db->result($r, 0, "amount") : 0;
     }
 
@@ -386,6 +387,7 @@ class ShopClass extends CatalogueClass
 
         $where = $client->getClientWhere();
         $db->query("DELETE FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where;");
+
         return true;
     }
 
@@ -400,6 +402,7 @@ class ShopClass extends CatalogueClass
         $where = $client->getClientWhere();
         $r = $db->query("SELECT 1 FROM `basket` WHERE $where AND `status_checked` = 1;");
         $n = $db->num_rows($r);
+
         return ($n > 0);
     }
 
@@ -417,6 +420,7 @@ class ShopClass extends CatalogueClass
 
         $where = $client->getClientWhere();
         $db->query("UPDATE `basket` SET `status_checked` = $status WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where;");
+
         return true;
     }
 
@@ -434,14 +438,15 @@ class ShopClass extends CatalogueClass
 
         $where = $client->getClientWhere();
         $status_action = 0;
-        if (!($this->checkActionPrice($art_id))) {
-        } else {
+        if ($this->checkActionPrice($art_id)) {
             list($action_id, $action_amount) = $this->checkActionPrice($art_id);
             if ($amount >= $action_amount) {
                 $status_action = $action_id;
             }
         }
+
         $db->query("UPDATE `basket` SET `amount` = '$amount', `status_action` = '$status_action' WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where;");
+
         return true;
     }
 
@@ -464,6 +469,7 @@ class ShopClass extends CatalogueClass
             $label = $count;
             $style = "";
         }
+
         return array($label, $style);
     }
 
@@ -477,8 +483,10 @@ class ShopClass extends CatalogueClass
         $exrate = new ExRateClass();
         $where = $client->getClientWhere();
         $summary = 0;
+
         $r = $db->query("SELECT `price`, `amount` FROM `basket` WHERE $where;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $price  = (float)$db->result($r, $i - 1, "price");
@@ -490,6 +498,7 @@ class ShopClass extends CatalogueClass
         } else {
             $summary = 0;
         }
+
         $cur_cap = $this->getSymbolExrate($this->getCurrentExrate());
         $summary .= " $cur_cap";
 
@@ -515,6 +524,7 @@ class ShopClass extends CatalogueClass
             $order_sum = $this->getOrderSummCur();
             $r = $dbt->query("SELECT `id`, `price` FROM `basket` WHERE $where AND `status_checked` = 1;");
             $n = $dbt->num_rows($r);
+
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
                     $id     = $dbt->result($r, $i - 1, "id") + 0;
@@ -837,6 +847,7 @@ class ShopClass extends CatalogueClass
         $r = $db->query("SELECT `VALID_TYPE_MAIN`, `VALID_TYPE_OTHER` FROM `orders_valid_delivery` WHERE `DELIVERY_ID` = $delivery_id LIMIT 1;");
         $valid_main = $db->result($r, 0, "VALID_TYPE_MAIN");
         $valid_other = $db->result($r, 0, "VALID_TYPE_OTHER");
+
         if (in_array($city_id, [10108, 24861])) { // MAIN CITTIES
             if ($valid_main) {
                 $result = 1;
@@ -918,7 +929,9 @@ class ShopClass extends CatalogueClass
             $list   .= "
             <option value=\"$id\">$text</option>";
         }
+
         $list = $this->replaceLang($list);
+
         return $list;
     }
 
@@ -1078,8 +1091,7 @@ class ShopClass extends CatalogueClass
             $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
         }
 
-        if (!($this->checkActionPrice($art_id))) {
-        } else {
+        if ($this->checkActionPrice($art_id)) {
             list($action_id, $action_amount, $action_price) = $this->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price, 1); // to UAH
             if ($amount >= $action_amount) {
@@ -1457,6 +1469,7 @@ class ShopClass extends CatalogueClass
         $list = "
         <span>$name, $phone, $city</span> <a onclick=\"editFields();\">{edit_cap}</a>";
         $list = $this->replaceLang($list);
+
         return $list;
     }
 
@@ -1509,6 +1522,7 @@ class ShopClass extends CatalogueClass
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id` = $client_id LIMIT 1;");
+
         return $db->result($r, 0, "bonus_balance");
     }
 
@@ -1714,6 +1728,7 @@ class ShopClass extends CatalogueClass
             $list = "
             <div class=\"cart-table-row\">{empty_cap}</div>";
         }
+
         $list = $this->replaceLang($list);
 
         return array($list, $sum_total, $bonus_total);

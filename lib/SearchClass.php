@@ -1107,10 +1107,10 @@ class SearchClass extends CatalogueClass
             }
         }
 
-        if (!($this->checkActionPrice($art_id))) {
-            $action_form    = "";
-            $action_count   = "";
-        } else {
+        $action_form    = "";
+        $action_count   = "";
+
+        if ($this->checkActionPrice($art_id)) {
             list(, $action_amount, $action_price, $action_max_amount, $action_data) = $this->checkActionPrice($art_id);
             $action_price = $kours->getKoursFromUSA($action_price, $cur);
             if ($cur === 1) {

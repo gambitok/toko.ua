@@ -1481,6 +1481,7 @@ class MenuClass extends CatalogueClass
 
         return $list;
     }
+
     public function getGroupsListValues($group_id = 0): string
     {
         $db = DbSingleton::getTokoDb();
