@@ -1335,14 +1335,18 @@ class CatalogExistClass extends CatalogueClass
             GROUP BY t.art_id;");
             $n = $dbc->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
-                $brand_id       = $dbc->result($r, $i - 1, "brand_cur_id");
-                $params[0][]    = $brand_id;
+                $brand_id       = (int)$dbc->result($r, $i - 1, "brand_cur_id");
+                if ($brand_id > 0) {
+                    $params[0][]    = $brand_id;
+                }
 
                 foreach ($exist_params as $param_id) {
                     $value_str = $dbc->result($r, $i - 1, "param_$param_id");
                     if (!empty($value_str)) {
                         foreach (explode(",", $value_str) as $item) {
-                            $params[$param_id][] = $item;
+                            if ((int)$item > 0) {
+                                $params[$param_id][] = (int)$item;
+                            }
                         }
                     }
                 }
@@ -1388,8 +1392,10 @@ class CatalogExistClass extends CatalogueClass
                 $param_id       = (int)$db->result($r, $i - 1, "PARAM_ID");
                 $param_ids[]    = $param_id;
             }
+
             $arr = [];
             $arr[0] = $params[0];
+
             foreach ($param_ids as $param_id) {
                 $arr[$param_id] = $params[$param_id];
             }
@@ -1422,7 +1428,7 @@ class CatalogExistClass extends CatalogueClass
                     <div class=\"hidden-list\">
                         <div class=\"hidden-list-title\">$param_name</div>
                         <div class=\"hidden-list-search\">
-                            <input type=\"text\" class=\"text-filter\" onkeyup=\"textParamSearch('$param_id')\" data-attr=\"$param_id\" placeholder=\"{search_by_name}\">
+                            <input type=\"text\" class=\"text-filter\" onkeyup=\"textParamSearch('$param_id');\" data-attr=\"$param_id\" placeholder=\"{search_by_name}\">
                         </div>
                         <div class=\"hidden-list-content\" data-attr=\"$param_id\">";
 
@@ -1444,6 +1450,7 @@ class CatalogExistClass extends CatalogueClass
                         $arr_value_name[$key]   = $row["value_name"];
                         $arr_count_arts[$key]   = $row["count_arts"];
                     }
+
                     if ((int)$param_id === 0) {
                         array_multisort($arr_checked, SORT_DESC, SORT_NUMERIC, $arr_value_name, SORT_ASC, SORT_STRING, $items);
                     } else {
@@ -1459,6 +1466,7 @@ class CatalogExistClass extends CatalogueClass
                         if ($checked) {
                             $checked_label = "<span class=\"fas fa-check-square checked\"></span>";
                         }
+
                         if ($value_name !== "") {
                             $list_params .= "
                             <a href=\"$link\" class=\"hidden-list-content__item\">
@@ -1477,6 +1485,7 @@ class CatalogExistClass extends CatalogueClass
                             <span class=\"none\">{hide_cap}</span>
                         </div>";
                     }
+
                     $list_params .= "
                     </div>$bottom</div>";
                 }
@@ -1553,18 +1562,19 @@ class CatalogExistClass extends CatalogueClass
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             if ((int)$param_id === 0) {
-                $value_str = $dbc->result($r, $i - 1, "brand_cur_id");
+                $value_str = (int)$dbc->result($r, $i - 1, "brand_cur_id");
             } else {
                 $value_str = $dbc->result($r, $i - 1, "param_$param_id");
             }
             if (!empty($value_str)) {
                 foreach (explode(",", $value_str) as $item) {
-                    if (!in_array($item, $value_arr, true)) {
-                        $value_arr[] = $item;
+                    if ((int)$item > 0 && !in_array($item, $value_arr, true)) {
+                        $value_arr[] = (int)$item;
                     }
                 }
             }
         }
+
         return $value_arr;
     }
 
@@ -2668,6 +2678,7 @@ class CatalogExistClass extends CatalogueClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $mfa_id = $db->result($r, $i - 1, "MFA_ID") + 0;
+
             $r1 = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model` ORDER BY `Model` ASC;");
             $n1 = $db->num_rows($r1);
             for ($i1 = 1; $i1 <= $n1; $i1++) {

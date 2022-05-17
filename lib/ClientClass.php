@@ -8,7 +8,8 @@ class ClientClass
 
     public $status_user             = 1;
     public $status_user_retail      = 145;
-    public $default_client_id       = 10;
+    public $default_client_id       = 26;
+//    public $default_client_id       = 10;
     public $default_user            = 0;
     public $default_tpoint          = 1;
     public $default_currency        = 1;

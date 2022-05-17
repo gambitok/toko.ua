@@ -142,23 +142,12 @@ class ExRateClass
      * */
     public function getKoursSymbol($cur): string
     {
-        switch ($cur) {
-            case 2:
-            {
-                $result = "$";
-                break;
-            }
-            case 3:
-            {
-                $result = "€";
-                break;
-            }
-            case 1:
-            default:
-            {
-                $result = "{uah_cap}";
-                break;
-            }
+        $result = "{uah_cap}";
+        if ($cur === 2) {
+            $result = "$";
+        }
+        if ($cur === 3) {
+            $result = "€";
         }
         return $result;
     }

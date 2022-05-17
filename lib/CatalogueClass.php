@@ -1694,6 +1694,7 @@ class CatalogueClass
     public function deleteEmptyNulls($mas): array
     {
         $arr = [];
+
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
                 if ((int)$val["stock"] === 0) {
@@ -1706,6 +1707,7 @@ class CatalogueClass
                 }
             }
         }
+
         foreach ($mas as $mas_key => $mas_val) {
             if (empty($mas_val)) {
                 unset($mas[$mas_key]);
@@ -1761,6 +1763,7 @@ class CatalogueClass
     public function deleteEmptyPositionMain($mas)
     {
         $count_success = 0;
+
         foreach ($mas as $key => $value) {
             if ($value["stock"] > 0 && $value["price"] > 0) {
                 $count_success++;
@@ -1992,7 +1995,7 @@ class CatalogueClass
      * */
     public function outSearchList($list, $error, $mas, $other_storages, $view = 0, $saleout = 0, $status_auto = 0, $mfa_id = 0, $model = ""): string
     {
-        $ll     = $other_storages["content"];
+        $ll = $other_storages["content"];
 
         (!$view) ?: $list .= "<div class=\"row\">";
 

@@ -860,6 +860,7 @@ class FormClass extends CatalogueClass
         $client = new ClientClass();
         $list = $client->getClientHistory();
         $result = "";
+
         foreach ($list as $i => $iValue) {
             $col        = $i + 1;
             $art_nr_ds  = $list[$i]["article_nr_displ"];
@@ -869,6 +870,7 @@ class FormClass extends CatalogueClass
             $result .= "
             <li>$col. <a href=\"" . $this->getSiteLink() . "$this->search_link/$art_nr_ds/$brand_link/\">$art_nr_ds ($brand_name)</a></li>";
         }
+
         !empty($list) ?: $result .= "<p>{empty_history}</p>";
 
         $form = $this->getHtmlForm("menu/history_block");
@@ -886,6 +888,7 @@ class FormClass extends CatalogueClass
         $catalog = new CatalogueClass();
         $list = $client->getClientHistory();
         $list_history = "";
+
         foreach ($list as $i => $iValue) {
             $id             = $list[$i]["id"];
             $art_nr_ds      = $list[$i]["article_nr_displ"];
@@ -901,8 +904,10 @@ class FormClass extends CatalogueClass
                 break;
             }
         }
+
         $form = $this->getHtmlForm("menu/history_list");
         $form = str_replace("{history_range}", $list_history, $form);
+
         if (count($list) === 0) {
             $form = "";
         }
@@ -917,6 +922,7 @@ class FormClass extends CatalogueClass
     {
         $history_id = $this->getUrlNumber($history_id);
         $db = DbSingleton::getTokoDb();
+
         if ($history_id === "") {
             $user_id    = $this->getUser();
             $client_id  = $this->getClient();
@@ -957,6 +963,7 @@ class FormClass extends CatalogueClass
         $status = 0;
 
         $photo_name = $this->getArticlePhoto($art_id);
+
         if ($photo_name !== "") {
             $photo_name = "$this->uploads_link/$photo_name";
         } else {
@@ -974,6 +981,7 @@ class FormClass extends CatalogueClass
                 $photo_name = "https://portal.myparts.pro/cdn/brands_files/" . $brand_photo;
             }
         }
+
         if ($photo_name === "")  {
             $this->noPhoto;
         }
@@ -996,6 +1004,7 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $arr = [];
+
         if ($client->checkRetailClientCategory($this->getClient())) {
             $date_cur = date("Y-m-d");
             $brand_id = $this->getUrlNumber($brand_id);
@@ -1295,6 +1304,7 @@ class FormClass extends CatalogueClass
         GROUP BY man.MFA_ID 
         ORDER BY man.MFA_BRAND ASC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $list = "";
             for ($i = 1; $i <= $n; $i++) {
@@ -1355,10 +1365,12 @@ class FormClass extends CatalogueClass
                 <div id=\"AMI$typ_id\"></div>
             </li>";
         }
+
         if ($n > 20) {
             $list = "
             <div>$list</div>";
         }
+
         $list .= "
         </div>";
         $list = $this->replaceLang($list);
@@ -1374,6 +1386,7 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $automan = new AutoClass();
         $list = "";
+
         $r = $db->query("SELECT tt.TYP_TEXT, tt.FUEL_ID, tt.TYP_KW_FROM, tt.TYP_HP_FROM, tt.TYP_CCM, tt.ENG_Cod, 
             CASE WHEN tt.TYP_PCON_START = 0 THEN '' ELSE tt.TYP_PCON_START END AS TYP_PCON_START,
             CASE WHEN tt.TYP_PCON_END = 0 THEN '' ELSE tt.TYP_PCON_END END AS TYP_PCON_END
@@ -1562,6 +1575,7 @@ class FormClass extends CatalogueClass
         $list .= "
         <ul>";
         $site_link .= $this->catalog_link . "/";
+
         foreach ($arr as $head_id => $cats) {
             if (!empty($cats)) {
                 $head_name = $this->getHeadRowName($head_id);
@@ -1569,6 +1583,7 @@ class FormClass extends CatalogueClass
 
                 $list .= "
                 <li><a href=\"$site_link$head_link/\">$head_name</a><ul>";
+
                 foreach ($cats as $cat_id => $groups) {
                     if (!empty($groups)) {
                         $catData = $this->getCatRowData($cat_id);
@@ -1593,6 +1608,7 @@ class FormClass extends CatalogueClass
                 </ul></li>";
             }
         }
+
         $list .= "
         </ul>";
 

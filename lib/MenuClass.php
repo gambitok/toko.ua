@@ -199,6 +199,7 @@ class MenuClass extends CatalogueClass
             SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id
         )) $where_arts AND ac.data >= '$cur_data';");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $arr = [];
             $list = "
@@ -363,6 +364,7 @@ class MenuClass extends CatalogueClass
         WHERE t2.status = 1 AND t2a.lang_id = $lang_id 
         ORDER BY t2.position DESC, t2a.full_name ASC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $list = "
             <form action=\"\" autocomplete=\"off\">";
@@ -405,6 +407,7 @@ class MenuClass extends CatalogueClass
         WHERE t2.status = 1 AND t2a.lang_id = $lang_id 
         ORDER BY t2.position DESC, t2a.full_name ASC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $list = "
             <form action=\"\" autocomplete=\"off\">";
@@ -487,6 +490,7 @@ class MenuClass extends CatalogueClass
             $list = "
             <h2>$this->err1</h2>";
         }
+
         $form = $this->getHtmlForm("menu/contacts");
         $form = str_replace("{contact_block}", $list, $form);
 
@@ -551,6 +555,7 @@ class MenuClass extends CatalogueClass
             $language_id = 5;
         }
         $file = "";
+
         $r = $db->query("SELECT `id` FROM `news_galery` WHERE `cat` = $news_id ORDER BY `main` DESC;");
         $n = $db->num_rows($r);
         if ($n > 0) {
@@ -567,11 +572,10 @@ class MenuClass extends CatalogueClass
     {
         $showform = new FormClass();
         $db = DbSingleton::getTokoDb();
+        $list = "";
 
         $r = $db->query("SELECT `BRAND_ID` FROM `POPULAR_BRANDS` WHERE 1;");
         $n = $db->num_rows($r);
-        $form = $this->getHtmlForm("brands/form");
-        $list = "";
         for ($i = 1; $i <= $n; $i++) {
             $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
             $brand_name = $this->getBrandName($brand_id);
@@ -581,6 +585,7 @@ class MenuClass extends CatalogueClass
             $list       .= $this->showPopularBrandsCard($image, $brand_name, $link);
         }
 
+        $form = $this->getHtmlForm("brands/form");
         $form = str_replace("{brands_range}", $list, $form);
         if ($n === 0) {
             $form = "";
@@ -604,6 +609,7 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list_phone = $list_email = $list_address = "";
+
         // PHONE
         $r = $db->query("SELECT `text`, `icon`, `link` FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 1;");
         $n = $db->num_rows($r);
@@ -620,6 +626,7 @@ class MenuClass extends CatalogueClass
                 </a>
             </li>";
         }
+
         // EMAIL
         $r = $db->query("SELECT `text`, `icon`, `link` FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 2;");
         $n = $db->num_rows($r);
@@ -636,6 +643,7 @@ class MenuClass extends CatalogueClass
                 </a>
             </li>";
         }
+
         // ADDRESS
         $r = $db->query("SELECT `text`, `text_short`, `icon`, `link` FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 3;");
         $n = $db->num_rows($r);
@@ -660,6 +668,7 @@ class MenuClass extends CatalogueClass
             $list_address .= "
             </ul></div>";
         }
+
         $form = $this->getHtmlForm("menu/contacts_bottom");
         $form = str_replace(array("{list_phone}", "{list_email}", "{list_address}"), array($list_phone, $list_email, $list_address), $form);
 
@@ -705,6 +714,7 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             $db->query("DELETE FROM `J_SUPPLIERS_COOPERATION_FILES` WHERE `cookie_id` = '$cookie_id';");
         }
+
         if ($size <= $max_bytes && in_array($type, $format_arr, true)) {
             $db->query("INSERT INTO `J_SUPPLIERS_COOPERATION` (`company`, `name`, `phone`, `email`, `city_id`, `commentary`, `file_id`, `status`) VALUES ('$company', '$name', '$phone', '$email', '$city_id', '$comment', '$file_name', 166);");
             return true;
@@ -748,6 +758,7 @@ class MenuClass extends CatalogueClass
 
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `STATUS` = 1 ORDER BY `data` DESC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $postfix = $this->getLangPostfix($this->getLanguage());
             for ($i = 1; $i <= $n; $i++) {
@@ -762,6 +773,7 @@ class MenuClass extends CatalogueClass
                 $list .= $form_range;
             }
         }
+
         $form = $this->getHtmlForm("reviews/form");
         $form = str_replace("{form_range}", $list, $form);
 
@@ -893,6 +905,7 @@ class MenuClass extends CatalogueClass
 
         $r = $db->query("SELECT `TEXT`, `STYLES`, `STATUS` FROM `T2_SITE_CONFIGS` WHERE `BLOCK` = 'site_warning_message' AND `STATUS` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $text   = $db->result($r, 0, "TEXT");
             $styles = $db->result($r, 0, "STYLES");
