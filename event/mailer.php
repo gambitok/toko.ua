@@ -14,10 +14,51 @@ require RDD . "/PHPMailer/Exception.php";
 require RDD . "/PHPMailer/PHPMailer.php";
 require RDD . "/PHPMailer/SMTP.php";
 
+require_once (RDD . "/lib/mysql_class.php");
+require_once (RDD . "/lib/DbSingleton.php");
 require_once (RDD . "/lib/Traits/Helper.php");
 require_once (RDD . "/lib/Traits/Variables.php");
-require_once (RDD . "/lib/mysql_class.php");
 require_once (RDD . "/lib/LangClass.php");
+require_once (RDD . "/lib/CatalogueClass.php");
+require_once (RDD . "/lib/ClientClass.php");
+require_once (RDD . "/lib/ProfileClass.php");
+require_once (RDD . "/lib/ExRateClass.php");
+require_once (RDD . "/lib/class.phpmailer.php");
+
+$catalogue = new CatalogueClass();
+
+$dbm = DbSingleton::getDbm();
+
+$user = 15;
+
+$r = $dbm->query("SELECT `name`, `email` FROM `A_CLIENTS_USERS` WHERE `id` = $user;");
+$n = $dbm->num_rows($r);
+
+$user_name  = $dbm->result($r, 0, "name");
+$user_email = $dbm->result($r, 0, "email");
+$filedata   = "TOKO_GROUP_price-list_" . $user . "_" . date("Y-m-d_H-i-s") . ".csv";
+$filename   = $user . "/" . $filedata;
+$list       = $catalogue->getPriceList($user);
+
+$csv = "";
+foreach ($list as $record) {
+    foreach ($record as $rec) {
+        $csv .= $rec . ';';
+    }
+    $csv .= "\n";
+}
+
+if (!file_exists(RDD . "/uploads/mailing/$user")) {
+    mkdir(RDD . "/uploads/mailing/$user", 0777, true);
+} elseif (file_exists(RDD . "/uploads/mailing/$user/")) {
+    foreach (glob(RDD . "/uploads/mailing/$user/*") as $file) {
+        unlink($file);
+    }
+}
+
+$csv_handler = fopen(RDD . "/uploads/mailing/$filename", 'w') or die("Can't create file");
+fwrite($csv_handler, $csv);
+fclose($csv_handler);
 
 $mail = new PHPMailer(true);
 $mail->CharSet = 'windows-1251';
@@ -25,7 +66,7 @@ $mail->CharSet = 'windows-1251';
 $host   = "smtp.office365.com";
 $name   = "toko.robot@outlook.com";
 $pass   = "Qwerty456852z";
-$email  = "gambitokgd@gmail.com";
+$email  = $user_email;
 $date   = date("Y-m-d H:i:s");
 
 $cname  = "TOKO GROUP";
@@ -38,7 +79,7 @@ $html   =  "
     <small>рнйн цпсо рнб, ╡ом:403029222256, ╙дпонс:40302920</small>";
 
 $fname  = "price.csv";
-$path   = RDD . "/PHPMailer/test.csv";
+$path   = RDD . "/uploads/mailing/$filename";
 
 try {
     $mail->SMTPDebug  = SMTP::DEBUG_SERVER;

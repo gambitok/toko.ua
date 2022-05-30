@@ -1644,9 +1644,11 @@ class CatalogueClass
 
         $r = $db->query("SELECT `cash_id` FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $cash_id = (int)$db->result($r, 0, "cash_id");
         }
+
         if ($cash_id === 0) {
             $db->query("UPDATE `T2_ARTICLES_PRICE_RATING` SET `cash_id` = 2 WHERE `art_id` = $art_id AND `in_use` = 1 LIMIT 1;");
             $cash_id = 2;
@@ -2522,11 +2524,12 @@ class CatalogueClass
             $address_local  = $client->getTPointAddress($tpoint);
             $address_remote = $client->getStorageAddress($storage_remote_alien);
 
-            if ($storage_local_alien !== "") {
+            if (!empty($storage_local_alien)) {
                 $filials_list[] = "$storage_cap $city_local ($address_local) ({local_storage})";
                 $storages[]     = $storage_local_alien;
             }
-            if ($storage_remote_alien !== "") {
+
+            if (!empty($storage_remote_alien)) {
                 $filials_list[] = "$storage_cap $city_remote ($address_remote) ({remote_storage})";
                 $storages[]     = $storage_remote_alien;
             }

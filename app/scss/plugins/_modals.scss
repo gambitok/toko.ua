@@ -174,15 +174,6 @@ $colors: (
     }
 }
 
-//#PhoneArticle {
-//    background-color: #fff;
-//    .modal-header {
-//        button {
-//            color: #000;
-//        }
-//    }
-//}
-
 .modal-full {
     background: #fff!important;
     .modal-header {
@@ -328,8 +319,12 @@ $colors: (
     }
 }
 
+#LoginModal {
+    z-index: 3000;
+}
+
 #BasketForm {
-    z-index: 9999999;
+    z-index: 2000;
     .modal-dialog {
         max-width: 1080px;
         padding-bottom: 30px;

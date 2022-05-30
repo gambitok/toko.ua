@@ -710,6 +710,7 @@ class ShopClass extends CatalogueClass
                 if ($delivery_info !== "") {
                     $delivery_info = "($delivery_info)";
                 }
+
                 $list .= "
                 <li class=\"orders-user__item\">
                     <a onclick=\"setClientOrderInfo('$id');\">$i. $delivery_text $delivery_info <br> $payment_text</a>
@@ -901,12 +902,15 @@ class ShopClass extends CatalogueClass
 
         if (in_array($city_id, $cities)) {
             $tpoint_id = 0;
+
             if ($city_id === 24861) {
                 $tpoint_id = 1;
             }
+
             if ($city_id === 10108) {
                 $tpoint_id = 2;
             }
+
             $city_name = $this->getCityName($city_id);
             $city_address = $city_name . " - " . $client->getTpointAddress($tpoint_id);
         }
@@ -959,16 +963,20 @@ class ShopClass extends CatalogueClass
         if ($porch !== "") {
             $porch = ", {entrance_cap} $porch";
         }
+
         if (($street !== "undefined") && ($house !== "undefined")) {
             $delivery_type_text .= "<div>{address_cap}: {street_cap} $street, {house_cap} $house $porch</div>";
         }
+
         if ($department !== "undefined" && $department !== "0") {
             $delivery_type_text .= "<div>{department_cap}: $department</div>";
         }
+
         if ($del_express !== "undefined") {
             $delivery_express_text  = $this->getDepartmentExpressName($del_express);
             $delivery_type_text     .= "<div>{delivery_type_7}: $delivery_express_text</div>";
         }
+
         if ($del_express_dep !== "undefined") {
             $delivery_type_text .= "<div>{department_cap}: $del_express_dep</div>";
         }
@@ -1077,6 +1085,7 @@ class ShopClass extends CatalogueClass
             $user_id        = $clientData["user_id"];
             $user_status    = 1;
         }
+
         $tpoint_id  = $this->getTpointID();
         $cookie     = $this->getSessionID();
         $cash_id    = $client->getClientCurrency($client_id);
@@ -1189,6 +1198,7 @@ class ShopClass extends CatalogueClass
         if ($bonus_status) {
             $this->updateOrderBasket();
         }
+
         $order_sum = $this->finishOrderBasket($order_id);
         $db->query("UPDATE `orders_new` SET `price_summ` = '$order_sum' WHERE `id` = $order_id LIMIT 1;");
 

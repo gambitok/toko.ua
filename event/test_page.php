@@ -1,4 +1,5 @@
 <?php
+
 //$db = DbSingleton::getDbm();
 //$r = $db->query("SELECT `cash_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = 7123123 LIMIT 1;");
 //$n = $db->num_rows($r);
@@ -13,11 +14,6 @@
 //var_dump($catalogue->getCatalogueLink('oc90'));
 
 //$content = str_replace("{main_window}", $catalogue->getHtmlForm("test"), $content);
-
-//require(RDD . "/swagger-generator/vendor/autoload.php");
-//$openapi = \OpenApi\Generator::getVersion();
-//header('Content-Type: application/x-yaml');
-//echo $openapi;
 
 //require(RDD . "/checkbox-php/vendor/autoload.php");
 //

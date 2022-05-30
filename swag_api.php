@@ -1,10 +1,10 @@
 <?php
 
+define('RDD', __DIR__);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 @ini_set('display_errors', true);
 date_default_timezone_set("Europe/Kiev");
 ini_set('memory_limit', '2048M');
-define('RDD', dirname (__FILE__));
 header('Content-Type: text/html; charset=utf-8');
 
 require(RDD . "/checkbox-php/vendor/autoload.php");
