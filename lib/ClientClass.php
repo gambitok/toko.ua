@@ -533,7 +533,7 @@ class ClientClass
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $client_category = (int)$db->result($r, 0, "client_category");
-                if ($client_category === $this->default_client_category) {
+                if ($client_category === $this->default_client_category) {     
 
                     $answer = 0;
                     $err = "";
