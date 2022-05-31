@@ -18,9 +18,11 @@ class SearchClass extends CatalogueClass
             $article_search = $db->result($r, $i - 1, "SEARCH_NUMBER");
             $brand_id       = (int)$db->result($r, $i - 1, "BRAND_ID");
         }
+
         if ($n === 1) {
             return $this->getCatalogList($article_search, $brand_id);
         }
+
         return $this->getSearchResult($article_search, $article_nr_search);
     }
 
@@ -40,6 +42,7 @@ class SearchClass extends CatalogueClass
                 $form = str_replace(array("{search_query}", "{search_range}"), array($article_nr_search, $list), $form);
             }
         }
+
         return $form;
     }
 
@@ -436,6 +439,7 @@ class SearchClass extends CatalogueClass
                 }
 
                 if ($n > 0) {
+
                     if ($list2 !== "") {
                         $list .= "
                         <div class='search-block'>
@@ -448,6 +452,7 @@ class SearchClass extends CatalogueClass
                             </ul>
                         </div>";
                     }
+
                     if ($list3 !== "") {
                         $list .= "
                         <div class='search-block'>
@@ -475,6 +480,7 @@ class SearchClass extends CatalogueClass
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `status_nulls` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $status = (int)$db->result($r, 0, "status_nulls");
         }
@@ -589,6 +595,7 @@ class SearchClass extends CatalogueClass
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", $nulls);
             $n = $db->num_rows($r);
+
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id             = (int)$db->result($r, $i - 1, "ART_ID");

@@ -497,6 +497,7 @@ class AutoClass extends CatalogueClass
 
         $r = $db->query("SELECT `id`, `typ_id`, `timestamp` FROM `AUTO_HISTORY` WHERE $where GROUP BY `typ_id` ORDER BY `timestamp` DESC LIMIT 10;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $list = "";
             for ($i = 1; $i <= $n; $i++) {
@@ -520,6 +521,7 @@ class AutoClass extends CatalogueClass
         } else {
             $list = "{empty_history}";
         }
+
         $form = $this->getHtmlForm("garage/garage_history");
         $form = str_replace("{garage_history_list}", $list, $form);
 
@@ -533,6 +535,7 @@ class AutoClass extends CatalogueClass
     {
         $history_id = $this->getUrlNumber($history_id);
         $db = DbSingleton::getTokoDb();
+
         if (empty($history_id)) {
             $user_id    = $this->getUser();
             $client_id  = $this->getClient();
@@ -541,6 +544,7 @@ class AutoClass extends CatalogueClass
         } else {
             $where = "`id` = '$history_id'";
         }
+
         $db->query("DELETE FROM `AUTO_HISTORY` WHERE $where;");
 
         return true;
@@ -628,7 +632,7 @@ class AutoClass extends CatalogueClass
             ksort($cats);
 
             foreach ($cats as $cat_id => $groups) {
-                $catData = $this->getCatRowData($cat_id);
+                $catData    = $this->getCatRowData($cat_id);
                 $cat_name   = $catData["cat_name"];
                 $cat_link   = $catData["cat_link"];
 
@@ -841,6 +845,7 @@ class AutoClass extends CatalogueClass
                 $url_text   .= "$model_link/";
             }
         }
+
         $form = $this->getHtmlForm("article/social");
         $form = str_replace(array("{h1_meta_tag}", "{url_meta_tag}", "{main_image_cap}"), array($h1_text, $url_text, $car_pict), $form);
 

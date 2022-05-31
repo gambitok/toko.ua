@@ -17,11 +17,11 @@ class ExRateClass
         session_start();
         $cur = $this->getUrlNumber($_COOKIE["currency"]);
 
-        if ($cur === "" || $cur === 0 || $cur === "0") {
+        if (empty($cur)) {
             $cur = $this->getUrlNumber($_SESSION["currency"]);
         }
 
-        if ($cur === "" || $cur === 0 || $cur === "0") {
+        if (empty($cur)) {
             $cur = 1;
         }
 
@@ -90,6 +90,7 @@ class ExRateClass
         } elseif (is_float($price)) {
             $price = number_format($price, 2, '.', '');
         }
+
         return $price;
     }
 
@@ -109,6 +110,7 @@ class ExRateClass
         } else {
             $price = number_format($price, 2, '.', '');
         }
+
         return $price;
     }
 
@@ -121,6 +123,7 @@ class ExRateClass
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `abr` FROM `CASH` WHERE `id` = $cur LIMIT 1;");
         $n = $db->num_rows($r);
+
         return ($n > 0) ? $db->result($r, 0, "abr") : "{uah_cap}";
     }
 
@@ -133,6 +136,7 @@ class ExRateClass
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `abr2` FROM `CASH` WHERE `id` = $cur LIMIT 1;");
         $n = $db->num_rows($r);
+
         return ($n > 0) ? $db->result($r, 0, "abr2") : "{uah_cap}";
     }
 
@@ -149,6 +153,7 @@ class ExRateClass
         if ($cur === 3) {
             $result = "€";
         }
+
         return $result;
     }
 

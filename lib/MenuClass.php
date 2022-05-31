@@ -912,6 +912,7 @@ class MenuClass extends CatalogueClass
             $status = $db->result($r, 0, "STATUS");
 
             $text = $this->replaceLang($text);
+
             if ($status) {
                 $form = "
                 <div class=\"row dblock\" style='$styles'>
@@ -936,6 +937,7 @@ class MenuClass extends CatalogueClass
         if (empty($head_id_sel)) {
             $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
             $n = $db->num_rows($r);
+
             if ($n > 0) {
                 $list = $this->getHtmlForm("bar/main");
                 $head_list = "";
@@ -970,6 +972,7 @@ class MenuClass extends CatalogueClass
                 }
                 $arr[$cat_id][] = $group_id;
             }
+
             if (!empty($arr)) {
                 $list .= "
                 <div class=\"menu-bar-head__title\" onclick=\"getMenuBar('0');\">
@@ -981,6 +984,7 @@ class MenuClass extends CatalogueClass
                 foreach ($arr as $cat_id => $groups) {
                     $cat_name = $this->getCatRowData($cat_id)["cat_name"];
                     $icon = "";
+
                     if ($cat_id === 0) {
                         $icon = "<span style=\"color: #f44438; margin-right: 5px;\">o</span>";
                     }
@@ -1064,6 +1068,7 @@ class MenuClass extends CatalogueClass
                 $list1 .= "
                 <li><a href=\"" . $this->getSiteLink() . "$router/$link/\"> $text</a></li>";
             }
+
             if ($i > 10 && $i <= 20) {
                 $list2 .= "
                 <li><a href=\"" . $this->getSiteLink() . "$router/$link/\"> $text</a></li>";
@@ -1107,6 +1112,7 @@ class MenuClass extends CatalogueClass
         if ($router_sel !== "article" && $router_sel !== "search" && $status_catalog !== 1 && $this->getLanguage() !== 3) {
             $r = $db->query("SELECT * FROM `T2_FOOTER_ARCHIVE` WHERE `LINK` = '$site_link' LIMIT 1;");
             $n = $db->num_rows($r);
+
             if ($n > 0) {
                 $top_cities = $db->result($r, 0, "SEO_CITY");
                 $top_cats   = $db->result($r, 0, "SEO_CAT");
@@ -1205,6 +1211,7 @@ class MenuClass extends CatalogueClass
 
         $list .= "
         <ul class='city-nav-ul'>";
+
         $r = $db->query("SELECT `GROUP_ID`, `VALUE_ID` FROM `T2_FUTER_GV` WHERE `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1215,6 +1222,7 @@ class MenuClass extends CatalogueClass
             $group_link = $this->getGroupRowLink($group_id);
 
             $text_link = "";
+
             if ($value_id > 0) {
                 $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
                 $param_link = $dataValue["param_link"];
@@ -1239,6 +1247,7 @@ class MenuClass extends CatalogueClass
             $group_link = $this->getGroupRowLink($group_id);
 
             $text_link = "brandy=$brand_link";
+
             if ($value_id > 0) {
                 $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
                 $param_link = $dataValue["param_link"];
@@ -1373,6 +1382,7 @@ class MenuClass extends CatalogueClass
             $group_link = $this->getGroupRowLink($group_id);
 
             $text_link = "";
+
             if ($value_id > 0) {
                 $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
                 $param_link = $dataValue["param_link"];
@@ -1401,6 +1411,7 @@ class MenuClass extends CatalogueClass
             $group_link = $this->getGroupRowLink($group_id);
 
             $text_link = "brandy=$brand_link";
+
             if ($value_id > 0) {
                 $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
                 $param_link = $dataValue["param_link"];
@@ -1693,6 +1704,13 @@ class MenuClass extends CatalogueClass
         $format_text = mb_strtolower($format_text);
 
         return $format_text;
+    }
+
+    public function getTelegramBotForm()
+    {
+        $form = $this->getHtmlForm("menu/telegram_bot");
+
+        return $form;
     }
 
 }

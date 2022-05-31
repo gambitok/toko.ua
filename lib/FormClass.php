@@ -900,6 +900,7 @@ class FormClass extends CatalogueClass
             $history_form = $this->getHtmlForm("history/card");
             $history_form = str_replace(array("{history_id}", "{history_link}", "{history_brand}", "{history_article}"), array($id, $history_link, $brand, $art_nr_ds), $history_form);
             $list_history .= $history_form;
+
             if ($i === $this->max_history_count) {
                 break;
             }
@@ -931,6 +932,7 @@ class FormClass extends CatalogueClass
         } else {
             $where = "`id` = $history_id";
         }
+
         $db->query("DELETE FROM `CLIENT_HISTORY` WHERE $where;");
 
         return true;
@@ -994,6 +996,7 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT * FROM `T2_PHOTOS` WHERE `ART_ID` IN ($where_art_id_str) AND `ACTIVE` = 1 ORDER BY `PHOTO_NAME` ASC;");
         $photos = mysqli_fetch_all($r, MYSQLI_ASSOC);
+
         foreach ($photos as $photo) {
             self::$articlePhotos[$photo['ART_ID']][] = $photo;
         }
@@ -1209,7 +1212,9 @@ class FormClass extends CatalogueClass
         WHERE t2c.KIND = 3 AND t2c.RELATION = 0 AND t2c.ART_ID = $art_id;");
         $n = $db->num_rows($r);
         $arr = [];
+
         if ($n > 0) {
+
             for ($i = 1; $i <= $n; $i++) {
                 $art_name   = $db->result($r, $i - 1, "DISPLAY_NR");
                 $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
@@ -1222,10 +1227,12 @@ class FormClass extends CatalogueClass
                     <div class=\"col-9\">{art_cap}</div>
                 </div>";
             $i = 1;
+
             foreach ($arr as $key => $values) {
                 $list .= "<div class=\"row info__numbers-row\">
                     <div class=\"col-3 info__numbers-row-auto\">" . $key . "</div>
                     <div class=\"col-9 info__numbers-row-article\">";
+
                 foreach ($values as $value) {
                     $format_value = str_replace(str_split('.,+-\/:*?"<>| '), "", $value);
                     $list .= "<a target=\"_blank\" href=\"" . $this->getSiteLink() . "$this->search_link/$format_value/\">$value</a>";
@@ -1234,9 +1241,11 @@ class FormClass extends CatalogueClass
                         $list .= ", ";
                     }
                 }
+
                 $list .= "</div></div>";
                 $i = 1;
             }
+
             $list .= "</div>";
         } else {
             $list = $this->err1;
@@ -1600,10 +1609,12 @@ class FormClass extends CatalogueClass
                             $list .= "
                             <li><a href=\"$site_link$group_link/\">$group_name</a></li>";
                         }
+
                         $list .= "
                         </ul></li>";
                     }
                 }
+
                 $list .= "
                 </ul></li>";
             }

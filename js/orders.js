@@ -292,9 +292,17 @@ function getDeliveryTypeFields(delivery_id) {
         department = data_department[0].text;
         department_id = data_department[0].value;
     }
+
     if (data_express !== undefined) {
         delivery_express = data_express[0].value;
     }
+
+    street              = (typeof street === 'undefined') ? '' : street;
+    house               = (typeof house === 'undefined') ? '' : house;
+    department          = (typeof department === 'undefined') ? '' : department;
+    department_id       = (typeof department_id === 'undefined') ? 0 : department_id;
+    delivery_express    = (typeof delivery_express === 'undefined') ? 0 : delivery_express;
+    express_department  = (typeof express_department === 'undefined') ? '' : express_department;
 
     let arr                             = [];
     arr["street"]                       = street;
@@ -304,6 +312,7 @@ function getDeliveryTypeFields(delivery_id) {
     arr["department_id"]                = department_id;
     arr["delivery_express"]             = delivery_express;
     arr["delivery_express_department"]  = express_department;
+
     return arr;
 }
 

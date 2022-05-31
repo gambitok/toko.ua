@@ -16,8 +16,10 @@ class LangClass
     public function getLanguageData(): int
     {
         $lang_id = $this->getUrlNumber($_SESSION["lang_id"]);
+
         if (empty($lang_id)) {
             $lang_id = $this->getUrlNumber($_COOKIE["lang_id"]);
+
             if (empty($lang_id)) {
                 $lang_id = $this->default_lang_id;
                 $_SESSION["lang_id"]    = $lang_id;
@@ -38,6 +40,7 @@ class LangClass
     public function getOldLanguage($lang_id): int
     {
         $lang_id = (int)$lang_id;
+
         if ($lang_id === 1) {
             $lang_id = 16;
         }
@@ -97,6 +100,7 @@ class LangClass
     {
         $pre = "";
         $lang_id = (int)$lang_id;
+
         if ($lang_id === 2) {
             $pre = "uk/";
         }

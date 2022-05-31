@@ -8,6 +8,7 @@ function setCookies()
     if (empty($catalogue->getSessionID())) {
         setcookie("session_id", $ses, time() + (86400 * 30), "/");
     }
+
     return true;
 }
 
@@ -49,6 +50,7 @@ function checkLangVariable($variable)
     $db = DbSingleton::getTokoDb();
     $r = $db->query("SELECT 1 FROM `new_lang_wd` WHERE `variable` = '$variable' LIMIT 1;");
     $n = $db->num_rows($r);
+
     return ($n > 0);
 }
 
@@ -70,6 +72,7 @@ function getTitle($path)
     $path = str_replace("/", "", $path);
     $prefix = getMoreTitle($path);
     $title = ($path !== "") ? $prefix : "{site_title}";
+
     return $language->replaceLangData($title);
 }
 
@@ -288,6 +291,7 @@ function printBreadcrumbs($path)
         $form = getHtmlForm("menu/breadcrumbs");
         $form = str_replace("{bread_text}", $pretitle, $form);
     }
+
     $form = $cat->replaceLang($form);
 
     foreach ($b_arr as $key => $val) {
@@ -327,6 +331,7 @@ function getHtmlForm($name)
     if (file_exists($form_htm)) {
         $form = file_get_contents($form_htm);
     }
+
     return $form;
 }
 
@@ -340,6 +345,7 @@ function getDescription($path)
     $description = ($path !== "")
         ? "{seo_description} $prefix {seo_description2}"
         : "{seo_description} {seo_description2}";
+
     if ($path === "cars") {
         $description = "{site_cars_description}";
     }
@@ -360,8 +366,10 @@ function getDescription($path)
     if ($path === "catalog") {
         $description = "{seo_description} {seo_description2}";
     }
+
     $description = $language->replaceLangData($description);
     ($cat->getUrlNumber($_GET['page']) === 0) ?: $description = "";
+
     return $description;
 }
 
@@ -375,12 +383,14 @@ function getKeywords($path)
     $keywords = ($path !== "") ? $prefix : "{site_keywords}";
     $keywords = $language->replaceLangData($keywords);
     ($cat->getUrlNumber($_GET['page']) === 0) ?: $keywords = "";
+
     return $keywords;
 }
 
 function getSiteLang($lang_id_sel = 0)
 {
     $language = new LangClass();
+
     if ($lang_id_sel === 0) {
         $lang_id = $language->getLanguage();
     } else {
@@ -396,6 +406,7 @@ function getSiteLang($lang_id_sel = 0)
     if ($lang_id === 3) {
         $lang_html = "en";
     }
+
     return $lang_html;
 }
 
@@ -410,6 +421,7 @@ function getPhpContent($file)
     } else {
         $contents = "File not exist!";
     }
+
     return $contents;
 }
 
@@ -425,6 +437,7 @@ function translateContent($content)
         //$word = iconv("windows-1251", "UTF-8", $word);
         $content = str_replace("{" . $code . "}", $word, $content);
     }
+
     return $content;
 }
 
@@ -432,9 +445,11 @@ function getPath()
 {
     $url = findUrl();
     $path = findPath();
+
     if ($path === "") {
         $path = $url;
     }
+
     return $path;
 }
 
@@ -444,9 +459,11 @@ function findPath()
     if (substr($link, -1) !== "/") {
         $link .= "/";
     }
+
 	$link = parse_url($link);
 	$url = substr($link["path"], 1);
 	$pos = strpos($url, "/");
+
     if ($pos) {
         $path = substr($url, 0, $pos + 1);
         $cur_path = substr($path, 0, -1);
@@ -459,6 +476,7 @@ function findPath()
     } else {
         $res = "";
     }
+
 	return $res;
 }
 
@@ -466,6 +484,7 @@ function findUrl()
 {
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 	$link = parse_url($link);
+
     return $link["path"];
 }
 
@@ -480,6 +499,7 @@ function findNoIndex()
             $result++;
         }
     }
+
     return ($result > 0);
 }
 
@@ -493,6 +513,7 @@ function findLanguage()
     if (strpos($link, "/en/") !== false) {
         $postfix = "en";
     }
+
     return $postfix;
 }
 
@@ -505,6 +526,7 @@ function findLanguageID($postfix)
     if ($postfix === "en") {
         $language_id = 3;
     }
+
     return $language_id;
 }
 
@@ -534,12 +556,14 @@ function findLinks()
             break;
         }
 	}
+
 	return $linka;
 }
 
 function str_replace_first($from, $to, $content)
 {
     $from = "/" . preg_quote($from, "/") . "/";
+
     return preg_replace($from, $to, $content, 1);
 }
 
@@ -547,6 +571,7 @@ function getSeoText($seo_text)
 {
     $form = getHtmlForm("menu/seo_text");
     $form = str_replace("{seo_text}", $seo_text, $form);
+
     return $form;
 }
 
@@ -586,11 +611,13 @@ function getSeoTextForm()
 
     $r = $db->query($query);
     $n = $db->num_rows($r);
+
     if (($n > 0) && $page <= 1) {
         $text = $db->result($r, 0, "CONTENT_$postfix");
         if ($text !== "") {
             $form = getSeoText($text);
         }
     }
+
     return $form;
 }

@@ -80,22 +80,18 @@ class ShopClass extends CatalogueClass
             $bprow = "";
         }
 
+        $checked_status = "";
+        $total_style = "";
+        if ($sum_checked === $sum_total) {
+            $checked_status = "checked=\"checked\"";
+            $total_style = "d-none";
+        }
+
+        $validate_class = ($client->getClientPhone() === "") ? "non_accept fa-times-circle" : "accept fa-check-circle";
+        $location_ff    = ($count_checked > 0) ? $location_fast : "alert('" . $this->replaceLang("{chose_all_in_basket}") . "');";
+
         $table_basket = $this->getHtmlForm("basket/basket_form");
-        $table_basket = str_replace("{basket_rows}", $brow, $table_basket);
-        $table_basket = str_replace("{checked_status}", ($sum_checked == $sum_total) ? "checked=\"checked\"" : "", $table_basket);
-        $table_basket = str_replace("{basket_phone_rows}", $bprow, $table_basket);
-        $table_basket = str_replace("{sum}", $sum_checked, $table_basket);
-        $table_basket = str_replace("{sum_total}", $sum_total, $table_basket);
-        $table_basket = str_replace("{count}", $count_checked, $table_basket);
-        $table_basket = str_replace("{total_style}", ($sum_checked == $sum_total) ? "d-none" : "", $table_basket);
-        $table_basket = str_replace("{location}", $location, $table_basket);
-        $table_basket = str_replace("{location_fast}", ($count_checked > 0) ? $location_fast : "alert('" . $this->replaceLang("{chose_all_in_basket}") . "');", $table_basket);
-        $table_basket = str_replace("{currency}", $showform->getCurrencyForm($cur, 1), $table_basket);
-        $table_basket = str_replace("{cur_cap}", $this->getSymbolExrate($cur), $table_basket);
-        $table_basket = str_replace("{disabled}", $disabled, $table_basket);
-        $table_basket = str_replace("{basket_proposed}", $this->getProposedArts(), $table_basket);
-        $table_basket = str_replace("{user_phone}", $client->getClientPhone(), $table_basket);
-        $table_basket = str_replace("{validate_class}", ($client->getClientPhone() == "") ? "non_accept fa-times-circle" : "accept fa-check-circle", $table_basket);
+        $table_basket = str_replace(array("{basket_rows}", "{checked_status}", "{basket_phone_rows}", "{sum}", "{sum_total}", "{count}", "{total_style}", "{location}", "{location_fast}", "{currency}", "{cur_cap}", "{disabled}", "{basket_proposed}", "{user_phone}", "{validate_class}"), array($brow, $checked_status, $bprow, $sum_checked, $sum_total, $count_checked, $total_style, $location, $location_ff, $showform->getCurrencyForm($cur, 1), $this->getSymbolExrate($cur), $disabled, $this->getProposedArts(), $client->getClientPhone(), $validate_class), $table_basket);
 
         $table_basket = $this->replaceLang($table_basket);
 
@@ -147,32 +143,15 @@ class ShopClass extends CatalogueClass
             $form = $this->getHtmlForm("basket/basket_phone_card");
         }
 
-        $form = str_replace("{art_id}", $art_id, $form);
-        $form = str_replace("{art_name}", $art_nr_ds, $form);
-        $form = str_replace("{brand_id}", $brand_id, $form);
-        $form = str_replace("{brand_name}", $brand_name, $form);
-        $form = str_replace("{suppl_id}", $suppl_id, $form);
-        $form = str_replace("{text}", $this->getArticleName($art_id), $form);
-        $form = str_replace("{amount}", $amount, $form);
-        $form = str_replace("{price}", $price, $form);
-        $form = str_replace("{date1}", date("d.m.y H:i", strtotime($date_create)), $form);
-        $form = str_replace("{date2}", date("d.m.y H:i", strtotime(date("Y-m-d H:i:s"))), $form);
-        $form = str_replace("{delivery_info}", str_replace('"', "", $deliveryData["info"]), $form);
-        $form = str_replace("{delivery_short_info}", $deliveryData["short"], $form);
-        $form = str_replace("{storage_id}", $storage_id, $form);
-        $form = str_replace("{stock}", $stock, $form);
-        $form = str_replace("{status}", $status, $form);
-        $form = str_replace("{status_checked}", $status_checked, $form);
-        $form = str_replace("{full_price}", $full_price, $form);
-        $form = str_replace("{disabled}", ($this->checkStatusBasket()) ? "" : "disabled", $form);
-        $form = str_replace("{checked}", ($status_checked) ? "checked=\"checked\"" : "", $form);
-        $form = str_replace("{link}", $this->getSiteLink() . "$this->products_link/" . $this->getFormatAticle($art_nr_ds) . "-" . $this->getBrandLink($brand_id) . "-" . "$art_id/", $form);
-        $form = str_replace("{flag}", $flag, $form);
-        $form = str_replace("{country_name}", $country_nm, $form);
-        $form = str_replace("{amount_field}", "count_" . $art_id . "_" . $storage_id, $form);
-        $form = str_replace("{action}", $this->getClientAction($art_id, $suppl_id, $storage_id, $amount, $cur), $form);
-        $form = str_replace("{cash_abr}", $this->getSymbolExrate($cur), $form);
-        $form = str_replace("{product_image}", $this->getBasketArticlePhoto($art_id), $form);
+        $delivery_info  = str_replace('"', "", $deliveryData["info"]);
+        $date_start     = date("d.m.y H:i", strtotime($date_create));
+        $date_end       = date("d.m.y H:i", strtotime(date("Y-m-d H:i:s")));
+        $disabled       = ($this->checkStatusBasket()) ? "" : "disabled";
+        $checked        = ($status_checked) ? "checked=\"checked\"" : "";
+        $site_link      = $this->getSiteLink() . "$this->products_link/" . $this->getFormatAticle($art_nr_ds) . "-" . $this->getBrandLink($brand_id) . "-" . "$art_id/";
+        $amount_field   = "count_" . $art_id . "_" . $storage_id;
+
+        $form = str_replace(array("{art_id}", "{art_name}", "{brand_id}", "{brand_name}", "{suppl_id}", "{text}", "{amount}", "{price}", "{date1}", "{date2}", "{delivery_info}", "{delivery_short_info}", "{storage_id}", "{stock}", "{status}", "{status_checked}", "{full_price}", "{disabled}", "{checked}", "{link}", "{flag}", "{country_name}", "{amount_field}", "{action}", "{cash_abr}", "{product_image}"), array($art_id, $art_nr_ds, $brand_id, $brand_name, $suppl_id, $this->getArticleName($art_id), $amount, $price, $date_start, $date_end, $delivery_info, $deliveryData["short"], $storage_id, $stock, $status, $status_checked, $full_price, $disabled, $checked, $site_link, $flag, $country_nm, $amount_field, $this->getClientAction($art_id, $suppl_id, $storage_id, $amount, $cur), $this->getSymbolExrate($cur), $this->getBasketArticlePhoto($art_id)), $form);
 
         return $form;
     }
@@ -185,6 +164,7 @@ class ShopClass extends CatalogueClass
         $n = $db->num_rows($r);
         $photo_name = $db->result($r, 0, "PHOTO_NAME");
         $photo_src  = "https://toko.ua/uploads/images/catalogue/$photo_name";
+
         if ($n === 0) {
             $photo_src = "https://toko.ua/$this->noPhoto";
         }
@@ -208,6 +188,7 @@ class ShopClass extends CatalogueClass
                 ? $this->getArticlePrice($art_id)
                 : $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
             $true_price = round($exrate->getKoursPrice($true_price, $cur), 2);
+
             if ($amount >= $action_amount) {
                 $true_cap = "<br><span class=\"span-outline\">$true_price $cur_cap</span>";
                 $true_clr = "";
@@ -215,6 +196,7 @@ class ShopClass extends CatalogueClass
                 $true_cap = "";
                 $true_clr = "color:lightcoral!important;";
             }
+
             $action = "
             $true_cap<br>
             <span style=\"font-size: 1.5em; $true_clr\" class=\"span-green tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" 
@@ -236,6 +218,7 @@ class ShopClass extends CatalogueClass
         $where = $client->getClientWhere();
         $r = $db->query("SELECT `art_id` FROM `basket` WHERE $where ORDER BY `date_create` DESC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $arts = [];
             for ($i = 1; $i <= $n; $i++) {
@@ -265,6 +248,7 @@ class ShopClass extends CatalogueClass
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $list .= $this->getProposedArtsCard($art_id);
         }
+
         $form = $this->getHtmlForm("orders/proposed");
         $form = str_replace("{proposed_range}", $list, $form);
         $form = $this->replaceLang($form);
@@ -321,6 +305,7 @@ class ShopClass extends CatalogueClass
         $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where LIMIT 1;");
         $n = $db->num_rows($r);
         $price = $this->getArticlePrice($art_id);
+
         if ($suppl_id !== 0) {
             $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
         }
@@ -340,6 +325,7 @@ class ShopClass extends CatalogueClass
         if ($n > 0) {
             $r2 = $db->query("SELECT `amount` FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where LIMIT 1;");
             $cur_stock = $db->result($r2, 0, "amount");
+
             if ($stock < ($cur_stock + $amount)) {
                 $amount = $stock;
             } else {
@@ -533,6 +519,7 @@ class ShopClass extends CatalogueClass
                     if ($cur === 1) {
                         $price = $client->getClientPriceRounding($client_id, $price);
                     }
+
                     $discountData = $this->getBonusDiscount($order_sum, $bonus_summ, $price);
                     $discount = abs($discountData["discount"]);
                     $real_discount = abs($discountData["real_discount"]);
@@ -617,12 +604,14 @@ class ShopClass extends CatalogueClass
 
         $r = $db->query("SELECT `DELIVERY_ID` FROM `ORDERS_CLIENT_INFO` WHERE `ID` = $order_info_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $delivery_id = (int)$db->result($r, 0, "DELIVERY_ID");
             $db->query("UPDATE `ORDERS_CLIENT_INFO` SET `CLIENT_ID` = $client_id, `USER_ID` = $user_id WHERE `ID` = $order_info_id LIMIT 1;");
         } else {
             $r2 = $db->query("SELECT `ID` FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID` = $client_id AND `USER_ID` = $user_id AND `DELIVERY_ID` = $delivery_id LIMIT 1;");
             $n2 = $db->num_rows($r2);
+
             if ($n2 === 0) {
                 $db->query("INSERT INTO `ORDERS_CLIENT_INFO` (`CLIENT_ID`, `USER_ID`, `STATUS`) VALUES ($client_id, $user_id, 1);");
             }
@@ -646,13 +635,17 @@ class ShopClass extends CatalogueClass
     {
         $client = new ClientClass();
         $art_id = $brand_id = $storage_id = $price = 0;
+
         if (in_array($delivery_id, [4, 5], true)) {
+
             if ($delivery_id === 4) {
                 $art_id = 100060075; // NOVA POSHTA
             }
+
             if ($delivery_id === 5) {
                 $art_id = 100060076; // NOVA POSHTA KURER
             }
+
             $brand_id   = $this->getArticleBrand($art_id);
             $storage_id = $client->getDefaultStorageID($tpoint_id);
             $price      = $this->getArticlePrice($art_id);
@@ -744,6 +737,7 @@ class ShopClass extends CatalogueClass
     public function getOrderContentForm($order_id, $user_id, $user_status)
     {
         $client = new ClientClass();
+
         if ($user_status === 0) {
             $form = $this->getHtmlForm("orders/done");
         } else {
@@ -767,8 +761,10 @@ class ShopClass extends CatalogueClass
         $user_name = $user_phone = $user_email = "";
         $user_city = 0;
         $status = false;
+
         if ($user_id > 0) {
             list($user_name, $user_phone, $user_email, $user_city) = $client->getClientUserData($user_id);
+
             if ($user_id > 0 && $user_phone !== "" && $user_name !== "" && $user_city !== "") {
                 $status = true;
             }
@@ -911,8 +907,7 @@ class ShopClass extends CatalogueClass
                 $tpoint_id = 2;
             }
 
-            $city_name = $this->getCityName($city_id);
-            $city_address = $city_name . " - " . $client->getTpointAddress($tpoint_id);
+            $city_address = $this->getCityName($city_id) . " - " . $client->getTpointAddress($tpoint_id);
         }
 
         return $city_address;
@@ -996,9 +991,12 @@ class ShopClass extends CatalogueClass
     public function letsFinishOrder($phone, $dataArticle): array
     {
         $client = new ClientClass();
+
         if ($client->validateOperator($phone)) {
             $dataReg = $client->validateRegistration($phone);
+
             if (!$dataReg[0]) {
+
                 if (!empty($dataArticle)) {
                     $art_id     = $dataArticle["art_id"];
                     $brand_id   = $dataArticle["brand_id"];
@@ -1051,12 +1049,13 @@ class ShopClass extends CatalogueClass
         $user_status = 0;
 
         // CREATE CLIENT
-        if ((int)$user_id === 0) {
+        if (empty($user_id)) {
             $clientData     = $client->addRetailClient($this->getClient(), $phone);
             $client_id      = $clientData["client_id"];
             $user_id        = $clientData["user_id"];
             $user_status    = 1;
         }
+
         $tpoint_id  = $this->getTpointID();
         $cookie     = $this->getSessionID();
         $cash_id    = $client->getClientCurrency($client_id);
@@ -1079,7 +1078,7 @@ class ShopClass extends CatalogueClass
         $user_status = 0;
 
         // CREATE CLIENT
-        if ((int)$user_id === 0) {
+        if (empty($user_id)) {
             $clientData     = $client->addRetailClient($this->getClient(), $phone);
             $client_id      = $clientData["client_id"];
             $user_id        = $clientData["user_id"];
@@ -1103,6 +1102,7 @@ class ShopClass extends CatalogueClass
         if ($this->checkActionPrice($art_id)) {
             list($action_id, $action_amount, $action_price) = $this->checkActionPrice($art_id);
             $action_price = $exrate->getKoursFromUSA($action_price, 1); // to UAH
+
             if ($amount >= $action_amount) {
                 $status_action = $action_id;
                 $price = $action_price;
@@ -1135,12 +1135,13 @@ class ShopClass extends CatalogueClass
         $recipient_phone    = $client->formatValidPhone($recipient_phone);
         $recipient_phone    = ($recipient_phone === 0 || $recipient_phone === "0") ? "" : $recipient_phone;
 
-        if ($user_id === 0 || $user_id === "0" || $user_id === "" || $user_id === "undefined") {
+        if (empty($user_id) || $user_id === "undefined") {
             $user_id    = $this->getUser();
             $client_id  = $this->getClient();
         } else {
             $client_id = $client->getClientByUser($user_id);
         }
+
         $tpoint_id      = $this->getTpointID();
         $cookie         = $this->getSessionID();
         $cash_id        = $client->getClientCurrency($client_id);
@@ -1249,9 +1250,11 @@ class ShopClass extends CatalogueClass
 
         $r = $db->query("SELECT `ID` FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID` = $client_id AND `USER_ID` = $user_id AND `CITY_ID` = $city_id AND `DELIVERY_ID` = $delivery_id AND `PAYMENT_ID` = $payment_id AND `DEL_STREET` = '$street' AND `DEL_HOUSE` = '$house' AND `DEL_PORCH` = '$porch' AND `DEL_DEPARTMENT` = '$department' AND `DEL_EXPRESS` = $express AND `DEL_EXPRESS_INFO` = '$express_in' LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n === 0) {
             $r2 = $db->query("SELECT `ID` FROM `ORDERS_CLIENT_INFO` WHERE `CLIENT_ID` = $client_id AND `USER_ID` = $user_id AND `DELIVERY_ID` = $delivery_id AND `PAYMENT_ID` = $payment_id AND `CITY_ID` = $city_id LIMIT 1;");
             $n2 = $db->num_rows($r2);
+
             if ($n2 === 0) {
                 $r = $db->query("SELECT MAX(`ID`) as maxim FROM `ORDERS_CLIENT_INFO`;");
                 $order_info_id = (int)$db->result($r, 0, "maxim") + 1;
@@ -1387,23 +1390,21 @@ class ShopClass extends CatalogueClass
      * */
     public function validDeliveryFields($delivery, $delivery_type): array
     {
-        $delivery = $this->getUrlNumber($delivery);
-        $result = true;
-        $fields = [];
-        $street = $delivery_type["street"];
-        $house = $delivery_type["house"];
-        $department = $delivery_type["department"];
-        $department_id = $delivery_type["department_id"]; // department ID
-        $delivery_express = $delivery_type["delivery_express"]; // express ID
-        $delivery_express_department = $delivery_type["delivery_express_department"];
+        $delivery       = $this->getUrlNumber($delivery);
+        $result         = true;
+        $fields         = [];
+        $street         = $delivery_type["street"];
+        $house          = $delivery_type["house"];
+        $department     = $delivery_type["department"];
+        $department_id  = $delivery_type["department_id"];
+        $del_ex         = $delivery_type["delivery_express"];
+        $del_ex_dep     = $delivery_type["delivery_express_department"];
 
         switch ($delivery) {
             case 4:
             {
-                if ($department_id === "0" || $department_id === 0 || $department_id === "undefined") {
-                    if ($department_id === "0" || $department_id === 0 || $department_id === "undefined") {
-                        $fields[] = "department";
-                    }
+                if (empty($department_id)) {
+                    $fields[] = "department";
                     $result = false;
                 }
                 break;
@@ -1412,11 +1413,11 @@ class ShopClass extends CatalogueClass
             case 3:
             case 5:
             {
-                if (($street === "" || $street === "undefined") || ($house === "" || $house === "undefined")) {
-                    if ($street === "" || $street === "undefined") {
+                if (empty($street) || empty($house)) {
+                    if (empty($street)) {
                         $fields[] = "street";
                     }
-                    if ($house === "" || $house === "undefined") {
+                    if (empty($house)) {
                         $fields[] = "house";
                     }
                     $result = false;
@@ -1425,21 +1426,19 @@ class ShopClass extends CatalogueClass
             }
             case 6:
             {
-                if ($department === "0" || $department === 0 || $department === "undefined") {
-                    if ($department === "0" || $department === 0 || $department === "undefined") {
-                        $fields[] = "department";
-                    }
+                if (empty($department)) {
+                    $fields[] = "department";
                     $result = false;
                 }
                 break;
             }
             case 7:
             {
-                if (($delivery_express_department === "" || $delivery_express_department === "undefined") || ($delivery_express === "0" || $delivery_express === 0 || $delivery_express === "undefined")) {
-                    if ($delivery_express_department === "" || $delivery_express_department === "undefined") {
+                if ((empty($del_ex_dep)) || (empty($del_ex))) {
+                    if (empty($del_ex_dep)) {
                         $fields[] = "delivery_express_department";
                     }
-                    if ($delivery_express === "0" || $delivery_express === 0 || $delivery_express === "undefined") {
+                    if (empty($del_ex)) {
                         $fields[] = "delivery_express";
                     }
                     $result = false;
@@ -1567,6 +1566,7 @@ class ShopClass extends CatalogueClass
         if ($delivery_id === 4) {
             $price = $this->getArticlePrice(100060075); // NP
         }
+
         if ($delivery_id === 5) {
             $price = $this->getArticlePrice(100060076); // NP KURER
         }
@@ -1643,6 +1643,7 @@ class ShopClass extends CatalogueClass
 
         $r = $db->query("SELECT `amount`, `price` FROM `basket` WHERE $where AND `status_checked` = 1 ORDER BY `date_create` DESC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $amount = $db->result($r, $i - 1, "amount");
@@ -1652,6 +1653,7 @@ class ShopClass extends CatalogueClass
                 if ($cur === 1) {
                     $price = $client->getClientPriceRounding($this->getClient(), $price);
                 }
+
                 $full_price = $price * $amount;
                 $order_sum  += $full_price;
             }
@@ -1679,6 +1681,7 @@ class ShopClass extends CatalogueClass
 
         $r = $db->query("SELECT `art_id`, `brand_id`, `price`, `amount` FROM `basket` WHERE $where AND `status_checked` = 1 ORDER BY `date_create` DESC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $art_id     = $db->result($r, $i - 1, "art_id");
@@ -1772,6 +1775,7 @@ class ShopClass extends CatalogueClass
         if ($lang_id === 1 || $lang_id === 3) {
             $postfix = "_RU";
         }
+
         if ($user_city > 0) {
             $where_user_city = "OR `CITY_ID` = $user_city";
         }
@@ -1804,6 +1808,7 @@ class ShopClass extends CatalogueClass
         $lang_id = $this->getLanguage();
         $mas = [];
         $postfix = "";
+
         if ($lang_id === 1 || $lang_id === 3) {
             $postfix = "_RU";
         }
@@ -1907,6 +1912,7 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $lang_id = $this->getLanguage();
         $postfix = "";
+
         if ($lang_id === 1 || $lang_id === 3) {
             $postfix = "_RU";
         }
@@ -1943,9 +1949,11 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $lang_id = $this->getLanguage();
         $postfix = "";
+
         if ($lang_id === 1 || $lang_id === 3) {
             $postfix = "_RU";
         }
+
         $list = "";
         $text = $this->getNameString($text);
 

@@ -19,6 +19,7 @@ trait Helper
         if (empty($cookie_id)) {
             $cookie_id = 0;
         }
+
         return $cookie_id;
     }
 
@@ -34,6 +35,7 @@ trait Helper
         }
         iconv('Windows-1251', 'UTF-8', $form);
         mb_convert_encoding($form, 'UTF-8', 'Windows-1251');
+
         return $form;
     }
 
@@ -43,6 +45,7 @@ trait Helper
     public function getUrlString($str): string
     {
         $str = str_replace(array("'", "`", ",", '"', "%22", "%27", "%60", "&nbsp;", "&rsquo;", "%20"), array("", "", "", "", "", "", "", "", "", " "), $str);
+
         return $str;
     }
 
@@ -52,6 +55,7 @@ trait Helper
     public function getNameString($str): string
     {
         $str = str_replace(array("'", "`", '"', "%22", "%27", "%60", "&rsquo;", "%20"), array("", "", "", "", "", "", "", " "), $str);
+
         return $str;
     }
 
@@ -63,6 +67,7 @@ trait Helper
         if (!is_numeric($number)) {
             $number = 0;
         }
+
         return $number;
     }
 
@@ -80,6 +85,7 @@ trait Helper
     {
         $client = new ClientClass();
         $clientData = $client->getClientData();
+
         return (int)$clientData[0];
     }
 
@@ -87,6 +93,7 @@ trait Helper
     {
         $client = new ClientClass();
         $clientData = $client->getClientData();
+
         return (int)$clientData[1];
     }
 
@@ -103,6 +110,7 @@ trait Helper
     public function getSiteLink(): string
     {
         $language = new LangClass();
+
         return "https://toko.ua/" . $language->getLangIDPrefix($this->getLanguage());
     }
 
@@ -120,6 +128,7 @@ trait Helper
         if ($lang_id === 3) {
             $postfix = "EN";
         }
+
         return $postfix;
     }
 
@@ -127,6 +136,7 @@ trait Helper
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `id` = $key;");
+
         return $db->result($r, 0, "mcaption");
     }
 
@@ -134,6 +144,7 @@ trait Helper
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `mcaption` FROM `manual` WHERE `key` = '$key' AND `mid` = $mid LIMIT 1;");
+
         return $db->result($r, 0, "mcaption");
     }
 
@@ -155,6 +166,7 @@ trait Helper
             $options .= "
             <option value=\"$id\">$caption</option>";
         }
+
         return $options;
     }
 
@@ -177,14 +189,16 @@ trait Helper
             }
             return $cmp;
         });
+
         return $array;
     }
 
     public function getWeekdayAbr($week_day)
     {
         $wks = array('1' => "Пн", '2' => "Вт", '3' => "Ср", '4' => "Чт", '5' => "Пт", '6' => "Сб", '7' => "Нд");
-        $wks["$week_day"] = iconv("UTF-8", "Windows-1251", $wks["$week_day"]);
-        return $wks["$week_day"];
+        $wks[$week_day] = iconv("UTF-8", "Windows-1251", $wks[$week_day]);
+
+        return $wks[$week_day];
     }
 
     public function translit($st)
@@ -202,6 +216,7 @@ trait Helper
             'R', 'S', 'T', 'U', 'F', 'H', 'Ts', 'Ch', 'Sh', 'Sht', 'A', 'I', 'Y', 'e', 'Yu', 'Ya', 'I', 'Yi', 'Ye'
         ];
         $st = str_replace($cyr, $lat, $st);
+
         return $st;
     }
 
@@ -220,6 +235,7 @@ trait Helper
             $n = rand(0, $alphaLength);
             $pass[] = $alphabet[$n];
         }
+
         return implode($pass);
     }
 
@@ -248,6 +264,7 @@ trait Helper
             $caption = $caption_3;
         }
         $caption = $this->replaceLang($caption);
+
         return $caption;
     }
     /*
@@ -275,6 +292,7 @@ trait Helper
             $caption = $caption_3;
         }
         $caption = $this->replaceLang($caption);
+
         return $caption;
     }
 
@@ -286,6 +304,7 @@ trait Helper
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT COUNT(`ART_ID`) as col FROM `T2_PHOTOS` WHERE `ART_ID` = $ref AND `ACTIVE` = 1;");
         $n = (int)$db->result($r, 0, "col");
+
         return ($n > 0);
     }
 
@@ -302,6 +321,7 @@ trait Helper
             $static_h1 = $static_data['//' . $_SERVER["HTTP_HOST"] . $uri][2];
         }
         $static_h1 = iconv("UTF-8", "windows-1251", $static_h1);
+
         return $static_h1;
     }
 
@@ -315,6 +335,7 @@ trait Helper
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ART_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id AND `TYP_ID` = $typ_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         return $n !== 0;
     }
 
@@ -415,6 +436,7 @@ trait Helper
         if (count($sub_str_arr) > 1) {
             $status = 1;
         }
+
         return $status;
     }
 
@@ -424,6 +446,7 @@ trait Helper
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
         $n = $db->result($r, 0, "count_arts");
+
         return ($n > 0);
     }
 
@@ -467,6 +490,7 @@ trait Helper
             $script = getHtmlForm("menu/breadcrumbs_script");
             $script = str_replace("{bread_text}", $script_list, $script);
         }
+
         return compact("form", "script");
     }
 
@@ -475,6 +499,7 @@ trait Helper
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ID` FROM `SEO_LISTING_CITY` WHERE `LINK_NAME` = '$city_link' LIMIT 1;");
         $n = $db->num_rows($r);
+
         return ($n > 0);
     }
 
@@ -483,6 +508,7 @@ trait Helper
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
         $r = $db->query("SELECT `$prefix$postfix` FROM `SEO_LISTING_CITY` WHERE `LINK_NAME` = '$city_link' LIMIT 1;");
+
         return $db->result($r, 0, "$prefix$postfix");
     }
 

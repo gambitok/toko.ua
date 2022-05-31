@@ -487,13 +487,16 @@ class CatalogueClass
 
         // main brand first
         $brand_main_key = 0;
+
         if ($main_brand > 0) {
             foreach ($brands as $key => $value) {
                 $brand_id = $value["brand_id"];
+
                 if ($main_brand === $brand_id) {
                     $brand_main_key = $key;
                 }
             }
+
             if (!empty($brands)){
                 $brands = array($brand_main_key => $brands[$brand_main_key]) + $brands;
             }
@@ -735,6 +738,7 @@ class CatalogueClass
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search);
             $n = $db->num_rows($r);
+
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id             = (int)$db->result($r, $i - 1, "ART_ID");
@@ -918,17 +922,22 @@ class CatalogueClass
         foreach ($supplPrices as $supplPrice) {
             $suppl_price_usd = (float)$supplPrice["price_usd"];
             $price_suppl = $suppl_price_usd;
+
             if ($supplPrice["margin"] > 0) {
                 $price = ($price_suppl + $price_suppl * $supplPrice["margin"] / 100) - $price_suppl;
+
                 if ($price > $supplPrice["delivery"]) {
                     $price = ($price_suppl + $price_suppl * $supplPrice["margin"] / 100);
                 }
+
                 if ($price <= $supplPrice["delivery"]) {
                     $price = $price_suppl + $price_suppl * $supplPrice["margin2"] / 100 + $supplPrice["delivery"];
                 }
+
                 if ($margin_price_suppl_lvl > 0 && $margin_price_suppl_lvl !== "") {
                     $price = $price + $price * $margin_price_suppl_lvl / 100;
                 }
+
                 if ($client_vat === 1) {
                     if ((int)$supplPrice["price_in_vat"] === 0 && (int)$supplPrice["show_in_vat"] === 1 && (int)$supplPrice["price_add_vat"] === 1) {
                         $price = $price + $price * 20 / 100;
@@ -977,6 +986,7 @@ class CatalogueClass
             } else {
                 $today = "<span class=\"delivery-dark\">$date_del ($week_day_short)</span>";
             }
+
             $info = "$today<br>$time_from_del - $time_to_del";
             $delivery_short_info = "$today<br>{with_cap} $time_from_del";
             $array[$deliver["storage_id"]] = compact("info", "delivery_days", "delivery_short_info");
@@ -996,6 +1006,7 @@ class CatalogueClass
         FROM `T_POINT_SUPPL_DELIVERY_TIME` 
         WHERE `status` = '1' AND `tpoint_id` = '$tpoint_id' AND `week_day` = '$week_day' AND `time_from` <= '$cur_time' AND `time_to` >= '$cur_time';");
         $deliveryTimes = mysqli_fetch_all($r, MYSQLI_ASSOC);
+
         foreach ($deliveryTimes as $deliveryTime) {
             $delivery_days  = (int)$deliveryTime["delivery_days"];
             $time_from_del  = substr($deliveryTime["time_from_del"], 0, -3);
@@ -1011,6 +1022,7 @@ class CatalogueClass
             } else {
                 $today = "<span class=\"delivery-dark\">$date_del ($week_day_short)</span>";
             }
+
             $info = "$today<br>{$time_from_del} - {$time_to_del}";
             $delivery_short_info = "$today<br>{with_cap} $time_from_del";
 
@@ -1036,30 +1048,35 @@ class CatalogueClass
         $image_analog = $this->images . "/tcdanalogs/clone.svg";
         $index_type = "
         <img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_analog}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_analog} $article_nr_search $brand_name\">";
+
         // OE
         if ($this->checkOriginalEquipment($true_art_id, $format_name)) {
             $image_analog = $this->images . "/tcdanalogs/oe.svg";
             $index_type = "
             <img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_original}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_original} $article_nr_search $brand_name\">";
         }
+
         // INCLUDED
         if ($this->checkAnalogTypes($art_id, $article_nr_search, 1)) {
             $image_analog = $this->images . "/tcdanalogs/chevron-square-down.svg";
             $index_type = "
             <img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_included}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_included} $article_nr_search $brand_name\">";
         }
+
         // PRESENTED
         if ($this->checkAnalogTypes($art_id, $article_nr_search, 2)) {
             $image_analog = $this->images . "/tcdanalogs/chevron-square-up.svg";
             $index_type = "
             <img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_presented}\" class=\"tooltips lazy\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_presented} $article_nr_search $brand_name\">";
         }
+
         // COMPANION
         if ($this->checkAnalogTypes($art_id, $article_nr_search, 3)) {
             $image_analog = $this->images . "/tcdanalogs/plus-square.svg";
             $index_type = "
             <img data-src=\"$image_analog\" width=\"15\" height=\"15\" alt=\"{index_type_companion}\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"{index_type_companion} $article_nr_search $brand_name\">";
         }
+
         // REQUESTED
         if (($article_nr_search !== "") && ($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && ($brand_id === $brand_nr_search)) {
             $image_analog = $this->images . "/tcdanalogs/square.svg";
@@ -1081,9 +1098,11 @@ class CatalogueClass
     public function getSuppLStorageVisible($suppl_id, $storage_id): bool
     {
         $db = DbSingleton::getDbm();
+
         if ($suppl_id > 0) {
             $r = $db->query("SELECT `visible` FROM `A_CLIENTS_STORAGE` WHERE `client_id` = $suppl_id AND `id` = $storage_id LIMIT 1;");
             $n = $db->num_rows($r);
+
             if ($n > 0) {
                 $visible = (int)$db->result($r, 0, "visible");
 
@@ -1175,18 +1194,15 @@ class CatalogueClass
         $form = str_replace("{product_title}", $productTitle, $form);
 
         if ((int)$stock === 0) {
-            $form = str_replace("{price_row_status}", "none", $form);
-            $form = str_replace("{soldout_row_status}", "", $form);
+            $form = str_replace(array("{price_row_status}", "{soldout_row_status}"), array("none", ""), $form);
         }
 
         if ($status) {
             // PRICE & STOCK NICE
-            $form = str_replace("{price_row_status}", "", $form);
-            $form = str_replace("{soldout_row_status}", "none", $form);
+            $form = str_replace(array("{price_row_status}", "{soldout_row_status}"), array("", "none"), $form);
         } else {
             // PRICE & STOCK = 0
-            $form = str_replace("{price_row_status}", "none", $form);
-            $form = str_replace("{soldout_row_status}", "", $form);
+            $form = str_replace(array("{price_row_status}", "{soldout_row_status}"), array("none", ""), $form);
         }
 
         // status_auto
@@ -1197,25 +1213,19 @@ class CatalogueClass
         $auto_typ_id = $this->getCookieAuto();
         if ($auto_typ_id !== "") {
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
-                $form = str_replace("{applicable_display}", "applicable-active", $form);
-                $form = str_replace("{applicable_display_text}", "{is_applicable}", $form);
-                $form = str_replace("{applicable_onclick}", "", $form);
+                $form = str_replace(array("{applicable_display}", "{applicable_display_text}", "{applicable_onclick}"), array("applicable-active", "{is_applicable}", ""), $form);
             } else {
                 if ((int)$status_auto === 1) {
                     $form = str_replace("{applicable_display}", "dnone", $form);
                 }
-                $form = str_replace("{applicable_display}", "", $form);
-                $form = str_replace("{applicable_display_text}", "{is_didnt_applicable}", $form);
-                $form = str_replace("{applicable_onclick}", "", $form);
+                $form = str_replace(array("{applicable_display}", "{applicable_display_text}", "{applicable_onclick}"), array("", "{is_didnt_applicable}", ""), $form);
             }
         }
 
         if ((int)$status_auto === 1) {
             $form = str_replace("{applicable_display}", "dnone", $form);
         }
-        $form = str_replace("{applicable_display}", "", $form);
-        $form = str_replace("{applicable_display_text}", "{is_not_applicable}", $form);
-        $form = str_replace("{applicable_onclick}", "toggleNavMob();", $form);
+        $form = str_replace(array("{applicable_display}", "{applicable_display_text}", "{applicable_onclick}"), array("", "{is_not_applicable}", "toggleNavMob();"), $form);
 
         $list = $form;
         if (!$view) {
@@ -1362,6 +1372,7 @@ class CatalogueClass
 
             // 3
             $art_cash_id = $this->getArticlePriceRatingCash($art_id);
+
             if ($margin_price_lvl < 0 && $markup_min > 0) {
                 $price                  = $this->getPriceRatingKours($price, $art_cash_id, $cash_id);
                 $proc_price_margin      = $price - ($price * abs($margin_price_lvl) / 100);
@@ -1401,6 +1412,7 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID = t2a.ART_ID)
         WHERE t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;");
         $n = (int)$dbt->num_rows($r);
+
         if ($n === 1) {
             $price      = (float)$dbt->result($r, 0, "price_" . $price_lvl);
             $minMarkup  = (float)$dbt->result($r, 0, "minMarkup");
@@ -1442,6 +1454,7 @@ class CatalogueClass
             }
 
             $price = $this->getPriceRatingKours($price, $cash_id, 1);
+
             if ($cash_id === 1) {
                 $price = $client->getClientPriceRounding($client_id, $price);
             }
@@ -1465,6 +1478,7 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
         WHERE t2a.ART_ID = $art_id AND t2si.suppl_id = $suppl_id LIMIT 1;");
         $n = $dbt->num_rows($r);
+
         if ($n === 1) {
             $suppl_price_usd = (float)($dbt->result($r, 0, "price_usd"));
             list($price_in_vat, $show_in_vat, $price_add_vat) = $this->getSupplVatConditions($suppl_id);
@@ -1474,6 +1488,7 @@ class CatalogueClass
 
             if ($suppl_margin_fm > 0) {
                 $price = ($price_suppl + $price_suppl * $suppl_margin_fm / 100) - $price_suppl;
+
                 if ($price > $suppl_delivery_fm) {
                     $price = ($price_suppl + $price_suppl * $suppl_margin_fm / 100);
                 }
@@ -1510,6 +1525,7 @@ class CatalogueClass
         $price_lvl = $margin_price_lvl = $price_suppl_lvl = $mprice_suppl_lvl = $client_vat = 0;
         $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n === 1) {
             $price_lvl          = (int)$db->result($r, 0, "price_lvl");
             $price_lvl++;
@@ -1529,6 +1545,7 @@ class CatalogueClass
         $price_in_vat = $show_in_vat = $price_add_vat = 0;
         $r = $db->query("SELECT `price_in_vat`, `show_in_vat`, `price_add_vat` FROM `A_CLIENTS_VAT_CONDITIONS` WHERE `client_id` = $suppl_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n === 1) {
             $price_in_vat   = (int)$db->result($r, 0, "price_in_vat");
             $show_in_vat    = (int)$db->result($r, 0, "show_in_vat");
@@ -1546,6 +1563,7 @@ class CatalogueClass
         WHERE `tpoint_id` = '$tpoint_id' AND `suppl_id` = '$suppl_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `price_from` <= '$price_suppl' 
         AND `price_to` >= '$price_suppl' AND `price_rating_id` = '$price_suppl_lvl' LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n === 1) {
             $margin     = (int)$db->result($r, 0, "margin");
             $delivery   = (float)$db->result($r, 0, "delivery");
@@ -1568,6 +1586,7 @@ class CatalogueClass
         WHERE `status` = '1' AND `tpoint_id` = '$tpoint_id' AND `storage_id` = '$storage_id' AND `week_day` = '$week_day' AND `time_from` <= '$cur_time' AND `time_to` >= '$cur_time' 
         ORDER BY `delivery_days` ASC LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n === 1) {
             $delivery_days  = (int)$db->result($r, 0, "delivery_days");
             $time_from_del  = substr($db->result($r, 0, "time_from_del"), 0, -3);
@@ -1583,6 +1602,7 @@ class CatalogueClass
             } else {
                 $today = "<span class=\"delivery-dark\">$date_del ($week_day_short)</span>";
             }
+
             $info       = "$today<br>$time_from_del - $time_to_del";
             $short_info = "$today<br>{with_cap} $time_from_del";
         }
@@ -1607,6 +1627,7 @@ class CatalogueClass
         WHERE `status` = '1' AND `tpoint_id` = '$tpoint_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `suppl_id` = '$suppl_id' AND `week_day` = '$week_day' 
         AND `time_from`<='$cur_time' AND `time_to`>='$cur_time' LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n === 1) {
             $delivery_days  = (int)$db->result($r, 0, "delivery_days");
             $time_from_del  = substr($db->result($r, 0, "time_from_del"), 0, -3);
@@ -1622,6 +1643,7 @@ class CatalogueClass
             } else {
                 $today = "<span class=\"delivery-dark\">$date_del ($week_day_short)</span>";
             }
+
             $info       = "$today<br>$time_from_del - $time_to_del";
             $short_info = "$today<br>{with_cap} $time_from_del";
         }

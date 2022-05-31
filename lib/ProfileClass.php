@@ -1028,6 +1028,7 @@ class ProfileClass extends ClientClass
     {
         $text = ($status === 2) ? "{status_off}" : "{status_on}";
         $text = $this->replaceLang($text);
+
         return $text;
     }
 
@@ -1040,6 +1041,7 @@ class ProfileClass extends ClientClass
         $shop = new ShopClass();
         $form = $this->getHtmlForm("profile/registration");
         $form = str_replace(array("{type_form}", "{region_form}", "{category_options}", "{tpoint_options}", "{user_city_main_list}"), array($menu->showTypeForm(), $menu->getRegionForm(), $this->getManualOptions("customers_categories"), $this->getRegionSelectProfile(), $shop->getCitiesMainSelect()), $form);
+
         return $form;
     }
 
@@ -1058,6 +1060,7 @@ class ProfileClass extends ClientClass
             $options .= "
             <option value=\"$id\">$region ($addres)</option>";
         }
+
         return $options;
     }
 
@@ -1102,6 +1105,7 @@ class ProfileClass extends ClientClass
                 $dbm->query("UPDATE `cron_task_prices` SET `status` = 2, `date_end` = '$date_end' WHERE `user_id` = $user_id AND `status` = 1;");
             }
         }
+
         return true;
     }
 

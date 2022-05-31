@@ -10,6 +10,7 @@ class ProductsClass extends CatalogueClass
         } else {
             $form = $this->getCarsSearch($mfa_link, $mod_link, $group_id);
         }
+
         return $form;
     }
 
@@ -95,6 +96,7 @@ class ProductsClass extends CatalogueClass
         for($i = $date_end; $i >= $date_start; $i--) {
             $mas[] = $i;
         }
+
         $headers = [];
         foreach($mas as $val) {
             $item = floor($val / 10) * 10;
@@ -102,6 +104,7 @@ class ProductsClass extends CatalogueClass
                 $headers[] = $item;
             }
         }
+
         $res = [];
         foreach ($headers as $head) {
             foreach ($mas as $val) {
@@ -122,6 +125,7 @@ class ProductsClass extends CatalogueClass
             }
             $form .= "</div>";
         }
+
         return $form;
     }
 
@@ -351,6 +355,7 @@ class ProductsClass extends CatalogueClass
         $image  = $db->result($r, 0, "LOGO");
         $name   = $db->result($r, 0, "TYPE_BODY");
         $path   = "https://toko.ua/uploads/images/body-types/$image";
+
         return array($name, $path);
     }
 
@@ -358,6 +363,7 @@ class ProductsClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = $mod_id LIMIT 1;");
+
         return $db->result($r, 0, "TEX_TEXT");
     }
 
@@ -365,6 +371,7 @@ class ProductsClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TYP_TEXT` FROM `T_types` WHERE `TYP_ID` = $typ_id LIMIT 1;");
+
         return $db->result($r, 0, "TYP_TEXT");
     }
 
@@ -379,6 +386,7 @@ class ProductsClass extends CatalogueClass
             $disabled   = "";
             $hidden     = "";
         }
+
         switch ($sel_tab) {
             case "2":
             {
@@ -418,7 +426,9 @@ class ProductsClass extends CatalogueClass
                 break;
             }
         }
+
         $text = $this->replaceLang($text);
+
         return array($class, $text);
     }
 
@@ -436,6 +446,7 @@ class ProductsClass extends CatalogueClass
 
         $form = $this->getHtmlForm("garage/selected");
         $form = str_replace(array("{typ_id}", "{manufacture_cap}", "{model_id_cap}", "{typ_text}", "{models_img}", "{garage_button}", "{typ_id}"), array($auto_typ_id, $manufacture_cap, $model_id_cap, $automan->getGroupInfo($auto_typ_id), $models_img, $garage_btn, $auto_typ_id), $form);
+
         return $this->replaceLang($form);
     }
 
@@ -451,9 +462,11 @@ class ProductsClass extends CatalogueClass
         $form = $this->getCarsSearch();
         $auto_typ_id = $this->getCookieAuto();
         $status = 0;
+
         if ($auto_typ_id !== "") {
             $status = 1;
         }
+
         return array($form, $status);
     }
 
