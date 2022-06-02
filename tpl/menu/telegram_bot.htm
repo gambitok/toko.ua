@@ -1,15 +1,44 @@
 <style>
-    .telegram-content ul {
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: space-between;
+    .telegram-content-ul {
+        list-style: none;
+        display: block;
         margin-top: 30px;
+        white-space: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        margin-bottom: 30px;
     }
-    .telegram-content ul li {
-        width: 15%;
+    .telegram-content-ul li {
+        display: inline-block;
+        width: 300px;
+        margin-right: 15px;
+        margin-bottom: 15px;
     }
-    .telegram-content ul li img {
+    .telegram-content-ul li img {
         width: 100%;
+        border-radius: 1em;
+    }
+
+    .telegram-update-p {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+    .telegram-update-ul {
+        list-style: none;
+        font-size: 15px;
+    }
+    .telegram-update-ul li {
+        margin-bottom: 30px;
+    }
+    .telegram-update-ul__date {
+        color: gray;
+        float: right;
+        margin-bottom: 30px;
+        margin-left: 60px;
+    }
+    .telegram-update-ul__text {
+        color: black;
     }
 
 </style>
@@ -21,16 +50,16 @@
     <h1>{telegram_bot_cap}</h1>
 
     <a href="https://t.me/tokoua_robot" rel="noopener" target="_blank">
-        {telegram_bot_text}
+        <i class="fa fa-link"></i> {telegram_bot_text}
     </a>
 
-    <div class="anchor-contacts-li anchor-contacts-li-item">
-        <a href="https://t.me/tokoua_robot" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram">
-            <img class="lazy loaded" data-src="/images/icons/socials/png/telegram.png" alt="Telegram" src="/images/icons/socials/png/telegram.png" data-was-processed="true">
-        </a>
-    </div>
+<!--    <div class="anchor-contacts-li anchor-contacts-li-item">-->
+<!--        <a href="https://t.me/tokoua_robot" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram">-->
+<!--            <img class="lazy loaded" data-src="/images/icons/socials/png/telegram.png" alt="Telegram" src="/images/icons/socials/png/telegram.png" data-was-processed="true">-->
+<!--        </a>-->
+<!--    </div>-->
 
-    <ul class="list-inline">
+    <ul class="telegram-content-ul">
         <li><img src="/images/telegram%20bot/toko-ua-bot-01.webp" alt="Telegram Bot 1"></li>
         <li><img src="/images/telegram%20bot/toko-ua-bot-02.webp" alt="Telegram Bot 2"></li>
         <li><img src="/images/telegram%20bot/toko-ua-bot-03.webp" alt="Telegram Bot 3"></li>
@@ -38,5 +67,7 @@
         <li><img src="/images/telegram%20bot/toko-ua-bot-05.webp" alt="Telegram Bot 5"></li>
         <li><img src="/images/telegram%20bot/toko-ua-bot-06.webp" alt="Telegram Bot 6"></li>
     </ul>
+
+   {telegram_bot_updates}
 
 </div>

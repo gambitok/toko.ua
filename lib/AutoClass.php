@@ -168,6 +168,7 @@ class AutoClass extends CatalogueClass
         $mfa_id = $this->getUrlNumber($mfa_id);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_BRAND` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
+
         return $db->result($r, 0, "MFA_BRAND");
     }
 
@@ -180,6 +181,7 @@ class AutoClass extends CatalogueClass
         $mfa_link = $this->getUrlString($mfa_link);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' LIMIT 1;");
+
         return (int)$db->result($r, 0, "MFA_ID");
     }
 
@@ -192,6 +194,7 @@ class AutoClass extends CatalogueClass
         $mod_link = $this->getUrlString($mod_link);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link` = '$mod_link' LIMIT 1;");
+
         return $db->result($r, 0, "Model");
     }
 
@@ -204,6 +207,7 @@ class AutoClass extends CatalogueClass
         $mod_id = $this->getUrlNumber($mod_id);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEX_TEXT` FROM `T_models` WHERE `MOD_ID` = $mod_id LIMIT 1;");
+
         return $db->result($r, 0, "TEX_TEXT");
     }
 
@@ -216,6 +220,7 @@ class AutoClass extends CatalogueClass
         $mod_id_link = $this->getUrlString($mod_id_link);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MOD_ID` FROM `T_models` WHERE `TEX_TEXT_link` = '$mod_id_link' LIMIT 1;");
+
         return (int)$db->result($r, 0, "MOD_ID");
     }
 

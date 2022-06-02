@@ -83,33 +83,36 @@ function getMoreTitle($path)
     $linka = findLinks();
 
     if ($path === "search") {
-        $article_nr_search = $cat->getUrlString($linka[1]);
-        $article_nr_search = rawurldecode($article_nr_search);
-        $article_nr_search = iconv("UTF-8", "windows-1251", $article_nr_search);
-        $brand_link = $cat->getUrlString($linka[2]);
-        $brand_id = ($brand_link !== "") ? $cat->getCatalogueBrandID($brand_link) : 0;
+        $article_nr_search  = $cat->getUrlString($linka[1]);
+        $article_nr_search  = rawurldecode($article_nr_search);
+        $article_nr_search  = iconv("UTF-8", "windows-1251", $article_nr_search);
+        $brand_link         = $cat->getUrlString($linka[2]);
+        $brand_id           = ($brand_link !== "") ? $cat->getCatalogueBrandID($brand_link) : 0;
 
         if ($article_nr_search === "") {
             $pretitle = "{site_title_short}";
         } elseif ($brand_id === 0 || $brand_id === "0") {
             $pretitle = "{search_results} $article_nr_search | {site_title_short}";
         } else {
-            $art_id = $cat->getArticleId($article_nr_search, $brand_id);
-            $art_name = $cat->getArticleName($art_id);
-            $brand_name = $cat->getBrandName($brand_id);
-            $article_nr_search = strtoupper($article_nr_search);
-            $pretitle = "$brand_name $article_nr_search - $art_name | {site_title_short}";
+            $art_id             = $cat->getArticleId($article_nr_search, $brand_id);
+            $art_name           = $cat->getArticleName($art_id);
+            $brand_name         = $cat->getBrandName($brand_id);
+            $article_nr_search  = strtoupper($article_nr_search);
+            $pretitle           = "$brand_name $article_nr_search - $art_name | {site_title_short}";
         }
     }
+
     elseif ($path === "cars") {
         $mfa_link = $cat->getUrlString($linka[1]);
         $mod_link = $cat->getUrlString($linka[2]);
+
         if ($mfa_link === "") {
             $pretitle = "{site_cars_h1} — {seo_site_toko}";
         } else {
             list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
             list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
             $translit = $automan->getCarManufTranslit($mfa_id, $model);
+
             if ($mfa_link !== "") {
                 $mm = "$mfa_brand $model_text";
                 if ($translit !== "") {
@@ -125,6 +128,7 @@ function getMoreTitle($path)
             $pretitle = "$pretitle - $postfix";
         }
     }
+
     elseif (checkLangVariable("site_$path")) {
         $pretitle = "{site_$path} - {seo_title}";
     } else {
@@ -149,6 +153,7 @@ function printBreadcrumbs($path)
 
     $section = $path;
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
     if (strpos($actual_link,"?") !== false) {
         $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
     }
@@ -173,6 +178,7 @@ function printBreadcrumbs($path)
                 "item" => "" . $cat->getSiteLink() . "brands/"
             ];
             $pretitle = "$a_home $icon <a href=\"https://toko.ua/brands/\" rel=\"v:url\" property=\"v:title\">$h_section</a>";
+
             if ($brand_link !== "") {
                 $brand_id = $cat->getBrandNameLink($brand_link);
                 $brand_name = $cat->getBrandName($brand_id);
@@ -194,6 +200,7 @@ function printBreadcrumbs($path)
             ];
             $pretitle = "$a_home $icon $h_section";
             list($mfa_name, $model_name) = $automan->getAutoDescrLink($mfa_link, $model_link);
+
             if ($mfa_link !== "") {
                 $pretitle = "$a_home $icon <a href=\"https://toko.ua/cars/\" rel=\"v:url\" property=\"v:title\">$h_section</a>";
                 $b_arr[3] = [
@@ -201,6 +208,7 @@ function printBreadcrumbs($path)
                     "item" => "" . $cat->getSiteLink() . "cars/" . $mfa_link . "/"
                 ];
                 $pretitle .= " $icon <a href=\"https://toko.ua/cars/$mfa_link/\" rel=\"v:url\" property=\"v:title\">$mfa_name</a>";
+
                 if ($model_link !== "") {
                     $b_arr[4] = [
                         "name" => "$mfa_name $model_name",
@@ -226,6 +234,7 @@ function printBreadcrumbs($path)
                 "name" => $h_section,
                 "item" => "" . $cat->getSiteLink() . "news/"
             ];
+
             if ($cat->getUrlString($bread[1]) === "state") {
                 $a_section = $cat->replaceLang($a_section);
                 $a_section = str_replace("{h1_text}", "{news_cap}", $a_section);
@@ -249,6 +258,7 @@ function printBreadcrumbs($path)
                 "name" => $h_section,
                 "item" => "" . $cat->getSiteLink() . "reviews/"
             ];
+
             if ($cat->getUrlString($bread[1]) === "state") {
                 $a_section = $cat->replaceLang($a_section);
                 $a_section = str_replace("{h1_text}", "{review_state_cap}", $a_section);
@@ -349,6 +359,7 @@ function getDescription($path)
     if ($path === "cars") {
         $description = "{site_cars_description}";
     }
+
     if ($path === "article") {
         $art_id = $linka[3];
         $article_nr_search = $cat->getArticleDispl($art_id);
@@ -360,9 +371,11 @@ function getDescription($path)
         $description = "$art_name $brand_name $article_nr_search - {seo_description_article}";
         $description = ltrim($description, " ");
     }
+
     if ($path === "brands") {
         $description = "{site_brands_description}";
     }
+
     if ($path === "catalog") {
         $description = "{seo_description} {seo_description2}";
     }
@@ -396,6 +409,7 @@ function getSiteLang($lang_id_sel = 0)
     } else {
         $lang_id = $lang_id_sel;
     }
+
     $lang_html = "ru";
     if ($lang_id === 1) {
         $lang_html = "ru";

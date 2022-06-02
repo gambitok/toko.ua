@@ -1710,6 +1710,31 @@ class MenuClass extends CatalogueClass
     {
         $form = $this->getHtmlForm("menu/telegram_bot");
 
+        $list = "";
+        $db = DbSingleton::getTokoDb();
+
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT * FROM `TELEGRAM_BOT_INFO` WHERE `STATUS` = 1;");
+        $n = $db->num_rows($r);
+
+        if ($n > 0) {
+            $list .= "
+            <p class='telegram-update-p'>{whats_new_cap}:</p>
+            <ul class='telegram-update-ul'>";
+            for ($i = 1; $i <= $n; $i++) {
+                $text = $db->result($r, $i - 1, "TEXT_$postfix");
+                $date = $db->result($r, $i - 1, "DATE_CREATE");
+                $list .= "
+                <li>
+                    <div class='telegram-update-ul__date'>$date</div>
+                    <div class='telegram-update-ul__text'>$text</div>
+                </li>";
+            }
+            $list .= "</ul>";
+        }
+
+        $form = str_replace("{telegram_bot_updates}", $list, $form);
+
         return $form;
     }
 
