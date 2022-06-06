@@ -1,73 +1,68 @@
-<style>
-    .telegram-content-ul {
-        list-style: none;
-        display: block;
-        margin-top: 30px;
-        white-space: nowrap;
-        overflow-x: auto;
-        overflow-y: hidden;
-        margin-bottom: 30px;
-    }
-    .telegram-content-ul li {
-        display: inline-block;
-        width: 300px;
-        margin-right: 15px;
-        margin-bottom: 15px;
-    }
-    .telegram-content-ul li img {
-        width: 100%;
-        border-radius: 1em;
-    }
-
-    .telegram-update-p {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-    .telegram-update-ul {
-        list-style: none;
-        font-size: 15px;
-    }
-    .telegram-update-ul li {
-        margin-bottom: 30px;
-    }
-    .telegram-update-ul__date {
-        color: gray;
-        float: right;
-        margin-bottom: 30px;
-        margin-left: 60px;
-    }
-    .telegram-update-ul__text {
-        color: black;
-    }
-
-</style>
 
 <link rel="stylesheet" href="/fonts/fontawesome_web/css/all-minify.css">
+<link rel="stylesheet" href="/js/plugins/OwlCarousel2-2.3.4/assets/owl.carousel.min.css" />
 
 <div class="content telegram-content">
 
     <h1>{telegram_bot_cap}</h1>
+    <br>
 
-    <a href="https://t.me/tokoua_robot" rel="noopener" target="_blank">
-        <i class="fa fa-link"></i> {telegram_bot_text}
-    </a>
+    <div class="row">
+        <div class="col-lg-6 col-12">
+            <div id="owl3d" class="owl-carousel owl-theme">
+                <div><img src="/images/telegram%20bot/toko-ua-bot-01.webp" alt="Telegram Bot 1"></div>
+                <div><img src="/images/telegram%20bot/toko-ua-bot-02.webp" alt="Telegram Bot 2"></div>
+                <div><img src="/images/telegram%20bot/toko-ua-bot-03.webp" alt="Telegram Bot 3"></div>
+                <div><img src="/images/telegram%20bot/toko-ua-bot-04.webp" alt="Telegram Bot 4"></div>
+                <div><img src="/images/telegram%20bot/toko-ua-bot-05.webp" alt="Telegram Bot 5"></div>
+                <div><img src="/images/telegram%20bot/toko-ua-bot-06.webp" alt="Telegram Bot 6"></div>
+            </div>
+        </div>
 
-<!--    <div class="anchor-contacts-li anchor-contacts-li-item">-->
-<!--        <a href="https://t.me/tokoua_robot" rel="noopener" target="_blank" class="anchor-contacts__item anchor-contacts__item-telegram">-->
-<!--            <img class="lazy loaded" data-src="/images/icons/socials/png/telegram.png" alt="Telegram" src="/images/icons/socials/png/telegram.png" data-was-processed="true">-->
-<!--        </a>-->
-<!--    </div>-->
+        <div class="col-lg-6 col-12">
+            <a href="https://t.me/tokoua_robot" rel="noopener" target="_blank">
+                <i class="fa fa-link"></i> {telegram_bot_text}
+            </a>
+            <br>
+            {telegram_bot_descr}
+        </div>
+    </div>
 
-    <ul class="telegram-content-ul">
-        <li><img src="/images/telegram%20bot/toko-ua-bot-01.webp" alt="Telegram Bot 1"></li>
-        <li><img src="/images/telegram%20bot/toko-ua-bot-02.webp" alt="Telegram Bot 2"></li>
-        <li><img src="/images/telegram%20bot/toko-ua-bot-03.webp" alt="Telegram Bot 3"></li>
-        <li><img src="/images/telegram%20bot/toko-ua-bot-04.webp" alt="Telegram Bot 4"></li>
-        <li><img src="/images/telegram%20bot/toko-ua-bot-05.webp" alt="Telegram Bot 5"></li>
-        <li><img src="/images/telegram%20bot/toko-ua-bot-06.webp" alt="Telegram Bot 6"></li>
-    </ul>
-
+    <br>
    {telegram_bot_updates}
 
 </div>
+
+<script src="/js/plugins/OwlCarousel2-2.3.4/owl.carousel.min.js"></script>
+<script>
+    var owl3 = $('#owl3d');
+    owl3.owlCarousel({
+        loop:true,
+        nav:true,
+        dots:true,
+        margin:10,
+        autoplay:false,
+        responsive:{
+            0:{
+                items:1
+            },
+            600:{
+                items:3
+            },
+            960:{
+                items:4
+            },
+            1200:{
+                items:4
+            }
+        }
+    });
+    owl3.on('mousewheel', '.owl-stage', function (e) {
+        if (e.deltaY>0) {
+            owl3.trigger('next.owl');
+        } else {
+            owl3.trigger('prev.owl');
+        }
+        e.preventDefault();
+    });
+</script>

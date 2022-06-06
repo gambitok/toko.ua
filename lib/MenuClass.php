@@ -1714,7 +1714,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
 
         $postfix = $this->getLangPostfix($this->getLanguage());
-        $r = $db->query("SELECT * FROM `TELEGRAM_BOT_INFO` WHERE `STATUS` = 1;");
+        $r = $db->query("SELECT * FROM `TELEGRAM_BOT_INFO` WHERE `STATUS` = 1 ORDER BY `DATE_CREATE` DESC;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
@@ -1724,6 +1724,7 @@ class MenuClass extends CatalogueClass
             for ($i = 1; $i <= $n; $i++) {
                 $text = $db->result($r, $i - 1, "TEXT_$postfix");
                 $date = $db->result($r, $i - 1, "DATE_CREATE");
+                $date = date("d-m-Y", strtotime($date));
                 $list .= "
                 <li>
                     <div class='telegram-update-ul__date'>$date</div>
