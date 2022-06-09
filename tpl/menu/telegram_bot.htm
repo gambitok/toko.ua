@@ -4,8 +4,18 @@
 
 <div class="content telegram-content">
 
-    <h1>{telegram_bot_cap}</h1>
-    <br>
+    <div class="row">
+        <div class="col-lg-10 col-10">
+            <h1>{telegram_bot_cap}</h1>
+            <br>
+            <a href="https://t.me/tokoua_robot" rel="noopener" target="_blank">
+                <i class="fa fa-link"></i> {telegram_bot_text}
+            </a>
+        </div>
+        <div class="col-lg-2 col-2">
+            <img src="/images/telegram_bot_logo.webp" alt="Telegram Bot" style="width: 80px; float: right; margin-bottom: 15px;">
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-lg-6 col-12">
@@ -20,11 +30,17 @@
         </div>
 
         <div class="col-lg-6 col-12">
-            <a href="https://t.me/tokoua_robot" rel="noopener" target="_blank">
-                <i class="fa fa-link"></i> {telegram_bot_text}
-            </a>
+            <p>{telegram_bot_descr}</p>
             <br>
-            {telegram_bot_descr}
+            <p>{telegram_bot_descr_01}</p>
+            <br>
+            <p>{telegram_bot_descr_02}</p>
+            <br>
+            <p>{telegram_bot_descr_03}</p>
+            <br>
+            <a href="https://t.me/tokoua_robot" rel="noopener" target="_blank" class="btn btn-info" style="display: block; margin: 0 auto; width: 300px;">
+                {open_in_cap} Telegram <i class="fa fa-chevron-right"></i>
+            </a>
         </div>
     </div>
 

@@ -62,7 +62,7 @@ for ($i = 1; $i <= $n; $i++) {
         }
     }
 
-    $csv_handler = fopen(RDD . "/../uploads/mailing/$filename", 'w') or die("Can't create file");
+    $csv_handler = fopen(RDD . "/../uploads/mailing/$filename", 'wb') or die("Can't create file");
     fwrite($csv_handler, $csv);
     fclose($csv_handler);
 
@@ -75,14 +75,31 @@ for ($i = 1; $i <= $n; $i++) {
     $email  = $user_email;
     $date   = date("Y-m-d H:i:s");
 
-    $cname  = "TOKO GROUP";
-    $title  = "TOKO GROUP - прайс";
-    $html   =  "
-    <p>Доброго дня, $user_name</p>
-    <p>У доданому файлі знаходиться актуальний прайс-лист станом на - $date</p>
-    <p>З повагою ТОКО ГРУП.</p>
-    <small>Якщо Ви не хочете отримувати новини такого типу в майбутньому, натисніть <a href='https://toko.ua/price_mailing/1/$user/'>тут</a>.</small><br>
-    <small>ТОКО ГРУП ТОВ, ІПН:403029222256, ЄДРПОУ:40302920</small>";
+    $cname  = "TOKO.ua";
+    $title  = "Updated price list for today ($date)";
+
+    $html = "
+<p>Доброго дня, $user_name</p>
+
+<p>У доданому файлі знаходиться актуальний прайс-лист станом на - $date</p>
+
+<p>—-</p>
+<p>З повагою,
+служба доставки інформації TOKO.ua</p>
+
+<p>TOKO GROUP LTD.</p>
+<p>7, Post-Volynska, Kyiv, 03061, Ukraine</p>
+<p>94/1, Prospect Mira, Khmelnitsky 29015, Ukraine</p>
+<p>mobile phone #1: +38 097 080 30 60</p>
+<p>mobile phone #2: +38 050 080 30 60</p>
+<p>mobile phone #3: +38 093 080 30 60</p>
+<p>e-mail: support@toko.ua</p>
+
+<p>Цей лист було надіслано на $user_email від toko.robot@outlook.com.</p>
+<p>Миттєве видалення за допомогою <a href='https://toko.ua/price_mailing/1/$user/'>SafeUnsubscribe</a>.</p>
+
+<p>This email was sent to $user_email by toko.robot@outlook.com.</p>
+<p>Instant removal with <a href='https://toko.ua/price_mailing/1/$user/'>SafeUnsubscribe</a>.</p>";
 
     $fname  = "price.csv";
     $path   = RDD . "/../uploads/mailing/$filename";

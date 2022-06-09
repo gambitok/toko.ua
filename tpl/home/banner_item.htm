@@ -1,9 +1,9 @@
 <div class="gallery">
-    <div class="gallery-item">
+    <a {banner_href} class="gallery-item">
         <div class="gallery-item-image">
             <img class="lazy" data-src="{banner_image}" alt="{banner_title}" src="/images/no_photo.svg">
         </div>
-        <div class="gallery-item-panel">
+        <div class="gallery-item-panel" {banner_text_status}>
             <div class="gallery-item-panel__title">
                 <div class="gallery-item-panel__title-center">
                     {banner_title}
@@ -15,5 +15,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </a>
 </div>

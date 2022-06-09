@@ -1168,30 +1168,7 @@ class CatalogueClass
 
         $productTitle = "$article_name $brand_name $article_nr_displ";
 
-        $form = str_replace("{product_i}", $id, $form);
-        $form = str_replace("{art_id}", $art_id, $form);
-        $form = str_replace("{brand_id}", $brand_id, $form);
-        $form = str_replace("{product_name}", $article_nr_displ, $form);
-        $form = str_replace("{product_brand}", $brand_name, $form);
-        $form = str_replace("{page_product_link}", $product_link, $form);
-        $form = str_replace("{product_text}", $product_text, $form);
-        $form = str_replace("{format_product_text}", $format_product_text, $form);
-        $form = str_replace("{product_stock}", $product_stock, $form);
-        $form = str_replace("{product_real_stock}", $stock, $form);
-        $form = str_replace("{product_storage_id}", $storage_id, $form);
-        $form = str_replace("{product_suppl_id}", $suppl_id, $form);
-        $form = str_replace("{product_delivery_class}", "", $form);
-        $form = str_replace("{product_delivery_short_info}", $delivery_short_info, $form);
-        $form = str_replace("{product_true_price}", $price, $form);
-        $form = str_replace("{product_kours_cap}", $kours_cap, $form);
-        $form = str_replace("{country_display}", $flagDisplay, $form);
-        $form = str_replace("{flag_image}", $flagData["flag"], $form);
-        $form = str_replace("{country_name}", $flagData["country"], $form);
-        $form = str_replace("{product_info}", $productInfo, $form);
-        $form = str_replace("{product_button}", $productBtn, $form);
-        $form = str_replace("{product_image}", $photoData["photo_name"], $form);
-        $form = str_replace("{product_image_class}", $photoImgClass, $form);
-        $form = str_replace("{product_title}", $productTitle, $form);
+        $form = str_replace(array("{product_i}", "{art_id}", "{brand_id}", "{product_name}", "{product_brand}", "{page_product_link}", "{product_text}", "{format_product_text}", "{product_stock}", "{product_real_stock}", "{product_storage_id}", "{product_suppl_id}", "{product_delivery_class}", "{product_delivery_short_info}", "{product_true_price}", "{product_kours_cap}", "{country_display}", "{flag_image}", "{country_name}", "{product_info}", "{product_button}", "{product_image}", "{product_image_class}", "{product_title}"), array($id, $art_id, $brand_id, $article_nr_displ, $brand_name, $product_link, $product_text, $format_product_text, $product_stock, $stock, $storage_id, $suppl_id, "", $delivery_short_info, $price, $kours_cap, $flagDisplay, $flagData["flag"], $flagData["country"], $productInfo, $productBtn, $photoData["photo_name"], $photoImgClass, $productTitle), $form);
 
         if ((int)$stock === 0) {
             $form = str_replace(array("{price_row_status}", "{soldout_row_status}"), array("none", ""), $form);

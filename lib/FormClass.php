@@ -32,6 +32,7 @@ class FormClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $brand_id = $this->getUrlNumber($brand_id);
+
         if (self::$flags === null) {
             $r = $db->query("SELECT t2c.ALFA2, t2b.BRAND_ID, t2c.COUNTRY_NAME 
             FROM `T2_BRANDS` t2b
@@ -41,6 +42,7 @@ class FormClass extends CatalogueClass
         $flag = self::$flags[$brand_id]["ALFA2"];
         $name_country = self::$flags[$brand_id]["COUNTRY_NAME"];
         $flag = mb_strtolower($flag);
+
         if ($name_country === "") {
             return false;
         }
@@ -139,6 +141,7 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `name`, `descr`, `link`, `logo_name` FROM `T2_BRAND_LINK` WHERE `brand_id` = $brand_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $info = $this->getHtmlForm("modals/brand_form");
             $info = str_replace(array("{brand_form_name}", "{brand_form_country}", "{brand_form_descr}", "{brand_form_link}"), array(trim($db->result($r, 0, "name")), $this->getCountryFlag($brand_id)["flag"], trim($db->result($r, 0, "descr")), trim($db->result($r, 0, "link"))), $info);
@@ -163,6 +166,7 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `logo_name` FROM `T2_BRAND_LINK` WHERE `brand_id` = $brand_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $logo_name  = trim($db->result($r, 0, "logo_name"));
             $logo_class = ($logo_name === "") ? "none" : "";
@@ -180,6 +184,7 @@ class FormClass extends CatalogueClass
         $basket_id = 0;
         $r = $db->query("SELECT `id` FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where ORDER BY `id` DESC LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $basket_id = $db->result($r, 0, "id");
         }
@@ -196,9 +201,11 @@ class FormClass extends CatalogueClass
 
         $r = $db->query("SELECT `stock` FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $stock = (int)$db->result($r, 0, "stock");
             $new_amount = (int)$amount;
+
             if ($new_amount > $stock) {
                 $answer = "{too_much}"; $err = 1;
             }
@@ -225,10 +232,12 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `amount`, `stock` FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $amount     = (int)$db->result($r, 0, "amount");
             $stock      = (int)$db->result($r, 0, "stock");
             $new_amount = ($status === 0) ? $amount - 1 : $amount + 1;
+
             if ($new_amount > $stock) {
                 $answer = "{too_much}"; $err = 1;
             }
@@ -299,7 +308,7 @@ class FormClass extends CatalogueClass
             $art_nr_ds  = $this->getArticleDispl($art_id);
             $brand_id   = $this->getArticleBrand($art_id);
             $art_name   = $this->getBrandName($brand_id) . " " . $art_nr_ds;
-            $h1         = $this->getArticleName($art_id) . " $art_name";
+            $h1         = $this->getArticleName($art_id) . " " . $art_name;
 
             $form = str_replace(array("{article_name}", "{article_header}", "{art_name}", "{article_style}"), array($art_name, $h1, $art_nr_ds, "none"), $form);
 
@@ -344,10 +353,12 @@ class FormClass extends CatalogueClass
         $form = str_replace("{product_barcode}", $this->getBarcode($art_id), $form);
 
         $article_info_form = $this->getArticleInfoForm($art_id, 0, 1);
-        $form = str_replace("{art_info}", ($article_info_form !== "") ? $article_info_form : $this->err1, $form);
+        $article_info_form = ($article_info_form !== "") ? $article_info_form : $this->err1;
+        $form = str_replace("{art_info}", $article_info_form, $form);
 
         $brand_form = $this->showBrandForm($brand_id);
-        $form = str_replace("{brand_info}", ($brand_form !== "") ? $brand_form : $this->err1, $form);
+        $brand_form = ($brand_form !== "") ? $brand_form : $this->err1;
+        $form = str_replace("{brand_info}", $brand_form, $form);
         $form = str_replace("{art_proposed}", $shop->getProposedArts(), $form);
         $form = str_replace("{art_history}", $this->getHistoryArts(), $form);
 
@@ -360,7 +371,8 @@ class FormClass extends CatalogueClass
 
         $main_article_photo = $this->getArticlePhoto($art_id);
         $show_article_photo = $this->showBrandPhoto($brand_id);
-        $form = str_replace("{art_main_image}", ($main_article_photo === "") ? $this->noPhoto : "https://toko.ua/uploads/images/catalogue/" . $main_article_photo, $form);
+        $art_main_image     = ($main_article_photo === "") ? $this->noPhoto : "https://toko.ua/uploads/images/catalogue/" . $main_article_photo;
+        $form = str_replace("{art_main_image}", $art_main_image, $form);
         $form = str_replace("{article_brand_photo}", $show_article_photo["logo_name"], $form);
         $form = str_replace("{article_brand_class}", $show_article_photo["logo_class"], $form);
 
@@ -1505,18 +1517,30 @@ class FormClass extends CatalogueClass
         $indicators = $items = "";
         $k = 0;
 
-        $r = $db->query("SELECT `TITLE_$postfix`, `TEXT_$postfix`, `IMAGE` FROM `T2_BANNERS` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
+        $r = $db->query("SELECT `TITLE_$postfix`, `TEXT_$postfix`, `IMAGE`, `LINK`, `STATUS_TEXT` FROM `T2_BANNERS` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $title  = $db->result($r, $i - 1, "TITLE_$postfix");
             $text   = $db->result($r, $i - 1, "TEXT_$postfix");
             $image  = $db->result($r, $i - 1, "IMAGE");
+            $link   = $db->result($r, $i - 1, "LINK");
+            $status_text   = $db->result($r, $i - 1, "STATUS_TEXT");
+            if (empty($status_text)) {
+                $status_text = "style='display:none!important'";
+            }
+
+            $href = "";
+            if (!empty($link)) {
+                $href = "href='$link'";
+            }
             $class  = ($k === 0) ? "active" : "";
+
 
             $indicators .= "
             <li class=\"$class\" data-target=\"#carouselBanner\" data-slide-to=\"$k\"></li>";
+            $image = "/images/banners/" . $image;
             $items .= "
-            <div class=\"carousel-item $class\">" . $this->getCarsBannerItem($title, $text, "/images/banners/" . $image) . "</div>";
+            <div class=\"carousel-item $class\">" . $this->getCarsBannerItem($title, $text, $image, $href, $status_text) . "</div>";
             $k++;
         }
 
@@ -1529,10 +1553,10 @@ class FormClass extends CatalogueClass
     /*
      * show banner item
      * */
-    public function getCarsBannerItem($title, $text, $image)
+    public function getCarsBannerItem($title, $text, $image, $href, $status_text)
     {
         $form = $this->getHtmlForm("home/banner_item");
-        $form = str_replace(array("{banner_title}", "{banner_text}", "{banner_image}"), array($title, $text, $image), $form);
+        $form = str_replace(array("{banner_title}", "{banner_text}", "{banner_image}", "{banner_href}", "{banner_text_status}"), array($title, $text, $image, $href, $status_text), $form);
 
         return $form;
     }

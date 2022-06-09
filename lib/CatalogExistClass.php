@@ -1147,6 +1147,9 @@ class CatalogExistClass extends CatalogueClass
             $form = $this->showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $typ_id, $h1_text);
             $form = str_replace(array("{mfa_link}", "{model_link}", "{model_id_link}"), array($this->getManufactureLink($mfa_id), $this->getModelLink($model), $this->getModelIDLink($model_id)), $form);
         } else {
+            $parts_count    = "{unselect_cap} $count " . $this->getGoodsCap($count);
+            $parts_h1       = "$h1_text $translit $pager";
+
             $form = $this->getHtmlForm("catalog_exist/form");
             $form = str_replace("{details_group_id}", $group_id, $form);
             $form = str_replace("{mfa_link}", $this->getManufactureLink($mfa_id), $form);
@@ -1154,8 +1157,8 @@ class CatalogExistClass extends CatalogueClass
             $form = str_replace("{model_id_link}", $this->getModelIDLink($model_id), $form);
             $form = str_replace("{parts_name}", $group_text, $form);
             $form = str_replace("{parts_list}", $list, $form);
-            $form = str_replace("{parts_h1}", "$h1_text $translit $pager", $form);
-            $form = str_replace("{parts_count}", "{unselect_cap} $count " . $this->getGoodsCap($count), $form);
+            $form = str_replace("{parts_h1}", $parts_h1, $form);
+            $form = str_replace("{parts_count}", $parts_count, $form);
             $form = str_replace("{parts_filters}", "$filters_btn", $form);
             $form = str_replace("{filter_count}", "$filters_count", $form);
 
@@ -1166,11 +1169,12 @@ class CatalogExistClass extends CatalogueClass
 
             $breadcrumbsData    = $this->getBreadCrumbForm($this->getCatalogBreadCrumb($group_id, $params, $h1_text, $source_link, $mfa_id));
             $breadcrumbs_script = $breadcrumbsData["script"];
+            $filters_style      = ($filters_count === 0) ? "none" : "";
 
             $form = str_replace("{parts_breadcrumbs}", $breadcrumbsData["form"], $form);
             $form = str_replace("{status_auto}", $status_auto, $form);
             $form = str_replace("{filters_count}", $filters_count, $form);
-            $form = str_replace("{filters_style}", ($filters_count === 0) ? "none" : "", $form);
+            $form = str_replace("{filters_style}", $filters_style, $form);
             $form = str_replace("{parts_cars}", $this->drawLoader(), $form);
             $form = str_replace("{parts_params_cars}", $this->getPartsCatalogueParamsCars($group_id, $params, $status_auto, $status_auto_type, $typ_id, $mfa_id, $model, $model_id), $form);
 
@@ -1325,6 +1329,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
+
         $table = "EX_TABLE_TREE_$group_id";
         $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
         $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
@@ -1514,6 +1519,7 @@ class CatalogExistClass extends CatalogueClass
         $list_params = "";
         if (!empty($arr)) {
             foreach ($arr as $param_id => $values) {
+
                 // except selected param
                 if ($sel_param_id === "" || ($sel_param_id !== "" && $sel_param_id !== $param_id)) {
                     if (!empty($values)) {
@@ -1637,6 +1643,7 @@ class CatalogExistClass extends CatalogueClass
 
         if ($group_id > 0) {
             $list .= "$group_link/";
+
             if ($link !== "") {
                 $list .= "$link/";
             }
@@ -1687,9 +1694,11 @@ class CatalogExistClass extends CatalogueClass
 
                     $where_link_arts = "";
                     $typ_arts = $this->getPartsCatalogueAuto($typ_id);
+
                     if (!empty($typ_arts)) {
                         $where_link_arts = " AND t.art_id IN (" . implode(",", $typ_arts) . ") ";
                     }
+
                     $count = $this->getPartsCountGroup($group_id, $params, $where_link_arts);
                     $car_count = "($count)";
                 }
@@ -1702,6 +1711,7 @@ class CatalogExistClass extends CatalogueClass
                     $count = $this->getPartsCountGroup($group_id, $params);
                     $all_count = "($count)";
                 }
+
                 $form = $this->getHtmlForm("catalog_exist/params_cars");
                 $form = str_replace(array("{typ_text}", "{on_car_checked}", "{on_car_count}", "{on_all_checked}", "{on_all_count}"), array($typ_text, $car_checked, $car_count, $all_checked, $all_count), $form);
             }
@@ -1830,6 +1840,7 @@ class CatalogExistClass extends CatalogueClass
         FROM `T_types` 
         WHERE `TYP_MOD_ID` = $model_id AND `ACTIVE` = 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $kw_from    = $db->result($r, $i - 1, "TYP_KW_FROM");
@@ -2684,14 +2695,17 @@ class CatalogExistClass extends CatalogueClass
             $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
             $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
             foreach ($params as $param_id => $values) {
+
                 if ($param_id > 0) {
                     foreach ($values as $value_id) {
+
                         if ($value_id > 0) {
                             $r = $dbc->query("SELECT tm.mfa_id, tm.model
                             FROM `$table_mfa` tm
                                 LEFT JOIN `$table_params` tp ON tp.art_id = tm.art_id
                             WHERE `param_$param_id` = '$value_id' OR `param_$param_id` LIKE '$value_id,%' OR `param_$param_id` LIKE '%,$value_id' OR `param_$param_id` LIKE '%,$value_id,%';");
                             $n = $dbc->num_rows($r);
+
                             if ($n > 0) {
                                 for ($i = 1; $i <= $n; $i++) {
                                     $mfa_id = (int)$dbc->result($r, $i - 1, "mfa_id");
