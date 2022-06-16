@@ -25,8 +25,3 @@ if ($formData["status"] === 1) {
     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
     header("HTTP/1.0 404 Not Found");
 }
-
-
-
-
-

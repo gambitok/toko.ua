@@ -32,7 +32,7 @@ $content = str_replace("{popular_brands}", $menu->showPopularBrands(), $content)
 $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $content);
 
 // LANGUAGE META INDEX
-if (findLanguage() != "") {
+if (findLanguage() !== "" && findLanguage() !== "uk") {
     $content = str_replace("{meta_noindex}", '
         <meta name="robots" content="noindex">
         <meta name="googlebot" content="noindex">
