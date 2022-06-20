@@ -992,7 +992,11 @@ class ShopClass extends CatalogueClass
     {
         $client = new ClientClass();
 
-        if ($client->validateOperator($phone)) {
+        $phone2 = $client->formatValidPhone($phone);
+        $phone2 = (int)$phone2;
+        $count = (int)strlen($phone2);
+
+        if ($count === 9 && $client->validateOperator($phone)) {
             $dataReg = $client->validateRegistration($phone);
 
             if (!$dataReg[0]) {
