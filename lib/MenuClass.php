@@ -450,7 +450,6 @@ class MenuClass extends CatalogueClass
         WHERE t2.id = $tpoint_id AND t2a.lang_id = $lang_id 
         ORDER BY t2.position DESC, t2a.full_name ASC;");
         $n = $db->num_rows($r);
-
         if ($n > 0) {
             $region     = $db->result($r, 0, "full_name");
             $address    = $db->result($r, 0, "address");
@@ -480,7 +479,6 @@ class MenuClass extends CatalogueClass
 
         $r = $db->query("SELECT `title`, `address`, `schedule`, `phone` FROM `contacts_new` WHERE `lang_id` = $language_id AND `status` = 1;");
         $n = $db->num_rows($r);
-
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $form_range = $this->getHtmlForm("menu/contacts_range");
@@ -560,7 +558,6 @@ class MenuClass extends CatalogueClass
 
         $r = $db->query("SELECT `id` FROM `news_galery` WHERE `cat` = $news_id ORDER BY `main` DESC;");
         $n = $db->num_rows($r);
-
         if ($n > 0) {
             $id = $db->result($r, 0, "id");
             if (file_exists("uploads/images/news/$language_id/$news_id/$id.jpg")) {
@@ -650,7 +647,6 @@ class MenuClass extends CatalogueClass
         // ADDRESS
         $r = $db->query("SELECT `text`, `text_short`, `icon`, `link` FROM `contacts_bottom_new` WHERE `status` = 1 AND `type_contact` = 3;");
         $n = $db->num_rows($r);
-
         if ($n > 0) {
             $list_address .= "
             <div itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\"><ul>";
@@ -954,7 +950,6 @@ class MenuClass extends CatalogueClass
                         $head_name
                     </div>";
                 }
-
                 $list = str_replace(array("{head_list}", "{media_list}", "{contacts_list}"), array($head_list, $this->getPhoneNav(), $this->getPhoneContacts()), $list);
             }
         } else {
@@ -1326,7 +1321,6 @@ class MenuClass extends CatalogueClass
         $list = "
         <ul class='city-nav-ul'>";
         $postfix = $this->getLangPostfix($this->getLanguage());
-
         $r = $db->query("SELECT `LINK_NAME`, `CITY_NAME_$postfix` FROM `SEO_LISTING_CITY` WHERE `ID` != $city_id_sel ORDER BY RAND() LIMIT 32;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1378,7 +1372,6 @@ class MenuClass extends CatalogueClass
 
         $list .= "
         <ul class='city-nav-ul'>";
-
         $r = $db->query("SELECT `GROUP_ID`, `VALUE_ID` FROM `T2_FUTER_GV` WHERE `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1500,7 +1493,6 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-
         $r = $db->query("SELECT `GROUP_ID`, `TEX_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY `TEX_RU` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1519,7 +1511,6 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "
         <option value='0'>-не вибрано-</option>";
-
         $r = $db->query("SELECT `VALUE_ID`, `VALUE_NAME`, `PARAM_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id ORDER BY `VALUE_NAME` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1676,7 +1667,6 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("main/navigation");
         $list = "";
-
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {

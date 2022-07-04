@@ -480,7 +480,7 @@ class CatalogueClass
      * */
     public function getListBrand($brands, $main_brand, $cur, $brand_filter = [])
     {
-        $list_brand = $checked = $main_brand_class = "";
+        $list_brand = $main_brand_class = "";
         $unique_brands = $brand_array = array();
 
         usort($brands, "cmpPrice");
@@ -514,16 +514,21 @@ class CatalogueClass
         }
 
         if (!empty($brands)) {
-            foreach ($brands as $key => $value) {
+            foreach ($brands as $value) {
                 $min_price  = $value["price"];
                 $brand_id   = $value["brand_id"];
                 $val_brand  = $value["brand_name"];
 
-                if ($brand_filter !== "") {
-                    $brand_array = explode(",", $brand_filter);
-                    $checked = (in_array($brand_id, $brand_array, true)) ? "checked=\"checked\"" : "";
+                $result_brand_array = array();
+                $brand_array = explode(",", $brand_filter);
+                foreach ($brand_array as $each_number) {
+                    $result_brand_array[] = (int) $each_number;
+                }
+
+                if (!empty($brand_filter)) {
+                    $checked = (in_array($brand_id, $result_brand_array, true)) ? "checked=\"checked\"" : "";
                 } else {
-                    $checked = (in_array($main_brand, $brand_array, true)) ? "checked=\"checked\"" : "";
+                    $checked = (in_array($main_brand, $result_brand_array, true)) ? "checked=\"checked\"" : "";
                 }
 
                 if (!empty($brand_id)) {
@@ -545,7 +550,7 @@ class CatalogueClass
     /*
      * CATALOG EXIST
      * */
-    public function searchListCatalog($where_art_id_str, $view = 0, $mfa_id = 0, $model = "", $status_auto = 0)
+    public function searchListCatalog($where_art_id_str, $mfa_id = 0, $model = "", $status_auto = 0, $order_status = 0)
     {
         $db = DbSingleton::getTokoDb();
         $kours = new ExRateClass();
@@ -611,8 +616,18 @@ class CatalogueClass
                     }
                 }
 
+                // fixed price order
+                if ($order_status === 1) {
+                    $oderby = "`price` ASC";
+                }
+                elseif ($order_status === 2) {
+                    $oderby = "`price` DESC";
+                } else {
+                    $oderby = "`status` DESC, `article_nr_displ` ASC";
+                }
+
                 $temp_arr = [];
-                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ` ASC;");
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY $oderby");
                 $n = $db->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id                 = (int)$db->result($r, $i - 1, "art_id");
@@ -668,6 +683,8 @@ class CatalogueClass
                             )
                         )
                     ) {
+                        // fixed price order
+                        unset($mas[$art_id]);
                         $mas[$art_id][0] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
                     }
                 }
@@ -682,7 +699,7 @@ class CatalogueClass
                 }
 
                 // show search list
-                $list = $this->outSearchList($list, $error, $mas, "", $view, 0, $status_auto, $mfa_id, $model);
+                $list = $this->outSearchList($list, $error, $mas, "", 0, $status_auto, $mfa_id, $model);
             }
 
             $count = count($mas);
@@ -708,7 +725,6 @@ class CatalogueClass
         $client_id  = $this->getClient();
         $tpoint_id  = $this->getTpointID();
         $cur        = $this->getCurrentExrate();
-        $view       = 1;
 
         session_start();
         $temp_key   = session_id();
@@ -852,10 +868,10 @@ class CatalogueClass
                 $mas = $this->sortByMinStock($mas);
 
                 // show other storages
-                $other_storages = $this->showOtherStorages($mas, $cur, $view);
+                $other_storages = $this->showOtherStorages($mas, $cur, 1);
 
                 // show search list
-                $list = $this->outSearchList($list, $error, $mas, $other_storages, $view);
+                $list = $this->outSearchList($list, $error, $mas, $other_storages);
             }
 
             if (count($mas) < 1) {
@@ -1858,12 +1874,14 @@ class CatalogueClass
 
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
+
                 if ($min_key !== 0) {
                     if ($mas[$pred_key][0]["price"] > $mas[$pred_key][$min_key]["price"] && $mas[$pred_key][0]["delivery_days"] > $mas[$pred_key][$min_key]["delivery_days"]) {
                         $null_key = 0;
                     } else {
                         $null_key = 1;
                     }
+
                     if (isset($mas[$pred_key][$min_key])) {
                         $temp = $mas[$pred_key][$min_key];
                         $mas[$pred_key][$min_key] = $mas[$pred_key][$null_key];
@@ -1871,6 +1889,7 @@ class CatalogueClass
                     }
                     $min_key = 0;
                 }
+
                 if (($val["price"] !== 0) && $val["price"] < $min_pr) {
                     $min_pr = $val["price"];
                     $min_key = $key;
@@ -1996,9 +2015,10 @@ class CatalogueClass
     /*
      * show search list
      * */
-    public function outSearchList($list, $error, $mas, $other_storages, $view = 0, $saleout = 0, $status_auto = 0, $mfa_id = 0, $model = ""): string
+    public function outSearchList($list, $error, $mas, $other_storages, $saleout = 0, $status_auto = 0, $mfa_id = 0, $model = ""): string
     {
         $ll = $other_storages["content"];
+        $view = 1;
 
         (!$view) ?: $list .= "<div class=\"row\">";
 

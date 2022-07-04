@@ -767,6 +767,12 @@ class SearchClass extends CatalogueClass
         $kours = new ExRateClass();
         $client = new ClientClass();
 
+        $nulls = 0;
+        $mas_nulls = [];
+        if ($this->getUserStatusNulls($this->getUser())) {
+            $nulls = 1;
+        }
+
         $client_id  = $this->getClient();
         $tpoint_id  = $this->getTpointID();
         $mas        = $filters = $brands = $current_value = array();
@@ -918,24 +924,40 @@ class SearchClass extends CatalogueClass
                         $status = ($suppl_id === 0) ? 1 : 0;
                     }
 
-                    if (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search) {
-                        $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
-                    }
-                    elseif ($stock > 0) {
-                        if ($price >= $price_min && $price <= $price_max && $delivery_days >= $del_min && $delivery_days <= $del_max) {
-                            $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+                    // show articles with suppl_id=0 or with price!=0 and stock!=0
+                    if (($price > 0 || $nulls === 1) || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
+                        if (($stock > 0 || $nulls === 1) || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
+                            // visible suppl storage
+                            if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+                                $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+
+                            }
                         }
                     }
-                }
 
-                if (!empty($mas[$art_id_search])) {
-                    $mas[$art_id_search] = $this->deleteEmptyPositionMain($mas[$art_id_search]);
+//                    if (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search) {
+//                        $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+//                    }
+//                    elseif ($stock > 0) {
+//                        if ($price >= $price_min && $price <= $price_max && $delivery_days >= $del_min && $delivery_days <= $del_max) {
+//                            $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
+//                        }
+//                    }
                 }
 
                 if (empty($mas)) {
                     $list = $this->getHtmlForm("error/nothing_found");
                     $list = str_replace("{error_nothing_found}", $this->err1, $list);
                     return array($list, "", "", 0);
+                }
+
+                if (!empty($mas[$art_id_search])) {
+                    $mas[$art_id_search] = $this->deleteEmptyPositionMain($mas[$art_id_search]);
+                }
+
+                // delete nulls
+                if ($nulls === 1) {
+                    list($mas, $mas_nulls) = $this->deleteEmptyNulls($mas);
                 }
 
                 // sort by delivery and price
@@ -946,13 +968,17 @@ class SearchClass extends CatalogueClass
                 // sort like: first = min delivery, second = min price, else = default
                 $mas = $this->sortByMinStock($mas);
 
+                // $mas[$art_id1][0] = ['suppl_id' => 1]
+                // $mas[$art_id2][0] = ['suppl_id' => 0]
+                $mas = $this->sortSuppls($mas, $art_id_search);
+
                 // show other storages
                 $other_storages = $this->showOtherStorages($mas, $cur, 0);
 
                 // show search list
                 FormClass::cacheArticlesPhotos($where_art_id_str);
                 FormClass::cacheInfoTemplates($where_art_id_str);
-                $list = $this->outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages);
+                $list = $this->outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $nulls, $mas_nulls);
             }
 
             if (count($mas) === 0) {
