@@ -190,6 +190,10 @@ if ($_REQUEST["w"] === "showGarageForm") {
     $GLOBALS['_RESULT'] = array("content" => $automan->showGarageForm());
 }
 
+if ($_REQUEST["w"] === "addGarageHistory") {
+    $GLOBALS['_RESULT'] = array("content" => $automan->addGarageHistory($_REQUEST["sel_typ_id"]));
+}
+
 if ($_REQUEST["w"] === "getGarageAutoCount") {
     $GLOBALS['_RESULT'] = array("content" => $automan->getGarageAutoCount());
 }

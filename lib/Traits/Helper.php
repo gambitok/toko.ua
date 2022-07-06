@@ -445,7 +445,7 @@ trait Helper
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
-        $n = $db->result($r, 0, "count_arts");
+        $n = (int)$db->result($r, 0, "count_arts");
 
         return ($n > 0);
     }

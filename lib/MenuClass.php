@@ -1576,7 +1576,7 @@ class MenuClass extends CatalogueClass
                 FROM `EX_TABLE_TREE_PARAMS_$group_id` tp
                     LEFT JOIN `EX_TABLE_TREE_$group_id` tm ON (tm.art_id = tp.art_id)
                 WHERE (tp.`param_$param_id` = '$value_id' OR tp.`param_$param_id` LIKE '%,$value_id%' OR tp.`param_$param_id` LIKE '%$value_id,%');");
-                $count_arts = $dbc->result($r, 0, "count_arts");
+                $count_arts = (int)$dbc->result($r, 0, "count_arts");
                 $link_cat   = "$group_link/$param_link=$value_link";
                 $link       = "https://toko.ua/catalog/$link_cat/";
                 $seo_status = (int)$this->checkSeoText("catalog", $link);

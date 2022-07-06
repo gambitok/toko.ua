@@ -292,7 +292,7 @@ class AutoClass extends CatalogueClass
     /*
      * get garage chosen form
      * */
-    public function getChosenAutoGarage($client_id, $user_id)
+    public function getChosenAutoGarage($client_id, $user_id, $sel_type_id = 0)
     {
         $db = DbSingleton::getTokoDb();
         $cookie_id = $this->getSessionID();
@@ -303,6 +303,10 @@ class AutoClass extends CatalogueClass
         if ($n > 0) {
             $typ_id     = $db->result($r, 0, "typ_id");
             $typ_text   = $this->getGroupInfo($typ_id);
+
+            if ($sel_type_id > 0) {
+                $typ_id = $sel_type_id;
+            }
 
             list($mfa_id, $model, $model_id) = $this->getCarInfo($typ_id);
             list($mfa_cap, , $model_id_cap) = $this->getAutoDescr($mfa_id, $model, $model_id, $typ_id);
@@ -364,14 +368,15 @@ class AutoClass extends CatalogueClass
         $n = $db->num_rows($r);
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
-                $id     = $db->result($r, $i - 1, "id");
-                $typ_id = $db->result($r, $i - 1, "typ_id");
+                $id     = (int)$db->result($r, $i - 1, "id");
+                $typ_id = (int)$db->result($r, $i - 1, "typ_id");
 
                 list($mfa_id, $model, $model_id) = $this->getCarInfo($typ_id);
+
                 if ($typ_id !== $this->getCookieAuto()) {
                     $status_cap     = "{select_cap}";
                     $status_disable = "";
-                    $status_btn     = "onclick='showGarageForm($id);'";
+                    $status_btn     = "onclick='showGarageForm($typ_id);'";
                 } else {
                     $status_cap     = "{unselect_cap}";
                     $status_disable = "disabled";
@@ -391,7 +396,13 @@ class AutoClass extends CatalogueClass
                     </div>
                 </li>";
             }
-            $auto_form = $this->getChosenAutoGarage($this->getClient(), $this->getUser());
+
+            $sel_typ_id = 0;
+            if ($this->getCookieAuto() > 0) {
+                $sel_typ_id = $this->getCookieAuto();
+            }
+
+            $auto_form = $this->getChosenAutoGarage($this->getClient(), $this->getUser(), $sel_typ_id);
         }
         $form = str_replace(array("{garage_list}", "{auto_form}"), array($list, $auto_form), $form);
 
@@ -409,6 +420,7 @@ class AutoClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
 
+        $text       = "";
         $typ_id     = $this->getUrlNumber($typ_id);
         $client_id  = $this->getClient();
         $user_id    = $this->getUser();
@@ -420,9 +432,11 @@ class AutoClass extends CatalogueClass
 
         if ($mfa_id > 0 && $model !== "" && $model_id > 0 && $typ_id > 0) {
             $count = $this->getGarageAutoCount();
+
             if ($count <= $max_auto) {
                 $r = $db->query("SELECT COUNT(`id`) as count_ids FROM `AUTO_GARAGE` WHERE $where AND `typ_id` = $typ_id;");
-                $n = $db->result($r, 0, "count_ids");
+                $n = (int)$db->result($r, 0, "count_ids");
+
                 if ($n === 0) {
                     $rs = $db->query("SELECT `id` FROM `AUTO_GARAGE` WHERE $where AND `status` = 1;");
                     $ns = $db->num_rows($rs);
@@ -430,10 +444,12 @@ class AutoClass extends CatalogueClass
                         $id = $db->result($rs, $i - 1, "id");
                         $db->query("UPDATE `AUTO_GARAGE` SET `status` = 0 WHERE `id` = $id;");
                     }
+
                     $db->query("INSERT INTO `AUTO_GARAGE` (`client_id`, `user_id`, `cookie_id`, `typ_id`, `status`) VALUES ($client_id, $user_id, '$cookie_id', $typ_id, 1);");
                     list($mfa_cap, , $model_id_cap, $typ_text) = $this->getAutoDescr($mfa_id, $model, $model_id, $typ_id);
                     setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
-                    $result = $this->replaceLang("{auto_cap} $mfa_cap $model_id_cap $typ_text {garage_added}");
+                    $result = true;
+                    $text   = $this->replaceLang("{auto_cap} $mfa_cap $model_id_cap $typ_text {garage_added}");
                 } else {
                     $result = true;
                 }
@@ -444,7 +460,7 @@ class AutoClass extends CatalogueClass
             $result = false;
         }
 
-        return $result;
+        return array($result, $text);
     }
 
     /*
@@ -460,7 +476,7 @@ class AutoClass extends CatalogueClass
         $where      = (empty($user_id)) ? "`client_id` = $client_id AND `cookie_id` = '$cookie_id'" : "`client_id` = $client_id AND `user_id` = $user_id";
 
         $r = $db->query("SELECT COUNT(`id`) as count_ids FROM `AUTO_GARAGE` WHERE $where;");
-        $n = $db->result($r, 0, "count_ids");
+        $n = (int)$db->result($r, 0, "count_ids");
 
         return ($n > 0) ? $n : "!";
     }
@@ -478,7 +494,7 @@ class AutoClass extends CatalogueClass
         $where      = (empty($user_id)) ? "`client_id` = $client_id AND `cookie_id` = '$cookie'" : "`client_id` = $client_id AND `user_id` = $user_id";
 
         $r = $db->query("SELECT COUNT(`id`) as count_ids FROM `AUTO_GARAGE` WHERE $where AND `typ_id` = $typ_id;");
-        $n = $db->result($r, 0, "count_ids");
+        $n = (int)$db->result($r, 0, "count_ids");
 
         return ($n === 0);
     }
@@ -526,6 +542,22 @@ class AutoClass extends CatalogueClass
         $form = str_replace("{garage_history_list}", $list, $form);
 
         return $this->replaceLang($form);
+    }
+
+    public function addGarageHistory($typ_id): bool
+    {
+        $db = DbSingleton::getTokoDb();
+        $typ_id = $this->getUrlNumber($typ_id);
+
+        if ($typ_id > 0) {
+            $client_id = $this->getClient();
+            $user_id = $this->getUser();
+            $cookie_id  = $this->getSessionID();
+
+            $db->query("INSERT INTO `AUTO_HISTORY` (`client_id`, `client_user_id`, `cookie_id`, `typ_id`) VALUES ($client_id, $user_id, '$cookie_id', $typ_id);");
+        }
+
+        return true;
     }
 
     /*

@@ -1047,7 +1047,7 @@ class ClientClass
             $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
             $r = $db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;");
-            $k = $db->result($r, 0, "kilk");
+            $k = (int)$db->result($r, 0, "kilk");
 
             if ($k > $this->max_history_count) {
                 $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");

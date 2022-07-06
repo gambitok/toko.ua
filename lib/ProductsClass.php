@@ -264,7 +264,7 @@ class ProductsClass extends CatalogueClass
             WHERE `TYP_MOD_ID` = $mod_id AND `ACTIVE` = 1 
             GROUP BY `VOLUME_CM`, `FUEL_ID` 
             ORDER BY `VOLUME_CM`, `FUEL_ID`;");
-            $n = $db->num_rows($r);
+            $n = (int)$db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $typ_id         = $db->result($r, $i - 1, "TYP_ID");
                 $count_types    = $db->result($r, $i - 1, "count_types");

@@ -110,7 +110,7 @@ class ProfileClass extends ClientClass
         $update_news = $db->result($r, 0, "update_news");
 
         $r = $dbt->query("SELECT COUNT(`id`) as count_ids FROM `news` WHERE `data` > '$update_news' AND `lang_id` = $lang_id AND `status` = 1;");
-        $n = $dbt->result($r, 0, "count_ids");
+        $n = (int)$dbt->result($r, 0, "count_ids");
 
         $counter = ($user_id > 0 && $n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
 
@@ -355,7 +355,7 @@ class ProfileClass extends ClientClass
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT COUNT(`id`) as kilk FROM `orders_new` WHERE `id` = $order_id AND `client_user_id` = $user_id;");
 
-        return $db->result($r, 0, "kilk");
+        return (int)$db->result($r, 0, "kilk");
     }
 
     /*

@@ -243,28 +243,37 @@ function copyToClipboard(element, art_name) {
 * */
 function finishGarage(typ_id, group_link) {
     setCookie('auto_typ_id', typ_id);
-    addToGarage(typ_id);
+    //addToGarage(typ_id);
+    addToGarageHistory(typ_id);
     location.href = group_link;
 }
 
+function addToGarageHistory(sel_typ_id = 0) {
+    JsHttpRequest.query(folder,{'w':'addGarageHistory', 'sel_typ_id':sel_typ_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            console.log(result.content);
+        }}, true);
+}
+
 // ADD NEW CAR TO GARAGE
-function addToGarage(typ_id = 0) {
+function addToGarage(typ_id = 0, a) {
     if (typ_id === 0) {
         typ_id = $("#typ_id").val();
     }
     if (typ_id !== undefined && typ_id !== 0 && typ_id !== "") {
         JsHttpRequest.query(folder,{'w':'addToGarage', 'typ_id':typ_id},
             function (result, errors){ if (errors) {alert(errors);} if (result) {
-                if (result.content !== false) {
-                    if (result.content === true) {
+                // if (result.content !== false) {
+                    if (result.content[0] === false) {
                         showNotify("{error_cap}:", "{garage_auto_exist}", "danger");
                     } else {
-                        showNotify("{done_cap}:", result.content, "success");
+                        showNotify("{done_cap}:", result.content[1], "success");
+                        $(a).addClass("btn-img-disabled");
                         showGarageStatus();
                     }
-                } else {
-                    showNotify("{error_cap}:", "{garage_is_full}", "danger");
-                }
+                // } else {
+                //     showNotify("{error_cap}:", "{garage_is_full}", "danger");
+                // }
             }}, true);
     } else {
         showNotify("{error_cap}:", "{select_all_fields}!", "danger");

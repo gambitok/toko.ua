@@ -245,7 +245,7 @@ class CatalogExistClass extends CatalogueClass
         $n = $dbc->num_rows($r);
         if ($n > 0) {
             $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1;");
-            $n = $dbc->result($r, 0, "col_arts");
+            $n = (int)$dbc->result($r, 0, "col_arts");
         }
 
         return $n;
@@ -262,7 +262,7 @@ class CatalogExistClass extends CatalogueClass
         $n = $dbc->num_rows($r);
         if ($n > 0) {
             $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table_params` WHERE 1;");
-            $n = $dbc->result($r, 0, "col_arts");
+            $n = (int)$dbc->result($r, 0, "col_arts");
         }
 
         return $n;
@@ -279,7 +279,7 @@ class CatalogExistClass extends CatalogueClass
         $n = $dbc->num_rows($r);
         if ($n > 0) {
             $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table` WHERE 1;");
-            $n = $dbc->result($r, 0, "col_arts");
+            $n = (int)$dbc->result($r, 0, "col_arts");
         }
 
         return $n;
@@ -563,7 +563,7 @@ class CatalogExistClass extends CatalogueClass
         // 3. delete 0 prices
         $max_count = 1000;
         $r = $dbc->query("SELECT COUNT(`art_id`) as count_arts FROM `$table` WHERE `price` > 0;");
-        $count_arts = $dbc->result($r, 0, "count_arts");
+        $count_arts = (int)$dbc->result($r, 0, "count_arts");
 
         if ($count_arts > $max_count) {
             $dbc->query("DELETE FROM `$table` WHERE `price` = 0;");
@@ -961,7 +961,7 @@ class CatalogExistClass extends CatalogueClass
                     GROUP BY t.`art_id`
                 ) as ex ;");
             }
-            $n = $dbc->result($r, 0, "count_arts");
+            $n = (int)$dbc->result($r, 0, "count_arts");
         }
 
         return $n;
@@ -977,7 +977,7 @@ class CatalogExistClass extends CatalogueClass
         $nc = $this->checkTable($group_id);
         if (($nc > 0) && $query !== "") {
             $r = $dbc->query("SELECT COUNT(ex.art_id) as ex_count FROM ( $query ) as ex;");
-            $n = $dbc->result($r, 0, "ex_count");
+            $n = (int)$dbc->result($r, 0, "ex_count");
         }
 
         return $n;

@@ -499,7 +499,7 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT COUNT(`ART_ID`) as count_arts FROM `T2_CROSS` 
         WHERE `ART_ID` = $art_id AND `SEARCH_NUMBER` LIKE '$article_nr_search' AND `KIND` IN (3,4) AND `RELATION` = $relation_id;");
-        $n = $db->result($r, 0, "count_arts");
+        $n = (int)$db->result($r, 0, "count_arts");
         return ($n > 0);
     }
 

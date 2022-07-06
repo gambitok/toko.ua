@@ -95,9 +95,14 @@ function togglePass(a) {
     }
 }
 
-function showGarageForm() {
+function showGarageForm(sel_typ_id = 0) {
+    if (sel_typ_id > 0) {
+        setCookie('auto_typ_id', sel_typ_id);
+    }
+
     $("#GarageForm").modal("show");
     $("#garage_block").html("<div class=\"spinner-border\"></div>");
+
     JsHttpRequest.query(folder,{ 'w': 'showGarageForm'},
         function (result, errors){ if (errors) {} if (result){
             $("#garage_block").html(result.content);
