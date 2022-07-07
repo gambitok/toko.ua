@@ -997,9 +997,9 @@ class ShopClass extends CatalogueClass
         $count = (int)strlen($phone2);
 
         if ($count === 9 && $client->validateOperator($phone)) {
-            $dataReg = $client->validateRegistration($phone);
+//            $dataReg = $client->validateRegistration($phone);
 
-            if (!$dataReg[0]) {
+//            if (!$dataReg[0]) {
 
                 if (!empty($dataArticle)) {
                     $art_id     = $dataArticle["art_id"];
@@ -1017,10 +1017,11 @@ class ShopClass extends CatalogueClass
 
                 $answer = 1;
                 $err = $res;
-            } else {
-                $answer = 2;
-                $err = "{user_already_logged}!<br>{phone_cap}: " . $dataReg[1];
-            }
+//            }
+//            else {
+//                $answer = 2;
+//                $err = "{user_already_logged}!<br>{phone_cap}: " . $dataReg[1];
+//            }
         } else {
             $answer = 3;
             $err = "{check_phone_data}!";

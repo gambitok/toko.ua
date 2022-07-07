@@ -384,6 +384,8 @@ class AutoClass extends CatalogueClass
                 }
                 list($mfa_cap, , $model_id_cap, $typ_text) = $this->getAutoDescr($mfa_id, $model, $model_id, $typ_id);
 
+//                $btn_link = "<button class=\"btn btn-primary btn-sm btn-go-to \" onclick=\"location.reload();\">{go_to_cap}</button>";
+
                 $list .= "
                 <li class=\"garage-row\">
                     <div class=\"garage-row__text\">
@@ -392,6 +394,7 @@ class AutoClass extends CatalogueClass
                     </div>
                     <div class=\"garage-row__buttons\"> 
                         <button class=\"btn btn-primary btn-sm\" $status_btn $status_disable>$status_cap</button>
+                        
                         <button class=\"btn btn-primary btn-sm\" onclick=\"deleteAutoGarage('$id');\">&times;</button>
                     </div>
                 </li>";
@@ -404,7 +407,9 @@ class AutoClass extends CatalogueClass
 
             $auto_form = $this->getChosenAutoGarage($this->getClient(), $this->getUser(), $sel_typ_id);
         }
-        $form = str_replace(array("{garage_list}", "{auto_form}"), array($list, $auto_form), $form);
+
+        $products = new ProductsClass();
+        $form = str_replace(array("{garage_list}", "{auto_form}", "{cars_garage_content}"), array($list, $auto_form, $products->showCarsForm()), $form);
 
         if ($n === 0) {
             $form = $this->getHtmlForm("error/404_garage");
@@ -416,7 +421,7 @@ class AutoClass extends CatalogueClass
     /*
      * add item to garage
      * */
-    public function addToGarage($typ_id)
+    public function addToGarage($typ_id): array
     {
         $db = DbSingleton::getTokoDb();
 
