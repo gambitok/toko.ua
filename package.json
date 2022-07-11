@@ -23,6 +23,7 @@
     "jquery": "^3.6.0"
   },
   "dependencies": {
+    "bootstrap-ios-modal": "^1.2.3",
     "gulp-scss": "^1.4.0"
   }
 }

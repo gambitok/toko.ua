@@ -740,6 +740,9 @@ class FormClass extends CatalogueClass
             }
         }
 
+        // MIN PRICE
+        $arr = $this->multiSort($arr, "price", "delivery");
+
         $article_nr_displ       = $arr[0]["article_nr_displ"];
         $brand_id               = $arr[0]["brand_id"];
         $brand_name             = $arr[0]["brand_name"];

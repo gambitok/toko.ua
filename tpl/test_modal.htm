@@ -1,0 +1,89 @@
+<link rel="stylesheet" href="/js/plugins/bootstrap-ios-modal/iosmodal.css">
+
+<div class="container mt-4">
+
+    <h1>Bootstrap Modal with iOS Styling</h1>
+
+    <h5>A Bootstrap modal dialog that acts like an iOS modal.</h5>
+
+    <p class="mb-0">Responsive to window size, dark/light modes.</p>
+
+    <p>Download from
+        <a href="https://github.com/terrymorse58/bootstrap-ios-modal">GitHub</a>.
+    </p>
+
+    <!-- show iOS style -->
+    <button type="button" class="btn btn-info mt-3" name="ios"
+            onclick="iosStyle();">
+        iOS styling
+    </button>
+</div>
+
+<!-- default Modal -->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="body-default">
+                {phone_call_info}
+            </div>
+            <div class="modal-footer">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/plugins/bootstrap-ios-modal/iosmodal.js"></script>
+
+<script>
+
+    function iosStyle () {
+        const mbody = document.getElementById('body-default').innerHTML;
+        const buttons = [
+            {
+                id: 'left-button',
+                type: 'button',
+                class: 'btn btn-lg btn-outline-primary',
+                innerHTML: 'Facebook Messenger',
+                onclick: () => alert('you clicked Facebook Messenger')
+            },
+            {
+                type: 'button',
+                class: 'btn btn-lg btn-outline-primary',
+                innerHTML: 'Viber',
+                onclick: () => alert('you clicked Viber')
+            },
+            {
+                id: 'left-button',
+                type: 'button',
+                class: 'btn btn-lg btn-outline-primary',
+                innerHTML: '{phone_call_cap}',
+                onclick: () => alert('you clicked {phone_call_cap}')
+            },
+            {
+                type: 'button',
+                class: 'btn btn-lg btn-outline-danger',
+                innerHTML: '{online_chat_cap}',
+                onclick: () => iOSModal.hide()
+            },
+            {
+                type: 'button',
+                class: 'btn btn-lg btn-outline-secondary',
+                innerHTML: '{cancel_cap}',
+                onclick: () => iOSModal.hide()
+            }
+        ];
+        iOSModal.show(mbody, buttons);
+    }
+
+     // iOSModal.customize({bottom: "80px"});
+
+</script>
+
+<!--{phone_call_info}-->
+<!--Facebook Messenger-->
+<!--Viber-->
+<!--{phone_call_cap}-->
+<!--{online_chat_cap}-->
+<!--{cancel_cap}-->
