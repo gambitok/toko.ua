@@ -22,6 +22,7 @@
 	<link rel="preload" href="/js/JsHttpRequest/JsHttpRequest.min.js" as="script" />
 	<link rel="preload" href="/images/no_photo.svg" as="image" type="image/png" />
 	<link rel="preload" href="/images/no_photo_min.png" as="image" type="image/png" />
+	<link rel="stylesheet" href="/js/plugins/bootstrap-ios-modal/iosmodal.css">
 
 	<title>{site_title}</title>
 	<meta http-equiv="Content-Type" content="text/html" charset="windows-1251">
@@ -614,6 +615,27 @@
 	</nav>
 </div>
 
+<!-- default Modal -->
+<div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<input type="hidden" value="Telegram" id="contact_telegram">
+			<input type="hidden" value="Facebook Messenger" id="contact_facebook">
+			<input type="hidden" value="Viber" id="contact_viber">
+			<input type="hidden" value="{phone_call_cap} +380970803060" id="contact_phone">
+			<input type="hidden" value="{cancel_cap}" id="contact_cancel">
+
+			<div class="modal-body" id="body-default">
+				{phone_call_info}
+			</div>
+			<div class="modal-footer">
+
+			</div>
+
+		</div>
+	</div>
+</div>
+
 <div class="modal fade" id="InputForm" role="dialog" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -664,6 +686,7 @@
 
 <!-- Custom Scripts -->
 <script type="text/javascript" src="/js/onload.js"></script>
+<script src="/js/plugins/bootstrap-ios-modal/iosmodal.js"></script>
 <script type="text/javascript" src="/js/catalogue.js"></script>
 <script type="text/javascript" src="/js/menu.js"></script>
 <script type="text/javascript" src="/js/shop.js"></script>

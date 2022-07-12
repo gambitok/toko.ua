@@ -101,9 +101,6 @@
     justify-content: space-evenly;
   }
 
-  .modal-dialog.modal-dialog-ios .modal-footer .btn {
-  }
-
   #iosmodal.fade.show {
     opacity: 1;
     transition: opacity .4s linear;
@@ -116,9 +113,9 @@
 }
 
 /* iOS modal backdrop is more transparent than default Bootstrap */
-.modal-backdrop.show {
-  opacity: 0.1;
-}
+/*.modal-backdrop.show {*/
+/*  opacity: 0.1;*/
+/*}*/
 
 .modal-dialog.modal-dialog-ios .modal-footer .btn {
   margin: 2px 12px;
@@ -126,6 +123,16 @@
   border-style: none;
   border-radius: 8px;
   width: calc(100% - 24px);
+}
+
+.modal-dialog.modal-dialog-ios .modal-footer .btn-group {
+  flex-wrap: wrap;
+}
+.modal-dialog.modal-dialog-ios .modal-footer .btn.btn-outline-primary {
+  color: #3274f6!important;
+}
+.modal-dialog.modal-dialog-ios .modal-footer .btn.btn-outline-danger {
+  color: #e93323!important;
 }
 
 /* ==== PHONE ==== */
@@ -142,12 +149,6 @@
     color: #3274f6;
     margin: 0;
     width: 100%;
-  }
-  .modal-dialog.modal-dialog-ios .modal-footer .btn.btn-outline-primary {
-    color: #3274f6!important;
-  }
-  .modal-dialog.modal-dialog-ios .modal-footer .btn.btn-outline-danger {
-    color: #e93323!important;
   }
 }
 

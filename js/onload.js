@@ -33,6 +33,65 @@ $(".backdrop").mouseover(function() {
     closeHideNavigation();
 });
 
+function toggleSocialIcons() {
+    if (detectmob()) {
+        iosStyle();
+    } else {
+        let social_icons = $(".anchor-contacts-li-item");
+        social_icons.toggleClass("anchor-contacts-li-hidden");
+        if (social_icons.hasClass("anchor-contacts-li-hidden")) {
+            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/png/chats.png");
+        } else {
+            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/png/close.png");
+        }
+    }
+}
+
+function iosStyle () {
+    const mbody = document.getElementById('body-default').innerHTML;
+    let contact_telegram = $("#contact_telegram").val();
+    let contact_facebook = $("#contact_facebook").val();
+    let contact_viber    = $("#contact_viber").val();
+    let contact_phone    = $("#contact_phone").val();
+    let contact_cancel   = $("#contact_cancel").val();
+
+    const buttons = [
+        {
+            id: 'left-button',
+            type: 'button',
+            class: 'btn btn-lg btn-outline-primary',
+            innerHTML: contact_telegram,
+            onclick: () => location.href="https://t.me/tokoua_bot"
+        },
+        {
+            id: 'left-button',
+            type: 'button',
+            class: 'btn btn-lg btn-outline-primary',
+            innerHTML: contact_facebook,
+            onclick: () => location.href="https://www.messenger.com/t/1564721550425159/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792"
+        },
+        {
+            type: 'button',
+            class: 'btn btn-lg btn-outline-primary',
+            innerHTML: contact_viber,
+            onclick: () => location.href="viber://pa?chatURI=tokogroup"
+        },
+        {
+            type: 'button',
+            class: 'btn btn-lg btn-outline-danger',
+            innerHTML: contact_phone,
+            onclick: () => location.href="tel:0970803060"
+        },
+        {
+            type: 'button',
+            class: 'btn btn-lg btn-outline-secondary',
+            innerHTML: contact_cancel,
+            onclick: () => iOSModal.hide()
+        }
+    ];
+    iOSModal.show(mbody, buttons);
+}
+
 let timer;
 $('.header-nav__li').on({'mouseover': function () {
         let self = this;
