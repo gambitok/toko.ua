@@ -1175,6 +1175,7 @@ class CatalogExistClass extends CatalogueClass
 
             $form = str_replace("{parts_seo}", $this->getPartsCatalogueSeo($group_id, $page, $params, $source_link, $h1_text, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $typ_id), $form);
             $form = str_replace("{parts_states}", $this->getPartsCatalogueStates($group_id), $form);
+            $form = str_replace("{parts_telegram}", $this->getTelegramForm(), $form);
         }
 
         $max_pages_count = (int)ceil($count / $this->products_on_page);
@@ -1216,6 +1217,11 @@ class CatalogExistClass extends CatalogueClass
             "script"        => $breadcrumbs_script,
             "time"          => $time
         );
+    }
+
+    public function getTelegramForm()
+    {
+        return $this->getHtmlForm("catalog_exist/telegram");
     }
 
     public function getPartsSortForm($sort, $source_link)

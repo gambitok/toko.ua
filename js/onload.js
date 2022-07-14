@@ -47,12 +47,14 @@ function toggleSocialIcons() {
     }
 }
 
-function iosStyle () {
+function iosStyle() {
     const mbody = document.getElementById('body-default').innerHTML;
     let contact_telegram = $("#contact_telegram").val();
     let contact_facebook = $("#contact_facebook").val();
     let contact_viber    = $("#contact_viber").val();
     let contact_phone    = $("#contact_phone").val();
+    let contact_phone2   = $("#contact_phone2").val();
+    let contact_phone3   = $("#contact_phone3").val();
     let contact_cancel   = $("#contact_cancel").val();
 
     const buttons = [
@@ -81,6 +83,18 @@ function iosStyle () {
             class: 'btn btn-lg btn-outline-danger',
             innerHTML: contact_phone,
             onclick: () => location.href="tel:0970803060"
+        },
+        {
+            type: 'button',
+            class: 'btn btn-lg btn-outline-danger',
+            innerHTML: contact_phone2,
+            onclick: () => location.href="tel:0500803060"
+        },
+        {
+            type: 'button',
+            class: 'btn btn-lg btn-outline-danger',
+            innerHTML: contact_phone3,
+            onclick: () => location.href="tel:0930803060"
         },
         {
             type: 'button',

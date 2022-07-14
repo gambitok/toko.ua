@@ -76,10 +76,16 @@ class CatalogueClass
             $search_brands = str_replace(array("{brands_list}", "{brands_display}"), array($list_brand, ($list_brand === "") ? "none" : ""), $search_brands);
             $form = str_replace("{cat_search_brands}", $search_brands, $form);
         }
+        $form = str_replace("{cat_search_telegram}", $this->getTelegramForm(), $form);
 
         $form = $this->replaceLang($form);
 
         return $form;
+    }
+
+    public function getTelegramForm()
+    {
+        return $this->getHtmlForm("catalog_exist/telegram");
     }
 
     /*

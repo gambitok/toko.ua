@@ -273,7 +273,13 @@ class ShopClass extends CatalogueClass
         $proposed_link  = $this->getSiteLink() . "$this->products_link/$format_name-$brand_link-$art_id/";
 
         $form = $this->getHtmlForm("orders/proposed_card");
-        $form = str_replace(array("{basket}", "{article_nr_displ}", "{name}", "{brand_name}", "{price}", "{image}", "{currency}", "{page_proposed_link}"), array($articleData["basket"], $art_nr_ds, $articleData["article_name"], $articleData["brand_name"], $articleData["price"], $showform->getArticleActivePhoto($art_id), $articleData["currency"], $proposed_link), $form);
+        $form = str_replace(
+            array("{basket}", "{article_nr_displ}", "{name}", "{brand_name}", "{price}", "{image}", "{currency}", "{page_proposed_link}"),
+            array($articleData["basket"], $art_nr_ds, $articleData["article_name"], $articleData["brand_name"], $articleData["price"], $showform->getArticleActivePhoto($art_id), $articleData["currency"], $proposed_link), $form);
+
+        if (empty($articleData["price"])) {
+            $form = "";
+        }
 
         return $form;
     }
