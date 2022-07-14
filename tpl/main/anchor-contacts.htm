@@ -19,11 +19,22 @@
             <img class="lazy" data-src="/images/icons/socials/png/facebook.png" alt="Facebook Messenger" src="">
         </a>
     </div>
-    <div class="anchor-contacts-li anchor-contacts-li-main tooltips" title="{make_question}" data-placement="left">
+<!--    tooltips" title="{make_question}" data-placement="left"-->
+    <div class="anchor-contacts-li anchor-contacts-li-main">
         <a onclick="toggleSocialIcons();" class="anchor-contacts__item anchor-contacts__item-contacts">
             <img class="lazy" data-src="/images/icons/socials/png/chats.png" alt="Socials" src="/images/no_photo_min.png">
         </a>
     </div>
 </div>
 
-
+<script>
+    function toggleSocialIcons() {
+        let social_icons = $(".anchor-contacts-li-item");
+        social_icons.toggleClass("anchor-contacts-li-hidden");
+        if (social_icons.hasClass("anchor-contacts-li-hidden")) {
+            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/png/chats.png");
+        } else {
+            $(".anchor-contacts-li-main").find("a").find("img").attr("src", "/images/icons/socials/png/close.png");
+        }
+    }
+</script>
