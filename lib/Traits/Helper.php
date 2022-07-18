@@ -183,7 +183,7 @@ trait Helper
             $i = 0;
             $c = count($args);
             $cmp = 0;
-            while ($cmp == 0 && $i < $c) {
+            while ($cmp === 0 && $i < $c) {
                 $cmp = strcmp($a[$args[$i]], $b[$args[$i]]);
                 $i++;
             }

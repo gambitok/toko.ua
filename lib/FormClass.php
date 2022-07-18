@@ -707,7 +707,9 @@ class FormClass extends CatalogueClass
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
         WHERE t2a.ART_ID IN ($art_id) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) AND (t2si.stock_suppl != NULL OR t2si.stock_suppl != 0)
         GROUP BY t2a.ART_ID, t2si.client_storage_id;");
+
         $n = $db->num_rows($r);
+
         for ($i = 1; $i <= $n; $i++) {
             $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
             $brand_id           = (int)$db->result($r, $i - 1, "BRAND_ID");
@@ -735,13 +737,23 @@ class FormClass extends CatalogueClass
 
             $basket = "moveBasket('one','$art_id','$brand_id','$real_stock','$storage_id',$suppl_id,1);";
 
-            if ($price > 0 && $stock > 0 && $this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+            if ($price > 0 && $real_stock > 0 && $this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                 $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "stock", "real_stock", "delivery_short_info", "price", "delivery_days", "basket", "storage_id", "suppl_id");
             }
         }
 
         // MIN PRICE
-        $arr = $this->multiSort($arr, "price", "delivery");
+        //$arr = $this->multiSort($arr, "price", "delivery");
+
+        foreach ($arr as $key => $row) {
+            $price[$key] = $row['price'];
+            $count[$key] = $row['delivery_days'];
+        }
+
+        $price = array_column($arr, 'price');
+        $count = array_column($arr, 'delivery_days');
+
+        array_multisort($price, SORT_ASC, $count, SORT_ASC, $arr);
 
         $article_nr_displ       = $arr[0]["article_nr_displ"];
         $brand_id               = $arr[0]["brand_id"];
