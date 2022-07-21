@@ -29,6 +29,7 @@ trait Variables
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
         $brand_id = 0;
+
         if ($art_id > 0) {
             $r = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
             $brand_id = $db->result($r, 0, "BRAND_ID");
@@ -44,8 +45,10 @@ trait Variables
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
         $name = "";
+        $lang_id = $this->getOldLanguage($this->getLanguage());
+
         if ($art_id > 0) {
-            $r = $db->query("SELECT `NAME` FROM `T2_NAMES` WHERE `ART_ID` = $art_id AND `LANG_ID` = 16 LIMIT 1;");
+            $r = $db->query("SELECT `NAME` FROM `T2_NAMES` WHERE `ART_ID` = $art_id AND `LANG_ID` = $lang_id LIMIT 1;");
             $n = $db->num_rows($r);
             if ($n > 0) {
                 $name = $db->result($r, 0, "NAME");
@@ -67,6 +70,7 @@ trait Variables
         $name = "";
         $language = new LangClass();
         $lang_id = $language->getOldLanguage($this->getLanguage());
+
         if ($art_id > 0) {
             $r = $db->query("SELECT `NAME` FROM `T2_NAMES` WHERE `ART_ID` = $art_id AND `LANG_ID` = $lang_id LIMIT 1;");
             $n = $db->num_rows($r);
@@ -105,6 +109,7 @@ trait Variables
         $group_id = 0;
         $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `ART_ID` = $art_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $group_id = $db->result($r, 0, "GROUP_ID");
         }
@@ -120,6 +125,7 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `BARCODE` FROM `T2_BARCODES` WHERE `ART_ID` = $art_id LIMIT 1;");
         $barcode = $db->result($r, 0, "BARCODE");
+
         if ($barcode === "") {
             $r = $db->query("SELECT MAX(`BARCODE`) as max_barcode FROM `T2_BARCODES`;");
             $barcode = $db->result($r, 0, "max_barcode") + 0;
@@ -136,6 +142,7 @@ trait Variables
         if (empty($storage_id)) {
             $storage_id = 0;
         }
+
         $r = $db->query("SELECT SUM(`AMOUNT`) as summ_amount FROM `T2_ARTICLES_STRORAGE`
         WHERE `ART_ID` = $art_id AND `STORAGE_ID` IN ($storage_id);");
         $n = $db->num_rows($r);
@@ -211,6 +218,7 @@ trait Variables
         $art_id = 0;
         $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` = '$article_nr_search' LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $art_id = $db->result($r, 0, "ART_ID");
         }
@@ -240,6 +248,7 @@ trait Variables
             $db = DbSingleton::getTokoDb();
             $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE BINARY `BRAND_LINK` = BINARY '$brand' LIMIT 1;");
             $n = $db->num_rows($r);
+
             if ($n > 0) {
                 $brand_id = $db->result($r, 0, "BRAND_ID");
             }
@@ -285,6 +294,7 @@ trait Variables
         $name = "";
         $r = $db->query("SELECT `prefix`, `doc_nom` FROM `J_SALE_INVOICE` WHERE `status` = 1 AND `id` = $invoice_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n === 1) {
             $name = $db->result($r, 0, "prefix") . "-" . $db->result($r, 0, "doc_nom");
         }
@@ -306,6 +316,7 @@ trait Variables
             LEFT JOIN `manual` m ON (m.id = p.pay_type_id AND m.`key` = 'pay_type_id') 
         WHERE p.status = 1 AND p.id = $jpay_id LIMIT 1;");
         $n = (int)$db->num_rows($r);
+
         if ($n === 1) {
             $pay_type_id    = (int)$db->result($r, 0, "pay_type_id");
             $name           = $db->result($r, 0, "pay_type_name") . " #" . $db->result($r, 0, "doc_nom");
@@ -331,6 +342,7 @@ trait Variables
         if ($lang_id === 3) {
             $lang_id = 4;
         }
+
         $r = $db->query("SELECT `FUEL` FROM `T_types_fuel` WHERE `FUEL_ID` = $fuel_id AND `LANG_ID` = $lang_id LIMIT 1;");
         return $db->result($r, 0, "FUEL");
     }

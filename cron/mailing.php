@@ -69,9 +69,9 @@ for ($i = 1; $i <= $n; $i++) {
     $mail = new PHPMailer(true);
     $mail->CharSet = 'windows-1251';
 
-    $host   = "smtp.office365.com";
-    $name   = "toko.robot@outlook.com";
-    $pass   = "Qwerty456852z";
+    $host   = "smtp.yandex.ru";
+    $name   = "robot@toko.ua";
+    $pass   = "R0b0tB0b0t";
     $email  = $user_email;
     $date   = date("Y-m-d H:i:s");
 
@@ -93,12 +93,12 @@ for ($i = 1; $i <= $n; $i++) {
 <p>mobile phone #1: +38 097 080 30 60</p>
 <p>mobile phone #2: +38 050 080 30 60</p>
 <p>mobile phone #3: +38 093 080 30 60</p>
-<p>e-mail: support@toko.ua</p>
+<p>e-mail: robot@toko.ua</p>
 
-<p>Цей лист було надіслано на $user_email від toko.robot@outlook.com.</p>
+<p>Цей лист було надіслано на $user_email від robot@toko.ua.</p>
 <p>Миттєве видалення за допомогою <a href='https://toko.ua/price_mailing/1/$user/'>SafeUnsubscribe</a>.</p>
 
-<p>This email was sent to $user_email by toko.robot@outlook.com.</p>
+<p>This email was sent to $user_email by robot@toko.ua.</p>
 <p>Instant removal with <a href='https://toko.ua/price_mailing/1/$user/'>SafeUnsubscribe</a>.</p>";
 
     $fname  = "price.csv";

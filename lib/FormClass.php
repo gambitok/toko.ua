@@ -714,7 +714,8 @@ class FormClass extends CatalogueClass
             $article_nr_displ   = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
             $brand_id           = (int)$db->result($r, $i - 1, "BRAND_ID");
             $brand_name         = $db->result($r, $i - 1, "BRAND_NAME");
-            $article_name       = $db->result($r, $i - 1, "NAME");
+            //$article_name       = $db->result($r, $i - 1, "NAME");
+            $article_name       = $this->getArticleName($art_id);
             $suppl_id           = (int)$db->result($r, $i - 1, "suppl_id");
             $stock              = (int)$db->result($r, $i - 1, "AMOUNT");
             $storage_id         = (int)$db->result($r, $i - 1, "storage_id");

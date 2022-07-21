@@ -119,6 +119,11 @@ trait Helper
         return (new LangClass())->getLanguageData();
     }
 
+    public function getOldLanguage($lang_id): int
+    {
+        return (new LangClass())->getOldLanguage($lang_id);
+    }
+
     public function getLangPostfix($lang_id): string
     {
         $postfix = "RU";

@@ -6,6 +6,7 @@ class LangClass
     use Helper;
 
     public $default_lang_id = 1;
+    public $default_old_lang_id = 16;
 
     private static $langVariables;
     private static $langNames;
@@ -49,6 +50,9 @@ class LangClass
         }
         if ($lang_id === 3) {
             $lang_id = 4;
+        }
+        if (empty($lang_id)) {
+            $lang_id = $this->default_old_lang_id;
         }
 
         return $lang_id;
