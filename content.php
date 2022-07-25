@@ -19,20 +19,20 @@ require_once (RDD . "/lib/LangClass.php");
 require_once (RDD . "/lib/ExRateClass.php");
 require_once (RDD . "/lib/AutoClass.php");
 require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");
-require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
+require_once (RDD . "/lib/Plugins/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 
 session_start();
-$JsHttpRequest = new JsHttpRequest("windows-1251");
-$catalog = new CatalogueClass();
-$search = new SearchClass();
-$menu = new MenuClass();
-$client = new ClientClass();
-$lang = new LangClass();
-$shop = new ShopClass();
-$showform = new FormClass();
-$automan = new AutoClass();
-$profile = new ProfileClass();
-$prod = new ProductsClass();
+$JsHttpRequest  = new JsHttpRequest("windows-1251");
+$catalog        = new CatalogueClass();
+$search         = new SearchClass();
+$menu           = new MenuClass();
+$client         = new ClientClass();
+$lang           = new LangClass();
+$shop           = new ShopClass();
+$showform       = new FormClass();
+$automan        = new AutoClass();
+$profile        = new ProfileClass();
+$prod           = new ProductsClass();
 
 /*==== PROFILE ====*/
 

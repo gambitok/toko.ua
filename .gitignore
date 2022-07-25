@@ -3,10 +3,12 @@ node_modules/
 data/
 docker/
 fontawesome_web/
+app/fonts/
 fonts/
 images/
 lib/deleted
 lib/excel/
+lib/Plugins
 myadmin/
 PEAR/
 price/
@@ -28,3 +30,4 @@ fd3b74fa680d.html
 12.rar
 14.rar
 cron_sms.php
+/vendor/

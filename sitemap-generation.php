@@ -10,7 +10,6 @@ ini_set('memory_limit', '2048M');
 define('RDD', dirname (__FILE__));
 
 require_once (RDD . "/lib/DbSingleton.php");
-require_once (RDD . "/lib/mysql_class.php");
 require_once (RDD . "/lib/Traits/Helper.php");
 require_once (RDD . "/lib/Traits/Variables.php");
 require_once (RDD . "/lib/CatalogueClass.php");

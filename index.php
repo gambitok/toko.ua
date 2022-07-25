@@ -24,9 +24,8 @@ require_once (RDD . "/lib/ProfileClass.php");                //user configuratio
 require_once (RDD . "/lib/LangClass.php");                   //multilingual
 require_once (RDD . "/lib/ExRateClass.php");                 //exchange rate
 require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");   //ajax requests
-require_once (RDD . "/lib/class.phpmailer.php");
 require_once (RDD . "/lib/CatalogExistClass.php");
-require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
+require_once (RDD . "/lib/Plugins/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 
 $db = DbSingleton::getTokoDb();
 $dbm = DbSingleton::getDbm();

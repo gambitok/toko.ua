@@ -12,11 +12,10 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
-require RDD . "/../PHPMailer/Exception.php";
-require RDD . "/../PHPMailer/PHPMailer.php";
-require RDD . "/../PHPMailer/SMTP.php";
+require RDD . "/../lib/Plugins/PHPMailer/Exception.php";
+require RDD . "/../lib/Plugins/PHPMailer/PHPMailer.php";
+require RDD . "/../lib/Plugins/PHPMailer/SMTP.php";
 
-require_once (RDD . "/../lib/mysql_class.php");
 require_once (RDD . "/../lib/DbSingleton.php");
 require_once (RDD . "/../lib/Traits/Helper.php");
 require_once (RDD . "/../lib/Traits/Variables.php");
@@ -25,7 +24,6 @@ require_once (RDD . "/../lib/ClientClass.php");
 require_once (RDD . "/../lib/ProfileClass.php");
 require_once (RDD . "/../lib/LangClass.php");
 require_once (RDD . "/../lib/ExRateClass.php");
-require_once (RDD . "/../lib/class.phpmailer.php");
 
 $catalogue = new CatalogueClass();
 

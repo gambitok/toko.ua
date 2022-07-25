@@ -1,0 +1,13 @@
+{
+    "name": "admin/dev.toko.ua",
+    "authors": [
+        {
+            "name": "Dmytro Dziubii",
+            "email": "gambitokgd@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+
+    }
+}

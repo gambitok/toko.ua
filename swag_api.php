@@ -7,7 +7,8 @@ date_default_timezone_set("Europe/Kiev");
 ini_set('memory_limit', '2048M');
 header('Content-Type: text/html; charset=utf-8');
 
-require(RDD . "/checkbox-php/vendor/autoload.php");
+require_once (RDD . "/lib/Plugins/checkbox-php/vendor/autoload.php");
+require_once (RDD . "/lib/DbSingleton.php");
 
 $config = new \igorbunov\Checkbox\Config([
     \igorbunov\Checkbox\Config::API_URL     => 'https://api.checkbox.in.ua/api/v1',
@@ -24,12 +25,72 @@ if (!empty($api->getCashierShift())) {
     $api->createShift();
 }
 
+//$db = DbSingleton::getDbm();
+//
 //$cashier_name = iconv("windows-1251", "UTF-8", "Касир");
 //$department = iconv("windows-1251", "UTF-8", "Отдел");
-//$name1 = iconv("windows-1251", "UTF-8", "Биовак");
-//$name2 = iconv("windows-1251", "UTF-8", "Биовак 2");
+//$email = "gambitokgd@gmail.com";
+//
+//$r = $db->query("SELECT `summ` FROM `J_SALE_INVOICE` WHERE `id` = 76749 LIMIT 1;");
+//$sum = (float)$db->result($r, 0, "summ");
+//$sum *= 100;
+//
+//$r = $db->query("SELECT `price_end`, `amount` FROM `J_SALE_INVOICE_STR` WHERE `invoice_id` = 76749;");
+//$n = $db->num_rows($r);
+//
+//$arr = [];
+//for ($i = 1; $i <= $n; $i++) {
+//    $amount = (int)$db->result($r, $i - 1, "amount");
+//    $price_end = (float)$db->result($r, $i - 1, "price_end");
+//
+//    $amount *= 1000;
+//    $price_end *= 100;
+//
+//    $arr[] = new \igorbunov\Checkbox\Models\Receipts\Goods\GoodItemModel(
+//        new \igorbunov\Checkbox\Models\Receipts\Goods\GoodModel(
+//            "test $i",
+//            $price_end,
+//            "text $i"
+//        ),
+//        $amount,
+//        NULL,
+//        NULL,
+//        false
+//    );
+//}
+//
+//try {
+//    $answer = 1; $err = "";
+//    $arr_pay = [];
+//
+//    $arr_pay[] = new \igorbunov\Checkbox\Models\Receipts\Payments\CashPaymentPayload(
+//        $sum
+//    );
+//
+//    $receipt = new \igorbunov\Checkbox\Models\Receipts\SellReceipt(
+//        $cashier_name,
+//        $department,
+//        new \igorbunov\Checkbox\Models\Receipts\Goods\Goods(
+//            $arr
+//        ),
+//        $email,
+//        new \igorbunov\Checkbox\Models\Receipts\Payments\Payments(
+//            $arr_pay
+//        )
+//    );
+//
+//    $api->createSellReceipt($receipt);
+//
+//    var_dump($api->getReceipts());
+//
+//} catch (\igorbunov\Checkbox\Errors\NoActiveShift $err) {
+//    $answer = 0; $err = "Для проведення поточного фіскального чеку на повернення в касі не вистачає коштів. Зробіть службове внесення коштів, або наторгуйте";
+//} catch (Exception $e) {
+//    $answer = 0; $err = "err";
+//}
 
-//3
+//======================================================================================================================
+
 //$receipt = new \igorbunov\Checkbox\Models\Receipts\SellReceipt(
 //    $cashier_name, // кассир
 //    $department, // отдел
