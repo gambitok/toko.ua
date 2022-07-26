@@ -83,22 +83,22 @@ function getMoreTitle($path)
     $linka = findLinks();
 
     if ($path === "search") {
-        $article_nr_search = $cat->getUrlString($linka[1]);
-        $article_nr_search = rawurldecode($article_nr_search);
-        $article_nr_search = iconv("UTF-8", "windows-1251", $article_nr_search);
+        $art_search = $cat->getUrlString($linka[1]);
+        $art_search = rawurldecode($art_search);
+        $art_search = iconv("UTF-8", "windows-1251", $art_search);
         $brand_link = $cat->getUrlString($linka[2]);
-        $brand_id = ($brand_link !== "") ? $cat->getCatalogueBrandID($brand_link) : 0;
+        $brand_id   = ($brand_link !== "") ? $cat->getCatalogueBrandID($brand_link) : 0;
 
-        if ($article_nr_search === "") {
+        if ($art_search === "") {
             $pretitle = "{site_title_short}";
         } elseif ($brand_id === 0 || $brand_id === "0") {
-            $pretitle = "{search_results} $article_nr_search | {site_title_short}";
+            $pretitle = "{search_results} $art_search | {site_title_short}";
         } else {
-            $art_id = $cat->getArticleId($article_nr_search, $brand_id);
-            $art_name = $cat->getArticleName($art_id);
+            $art_id     = $cat->getArticleId($art_search, $brand_id);
+            $art_name   = $cat->getArticleName($art_id);
             $brand_name = $cat->getBrandName($brand_id);
-            $article_nr_search = strtoupper($article_nr_search);
-            $pretitle = "$brand_name $article_nr_search - $art_name | {site_title_short}";
+            $art_search = strtoupper($art_search);
+            $pretitle   = "$brand_name $art_search - $art_name | {site_title_short}";
         }
     }
     elseif ($path === "cars") {
@@ -145,17 +145,15 @@ function printBreadcrumbs($path)
     $automan = new AutoClass();
     $bread = findLinks();
 
-    $icon = "<span> > </span>";
-
-    $section = $path;
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     if (strpos($actual_link,"?") !== false) {
         $actual_link = substr($actual_link, 0, strpos($actual_link, "?"));
     }
 
+    $icon = "<span> > </span>";
+    $section = $path;
     $a_home = "<li class=\"cat-products-bread__item\"><a href=\"" . $cat->getSiteLink() . "\" title=\"{seo_site_toko}\">{seo_shop_toko}</a></li>";
     $a_section = "<li class=\"cat-products-bread__item\"><a href=\"" . $cat->getSiteLink() . "$section/\">{site_$section}</a></li>";
-
     $h_section = "{site_$section}";
 
     $list = "";
@@ -173,6 +171,7 @@ function printBreadcrumbs($path)
                 "item" => "" . $cat->getSiteLink() . "brands/"
             ];
             $pretitle = "$a_home $icon <a href=\"https://toko.ua/brands/\" rel=\"v:url\" property=\"v:title\">$h_section</a>";
+
             if ($brand_link !== "") {
                 $brand_id = $cat->getBrandNameLink($brand_link);
                 $brand_name = $cat->getBrandName($brand_id);
@@ -185,8 +184,7 @@ function printBreadcrumbs($path)
             break;
         }
         case "cars" : {
-            $mfa_link = $bread[1];
-            $model_link = $bread[2];
+            list(, $mfa_link, $model_link) = $bread;
             $h_section = "{site_cars_h1}";
             $b_arr[2] = [
                 "name" => $h_section,
@@ -194,6 +192,7 @@ function printBreadcrumbs($path)
             ];
             $pretitle = "$a_home $icon $h_section";
             list($mfa_name, $model_name) = $automan->getAutoDescrLink($mfa_link, $model_link);
+
             if ($mfa_link !== "") {
                 $pretitle = "$a_home $icon <a href=\"https://toko.ua/cars/\" rel=\"v:url\" property=\"v:title\">$h_section</a>";
                 $b_arr[3] = [
@@ -201,6 +200,7 @@ function printBreadcrumbs($path)
                     "item" => "" . $cat->getSiteLink() . "cars/" . $mfa_link . "/"
                 ];
                 $pretitle .= " $icon <a href=\"https://toko.ua/cars/$mfa_link/\" rel=\"v:url\" property=\"v:title\">$mfa_name</a>";
+
                 if ($model_link !== "") {
                     $b_arr[4] = [
                         "name" => "$mfa_name $model_name",
@@ -212,11 +212,11 @@ function printBreadcrumbs($path)
             break;
         }
         case "search" : {
-            $article_nr_search  = $cat->getUrlString($bread[1]);
-            $article_nr_search  = rawurldecode($article_nr_search);
-            $article_nr_search  = iconv("UTF-8", "windows-1251", $article_nr_search);
-            $info               = $article_nr_search;
-            $pretitle           = "$a_home $icon {search_cap} $icon {search_results} $info";
+            $art_search  = $cat->getUrlString($bread[1]);
+            $art_search  = rawurldecode($art_search);
+            $art_search  = iconv("UTF-8", "windows-1251", $art_search);
+            $info        = $art_search;
+            $pretitle    = "$a_home $icon {search_cap} $icon {search_results} $info";
             break;
         }
         case "news" : {
@@ -226,6 +226,7 @@ function printBreadcrumbs($path)
                 "name" => $h_section,
                 "item" => "" . $cat->getSiteLink() . "news/"
             ];
+
             if ($cat->getUrlString($bread[1]) === "state") {
                 $a_section = $cat->replaceLang($a_section);
                 $a_section = str_replace("{h1_text}", "{news_cap}", $a_section);
@@ -249,6 +250,7 @@ function printBreadcrumbs($path)
                 "name" => $h_section,
                 "item" => "" . $cat->getSiteLink() . "reviews/"
             ];
+
             if ($cat->getUrlString($bread[1]) === "state") {
                 $a_section = $cat->replaceLang($a_section);
                 $a_section = str_replace("{h1_text}", "{review_state_cap}", $a_section);
@@ -291,7 +293,6 @@ function printBreadcrumbs($path)
         $form = getHtmlForm("menu/breadcrumbs");
         $form = str_replace("{bread_text}", $pretitle, $form);
     }
-
     $form = $cat->replaceLang($form);
 
     foreach ($b_arr as $key => $val) {
@@ -342,35 +343,35 @@ function getDescription($path)
     $linka = findLinks();
     $path = str_replace("/", "", $path);
     $prefix = "";
-    $description = ($path !== "")
+    $descr = ($path !== "")
         ? "{seo_description} $prefix {seo_description2}"
         : "{seo_description} {seo_description2}";
 
     if ($path === "cars") {
-        $description = "{site_cars_description}";
+        $descr = "{site_cars_description}";
     }
     if ($path === "article") {
         $art_id = $linka[3];
-        $article_nr_search = $cat->getArticleDispl($art_id);
-        $brand_id = $cat->getArticleBrand($art_id);
-        $article_nr_search = strtoupper($article_nr_search);
+        $art_search = $cat->getArticleDispl($art_id);
+        $brand_id   = $cat->getArticleBrand($art_id);
+        $art_search = strtoupper($art_search);
         $brand_name = $cat->getBrandName($brand_id);
         $brand_name = strtoupper($brand_name);
-        $art_name = $cat->getArticleName($art_id);
-        $description = "$art_name $brand_name $article_nr_search - {seo_description_article}";
-        $description = ltrim($description, " ");
+        $art_name   = $cat->getArticleName($art_id);
+        $descr      = "$art_name $brand_name $art_search - {seo_description_article}";
+        $descr      = ltrim($descr, " ");
     }
     if ($path === "brands") {
-        $description = "{site_brands_description}";
+        $descr = "{site_brands_description}";
     }
     if ($path === "catalog") {
-        $description = "{seo_description} {seo_description2}";
+        $descr = "{seo_description} {seo_description2}";
     }
 
-    $description = $language->replaceLangData($description);
-    ($cat->getUrlNumber($_GET['page']) === 0) ?: $description = "";
+    $descr = $language->replaceLangData($descr);
+    ($cat->getUrlNumber($_GET['page']) === 0) ?: $descr = "";
 
-    return $description;
+    return $descr;
 }
 
 function getKeywords($path)
@@ -425,6 +426,14 @@ function getPhpContent($file)
     return $contents;
 }
 
+function replaceLangVariables($content)
+{
+    $site_link = getSiteCurentLink();
+    $content = str_replace(array("{site_link_ru}", "{site_link_uk}", "{site_link_en}"), array($site_link["ru"], $site_link["uk"], $site_link["en"]), $content);
+
+    return $content;
+}
+
 function translateContent($content)
 {
     $db = DbSingleton::getTokoDb();
@@ -445,12 +454,7 @@ function getPath()
 {
     $url = findUrl();
     $path = findPath();
-
-    if ($path === "") {
-        $path = $url;
-    }
-
-    return $path;
+    return (empty($path)) ? $url : $path;
 }
 
 function findPath()

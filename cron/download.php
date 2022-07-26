@@ -1,19 +1,12 @@
 <?php
+
 define('RDD', __DIR__);
-error_reporting(0);
-@ini_set('display_errors', false);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
-@ini_set('display_errors', true);
+@ini_set('display_errors', false);
 date_default_timezone_set("Europe/Kiev");
 
-require_once (RDD."/../lib/DbSingleton.php");
-require_once (RDD . "/../lib/Traits/Helper.php");
-require_once (RDD . "/../lib/Traits/Variables.php");
-require_once (RDD."/../lib/CatalogueClass.php");
-require_once (RDD."/../lib/ClientClass.php");
-require_once (RDD."/../lib/ProfileClass.php");
-require_once (RDD."/../lib/LangClass.php");
-require_once (RDD."/../lib/ExRateClass.php");
+require_once (RDD."/../vendor/autoload.php");
+
 $catalogue = new CatalogueClass();
 
 $dbm = DbSingleton::getDbm();

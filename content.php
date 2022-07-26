@@ -3,23 +3,9 @@
 define('RDD', __DIR__);
 date_default_timezone_set("Europe/Kiev");
 
-include_once (RDD . "/lib/access.php");
-require_once (RDD . "/lib/Traits/Helper.php");
-require_once (RDD . "/lib/Traits/Variables.php");
-require_once (RDD . "/lib/DbSingleton.php");
-require_once (RDD . "/lib/CatalogueClass.php");
-require_once (RDD . "/lib/SearchClass.php");
-require_once (RDD . "/lib/FormClass.php");
-require_once (RDD . "/lib/ProductsClass.php");
-require_once (RDD . "/lib/MenuClass.php");
-require_once (RDD . "/lib/ShopClass.php");
-require_once (RDD . "/lib/ClientClass.php");
-require_once (RDD . "/lib/ProfileClass.php");
-require_once (RDD . "/lib/LangClass.php");
-require_once (RDD . "/lib/ExRateClass.php");
-require_once (RDD . "/lib/AutoClass.php");
-require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");
-require_once (RDD . "/lib/Plugins/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
+require_once (RDD . "/vendor/autoload.php");                  // init classes
+require_once (RDD . "/lib/access.php");                       // get access site
+require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");   // ajax requests
 
 session_start();
 $JsHttpRequest  = new JsHttpRequest("windows-1251");

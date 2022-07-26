@@ -3,7 +3,7 @@
 $xmlWriter = new XMLWriter();
 $xmlWriter->openMemory();
 
-define('RDD', dirname (__FILE__));
+define('RDD', __DIR__);
 
 $lang = "/ua-uk";
 

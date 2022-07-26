@@ -7,49 +7,50 @@ function show_image($srcimage, $newwidth, $newheight = 0) {
 
     list($width, $height) = getimagesize($srcimage);
 
-    if ($newheight == 0) {
-        $newheight = round($height * $newwidth /  $width);
+    $setnewheight = $newheight;
+    if ($newheight === 0 || $newheight === "0") {
+        $setnewheight = round($height * $newwidth /  $width);
     }
 
     $image = "";
-    if ($extension == "jpg" || $extension == "jpeg"|| $extension == "JPG"|| $extension == "JPEG") {
+    if ($extension === "jpg" || $extension === "jpeg"|| $extension === "JPG"|| $extension === "JPEG") {
         $image = imagecreatefromjpeg($srcimage);
     }
-    elseif ($extension == "png" || $extension == "PNG") {
+    elseif ($extension === "png" || $extension === "PNG") {
         $image = imagecreatefrompng($srcimage);
     }
-    elseif ($extension == "webp" || $extension == "WEBP") {
+    elseif ($extension === "webp" || $extension === "WEBP") {
         $image = imagecreatefromwebp($srcimage);
     }
 
-    $thumbImage = imagecreatetruecolor($newwidth, $newheight);
+    $thumbImage = imagecreatetruecolor($newwidth, $setnewheight);
 
-    imagecopyresized($thumbImage, $image, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+    imagecopyresized($thumbImage, $image, 0, 0, 0, 0, $newwidth, $setnewheight, $width, $height);
     imagedestroy($image);
 
     header("Content-Type: image/$extension");
 
-    if ($extension == "jpg" || $extension == "jpeg"|| $extension == "JPG"|| $extension == "JPEG") {
+    if ($extension === "jpg" || $extension === "jpeg"|| $extension === "JPG"|| $extension === "JPEG") {
         imagejpeg($thumbImage, NULL, 75);
     }
-    elseif ($extension == "png" || $extension == "PNG") {
+    elseif ($extension === "png" || $extension === "PNG") {
         imagepng($thumbImage, NULL, 75);
     }
-    elseif ($extension == "webp" || $extension == "WEBP") {
+    elseif ($extension === "webp" || $extension === "WEBP") {
         imagewebp($thumbImage, NULL, 75);
     }
     imagedestroy($thumbImage);
     exit;
 }
 
-$path = $_GET['image'];
-$width = $_GET['w'];
+$path   = $_GET['image'];
+$width  = $_GET['w'];
 $height = $_GET['h'];
-$type = $_GET['type'];
+$type   = $_GET['type'];
 
-if ($type == "" || $type == "catalogue") {
+if ($type === "" || $type === "catalogue") {
     $path = "uploads/images/catalogue/" . $path;
-} elseif ($type == "certificates") {
+} elseif ($type === "certificates") {
     $path = "uploads/images/certificates/" . $path;
 }
 

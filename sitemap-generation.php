@@ -1,19 +1,14 @@
 <?php
 
-$start = microtime(true);
-
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 @ini_set('display_errors', true);
 date_default_timezone_set("Europe/Kiev");
 ini_set('memory_limit', '2048M');
 
-define('RDD', dirname (__FILE__));
+define('RDD', __DIR__);
+require_once (RDD . "/vendor/autoload.php");
 
-require_once (RDD . "/lib/DbSingleton.php");
-require_once (RDD . "/lib/Traits/Helper.php");
-require_once (RDD . "/lib/Traits/Variables.php");
-require_once (RDD . "/lib/CatalogueClass.php");
-require_once (RDD . "/lib/CatalogExistClass.php");
+$start = microtime(true);
 
 $link = "https://toko.ua/";
 $lang = "";

@@ -1,24 +1,18 @@
 <?php
 
-$start = microtime(true);
-
+define('RDD', __DIR__);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
-@ini_set('display_errors', true);
+@ini_set('display_errors', false);
 date_default_timezone_set("Europe/Kiev");
 ini_set('memory_limit', '2048M');
 
-define('RDD', __DIR__);
-require_once (RDD."/../lib/DbSingleton.php");
-require_once (RDD . "/../lib/Traits/Helper.php");
-require_once (RDD . "/../lib/Traits/Variables.php");
-require_once (RDD."/../lib/CatalogueClass.php");
-require_once (RDD."/../lib/CatalogExistClass.php");
-require_once (RDD."/../lib/ExRateClass.php");
-require_once (RDD."/../lib/ClientClass.php");
+require_once (RDD."/../vendor/autoload.php");
 
 $dbt = DbSingleton::getTokoDb();
 $dbc = DbSingleton::getTokoCacheDb();
 $catalog_exist = new CatalogExistClass();
+
+$start = microtime(true);
 
 $where = "1";
 $where1 = "1";

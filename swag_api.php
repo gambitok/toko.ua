@@ -7,8 +7,8 @@ date_default_timezone_set("Europe/Kiev");
 ini_set('memory_limit', '2048M');
 header('Content-Type: text/html; charset=utf-8');
 
+require_once (RDD . "/vendor/autoload.php");
 require_once (RDD . "/lib/Plugins/checkbox-php/vendor/autoload.php");
-require_once (RDD . "/lib/DbSingleton.php");
 
 $config = new \igorbunov\Checkbox\Config([
     \igorbunov\Checkbox\Config::API_URL     => 'https://api.checkbox.in.ua/api/v1',
@@ -24,6 +24,8 @@ $api->signInCashier();
 if (!empty($api->getCashierShift())) {
     $api->createShift();
 }
+
+var_dump($api->getReceipts());
 
 //$db = DbSingleton::getDbm();
 //
