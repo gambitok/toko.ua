@@ -362,7 +362,7 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_proposed}", $shop->getProposedArts(), $form);
         $form = str_replace("{art_history}", $this->getHistoryArts(), $form);
 
-        $form = str_replace("{art_seo_text}", $this->getArticleSeoText($art_id, $h1), $form);
+        $form = str_replace("{art_seo_text}", $this->getArticleSeoText($art_id), $form);
         $form = str_replace("{art_id}", $art_id, $form);
         $form = str_replace("{brand_id}", $brand_id, $form);
         $form = str_replace("{suppl_id}", $articleData["suppl_id"], $form);

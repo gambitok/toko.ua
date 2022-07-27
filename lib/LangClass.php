@@ -7,6 +7,8 @@ class LangClass
 
     public $default_lang_id = 1;
     public $default_old_lang_id = 16;
+//    public $default_lang_id = 2;
+//    public $default_old_lang_id = 41;
 
     private static $langVariables;
     private static $langNames;
@@ -195,9 +197,7 @@ class LangClass
     public function changeLangJs($text)
     {
         $text = $this->getNameString($text);
-        $text = $this->replaceLangData($text);
-
-        return $text;
+        return $this->replaceLangData($text);
     }
 
 }
