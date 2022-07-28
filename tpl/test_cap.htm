@@ -1,7 +1,8 @@
+<link rel="stylesheet" href="/captcha/css/style.css">
 
 <script type='text/javascript'>
     function refreshCaptcha(){
-        var img = document.images['captchaimg'];
+        let img = document.images['captchaimg'];
         img.src = img.src.substring(0,img.src.lastIndexOf("?"))+"?rand="+Math.random()*1000;
     }
 </script>
@@ -10,14 +11,9 @@
 
 <form action="" method="post" name="form1" id="form1" >
     <table width="400" border="0" align="center" cellpadding="5" cellspacing="1" class="table">
-        <?php if(isset($msg)){?>
-        <tr>
-            <td colspan="2" align="center" valign="top"><?php echo $msg;?></td>
-        </tr>
-        <?php } ?>
         <tr>
             <td align="right" valign="top"> Validation code:</td>
-            <td><img src="captcha.php?rand=<?php echo rand();?>" id='captchaimg'><br>
+            <td><img src="/captcha/captcha.php?rand=<?php echo rand();?>" id='captchaimg'><br>
                 <label for='message'>Enter the code above here :</label>
                 <br>
                 <input id="captcha_code" name="captcha_code" type="text">
@@ -26,7 +22,7 @@
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td><input name="Submit" type="submit" onclick="return validate();" value="Submit" class="button1"></td>
+            <td><input name="Submit" type="submit" value="Submit" class="button1"></td>
         </tr>
     </table>
 </form>
