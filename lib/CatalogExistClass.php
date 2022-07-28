@@ -681,7 +681,7 @@ class CatalogExistClass extends CatalogueClass
                                 $brand_link = $brand_name = "";
                                 foreach ($values as $value_id) {
                                     $brand_name = $this->getBrandName($value_id);
-                                    $brand_link = $this->getBrandName($value_id);
+                                    $brand_link = $this->getBrandLink($value_id);
                                 }
                                 $arr2[] = [
                                     "name" => "$group_name $brand_name",
