@@ -341,9 +341,8 @@ class MenuClass extends CatalogueClass
             $art_id = $db->result($r, $i - 1, "ART_ID");
             $arts[] = $art_id;
         }
-        $arts = implode(",", $arts);
 
-        return $arts;
+        return implode(",", $arts);
     }
 
     /*
@@ -910,8 +909,7 @@ class MenuClass extends CatalogueClass
             $text   = $db->result($r, 0, "TEXT");
             $styles = $db->result($r, 0, "STYLES");
             $status = $db->result($r, 0, "STATUS");
-
-            $text = $this->replaceLang($text);
+            $text   = $this->replaceLang($text);
 
             if ($status) {
                 $form = "
@@ -940,6 +938,7 @@ class MenuClass extends CatalogueClass
 
             if ($n > 0) {
                 $list = $this->getHtmlForm("bar/main");
+
                 $head_list = "";
                 for ($i = 1; $i <= $n; $i++) {
                     $head_id    = $db->result($r, $i - 1, "HEAD_ID");
@@ -950,6 +949,7 @@ class MenuClass extends CatalogueClass
                         $head_name
                     </div>";
                 }
+
                 $list = str_replace(array("{head_list}", "{media_list}", "{contacts_list}"), array($head_list, $this->getPhoneNav(), $this->getPhoneContacts()), $list);
             }
         } else {
@@ -1165,16 +1165,14 @@ class MenuClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $art_id     = $db->result($r, $i - 1, "ART_ID");
             $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
-
             $art_nr_ds  = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
             $art_name   = $this->getArticleNameLang($art_id);
-
             $brand_name = $this->getBrandName($brand_id);
-            $format_brand_link  = $this->getBrandLink($brand_id);
-            $format_name  = $this->getFormatAticle($art_nr_ds);
+            $fbrand     = $this->getBrandLink($brand_id);
+            $fname      = $this->getFormatAticle($art_nr_ds);
 
             $text = "$art_name $brand_name $art_nr_ds";
-            $link = "$format_name-$format_brand_link-$art_id";
+            $link = "$fname-$fbrand-$art_id";
 
             $arr[] = ["link" => $link, "text" => $text];
         }

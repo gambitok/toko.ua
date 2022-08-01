@@ -19,8 +19,8 @@ class dbm
     {
         $this->host = '172.17.0.1';
         $this->dbname = 'myparts_dba';
-        $this->username = 'myparts_usr';
-        $this->password = 'sdF98723KJef82';
+        $this->username = 'toko_usr';
+        $this->password = 'T0k0U&erP@ssw0rd#183729z';
     }
 
     public function connect()
@@ -103,7 +103,7 @@ class db
         $this->host = '172.17.0.1';
         $this->dbname = 'toko_dba';
         $this->username = 'toko_usr';
-        $this->password = 'Xm53R9H4znZda4YH';
+        $this->password = 'T0k0U&erP@ssw0rd#183729z';
     }
 
     public function connect()
@@ -186,7 +186,7 @@ class dbc
         $this->host = '172.17.0.1';
         $this->dbname = 'toko_dba_cache';
         $this->username = 'toko_usr';
-        $this->password = 'Xm53R9H4znZda4YH';
+        $this->password = 'T0k0U&erP@ssw0rd#183729z';
     }
 
     public function connect()

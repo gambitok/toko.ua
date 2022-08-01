@@ -285,7 +285,8 @@ $(document).ready(function() {
     if (!detectmob()) {
         if (cookie_user_id === "") {
             setTimeout(function () {
-                void(Tawk_API.toggle());
+                //void(Tawk_API.toggle());
+                toggleSocialIcons();
             }, 60000);
         }
     }

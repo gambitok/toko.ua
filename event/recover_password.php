@@ -1,40 +1,47 @@
-<?php session_start();
+<?php
+
+session_start();
 
 if ($client->checkUnRegClient()) {
+    $ses_phone      = $_POST["recover_phone"];
+    $ses_password   = "";
+    $message        = "";
 
-    $ses_phone = $_POST["recover_phone"];
-
-    if (isset($_POST['Submit'])) {
-        if (empty($_SESSION['recover_phone'] ) || strcasecmp($_SESSION['recover_phone'], $_POST['recover_phone']) !== 0) {
-            $msg = "Done!";
-        }
+    $form = $client->getHtmlForm("profile/recover_phone");
+    if (empty($_SESSION["captcha_code"])) {
+        $_SESSION["captcha_code_status"] = 0;
     }
 
     if (empty($ses_phone)) {
-        $form = $menu->getHtmlForm("profile/recover_password");
-        $form = str_replace(array("{ses_phone}", "{ses_message}"), array("", ""), $form);
-    }
+        $message = "";
+    } elseif ($client->checkRegClient($ses_phone) !== false) {
+        $ses_captcha = $_POST["captcha_code"];
 
-    if (!empty($ses_phone)) {
-        if ($client->checkRegClient($ses_phone) !== false) {
-            //next
-            //open captcha = content main window
-            include_once RDD . "/event/recover.php";
-            $msg = "Validate phone";
+        $form = $client->getHtmlForm("recover_captcha");
 
-            $form = "";
-
+        if (empty($ses_captcha)) {
+            $message = "";
+        } elseif ((empty($_SESSION['captcha_code']) || strcasecmp($_SESSION['captcha_code'], $_POST['captcha_code']) !== 0)) {
+            //INCORRECT CAPTCHA
+            $message = "{wrong_captcha_cap}!";
+            $_SESSION['captcha_code_status'] = 0;
         } else {
-            //err message
-            $msg = "Error phone!";
-
-            $form = $menu->getHtmlForm("profile/recover_password");
-            $form = str_replace(array("{ses_phone}", "{ses_message}"), array($ses_phone, $msg), $form);
+            $message = "";
+            $form = $client->getHtmlForm("profile/recover_password_done");
+            $client->recoverPassword($ses_phone);
         }
+
+    } else {
+        // INCORRECT PHONE
+        $message = "{wrong_phone_cap}!";
+        $_SESSION["captcha_code_status"] = 0;
     }
 
+    $form = str_replace(array("{form_phone}", "{form_password}", "{message}"), array($ses_phone, $ses_password, (!empty($message)) ? "<label class=\"alert-danger\">$message</label>" : $message), $form);
     $content = str_replace("{main_window}", $form, $content);
 
+
 } else {
+    // EMPTY USER
     require_once("profile.php");
 }

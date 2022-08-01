@@ -7,26 +7,27 @@
     }
 </script>
 
+<style>
+    label.alert-danger {
+        padding: 15px;
+        display: block;
+        margin-bottom: 15px;
+    }
+</style>
+
 <div class="content">
     {message}
 
-    <form action="" method="post" name="form1" id="form1" >
+    <h1>{captcha_cap}</h1>
+    <br>
+    <form action="" method="post" name="form1" id="form1" class="table_captcha">
         <input name="recover_phone" type="hidden" value="{form_phone}">
-
-        <table width="400" border="0" align="center" cellpadding="5" cellspacing="1" class="table">
-            <tr>
-                <td align="right" valign="top"> Validation code:</td>
-                <td><img src="/captcha/captcha.php?rand=<?php echo rand();?>" id='captchaimg'><br>
-                    <label for='message'>Enter the code above here :</label>
-                    <br>
-                    <input id="captcha_code" name="captcha_code" type="text">
-                    <br>
-                    Can't read the image? click <a href='javascript: refreshCaptcha();'>here</a> to refresh.</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td><input name="Submit" type="submit" value="Submit" class="button1"></td>
-            </tr>
-        </table>
+        <p><img src="/captcha/captcha.php?rand=<?php echo rand();?>" id='captchaimg'></p>
+        <br>
+        <p><label for='message'>{cant_read_code}:</label></p>
+        <p><input id="captcha_code" name="captcha_code" type="text" class="form-control" style="width: 300px"></p>
+        <p>{click_to_refresh} <a href='javascript: refreshCaptcha();'>{here_cap}</a>.</p>
+        <br>
+        <p><input name="Submit" type="submit" value="{send_sms}" class="btn btn-primary" style="width: 300px"></p>
     </form>
 </div>

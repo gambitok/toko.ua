@@ -4,6 +4,7 @@
 	color: #1155CC !important;
 	font-family: "verdana", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	text-decoration: none;
+	text-decoration: underline;
 }
 .table_captcha a:hover {
 	text-decoration: underline;
@@ -76,13 +77,4 @@
 .button1:active, .a:active {
 	position: relative;
 	top: 1px;
-}
-.table_captcha {
-	font-family: verdana, Helvetica, sans-serif;
-	font-size: 12px;
-	color: #333;
-	background-color: #E4E4E4;
-}
-.table_captcha td {
-	background-color: #F8F8F8;
 }
