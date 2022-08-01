@@ -6,6 +6,7 @@ date_default_timezone_set("Europe/Kiev");
 require_once (RDD . "/vendor/autoload.php");                  // init classes
 require_once (RDD . "/lib/access.php");                       // get access site
 require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");   // ajax requests
+require_once (RDD . "/lib/Plugins/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 
 session_start();
 $JsHttpRequest  = new JsHttpRequest("windows-1251");

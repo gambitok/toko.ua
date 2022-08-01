@@ -1,0 +1,30 @@
+<script>
+    $(document).ready(function(){
+        $(".masked-phone").mask("+38(999) 999-99-99", {
+            placeholder:"+38(___) ___-__-__",
+            autoclear: false,
+            alias: "numeric"
+        });
+    })
+</script>
+
+<div class="content">
+    {message}
+
+    <h1>{recover_pass}</h1>
+
+    <div id="recover_block" class="row">
+        <div class="col-12">
+            <span>{set_pass_recover}</span>
+        </div>
+        <form action="" method="post" style="display:contents;">
+            <div class="col-6">
+                <input id="recover_phone" name="recover_phone" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__">
+            </div>
+            <div class="col-6">
+                <input name="Submit" type="submit" value="{send_sms}" class="btn btn-primary">
+            </div>
+        </form>
+
+    </div>
+</div>

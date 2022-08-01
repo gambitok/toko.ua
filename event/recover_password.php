@@ -3,6 +3,7 @@
 if ($client->checkUnRegClient()) {
 
     $ses_phone = $_POST["recover_phone"];
+
     if (isset($_POST['Submit'])) {
         if (empty($_SESSION['recover_phone'] ) || strcasecmp($_SESSION['recover_phone'], $_POST['recover_phone']) !== 0) {
             $msg = "Done!";
