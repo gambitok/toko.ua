@@ -19,11 +19,20 @@ $catalog_exist  = new CatalogExistClass();
 
 global $content;
 $content = null;
+// REDIRECT TO DEFAULT LANG
+//$user_id = $_COOKIE['user_id'];
+//$lang_id = $_COOKIE['lang_id'];
+//$postfix = strpos($_SERVER["REQUEST_URI"], "/uk/");
+//
+//if (empty($user_id) && empty($lang_id) && $postfix !== 0) {
+//    $language->setLangID($language->default_lang_id);
+//    header("Location: " . getLangUrl("uk"), TRUE, 301);
+//}
 
-//set cookies for user
+// set cookies for user
 setCookies();
 
-//set language for user
+// set language for user
 $language->setLangID(findLanguageID(findLanguage()));
 
 $theme_htm = RDD . "/main.htm";
