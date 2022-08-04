@@ -483,14 +483,14 @@ function findPath()
 	return $res;
 }
 
-function getLangUrl($lang)
-{
-    $path = $_SERVER["REQUEST_URI"];
-    $path = ltrim($path, "/en/");
-    $path = ltrim($path, "/uk/");
-    $path = ltrim($path, "/ru/");
-    return "https://" . $_SERVER["HTTP_HOST"] . "/$lang/" . $path;
-}
+//function getLangUrl($lang)
+//{
+//    $path = $_SERVER["REQUEST_URI"];
+//    $path = ltrim($path, "/en/");
+//    $path = ltrim($path, "/uk/");
+//    $path = ltrim($path, "/ru/");
+//    return "https://" . $_SERVER["HTTP_HOST"] . "/$lang/" . $path;
+//}
 
 function findUrl()
 {
