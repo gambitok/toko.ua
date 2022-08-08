@@ -139,12 +139,32 @@ class FormClass extends CatalogueClass
     {
         $brand_id = $this->getUrlNumber($brand_id);
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `name`, `descr`, `link`, `logo_name` FROM `T2_BRAND_LINK` WHERE `brand_id` = $brand_id LIMIT 1;");
+        $r = $db->query("SELECT `name`, `descr`, `descr_ua`, `descr_en`, `link`, `logo_name` FROM `T2_BRAND_LINK` WHERE `brand_id` = $brand_id LIMIT 1;");
         $n = $db->num_rows($r);
 
+        $lang_id = $this->getLanguage();
+        $descr = "";
+
         if ($n > 0) {
+            $descr_ru   = trim($db->result($r, 0, "descr"));
+            $descr_ua   = trim($db->result($r, 0, "descr_ua"));
+            $descr_en   = trim($db->result($r, 0, "descr_en"));
+
+            if ($lang_id === 1) {
+                $descr = $descr_ru;
+            }
+            if ($lang_id === 2) {
+                $descr = $descr_ua;
+            }
+            if ($lang_id === 3) {
+                $descr = $descr_en;
+            }
+            if ($descr === "") {
+                $descr = $descr_ru;
+            }
+
             $info = $this->getHtmlForm("modals/brand_form");
-            $info = str_replace(array("{brand_form_name}", "{brand_form_country}", "{brand_form_descr}", "{brand_form_link}"), array(trim($db->result($r, 0, "name")), $this->getCountryFlag($brand_id)["flag"], trim($db->result($r, 0, "descr")), trim($db->result($r, 0, "link"))), $info);
+            $info = str_replace(array("{brand_form_name}", "{brand_form_country}", "{brand_form_descr}", "{brand_form_link}"), array(trim($db->result($r, 0, "name")), $this->getCountryFlag($brand_id)["flag"], $descr, trim($db->result($r, 0, "link"))), $info);
 
             $logo_brand = trim($db->result($r, 0, "logo_name"));
             $info = str_replace("{brand_form_logo_class}", ($logo_brand === "") ? "none" : "", $info);
@@ -740,6 +760,7 @@ class FormClass extends CatalogueClass
         $deliveryData           = $this->getTpointDeliveryInfo($tpoint, $storage_id);
         $delivery_days          = $deliveryData["days"];
         $delivery_short_info    = $deliveryData["short"];
+
         if ($suppl_id > 0) {
             $deliveryData           = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
             $delivery_days          = $deliveryData["days"];
@@ -761,6 +782,7 @@ class FormClass extends CatalogueClass
 
         $cur = $this->getCurrentExrate();
         $arr = [];
+        $arr2 = [];
 
         $r = $db->query("SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
         FROM `T2_ARTICLES` t2a
@@ -811,10 +833,19 @@ class FormClass extends CatalogueClass
             if ($price > 0 && $real_stock > 0 && $this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                 $arr[] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "stock", "real_stock", "delivery_short_info", "price", "delivery_days", "basket", "storage_id", "suppl_id");
             }
+
+            if (($suppl_id === 0) && $price > 0 && $real_stock > 0 && $this->getSuppLStorageVisible($suppl_id, $storage_id)) {
+                $arr2[] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "stock", "real_stock", "delivery_short_info", "price", "delivery_days", "basket", "storage_id", "suppl_id");
+            }
         }
 
         // MIN PRICE
         //$arr = $this->multiSort($arr, "price", "delivery");
+
+        // for our articles (no suppls)
+        if (!empty($arr2)) {
+            $arr = $arr2;
+        }
 
         foreach ($arr as $key => $row) {
             $price[$key] = $row['price'];
