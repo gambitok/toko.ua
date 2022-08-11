@@ -115,12 +115,15 @@ function saveRegistrationForm() {
             if (result.content !== false) {
                 let text = "{user_already_logged}!<br>{client_login}: " + result.content[0];
                 showAlertModal(text, "{error_cap}", 0, showLoginForm);
+                return false;
             } else {
-                showValidateModal(phone, validatePhone, saveRegistration);
+                //showValidateModal(phone, validatePhone, saveRegistration);
+                return true;
             }
         }}, true);
     } else {
         showAlertModal("{input_all_data}!", "{error_cap}", 0);
+        return false;
     }
 }
 

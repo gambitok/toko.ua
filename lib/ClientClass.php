@@ -567,6 +567,7 @@ class ClientClass
     /*
      * checking user authorization in the system
      * Table: myparts_dba.`A_CLIENTS_USERS`, myparts_dba.`A_CLIENTS_USERS_RETAIL`
+     * false - if new user
     */
     public function checkRegClient($phone, $type = 0)
     {

@@ -1,31 +1,91 @@
 <?php
 
-$red_status = 0;
-$red_type   = 0;
-$red_link   = "";
+//$red_status = 0;
+//$red_type   = 0;
+//$red_link   = "";
+
+$phone      = $_POST["reg_phone"];
+$name       = $_POST["reg_name"];
+$email      = $_POST["reg_email"];
+$password   = $_POST["reg_password"];
+$category   = $_POST["reg_category"];
+$tpoint     = $_POST["reg_tpoint"];
+$city       = $_POST["user_city"];
+$mailing    = isset($_POST["reg_mailing"]) ? 1 : 0;
+
+$fields = "
+NAME :$name<br>
+PHONE: $phone<br>
+EMAIL: $email<br>
+PASS: $password<br>
+CATEG: $category<br>
+TPOINT: $tpoint<br>
+CITY: $city<br>
+MAILINT: $mailing";
 
 if ($client->checkUnRegClient()) {
-    if (count(findLinks()) > 1) {
-        $red_status = 1;
-        $red_type   = 404;
-        $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+//    if (count(findLinks()) > 1) {
+//        $red_status = 1;
+//        $red_type   = 404;
+//        $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+//    }
+    $message = "";
+    $ses_phone      = $phone;
+
+    $form = $profile->showRegistrationForm();
+
+    if (empty($ses_phone)) {
+        $message = "";
+    } elseif ($client->checkRegClient($ses_phone) === false) {
+
+        $ses_captcha = $_POST["captcha_code"];
+
+        $form = $client->getHtmlForm("reg_captcha");
+
+        if (empty($ses_captcha)) {
+            $message = "";
+        } elseif ((empty($_SESSION['captcha_code']) || strcasecmp($_SESSION['captcha_code'], $_POST['captcha_code']) !== 0)) {
+            //INCORRECT CAPTCHA
+            $message = "{wrong_captcha_cap}!";
+        } else {
+            $message = "{done}";
+            $form = $client->getHtmlForm("profile/registration_done");
+
+            $client->saveRegistration($phone, $password, $email, $name, $category, $city, $tpoint, $mailing);
+        }
+    } else {
+        $message = "{user_already_logged}!";
     }
-    $content = str_replace("{main_window}", $profile->showRegistrationForm(), $content);
+
+    $form = str_replace("{reg_phone}", $phone, $form);
+    $form = str_replace("{reg_name}", $name, $form);
+    $form = str_replace("{reg_email}", $email, $form);
+    $form = str_replace("{reg_password}", $password, $form);
+    $form = str_replace("{reg_category}", $category, $form);
+    $form = str_replace("{reg_tpoint}", $tpoint, $form);
+    $form = str_replace("{user_city}", $city, $form);
+    $form = str_replace("{reg_mailing}", $mailing, $form);
+    $form = str_replace("{message}", (!empty($message)) ? "<label class=\"alert-danger\">$message</label>" : $message, $form);
+
+    $content = str_replace("{main_window}", $form, $content);
+
 } else {
     require_once("profile.php");
 }
 
-$content = str_replace("{meta_noindex}", '
-    <meta name="robots" content="noindex">
-    <meta name="googlebot" content="noindex">
-    <meta name="yandex" content="noindex">
-', $content);
 
-if ($red_status) {
-    if ($red_type === 404) {
-        header("HTTP/1.0 404 Not Found");
-    }
-    if ($red_type === 301) {
-        header("Location: $red_link", TRUE, 301);
-    }
-}
+
+//$content = str_replace("{meta_noindex}", '
+//    <meta name="robots" content="noindex">
+//    <meta name="googlebot" content="noindex">
+//    <meta name="yandex" content="noindex">
+//', $content);
+
+//if ($red_status) {
+//    if ($red_type === 404) {
+//        header("HTTP/1.0 404 Not Found");
+//    }
+//    if ($red_type === 301) {
+//        header("Location: $red_link", TRUE, 301);
+//    }
+//}

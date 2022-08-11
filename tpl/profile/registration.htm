@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="/js/plugins/select2/select2.min.css" />
+
 <script>
     $(document).ready(function(){
         $(".masked-phone").mask("+38(999) 999-99-99", {
@@ -32,12 +33,24 @@
     }
 </style>
 
+<style>
+	label.alert-danger {
+		padding: 15px;
+		display: block;
+		margin-bottom: 15px;
+	}
+</style>
+
 <div class="content">
+
+	{message}
 
 	<h1>{registration}</h1>
 
 	<div class="container">
 		<div class="registration">
+
+			<form name="myForm" action="" onsubmit="return saveRegistrationForm();" method="post">
 
 			<div class="registration-row">
 				<div class="row">
@@ -45,7 +58,7 @@
 						<label class="label-required">{name_surname}:</label>
 					</div>
 					<div class="col-lg-8 col-12">
-						<input id="reg_name" title="{name_surname}" class="form-control" type="text">
+						<input id="reg_name" name="reg_name" title="{name_surname}" class="form-control" type="text">
 					</div>
 				</div>
 			</div>
@@ -56,7 +69,7 @@
 						<label class="label-required">{phone_cap}:</label>
 					</div>
 					<div class="col-lg-8 col-12">
-						<input id="reg_phone" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__">
+						<input id="reg_phone" name="reg_phone" title="{phone_cap}" class="form-control masked-phone" type="tel" placeholder="+38(___) ___-__-__">
 					</div>
 				</div>
 			</div>
@@ -67,7 +80,7 @@
 						<label>{email_cap}:</label>
 					</div>
 					<div class="col-lg-8 col-12">
-						<input id="reg_email" title="{email_cap}" class="form-control" type="email">
+						<input id="reg_email" name="reg_email" title="{email_cap}" class="form-control" type="email">
 					</div>
 				</div>
 			</div>
@@ -100,7 +113,7 @@
 						<label class="label-required">{client_category}:</label>
 					</div>
 					<div class="col-lg-8 col-12">
-						<select id="reg_category" title="{client_category}" class="form-control">
+						<select id="reg_category" name="reg_category" title="{client_category}" class="form-control">
 							{category_options}
 						</select>
 					</div>
@@ -113,7 +126,7 @@
 						<label class="label-required">{choose_office_near}:</label>
 					</div>
 					<div class="col-lg-8 col-12">
-						<select id="reg_tpoint" title="{choose_office}" class="form-control">
+						<select id="reg_tpoint" name="reg_tpoint" title="{choose_office}" class="form-control">
 							{tpoint_options}
 						</select>
 					</div>
@@ -126,7 +139,7 @@
 						<label class="label-required">{location_cap}:</label>
 					</div>
 					<div class="col-lg-8 col-12">
-						<select id="user_city" title="{location_cap}" class="form-control" data-attr="select" oninput="getCityVal();" onchange="setCityVal();">
+						<select id="user_city" name="user_city" title="{location_cap}" class="form-control" data-attr="select" oninput="getCityVal();" onchange="setCityVal();">
 							<option value="0">{not_chosen}</option>
 							{user_city_main_list}
 						</select>
@@ -136,10 +149,10 @@
 						<div class="city-inline">
 							<ul class="list-inline">
 								<li class="list-inline-item">{for_example}:</li>
-								<li class="list-inline-item"><button id="10108" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>
-								<li class="list-inline-item"><button id="22739" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kharkiv} </button></li>
-								<li class="list-inline-item"><button id="13549" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
-								<li class="list-inline-item"><button id="4074" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_dnepr} </button></li>
+								<li class="list-inline-item"><button id="10108" type="button" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kyiv} </button></li>
+								<li class="list-inline-item"><button id="22739" type="button" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_kharkiv} </button></li>
+								<li class="list-inline-item"><button id="13549" type="button" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_lviv} </button></li>
+								<li class="list-inline-item"><button id="4074" type="button" class="js-programmatic-set-val button" onclick="triggerCity(this);"> {city_dnepr} </button></li>
 							</ul>
 						</div>
 					</div>
@@ -148,14 +161,17 @@
 
 			<div class="registration-row">
 				<label class="container_check">{mailing_cap}
-					<input id="reg_mailing" value="{mailing_cap}" name="{mailing_cap}" type="checkbox" checked="checked">
+					<input id="reg_mailing" name="reg_mailing" value="{mailing_cap}" type="checkbox" checked="checked">
 					<span class="checkmark"></span>
 				</label>
 			</div>
 
 			<div class="registration-row">
-				<input type="submit" class="btn btn-primary" value="{save_cap}" onclick="saveRegistrationForm();">
+<!--				onclick="saveRegistrationForm();"-->
+				<input type="submit" class="btn btn-primary" value="{save_cap}" >
 			</div>
+
+			</form>
 
 		</div>
 	</div>

@@ -21,8 +21,15 @@
     <h1>{captcha_cap}</h1>
     <br>
     <form action="" method="post" name="form1" id="form1" class="table_captcha">
-        <input name="recover_phone" type="hidden" value="{form_phone}">
-        <input name="reg_phone" type="hidden" value="{form_phone}">
+        <input name="reg_phone" type="hidden" value="{reg_phone}">
+        <input name="reg_name" type="hidden" value="{reg_name}">
+        <input name="reg_email" type="hidden" value="{reg_email}">
+        <input name="reg_password" type="hidden" value="{reg_password}">
+        <input name="reg_category" type="hidden" value="{reg_category}">
+        <input name="reg_tpoint" type="hidden" value="{reg_tpoint}">
+        <input name="user_city" type="hidden" value="{user_city}">
+        <input name="reg_mailing" type="hidden" value="{reg_mailing}">
+
         <p><img src="/captcha/captcha.php?rand=<?php echo rand();?>" id='captchaimg'></p>
         <br>
         <p><label for='message'>{cant_read_code}:</label></p>
