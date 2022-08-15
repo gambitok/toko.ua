@@ -1023,10 +1023,10 @@ class ClientClass
 
         if ($user_id > 0) {
             $r = $db->query("SELECT `phone` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id LIMIT 1;");
-            $phone = $db->result($r, 0, "phone");
+            $phone = (string)$db->result($r, 0, "phone");
         }
 
-        return (string)$phone;
+        return $phone;
     }
 
     /*

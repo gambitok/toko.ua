@@ -22,7 +22,6 @@ if ($client->checkUnRegClient()) {
         if (empty($ses_captcha)) {
             $message = "";
         } elseif ((empty($_SESSION['captcha_code']) || strcasecmp($_SESSION['captcha_code'], $_POST['captcha_code']) !== 0)) {
-            //INCORRECT CAPTCHA
             $message = "{wrong_captcha_cap}!";
             $_SESSION['captcha_code_status'] = 0;
         } else {
@@ -32,7 +31,6 @@ if ($client->checkUnRegClient()) {
         }
 
     } else {
-        // INCORRECT PHONE
         $message = "{wrong_phone_cap}!";
         $_SESSION["captcha_code_status"] = 0;
     }
@@ -42,6 +40,5 @@ if ($client->checkUnRegClient()) {
 
 
 } else {
-    // EMPTY USER
     require_once("profile.php");
 }

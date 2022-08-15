@@ -603,7 +603,7 @@ class ShopClass extends CatalogueClass
 
         $price = $delivery_id = 0;
         $r = $db->query("SELECT `order_info_id`, `tpoint_id`, `client_id`, `client_user_id` FROM `orders_new` WHERE `ID` = $order_id LIMIT 1;");
-        $order_info_id  = (int)$db->result($r, 0, "order_info_id") + 0;
+        $order_info_id  = (int)$db->result($r, 0, "order_info_id");
         $tpoint_id      = (int)$db->result($r, 0, "tpoint_id");
         $client_id      = (int)$db->result($r, 0, "client_id");
         $user_id        = (int)$db->result($r, 0, "client_user_id");
@@ -1909,14 +1909,13 @@ class ShopClass extends CatalogueClass
         return $list;
     }
 
-
-    public function getSearchCityForm()
-    {
-        $form = $this->getHtmlForm("orders/city_dropdown");
-        $form = str_replace(array("{selected_id}", "{selected_name}", "{select_list}"), array(0, "-{not_chosen}-", $this->searchCityMain()), $form);
-
-        return $form;
-    }
+//    public function getSearchCityForm()
+//    {
+//        $form = $this->getHtmlForm("orders/city_dropdown");
+//        $form = str_replace(array("{selected_id}", "{selected_name}", "{select_list}"), array(0, "-{not_chosen}-", $this->searchCityMain()), $form);
+//
+//        return $form;
+//    }
 
     public function searchCityMain(): string
     {

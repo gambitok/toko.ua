@@ -1,5 +1,7 @@
 <?php
 
+$content = str_replace("{main_window}", $catalogue->getHtmlForm("test_page"), $content);
+
 //$db = DbSingleton::getDbm();
 //$r = $db->query("SELECT `cash_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = 7123123 LIMIT 1;");
 //$n = $db->num_rows($r);
