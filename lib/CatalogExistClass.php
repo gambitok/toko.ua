@@ -237,7 +237,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * check exist of group params table
      * */
-    public function checkTable($group_id)
+    public function checkTable($group_id): int
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
@@ -254,7 +254,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * check exist of group params table
      * */
-    public function checkTableParams($group_id)
+    public function checkTableParams($group_id): int
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
@@ -271,7 +271,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * check exist of group mfa table
      * */
-    public function checkTableMfa($group_id)
+    public function checkTableMfa($group_id): int
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_MFA_$group_id";
@@ -929,7 +929,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * get count parts from all group
      * */
-    public function getPartsCountGroup($group_id, $params, $where_link_arts = "", $mfa_id = 0, $model = "")
+    public function getPartsCountGroup($group_id, $params, $where_link_arts = "", $mfa_id = 0, $model = ""): int
     {
         $dbc = DbSingleton::getTokoCacheDb();
 
@@ -970,7 +970,7 @@ class CatalogExistClass extends CatalogueClass
     /*
      * get products count
      * */
-    public function getPartsCount($group_id, $query = "")
+    public function getPartsCount($group_id, $query = ""): int
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $n = 0;
@@ -1036,7 +1036,9 @@ class CatalogExistClass extends CatalogueClass
                 $catalog_link   .= "$model_link/";
             }
         }
+
         $form = str_replace("{catlog_link}", "<a class=\"blue-a\" href=\"$catalog_link\">$catalog_text</a>", $form);
+
         return $this->replaceLang($form);
     }
 
@@ -1217,11 +1219,6 @@ class CatalogExistClass extends CatalogueClass
             "script"        => $breadcrumbs_script,
             "time"          => $time
         );
-    }
-
-    public function getTelegramForm()
-    {
-        return $this->getHtmlForm("catalog_exist/telegram");
     }
 
     public function getPartsSortForm($sort, $source_link)
@@ -2445,6 +2442,7 @@ class CatalogExistClass extends CatalogueClass
                 </div>";
             }
         }
+
         return $list;
     }
 
@@ -2510,6 +2508,7 @@ class CatalogExistClass extends CatalogueClass
                 ];
             }
         }
+
         return $arr;
     }
 
@@ -2581,6 +2580,7 @@ class CatalogExistClass extends CatalogueClass
         if ($count_params > 1) {
             $count_params = 1;
         }
+
         return array($count_brands, $count_params, $count_values);
     }
 
@@ -2594,6 +2594,7 @@ class CatalogExistClass extends CatalogueClass
         $img_text = "https://toko.ua/images/tree-group/" . $this->getGroupRowImage($group_id);
         $form = $this->getHtmlForm("article/social");
         $form = str_replace(array("{h1_meta_tag}", "{url_meta_tag}", "{main_image_cap}"), array($h1_text, $url_text, $img_text), $form);
+
         return $form;
     }
 
