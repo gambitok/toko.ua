@@ -6,7 +6,13 @@
             "email": "gambitokgd@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "guzzlehttp/guzzle": "7.4.5 as 7.3.0"
+    }
+    ,
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
+    },
     "autoload": {
         "classmap": [
             "lib/"

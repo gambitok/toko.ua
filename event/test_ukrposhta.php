@@ -1,8 +1,7 @@
 <?php
 
-$config = new Ukrposhta\Data\Configuration();
-$config->setBearer('7e769f5c-4ac8-32a8-bdf6-0f5bede5a204');
-$config->setToken('1743156c-40ab-451d-9fd7-2970b407c583');
+require_once RDD . "/lib/UkrPoshtaClass.php";
 
-$doc = new Ukrposhta\Doc($config);
-$doc->save('./');
+$up = new UkrPoshtaClass("a979e2d9-d044-3f41-8b8c-099c5879ae32");
+
+var_dump($up->getDistrictsList(10765));
