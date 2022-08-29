@@ -7,6 +7,7 @@ require_once (RDD . "/vendor/autoload.php");                  // init classes
 require_once (RDD . "/lib/access.php");                       // get access site
 require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");   // ajax requests
 require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
+require_once (RDD . "/lib/UkrPoshtaClass.php");
 
 session_start();
 $JsHttpRequest  = new JsHttpRequest("windows-1251");
@@ -20,6 +21,7 @@ $showform       = new FormClass();
 $automan        = new AutoClass();
 $profile        = new ProfileClass();
 $prod           = new ProductsClass();
+$up             = new UkrPoshtaClass("a979e2d9-d044-3f41-8b8c-099c5879ae32");
 
 /*==== PROFILE ====*/
 
@@ -433,3 +435,12 @@ if ($_REQUEST["w"] === "getGroupsLinks") {
     $GLOBALS['_RESULT'] = array("content" => $menu->getGroupsLinks($_REQUEST["group_id"],$_REQUEST["param_id"],$_REQUEST["value_id"]));
 }
 
+/*==== UkrPoshta ====*/
+
+if ($_REQUEST["w"] === "getUpCitiesList") {
+    $GLOBALS['_RESULT'] = array("content" => $up->printList($up->getCitiesList($_REQUEST["region_id"])));
+}
+
+if ($_REQUEST["w"] === "getUpDistrictsList") {
+    $GLOBALS['_RESULT'] = array("content" => $up->printList($up->getDistrictsList($_REQUEST["city_id"])));
+}

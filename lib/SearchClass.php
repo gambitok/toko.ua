@@ -346,7 +346,7 @@ class SearchClass extends CatalogueClass
         if ($text !== "" && mb_strlen($text) > 1) {
             $text = $this->getUrlString($text);
             $format_text = $text;
-            $format_text = str_replace(str_split(' -,+\/:*?"<>|_'), "", $format_text);
+            $format_text = str_replace(str_split(' -,+\/:*?"<>|_.'), "", $format_text);
 
             $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `DISPLAY_NR`, MIN(`KIND`) as min_kind 
             FROM `T2_CROSS` 
@@ -1158,6 +1158,7 @@ class SearchClass extends CatalogueClass
         }
 
         $product_link = (empty($stock) && empty($price)) ? "" : $this->getSiteLink() . "$this->products_link/$format_name-$format_brand_link-$art_id/";
+        $product_link2 = (empty($stock) && empty($price)) ? "" : $this->getSiteLink() . "$this->search_link/$format_name/$format_brand_link/";
 
         $product_text = ($article_name === "") ? "{details_name_cap}" : $article_name;
         $format_product_text = ($article_name === "") ? "{details_name_cap}" : $this->formatArticleName($article_name);
@@ -1196,6 +1197,7 @@ class SearchClass extends CatalogueClass
         $form = str_replace("{product_name}", $article_nr_displ, $form);
         $form = str_replace("{product_brand}", $brand_name, $form);
         $form = str_replace("{page_product_link}", $product_link, $form);
+        $form = str_replace("{page_product_link2}", $product_link2, $form);
         $form = str_replace("{product_text}", $product_text, $form);
         $form = str_replace("{format_product_text}", $format_product_text, $form);
         $form = str_replace("{product_stock}", $product_stock, $form);

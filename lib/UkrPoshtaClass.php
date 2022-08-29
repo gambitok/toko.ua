@@ -18,6 +18,13 @@ class UkrPoshtaClass
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 400);
+//
+//        curl_setopt($ch, CURLOPT_HEADER, 0);
+//        curl_setopt($ch, CURLOPT_POST, 1);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+//        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 
         $response = curl_exec($ch);
 
@@ -60,7 +67,6 @@ class UkrPoshtaClass
     public function getCitiesList($region_id): array
     {
         $data = $this->connect("address-classifier-ws/", "get_city_by_region_id_and_district_id_and_city_ua", ["region_id" => $region_id]);
-
         $arr = [];
         foreach ($data["Entry"] as $value) {
             $arr[$value["CITY_ID"]] = iconv("UTF-8", "windows-1251", $value["CITY_UA"]);
@@ -79,6 +85,17 @@ class UkrPoshtaClass
         }
 
         return $arr;
+    }
+
+    public function printList($data, $sel_id = 0): string
+    {
+        $list = "<option value='0'>-Not selected-</option>";
+        foreach ($data as $key => $value) {
+            $sel = ($key === $sel_id) ? "selected" : "";
+            $list .= "<option value='$key' $sel>$value</option>";
+        }
+
+        return $list;
     }
 
 }

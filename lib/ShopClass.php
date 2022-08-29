@@ -216,6 +216,7 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $where = $client->getClientWhere();
+
         $r = $db->query("SELECT `art_id` FROM `basket` WHERE $where ORDER BY `date_create` DESC;");
         $n = $db->num_rows($r);
 
@@ -242,6 +243,7 @@ class ShopClass extends CatalogueClass
         $list = "";
         $arts = $this->getBasketArts();
         $where_arts = ($arts !== "") ? " AND `ART_ID` NOT IN ($arts)" : "";
+
         $r = $db->query("SELECT `ART_ID` FROM `T2_ARTICLES_PROPOSED` WHERE `STATUS` = 1 $where_arts;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -343,6 +345,7 @@ class ShopClass extends CatalogueClass
             $db->query("INSERT INTO `basket` (`art_id`, `brand_id`, `amount`, `price`, `stock`, `delivery`, `client_id`, `cookie_id`, `date_create`, `storage_id`, `delivery_info`, `suppl_id`,`status_action`,`status`) 
             VALUES ($art_id, $brand_id, '$amount', $price, '$stock', '$delivery_days', '$user_id', '$cookie', '$date_time', '$storage_id', '$delivery_short_info', '$suppl_id', '$status_action', '0');");
         }
+
         $amount_cap = ($amount > 0) ? $this->replaceLang("{site_basket}: $amount {amount_abbr}.") : "";
 
         return array($old_amount, $art_name, $amount_cap);
@@ -777,7 +780,10 @@ class ShopClass extends CatalogueClass
         }
 
         $form = $this->getHtmlForm("orders/form");
-        $form = str_replace(array("{order_user_id}", "{order_delivery}", "{order_payment}", "{user_city_main_list}", "{user_name}", "{user_phone}", "{user_email}", "{basket_range}", "{order_user_status}", "{user_name_disable}"), array($user_id, $this->getOrderDelivery(), $this->getOrderPayment(), $this->getCitiesMainSelect($user_city), $user_name, $user_phone, $user_email, $this->getBasketOrder(), $status, ($user_id > 0) ? "disabled" : ""), $form);
+        $form = str_replace(
+            array("{order_user_id}", "{order_delivery}", "{order_payment}", "{user_city_main_list}", "{user_name}", "{user_phone}", "{user_email}", "{basket_range}", "{order_user_status}", "{user_name_disable}"),
+            array($user_id, $this->getOrderDelivery(), $this->getOrderPayment(), $this->getCitiesMainSelect($user_city), $user_name, $user_phone, $user_email, $this->getBasketOrder(), $status, ($user_id > 0) ? "disabled" : "")
+        , $form);
         $form = $this->replaceLang($form);
 
         return $form;
@@ -1004,9 +1010,7 @@ class ShopClass extends CatalogueClass
 
         if ($count === 9 && $client->validateOperator($phone)) {
 //            $dataReg = $client->validateRegistration($phone);
-
 //            if (!$dataReg[0]) {
-
                 if (!empty($dataArticle)) {
                     $art_id     = $dataArticle["art_id"];
                     $brand_id   = $dataArticle["brand_id"];

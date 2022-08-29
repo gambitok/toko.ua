@@ -760,7 +760,6 @@ class FormClass extends CatalogueClass
         $deliveryData           = $this->getTpointDeliveryInfo($tpoint, $storage_id);
         $delivery_days          = $deliveryData["days"];
         $delivery_short_info    = $deliveryData["short"];
-
         if ($suppl_id > 0) {
             $deliveryData           = $this->getTpointSupplDeliveryInfo($tpoint, $suppl_id, $storage_id);
             $delivery_days          = $deliveryData["days"];

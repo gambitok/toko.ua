@@ -100,8 +100,7 @@ function setCityVal() {
         $(".chosen-city").html(city_name);
         JsHttpRequest.query(folder,{'w':'setCityNPVal', 'city_id':city_id},
             function (result, errors){ if (errors) {alert(errors);} if (result) {
-                let user_city = $("#user_city_np");
-                user_city.html(result.content);
+                $("#user_city_np").html(result.content);
             }}, true);
     }
 }
@@ -111,18 +110,15 @@ function getCityVal() {
     let search_text = $(".select2-search__field").val();
     if ($("#select2-user_city-results").val() !== undefined) {
         if (search_text !== undefined) {
-            let len = search_text.length;
-            if (len > 2) {
+            if (search_text.length > 2) {
                 JsHttpRequest.query(folder,{'w':'getCityVal', 'search_text':search_text},
                     function (result, errors){ if (errors) {alert(errors);} if (result) {
-                        let user_city = $("#user_city");
-                        user_city.append(result.content);
-                        var mas = result.content;
-                        var len = Object.keys(mas).length;
-                        for (var i = 1; i <= len; i++) {
-                            var id_city = Object.entries(mas[i])[0][1];
-                            var value_city = Object.entries(mas[i])[1][1];
-                            var data_foo = Object.entries(mas[i])[2][1];
+                        $("#user_city").append(result.content);
+                        let mas = result.content;
+                        for (let i = 1; i <= Object.keys(mas).length; i++) {
+                            let id_city     = Object.entries(mas[i])[0][1];
+                            let value_city  = Object.entries(mas[i])[1][1];
+                            let data_foo    = Object.entries(mas[i])[2][1];
                             addOption(id_city, value_city, data_foo);
                         }
                     }}, true);
@@ -130,6 +126,7 @@ function getCityVal() {
         }
     }
 }
+
 function addOption(id_city, value_city, data_foo) {
     let user_city = $("#user_city");
     if (user_city.find("option[value='" + id_city + "']").length) {
@@ -140,8 +137,6 @@ function addOption(id_city, value_city, data_foo) {
         user_city.append(newOption).val(null).trigger('change');
     }
 }
-
-/*==== /INFO BLOCK ====*/
 
 /*==== DELIVERY + PAYMENT ====*/
 
@@ -161,6 +156,7 @@ function setCityDepartments() {
 
 // GET DELIVERY BLOCK
 function getOrderDeliveryBlock() {
+
     $(".orders-block-row-delivery").each(function () {
         let block       = $(this);
         let delivery_id = $(this).attr("data-tab-delivery");
@@ -169,8 +165,7 @@ function getOrderDeliveryBlock() {
         block.removeClass("orders-block-row-hidden");
         JsHttpRequest.query(folder,{'w':'getOrderDeliveryBlock', 'delivery_id':delivery_id, 'city_id':city_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-                let status = result.content;
-                if (status == 0) {
+                if (result.content == 0) {
                     block.addClass("orders-block-row-hidden");
                 }
                 if ($("#user_city_np option:selected").val() === undefined) {
@@ -178,13 +173,14 @@ function getOrderDeliveryBlock() {
                 }
             }}, true);
     });
+
     setCityDepartments();
     setCityAddress();
 }
 
 // GET PAYMENT BLOCK
 function getOrderPaymentBlock() {
-    let status = "1";
+
     $(".orders-block-row-payment").each(function () {
         let block       = $(this);
         let payment_id  = block.attr("data-tab-payment");
@@ -194,12 +190,12 @@ function getOrderPaymentBlock() {
         block.find("label").find("input[type='radio']").prop("checked", false);
         JsHttpRequest.query(folder,{'w':'getOrderPaymentBlock', 'payment_id':payment_id, 'delivery_id':delivery_id},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-                status = result.content;
-                if (status === "0") {
+                if (result.content === "0") {
                     block.addClass("orders-block-row-hidden");
                 }
             }}, true);
     });
+
     $("#valid_payment_block").removeClass("not-valid");
 }
 
@@ -227,8 +223,6 @@ function uncheckRadioPayment() {
     });
     $("#valid_payment_block").removeClass("not-valid");
 }
-
-/*==== /DELIVERY + PAYMENT ====*/
 
 /*==== SAVE ORDER ====*/
 
@@ -339,8 +333,6 @@ function getBasketOrder() {
         }}, true);
 }
 
-/*==== /SAVE ====*/
-
 /*==== VALIDATION ====*/
 
 // VALID INFO FIELDS
@@ -385,6 +377,7 @@ function validInfoFields() {
             }
         }
     });
+
     // ALL OK
     if (valid === 0) {
         let order_user_id = $("#order_user_id").val();
@@ -422,14 +415,15 @@ function validInfoFields() {
             getUserSavedData(order_user_id);
         }
     }
+
     getOrderDeliveryBlock();
 }
 
 // VALID DELIVERY & PAYMENT FIELDS
 function validOrder() {
-    let delivery = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
-    let delivery_type = getDeliveryTypeFields(delivery);
-    let payment = $("input[name ='user_payment']:checked").attr("data-id-payment");
+    let delivery        = $("input[name ='user_delivery']:checked").attr("data-id-delivery");
+    let delivery_type   = getDeliveryTypeFields(delivery);
+    let payment         = $("input[name ='user_payment']:checked").attr("data-id-payment");
 
     let div = $("div[data-tab-delivery='" + delivery + "']");
     div.find("div").find("input").each(function () {
@@ -481,7 +475,6 @@ function validFullOrder() {
 
 // FINISH ORDER
 function saveOrder() {
-    let user_id         = $("#order_user_id").val();
     let name            = $("#user_name").val();
     let phone           = $("#user_phone").val();
     let city            = $("#user_city").select2("val");
@@ -490,6 +483,8 @@ function saveOrder() {
     let payment         = $("input[name ='user_payment']:checked").attr("data-id-payment");
     let email           = $("#user_email").val();
     let comment         = $("#user_comment").val();
+
+    let user_id         = $("#order_user_id").val();
     let recipient_name  = $("#user_recipient_name").val();
     let recipient_phone = $("#user_recipient_phone").val();
     let bonus_status    = $("#bonus_status").prop("checked");
@@ -500,14 +495,12 @@ function saveOrder() {
 
     JsHttpRequest.query(folder,{'w':'saveOrder', 'user_id':user_id, 'name':name, 'phone':phone, 'city':city, 'delivery':delivery, 'delivery_type':delivery_type, 'payment': payment, 'email':email, 'comment':comment, 'recipient_name':recipient_name, 'recipient_phone':recipient_phone, 'bonus_status':bonus_status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
-            let order_id    = result.content[0];
-            let user_id     = result.content[1];
-            let user_status = result.content[2];
-            location.href   = window.location.href  + "/?order_id=" + order_id + "&user_id=" + user_id + "&user_status=" + user_status;
+            let order_id        = result.content[0];
+            let order_user_id   = result.content[1];
+            let user_status     = result.content[2];
+            location.href   = window.location.href  + "/?order_id=" + order_id + "&user_id=" + order_user_id + "&user_status=" + user_status;
         }}, true);
 }
-
-/*==== /VALIDATION ====*/
 
 /*==== USER DATA ====*/
 
@@ -594,7 +587,7 @@ function getUserSavedData(user_id) {
     JsHttpRequest.query(folder,{'w':'getUserSavedData', 'user_id':user_id, 'city':city},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             if (result.status == 1) {
-                setClientOrderInfo(result.info_id);
+                setClientOrderInfo(result["info_id"]);
                 $("#user_saved_info").html("");
             } else {
                 $("#user_saved_info").html(result.list);
@@ -606,9 +599,8 @@ function ordersUserToggle() {
     $("#user_saved_info_list").toggle();
 }
 
-/*==== /USER DATA ====*/
-
 /*==== ORDER DONE ====*/
+
 function saveOrderClient() {
     let user_id = $("#order_user_id").val();
     let name    = $("#user_name").val();
@@ -630,4 +622,69 @@ function loginOrderClient() {
         }}, true);
 }
 
-/*==== /ORDER DONE ====*/
+/*==== UkrPoshta ====*/
+
+function getUpCitiesList()
+{
+    let region_id = $("#regions_list option:selected").val();
+
+    JsHttpRequest.query(folder,{'w':'getUpCitiesList', 'region_id': region_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            console.log(result.content);
+            $("#cities_list").html(result.content);
+        }}, true);
+
+    return true;
+}
+
+function getUpDistrictsList()
+{
+    let city_id = $("#cities_list option:selected").val();
+
+    JsHttpRequest.query(folder,{'w':'getUpDistrictsList', 'city_id': city_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#districts_list").html(result.content);
+        }}, true);
+
+    return true;
+}
+
+function ajaxTest()
+{
+    let region_id = $("#regions_list option:selected").val();
+    $.ajax({
+        type: "post",
+        url: '/content_ajax.php',
+        data: {foo: region_id},
+        success: function(response)
+        {
+            console.log(response);
+            let jsonData = JSON.parse(response);
+
+            if (jsonData.success === 1)
+            {
+                alert(jsonData.text);
+            } else {
+                alert('error!');
+            }
+        }
+    });
+
+    return true;
+}
+
+function ajaxCurl()
+{
+    $.ajax({
+        type: 'GET',
+        dataType:"xml",
+        url: "https://ukrposhta.ua/address-classifier-ws/get_regions_by_region_ua",
+        headers:{
+            'Authorization' : 'Bearer a979e2d9-d044-3f41-8b8c-099c5879ae32',
+            'Content-Type':'application/json'
+        },
+        succces: function(data) {
+            console.log('success', data);
+        }
+    });
+}
