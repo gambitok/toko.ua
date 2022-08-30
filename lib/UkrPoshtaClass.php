@@ -20,7 +20,6 @@ class UkrPoshtaClass
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
         curl_setopt($ch, CURLOPT_TIMEOUT, 400);
-//
 //        curl_setopt($ch, CURLOPT_HEADER, 0);
 //        curl_setopt($ch, CURLOPT_POST, 1);
 //        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -75,6 +74,20 @@ class UkrPoshtaClass
         return $arr;
     }
 
+    public function getCitiesListAll(): array
+    {
+        $data = $this->connect("address-classifier-ws/", "get_city_by_region_id_and_district_id_and_city_ua");
+        $arr = [];
+        foreach ($data["Entry"] as $value) {
+            $arr[] = [
+                'CITY_ID'   => $value['CITY_ID'],
+                'CITY_UA'   => iconv("UTF-8", "windows-1251", $value['CITY_UA']),
+                'REGION_ID' => $value['REGION_ID']];
+        }
+
+        return $arr;
+    }
+
     public function getDistrictsList($city_id): array
     {
         $data = $this->connect("address-classifier-ws/", "get_postoffices_by_postindex", ["poCityId" => $city_id]);
@@ -82,6 +95,24 @@ class UkrPoshtaClass
         $arr = [];
         foreach ($data["Entry"] as $value) {
             $arr[$value["ID"]] = iconv("UTF-8", "windows-1251", $value["PO_LONG"]);
+        }
+
+        return $arr;
+    }
+
+    public function getDistrictsListAll(): array
+    {
+        $data = $this->connect("address-classifier-ws/", "get_postoffices_by_postindex");
+
+        $arr = [];
+        foreach ($data["Entry"] as $value) {
+//            $arr[$value["ID"]] = iconv("UTF-8", "windows-1251", $value["PO_LONG"]);
+            $district_name = iconv("UTF-8", "windows-1251", $value['PO_LONG']);
+            $district_name = str_replace('"', "", $district_name);
+            $arr[] = [
+                'DISTRICT_ID'   => $value['ID'],
+                'DISTRICT_NAME' => $district_name,
+                'CITY_ID'       => $value['PDCITY_ID']];
         }
 
         return $arr;
@@ -97,5 +128,46 @@ class UkrPoshtaClass
 
         return $list;
     }
+
+    public function add_table($data, $table_name, $city_id): int
+    {
+        $db = DbSingleton::getTokoDb();
+
+        foreach($data as $id => $name) {
+            $db->query("INSERT INTO `$table_name` (`ID`, `CITY_ID`, `NAME`) VALUES ($id, $city_id, \"$name\");");
+        }
+
+        return count($data);
+    }
+
+//    public function write_file($data, $filename = "up.csv"): string
+//    {
+//        $file = fopen(RDD . "/../files/$filename", 'wb') or die("error");
+//
+//        foreach ($data as $key => $value) {
+//            print "$key, $value";
+//            fputcsv($file, array($key, $value), ";");
+//        }
+//
+//        fclose($file);
+//
+//        return "done";
+//    }
+//
+//    public function open_file($filename): string
+//    {
+//        $list = "";
+//        if (($handle = fopen(RDD . "/files/$filename", 'rb')) !== FALSE) {
+//            while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) {
+//                foreach ($data as $cValue) {
+//                    $d = explode(";", $cValue);
+//                    $list .= $d[0] . " - " . $d[1] . "<br />\n";
+//                }
+//            }
+//            fclose($handle);
+//        }
+//
+//        return $list;
+//    }
 
 }

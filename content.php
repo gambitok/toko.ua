@@ -437,10 +437,10 @@ if ($_REQUEST["w"] === "getGroupsLinks") {
 
 /*==== UkrPoshta ====*/
 
-if ($_REQUEST["w"] === "getUpCitiesList") {
-    $GLOBALS['_RESULT'] = array("content" => $up->printList($up->getCitiesList($_REQUEST["region_id"])));
-}
-
-if ($_REQUEST["w"] === "getUpDistrictsList") {
-    $GLOBALS['_RESULT'] = array("content" => $up->printList($up->getDistrictsList($_REQUEST["city_id"])));
-}
+//if ($_REQUEST["w"] === "getUpCitiesList") {
+//    $GLOBALS['_RESULT'] = array("content" => $up->printList($up->getCitiesList($_REQUEST["region_id"])));
+//}
+//
+//if ($_REQUEST["w"] === "getUpDistrictsList") {
+//    $GLOBALS['_RESULT'] = array("content" => $up->printList($up->getDistrictsList($_REQUEST["city_id"])));
+//}
