@@ -33,7 +33,8 @@ function getContent($content)
     $profile    = new ProfileClass();
     $automan    = new AutoClass();
 
-    $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    //$actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $actual_link = "https://$_SERVER[HTTP_HOST]" . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
     $actual_full_link = "<link rel=\"canonical\" href=\"$actual_link\"/>";
     if (strpos($actual_link,"?") !== false) {
         $actual_full_link = "";
