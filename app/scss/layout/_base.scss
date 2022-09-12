@@ -285,6 +285,13 @@
             position: absolute;
             width: 100%;
         }
+        &-open {
+            max-height: unset;
+            overflow: unset;
+            &:after {
+                background: unset;
+            }
+        }
     }
 }
 

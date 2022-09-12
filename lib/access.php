@@ -33,12 +33,12 @@ function getContent($content)
     $profile    = new ProfileClass();
     $automan    = new AutoClass();
 
-    //$actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-    $actual_link = "https://$_SERVER[HTTP_HOST]" . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+    $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    //$actual_link = "https://$_SERVER[HTTP_HOST]" . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
     $actual_full_link = "<link rel=\"canonical\" href=\"$actual_link\"/>";
-    if (strpos($actual_link,"?") !== false) {
-        $actual_full_link = "";
-    }
+//    if (strpos($actual_link,"?") !== false) {
+//        $actual_full_link = "";
+//    }
     $basketData = $shop->countBasket();
 
     $content = str_replace(array("{canonical_link}", "{canonical_full_link}", "{contacts_bottom}", "{basket_count}", "{basket_style}", "{garage_style}", "{garage_status}", "{basket_summ}", "{profile_mobile}", "{list_social}", "{info_title}", "{lang_list}", "<h1></h1>"), array($actual_link, $actual_full_link, $menu->showContactsBottom(), $basketData[0], $basketData[1], "", $automan->getGarageAutoCount(), $shop->countSummBasket(), $profile->getProfileInfoMobile(), "<ul>" . getPhpContent("/tpl/menu/social_icons.php") . "</ul>", "", "", "<h1>" . getTitle(getPath()) . "</h1>"), $content);

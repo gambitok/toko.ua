@@ -766,6 +766,9 @@ class MenuClass extends CatalogueClass
                 $state_id   = $db->result($r, $i - 1, "ID");
                 $transcript = $this->formatUrlText($title_ru);
 
+                $transcript = str_replace(str_split('.,+\/:*?"<>|_'), "", $transcript);
+                $transcript = str_replace(array("–", "---"), "-", $transcript);
+
                 $form_range = $this->getHtmlForm("reviews/form_range");
                 $form_range = str_replace(array("{review_title}", "{review_date}", "{review_img}", "{page_review_link}"), array($title, $db->result($r, $i - 1, "DATA"), $db->result($r, $i - 1, "IMG"), $this->getSiteLink() . "$this->reviews_link/state/$state_id/$transcript/"), $form_range);
 
