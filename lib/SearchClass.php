@@ -35,6 +35,7 @@ class SearchClass extends CatalogueClass
             $form = $this->getBrandList($article_search, $article_nr_search);
         } else {
             $list = $this->showSearchDropdown($article_nr_search);
+
             if ($list === "") {
                 $form = $this->getHtmlForm("error/search_unknown");
             } else {

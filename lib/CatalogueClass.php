@@ -927,8 +927,10 @@ class CatalogueClass
     {
         $dbt = DbSingleton::getTokoDb();
         $db = DbSingleton::getDbm();
+
         $kours = new ExRateClass();
         $client = new ClientClass();
+
         $tpoint = $this->getTpointID();
         $client_id = $this->getClient();
         $price = 0;
@@ -971,6 +973,7 @@ class CatalogueClass
                     }
                 }
             }
+
             $price = round($price, 2);
             $cur_usd = $kours->getKours("dollar");
             $price *= $cur_usd;
@@ -1213,9 +1216,11 @@ class CatalogueClass
 
         $auto_typ_id = $this->getCookieAuto();
         if ($auto_typ_id !== "") {
+
             if ($this->checkT2Link($auto_typ_id, $art_id)) {
                 $form = str_replace(array("{applicable_display}", "{applicable_display_text}", "{applicable_onclick}"), array("applicable-active", "{is_applicable}", ""), $form);
             } else {
+
                 if ((int)$status_auto === 1) {
                     $form = str_replace("{applicable_display}", "dnone", $form);
                 }
@@ -1330,6 +1335,7 @@ class CatalogueClass
 
         $r = $dbt->query("SELECT `cash_id` FROM `T2_ARTICLES_PRICE_RATING` WHERE `art_id` = $art_id AND `in_use` = 1 ORDER BY `data_update` DESC LIMIT 1;");
         $n = $dbt->num_rows($r);
+
         if ($n > 0) {
             $cash_id = (int)$dbt->result($r, 0, "cash_id");
         }
@@ -1850,8 +1856,10 @@ class CatalogueClass
                 $delivery_info  = $val["delivery_info"];
                 $price          = (float)$val["price"];
                 $stock          = (int)$val["stock"];
+
                 if (!empty($uniq)) {
                     foreach ($uniq as $uval) {
+
                         if ($delivery_days === $uval["delivery_days"] && $delivery_info === $uval["delivery_info"] && $price === $uval["price"]) {
                             if ($stock > $uval["stock"]) {
                                 $ukey = (int)$uval["key"];

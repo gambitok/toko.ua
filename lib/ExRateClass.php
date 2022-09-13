@@ -35,6 +35,7 @@ class ExRateClass
     public function getKours($val)
     {
         $db = DbSingleton::getDbm();
+
         if ($val === "dollar") {
             if ($this->usdRate === null) {
                 $r = $db->query("SELECT `kours_value` FROM `J_KOURS` WHERE `cash_id` = 2 AND `in_use` = 1 LIMIT 1;");
@@ -61,6 +62,7 @@ class ExRateClass
     public function getKoursPrice($price, $cur): float
     {
         $cur = (int)$cur;
+
         if ($cur === 2) {
             $price /= $this->getKours("dollar");
             $price = number_format($price, 2, '.', '');
@@ -81,6 +83,7 @@ class ExRateClass
     public function getKoursFromUSA($price, $cur): string
     {
         $cur = (int)$cur;
+
         if ($cur === 1) {
             $price *= $this->getKours("dollar");
             $price = number_format($price, 2, '.', '');
@@ -101,6 +104,7 @@ class ExRateClass
     public function getKoursFromUAH($price, $cur): string
     {
         $cur = (int)$cur;
+
         if ($cur === 2) {
             $price /= $this->getKours("dollar");
             $price = number_format($price, 2, '.', '');
@@ -147,9 +151,11 @@ class ExRateClass
     public function getKoursSymbol($cur): string
     {
         $result = "{uah_cap}";
+
         if ($cur === 2) {
             $result = "$";
         }
+
         if ($cur === 3) {
             $result = "€";
         }

@@ -78,6 +78,7 @@ class ProfileClass extends ClientClass
 
         $counter = ($n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
 
+        $info = "";
         if ($user_id > 0 && ($n1 > 0 || $n2 > 0)) {
             $info = "
             <li class=\"authorization-item\">
@@ -85,8 +86,6 @@ class ProfileClass extends ClientClass
                     <span class=\"fas fa-box-open\"></span> <span>{special_offers_cap} $counter</span>
                 </a>
             </li>";
-        } else {
-            $info = "";
         }
 
         return $info;
@@ -240,6 +239,7 @@ class ProfileClass extends ClientClass
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $amount_bug = $db->result($r, $i - 1, "amount_bug");
+
                 if ($amount_bug > 0) {
                     $k++;
                 }
@@ -264,6 +264,7 @@ class ProfileClass extends ClientClass
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $amount_bug = $db->result($r, $i - 1, "amount_bug");
+
                 if ($amount_bug > 0) {
                     $k++;
                 }
@@ -338,6 +339,7 @@ class ProfileClass extends ClientClass
 
         $r = $db->query("SELECT MAX(`status_visible`) as maxim FROM `orders_str_new` WHERE `order_id` = $order_id;");
         $status = (int)$db->result($r, 0, "maxim");
+
         if ($status === 0) {
             $db->query("UPDATE `orders_new` SET `status_visible` = 1 WHERE `id` = $order_id;");
         }
@@ -348,7 +350,7 @@ class ProfileClass extends ClientClass
     /*
      * check user order amount
      * */
-    public function checkOrderUser($order_id, $user_id)
+    public function checkOrderUser($order_id, $user_id): int
     {
         $order_id   = $this->getUrlNumber($order_id);
         $user_id    = $this->getUrlNumber($user_id);
@@ -372,6 +374,7 @@ class ProfileClass extends ClientClass
         for ($ii = 1; $ii <= $nn; $ii++) {
             $dp_id  = $db->result($rr, $ii - 1, "dp_id");
             $dp_str = explode(",", $dp_id);
+
             foreach ($dp_str as $jValue) {
                 $dp_arr[] = $jValue;
             }
@@ -655,7 +658,9 @@ class ProfileClass extends ClientClass
         return $form;
     }
 
-    //doc_type: 1-income, 2-move, 3-sale, 4-back client, 5-back suppl, 6-write_off
+    /*
+     * doc_type: 1-income, 2-move, 3-sale, 4-back client, 5-back suppl, 6-write_off
+     * */
     public function showProfileDocs($td_id, $doc_id, $doc_type_id)
     {
         $db = DbSingleton::getDbm();
@@ -739,6 +744,7 @@ class ProfileClass extends ClientClass
         if ((int)$data_from === 0 || $data_from === "") {
             $data_from = date("Y-m-01");
         }
+
         if ((int)$data_to === 0 || $data_to === "") {
             $data_to = date("Y-m-d");
         }
@@ -769,8 +775,7 @@ class ProfileClass extends ClientClass
                 $doc_id         = $db->result($r, $i - 1, "doc_id");
                 $pay_cash_name  = $db->result($r, $i - 1, "cash_abr");
                 $pay_summ       = $db->result($r, $i - 1, "pay_summ");
-
-                $document_name = "";
+                $document_name  = "";
 
                 if ($doc_type_id === 1) {
                     $document_name = $this->getSaleInvoiceName($doc_id);
@@ -987,6 +992,7 @@ class ProfileClass extends ClientClass
 
         $r = $db->query("SELECT `filename`, `date`, `date_end`, `status` FROM `cron_task_prices` WHERE `user_id` = $user_id ORDER BY `date` DESC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $table = "";
             for ($i = 1; $i <= $n; $i++) {
@@ -1081,9 +1087,10 @@ class ProfileClass extends ClientClass
 
                 $csv = "";
                 foreach ($this->getPriceProfileList() as $record) {
-                    foreach ($record as $rec) {
-                        $csv .= $rec . ';';
-                    }
+//                    foreach ($record as $rec) {
+//                        $csv .= $rec . ';';
+//                    }
+                    $csv .= $record . ';';
                     $csv .= "\n";
                 }
 
@@ -1098,7 +1105,7 @@ class ProfileClass extends ClientClass
                     }
                 }
 
-                $csv_handler = fopen(RDD . "/uploads/$filename", 'w') or die("Can't create file");
+                $csv_handler = fopen(RDD . "/uploads/$filename", 'wb') or die("Can't create file");
                 fwrite($csv_handler, $csv);
                 fclose($csv_handler);
                 $date_end = date("Y-m-d H:i:s");

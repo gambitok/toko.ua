@@ -98,7 +98,7 @@ class ProductsClass extends CatalogueClass
         }
 
         $headers = [];
-        foreach($mas as $val) {
+        foreach ($mas as $val) {
             $item = floor($val / 10) * 10;
             if (!in_array($item, $headers, true)) {
                 $headers[] = $item;

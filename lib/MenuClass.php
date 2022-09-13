@@ -449,6 +449,7 @@ class MenuClass extends CatalogueClass
         WHERE t2.id = $tpoint_id AND t2a.lang_id = $lang_id 
         ORDER BY t2.position DESC, t2a.full_name ASC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $region     = $db->result($r, 0, "full_name");
             $address    = $db->result($r, 0, "address");
@@ -478,6 +479,7 @@ class MenuClass extends CatalogueClass
 
         $r = $db->query("SELECT `title`, `address`, `schedule`, `phone` FROM `contacts_new` WHERE `lang_id` = $language_id AND `status` = 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $form_range = $this->getHtmlForm("menu/contacts_range");
@@ -649,6 +651,7 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             $list_address .= "
             <div itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\"><ul>";
+
             for ($i = 1; $i <= $n; $i++) {
                 $text       = $db->result($r, $i - 1, "text");
                 $text_short = $db->result($r, $i - 1, "text_short");
@@ -664,6 +667,7 @@ class MenuClass extends CatalogueClass
                     </a>
                 </li>";
             }
+
             $list_address .= "
             </ul></div>";
         }
