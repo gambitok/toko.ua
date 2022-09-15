@@ -820,11 +820,15 @@ class MenuClass extends CatalogueClass
         $title_ru   = $db->result($r, 0, "TITLE_RU");
         $text       = $db->result($r, 0, "TEXT_$postfix");
         $img_file   = $db->result($r, 0, "IMG");
-        $title_frmt = $this->formatUrlText($title_ru);
-        $url        = $this->getSiteLink() . "$this->reviews_link/state/$state_id/$title_frmt/";
+
+        $transcript = $this->formatUrlText($title_ru);
+        $transcript = str_replace(str_split('.,+\/:*?"<>|_'), "", $transcript);
+        $transcript = str_replace(array("–", "---"), "-", $transcript);
+
+        $url        = $this->getSiteLink() . "$this->reviews_link/state/$state_id/$transcript/";
         $img        = "https://portal.myparts.pro/uploads/images/saved/$img_file";
 
-        return compact("title", "text", "date", "url", "img", "site_title", "site_descr");
+        return compact("title", "text", "date", "url", "img", "site_title", "site_descr", "transcript");
     }
 
     /*

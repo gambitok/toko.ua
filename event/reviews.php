@@ -7,6 +7,7 @@ $red_link   = "";
 $link = $catalogue->getUrlString(findLinks()[1]);
 $title = $description = "";
 $state_id = findLinks()[2];
+$state_name = findLinks()[3];
 
 if ($link === "") {
     $content = str_replace("{main_window}", $menu->showReviews() . $showform->getHistoryArts(), $content);
@@ -14,6 +15,12 @@ if ($link === "") {
     $title = str_replace("{h1_text}", "{review_state_cap}", $title);
 }
 elseif ($link === "state") {
+
+    $true_state_name = $menu->getReviewsData($state_id)["transcript"];
+    if (!empty($state_id) && $state_name !== $true_state_name) {
+        header("Location: " . $menu->getReviewsData($state_id)["url"], TRUE, 301);
+    }
+
     $content = str_replace("{main_window}", $menu->getReviewsState($state_id) . $showform->getHistoryArts(), $content);
     $content = str_replace("{meta_social_tag}", $menu->getReviewsMetaTags($state_id), $content);
     $dataReview = $menu->getReviewsData($state_id);

@@ -724,7 +724,8 @@ class CatalogExistClass extends CatalogueClass
     {
         $prefix = ($sort !== "") ? "?sort=$sort&" : "?";
         $count  = $this->products_on_page;
-        $pages_count = ceil($n / $count);
+        $pages_count = (int)ceil($n / $count);
+
         if ($n < $count) {
             $pages_count = 1;
         }
@@ -744,6 +745,7 @@ class CatalogExistClass extends CatalogueClass
                     $link       = ($i > 1) ? $prefix . "page=$i" : ".";
                     $pagination .= $this->getPaginRow($i, $link, $active);
                 }
+
                 $pagination .= $this->getPaginRow("...", "#");
                 $link       = ($pages_count > 1) ? $prefix . "page=$pages_count" : ".";
                 $pagination .= $this->getPaginRow($pages_count, $link);
@@ -900,6 +902,7 @@ class CatalogExistClass extends CatalogueClass
             }
             $where .= ") ";
         }
+        
         return $where;
     }
 
