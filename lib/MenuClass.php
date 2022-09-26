@@ -869,7 +869,7 @@ class MenuClass extends CatalogueClass
             foreach ($imgs as $img) {
                 if (strpos($img, "alt") === false) {
                     $count++;
-                    $formate_img = str_replace("<img ", "<img alt='$h1_text - {photo_cap} $count' title='$h1_text - {photo_cap} $count'", $img);
+                    $formate_img = str_replace("<img ", "<img alt=\"$h1_text - {photo_cap} $count\" title=\"$h1_text - {photo_cap} $count\"", $img);
                     $formate_img = $this->replaceLang($formate_img);
                 } else {
                     $formate_img = $img;
