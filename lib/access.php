@@ -17,9 +17,7 @@ function getSiteCurentLink()
     $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $actual_link = str_replace(array("/uk/", "/en/"), "/", $actual_link);
 
-    $ru = $actual_link;
-    $uk = $actual_link;
-    $en = $actual_link;
+    $ru = $uk = $en = $actual_link;
     $uk = str_replace("https://toko.ua/", "https://toko.ua/uk/", $uk);
     $en = str_replace("https://toko.ua/", "https://toko.ua/en/", $en);
 
@@ -33,13 +31,9 @@ function getContent($content)
     $profile    = new ProfileClass();
     $automan    = new AutoClass();
 
-    $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-    //$actual_link = "https://$_SERVER[HTTP_HOST]" . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-    $actual_full_link = "<link rel=\"canonical\" href=\"$actual_link\"/>";
-//    if (strpos($actual_link,"?") !== false) {
-//        $actual_full_link = "";
-//    }
-    $basketData = $shop->countBasket();
+    $actual_link        = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $actual_full_link   = "<link rel=\"canonical\" href=\"$actual_link\"/>";
+    $basketData         = $shop->countBasket();
 
     $content = str_replace(array("{canonical_link}", "{canonical_full_link}", "{contacts_bottom}", "{basket_count}", "{basket_style}", "{garage_style}", "{garage_status}", "{basket_summ}", "{profile_mobile}", "{list_social}", "{info_title}", "{lang_list}", "<h1></h1>"), array($actual_link, $actual_full_link, $menu->showContactsBottom(), $basketData[0], $basketData[1], "", $automan->getGarageAutoCount(), $shop->countSummBasket(), $profile->getProfileInfoMobile(), "<ul>" . getPhpContent("/tpl/menu/social_icons.php") . "</ul>", "", "", "<h1>" . getTitle(getPath()) . "</h1>"), $content);
 
@@ -71,8 +65,7 @@ function getTitle($path)
 {
     $language = new LangClass();
     $path = str_replace("/", "", $path);
-    $prefix = getMoreTitle($path);
-    $title = ($path !== "") ? $prefix : "{site_title}";
+    $title = ($path !== "") ? getMoreTitle($path) : "{site_title}";
 
     return $language->replaceLangData($title);
 }
@@ -105,12 +98,14 @@ function getMoreTitle($path)
     elseif ($path === "cars") {
         $mfa_link = $cat->getUrlString($linka[1]);
         $mod_link = $cat->getUrlString($linka[2]);
+
         if ($mfa_link === "") {
             $pretitle = "{site_cars_h1} — {seo_site_toko}";
         } else {
             list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
             list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
             $translit = $automan->getCarManufTranslit($mfa_id, $model);
+
             if ($mfa_link !== "") {
                 $mm = "$mfa_brand $model_text";
                 if ($translit !== "") {
@@ -119,6 +114,7 @@ function getMoreTitle($path)
             } else {
                 $mm = "";
             }
+
             $pretitle = "{details_on_cap}";
             ($mm === "") ?: $pretitle .= " $mm";
             $postfix = $cat->replaceLang("{seo_title_lvl3}");
@@ -397,10 +393,8 @@ function getSiteLang($lang_id_sel = 0)
     } else {
         $lang_id = $lang_id_sel;
     }
+
     $lang_html = "ru";
-    if ($lang_id === 1) {
-        $lang_html = "ru";
-    }
     if ($lang_id === 2) {
         $lang_html = "uk";
     }
@@ -417,8 +411,7 @@ function getPhpContent($file)
     $file = RDD . $file;
     if (file_exists($file)) {
         include($file);
-        $contents = ob_get_contents();
-        ob_end_clean();
+        $contents = ob_get_clean();
     } else {
         $contents = "File not exist!";
     }
