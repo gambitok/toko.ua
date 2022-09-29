@@ -1195,6 +1195,9 @@ class CatalogExistClass extends CatalogueClass
 
         $max_pages_count = (int)ceil($count / $this->products_on_page);
 
+        $form = str_replace("{cur_page}", $page, $form);
+        $form = str_replace("{max_page}", $max_pages_count, $form);
+
         $description = $this->replaceLang("{site_catalog_group_description}");
         $description = str_replace("{h1_text}", $h1_text, $description);
         $description .= $pager;

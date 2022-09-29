@@ -558,8 +558,9 @@ function showSearchDropdown2() {
 }
 
 function getPartsSortForm(link) {
-    redirect_link = "";
+    let redirect_link = "";
     let sort_id = $("#cat-products-sort option:selected").val();
+
     if (sort_id == "0") {
         redirect_link = link;
     }
@@ -570,4 +571,20 @@ function getPartsSortForm(link) {
         redirect_link = link + "?sort=desc";
     }
     location.href = redirect_link;
+}
+
+function appendCatalog() {
+    let cur_page = parseInt($("#cur_page").val());
+    let max_page = parseInt($("#max_page").val());
+
+    if (cur_page < max_page) {
+        let new_page = cur_page + 1;
+        $("#cur_page").val(new_page);
+        if (new_page === max_page) {
+            $("#append_btn").hide();
+        }
+        $(".cat-products-list").last().append("<div class='cat-products-list'>CONTENT HERE => PAGE " + new_page + "</div>");
+    } else {
+        $("#append_btn").hide();
+    }
 }

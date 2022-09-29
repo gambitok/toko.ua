@@ -553,6 +553,7 @@ class CatalogueClass
 
         return $this->replaceLang($list_brand);
     }
+
     /*
      * CATALOG EXIST
      * */
@@ -591,7 +592,6 @@ class CatalogueClass
                     $storage_id         = (int)$db->result($r, $i - 1, "storage_id");
                     $return_days        = (int)$db->result($r, $i - 1, "return_delay");
 
-                    // price
                     $price = $this->getArticlePrice($art_id);
                     if ($suppl_id !== 0) {
                         $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
@@ -601,7 +601,6 @@ class CatalogueClass
                         $price = $client->getClientPriceRounding($client_id, $price);
                     }
 
-                    // delivery
                     $deliveryData           = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
                     $delivery_info          = $deliveryData["info"];
                     $delivery_days          = (int)$deliveryData["days"];
@@ -622,14 +621,17 @@ class CatalogueClass
                     }
                 }
 
-                // fixed price order
+                // from cheap to rich
                 if ($order_status === 1) {
-                    $oderby = "`price` ASC";
+                    $oderby = "`status` ASC, `price` ASC";
                 }
+                // from rich to cheap
                 elseif ($order_status === 2) {
-                    $oderby = "`price` DESC";
-                } else {
-                    $oderby = "`status` DESC, `article_nr_displ` ASC";
+                    $oderby = "`status` ASC, `price` DESC";
+                }
+                // default status + price order
+                else {
+                    $oderby = "`status` ASC, `price` ASC, `article_nr_displ` ASC";
                 }
 
                 $temp_arr = [];
@@ -708,8 +710,7 @@ class CatalogueClass
                 $list = $this->outSearchList($list, $error, $mas, "", 0, $status_auto, $mfa_id, $model);
             }
 
-            $count = count($mas);
-            if ($count < 1) {
+            if (count($mas) < 1) {
                 $list = $error;
             }
 
@@ -775,7 +776,6 @@ class CatalogueClass
                     $storage_id         = (int)$db->result($r, $i - 1, "storage_id");
                     $format_name        = $this->getFormatAticle($article_nr_displ);
 
-                    // price
                     $price = $this->getArticlePrice($art_id);
                     if ($suppl_id !== 0) {
                         $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
@@ -785,7 +785,6 @@ class CatalogueClass
                         $price = $client->getClientPriceRounding($client_id, $price);
                     }
 
-                    // delivery
                     $deliveryData           = $this->getTpointDeliveryInfo($tpoint_id, $storage_id);
                     $delivery_info          = $deliveryData["info"];
                     $delivery_days          = (int)$deliveryData["days"];
@@ -1255,8 +1254,7 @@ class CatalogueClass
         $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $category_id    = $db->result($r, $i - 1, "client_category");
-            $categories[]   = $category_id;
+            $categories[] = $db->result($r, $i - 1, "client_category");
         }
         $categories = implode(",", $categories);
 
@@ -1264,14 +1262,18 @@ class CatalogueClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $action_id = $db->result($r, $i - 1, "id");
+
             $r2 = $db->query("SELECT 1 FROM `ACTION_CLIENTS_LIST` WHERE `action_id` = $action_id AND `client_id` = $client_id;");
             $n2 = $db->num_rows($r2);
+
             if ($n2 > 0) {
                 $actions[] = $action_id;
             }
+
             if ($categories !== "") {
                 $r3 = $db->query("SELECT 1 FROM `ACTION_CLIENTS_CATEGORY` WHERE `action_id` = $action_id AND `category_id` IN ($categories);");
                 $n3 = $db->num_rows($r3);
+
                 if ($n3 > 0) {
                     $actions[] = $action_id;
                 }
@@ -1566,6 +1568,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $margin = $delivery = $margin2 = 0;
+
         $r = $db->query("SELECT `margin`, `delivery`, `margin2` FROM `T_POINT_SUPPL_FM` 
         WHERE `tpoint_id` = '$tpoint_id' AND `suppl_id` = '$suppl_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `price_from` <= '$price_suppl' 
         AND `price_to` >= '$price_suppl' AND `price_rating_id` = '$price_suppl_lvl' LIMIT 1;");

@@ -67,6 +67,7 @@ class MenuClass extends CatalogueClass
         WHERE `lang_id` = $language_id AND `data` <= '$date_cur' AND `status` = 1 
         ORDER BY `data` DESC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $state_id       = $db->result($r, $i - 1, "id");
@@ -95,6 +96,7 @@ class MenuClass extends CatalogueClass
             $list = "
             <div class=\"content\"><h2>$err1<h2></div>";
         }
+
         $form = $this->getHtmlForm("news/form");
         $form = str_replace("{news_range}", $list, $form);
 
@@ -295,7 +297,7 @@ class MenuClass extends CatalogueClass
             <div class=\"content\"><h2>$err1<h2></div>";
         }
 
-        $list       = $this->replaceLang($list);
+        $list = $this->replaceLang($list);
         $group_arts = implode(",", $group_arts);
 
         return array($list, $group_arts);
@@ -559,6 +561,7 @@ class MenuClass extends CatalogueClass
 
         $r = $db->query("SELECT `id` FROM `news_galery` WHERE `cat` = $news_id ORDER BY `main` DESC;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $id = $db->result($r, 0, "id");
             if (file_exists("uploads/images/news/$language_id/$news_id/$id.jpg")) {
@@ -588,6 +591,7 @@ class MenuClass extends CatalogueClass
 
         $form = $this->getHtmlForm("brands/form");
         $form = str_replace("{brands_range}", $list, $form);
+
         if ($n === 0) {
             $form = "";
         }
@@ -841,7 +845,55 @@ class MenuClass extends CatalogueClass
         $list = $this->getHtmlForm("reviews/card_range");
         $list = str_replace(array("{review_date}", "{review_title}", "{review_text}"), array($reviewsData["date"], $this->replaceTextTags($reviewsData["title"], ""), $this->replaceTextTags($reviewsData["text"], $reviewsData["title"])), $list);
         $form = $this->getHtmlForm("reviews/card");
-        $form = str_replace(array("{state_id}", "{state_info}"), array($state_id, ($state_id > 0) ? $list : "<h1>$this->err1</h1>"), $form);
+        $state_catalog = $this->getReviewsStateCatalog($state_id);
+        $form = str_replace(array("{state_id}", "{state_info}", "{state_catalog}"), array($state_id, ($state_id > 0) ? $list : "<h1>$this->err1</h1>", $state_catalog), $form);
+
+        return $form;
+    }
+
+    /*
+     * catalog in reviews
+     * */
+    public function getReviewsStateCatalog($state_id): string
+    {
+        $catalog_exist = new CatalogExistClass();
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+
+        // ! add multi group
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_GROUP_REVIEW` WHERE `REVIEW_ID` = $state_id LIMIT 1;");
+        $group_id = $db->result($r, 0, "GROUP_ID");
+
+        $limit          = $catalog_exist->getSearchLimit(1);
+        $table          = "EX_TABLE_TREE_$group_id";
+        $table_mfa      = "EX_TABLE_TREE_MFA_$group_id";
+        $table_params   = "EX_TABLE_TREE_PARAMS_$group_id";
+        $where_sort     = "ORDER BY t.price = 0, t.id ASC";
+
+        $query = "SELECT t.art_id FROM `$table` t
+            LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
+            LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+        WHERE 1 
+        GROUP BY t.art_id
+        $where_sort";
+
+        $query_limit = "$query $limit";
+
+        $arts = [];
+        $r = $dbc->query($query_limit);
+        $n = $dbc->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $arts[] = $dbc->result($r, $i - 1, "art_id");
+        }
+
+        $art_id_str = implode(",", array_unique($arts));
+
+        $list = $catalog_exist->searchListCatalog($art_id_str);
+
+        $form = "";
+        if (!empty($list)) {
+            $form = "<div class='content'>$list</div>";
+        }
 
         return $form;
     }
@@ -1158,7 +1210,7 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "
-        <ul class='city-nav-ul'>";
+        <ul class=\"city-nav-ul\">";
 
         $arts = [];
         $arr = [];
@@ -1219,7 +1271,7 @@ class MenuClass extends CatalogueClass
         $arr = [];
 
         $list .= "
-        <ul class='city-nav-ul'>";
+        <ul class=\"city-nav-ul\">";
 
         $r = $db->query("SELECT `GROUP_ID`, `VALUE_ID` FROM `T2_FUTER_GV` WHERE `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 10;");
         $n = $db->num_rows($r);
@@ -1328,8 +1380,9 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $arr = [];
         $list = "
-        <ul class='city-nav-ul'>";
+        <ul class=\"city-nav-ul\">";
         $postfix = $this->getLangPostfix($this->getLanguage());
+
         $r = $db->query("SELECT `LINK_NAME`, `CITY_NAME_$postfix` FROM `SEO_LISTING_CITY` WHERE `ID` != $city_id_sel ORDER BY RAND() LIMIT 32;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1380,7 +1433,8 @@ class MenuClass extends CatalogueClass
         $arr = [];
 
         $list .= "
-        <ul class='city-nav-ul'>";
+        <ul class=\"city-nav-ul\">";
+
         $r = $db->query("SELECT `GROUP_ID`, `VALUE_ID` FROM `T2_FUTER_GV` WHERE `GROUP_ID` != $group_id_sel ORDER BY RAND() LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1502,6 +1556,7 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
+
         $r = $db->query("SELECT `GROUP_ID`, `TEX_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY `TEX_RU` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1520,6 +1575,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "
         <option value='0'>-не вибрано-</option>";
+
         $r = $db->query("SELECT `VALUE_ID`, `VALUE_NAME`, `PARAM_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id ORDER BY `VALUE_NAME` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -1676,6 +1732,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("main/navigation");
         $list = "";
+
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
