@@ -863,36 +863,38 @@ class MenuClass extends CatalogueClass
         // ! add multi group
         $r = $db->query("SELECT `GROUP_ID` FROM `T2_GROUP_REVIEW` WHERE `REVIEW_ID` = $state_id LIMIT 1;");
         $group_id = $db->result($r, 0, "GROUP_ID");
-
-        $limit          = $catalog_exist->getSearchLimit(1);
-        $table          = "EX_TABLE_TREE_$group_id";
-        $table_mfa      = "EX_TABLE_TREE_MFA_$group_id";
-        $table_params   = "EX_TABLE_TREE_PARAMS_$group_id";
-        $where_sort     = "ORDER BY t.price = 0, t.id ASC";
-
-        $query = "SELECT t.art_id FROM `$table` t
-            LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
-            LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-        WHERE 1 
-        GROUP BY t.art_id
-        $where_sort";
-
-        $query_limit = "$query $limit";
-
-        $arts = [];
-        $r = $dbc->query($query_limit);
-        $n = $dbc->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $arts[] = $dbc->result($r, $i - 1, "art_id");
-        }
-
-        $art_id_str = implode(",", array_unique($arts));
-
-        $list = $catalog_exist->searchListCatalog($art_id_str);
-
         $form = "";
-        if (!empty($list)) {
-            $form = "<div class='content'>$list</div>";
+        if ($group_id > 0) {
+            $limit          = $catalog_exist->getSearchLimit(1);
+            $table          = "EX_TABLE_TREE_$group_id";
+            $table_mfa      = "EX_TABLE_TREE_MFA_$group_id";
+            $table_params   = "EX_TABLE_TREE_PARAMS_$group_id";
+            $where_sort     = "ORDER BY t.price = 0, t.id ASC";
+
+            $query = "SELECT t.art_id FROM `$table` t
+                LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
+                LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
+            WHERE 1 
+            GROUP BY t.art_id
+            $where_sort";
+
+            $query_limit = "$query $limit";
+
+            $arts = [];
+            $r = $dbc->query($query_limit);
+            $n = $dbc->num_rows($r);
+            for ($i = 1; $i <= $n; $i++) {
+                $arts[] = $dbc->result($r, $i - 1, "art_id");
+            }
+
+            $art_id_str = implode(",", array_unique($arts));
+
+            $list = $catalog_exist->searchListCatalog($art_id_str);
+
+            $form = "";
+            if (!empty($list)) {
+                $form = "<div class='content'>$list</div>";
+            }
         }
 
         return $form;
@@ -1612,8 +1614,8 @@ class MenuClass extends CatalogueClass
                 $r = $dbc->query("SELECT `mfa_id`, `model`, COUNT(`art_id`) as count_arts  FROM `EX_TABLE_TREE_MFA_$group_id` WHERE 1 GROUP BY `mfa_id`, `model`;");
                 $n = $dbc->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
-                    $mfa_id = $dbc->result($r, $i - 1, "mfa_id");
-                    $model = $dbc->result($r, $i - 1, "model");
+                    $mfa_id     = $dbc->result($r, $i - 1, "mfa_id");
+                    $model      = $dbc->result($r, $i - 1, "model");
                     $count_arts = $dbc->result($r, $i - 1, "count_arts");
 
                     if ($mfa_id > 0) {
