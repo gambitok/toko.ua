@@ -76,18 +76,26 @@ class ProductsClass extends CatalogueClass
         return $this->replaceLang($form);
     }
 
+    public function getMinModelYear()
+    {
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT MIN(`MOD_PCON_START`) as min_year FROM `T_models` WHERE `ACTIVE` = 1;");
+        return substr($db->result($r, 0, "min_year"), 0, -2);
+    }
+
     public function getYearsForm($date_start, $date_end, $mfa_id, $model): string
     {
-        $min_date_start = 1947;
-        $max_date_end = 2020;
+        $min_date_start = $this->getMinModelYear();
+        $max_date_end   = (int)date("Y");
 
-        if ($date_end !== "" && (int)$date_end !== 0) {
-            $date_end = substr($date_end, 0, -2) . "";
+        if (!empty($date_end)) {
+            $date_end = substr($date_end, 0, -2);
         } else {
             $date_end = $max_date_end;
         }
-        if ($date_start !== "" && (int)$date_start !== 0) {
-            $date_start = substr($date_start, 0, -2) . "";
+
+        if (!empty($date_start)) {
+            $date_start = substr($date_start, 0, -2);
         } else {
             $date_start = $min_date_start;
         }
