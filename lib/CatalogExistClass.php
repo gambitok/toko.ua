@@ -1018,7 +1018,9 @@ class CatalogExistClass extends CatalogueClass
 
             if ($typ_id !== "") {
                 $typ_arts = $this->getPartsCatalogueAuto($typ_id);
-                $where_link_arts = " AND t.`art_id` IN (" . implode(",", $typ_arts) . ") ";
+                if (!empty($typ_arts)) {
+                    $where_link_arts = " AND t.`art_id` IN (" . implode(",", $typ_arts) . ") ";
+                }
             }
         }
 

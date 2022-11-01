@@ -763,7 +763,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "";
 
-        $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `STATUS` = 1 ORDER BY `data` DESC;");
+        $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `STATUS` = 1 ORDER BY `DATA_CREATE` DESC;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
@@ -778,7 +778,7 @@ class MenuClass extends CatalogueClass
                 $transcript = str_replace(array("–", "---"), "-", $transcript);
 
                 $form_range = $this->getHtmlForm("reviews/form_range");
-                $form_range = str_replace(array("{review_title}", "{review_date}", "{review_img}", "{page_review_link}"), array($title, $db->result($r, $i - 1, "DATA"), $db->result($r, $i - 1, "IMG"), $this->getSiteLink() . "$this->reviews_link/state/$state_id/$transcript/"), $form_range);
+                $form_range = str_replace(array("{review_title}", "{review_date}", "{review_img}", "{page_review_link}"), array($title, $db->result($r, $i - 1, "DATA_CREATE"), $db->result($r, $i - 1, "IMG"), $this->getSiteLink() . "$this->reviews_link/state/$state_id/$transcript/"), $form_range);
 
                 $list .= $form_range;
             }
@@ -801,7 +801,7 @@ class MenuClass extends CatalogueClass
             $dataReview = $this->getReviewsData($state_id);
             $text       = $dataReview["title"];
             $url_text   = $dataReview["url"];
-            $img_text    = $dataReview["img"];
+            $img_text   = $dataReview["img"];
         }
 
         $form = $this->getHtmlForm("article/social");
@@ -815,9 +815,10 @@ class MenuClass extends CatalogueClass
         $state_id = $this->getUrlNumber($state_id);
         $db = DbSingleton::getTokoDb();
 
-        $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID` = $state_id;");
+        $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID` = $state_id ORDER BY `DATA_CREATE` DESC;");
         $postfix    = $this->getLangPostfix($this->getLanguage());
         $date       = $db->result($r, 0, "DATA");
+        $date_create= $db->result($r, 0, "DATA_CREATE");
         $site_title = $db->result($r, 0, "T_$postfix");
         $site_descr = $db->result($r, 0, "D_$postfix");
         $title      = $db->result($r, 0, "TITLE_$postfix");
@@ -832,7 +833,7 @@ class MenuClass extends CatalogueClass
         $url        = $this->getSiteLink() . "$this->reviews_link/state/$state_id/$transcript/";
         $img        = "https://portal.myparts.pro/uploads/images/saved/$img_file";
 
-        return compact("title", "text", "date", "url", "img", "site_title", "site_descr", "transcript");
+        return compact("title", "text", "date", "date_create", "url", "img", "site_title", "site_descr", "transcript");
     }
 
     /*
@@ -843,7 +844,7 @@ class MenuClass extends CatalogueClass
         $reviewsData = $this->getReviewsData($state_id);
 
         $list = $this->getHtmlForm("reviews/card_range");
-        $list = str_replace(array("{review_date}", "{review_title}", "{review_text}"), array($reviewsData["date"], $this->replaceTextTags($reviewsData["title"], ""), $this->replaceTextTags($reviewsData["text"], $reviewsData["title"])), $list);
+        $list = str_replace(array("{review_date}", "{review_title}", "{review_text}"), array($reviewsData["date_create"], $this->replaceTextTags($reviewsData["title"], ""), $this->replaceTextTags($reviewsData["text"], $reviewsData["title"])), $list);
         $form = $this->getHtmlForm("reviews/card");
         $state_catalog = $this->getReviewsStateCatalog($state_id);
         $form = str_replace(array("{state_id}", "{state_info}", "{state_catalog}"), array($state_id, ($state_id > 0) ? $list : "<h1>$this->err1</h1>", $state_catalog), $form);
