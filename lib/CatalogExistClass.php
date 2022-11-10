@@ -2445,7 +2445,8 @@ class CatalogExistClass extends CatalogueClass
             $r = $db->query("SELECT t2r.`ID`, t2r.`TITLE_$postfix` 
             FROM `T2_GROUP_REVIEW` t2gr 
                 LEFT JOIN `T2_REVIEWS` t2r ON (t2r.`ID` = t2gr.`REVIEW_ID`)
-            WHERE t2gr.`GROUP_ID` = $group_id AND t2r.`STATUS` = 1;");
+            WHERE t2gr.`GROUP_ID` = $group_id AND t2r.`STATUS` = 1
+            GROUP BY t2gr.`REVIEW_ID`;");
             $n = $db->num_rows($r);
 
             if ($n > 0) {
