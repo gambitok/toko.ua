@@ -2,7 +2,7 @@
 
 use LisDev\Delivery\NovaPoshtaApi2;
 
-$np = new NovaPoshtaApi2('e52c020f392e0da179684b87cdbbbf05');
+$np = new NovaPoshtaApi2('c11f032abf542a39f2324d58004e12c1');
 
 $list = "";
 $arr = $np->getCities();

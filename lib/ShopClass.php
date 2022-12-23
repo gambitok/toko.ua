@@ -1898,7 +1898,7 @@ class ShopClass extends CatalogueClass
     public function getNovaPoshtaWarehousesSelect($ref, $department_ref)
     {
         $list   = $this->replaceLang("<option value=\"0\">{not_chosen}</option>");
-        $np     = new NovaPoshtaApi2('e52c020f392e0da179684b87cdbbbf05');
+        $np     = new NovaPoshtaApi2('c11f032abf542a39f2324d58004e12c1');
         $arr    = $np->getWarehouses($ref)['data'];
 
         foreach ($arr as $val) {
