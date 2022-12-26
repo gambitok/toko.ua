@@ -1,4 +1,15 @@
 User-agent: *
+Allow: *.js
+Allow: *.css
+Allow: *.png
+Allow: *.jpg
+Allow: *.jpeg
+Allow: *.gif
+Allow: *.webp
+Allow: *.svg
+Allow: *.ttf
+Allow: *.woff
+Allow: *.woff2
 Disallow: /utm_
 Disallow: /*gclid=
 Disallow: /search/
