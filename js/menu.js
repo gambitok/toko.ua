@@ -112,19 +112,19 @@ function showGarageForm(sel_typ_id = 0) {
 
     if (form_cars.length && form_cars.html().length === 0) {
         console.log('garage');
-        // $("#garage_404_select").html("<div class=\"spinner-border\"></div>");
-        // JsHttpRequest.query(folder,{'w':'showCarsGarageForm'},
-        //     function (result, errors){ if (errors) {alert(errors);} if (result){
-        //         $("#garage_404_select").html(result.content[0]);
-        //         if (result.content[1] == 1) {
-        //             toggleCarsNavigation($("div[data-type='manuf']"));
-        //         }
-        //     }}, true);
+        $("#garage_404_select").html("<div class=\"spinner-border\"></div>");
+        JsHttpRequest.query(folder,{'w':'showCarsGarageForm'},
+            function (result, errors){ if (errors) {alert(errors);} if (result){
+                $("#garage_404_select").html(result.content[0]);
+                if (result.content[1] == 1) {
+                    toggleCarsNavigation($("div[data-type='manuf']"));
+                }
+            }}, true);
     } else {
         console.log('none');
-        // let form_garage = $("#garage_cars_form");
-        // form_garage.html("<div class=\"spinner-border\"></div>");
-        // form_garage.html(form_cars.html());
+        let form_garage = $("#garage_cars_form");
+        form_garage.html("<div class=\"spinner-border\"></div>");
+        form_garage.html(form_cars.html());
         form_cars.html("");
     }
 
