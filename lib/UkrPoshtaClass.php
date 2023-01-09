@@ -74,19 +74,19 @@ class UkrPoshtaClass
         return $arr;
     }
 
-//    public function getCitiesListAll(): array
-//    {
-//        $data = $this->connect("address-classifier-ws/", "get_city_by_region_id_and_district_id_and_city_ua");
-//        $arr = [];
-//        foreach ($data["Entry"] as $value) {
-//            $arr[] = [
-//                'CITY_ID'   => $value['CITY_ID'],
-//                'CITY_UA'   => iconv("UTF-8", "windows-1251", $value['CITY_UA']),
-//                'REGION_ID' => $value['REGION_ID']];
-//        }
-//
-//        return $arr;
-//    }
+    public function getCitiesListAll(): array
+    {
+        $data = $this->connect("address-classifier-ws/", "get_city_by_region_id_and_district_id_and_city_ua");
+        $arr = [];
+        foreach ($data["Entry"] as $value) {
+            $arr[] = [
+                'CITY_ID'   => $value['CITY_ID'],
+                'CITY_UA'   => iconv("UTF-8", "windows-1251", $value['CITY_UA']),
+                'REGION_ID' => $value['REGION_ID']];
+        }
+
+        return $arr;
+    }
 
     public function getDistrictsList($city_id): array
     {
@@ -106,6 +106,7 @@ class UkrPoshtaClass
 
         $arr = [];
         foreach ($data["Entry"] as $value) {
+//            $arr[$value["ID"]] = iconv("UTF-8", "windows-1251", $value["PO_LONG"]);
             $district_name = iconv("UTF-8", "windows-1251", $value['PO_LONG']);
             $district_name = str_replace('"', "", $district_name);
             $arr[] = [
@@ -132,7 +133,7 @@ class UkrPoshtaClass
     {
         $db = DbSingleton::getTokoDb();
 
-        foreach ($data as $id => $name) {
+        foreach($data as $id => $name) {
             $db->query("INSERT INTO `$table_name` (`ID`, `CITY_ID`, `NAME`) VALUES ($id, $city_id, \"$name\");");
         }
 
