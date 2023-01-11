@@ -596,7 +596,6 @@ class SearchClass extends CatalogueClass
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", $nulls);
             $n = $db->num_rows($r);
-
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id             = (int)$db->result($r, $i - 1, "ART_ID");
@@ -615,6 +614,7 @@ class SearchClass extends CatalogueClass
                     if ($suppl_id > 0) {
                         $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
                     }
+
                     $price = $kours->getKoursPrice($price, $cur);
                     if ($cur === 1) {
                         $price = $client->getClientPriceRounding($client_id, $price);

@@ -1492,6 +1492,8 @@ class CatalogueClass
             $suppl_price_usd = (float)($dbt->result($r, 0, "price_usd"));
             list($price_in_vat, $show_in_vat, $price_add_vat) = $this->getSupplVatConditions($suppl_id);
             $price_suppl = $suppl_price_usd;
+            //?
+            $price = $suppl_price_usd;
 
             list($suppl_margin_fm, $suppl_delivery_fm, $suppl_margin2_fm) = $this->getTpointSupplFm($tpoint, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl);
 
@@ -1518,6 +1520,7 @@ class CatalogueClass
                     }
                 }
             }
+
             $price = round($price, 2);
         }
 

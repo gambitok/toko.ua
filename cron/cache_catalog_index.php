@@ -14,16 +14,18 @@ $catalog_exist = new CatalogExistClass();
 
 $start = microtime(true);
 
-$where = "1";
-$where1 = "1";
-//$where = "`GROUP_ID` = 788";
-//$where1 = "`group_id` = 788";
+$group_id = (int)$_GET["group_id"];
+
+$where = "`GROUP_ID` = $group_id";
+$where1 = "`group_id` = $group_id";
+
+if ($group_id > 0) {
 
 $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_MFA`;");
 $dbt->query("UPDATE `T2_TREE_GROUP_EXIST` SET `STATUS_CACHE` = 0 WHERE $where;");
 
 print
-"============\n
+    "============\n
 Done with full table \n
 ============\n";
 
@@ -37,7 +39,7 @@ for ($i = 1; $i <= $n; $i++) {
     print $catalog_exist->initPartsMfaTable($group_id);
     print $catalog_exist->initPartsParamsTable($group_id);
     print
-"============\n
+        "============\n
 Done with $group_link (GROUP_ID: $group_id) \n
 ============\n";
 }
@@ -59,5 +61,6 @@ SELECT `group_id`, `mfa_id`, `model` FROM `EX_TABLE_TREE_AVAILABLE_MFA` WHERE $w
 $time = microtime(true) - $start;
 
 print
-"TREE CACHE: \n 
+    "TREE CACHE: \n 
 Run time: $time";
+}
