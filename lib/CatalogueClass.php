@@ -359,6 +359,7 @@ class CatalogueClass
             WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)  
             GROUP BY t2a.ART_ID, t2si.client_storage_id
             ");
+            
         }
 
         return $r;
