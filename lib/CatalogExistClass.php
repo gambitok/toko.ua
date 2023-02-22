@@ -494,7 +494,7 @@ class CatalogExistClass extends CatalogueClass
         return true;
     }
 
-    public function initPartsAvailableTables($group_id): string
+    public function initPartsAvailableTables($group_id, $status = 0): string
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
@@ -512,7 +512,16 @@ class CatalogExistClass extends CatalogueClass
             $list .= "added group $group_id \n";
         }
         if ($n > 0) {
-            $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`) VALUES ($group_id, 1);");
+            if ($status === 0) {
+                $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`) VALUES ($group_id, 1);");
+            }
+            if ($status === 1) {
+                $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_GROUP` WHERE `group_id` = $group_id LIMIT 1;");
+                $group_select_id = $dbc->result($r, 0, "group_id");
+                if (empty($group_select_id)) {
+                    $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`) VALUES ($group_id, 1);");
+                }
+            }
         }
         return $list;
     }
@@ -1020,6 +1029,8 @@ class CatalogExistClass extends CatalogueClass
                 $typ_arts = $this->getPartsCatalogueAuto($typ_id);
                 if (!empty($typ_arts)) {
                     $where_link_arts = " AND t.`art_id` IN (" . implode(",", $typ_arts) . ") ";
+                } else {
+                    $where_link_arts = " AND t.`art_id` IN (0) ";
                 }
             }
         }
@@ -2078,6 +2089,7 @@ class CatalogExistClass extends CatalogueClass
         $list       = "";
         $link       = $this->catalog_link;
         $det_cap    = "{all_type_models}";
+        $nophoto    = $this->noPhoto;
 
         if ($group_id > 0) {
             $group_name = $this->getGroupRowName($group_id);
@@ -2122,9 +2134,9 @@ class CatalogExistClass extends CatalogueClass
 
                 $list .= "
                 <a class=\"seo-li\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/$mod_id_lnk/\">
-                    <div class=\"row \">
+                    <div class=\"row\">
                         <div class=\"col-4\">
-                            <img src=\"https://toko.ua/uploads/images/models/$image\" alt=\"$text\" title=\"$text\">
+                            <img data-src=\"/uploads/images/models/$image\" class=\"lazy\" alt=\"$text\" title=\"$text\" src=\"$nophoto\">
                         </div>
                         <div class=\"col-8\">
                             <span>$mfa_brand $text ($d_start - $d_end)</span>

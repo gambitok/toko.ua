@@ -44,17 +44,18 @@ Done with $group_link (GROUP_ID: $group_id) \n
 ============\n";
 }
 
-$dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_GROUP`;");
-$dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_BRANDS`;");
+//$dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_GROUP`;");
+//$dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_BRANDS`;");
 
 $r = $dbt->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP_EXIST` WHERE $where;");
 $n = $dbt->num_rows($r);
 for ($i = 1; $i <= $n; $i++) {
     $group_id   = $dbt->result($r, $i - 1, "GROUP_ID");
-    $catalog_exist->initPartsAvailableTables($group_id);
+    $catalog_exist->initPartsAvailableTables($group_id, 1);
 }
 
-$dbc->query("TRUNCATE TABLE `EX_TABLE_AVAILABLE_MFA`;");
+//$dbc->query("TRUNCATE TABLE `EX_TABLE_AVAILABLE_MFA`;");
+$dbc->query("DELETE FROM `EX_TABLE_AVAILABLE_MFA` WHERE $where1 ;");
 $dbc->query("INSERT INTO `EX_TABLE_AVAILABLE_MFA` (`group_id`, `mfa_id`, `model`)
 SELECT `group_id`, `mfa_id`, `model` FROM `EX_TABLE_TREE_AVAILABLE_MFA` WHERE $where1 GROUP BY `group_id`, `mfa_id`, `model`;");
 

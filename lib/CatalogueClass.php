@@ -359,7 +359,6 @@ class CatalogueClass
             WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)  
             GROUP BY t2a.ART_ID, t2si.client_storage_id
             ");
-            
         }
 
         return $r;
@@ -2308,6 +2307,7 @@ class CatalogueClass
         FROM `T2_TREE_HCG_EXIST` t2hcg
             LEFT JOIN `T2_TREE_GROUP_EXIST` t2g ON (t2g.GROUP_ID = t2hcg.GROUP_ID)
         WHERE t2hcg.`HEAD_ID` = $head_id AND t2hcg.`CAT_ID` = $cat_id AND t2g.`STATUS` = 1 AND 1;");
+
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $gg[] = $dbc->result($r, $i - 1, "GROUP_ID");
