@@ -1107,8 +1107,9 @@ class MenuClass extends CatalogueClass
         return $form;
     }
 
-    public function getFooterForm($router_sel = "", $site_link = "")
+    public function getFooterForm($router_sel = "")
     {
+        //$site_link = ""
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
 
@@ -1147,7 +1148,8 @@ class MenuClass extends CatalogueClass
         </ul>";
 
         $form = getHtmlForm("main/footer");
-        $form = str_replace(array("{popular_catalogs_list1}", "{popular_catalogs_list2}"), array($list1, $list2), $form);
+//        $form = str_replace(array("{popular_catalogs_list1}", "{popular_catalogs_list2}"), array($list1, $list2), $form);
+//        $form = str_replace("{footer_cities}", "", $form);
 
 //        $group_id_sel   = 0;
 //        $art_id_sel     = 0;
@@ -1204,7 +1206,7 @@ class MenuClass extends CatalogueClass
 //            $form = str_replace("{footer_cities}", $list, $form);
 //        }
 
-        $form = str_replace("{footer_cities}", "", $form);
+        $form = str_replace(array("{popular_catalogs_list1}", "{popular_catalogs_list2}", "{footer_cities}"), array($list1, $list2, ""), $form);
 
         return $form;
     }

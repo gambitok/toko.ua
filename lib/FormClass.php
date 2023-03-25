@@ -331,6 +331,7 @@ class FormClass extends CatalogueClass
         $article_name   = $articleData["article_name"];
         $real_stock     = $articleData["real_stock"];
         $h1             = "$article_name $brand_name $art_nr_ds";
+        $art_brand_name = "$brand_name $art_nr_ds";
 
         $flagData = $this->getCountryFlag($brand_id);
         if ($flagData !== false) {
@@ -419,9 +420,7 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_proposed}", $shop->getProposedArts(), $form);
         $form = str_replace("{art_history}", $this->getHistoryArts(), $form);
 
-//        $form = str_replace("{art_seo_text}", $this->getArticleSeoText($art_id, $h1), $form);
         $form = str_replace("{art_seo_text}", "", $form);
-        $form = str_replace("{art_id}", $art_id, $form);
         $form = str_replace("{brand_id}", $brand_id, $form);
         $form = str_replace("{suppl_id}", $articleData["suppl_id"], $form);
         $form = str_replace("{storage_id}", $articleData["storage_id"], $form);
@@ -430,6 +429,7 @@ class FormClass extends CatalogueClass
         $main_article_photo = $this->getArticlePhoto($art_id);
         $show_article_photo = $this->showBrandPhoto($brand_id);
         $art_main_image     = ($main_article_photo === "") ? $this->noPhoto : "https://toko.ua/uploads/images/catalogue/" . $main_article_photo;
+
         $form = str_replace("{art_main_image}", $art_main_image, $form);
         $form = str_replace("{article_brand_photo}", $show_article_photo["logo_name"], $form);
         $form = str_replace("{article_brand_class}", $show_article_photo["logo_class"], $form);
@@ -447,8 +447,8 @@ class FormClass extends CatalogueClass
         $form = str_replace("{art_images}", $art_images, $form);
         $form = str_replace("{applicable_form}", $this->getApplicableForm($art_id, $auto_typ_id), $form);
         $form = str_replace("{article_info_row}", $article_info_row, $form);
-        $form = str_replace("{article_name}", "$brand_name $art_nr_ds", $form);
-        $form = str_replace("{article_header}", "$h1", $form);
+        $form = str_replace("{article_name}", $art_brand_name, $form);
+        $form = str_replace("{article_header}", $h1, $form);
         $form = str_replace("{loader_form}", $this->drawLoader(), $form);
 
         $form = $this->replaceLang($form);

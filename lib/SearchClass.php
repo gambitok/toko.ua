@@ -1124,14 +1124,17 @@ class SearchClass extends CatalogueClass
         $return_days_alt    = $return_days_img = "";
 
         if ((int)$suppl_id > 0) {
+
             if ($return_days === 0) {
                 $return_days_alt = "{no_exchange}";
                 $return_days_img = $this->images . "/exchange/exchange2.png";
             }
+
             elseif ($return_days === 14) {
                 $return_days_alt = "";
                 $return_days_img = "";
             }
+
             elseif ($return_days >= 15) {
                 $return_days_alt = "{return_within} $return_days {days_cap}";
                 $return_days_img = $this->images . "/exchange/exchange1.png";
@@ -1147,9 +1150,11 @@ class SearchClass extends CatalogueClass
         if ($this->checkActionPrice($art_id)) {
             list(, $action_amount, $action_price, $action_max_amount, $action_data) = $this->checkActionPrice($art_id);
             $action_price = $kours->getKoursFromUSA($action_price, $cur);
+
             if ($cur === 1) {
                 $action_price = $client->getClientPriceRounding($this->getClient(), $action_price);
             }
+
             $action_data_cap = ($action_data > 0) ? date("d.m.Y", strtotime($action_data)) : "{indefinitely_cap}";
             $action_max_amount_cap = ($action_max_amount > 0) ? "{yes_cap}" : "{no_cap}";
 
@@ -1179,66 +1184,31 @@ class SearchClass extends CatalogueClass
             $delivery_short_info = "<span class='delivery-green'>{send_done}</span>";
         }
 
-        $tpoint_fname = (empty($suppl_id)) ? $client->getArticleStorageTPoint($storage_id) : "";
+        $tpoint_fname       = (empty($suppl_id)) ? $client->getArticleStorageTPoint($storage_id) : "";
         $product_main_photo = ($showform->getArticlePhoto($art_id) === "") ? $this->noPhoto : $showform->getArticlePhoto($art_id);
-        $analog_display = (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && ($brand_id === $brand_nr_search)) ? "none" : "";
+        $analog_display     = (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && ($brand_id === $brand_nr_search)) ? "none" : "";
 
-        $basket_amount = $shop->getBasketArticleAmount($art_id, $storage_id);
-        $basket_amount_cap = ($basket_amount > 0) ? "{site_basket}: $basket_amount {amount_abbr}." : "";
-        $return_display = ($return_days === 14 || $return_days_img === "") ? "none" : "";
+        $basket_amount      = $shop->getBasketArticleAmount($art_id, $storage_id);
+        $basket_amount_cap  = ($basket_amount > 0) ? "{site_basket}: $basket_amount {amount_abbr}." : "";
+        $return_display     = ($return_days === 14 || $return_days_img === "") ? "none" : "";
 
-        $pvisibility = (!empty($stock) && !empty($price)) ? "" : "dvisibility0";
-        $pvisibility_price = (empty($stock) && empty($price)) ? "dvisibility0" : "";
-        $pvisibility_info = (empty($stock) && empty($price)) ? "dvisibility0" : "";
+        $pvisibility        = (!empty($stock) && !empty($price)) ? "" : "dvisibility0";
+        $pvisibility_price  = (empty($stock) && empty($price)) ? "dvisibility0" : "";
+        $pvisibility_info   = (empty($stock) && empty($price)) ? "dvisibility0" : "";
+
+        $photo_display  = $this->checkPhoto($art_id) ? "" : "none";
+        $photo_src      = $showform->getArticleActivePhoto($art_id);
+        $prod_title_del = str_replace("<br>", " ", $delivery_info);
+        $prod_barcode   = $this->getBarcode($art_id);
+        $index_type     = $this->getIndexTypeImage($art_id, $article_nr_search, $article_nr_displ, $format_name, $brand_id, $brand_nr_search);
+        $product_info   = $showform->getArticleInfoForm($art_id, 1);
 
         $form = $this->getHtmlForm("product_card");
-        $form = str_replace("{product_i}", $id, $form);
-        $form = str_replace("{art_id}", $art_id, $form);
-        $form = str_replace("{brand_id}", $brand_id, $form);
-        $form = str_replace("{product_name}", $article_nr_displ, $form);
-        $form = str_replace("{product_brand}", $brand_name, $form);
-        $form = str_replace("{page_product_link}", $product_link, $form);
-        $form = str_replace("{page_product_link2}", $product_link2, $form);
-        $form = str_replace("{product_text}", $product_text, $form);
-        $form = str_replace("{format_product_text}", $format_product_text, $form);
-        $form = str_replace("{product_stock}", $product_stock, $form);
-        $form = str_replace("{product_real_stock}", $stock, $form);
-        $form = str_replace("{product_storage_id}", $storage_id, $form);
-        $form = str_replace("{product_suppl_id}", $suppl_id, $form);
-        $form = str_replace("{return_days_img}", $return_days_img, $form);
-        $form = str_replace("{return_days_alt}", $return_days_alt, $form);
-        $form = str_replace("{return_display}", $return_display, $form);
-        $form = str_replace("{photo_src}", $showform->getArticleActivePhoto($art_id), $form);
-        $form = str_replace("{photo_display}", $this->checkPhoto($art_id) ? "" : "none", $form);
-        $form = str_replace("{product_main_photo}", $product_main_photo, $form);
-        $form = str_replace("{product_del}", $delivery_info, $form);
-        $form = str_replace("{product_dd}", $delivery_days, $form);
-        $form = str_replace("{product_delivery_class}", "", $form);
-        $form = str_replace("{product_delivery_short_info}", $delivery_short_info, $form);
-        $form = str_replace("{product_price}", $price . " " . $kours_cap, $form);
-        $form = str_replace("{product_true_price}", $price, $form);
-        $form = str_replace("{product_kours_cap}", $kours_cap, $form);
-        $form = str_replace("{product_action}", $action_form, $form);
-        $form = str_replace("{product_action_count}", $action_count, $form);
-        $form = str_replace("{product_title_del}", str_replace("<br>", " ", $delivery_info), $form);
-        $form = str_replace("{analog_display}", $analog_display, $form);
-        $form = str_replace("{product_barcode}", $this->getBarcode($art_id), $form);
-        $form = str_replace("{style_border}", $os["border"], $form);
-        $form = str_replace("{style_class}", $os["class"], $form);
-        $form = str_replace("{style_none}", $os["none"], $form);
-        $form = str_replace("{style_hide}", $os["hide"], $form);
-        $form = str_replace("{country_display}", $flagClass, $form);
-        $form = str_replace("{flag_image}", $flagData["flag"], $form);
-        $form = str_replace("{country_name}", $flagData["country"], $form);
-        $form = str_replace("{instock}", $instock, $form);
-        $form = str_replace("{index_type}", $this->getIndexTypeImage($art_id, $article_nr_search, $article_nr_displ, $format_name, $brand_id, $brand_nr_search), $form);
-        $form = str_replace("{tpoint_full_name}", $tpoint_fname, $form);
-        $form = str_replace("{product_info}", $showform->getArticleInfoForm($art_id, 1), $form);
-        $form = str_replace("{del_class}", "", $form);
-        $form = str_replace("{basket_amount}", $basket_amount_cap, $form);
-        $form = str_replace("{pvisibility}", $pvisibility, $form);
-        $form = str_replace("{pvisibility_price}", $pvisibility_price, $form);
-        $form = str_replace("{pvisibility_info}", $pvisibility_info, $form);
+        $form = str_replace(
+            array("{product_i}", "{art_id}", "{brand_id}", "{product_name}", "{product_brand}", "{page_product_link}", "{page_product_link2}", "{product_text}", "{format_product_text}", "{product_stock}", "{product_real_stock}", "{product_storage_id}", "{product_suppl_id}", "{return_days_img}", "{return_days_alt}", "{return_display}", "{photo_src}", "{photo_display}", "{product_main_photo}", "{product_del}", "{product_dd}", "{product_delivery_class}", "{product_delivery_short_info}", "{product_price}", "{product_true_price}", "{product_kours_cap}", "{product_action}", "{product_action_count}", "{product_title_del}", "{analog_display}", "{product_barcode}", "{style_border}", "{style_class}", "{style_none}", "{style_hide}", "{country_display}", "{flag_image}", "{country_name}", "{instock}", "{index_type}", "{tpoint_full_name}", "{product_info}", "{del_class}", "{basket_amount}", "{pvisibility}", "{pvisibility_price}", "{pvisibility_info}"),
+            array($id, $art_id, $brand_id, $article_nr_displ, $brand_name, $product_link, $product_link2, $product_text, $format_product_text, $product_stock, $stock, $storage_id, $suppl_id, $return_days_img, $return_days_alt, $return_display, $photo_src, $photo_display, $product_main_photo, $delivery_info, $delivery_days, "", $delivery_short_info, $price . " " . $kours_cap, $price, $kours_cap, $action_form, $action_count, $prod_title_del, $analog_display, $prod_barcode, $os["border"], $os["class"], $os["none"], $os["hide"], $flagClass, $flagData["flag"], $flagData["country"], $instock, $index_type, $tpoint_fname, $product_info, "", $basket_amount_cap, $pvisibility, $pvisibility_price, $pvisibility_info),
+            $form
+        );
 
         $list = $form;
         $list .= $os["content"];
