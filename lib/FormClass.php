@@ -280,6 +280,28 @@ class FormClass extends CatalogueClass
         return array($answer, $err, $stock);
     }
 
+    public function getArticleAnalogsStatus($art_id, $brand_id, $search_number)
+    {
+        $db = DbSingleton::getTokoDb();
+
+        $status = 0;
+
+        $r = $db->query("SELECT EXISTS(SELECT `ID` FROM `T2_CROSS`
+                         WHERE
+                            `SEARCH_NUMBER` = '$search_number' AND
+                             `BRAND_ID` = $brand_id AND
+                             `kind` != 0 AND
+                             `ART_ID` != $art_id) as res");
+
+        $n = $db->result($r, 0, "res");
+
+        if ($n > 0) {
+            $status = 1;
+        }
+
+        return $status;
+    }
+
     /*
      * show article form
      * */
@@ -334,6 +356,7 @@ class FormClass extends CatalogueClass
             $brand_id   = $this->getArticleBrand($art_id);
             $art_name   = $this->getBrandName($brand_id) . " " . $art_nr_ds;
             $h1         = $this->getArticleName($art_id) . " " . $art_name;
+            $art_sr_nr = $this->getArticleSearch($art_id);
 
             $form = str_replace(array("{article_name}", "{article_header}", "{art_name}", "{article_style}"), array($art_name, $h1, $art_nr_ds, "none"), $form);
 
@@ -347,6 +370,14 @@ class FormClass extends CatalogueClass
             </div>";
 
             $article_info_row = $this->getHtmlForm("article/soldout");
+
+            $analogs_text = "{in_folder} <a onclick=\"shortSearchList(); $('#nav-profile-tab').tab('show');\" style=\"color: #0ca9ee; cursor: pointer;\">«{analogs_2_cap}»</a> {in_folder_will}";
+
+            if ($this->getArticleAnalogsStatus($art_id, $brand_id, $art_sr_nr) === 0) {
+                $analogs_text = "{analog_soldout_cap}";
+            }
+            $article_info_row = str_replace("{analogs_text}", $analogs_text, $article_info_row);
+
         } else {
             $client = new ClientClass();
             $user_phone         = ($this->getUser() > 0) ? $client->getClientInfo($this->getClient(), $this->getUser())["phone"] : "";

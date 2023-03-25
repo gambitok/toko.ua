@@ -56,17 +56,17 @@ function validate(evt) {
 }
 
 // REGISTRATION VALIDATE
-function showValidateModal(phone, callback, callback2) {
-    if (phone !== undefined) {
-        JsHttpRequest.query(folder,{ 'w': 'validatePhone', 'phone':phone},
-            function (result, errors){ if (errors) {} if (result){
-                $("#ValidateForm").modal("show");
-                $("#validate_btn_ok").click(function(){
-                    callback(callback2);
-                });
-            }}, true);
-    }
-}
+// function showValidateModal(phone, callback, callback2) {
+//     if (phone !== undefined) {
+//         JsHttpRequest.query(folder,{ 'w': 'validatePhone', 'phone':phone},
+//             function (result, errors){ if (errors) {} if (result){
+//                 $("#ValidateForm").modal("show");
+//                 $("#validate_btn_ok").click(function(){
+//                     callback(callback2);
+//                 });
+//             }}, true);
+//     }
+// }
 
 function validatePhone(callback) {
     let phone = $("#reg_phone").val();

@@ -282,9 +282,9 @@ if ($_REQUEST["w"] === "recoverPassword") {
     $GLOBALS['_RESULT'] = array("content" => $client->recoverPassword($_REQUEST["phone"]));
 }
 
-if ($_REQUEST["w"] === "validatePhone") {
-    $GLOBALS['_RESULT'] = array("content" => $client->validatePhone($_REQUEST["phone"]));
-}
+//if ($_REQUEST["w"] === "validatePhone") {
+//    $GLOBALS['_RESULT'] = array("content" => $client->validatePhone($_REQUEST["phone"]));
+//}
 
 if ($_REQUEST["w"] === "endValidation") {
     $GLOBALS['_RESULT'] = array("content" => $client->endValidation($_REQUEST["phone"], $_REQUEST["password"]));

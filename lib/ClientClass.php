@@ -805,7 +805,7 @@ class ClientClass
     /*
      * send SMS validation
      * */
-    public function validatePhone($phone): int
+    public function validatePhone($phone, $ip = "", $captcha = ""): int
     {
         $phone = $this->formatValidPhone($phone);
         $db = DbSingleton::getDbm();
@@ -815,7 +815,7 @@ class ClientClass
         $message    = "Vvedite kod: $password";
 
         $db->query("INSERT INTO `phone_validation` (`phone`, `password`, `status`) VALUES ('$phone', '$password', '0');");
-        $dbt->query("INSERT INTO `sms_journal` (`phone`, `sign`, `message`, `status`) VALUES ('$phone', 'TOKO.UA', '$message', '1');");
+        $dbt->query("INSERT INTO `sms_journal` (`phone`, `sign`, `message`, `status`, `ip`, `captcha`) VALUES ('$phone', 'TOKO.UA', '$message', '1', '$ip', '$captcha');");
 
         return $password;
     }

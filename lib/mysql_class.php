@@ -17,10 +17,10 @@ class dbm
 
     private function load_auth_param()
     {
-        $this->host = '172.17.0.1';
+        $this->host = 'localhost';
         $this->dbname = 'myparts_dba';
         $this->username = 'toko_usr';
-        $this->password = 'T0k0U&erPa$&w0rd#183729z';
+        $this->password = 'T0k0U$er183729Pa$$#';
     }
 
     public function connect()
@@ -100,10 +100,10 @@ class db
 
     private function load_auth_param()
     {
-        $this->host = '172.17.0.1';
+        $this->host = 'localhost';
         $this->dbname = 'toko_dba';
         $this->username = 'toko_usr';
-        $this->password = 'T0k0U&erPa$&w0rd#183729z';
+        $this->password = 'T0k0U$er183729Pa$$#';
     }
 
     public function connect()
@@ -183,10 +183,10 @@ class dbc
 
     private function load_auth_param()
     {
-        $this->host = '172.17.0.1';
+        $this->host = 'localhost';
         $this->dbname = 'toko_dba_cache';
         $this->username = 'toko_usr';
-        $this->password = 'T0k0U&erPa$&w0rd#183729z';
+        $this->password = 'T0k0U$er183729Pa$$#';
     }
 
     public function connect()
