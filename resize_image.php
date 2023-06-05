@@ -2,41 +2,41 @@
 
 ob_start();
 
-function show_image($srcimage, $newwidth, $newheight = 0) {
-    $extension = pathinfo($srcimage, PATHINFO_EXTENSION);
+function show_image($sourceImage, $newWidth, $newHeight = 0) {
+    $extension = pathinfo($sourceImage, PATHINFO_EXTENSION);
 
-    list($width, $height) = getimagesize($srcimage);
+    list($width, $height) = getimagesize($sourceImage);
 
-    $setnewheight = $newheight;
-    if ($newheight === 0 || $newheight === "0") {
-        $setnewheight = round($height * $newwidth /  $width);
+    $setNewHeight = $newHeight;
+    if ($newHeight === 0 || $newHeight === "0") {
+        $setNewHeight = round($height * $newWidth /  $width);
     }
 
     $image = "";
-    if ($extension === "jpg" || $extension === "jpeg"|| $extension === "JPG"|| $extension === "JPEG") {
-        $image = imagecreatefromjpeg($srcimage);
+    if (strtolower($extension) === "jpg" || strtolower($extension) === "jpeg") {
+        $image = imagecreatefromjpeg($sourceImage);
     }
-    elseif ($extension === "png" || $extension === "PNG") {
-        $image = imagecreatefrompng($srcimage);
+    elseif (strtolower($extension)  === "png") {
+        $image = imagecreatefrompng($sourceImage);
     }
-    elseif ($extension === "webp" || $extension === "WEBP") {
-        $image = imagecreatefromwebp($srcimage);
+    elseif (strtolower($extension) === "webp") {
+        $image = imagecreatefromwebp($sourceImage);
     }
 
-    $thumbImage = imagecreatetruecolor($newwidth, $setnewheight);
+    $thumbImage = imagecreatetruecolor($newWidth, $setNewHeight);
 
-    imagecopyresized($thumbImage, $image, 0, 0, 0, 0, $newwidth, $setnewheight, $width, $height);
+    imagecopyresized($thumbImage, $image, 0, 0, 0, 0, $newWidth, $setNewHeight, $width, $height);
     imagedestroy($image);
 
     header("Content-Type: image/$extension");
 
-    if ($extension === "jpg" || $extension === "jpeg"|| $extension === "JPG"|| $extension === "JPEG") {
+    if (strtolower($extension) === "jpg" || strtolower($extension) === "jpeg") {
         imagejpeg($thumbImage, NULL, 75);
     }
-    elseif ($extension === "png" || $extension === "PNG") {
+    elseif (strtolower($extension) === "png") {
         imagepng($thumbImage, NULL, 75);
     }
-    elseif ($extension === "webp" || $extension === "WEBP") {
+    elseif (strtolower($extension) === "webp") {
         imagewebp($thumbImage, NULL, 75);
     }
     imagedestroy($thumbImage);

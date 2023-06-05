@@ -673,10 +673,10 @@ class ClientClass
     }
 
     /*
-     * select all tpoints except the specified one
+     * select all tpoint except the specified one
      * Table: toko_dba.`T_POINT`
     */
-    public function getOtherTpoints($tpoint_id_sel): array
+    public function getTpointOtherList($tpoint_id_sel): array
     {
         $db = DbSingleton::getTokoDb();
         $tpoint_array = [];
@@ -1267,7 +1267,7 @@ class ClientClass
     /*
      * get client_id / user_id from PHONE
      * */
-    public function getClientUserbyPhone($phone): array
+    public function getClientUserByPhone($phone): array
     {
         $db = DbSingleton::getDbm();
 
@@ -1328,7 +1328,7 @@ class ClientClass
     }
 
     /*
-     * set bouns on clients phone
+     * set bonus on clients phone
      * if not used before
      * */
     public function finishBonusPhone($phone, $bonus = 1)
@@ -1339,9 +1339,9 @@ class ClientClass
         // check reg CLIENT
         if ($this->checkRegClient($phone)) {
             // get CLIENT
-            $clientData = $this->getClientUserbyPhone($phone);
+            $clientData = $this->getClientUserByPhone($phone);
             $client_id  = $clientData["client_id"];
-            // check if roznica
+            // check if retail
             // check if have BONUS already
             // add BONUS
             if ($this->checkRetailClientCategory($client_id) && !$this->checkClientBonus($client_id, $bonus)) {
@@ -1364,6 +1364,464 @@ class ClientClass
         $form = $this->replaceLang($form);
 
         return $form;
+    }
+
+    public function getCashDataArray()
+    {
+        $db = DbSingleton::getDbm();
+        $dat = array();
+        $r = $db->query("SELECT * FROM `CASH` ORDER BY `name`;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $id = $db->result($r, $i - 1, "id");
+            $abr = $db->result($r, $i - 1, "abr");
+            $abr2 = $db->result($r, $i - 1, "abr2");
+            $name = $db->result($r, $i - 1, "name");
+            $dat[$i]["id"] = $id;
+            $dat[$i]["abr"] = $abr;
+            $dat[$i]["abr2"] = $abr2;
+            $dat[$i]["name"] = $name;
+        }
+        return $dat;
+    }
+
+    public function getSupplArtsList($suppl_id)
+    {
+        $db = DbSingleton::getTokoDb();
+        $suppl_arts = [];
+        $r = $db->query("SELECT `art_id` FROM `T2_SUPPL_IMPORT` WHERE `suppl_id` = $suppl_id GROUP BY `art_id`;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $art_id = $db->result($r, $i - 1, "art_id");
+            $suppl_arts[] = $art_id;
+        }
+        return $suppl_arts;
+    }
+
+    public function getSupplStorageArray($suppl_id)
+    {
+        $db = DbSingleton::getDbm();
+        $suppl_id = intval($suppl_id);
+        $st = array();
+        $r = $db->query("SELECT `id`, `name` FROM `A_CLIENTS_STORAGE` WHERE `status` = 1 AND `client_id` = $suppl_id ORDER BY `name`;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $id = $db->result($r, $i - 1, "id");
+            $name = $db->result($r, $i - 1, "name");
+            $st[$i]["id"] = $id;
+            $st[$i]["name"] = $name;
+        }
+        return $st;
+    }
+
+    public function findCashID($suppl_cash, $cash_data)
+    {
+        $id = 0;
+        foreach ($cash_data as $cash) {
+            if ($cash["abr"] == $suppl_cash) {
+                $id = $cash["id"];
+                break;
+            }
+            if ($cash["abr2"] == $suppl_cash) {
+                $id = $cash["id"];
+                break;
+            }
+            if ($cash["name"] == $suppl_cash) {
+                $id = $cash["id"];
+                break;
+            }
+        }
+
+        return $id;
+    }
+
+    public function getCacheStockArts($suppl_arts, $suppl_import_arts)
+    {
+        $db = DbSingleton::getTokoDb();
+
+        // Ті, яких немає в $suppl_import_arts
+        $suppl_delete_arts = array_diff($suppl_arts, $suppl_import_arts);
+        $suppl_valid_arts = [];
+
+        if (!empty($suppl_delete_arts)) {
+            foreach ($suppl_delete_arts as $art_id) {
+                $art_id = intval($art_id);
+                $status = 0;
+                $r1 = $db->query("SELECT * FROM `T2_SUPPL_IMPORT` WHERE `art_id` = $art_id;");
+                $n1 = $db->num_rows($r1);
+                if ($n1 > 0) {
+                    $status = 1;
+                }
+                $r2 = $db->query("SELECT * FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID` = $art_id AND `AMOUNT` > 0;");
+                $n2 = $db->num_rows($r2);
+                if ($n2 > 0) {
+                    $status = 1;
+                }
+                if ($status) {
+                    $suppl_valid_arts[] = $art_id;
+                }
+            }
+        }
+
+        // Імпортовані + Валідні з видалених
+        $suppl_cache_arts_update = array_merge($suppl_import_arts, $suppl_valid_arts);
+        // Ті, яких немає в $suppl_cache_arts_update
+        $suppl_cache_arts_delete = array_diff($suppl_arts, $suppl_cache_arts_update);
+
+        return array($suppl_cache_arts_update, $suppl_cache_arts_delete);
+    }
+
+    public function getArtsGroupId($art_id)
+    {
+        $art_id = intval($art_id);
+        $db = DbSingleton::getTokoDb();
+        $group_id = 0;
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `ART_ID` = $art_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $group_id = $db->result($r, 0, "GROUP_ID");
+        }
+        return $group_id;
+    }
+
+    public function updateGroupCacheArts($suppl_cache_arts_update, $suppl_cache_arts_delete)
+    {
+        $db = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+        $answer = 0;
+        $err = "Помилка запису";
+
+        $arts_update = [];
+        foreach ($suppl_cache_arts_update as $art_id) {
+            $group_id = $this->getArtsGroupId($art_id);
+            $arts_update[$group_id][] = $art_id;
+        }
+
+        foreach ($arts_update as $group_id => $arts) {
+            $group_id = intval($group_id);
+            $table = "EX_TABLE_TREE_$group_id";
+            $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
+            $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
+            $rch1 = $dbc->query("SHOW TABLES LIKE '$table';");
+            $nch1 = $dbc->num_rows($rch1);
+            $rch2 = $dbc->query("SHOW TABLES LIKE '$table_params';");
+            $nch2 = $dbc->num_rows($rch2);
+            $rch3 = $dbc->query("SHOW TABLES LIKE '$table_mfa';");
+            $nch3 = $dbc->num_rows($rch3);
+
+            if ($nch1 > 0 && $nch2 > 0 && $nch3 > 0) {
+                foreach ($arts as $art_id) {
+                    $art_id = intval($art_id);
+                    // TABLE
+                    $r1 = $dbc->query("SELECT `art_id` FROM `$table` WHERE `art_id` = $art_id;");
+                    $n1 = $dbc->num_rows($r1);
+                    if ($n1 == 0) {
+                        $rbr = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
+                        $brand_id = intval($db->result($rbr, 0, "BRAND_ID"));
+                        $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status`) VALUES ($art_id, $brand_id, 1);");
+                    }
+                    // TABLE PARAMS
+                    $r2 = $dbc->query("SELECT `art_id` FROM `$table_params` WHERE `art_id` = $art_id;");
+                    $n2 = $dbc->num_rows($r2);
+                    if ($n2 == 0) {
+                        $rbr = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
+                        $brand_id = intval($db->result($rbr, 0, "BRAND_ID"));
+                        $arr = [];
+                        $rpar = $db->query("SELECT `PARAM_ID`, `VALUE_ID` FROM `T2_TREE_ARTS_PARAMS_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `ART_ID` = $art_id;");
+                        $npar = $db->num_rows($rpar);
+                        if ($npar > 0) {
+                            for ($i = 1; $i <= $npar; $i++) {
+                                $param_id = $db->result($rpar, $i - 1, "PARAM_ID");
+                                $value_id = $db->result($rpar, $i - 1, "VALUE_ID");
+                                $arr[$param_id][] = $value_id;
+                            }
+                            $column_name = [];
+                            $column_value = [];
+                            foreach ($arr as $param_id => $values) {
+                                if ($param_id > 0 && !empty($values)) {
+                                    $column_name[] = "`param_$param_id`";
+                                    $column_value[] = "'" . implode(",", $values) . "'";
+                                }
+                            }
+                            $column_set_name = implode(",", $column_name);
+                            if ($column_set_name != "") $column_set_name = ", " . $column_set_name;
+                            $column_set_value = implode(",", $column_value);
+                            if ($column_set_value != "") $column_set_value = ", " . $column_set_value;
+
+                            $dbc->query("INSERT INTO `$table_params` (`art_id`, `brand_id`, `status` $column_set_name) VALUES ($art_id, $brand_id, 1 $column_set_value);");
+                        }
+                    }
+                    // TABLE MFA
+                    $r3 = $dbc->query("SELECT `art_id` FROM `$table_mfa` WHERE `art_id` = $art_id;");
+                    $n3 = $dbc->num_rows($r3);
+                    if ($n3 == 0) {
+                        $arr = [];
+                        $rmfa = $db->query("SELECT tl.`ART_ID`, tm.MOD_MFA_ID, tm.Model 
+                        FROM `T2_LINKS` tl
+                            LEFT JOIN `T_types` tt ON (tt.TYP_ID = tl.TYP_ID)
+                            LEFT JOIN `T_models` tm ON (tm.MOD_ID = tt.TYP_MOD_ID)
+                        WHERE `ART_ID` = $art_id 
+                        GROUP BY tl.ART_ID, tm.MOD_MFA_ID, tm.Model");
+                        $nmfa = $db->num_rows($rmfa);
+                        for ($i = 1; $i <= $nmfa; $i++) {
+                            $art_id = $db->result($rmfa, $i - 1, "ART_ID");
+                            $mfa_id = $db->result($rmfa, $i - 1, "MOD_MFA_ID");
+                            $model = $db->result($rmfa, $i - 1, "Model");
+                            if ($mfa_id > 0) {
+                                $arr[$art_id][$mfa_id][] = $model;
+                            }
+                        }
+                        foreach ($arr as $art_id => $mfas) {
+                            foreach ($mfas as $mfa_id => $models) {
+                                foreach ($models as $model) {
+                                    $art_id = intval($art_id);
+                                    $mfa_id = intval($mfa_id);
+                                    $dbc->query("INSERT INTO `$table_mfa` (`art_id`, `mfa_id`, `model`, `status`) VALUES ($art_id, $mfa_id, \"$model\", 1);");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $arts_delete = [];
+        foreach ($suppl_cache_arts_delete as $art_id) {
+            $group_id = $this->getArtsGroupId($art_id);
+            $arts_delete[$group_id][] = $art_id;
+        }
+
+        foreach ($arts_delete as $group_id => $arts) {
+            $group_id = intval($group_id);
+            $table = "EX_TABLE_TREE_$group_id";
+            $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
+            $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
+            $rch1 = $dbc->query("SHOW TABLES LIKE '$table';");
+            $nch1 = $dbc->num_rows($rch1);
+            $rch2 = $dbc->query("SHOW TABLES LIKE '$table_params';");
+            $nch2 = $dbc->num_rows($rch2);
+            $rch3 = $dbc->query("SHOW TABLES LIKE '$table_mfa';");
+            $nch3 = $dbc->num_rows($rch3);
+
+            if ($nch1 > 0 && $nch2 > 0 && $nch3 > 0) {
+                foreach ($arts as $art_id) {
+                    $art_id = intval($art_id);
+                    $r1 = $dbc->query("SELECT `art_id` FROM `$table` WHERE `art_id` = $art_id;");
+                    $n1 = $dbc->num_rows($r1);
+                    if ($n1 > 0) {
+                        $dbc->query("DELETE FROM `$table` WHERE `art_id` = $art_id;");
+                    }
+                    $r2 = $dbc->query("SELECT `art_id` FROM `$table_params` WHERE `art_id` = $art_id;");
+                    $n2 = $dbc->num_rows($r2);
+                    if ($n2 > 0) {
+                        $dbc->query("DELETE FROM `$table_params` WHERE `art_id` = $art_id;");
+                    }
+                    $r3 = $dbc->query("SELECT `art_id` FROM `$table_mfa` WHERE `art_id` = $art_id;");
+                    $n3 = $dbc->num_rows($r3);
+                    if ($n3 > 0) {
+                        $dbc->query("DELETE FROM `$table_mfa` WHERE `art_id` = $art_id;");
+                    }
+                }
+            }
+        }
+
+        return array($answer, $err);
+    }
+
+    public function getActingExRate()
+    {
+        $db = DbSingleton::getDbm();
+        $exRate = [];
+
+        $r = $db->query("SELECT jk.`kours_value`, jc.`abr` 
+        FROM `J_KOURS` jk 
+            LEFT JOIN `myparts_dba`.`CASH` jc ON jc.id = jk.cash_id 
+        WHERE jk.`in_use` = 1;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $abr    = $db->result($r, $i - 1, "abr");
+            $value  = $db->result($r, $i - 1, "kours_value");
+
+            $exRate[$abr] = $value;
+        }
+
+        return $exRate;
+    }
+
+    public function getSupplPriceTemplate($suppl_id)
+    {
+        $path = "/var/www/portal.myparts.pro/uploads/templates/";
+        $file = $path . $suppl_id . ".json";
+
+        $data = file_get_contents($file);
+        $data = json_decode($data, true);
+
+        foreach ($data['columns'] as $key => $val) {
+            foreach ($val as $k => $v) {
+                $data['columns'][$key][$k] = $v;
+            }
+        }
+
+        return $data;
+    }
+
+    public function finishSupplPriceImport($file_name, $file_path, $suppl_id, $template, $rows)
+    {
+        $db = DbSingleton::getDbm();
+        $dbt = DbSingleton::getTokoDb();
+        $answer = 0;
+        $err = "Помилка збереження даних!";
+        $user_id = 0;
+        $price = 0;
+        $suppl_cash_id = 2;
+
+        if ($suppl_id > 0) {
+            $start_row = $template['start_row'];
+            $currency = $template['currency'];
+            $exRateData = $this->getActingExRate();
+            $kours_usd = $exRateData['USD'];
+            $kours_eur = $exRateData['EUR'];
+
+            if (file_exists($file_path)) {
+                $suppl_arts = $this->getSupplArtsList($suppl_id);
+                $storages = $this->getSupplStorageArray($suppl_id);
+                $kol_storages = count($storages);
+                $suppl_storages_use = [];
+                $cash_data = $this->getCashDataArray();
+                $index = 0;
+                $brand = 0;
+                $cash = 0;
+                $storage_str = "";
+
+                foreach ($template['columns'] as $key => $val) {
+                    if ($val['type'] === 'index') {
+                        $index = $key;
+                    }
+                    if ($val['type'] === 'brand') {
+                        $brand = $key;
+                    }
+                    if ($val['type'] === 'price') {
+                        $price = $key;
+                    }
+                    if ($val['type'] === 'cash') {
+                        $cash = $key;
+                    }
+                    if ($val['type'] === 'storage') {
+                        $storage_id = $val['storage_id'];
+                        $suppl_storages_use[$storage_id] = $key;
+                        $storage_str .= "$storage_id,";
+                    }
+                }
+
+                if ($storage_str != "") {
+                    $storage_str = substr($storage_str, 0, -1);
+                }
+
+                if ($storage_str == "") {
+                    $storage_str = 0;
+                }
+
+                $fna = explode(".", $file_name);
+                $ft = count($fna);
+                $file_type = $fna[$ft - 1];
+
+                if ($currency > 0) {
+                    $suppl_cash_id = $currency;
+                }
+
+                $dbt->query("INSERT INTO `T2_SUPPL_IMPORT_ARCHIVE` (`suppl_id`,`suppl_index`,`brand`,`art_id`,`price_suppl`,`cash_id`,`kours_usd`,`price_usd`,`client_storage_id`,`stock_suppl`,`data_update`,`status`,`return_delay`,`warranty_info`)
+                SELECT `suppl_id`,`suppl_index`,`brand`,`art_id`,`price_suppl`,`cash_id`,`kours_usd`,`price_usd`,`client_storage_id`,`stock_suppl`,`data_update`,`status`,`return_delay`,`warranty_info`
+                FROM `T2_SUPPL_IMPORT` WHERE `suppl_id` = $suppl_id AND `client_storage_id` IN ($storage_str);");
+
+                // AND `client_storage_id` IN ($storage_str)
+                $dbt->query("DELETE FROM `T2_SUPPL_IMPORT` WHERE `suppl_id` = $suppl_id;");
+
+                $pkg_k = 0;
+                $max_pkg = 50;
+                $pkg = "";
+                $krs = 0;
+
+                if (!empty($rows)) {
+
+                    foreach ($rows as $Key => $Row) {
+                        $krs += 1;
+
+                        if ($krs >= $start_row) {
+                            $suppl_index = trim(iconv("UTF-8", "Windows-1251", $Row[$index - 1]));
+                            $suppl_brand = trim(iconv("UTF-8", "Windows-1251", $Row[$brand - 1]));
+                            $suppl_price = str_replace(",", ".", trim(iconv("UTF-8", "Windows-1251", $Row[$price - 1])));
+
+                            if ($currency == 0) {
+                                $suppl_cash = trim(iconv("UTF-8", "Windows-1251", $Row[$cash - 1]));
+                                $suppl_cash_id = $this->findCashID($suppl_cash, $cash_data);
+                            }
+                            $price_usd = 0;
+                            if ($suppl_cash_id == 2) {
+                                $price_usd = $suppl_price;
+                            }
+                            if ($suppl_cash_id == 1) {
+                                $price_usd = ($suppl_price / $kours_usd);
+                            }
+                            if ($suppl_cash_id == 3) {
+                                $price_usd = ($suppl_price * $kours_eur / $kours_usd);
+                            }
+
+                            for ($s = 1; $s <= $kol_storages; $s++) {
+                                $storage_id = $storages[$s]["id"];
+                                $stokCellNom = $suppl_storages_use[$storage_id] - 1;
+                                $suppl_stock = trim(iconv("UTF-8", "Windows-1251", preg_replace('/\D/', '', $Row[$stokCellNom])));
+
+                                if ($suppl_stock > 0) {
+                                    if ($pkg != "") {
+                                        $pkg .= ",";
+                                    }
+                                    $pkg .= "($suppl_id, \"$suppl_index\", \"$suppl_brand\", '$suppl_price', '$suppl_cash_id', '$kours_usd', '$price_usd', '$storage_id', '$suppl_stock', CURDATE())";
+                                    $pkg_k += 1;
+                                    if ($pkg_k == $max_pkg) {
+                                        $dbt->query("INSERT INTO `T2_SUPPL_IMPORT` (`suppl_id`, `suppl_index`, `brand`, `price_suppl`, `cash_id`, `kours_usd`, `price_usd`, `client_storage_id`, `stock_suppl`, `data_update`) VALUES $pkg;");
+                                        $pkg = "";
+                                        $pkg_k = 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!empty($pkg)) {
+                        $dbt->query("INSERT INTO `T2_SUPPL_IMPORT` (`suppl_id`, `suppl_index`, `brand`, `price_suppl`, `cash_id`, `kours_usd`, `price_usd`, `client_storage_id`, `stock_suppl`, `data_update`) VALUES $pkg;");
+                    }
+
+                    $answer = 1;
+                    $err = "";
+                }
+
+                if ($answer === 0) {
+                    $err = "No file to import!";
+                } else {
+                    $db->query("INSERT INTO `cron_suppl_price_import` (`suppl_id`, `user_id`, `status`) VALUES ($suppl_id, '$user_id', '1');");
+
+                    $suppl_import_arts = [];
+                    $r = $dbt->query("SELECT `art_id`, `suppl_brand`, `suppl_index`, `return_delay` FROM `T2_SUPPL_ARTICLES_IMPORT` WHERE `suppl_id` = $suppl_id;");
+                    $n = $dbt->num_rows($r);
+                    for ($i = 1; $i <= $n; $i++) {
+                        $art_id         = intval($dbt->result($r, $i - 1, "art_id"));
+                        $suppl_brand    = $dbt->result($r, $i - 1, "suppl_brand");
+                        $suppl_index    = $dbt->result($r, $i - 1, "suppl_index");
+                        $return_delay   = $dbt->result($r, $i - 1, "return_delay");
+                        $suppl_import_arts[] = $art_id;
+
+                        $dbt->query("UPDATE `T2_SUPPL_IMPORT` SET `art_id` = $art_id, `return_delay` = '$return_delay'
+                        WHERE `suppl_index` LIKE '$suppl_index' AND `suppl_id` = $suppl_id AND `brand` LIKE \"$suppl_brand\" AND `status` = 1;");
+                    }
+
+                    list($suppl_cache_arts_update, $suppl_cache_arts_delete) = $this->getCacheStockArts($suppl_arts, $suppl_import_arts);
+                    $this->updateGroupCacheArts($suppl_cache_arts_update, $suppl_cache_arts_delete);
+                }
+
+            }
+        }
+
+        return array('answer' => $answer, 'error' => $err);
     }
 
 }

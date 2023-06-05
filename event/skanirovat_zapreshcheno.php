@@ -14,7 +14,7 @@ if ($phone === "") {
         $content = str_replace("{main_window}", $menu->getHtmlForm("bonus/scan"), $content);
 } else {
     if ($client->checkRegistration($phone)) {
-        $clientData = $client->getClientUserbyPhone($phone);
+        $clientData = $client->getClientUserByPhone($phone);
         $client_id  = $clientData["client_id"];
 
         if ($client->checkRetailClientCategory($client_id)) {

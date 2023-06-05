@@ -6,10 +6,21 @@
             "email": "gambitokgd@gmail.com"
         }
     ],
+    "config": {
+        "platform-check": false
+    },
     "require": {
-        "guzzlehttp/guzzle": "7.4.5 as 7.3.0"
-    }
-    ,
+        "ext-zip": "*",
+        "ext-json": "*",
+        "ext-iconv": "*",
+        "guzzlehttp/guzzle": "^7.5",
+        "phpoffice/phpspreadsheet": "^1.28",
+        "box/spout": "2.4.4",
+        "ext-libxml": "*",
+        "shuchkin/simplexlsx": "^1.0",
+        "ext-mysqli": "*",
+        "ext-gd": "*"
+    },
     "require-dev": {
         "roave/security-advisories": "dev-latest"
     },

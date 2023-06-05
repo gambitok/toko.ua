@@ -463,6 +463,7 @@ class CatalogExistClass extends CatalogueClass
     public function getArticleStorage($group_id, $arts): bool
     {
         $db = DbSingleton::getTokoDb();
+
         if (!empty($arts)) {
             $where_arts = implode(",", $arts);
             $r = $db->query("
@@ -478,6 +479,7 @@ class CatalogExistClass extends CatalogueClass
             GROUP BY t2asc.ART_ID 
             ");
             $n = $db->num_rows($r);
+
             if ($n > 0) {
                 $dbc = DbSingleton::getTokoCacheDb();
                 $table = "EX_TABLE_TREE_$group_id";
@@ -491,6 +493,7 @@ class CatalogExistClass extends CatalogueClass
                 }
             }
         }
+
         return true;
     }
 
@@ -498,6 +501,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $dbc = DbSingleton::getTokoCacheDb();
         $table = "EX_TABLE_TREE_$group_id";
+
         $r = $dbc->query("SELECT `brand_id` FROM `$table` WHERE 1 GROUP BY `brand_id`;");
         $n = $dbc->num_rows($r);
         $list = "n = $n\n";
@@ -511,6 +515,7 @@ class CatalogExistClass extends CatalogueClass
 
             $list .= "added group $group_id \n";
         }
+
         if ($n > 0) {
             if ($status === 0) {
                 $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`) VALUES ($group_id, 1);");
@@ -523,6 +528,7 @@ class CatalogExistClass extends CatalogueClass
                 }
             }
         }
+
         return $list;
     }
 
@@ -1887,7 +1893,7 @@ class CatalogExistClass extends CatalogueClass
             CASE WHEN MOD_PCON_END = 0 THEN '' ELSE MOD_PCON_END END AS MOD_PCON_END 
             FROM `T_models`
             WHERE `MOD_MFA_ID` = $mfa_id AND `Model` = '$model'
-            ORDER BY `MOD_PCON_START` ASC;");
+            ORDER BY `MOD_PCON_START`;");
             $n = $db->num_rows($r);
 
             if ($n > 0) {
@@ -2743,12 +2749,12 @@ class CatalogExistClass extends CatalogueClass
          * */
         $arr_cars = [];
 
-        $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID` ASC;");
+        $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $mfa_id = (int)$db->result($r, $i - 1, "MFA_ID");
 
-            $r1 = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model` ORDER BY `Model` ASC;");
+            $r1 = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model` ORDER BY `Model`;");
             $n1 = $db->num_rows($r1);
             for ($i1 = 1; $i1 <= $n1; $i1++) {
                 $model = $db->result($r1, $i1 - 1, "Model");

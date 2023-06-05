@@ -62,7 +62,7 @@ class FormClass extends CatalogueClass
         FROM `T2_BRANDS` t2b 
             LEFT JOIN `T2_BRAND_LINK` t2bl ON t2bl.BRAND_ID = t2b.BRAND_ID
         WHERE t2b.`VISIBLE` = 1 AND t2bl.descr != '' 
-        ORDER BY t2b.`BRAND_NAME` ASC;");
+        ORDER BY t2b.`BRAND_NAME`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $brand_id   = $db->result($r, $i - 1, "BRAND_ID");
@@ -241,7 +241,7 @@ class FormClass extends CatalogueClass
                 $answer = "ok"; $err = 3;
             }
         } else {
-            $answer = "pusto";
+            $answer = "empty";
         }
 
         return array($answer, $err, $stock);
@@ -274,7 +274,7 @@ class FormClass extends CatalogueClass
                 $answer = "ok"; $err = 3;
             }
         } else {
-            $answer = "pusto";
+            $answer = "empty";
         }
 
         return array($answer, $err, $stock);
@@ -441,8 +441,10 @@ class FormClass extends CatalogueClass
 
         $dataPhoto  = $this->getSlideProPhoto($art_id, $brand_id, $h1);
         $form_photo = $this->getHtmlForm("article/shit");
-        $form_photo = str_replace(array("{images_slide}", "{images_thumbnail}"), array($dataPhoto["slide"], $dataPhoto["thumbnail"]), $form_photo);
-        $art_images = ($dataPhoto["status"] === 1) ? $form_photo : "<div><img style=\"display: block; margin: 0 auto; width: 100%;\" itemprop=\"image\" alt=\"$art_nr_ds\" src=\"$this->noPhoto\"></div>";
+        $form_photo = str_replace(array("{images_slide}", "{images_thumbnail}", "{scale_mode}"), array($dataPhoto["slide"], $dataPhoto["thumbnail"], $dataPhoto["scale"]), $form_photo);
+        $art_images = ($dataPhoto["status"] === 1)
+            ? $form_photo
+            : "<div><img style=\"display: block; margin: 0 auto; width: 100%;\" itemprop=\"image\" alt=\"$art_nr_ds\" src=\"$this->noPhoto\"></div>";
 
         $form = str_replace("{art_images}", $art_images, $form);
         $form = str_replace("{applicable_form}", $this->getApplicableForm($art_id, $auto_typ_id), $form);
@@ -472,9 +474,10 @@ class FormClass extends CatalogueClass
         $status = 0;
         $slide = $thumbnail = "";
         $arr = [];
+        $scale = 'none';
 
         $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` 
-        WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `ID` ASC;");
+        WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $photo = $db->result($r, $i - 1, "PHOTO_NAME");
@@ -511,10 +514,25 @@ class FormClass extends CatalogueClass
                 $type   = $value["type"];
                 $status = 1;
 
+                $scale = 'contain';
+                $maxWidth = 0;
+                $width = 633;
+                if ($type === "" || $type === "catalogue") {
+                    $path = RDD . "/uploads/images/catalogue/" . $photo;
+                    list($maxWidth) = getimagesize($path);
+                } elseif ($type === "certificates") {
+                    $path = RDD . "/uploads/images/certificates/" . $photo;
+                    list($maxWidth) = getimagesize($path);
+                }
+                if ($maxWidth < $width && $maxWidth > 0) {
+                    $width = $maxWidth;
+                    $scale = 'none';
+                }
+
                 $slide .= "
                 <div class=\"sp-slide\">
                     <img class=\"sp-image\" 
-                        src=\"https://toko.ua/resize_image.php?image=$photo&w=633&h=0&type=$type\"
+                        src=\"https://toko.ua/resize_image.php?image=$photo&w=$width&h=0&type=$type\"
                         alt=\"$h1 - {photo_card_cap} #$i\"
                         title=\"$h1 - {photo_card_cap} #$i\"/>
                 </div>";
@@ -537,7 +555,8 @@ class FormClass extends CatalogueClass
         return array(
             "slide"     => $slide,
             "thumbnail" => $thumbnail,
-            "status"    => $status
+            "status"    => $status,
+            "scale"     => $scale
         );
     }
 
@@ -574,7 +593,10 @@ class FormClass extends CatalogueClass
         $brand_link     = $this->getBrandLink($articleData["brand_id"]);
 
         $form = $this->getHtmlForm("article/history_card");
-        $form = str_replace(array("{basket}", "{article_nr_displ}", "{name}", "{brand_name}", "{price}", "{image}", "{currency}", "{page_proposed_link}"), array($articleData["basket"], $art_nr_ds, $articleData["article_name"], $articleData["brand_name"], $articleData["price"], $this->getArticleActivePhoto($art_id), $articleData["currency"], $this->getSiteLink() . "$this->products_link/$format_name-$brand_link-$art_id/"), $form);
+        $form = str_replace(
+            array("{basket}", "{article_nr_displ}", "{name}", "{brand_name}", "{price}", "{image}", "{currency}", "{page_proposed_link}"),
+            array($articleData["basket"], $art_nr_ds, $articleData["article_name"], $articleData["brand_name"], $articleData["price"], $this->getArticleActivePhoto($art_id), $articleData["currency"], $this->getSiteLink() . "$this->products_link/$format_name-$brand_link-$art_id/"),
+        $form);
 
         return $form;
     }
@@ -884,7 +906,7 @@ class FormClass extends CatalogueClass
         // MIN PRICE
         //$arr = $this->multiSort($arr, "price", "delivery");
 
-        // for our articles (no suppls)
+        // for our articles (no suppl)
         if (!empty($arr2)) {
             $arr = $arr2;
         }
@@ -1018,7 +1040,7 @@ class FormClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
 
-        $r = $db->query("SELECT `TEXT`, `VALUE`, `ART_ID` FROM `T2_INFO` WHERE `ART_ID` IN ($where_art_id_str) AND `LANG_ID` = 16 ORDER BY `SORT` ASC;");
+        $r = $db->query("SELECT `TEXT`, `VALUE`, `ART_ID` FROM `T2_INFO` WHERE `ART_ID` IN ($where_art_id_str) AND `LANG_ID` = 16 ORDER BY `SORT`;");
         $infoTemplates = mysqli_fetch_all($r, MYSQLI_ASSOC);
         foreach ($infoTemplates as $infoTemplate) {
             self::$infoTemplates[$infoTemplate['ART_ID']][] = $infoTemplate;
@@ -1117,7 +1139,7 @@ class FormClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $photo_name = "";
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `PHOTO_NAME` ASC LIMIT 1;");
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `PHOTO_NAME` LIMIT 1;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
@@ -1492,7 +1514,7 @@ class FormClass extends CatalogueClass
             SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id
         ) AND tt.ACTIVE = 1 
         GROUP BY man.MFA_ID 
-        ORDER BY man.MFA_BRAND ASC;");
+        ORDER BY man.MFA_BRAND;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
@@ -1531,7 +1553,7 @@ class FormClass extends CatalogueClass
             SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id
         ) AND tm.MOD_MFA_ID = $mfa_id AND tt.ACTIVE = 1 
         GROUP BY tt.TYP_ID 
-        ORDER BY tm.Model ASC;");
+        ORDER BY tm.Model;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $typ_id     = $db->result($r, $i - 1, "TYP_ID");
@@ -1586,7 +1608,7 @@ class FormClass extends CatalogueClass
             INNER JOIN `T_manufacturers` man ON (man.MFA_ID = tm.MOD_MFA_ID)
         WHERE tl.ART_ID = $art_id AND tt.TYP_ID = $typ_id AND tt.ACTIVE = 1 
         GROUP BY tm.MOD_ID 
-        ORDER BY tt.TYP_TEXT ASC;");
+        ORDER BY tt.TYP_TEXT;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $TYP_TEXT       = $db->result($r, $i - 1, "TYP_TEXT");
@@ -1686,7 +1708,7 @@ class FormClass extends CatalogueClass
         $indicators = $items = "";
         $k = 0;
 
-        $r = $db->query("SELECT `TITLE_$postfix`, `TEXT_$postfix`, `IMAGE`, `LINK`, `STATUS_TEXT` FROM `T2_BANNERS` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
+        $r = $db->query("SELECT `TITLE_$postfix`, `TEXT_$postfix`, `IMAGE`, `LINK`, `STATUS_TEXT` FROM `T2_BANNERS` WHERE `STATUS` = 1 ORDER BY `POSITION`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $title  = $db->result($r, $i - 1, "TITLE_$postfix");

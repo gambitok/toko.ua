@@ -21,7 +21,7 @@ if ($n > 0) {
         $date       = $dbm->result($r, $i - 1, "date");
         $filename   = $user . "/" . $dbm->result($r, $i - 1, "filename");
         $list       = $catalogue->getPriceList($user);
-
+//
         $csv = "";
         foreach ($list as $record) {
             foreach ($record as $rec) {

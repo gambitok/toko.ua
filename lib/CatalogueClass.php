@@ -37,7 +37,7 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
         WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
         GROUP BY t2c.`ART_ID` 
-        ORDER BY t2n.NAME ASC;");
+        ORDER BY t2n.`NAME`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -105,7 +105,7 @@ class CatalogueClass
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
         WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
-        ORDER BY t2n.NAME ASC;");
+        ORDER BY t2n.`NAME`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_ids[] = (int)$db->result($r, $i - 1, "ART_ID");
@@ -547,7 +547,11 @@ class CatalogueClass
                 }
 
                 $list_brand .= $this->getHtmlForm("search/brand_item");
-                $list_brand = str_replace(array("{val_brand}", "{brand_id}", "{main_brand_class}", "{checked}", "{min_price}", "{cur_cap}"), array($val_brand, $brand_id, $main_brand_class, $checked, $min_price, $this->getSymbolExrate($cur)), $list_brand);
+                $list_brand = str_replace(
+                    array("{val_brand}", "{brand_id}", "{main_brand_class}", "{checked}", "{min_price}", "{cur_cap}"),
+                    array($val_brand, $brand_id, $main_brand_class, $checked, $min_price, $this->getSymbolExrate($cur)),
+                    $list_brand
+                );
             }
         }
 
@@ -623,19 +627,19 @@ class CatalogueClass
 
                 // from cheap to rich
                 if ($order_status === 1) {
-                    $oderby = "`status` ASC, `price` ASC";
+                    $oderBy = "`status` ASC, `price` ASC";
                 }
                 // from rich to cheap
                 elseif ($order_status === 2) {
-                    $oderby = "`status` ASC, `price` DESC";
+                    $oderBy = "`status` ASC, `price` DESC";
                 }
                 // default status + price order
                 else {
-                    $oderby = "`status` ASC, `price` ASC, `article_nr_displ` ASC";
+                    $oderBy = "`status` ASC, `price` ASC, `article_nr_displ` ASC";
                 }
 
                 $temp_arr = [];
-                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY $oderby");
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY $oderBy");
                 $n = $db->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id                 = (int)$db->result($r, $i - 1, "art_id");
@@ -748,7 +752,7 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
         WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
         GROUP BY t2c.`ART_ID` 
-        ORDER BY t2n.NAME ASC;");
+        ORDER BY t2n.`NAME`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -817,7 +821,7 @@ class CatalogueClass
                     }
                 }
 
-                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ` ASC;");
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ`;");
                 $n = $db->num_rows($r);
 
                 if ($n === 1) {
@@ -993,7 +997,7 @@ class CatalogueClass
         FROM `T_POINT_DELIVERY_TIME` tpdt
             JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.STORAGE_ID = tpdt.storage_id)
         WHERE t2asc.ART_ID IN ($where_art_id_str) AND tpdt.status = '1' AND tpdt.tpoint_id = '$tpoint_id' AND tpdt.week_day = '$week_day' AND tpdt.time_from <= '$cur_time' AND tpdt.time_to >= '$cur_time' 
-        ORDER BY tpdt.delivery_days ASC;");
+        ORDER BY tpdt.delivery_days;");
         $delivers = mysqli_fetch_all($r, MYSQLI_ASSOC);
         $array = [];
 
@@ -1534,21 +1538,21 @@ class CatalogueClass
     public function getDpClientPriceLevels($client_id): array
     {
         $db = DbSingleton::getDbm();
-        $price_lvl = $margin_price_lvl = $price_suppl_lvl = $mprice_suppl_lvl = $client_vat = 0;
+        $price_lvl = $margin_price_lvl = $price_suppl_lvl = $margin_price_suppl_lvl = $client_vat = 0;
         $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id LIMIT 1;");
         $n = $db->num_rows($r);
 
         if ($n === 1) {
-            $price_lvl          = (int)$db->result($r, 0, "price_lvl");
+            $price_lvl                  = (int)$db->result($r, 0, "price_lvl");
             $price_lvl++;
-            $margin_price_lvl   = (float)$db->result($r, 0, "margin_price_lvl");
-            $price_suppl_lvl    = (int)$db->result($r, 0, "price_suppl_lvl");
+            $margin_price_lvl           = (float)$db->result($r, 0, "margin_price_lvl");
+            $price_suppl_lvl            = (int)$db->result($r, 0, "price_suppl_lvl");
             $price_suppl_lvl++;
-            $mprice_suppl_lvl   = (float)$db->result($r, 0, "margin_price_suppl_lvl");
-            $client_vat         = (int)$db->result($r, 0, "client_vat");
+            $margin_price_suppl_lvl     = (float)$db->result($r, 0, "margin_price_suppl_lvl");
+            $client_vat                 = (int)$db->result($r, 0, "client_vat");
         }
 
-        return array($price_lvl, $margin_price_lvl, $price_suppl_lvl, $mprice_suppl_lvl, $client_vat);
+        return array($price_lvl, $margin_price_lvl, $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat);
     }
 
     public function getSupplVatConditions($suppl_id): array
@@ -1596,7 +1600,7 @@ class CatalogueClass
         $r = $db->query("SELECT `delivery_days`, `time_from_del`, `time_to_del` 
         FROM `T_POINT_DELIVERY_TIME`
         WHERE `status` = '1' AND `tpoint_id` = '$tpoint_id' AND `storage_id` = '$storage_id' AND `week_day` = '$week_day' AND `time_from` <= '$cur_time' AND `time_to` >= '$cur_time' 
-        ORDER BY `delivery_days` ASC LIMIT 1;");
+        ORDER BY `delivery_days` LIMIT 1;");
         $n = $db->num_rows($r);
 
         if ($n === 1) {
@@ -2263,7 +2267,7 @@ class CatalogueClass
         $list = "";
         $head_link = $this->getHeadRowLink($head_id);
 
-        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id AND `STATUS` = 1 ORDER BY `COL` ASC, `ROW` ASC;");
+        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id AND `STATUS` = 1 ORDER BY `COL`, `ROW`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id     = (int)$db->result($r, $i - 1, "CAT_ID");
@@ -2371,7 +2375,7 @@ class CatalogueClass
         $form = $this->getHtmlForm("catalog_menu/list");
         $list = "";
         $arr = [];
-        $r = $db->query("SELECT `CAT_ID`, `COL`, `ROW` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id AND `STATUS` = 1 ORDER BY `COL` ASC, `ROW` ASC;");
+        $r = $db->query("SELECT `CAT_ID`, `COL`, `ROW` FROM `T2_TREE_CONSTRUCTOR_STR` WHERE `HEAD_ID` = $head_id AND `STATUS` = 1 ORDER BY `COL`, `ROW`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = (int)$db->result($r, $i - 1, "CAT_ID");
@@ -2553,10 +2557,10 @@ class CatalogueClass
         $cur            = $client->getClientCurrency($client_id);
         $cur_cap        = $kours->getKoursCaption($cur);
         $list           = $storages = [];
-        $filials_list   = ["#", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "{barcode_cap}"];
-        $tpoints        = $client->getOtherTpoints($tpoint_user_id);
+        $filialList     = ["#", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "{barcode_cap}"];
+        $tpointOtherList = $client->getTpointOtherList($tpoint_user_id);
 
-        foreach ($tpoints as $tpoint) {
+        foreach ($tpointOtherList as $tpoint) {
             list($storage_local_alien, $storage_remote_alien) = $client->getStorageByTpoint($tpoint);
 
             $storage_cap    = ($tpoint === $tpoint_user_id) ? "{your_affiliate} -" : "";
@@ -2566,17 +2570,17 @@ class CatalogueClass
             $address_remote = $client->getStorageAddress($storage_remote_alien);
 
             if (!empty($storage_local_alien)) {
-                $filials_list[] = "$storage_cap $city_local ($address_local) ({local_storage})";
+                $filialList[] = "$storage_cap $city_local ($address_local) ({local_storage})";
                 $storages[]     = $storage_local_alien;
             }
 
             if (!empty($storage_remote_alien)) {
-                $filials_list[] = "$storage_cap $city_remote ($address_remote) ({remote_storage})";
+                $filialList[] = "$storage_cap $city_remote ($address_remote) ({remote_storage})";
                 $storages[]     = $storage_remote_alien;
             }
         }
 
-        $list[0] = $filials_list;
+        $list[0] = $filialList;
         $list[0] = $this->replaceLang($list[0]);
 
         $r = $db->query("SELECT t2as.ART_ID, t2as.STORAGE_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2br.BARCODE 
