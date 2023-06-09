@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ua">
+
+<head>
+  <title>jQuery Gallery Plugin Basic Demo</title>
+  <link rel="stylesheet" href="jquerysctipttop.css">
+  <link rel="stylesheet" href="stylesheet.css">
+  <link rel="stylesheet" href="fancybox/jquery.fancybox.css">
+</head>
+
+<body>
+
+<div class="container clearfix">
+  <div class="gallery">
+    <div class="previews">
+      <a href="#" class="selected" data-full="images/top1large.jpg"><img src="images/top1small.jpg" /></a>
+      <a href="#" data-full="images/top2large.jpg"><img src="images/top2small.jpg" /></a>
+      <a href="#" data-full="images/top3large.jpg"><img src="images/top3small.jpg" /></a>
+      <a href="#" data-full="images/top4large.jpg"><img src="images/top4small.jpg" /></a>
+      <a href="#" data-full="images/top5large.jpg"><img src="images/top5small.jpg" /></a>
+      <a href="#" data-full="images/top5large.jpg"><img src="images/top5small.jpg" /></a>
+      <a href="#" data-full="images/top5large.jpg"><img src="images/top5small.jpg" /></a>
+      <a href="#" data-full="images/top5large.jpg"><img src="images/top5small.jpg" /></a>
+      <a href="#" data-full="images/top5large.jpg"><img src="images/top5small.jpg" /></a>
+    </div>
+    <div class="full">
+      <img src="images/top1large.jpg" />
+    </div>
+  </div>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> 
+<script src="fancybox/jquery.fancybox.js?v=2.1.4"></script> 
+<script>
+  $(document).ready(function(){
+    $('a').click(function(){
+      var largeImage = $(this).attr('data-full');
+      $('.selected').removeClass();
+      $(this).addClass('selected');
+      $('.full img').hide();
+      $('.full img').attr('src', largeImage);
+      $('.full img').fadeIn();
+
+
+    }); // closing the listening on a click
+    $('.full img').on('click', function(){
+      var modalImage = $(this).attr('src');
+      $.fancybox.open(modalImage);
+    });
+  }); //closing our doc ready
+  </script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</body>
+</html>

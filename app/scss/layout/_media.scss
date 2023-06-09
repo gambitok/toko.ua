@@ -28,12 +28,23 @@
         &__item {
             &-header {
                 flex-wrap: wrap;
+                &:hover {
+                    filter: none;
+                    img {
+                        transform: none;
+                    }
+                }
             }
             &-text {
                 width: auto;
             }
             &-image {
                 width: auto;
+                img {
+                    transition: none;
+                    height: 100px;
+                    width: 300px;
+                }
             }
             &-descr {
                 font-size: 10px;

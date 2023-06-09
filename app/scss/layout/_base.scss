@@ -241,7 +241,7 @@
         border: none;
         color: #606975;
         cursor: pointer;
-        float: right;
+        //float: right;
         font-size: 14px;
         margin-top: 15px;
         text-align: right;
@@ -1057,11 +1057,11 @@
             text-align: right;
             width: 20%;
             img {
-                height: 100%;
-                object-fit: contain;
+                height: 100px;
+                width: 300px;
                 transition: all 1s ease-out;
                 user-select: none;
-                width: 100%;
+                object-fit: contain;
             }
         }
         &-text {

@@ -1,18 +1,58 @@
-<!--<script src="https://www.google.com/recaptcha/api.js"></script>-->
+<link rel="stylesheet" href="../gallery/jquerysctipttop.css">
+<link rel="stylesheet" href="../gallery/stylesheet.css">
+<link rel="stylesheet" href="../gallery/fancybox/jquery.fancybox.css">
 
-<!--<script>-->
-<!--    function onSubmit(token) {-->
-<!--        document.getElementById("demo-form").submit();-->
-<!--    }-->
-<!--</script>-->
+<div class="container clearfix">
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            <div class="gr">
+                <div class="gr__item gr__item-left">
+                    <a href="#" class="selected" data-full="../gallery/images/top1large.jpg"><img src="../gallery/images/top1small.jpg" /></a>
+                    <a href="#" data-full="../gallery/images/top2large.jpg"><img src="../gallery/images/top2small.jpg" /></a>
+                    <a href="#" data-full="../gallery/images/test.jpg"><img src="../gallery/images/test_small.jpg" /></a>
+                    <a href="#" data-full="../gallery/images/test1.jpg"><img src="../gallery/images/test1_small.jpg" /></a>
+                    <a href="#" data-full="../gallery/images/test2.webp"><img src="../gallery/images/test2_small.webp" /></a>
+                    <a href="#" data-full="../gallery/images/test3.jpg"><img src="../gallery/images/test3_small.jpg" /></a>
+                    <a href="#" data-full="../gallery/images/test4.jpg"><img src="../gallery/images/test4_small.jpg" /></a>
+                </div>
+                <div class="gr__item full">
+                    <img src="../gallery/images/top1large.jpg" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<!--<div class="content">-->
-<!--    <div id="demo-form">-->
+<script src="../gallery/fancybox/jquery.fancybox.js?v=2.1.4"></script>
+<script>
+    $(document).ready(function(){
+        $('a').click(function(){
+            var largeImage = $(this).attr('data-full');
+            $('.selected').removeClass();
+            $(this).addClass('selected');
+            $('.full img').hide();
+            $('.full img').attr('src', largeImage);
+            $('.full img').fadeIn();
 
-<!--    </div>-->
-<!--    <button class="g-recaptcha"-->
-<!--            data-sitekey="reCAPTCHA_site_key"-->
-<!--            data-callback='onSubmit'-->
-<!--            data-action='submit'>Submit</button>-->
-<!--</div>-->
 
+        }); // closing the listening on a click
+        $('.full img').on('click', function(){
+            var modalImage = $(this).attr('src');
+            $.fancybox.open(modalImage);
+        });
+    }); //closing our doc ready
+</script>
+<script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36251023-1']);
+    _gaq.push(['_setDomainName', 'jqueryscript.net']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+</script>

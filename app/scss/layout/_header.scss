@@ -311,14 +311,15 @@ header {
             display: flex;
             flex-wrap: wrap;
             img {
-                max-height: 30px;
-                height: 100%;
-                width: 100%;
+                height: 30px;
+                width: 120px;
+                object-fit: contain;
             }
             span {
                 color: #0c5460;
                 font-size: 0.1vh;
                 font-weight: 700;
+                object-fit: contain;
             }
         }
         &__list {
@@ -329,6 +330,11 @@ header {
             &-link {
                 cursor: pointer;
                 display: block;
+                img {
+                    width: 30px;
+                    height: 30px;
+                    object-fit: contain;
+                }
             }
             .basket_status {
                 position: absolute;
@@ -342,17 +348,8 @@ header {
         height: 82px;
         overflow: hidden;
         padding: 10px 15px;
-        &__button {
-            background: #fff;
-            border: 1px solid #0c5460;
-            border-radius: .25em;
-            color: #ccc;
-            display: block;
-            padding: 5px;
-            text-align: left;
-            width: 100%;
-            height: 100%;
-            font-size: 14px;
+        input {
+            object-fit: contain;
         }
     }
     &-drop {

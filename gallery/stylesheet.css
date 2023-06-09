@@ -1,0 +1,115 @@
+.clearfix:after {
+    content: ".";
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both;
+}
+.gallery {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.previews {
+    height: 600px;
+    width: 100px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-right: 10px;
+}
+.previews a {
+    border: 4px solid #eee;
+    display: block;
+    margin-bottom: 10px;
+}
+.previews a:hover, .previews a.selected {
+    border: 4px solid #777;
+}
+.previews img {
+    margin: 0 auto;
+    display: block;
+    max-height: 100px;
+    max-width: 100px;
+}
+.previews::-webkit-scrollbar {
+    display: none;
+}
+.full {
+    width: 100%;
+}
+.full img {
+    width: auto;
+}
+/*.full {*/
+/*    height: 600px;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    font-size: 12px;*/
+/*}*/
+/*.full img {*/
+/*    width: 100%;*/
+/*}*/
+/*.full img:hover {*/
+/*    cursor: pointer;*/
+/*}*/
+@media (max-width: 575px) {
+    .gallery {
+        width: 100%;
+    }
+}
+
+.gr {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: left;
+}
+
+.gr__item {
+    display: block;
+}
+
+.gr__item-left {
+    display: block;
+    width: 90px;
+    margin-right: 10px;
+
+    height: 600px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.gr__item-left::-webkit-scrollbar {
+    display: none;
+}
+
+.gr__item-left img {
+    max-height: 100px;
+    width: 100%;
+}
+
+.gr__item-left a {
+    border: 4px solid #eee;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.gr__item.full {
+    display: block;
+    width: calc(100% - 90px);
+    height: 600px;
+    position: relative;
+}
+
+.gr__item.full img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    cursor: pointer;
+}
