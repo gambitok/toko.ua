@@ -15,8 +15,15 @@
                     <a href="#" data-full="../gallery/images/test3.jpg"><img src="../gallery/images/test3_small.jpg" /></a>
                     <a href="#" data-full="../gallery/images/test4.jpg"><img src="../gallery/images/test4_small.jpg" /></a>
                 </div>
-                <div class="gr__item full">
+                <div class="gr__item full"></div>
+                <div id="grItem" class="none">
                     <img src="../gallery/images/top1large.jpg" />
+                    <img src="../gallery/images/top2large.jpg" />
+                    <img src="../gallery/images/test.jpg" />
+                    <img src="../gallery/images/test1.jpg" />
+                    <img src="../gallery/images/test2.webp" />
+                    <img src="../gallery/images/test3.jpg" />
+                    <img src="../gallery/images/test4.jpg" />
                 </div>
             </div>
         </div>
@@ -26,21 +33,32 @@
 <script src="../gallery/fancybox/jquery.fancybox.js?v=2.1.4"></script>
 <script>
     $(document).ready(function(){
-        $('a').click(function(){
-            var largeImage = $(this).attr('data-full');
-            $('.selected').removeClass();
+        $('.gr__item.full').append("<img src='" + $('.gr__item .selected').attr('data-full') + "'>");
+
+        $('.gr__item a').click(function(){
+            let largeImage = $(this).attr('data-full');
+            $('.gr__item .selected').removeClass();
             $(this).addClass('selected');
-            $('.full img').hide();
-            $('.full img').attr('src', largeImage);
-            $('.full img').fadeIn();
-
-
-        }); // closing the listening on a click
-        $('.full img').on('click', function(){
-            var modalImage = $(this).attr('src');
-            $.fancybox.open(modalImage);
+            $('.gr__item.full img').hide().attr('src', largeImage).fadeIn();
         });
-    }); //closing our doc ready
+
+        $('.gr__item.full img').on('click', function(){
+            let arr = [];
+            $( "#grItem img" ).each(function() {
+                let a = $(this).attr('src');
+                arr.push(a);
+            });
+            $.fancybox(arr, {
+                'autoScale': true,
+                'transitionIn': 'elastic',
+                'transitionOut': 'elastic',
+                'speedIn': 500,
+                'speedOut': 300,
+                'autoDimensions': true,
+                'centerOnScroll': true,
+            });
+        });
+    });
 </script>
 <script type="text/javascript">
 

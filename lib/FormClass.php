@@ -439,14 +439,23 @@ class FormClass extends CatalogueClass
 
         $form = str_replace("{article_buy_here}", $hidden_form, $form);
 
-        $dataPhoto  = $this->getSlideProPhoto($art_id, $brand_id, $h1);
-        $form_photo = $this->getHtmlForm("article/shit");
-        $form_photo = str_replace(array("{images_slide}", "{images_thumbnail}", "{scale_mode}"), array($dataPhoto["slide"], $dataPhoto["thumbnail"], $dataPhoto["scale"]), $form_photo);
-        $art_images = ($dataPhoto["status"] === 1)
+        $dPhoto = $this->getGalleryPhoto($art_id, $brand_id, $h1);
+        $form_photo = $this->getHtmlForm("article/gallery");
+        $form_photo = str_replace(array("{gallery_large_images}", "{gallery_open_images}"), array($dPhoto["large"], $dPhoto["small"]), $form_photo);
+        $art_images = ($dPhoto["status"] === 1)
             ? $form_photo
             : "<div><img style=\"display: block; margin: 0 auto; width: 100%;\" itemprop=\"image\" alt=\"$art_nr_ds\" src=\"$this->noPhoto\"></div>";
 
         $form = str_replace("{art_images}", $art_images, $form);
+
+//        $dataPhoto  = $this->getSlideProPhoto($art_id, $brand_id, $h1);
+//        $form_photo = $this->getHtmlForm("article/shit");
+//        $form_photo = str_replace(array("{images_slide}", "{images_thumbnail}", "{scale_mode}"), array($dataPhoto["slide"], $dataPhoto["thumbnail"], $dataPhoto["scale"]), $form_photo);
+//        $art_images = ($dataPhoto["status"] === 1)
+//            ? $form_photo
+//            : "<div><img style=\"display: block; margin: 0 auto; width: 100%;\" itemprop=\"image\" alt=\"$art_nr_ds\" src=\"$this->noPhoto\"></div>";
+//
+//        $form = str_replace("{art_images}", $art_images, $form);
         $form = str_replace("{applicable_form}", $this->getApplicableForm($art_id, $auto_typ_id), $form);
         $form = str_replace("{article_info_row}", $article_info_row, $form);
         $form = str_replace("{article_name}", $art_brand_name, $form);
@@ -465,6 +474,83 @@ class FormClass extends CatalogueClass
         $description = str_replace("{h1_text}", $h1, $description);
 
         return compact("form", "title", "description", "breadcrumbs", "real_stock");
+    }
+
+    public function getGalleryPhoto($art_id, $brand_id, $h1): array
+    {
+        $db = DbSingleton::getTokoDb();
+
+        $arr = [];
+        $status = 0;
+        $small = ""; $large = "";
+
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` 
+        WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `ID`;");
+        $n = $db->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $photo = $db->result($r, $i - 1, "PHOTO_NAME");
+            if ($photo !== "") {
+                $arr[] = [
+                    "type"  => "catalogue",
+                    "photo" => $photo
+                ];
+            }
+        }
+
+        $client = new ClientClass();
+        $nn = 0;
+
+        if ($brand_id > 0 && $client->checkRetailClientCategory($this->getClient())) {
+            $date_cur = date("Y-m-d");
+            $r = $db->query("SELECT `photo_link` FROM `T2_CERTIFICATES` 
+            WHERE `brand_id` = $brand_id AND `date_from` <= '$date_cur' AND `date_to` >= '$date_cur' AND `status` = 1;");
+            $nn = $db->num_rows($r);
+            for ($i = 1; $i <= $nn; $i++) {
+                $photo = $db->result($r, $i - 1, "photo_link");
+                $arr[] = [
+                    "type"  => "certificates",
+                    "photo" => $photo
+                ];
+            }
+        }
+
+        if ($n > 0 || $nn > 0) {
+            $i = 0;
+            foreach ($arr as $value) {
+                $i++;
+                $photo  = $value["photo"];
+                $type   = $value["type"];
+                $status = 1;
+
+                $maxWidth = 0;
+                $width = 633;
+                if ($type === "" || $type === "catalogue") {
+                    $path = RDD . "/uploads/images/catalogue/" . $photo;
+                    list($maxWidth) = getimagesize($path);
+                } elseif ($type === "certificates") {
+                    $path = RDD . "/uploads/images/certificates/" . $photo;
+                    list($maxWidth) = getimagesize($path);
+                }
+                if ($maxWidth < $width && $maxWidth > 0) {
+                    $width = $maxWidth;
+                }
+
+//                $large .= "
+//                <a href=\"#\" class=\"selected\" data-full=\"https://toko.ua/resize_image.php?image=$photo&w=$width&h=0&type=$type\" >
+//                    <img src=\"https://toko.ua/resize_image.php?image=$photo&w=100&h=80&type=$type\" />
+//                </a>";
+
+                $large .= "
+                <a class=\"selected pointer\" data-full=\"https://toko.ua/uploads/images/$type/$photo\" >
+                    <img src=\"https://toko.ua/uploads/images/$type/$photo\" />
+                </a>";
+
+                $small .= "
+                <img src=\"https://toko.ua/uploads/images/$type/$photo\" />";
+            }
+        }
+
+        return array("small" => $small, "large" => $large, "status" => $status);
     }
 
     public function getSlideProPhoto($art_id, $brand_id, $h1): array

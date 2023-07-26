@@ -12,8 +12,15 @@ function showRegionForm() {
             $("#modals").append(result.content);
             $("#RegionForm").modal("show");
             $("#menu").css('left', '-100%');
+
+            $("#RegionForm").on('hidden.bs.modal', function () {
+                setCookie('tpoint_id_status', 1);
+            });
         }}, true);
 }
+// reg_form.on('hidden.bs.modal', function () {
+//     setCookie('tpoint_id_status', 1);
+// });
 
 // Modal `Help` in Catalogs
 function showPhoneForm() {

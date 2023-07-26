@@ -498,7 +498,7 @@ function saveOrder() {
             let order_id        = result.content[0];
             let order_user_id   = result.content[1];
             let user_status     = result.content[2];
-            location.href   = window.location.href  + "/?order_id=" + order_id + "&user_id=" + order_user_id + "&user_status=" + user_status;
+            location.href       = window.location.href  + "/?order_id=" + order_id + "&user_id=" + order_user_id + "&user_status=" + user_status;
         }}, true);
 }
 

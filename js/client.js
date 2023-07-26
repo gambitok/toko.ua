@@ -1,5 +1,5 @@
 /*
-* change Site Langugage
+* change Site Language
 * */
 function setSiteLang(id) {
     JsHttpRequest.query(folder,{'w':'setSiteLang', 'id':id},

@@ -192,6 +192,13 @@ function loadInputNumber() {
 
 $(document).ready(function() {
 
+    if (getCookie('tpoint_id_status') === "" && getCookie('user_id') === "") {
+
+        setTimeout(function() {
+            showRegionForm();
+        }, 5000);
+    }
+
     // Tooltips
     $(".tooltips").tooltip();
 

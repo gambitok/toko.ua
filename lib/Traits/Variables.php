@@ -466,6 +466,7 @@ trait Variables
     public function formatArticleName($text, $max_symbols = 36): string
     {
         $dots = "...";
+        $text = "$text";
         if (strlen($text) > $max_symbols) {
             $format_text = substr($text, 0, $max_symbols - strlen($dots)) . $dots;
         } else {

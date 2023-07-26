@@ -363,12 +363,12 @@ class MenuClass extends CatalogueClass
         FROM `T_POINT` t2
             LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id = t2.id)
         WHERE t2.status = 1 AND t2a.lang_id = $lang_id 
-        ORDER BY t2.position DESC, t2a.full_name ASC;");
+        ORDER BY t2.position DESC, t2a.full_name;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
             $list = "
-            <form action=\"\" autocomplete=\"off\">";
+            <form action=\"\" autocomplete=\"off\" onclick=\"$('#RegionForm').modal('hide');\">";
             $ch = "";
 
             for ($i = 1; $i <= $n; $i++) {
@@ -449,7 +449,7 @@ class MenuClass extends CatalogueClass
         FROM `T_POINT` t2
             LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id = t2.id)
         WHERE t2.id = $tpoint_id AND t2a.lang_id = $lang_id 
-        ORDER BY t2.position DESC, t2a.full_name ASC;");
+        ORDER BY t2.position DESC, t2a.full_name;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {

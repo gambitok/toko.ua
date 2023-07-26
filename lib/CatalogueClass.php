@@ -197,8 +197,8 @@ class CatalogueClass
             }
         }
 
-        if ($where_art_id_str === "") {
-            $where_art_id_str = 0;
+        if (empty($where_art_id_str)) {
+            $where_art_id_str = "0";
         }
         $where_art_id_str = rtrim($where_art_id_str, ",");
         $where_art_id_str = str_replace("'", "", $where_art_id_str);
@@ -211,7 +211,7 @@ class CatalogueClass
         }
 
         $r = "";
-        if ($where_art_id_str !== "") {
+        if (!empty($where_art_id_str)) {
             $r = $db->query("
             SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2asc.AMOUNT as AMOUNT, t2asc.STORAGE_ID as storage_id, 0 as suppl_id, 0 as return_delay
             FROM `T2_ARTICLES` t2a
@@ -1931,17 +1931,18 @@ class CatalogueClass
     public function showOtherStorages($mas, $cur, $view): array
     {
         $cur_cap = $this->getSymbolExrate($cur);
-        $ll = $class = $hide = $border = $none = $checkarray = [];
-        $i = $j = $double = $preprice = 0;
+        $ll = $class = $hide = $border = $none = $arts = [];
+        $i = $j = $double = $price_pred = 0;
         $min_price = 9999999;
 
         foreach ($mas as $mas_key => $mas_val) {
             foreach ($mas_val as $key => $val) {
+
                 $art_id = $mas_key;
 
-                if (in_array($art_id, $checkarray, true)) {
+                if (in_array($art_id, $arts, true)) {
 
-                    if ($val["price"] < $preprice) {
+                    if ($val["price"] < $price_pred) {
 
                         if ($double > 0) {
 
@@ -2013,15 +2014,16 @@ class CatalogueClass
                     $hide[$i]   = "";
                     $none[$i]   = "dvisibility";
                     $border[$i] = "border-line";
-                    $checkarray = array();
+                    $arts       = array();
                     $double     = 0;
-                    $preprice   = $val["price"];
+                    $price_pred = $val["price"];
                 }
 
-                $checkarray[] = $art_id;
+                $arts[] = $art_id;
                 $i++;
                 $j++;
             }
+
             $j = 0;
             $min_price = 9999999;
         }

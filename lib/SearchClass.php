@@ -223,13 +223,13 @@ class SearchClass extends CatalogueClass
                         if ($stock > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                                 $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
-                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', '$article_name', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
+                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', \"$article_name\", '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
                             }
                         }
                     }
                 }
 
-                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ` ASC;");
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ`;");
                 $n = $db->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id                 = $db->result($r, $i - 1, "art_id");
@@ -591,7 +591,7 @@ class SearchClass extends CatalogueClass
 
         list($error, $list) = $this->getSearchMessages();
 
-        if ($where_art_id_str !== "") {
+        if (!empty($where_art_id_str)) {
             $this->createTemporarySearchTable($temp_key);
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", $nulls);
@@ -658,7 +658,7 @@ class SearchClass extends CatalogueClass
                             // visible suppl storage
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                                 $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
-                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', '$article_name', '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
+                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', \"$article_name\", '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
 
                                 if ($art_id === $art_id_search) {
                                     $main_brand = $brand_id;
@@ -735,6 +735,57 @@ class SearchClass extends CatalogueClass
                 // $mas[$art_id2][0] = ['suppl_id' => 0]
 
                 $mas = $this->sortSuppls($mas, $art_id_search);
+
+                // sort by delivery days and price (all analogs list)
+                $arr = [];
+                foreach ($mas as $mas_key => $mas_val) {
+                    if ($mas_key !== $art_id_search) {
+                        $arr[$mas_key] = $mas[$mas_key][0];
+                        $arr[$mas_key]['ART_ID'] = $mas_key;
+                    }
+                }
+
+                $mas0[$art_id_search] = $mas[$art_id_search];
+                $mas1 = [];
+                $mas2 = [];
+                foreach ($arr as $val) {
+                    $art = $val['ART_ID'];
+                    if ($art != $art_id_search) {
+                        if ((int)$val['delivery_days'] === 0 && (int)$val['suppl_id'] === 0) {
+                            $mas1[$art] = $mas[$art];
+                        } else {
+                            $mas2[$art] = $mas[$art];
+                        }
+                    }
+                }
+
+                $arr2 = [];
+                foreach ($mas2 as $mas_key => $mas_val) {
+                    if ($mas_key !== $art_id_search) {
+                        $arr2[$mas_key] = $mas2[$mas_key][0];
+                        $arr2[$mas_key]['ART_ID'] = $mas_key;
+                    }
+                }
+                $sort = array();
+                foreach($arr2 as $k=>$v) {
+                    $sort['price'][$k] = $v['price'];
+                    $sort['delivery_days'][$k] = $v['delivery_days'];
+                }
+                array_multisort($sort['price'], SORT_ASC, $sort['delivery_days'], SORT_ASC, $arr2);
+
+                $mas22 = [];
+                foreach ($arr2 as $val) {
+                    $art = $val['ART_ID'];
+                    $mas22[$art] = $mas2[$art];
+                }
+
+                if (!empty($mas0)) {
+                    $mas1 = $mas0 + $mas1;
+                }
+                if (!empty($mas1)) {
+                    $mas22 = $mas1 + $mas22;
+                }
+                $mas = $mas22;
 
                 // show other storages
                 $other_storages = $this->showOtherStorages($mas, $cur, 0);
@@ -973,6 +1024,57 @@ class SearchClass extends CatalogueClass
                 // $mas[$art_id2][0] = ['suppl_id' => 0]
                 $mas = $this->sortSuppls($mas, $art_id_search);
 
+                // sort by delivery days and price (all analogs list)
+                $arr = [];
+                foreach ($mas as $mas_key => $mas_val) {
+                    if ($mas_key !== $art_id_search) {
+                        $arr[$mas_key] = $mas[$mas_key][0];
+                        $arr[$mas_key]['ART_ID'] = $mas_key;
+                    }
+                }
+
+                $mas0[$art_id_search] = $mas[$art_id_search];
+                $mas1 = [];
+                $mas2 = [];
+                foreach ($arr as $val) {
+                    $art = $val['ART_ID'];
+                    if ($art != $art_id_search) {
+                        if ((int)$val['delivery_days'] === 0 && (int)$val['suppl_id'] === 0) {
+                            $mas1[$art] = $mas[$art];
+                        } else {
+                            $mas2[$art] = $mas[$art];
+                        }
+                    }
+                }
+
+                $arr2 = [];
+                foreach ($mas2 as $mas_key => $mas_val) {
+                    if ($mas_key !== $art_id_search) {
+                        $arr2[$mas_key] = $mas2[$mas_key][0];
+                        $arr2[$mas_key]['ART_ID'] = $mas_key;
+                    }
+                }
+                $sort = array();
+                foreach($arr2 as $k=>$v) {
+                    $sort['price'][$k] = $v['price'];
+                    $sort['delivery_days'][$k] = $v['delivery_days'];
+                }
+                array_multisort($sort['price'], SORT_ASC, $sort['delivery_days'], SORT_ASC, $arr2);
+
+                $mas22 = [];
+                foreach ($arr2 as $val) {
+                    $art = $val['ART_ID'];
+                    $mas22[$art] = $mas2[$art];
+                }
+
+                if (!empty($mas0)) {
+                    $mas1 = $mas0 + $mas1;
+                }
+                if (!empty($mas1)) {
+                    $mas22 = $mas1 + $mas22;
+                }
+                $mas = $mas22;
+
                 // show other storages
                 $other_storages = $this->showOtherStorages($mas, $cur, 0);
 
@@ -1046,6 +1148,7 @@ class SearchClass extends CatalogueClass
 
             // analogs
             if (count($mas) > 1) {
+
                 $style = "";
                 foreach ($mas as $mas_key => $mas_val) {
                     if ($mas_key !== $art_id_search) {
