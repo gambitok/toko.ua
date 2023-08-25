@@ -199,6 +199,11 @@ $(document).ready(function() {
         }, 5000);
     }
 
+    // if (getCookie('lang_id_status') === "" && getCookie('user_id') === "") {
+    //     //setCookie('lang_id_status', 1);
+    //     //showRegionForm();
+    // }
+
     // Tooltips
     $(".tooltips").tooltip();
 

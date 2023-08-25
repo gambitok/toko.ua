@@ -988,6 +988,37 @@ class MenuClass extends CatalogueClass
         return $this->replaceLang($form);
     }
 
+    public function getSiteCurrentLink()
+    {
+        $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $actual_link = str_replace(array("/uk/", "/en/"), "/", $actual_link);
+
+        $ru = $uk = $en = $actual_link;
+        $uk = str_replace("https://toko.ua/", "https://toko.ua/uk/", $uk);
+        $en = str_replace("https://toko.ua/", "https://toko.ua/en/", $en);
+
+        return compact("ru", "uk", "en");
+    }
+
+    /*
+     * site warning message
+     * */
+    public function getSiteLangMessage($lang_id, $lang_id_prefer)
+    {
+        $form = "";
+
+        if ($lang_id !== 2 && $lang_id !== 3 && empty($lang_id_prefer)) {
+            $form = "
+            <div class=\"row dblock\" style='background: #2d8bfa; color: #fff; text-align: center; padding: 10px; font-size: 16px;}'>
+                <span>{change_language_uk}</span>
+                <a href='https://toko.ua/lang.php?status=1' class=\"btn btn-info\">{yes_cap_uk}</a>
+                <a href='https://toko.ua/lang.php?status=2' class=\"btn btn-danger\">{no_cap_uk}</a>
+            </div>";
+        }
+
+        return $this->replaceLang($form);
+    }
+
     /*
      * get phone nav menu
      * */

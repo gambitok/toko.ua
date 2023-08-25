@@ -8,17 +8,30 @@ class AutoClass extends CatalogueClass
      * */
     public function getCarManufTranslit($mfa_id, $model = ""): string
     {
+        $lang_id = (int)$this->getLanguage();
         $mfa_id = $this->getUrlNumber($mfa_id);
         $model  = $this->getUrlString($model);
 
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `MFA_BRAND_TRANSLIT` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
-        $mfa_translate  = $db->result($r, 0, "MFA_BRAND_TRANSLIT");
+        $r = $db->query("SELECT `MFA_BRAND_TRANSLIT_RU`, `MFA_BRAND_TRANSLIT_UA` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
+        $mfa_translate  = $db->result($r, 0, "MFA_BRAND_TRANSLIT_RU");
+        $mfa_translate_ua  = $db->result($r, 0, "MFA_BRAND_TRANSLIT_UA");
+
+        if ($lang_id === 2) {
+            $mfa_translate = $mfa_translate_ua;
+        }
+
         $text           = (!empty($mfa_translate)) ? "($mfa_translate)" : "";
 
         if (!empty($model)) {
-            $r = $db->query("SELECT `Model_TRANSLIT` FROM `T_models` WHERE `Model` = '$model' AND `Model_TRANSLIT` != '' LIMIT 1;");
-            $model_translate    = $db->result($r, 0, "Model_TRANSLIT");
+            $r = $db->query("SELECT `Model_TRANSLIT_RU`, `Model_TRANSLIT_UA` FROM `T_models` WHERE `Model` = '$model' AND `Model_TRANSLIT_RU` != '' LIMIT 1;");
+            $model_translate    = $db->result($r, 0, "Model_TRANSLIT_RU");
+            $model_translate_ua    = $db->result($r, 0, "Model_TRANSLIT_UA");
+
+            if ($lang_id === 2) {
+                $model_translate = $model_translate_ua;
+            }
+
             $text               = (!empty($model_translate)) ? "($mfa_translate $model_translate)" : $text;
         }
 

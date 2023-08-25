@@ -18,9 +18,15 @@ function showRegionForm() {
             });
         }}, true);
 }
-// reg_form.on('hidden.bs.modal', function () {
-//     setCookie('tpoint_id_status', 1);
-// });
+
+// function showLangStatusForm(status) {
+//     setCookie('lang_id_status', 1);
+//     if (status) {
+//
+//     } else {
+//
+//     }
+// }
 
 // Modal `Help` in Catalogs
 function showPhoneForm() {

@@ -1922,26 +1922,41 @@ class CatalogExistClass extends CatalogueClass
                     </li>";
                 }
                 $list .= "
-                </ul>";
+                </ol>";
             }
         }
 
         return $list;
     }
 
-    public function getCatalogMfaModelInfo($mfa_id, $model = "", $status = 0)
+    public function getCatalogMfaModelInfo($mfa_id, $model = "")
     {
+        $lang_id = $this->getLanguage();
         $mfaData = $this->getMfaData($mfa_id);
         $link = $this->getSiteLink() . $this->cars_link .  "/" . $mfaData["mfa_link"] . "/";
         $text = $mfaData["mfa_brand"];
+        $text_transl = $mfaData["mfa_ru"];
+        if ($lang_id === 2) {
+            $text_transl = $mfaData["mfa_ua"];
+        }
 
         if ($model !== "") {
             $model_link = $this->getModelLink($model);
             $link       = $this->getSiteLink() . $this->cars_link .  "/" . $mfaData["mfa_link"] . "/" . $model_link . "/";
             $text       .= " $model";
+            $model_transl = $this->getModelTransl($model)['model_link_ru'];
+            if ($lang_id === 2) {
+                $model_transl = $this->getModelTransl($model)['model_link_ua'];
+            }
+
+            $text_transl .= " $model_transl";
         }
 
-        return ($status === 0) ? $text : "<a href='$link'>$text</a>";
+        $model_name = $text;
+        $model_link = "<a href='$link'>$text</a>";
+        $model_transl = $text_transl;
+
+        return compact('model_name', 'model_link', 'model_transl');
     }
 
     public function getParamsLink($params): string
@@ -2032,7 +2047,12 @@ class CatalogExistClass extends CatalogueClass
 
         if ($n > 0) {
             $text = $db->result($r, 0, "TEXT_$postfix");
-            $text = str_replace(array("{GET_PAGE_H1}", "{GET_PAGE_H1_LINK}", "{MarkaMFA_Model}", "{MarkaMFA_Model_LINK}", "{Main_Category_H1}", "{Main_Category_H1_LINK}", "{Main_Category_H1_Main_Category_H1}", "{Main_Category_H1_Main_Category_H1_LINK}", "{Cars_List}"), array($h1_text, $h1_text, $this->getCatalogMfaModelInfo($mfa_id, $model), $this->getCatalogMfaModelInfo($mfa_id, $model, 1), $group_name, "<a href='$main_link'>$group_name</a>", $head_name, "<a href='$head_link'>$head_name</a>", $this->getCatalogSeoCarsList($mfa_id, $model)), $text);
+            $modelData = $this->getCatalogMfaModelInfo($mfa_id, $model);
+            $h1_text_small = strtolower($h1_text);
+
+            $group_name_small = mb_strtolower($this->replaceLang($group_name), 'windows-1251');
+            $text = str_replace(array("{GET_PAGE_H1}", "{GET_PAGE_H1_small}", "{GET_PAGE_H1_LINK}", "{MarkaMFA_Model}", "{MarkaMFA_Model_transl}", "{MarkaMFA_Model_LINK}", "{Main_Category_H1}", "{Main_Category_H1_LINK}", "{Main_Category_H1_LINK_small}", "{Main_Category_H1_Main_Category_H1}", "{Main_Category_H1_Main_Category_H1_LINK}", "{Cars_List}"),
+                array($h1_text, $h1_text_small, $h1_text, $modelData['model_name'], $modelData['model_transl'], $modelData['model_link'], $group_name, "<a href='$main_link'>$group_name</a>", "<a href='$main_link'>$group_name_small</a>", $head_name, "<a href='$head_link'>$head_name</a>", $this->getCatalogSeoCarsList($mfa_id, $model)), $text);
         }
 
         return $text;

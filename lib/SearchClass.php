@@ -219,6 +219,8 @@ class SearchClass extends CatalogueClass
                         $status = ($suppl_id === 0) ? 1 : 0;
                     }
 
+                    $article_name = str_replace('"', "''" , $article_name);
+
                     if ($price > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
                         if ($stock > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
@@ -651,6 +653,8 @@ class SearchClass extends CatalogueClass
                     } else {
                         $status = ($suppl_id === 0) ? 1 : 0;
                     }
+
+                    $article_name = str_replace('"', "''" , $article_name);
 
                     // show articles with suppl_id=0 or with price!=0 and stock!=0
                     if (($price > 0 || $nulls === 1) || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {

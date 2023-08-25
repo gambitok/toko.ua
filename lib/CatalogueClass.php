@@ -808,6 +808,8 @@ class CatalogueClass
                         $status = ($suppl_id === 0) ? 1 : 0;
                     }
 
+                    $article_name = str_replace('"', "''" , $article_name);
+
                     // show articles with suppl_id=0 or with price!=0 and stock!=0
                     if ($price !== 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
                         if ($stock > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
@@ -2484,14 +2486,16 @@ class CatalogueClass
         $mfa_id = $this->getUrlNumber($mfa_id);
         $db = DbSingleton::getTokoDb();
         $mfa_brand = $mfa_link = "";
-        $r = $db->query("SELECT `MFA_BRAND`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
+        $r = $db->query("SELECT `MFA_BRAND`, `MFA_BRAND_TRANSLIT_RU`, `MFA_BRAND_TRANSLIT_UA`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $mfa_brand  = $db->result($r, 0, "MFA_BRAND");
+            $mfa_ru     = $db->result($r, 0, "MFA_BRAND_TRANSLIT_RU");
+            $mfa_ua     = $db->result($r, 0, "MFA_BRAND_TRANSLIT_UA");
             $mfa_link   = $db->result($r, 0, "MFA_BRAND_LINK");
         }
 
-        return compact("mfa_brand", "mfa_link");
+        return compact("mfa_brand", "mfa_ru", "mfa_ua", "mfa_link");
     }
     public function getModelLink($model)
     {
@@ -2505,6 +2509,20 @@ class CatalogueClass
         }
 
         return $model_link;
+    }
+    public function getModelTransl($model)
+    {
+        $model = $this->getUrlString($model);
+        $db = DbSingleton::getTokoDb();
+        $model_link_ru = $model_link_ua = "";
+        $r = $db->query("SELECT `Model_TRANSLIT_RU`, `Model_TRANSLIT_UA` FROM `T_models` WHERE `Model` = '$model' LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $model_link_ru = $db->result($r, 0, "Model_TRANSLIT_RU");
+            $model_link_ua = $db->result($r, 0, "Model_TRANSLIT_UA");
+        }
+
+        return compact('model_link_ru', 'model_link_ua');
     }
     public function getModelIDLink($model_id)
     {

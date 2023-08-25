@@ -522,18 +522,18 @@ class FormClass extends CatalogueClass
                 $type   = $value["type"];
                 $status = 1;
 
-                $maxWidth = 0;
-                $width = 633;
-                if ($type === "" || $type === "catalogue") {
-                    $path = RDD . "/uploads/images/catalogue/" . $photo;
-                    list($maxWidth) = getimagesize($path);
-                } elseif ($type === "certificates") {
-                    $path = RDD . "/uploads/images/certificates/" . $photo;
-                    list($maxWidth) = getimagesize($path);
-                }
-                if ($maxWidth < $width && $maxWidth > 0) {
-                    $width = $maxWidth;
-                }
+//                $maxWidth = 0;
+//                $width = 633;
+//                if ($type === "" || $type === "catalogue") {
+//                    $path = RDD . "/uploads/images/catalogue/" . $photo;
+//                    list($maxWidth) = getimagesize($path);
+//                } elseif ($type === "certificates") {
+//                    $path = RDD . "/uploads/images/certificates/" . $photo;
+//                    list($maxWidth) = getimagesize($path);
+//                }
+//                if ($maxWidth < $width && $maxWidth > 0) {
+//                    $width = $maxWidth;
+//                }
 
 //                $large .= "
 //                <a href=\"#\" class=\"selected\" data-full=\"https://toko.ua/resize_image.php?image=$photo&w=$width&h=0&type=$type\" >
@@ -542,11 +542,17 @@ class FormClass extends CatalogueClass
 
                 $large .= "
                 <a class=\"selected pointer\" data-full=\"https://toko.ua/uploads/images/$type/$photo\" >
-                    <img src=\"https://toko.ua/uploads/images/$type/$photo\" />
+                    <img src=\"https://toko.ua/uploads/images/$type/$photo\"
+                    alt=\"$h1 - {photo_card_cap} #$i\"
+                    title=\"$h1 - {photo_card_cap} #$i\"
+                    />
                 </a>";
 
                 $small .= "
-                <img src=\"https://toko.ua/uploads/images/$type/$photo\" />";
+                <img src=\"https://toko.ua/uploads/images/$type/$photo\"       
+                alt=\"$h1 - {photo_card_cap} #$i\"
+                title=\"$h1 - {photo_card_cap} #$i\"
+                />";
             }
         }
 

@@ -477,14 +477,34 @@ function findPath()
 	return $res;
 }
 
-//function getLangUrl($lang)
-//{
-//    $path = $_SERVER["REQUEST_URI"];
-//    $path = ltrim($path, "/en/");
-//    $path = ltrim($path, "/uk/");
-//    $path = ltrim($path, "/ru/");
-//    return "https://" . $_SERVER["HTTP_HOST"] . "/$lang/" . $path;
-//}
+function getLangPrefix($lang_id)
+{
+    $pre = "";
+    $lang_id = (int)$lang_id;
+
+    if ($lang_id === 2) {
+        $pre = "uk/";
+    }
+    if ($lang_id === 3) {
+        $pre = "en/";
+    }
+
+    return $pre;
+}
+
+function getLangUrl($lang)
+{
+    $path = $_SERVER["REQUEST_URI"];
+    $path = ltrim($path, "/en/");
+    $path = ltrim($path, "/uk/");
+    $path = ltrim($path, "/ru/");
+    if (empty($lang)) {
+        $postfix = "/";
+    } else {
+        $postfix = "/$lang/";
+    }
+    return "https://" . $_SERVER["HTTP_HOST"] . $postfix . $path;
+}
 
 function findUrl()
 {
