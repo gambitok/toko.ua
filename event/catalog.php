@@ -192,6 +192,14 @@ else {
                 $red_link   = $path_to;
             }
 
+            if ($page > 1) {
+                $content = str_replace("{meta_noindex}", '
+                        <meta name="robots" content="noindex, follow">
+                        <meta name="googlebot" content="noindex, follow">
+                        <meta name="yandex" content="noindex, follow">
+                    ', $content);
+            }
+
             $content = str_replace("{main_window}", $catalog_form["form"] . $showform->getHistoryArts(), $content);
             $content = str_replace("{site_title}", $catalog_form["title"], $content);
             $content = str_replace("{site_description}", $catalog_form["description"], $content);

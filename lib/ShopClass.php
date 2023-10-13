@@ -160,7 +160,7 @@ class ShopClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
 
-        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `PHOTO_NAME` ASC LIMIT 1;");
+        $r = $db->query("SELECT `PHOTO_NAME` FROM `T2_PHOTOS` WHERE `ART_ID` = $art_id AND `ACTIVE` = 1 ORDER BY `MAIN` DESC, `PHOTO_NAME` LIMIT 1;");
         $n = $db->num_rows($r);
         $photo_name = $db->result($r, 0, "PHOTO_NAME");
         $photo_src  = "https://toko.ua/uploads/images/catalogue/$photo_name";
@@ -932,7 +932,7 @@ class ShopClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $list = "";
-        $r = $db->query("SELECT `ID`, `TEXT` FROM `T2_DELIVERY_EXPRESS` WHERE 1 ORDER BY `ID` ASC;");
+        $r = $db->query("SELECT `ID`, `TEXT` FROM `T2_DELIVERY_EXPRESS` WHERE 1 ORDER BY `ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id     = $db->result($r, $i - 1, "ID");
@@ -1009,29 +1009,22 @@ class ShopClass extends CatalogueClass
         $count = (int)strlen($phone2);
 
         if ($count === 9 && $client->validateOperator($phone)) {
-//            $dataReg = $client->validateRegistration($phone);
-//            if (!$dataReg[0]) {
-                if (!empty($dataArticle)) {
-                    $art_id     = $dataArticle["art_id"];
-                    $brand_id   = $dataArticle["brand_id"];
-                    $amount     = $dataArticle["count"];
-                    $stock      = $dataArticle["stock"];
-                    $storage_id = $dataArticle["storage_id"];
-                    $suppl_id   = $dataArticle["suppl_id"];
+            if (!empty($dataArticle)) {
+                $art_id     = $dataArticle["art_id"];
+                $brand_id   = $dataArticle["brand_id"];
+                $amount     = $dataArticle["count"];
+                $stock      = $dataArticle["stock"];
+                $storage_id = $dataArticle["storage_id"];
+                $suppl_id   = $dataArticle["suppl_id"];
 
-                    $res = $this->saveFastOrderBasket($phone, $art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id);
-                } else {
+                $res = $this->saveFastOrderBasket($phone, $art_id, $brand_id, $amount, $stock, $storage_id, $suppl_id);
+            } else {
 
-                    $res = $this->saveFastOrder($phone);
-                }
+                $res = $this->saveFastOrder($phone);
+            }
 
-                $answer = 1;
-                $err = $res;
-//            }
-//            else {
-//                $answer = 2;
-//                $err = "{user_already_logged}!<br>{phone_cap}: " . $dataReg[1];
-//            }
+            $answer = 1;
+            $err = $res;
         } else {
             $answer = 3;
             $err = "{check_phone_data}!";
@@ -1795,7 +1788,7 @@ class ShopClass extends CatalogueClass
             $where_user_city = "OR `CITY_ID` = $user_city";
         }
 
-        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `REGION_NAME` = '' $where_user_city ORDER BY `CITY_NAME$postfix` ASC;");
+        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `REGION_NAME` = '' $where_user_city ORDER BY `CITY_NAME$postfix`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $city_id        = $db->result($r, $i - 1, "CITY_ID");
@@ -1932,7 +1925,7 @@ class ShopClass extends CatalogueClass
         }
         $list = "";
 
-        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `STATUS` = 1 ORDER BY `CITY_NAME_CLEAR_RU` ASC;");
+        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `STATUS` = 1 ORDER BY `CITY_NAME_CLEAR_RU`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $city_id        = $db->result($r, $i - 1, "CITY_ID");
@@ -1945,14 +1938,14 @@ class ShopClass extends CatalogueClass
 
             if ($region_name === "") {
                 $city_name  = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
-                $city_fname = "$city_name1 $city_name2";
+                $city_full_name = "$city_name1 $city_name2";
             } else {
                 $city_name  = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix") . " ($state_name обл., $region_name р-он)";
-                $city_fname = "$city_name1 ($state_name обл., $region_name р-он) - $city_name2 ($state_name2 обл., $region_name2 р-он)";
+                $city_full_name = "$city_name1 ($state_name обл., $region_name р-он) - $city_name2 ($state_name2 обл., $region_name2 р-он)";
             }
 
             $list .= "
-            <li class=\"select3-list__item\" data-id=\"$city_id\" data-text=\"$city_fname\" data-name=\"$city_name\" onclick=\"selectCity(this);\">$city_name</li>";
+            <li class=\"select3-list__item\" data-id=\"$city_id\" data-text=\"$city_full_name\" data-name=\"$city_name\" onclick=\"selectCity(this);\">$city_name</li>";
         }
 
         return $list;
@@ -1971,7 +1964,7 @@ class ShopClass extends CatalogueClass
         $list = "";
         $text = $this->getNameString($text);
 
-        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR` LIKE \"$text%\" OR `CITY_NAME_CLEAR_RU` LIKE \"$text%\" ORDER BY `STATUS` DESC, `CITY_ID` ASC;");
+        $r = $db->query("SELECT * FROM `T2_LOCATION` WHERE `CITY_NAME_CLEAR` LIKE \"$text%\" OR `CITY_NAME_CLEAR_RU` LIKE \"$text%\" ORDER BY `STATUS` DESC, `CITY_ID`;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
@@ -1986,14 +1979,14 @@ class ShopClass extends CatalogueClass
 
                 if ($region_name === "") {
                     $city_name  = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix");
-                    $city_fname = "$city_name1 $city_name2";
+                    $city_full_name = "$city_name1 $city_name2";
                 } else {
                     $city_name  = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix") . " ($state_name обл., $region_name р-он)";
-                    $city_fname = "$city_name1 ($state_name обл., $region_name р-он) - $city_name2 ($state_name2 обл., $region_name2 р-он)";
+                    $city_full_name = "$city_name1 ($state_name обл., $region_name р-он) - $city_name2 ($state_name2 обл., $region_name2 р-он)";
                 }
 
                 $list .= "
-                <li class=\"select3-list__item\" data-id=\"$city_id\" data-text=\"$city_fname\" data-name=\"$city_name\" onclick=\"selectCity(this);\">$city_name</li>";
+                <li class=\"select3-list__item\" data-id=\"$city_id\" data-text=\"$city_full_name\" data-name=\"$city_full_name\" onclick=\"selectCity(this);\">$city_name</li>";
             }
         } else {
             $list = $this->replaceLang("<li class=\"select3-list__item\">-{nothing_found}-</li>");

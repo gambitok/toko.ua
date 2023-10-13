@@ -19,13 +19,15 @@ class ProductsClass extends CatalogueClass
         $automan = new AutoClass();
 
         $status = 1;
-        $title  = $descr = $meta_tag = "";
+        $title  = $descr = "";
 
         list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
         $h1 = $automan->getCarsTitle($mfa_id, $model);
 
         $form = $this->getHtmlForm("cars/form");
-        $form = str_replace(array("{cars_h1}", "{cars_list}", "{cars_seo}"), array($h1, $this->getCarsSearch($mfa_link, $mod_link), $automan->getCarsSeoContent($mfa_link, $mod_link)), $form);
+        $form = str_replace(array("{cars_h1}", "{cars_list}", "{cars_seo}"),
+            array($h1, $this->getCarsSearch($mfa_link, $mod_link), $automan->getCarsSeoContent($mfa_link, $mod_link)),
+        $form);
 
         $automan->getCarsMetaTags($mfa_id, $model, $h1);
         if ($mfa_id > 0) {
@@ -46,7 +48,43 @@ class ProductsClass extends CatalogueClass
             $status = 0;
         }
 
-        return compact("form", "title", "descr", "meta_tag", "status");
+        $breadcrumbs = $this->getBreadCrumbForm($this->getCarsBreadCrumb($mfa_id, $model));
+
+        return compact("form", "title", "descr", "status", "breadcrumbs");
+    }
+
+    public function getCarsBreadCrumb($mfa_id = 0, $model = "")
+    {
+        $arr = [];
+
+        $arr[] = [
+            "name" => "{seo_site_toko}",
+            "link" => $this->getSiteLink()
+        ];
+        $arr[] = [
+            "name" => "{site_cars}",
+            "link" => $this->getSiteLink() . "$this->cars_link/"
+        ];
+
+        if ($mfa_id > 0) {
+            $mfaData = $this->getMfaData($mfa_id);
+            $mfa_name = $mfaData['mfa_brand'];
+            $mfa_link = $mfaData['mfa_link'];
+            $arr[] = [
+                "name" => $mfa_name,
+                "link" => $this->getSiteLink() . "$this->cars_link/$mfa_link/"
+            ];
+
+            if (!empty($model)) {
+                $model_link = $this->getModelLink($model);
+                $arr[] = [
+                    "name" => $model,
+                    "link" => $this->getSiteLink() . "$this->cars_link/$mfa_link/$model_link/"
+                ];
+            }
+        }
+
+        return $arr;
     }
 
     public function getCarsSearch($mfa_link = "", $mod_link = "", $group_id = 0)
@@ -195,7 +233,7 @@ class ProductsClass extends CatalogueClass
             $n      = 1;
 
             $r = $db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
-                CASE WHEN MIN(`MOD_PCON_END`)=0 THEN 0 ELSE MAX(`MOD_PCON_END`) END as max_year
+                IF (MIN(`MOD_PCON_END`) = 0, 0, MAX(`MOD_PCON_END`)) AS max_year
             FROM `T_models` 
             WHERE `Model` = '$model' AND `MOD_MFA_ID` = $mfa_id;");
             $date_start = $db->result($r, 0, "min_year");
@@ -219,8 +257,8 @@ class ProductsClass extends CatalogueClass
                 OR (`MOD_PCON_START`<=" . $year . "12 AND `MOD_PCON_END`=0))";
 
             $r = $db->query("SELECT `MOD_ID`, `TEX_TEXT`, `Car_pict`,
-            CASE WHEN MOD_PCON_START = 0 THEN '' ELSE MOD_PCON_START END AS MOD_PCON_START,
-            CASE WHEN MOD_PCON_END = 0 THEN '{cur_time_min}' ELSE MOD_PCON_END END AS MOD_PCON_END 
+            IF (MOD_PCON_START = 0, '', MOD_PCON_START) AS MOD_PCON_START,
+            IF (MOD_PCON_END = 0, '{cur_time_min}', MOD_PCON_END) AS MOD_PCON_END
             FROM `T_models` 
             WHERE `Model` = '$model' AND `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 $where;");
             $n = $db->num_rows($r);
@@ -297,9 +335,9 @@ class ProductsClass extends CatalogueClass
             $volume_cm  = $this->getUrlString($volume_cm);
             $fuel_id    = $this->getUrlNumber($fuel_id);
 
-            $r = $db->query("SELECT `TYP_ID`, `TYP_TEXT`, `TYP_KW_FROM`, `TYP_HP_FROM`, `ENG_Cod`,
-            CASE WHEN TYP_PCON_START = 0 THEN '' ELSE TYP_PCON_START END AS TYP_PCON_START,
-            CASE WHEN TYP_PCON_END = 0 THEN '{cur_time_min}' ELSE TYP_PCON_END END AS TYP_PCON_END 
+            $r = $db->query("SELECT `TYP_ID`, `TYP_TEXT`, `TYP_KW_FROM`, `TYP_HP_FROM`, `ENG_Cod`,  
+            IF (TYP_PCON_START = 0, '', TYP_PCON_START) AS TYP_PCON_START,
+            IF (TYP_PCON_END = 0, '{cur_time_min}', TYP_PCON_END) AS TYP_PCON_END
             FROM `T_types` 
             WHERE `TYP_MOD_ID` = $mod_id AND `VOLUME_CM` = '$volume_cm' AND `FUEL_ID` = $fuel_id AND `ACTIVE` = 1 
             ORDER BY `TYP_HP_FROM`;");
@@ -453,7 +491,9 @@ class ProductsClass extends CatalogueClass
         $garage_btn = ($auto_typ_id !== "" && !($automan->checkUserGarage($auto_typ_id))) ? "btn-img-disabled" : "";
 
         $form = $this->getHtmlForm("garage/selected");
-        $form = str_replace(array("{typ_id}", "{manufacture_cap}", "{model_id_cap}", "{typ_text}", "{models_img}", "{garage_button}", "{typ_id}"), array($auto_typ_id, $manufacture_cap, $model_id_cap, $automan->getGroupInfo($auto_typ_id), $models_img, $garage_btn, $auto_typ_id), $form);
+        $form = str_replace(array("{typ_id}", "{manufacture_cap}", "{model_id_cap}", "{typ_text}", "{models_img}", "{garage_button}", "{typ_id}"),
+            array($auto_typ_id, $manufacture_cap, $model_id_cap, $automan->getGroupInfo($auto_typ_id), $models_img, $garage_btn, $auto_typ_id),
+        $form);
 
         return $this->replaceLang($form);
     }

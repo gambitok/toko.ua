@@ -114,15 +114,14 @@ class MenuClass extends CatalogueClass
         }
 
         $r = $db->query("SELECT `caption`, `desc`, `data` FROM `news` WHERE `id` = $state_id;");
-        $title      = $db->result($r, 0, "caption");
-        $title      = ($title === "") ? $this->replaceLang("{news_one_cap}" . "-$state_id") : $title;
-        $text       = $db->result($r, 0, "desc");
-        $date       = $db->result($r, 0, "data");
-        $img_fname  = $this->getNewsImage($state_id);
-        $img_file   = "/uploads/images/news/$language_id/$state_id/" . $img_fname;
-        $img        = ($img_fname !== "") ? "<p><img itemprop=\"image\" src=\"$img_file\" alt=\"state\"></p>" : "";
-        $ftitle     = $this->formatUrlText($title);
-        $url        = $this->getSiteLink() . "$this->news_link/state/$state_id/$ftitle/";
+        $title          = ($db->result($r, 0, "caption") === "") ? $this->replaceLang("{news_one_cap}" . "-$state_id") : $db->result($r, 0, "caption");
+        $text           = $db->result($r, 0, "desc");
+        $date           = $db->result($r, 0, "data");
+        $news_img_name  = $this->getNewsImage($state_id);
+        $img_file       = "/uploads/images/news/$language_id/$state_id/" . $news_img_name;
+        $img            = ($news_img_name !== "") ? "<p><img itemprop=\"image\" src=\"$img_file\" alt=\"state\"></p>" : "";
+        $format_url     = $this->formatUrlText($title);
+        $url            = $this->getSiteLink() . "$this->news_link/state/$state_id/$format_url/";
 
         return compact("title", "date", "img_file", "img", "text", "url");
     }
@@ -406,7 +405,7 @@ class MenuClass extends CatalogueClass
         FROM `T_POINT` t2
             LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id = t2.id)
         WHERE t2.status = 1 AND t2a.lang_id = $lang_id 
-        ORDER BY t2.position DESC, t2a.full_name ASC;");
+        ORDER BY t2.position DESC, t2a.full_name;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
@@ -508,7 +507,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $form = "";
 
-        $r = $db->query("SELECT `STATE_ID`, `STATE_NAME` FROM `T2_STATE` ORDER BY `STATE_NAME` ASC;");
+        $r = $db->query("SELECT `STATE_ID`, `STATE_NAME` FROM `T2_STATE` ORDER BY `STATE_NAME`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id         = (int)$db->result($r, $i - 1, "STATE_ID");
@@ -533,7 +532,7 @@ class MenuClass extends CatalogueClass
             $org_type = 1;
         }
 
-        $r = $db->query("SELECT `id`, `full_name` FROM `A_ORG_TYPE` ORDER BY `id` ASC;");
+        $r = $db->query("SELECT `id`, `full_name` FROM `A_ORG_TYPE` ORDER BY `id`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id         = (int)$db->result($r, $i - 1, "id");
@@ -870,7 +869,7 @@ class MenuClass extends CatalogueClass
             $table          = "EX_TABLE_TREE_$group_id";
             $table_mfa      = "EX_TABLE_TREE_MFA_$group_id";
             $table_params   = "EX_TABLE_TREE_PARAMS_$group_id";
-            $where_sort     = "ORDER BY t.price = 0, t.id ASC";
+            $where_sort     = "ORDER BY t.price = 0, t.id";
 
             $query = "SELECT t.art_id FROM `$table` t
                 LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
@@ -988,36 +987,36 @@ class MenuClass extends CatalogueClass
         return $this->replaceLang($form);
     }
 
-    public function getSiteCurrentLink()
-    {
-        $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-        $actual_link = str_replace(array("/uk/", "/en/"), "/", $actual_link);
-
-        $ru = $uk = $en = $actual_link;
-        $uk = str_replace("https://toko.ua/", "https://toko.ua/uk/", $uk);
-        $en = str_replace("https://toko.ua/", "https://toko.ua/en/", $en);
-
-        return compact("ru", "uk", "en");
-    }
+//    public function getSiteCurrentLink()
+//    {
+//        $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+//        $actual_link = str_replace(array("/uk/", "/en/"), "/", $actual_link);
+//
+//        $ru = $uk = $en = $actual_link;
+//        $uk = str_replace("https://toko.ua/", "https://toko.ua/uk/", $uk);
+//        $en = str_replace("https://toko.ua/", "https://toko.ua/en/", $en);
+//
+//        return compact("ru", "uk", "en");
+//    }
 
     /*
      * site warning message
      * */
-    public function getSiteLangMessage($lang_id, $lang_id_prefer)
-    {
-        $form = "";
-
-        if ($lang_id !== 2 && $lang_id !== 3 && empty($lang_id_prefer)) {
-            $form = "
-            <div class=\"row dblock\" style='background: #2d8bfa; color: #fff; text-align: center; padding: 10px; font-size: 16px;}'>
-                <span>{change_language_uk}</span>
-                <a href='https://toko.ua/lang.php?status=1' class=\"btn btn-info\">{yes_cap_uk}</a>
-                <a href='https://toko.ua/lang.php?status=2' class=\"btn btn-danger\">{no_cap_uk}</a>
-            </div>";
-        }
-
-        return $this->replaceLang($form);
-    }
+//    public function getSiteLangMessage($lang_id, $lang_id_prefer)
+//    {
+//        $form = "";
+//
+//        if ($lang_id !== 2 && $lang_id !== 3 && empty($lang_id_prefer)) {
+//            $form = "
+//            <div class=\"row dblock\" style='background: #2d8bfa; color: #fff; text-align: center; padding: 10px; font-size: 16px;}'>
+//                <span>{change_language_uk}</span>
+//                <a href='https://toko.ua/lang.php?status=1' class=\"btn btn-info\">{yes_cap_uk}</a>
+//                <a href='https://toko.ua/lang.php?status=2' class=\"btn btn-danger\">{no_cap_uk}</a>
+//            </div>";
+//        }
+//
+//        return $this->replaceLang($form);
+//    }
 
     /*
      * get phone nav menu
@@ -1030,7 +1029,7 @@ class MenuClass extends CatalogueClass
 
         $list = "";
         if (empty($head_id_sel)) {
-            $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
+            $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION`;");
             $n = $db->num_rows($r);
 
             if ($n > 0) {
@@ -1057,7 +1056,7 @@ class MenuClass extends CatalogueClass
                 LEFT JOIN `T2_TREE_HCG_EXIST` he ON (he.HEAD_ID = cs.HEAD_ID AND he.CAT_ID = cs.CAT_ID)
                 LEFT JOIN `T2_TREE_GROUP_EXIST` ge ON (ge.GROUP_ID = he.GROUP_ID)
             WHERE cs.`CAT_ID` > 0 AND cs.`STATUS` = 1 AND ge.`STATUS` = 1 AND cs.`HEAD_ID` = $head_id_sel
-            ORDER BY he.`POPULAR` DESC, he.`CAT_ID` ASC, he.`GROUP_ID` ASC;");
+            ORDER BY he.`POPULAR` DESC, he.`CAT_ID`, he.`GROUP_ID`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $cat_id     = (int)$db->result($r, $i - 1, "CAT_ID");
@@ -1155,7 +1154,7 @@ class MenuClass extends CatalogueClass
             $where = "`LINK` != '$group_link'";
         }
 
-        $r = $db->query("SELECT `ROUTER`, `LINK`, `TEXT_$postfix` FROM `T2_SEO_FOOTER` WHERE $where ORDER BY `TEXT_RU` ASC LIMIT 0,20;");
+        $r = $db->query("SELECT `ROUTER`, `LINK`, `TEXT_$postfix` FROM `T2_SEO_FOOTER` WHERE $where ORDER BY `TEXT_RU` LIMIT 0,20;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $router = $db->result($r, $i - 1, "ROUTER");
@@ -1593,7 +1592,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "";
 
-        $r = $db->query("SELECT `GROUP_ID`, `TEX_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY `TEX_RU` ASC;");
+        $r = $db->query("SELECT `GROUP_ID`, `TEX_RU` FROM `T2_TREE_GROUP_EXIST` WHERE `STATUS` = 1 ORDER BY `TEX_RU`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id   = $db->result($r, $i - 1, "GROUP_ID");
@@ -1611,8 +1610,8 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $list = "
         <option value='0'>-не вибрано-</option>";
-
-        $r = $db->query("SELECT `VALUE_ID`, `VALUE_NAME`, `PARAM_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id ORDER BY `VALUE_NAME` ASC;");
+        $lang_id = $this->getOldLanguage($this->getLanguage());
+        $r = $db->query("SELECT `VALUE_ID`, `VALUE_NAME`, `PARAM_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `LANG_ID` = $lang_id ORDER BY `VALUE_NAME`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $value_id   = $db->result($r, $i - 1, "VALUE_ID");
@@ -1769,7 +1768,7 @@ class MenuClass extends CatalogueClass
         $form = $this->getHtmlForm("main/navigation");
         $list = "";
 
-        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $head_id    = $db->result($r, $i - 1, "HEAD_ID");

@@ -223,8 +223,16 @@ if ($_REQUEST["w"] === "getArticleApplModelInfoForm") {
     $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplModelInfoForm($_REQUEST["art_id"], $_REQUEST["typ_id"]));
 }
 
+if ($_REQUEST["w"] === "getArticleApplModelTypeForm") {
+    $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplModelTypeForm($_REQUEST["art_id"], $_REQUEST["mfa_id"], $_REQUEST["model"], $_REQUEST["body_id"]));
+}
+
 if ($_REQUEST["w"] === "showInfoForm") {
     $GLOBALS['_RESULT'] = array("content" => $showform->showInfoForm($_REQUEST["art_id"]));
+}
+
+if ($_REQUEST["w"] === "showBenefitsForm") {
+    $GLOBALS['_RESULT'] = array("content" => $showform->showBenefitsForm($_REQUEST["benefit_id"]));
 }
 
 if ($_REQUEST["w"] === "showPhotoGallery") {

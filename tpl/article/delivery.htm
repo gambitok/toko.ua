@@ -1,0 +1,44 @@
+<div class="article-issuance article-issuance-head">
+    <p>{article_delivery_title_cap}:</p>
+</div>
+<div class="article-issuance">
+    <table>
+        <tr>
+            <td class="ico"><img src="/images/article_delivery/online-shop-504.png" alt=""></td>
+            <td class="head">{delivery_type_1}</td>
+            <td>
+                <p>{delivery_cap} = {free_cap}</p>
+                <a class="pointer" onclick="toggleArticleDeliveryHide(this)" data-attr="{article_delivery_status_2}">{article_delivery_status_1}</a>
+                <div class="more dnone"><p>{ready_to_issue_cap} => {tpoint_address}</p></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="ico"><img src="/images/article_delivery/np.svg" alt=""></td>
+            <td class="head">{delivery_type_4}</td>
+            <td>
+                <p>{delivery_cap} = {delivery_price_1} {uah_cap}</p>
+                <p>{transfer_to_delivery_cap} => {delivery_time_1}</p>
+            </td>
+        </tr>
+        <tr>
+            <td class="ico"><img src="/images/article_delivery/np.svg" alt=""></td>
+            <td class="head">{delivery_type_5}</td>
+            <td>
+                <p>{delivery_cap} = {delivery_price_2} {uah_cap}</p>
+                <p>{transfer_to_delivery_cap} => {delivery_time_1}</p>
+            </td>
+        </tr>
+        <tr>
+            <td class="ico"><img src="/images/article_delivery/in-transit-504.png" alt=""></td>
+            <td class="head">{delivery_type_2}</td>
+            <td>
+                <p>{delivery_cap} = {free_cap}</p>
+                <p>{transfer_to_delivery_cap} => {delivery_time_2}</p>
+                <a class="pointer" onclick="toggleArticleDeliveryHide(this)" data-attr="{article_delivery_status_2}">{article_delivery_status_1}</a>
+                <div class="more dnone">
+                    {city_delivery_list}
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

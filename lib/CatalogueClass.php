@@ -35,9 +35,8 @@ class CatalogueClass
         $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
-        GROUP BY t2c.`ART_ID` 
-        ORDER BY t2n.`NAME`;");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
+        GROUP BY t2c.`ART_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -50,7 +49,7 @@ class CatalogueClass
         $search_filters = $this->getHtmlForm("search/filters");
         $search_brands  = $this->getHtmlForm("search/brands");
 
-        list($list, $list_brand, $filters) = $search->searchList($art_id_str, $article_nr_search, $brand_nr_search);
+        list($list, $list_brand, $filters, $c) = $search->searchList($art_id_str, $article_nr_search, $brand_nr_search);
 
         // if found something
         if (($list_brand) && ($filters)) {
@@ -104,7 +103,7 @@ class CatalogueClass
         $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
         ORDER BY t2n.`NAME`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -220,7 +219,7 @@ class CatalogueClass
                 LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
             WHERE t2a.ART_ID IN ($where_art_id_str) 
                 AND t2b.`VISIBLE` = '1' 
-                AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) 
+                AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
                 $where_storage1
                 $where_brands 
             GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
@@ -232,7 +231,7 @@ class CatalogueClass
                 LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
             WHERE t2a.ART_ID IN ($where_art_id_str) 
                 AND t2b.`VISIBLE` = '1' 
-                AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) 
+                AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
                 $where_storage2
                 $where_brands 
             GROUP BY t2a.ART_ID, t2si.client_storage_id;");
@@ -348,7 +347,7 @@ class CatalogueClass
                 LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID) 
                 LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID) 
                 LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID) 
-            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) 
+            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
             GROUP BY t2a.ART_ID, t2asc.STORAGE_ID 
             UNION ALL 
             SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, IFNULL(t2si.stock_suppl,0) as AMOUNT, IFNULL(t2si.client_storage_id,0) as storage_id, IFNULL(t2si.suppl_id,0), IFNULL(t2si.return_delay,0) 
@@ -356,7 +355,7 @@ class CatalogueClass
                 LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID) 
                 LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID) 
                 LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1) 
-            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)  
+            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
             GROUP BY t2a.ART_ID, t2si.client_storage_id
             ");
         }
@@ -627,15 +626,15 @@ class CatalogueClass
 
                 // from cheap to rich
                 if ($order_status === 1) {
-                    $oderBy = "`status` ASC, `price` ASC";
+                    $oderBy = "`status`, `price`";
                 }
                 // from rich to cheap
                 elseif ($order_status === 2) {
-                    $oderBy = "`status` ASC, `price` DESC";
+                    $oderBy = "`status`, `price` DESC";
                 }
                 // default status + price order
                 else {
-                    $oderBy = "`status` ASC, `price` ASC, `article_nr_displ` ASC";
+                    $oderBy = "`status`, `price`, `article_nr_displ`";
                 }
 
                 $temp_arr = [];
@@ -646,7 +645,8 @@ class CatalogueClass
                     $article_nr_displ       = $db->result($r, $i - 1, "article_nr_displ");
                     $brand_id               = (int)$db->result($r, $i - 1, "brand_id");
                     $brand_name             = $db->result($r, $i - 1, "brand_name");
-                    $article_name           = $db->result($r, $i - 1, "article_name");
+                    //$article_name           = $db->result($r, $i - 1, "article_name");
+                    $article_name = $this->getArticleName($art_id);
                     $delivery_days          = (int)$db->result($r, $i - 1, "delivery_days");
                     $delivery_info          = $db->result($r, $i - 1, "delivery_info");
                     $delivery_short_info    = $db->result($r, $i - 1, "delivery_short_info");
@@ -750,9 +750,8 @@ class CatalogueClass
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID)
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
-        GROUP BY t2c.`ART_ID` 
-        ORDER BY t2n.`NAME`;");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
+        GROUP BY t2c.`ART_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -944,7 +943,7 @@ class CatalogueClass
         $r = $dbt->query("SELECT t2a.ART_ID, t2si.client_storage_id, t2si.price_usd, t2si.suppl_id, acvc.*, t2si.suppl_id, tpsf.margin, tpsf.delivery, tpsf.margin2 
         FROM `T2_ARTICLES` t2a 
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
-            LEFT OUTER JOIN {$db->getDbName()}.A_CLIENTS_VAT_CONDITIONS acvc ON (acvc.client_id = t2si.suppl_id)
+            LEFT OUTER JOIN {$db->getDbName()}.A_CLIENTS_VAT_CONDITIONS acvc ON ({$db->getDbName()}.acvc.client_id = t2si.suppl_id)
             LEFT OUTER JOIN `T_POINT_SUPPL_FM` tpsf ON (tpsf.suppl_id = t2si.suppl_id AND tpsf.suppl_storage_id = t2si.client_storage_id)
         WHERE t2a.ART_ID IN ($where_art_id_str) AND t2si.status = 1 AND tpsf.tpoint_id = $tpoint AND tpsf.price_rating_id = '$price_suppl_lvl' AND tpsf.price_from <= t2si.price_usd AND tpsf.price_to >= t2si.price_usd;");
         $supplPrices = mysqli_fetch_all($r, MYSQLI_ASSOC);
@@ -1427,7 +1426,6 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID = t2a.ART_ID)
         WHERE t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;");
         $n = (int)$dbt->num_rows($r);
-
         if ($n === 1) {
             $price      = (float)$dbt->result($r, 0, "price_" . $price_lvl);
             $minMarkup  = (float)$dbt->result($r, 0, "minMarkup");
@@ -1591,13 +1589,35 @@ class CatalogueClass
         return array($margin, $delivery, $margin2);
     }
 
+    public function getTpointDeliveryTime($delivery_days)
+    {
+        $current_week_day = (int)date("N");
+
+        if (($delivery_days + $current_week_day) === 7) {
+            $delivery_days++;
+        }
+
+        if ($delivery_days === 0) {
+            $delivery_time = "<span class=\"delivery-green\">{today_cap}</span>";
+        } elseif ($delivery_days === 1) {
+            $delivery_time = "<span class=\"delivery-blue\">{tomorrow_cap}</span>";
+        } else {
+            $date_del       = date("d.m", strtotime(" + " . $delivery_days . " days"));
+            $week           = date("N", strtotime(" + " . $delivery_days . " days"));
+            $week_day_short = $this->getWeekdayAbr($week);
+            $delivery_time = "<span class=\"delivery-dark\">$date_del ($week_day_short)</span>";
+        }
+
+        return $delivery_time;
+    }
+
     public function getTpointDeliveryInfo($tpoint_id, $storage_id): array
     {
         $db = DbSingleton::getTokoDb();
         $week_day = date("N");
         $cur_time = date("H:i:s");
         $delivery_days = 0;
-        $info = $short_info = "";
+        $info = $short_info = $time_from_del = "";
 
         $r = $db->query("SELECT `delivery_days`, `time_from_del`, `time_to_del` 
         FROM `T_POINT_DELIVERY_TIME`
@@ -1626,9 +1646,10 @@ class CatalogueClass
         }
 
         return array(
-            "info"  => $info,
-            "days"  => $delivery_days,
-            "short" => $short_info
+            "info"      => $info,
+            "days"      => $delivery_days,
+            "short"     => $short_info,
+            "time_from" => $time_from_del
         );
     }
 
@@ -1638,7 +1659,7 @@ class CatalogueClass
         $week_day = date("N");
         $cur_time = date("H:i:s");
         $delivery_days = 0;
-        $info = $short_info = "";
+        $info = $short_info = $time_from_del = "";
 
         $r = $db->query("SELECT `delivery_days`, `time_from_del`, `time_to_del` 
         FROM `T_POINT_SUPPL_DELIVERY_TIME` 
@@ -1669,7 +1690,8 @@ class CatalogueClass
         return array(
             "info"  => $info,
             "days"  => $delivery_days,
-            "short" => $short_info
+            "short" => $short_info,
+            "time_from" => $time_from_del
         );
     }
 
@@ -2225,7 +2247,7 @@ class CatalogueClass
         $db = DbSingleton::getTokoDb();
         $nophoto = $this->noPhoto;
 
-        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION` ASC;");
+        $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION`;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $list = "";
@@ -2555,7 +2577,7 @@ class CatalogueClass
         $value_id = $this->getUrlNumber($value_id);
         $db = DbSingleton::getTokoDb();
         $value_name = "";
-        $r = $db->query("SELECT `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
+        $r = $db->query("SELECT `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id AND `LANG_ID` = 16 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $value_name = $db->result($r, 0, "VALUE_LINK");
@@ -2609,7 +2631,7 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
             LEFT OUTER JOIN `T2_BARCODES` t2br ON (t2br.ART_ID = t2a.ART_ID)
-        WHERE t2as.AMOUNT != 0 AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END)
+        WHERE t2as.AMOUNT != 0 AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
         GROUP BY t2a.ARTICLE_NR_DISPL;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {

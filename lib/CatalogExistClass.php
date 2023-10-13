@@ -92,11 +92,16 @@ class CatalogExistClass extends CatalogueClass
     }
     public function getGroupParamName($param_id)
     {
+        $language = new LangClass;
+        $lang_id = $language->getOldLanguage($this->getLanguage());
+
         $param_id = $this->getUrlNumber($param_id);
         $db = DbSingleton::getTokoDb();
         $param_name = "";
-        $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` = $param_id LIMIT 1;");
-        $n = $db->num_rows($r);
+
+        $r = $db->query("SELECT `PARAM_NAME` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` = $param_id AND `LANG_ID` = $lang_id LIMIT 1;");
+        $n = (int)$db->num_rows($r);
+
         if ($n > 0) {
             $param_name = $db->result($r, 0, "PARAM_NAME");
         }
@@ -133,7 +138,7 @@ class CatalogExistClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
 
         $value_id = 0;
-        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `PARAM_ID` = $param_id AND `VALUE_LINK` = '$value_link' LIMIT 1;");
+        $r = $db->query("SELECT `VALUE_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `PARAM_ID` = $param_id AND `VALUE_LINK` = '$value_link' AND `LANG_ID` = 16 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $value_id = (int)$db->result($r, 0, "VALUE_ID");
@@ -149,12 +154,14 @@ class CatalogExistClass extends CatalogueClass
     }
     public function getGroupValueName($value_id, $param_id = 0)
     {
+
         $value_id = $this->getUrlNumber($value_id);
         $param_id = $this->getUrlNumber($param_id);
         $db = DbSingleton::getTokoDb();
+        $lang_id = $this->getOldLanguage($this->getLanguage());
         $value_name     = "";
         $where_param    = ($param_id > 0) ? "`PARAM_ID` = $param_id" : "1";
-        $r = $db->query("SELECT `VALUE_NAME` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id AND $where_param LIMIT 1;");
+        $r = $db->query("SELECT `VALUE_NAME` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id AND $where_param AND `LANG_ID` = $lang_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $value_name = $db->result($r, 0, "VALUE_NAME");
@@ -169,8 +176,9 @@ class CatalogExistClass extends CatalogueClass
         $value_id = $this->getUrlNumber($value_id);
         $param_id = $this->getUrlNumber($param_id);
         $db = DbSingleton::getTokoDb();
+
         $value_name = "";
-        $r = $db->query("SELECT `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
+        $r = $db->query("SELECT `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id AND `LANG_ID` = 16 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $value_name = $db->result($r, 0, "VALUE_LINK");
@@ -187,7 +195,7 @@ class CatalogExistClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
         $value_h1 = "";
-        $r = $db->query("SELECT `VALUE_H1_$postfix` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
+        $r = $db->query("SELECT `VALUE_H1_$postfix` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id AND `LANG_ID` = 16 LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $value_h1 = $db->result($r, 0, "VALUE_H1_$postfix");
@@ -209,8 +217,8 @@ class CatalogExistClass extends CatalogueClass
         $value_name = "";
         $value_link = "";
         $postfix    = $this->getLangPostfix($this->getLanguage());
-
-        $r = $db->query("SELECT `PARAM_ID`, `VALUE_NAME`, `VALUE_H1_$postfix`, `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id LIMIT 1;");
+        $lang_id = $this->getOldLanguage($this->getLanguage());
+        $r = $db->query("SELECT `PARAM_ID`, `VALUE_NAME`, `VALUE_H1_$postfix`, `VALUE_LINK` FROM `T2_TREE_VALUE_EXIST` WHERE `VALUE_ID` = $value_id AND `LANG_ID` = $lang_id LIMIT 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
             $param_id   = $db->result($r, 0, "PARAM_ID");
@@ -301,7 +309,7 @@ class CatalogExistClass extends CatalogueClass
 
         $params = [];
         $params_str = "";
-        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID` = $group_id AND `STATUS` = 1;");
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID` = $group_id AND `STATUS` = 1 AND `LANG_ID` = 16;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $param_id   = (int)$db->result($r, $i - 1, "PARAM_ID");
@@ -890,7 +898,7 @@ class CatalogExistClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $params = [];
-        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID` = $group_id AND `STATUS` = 1;");
+        $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `GROUP_ID` = $group_id AND `STATUS` = 1 AND `LANG_ID` = 16;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $param_id = (int)$db->result($r, $i - 1, "PARAM_ID");
@@ -1099,10 +1107,10 @@ class CatalogExistClass extends CatalogueClass
         $query_limit    = $query = $query_min = "";
 
         $order_status   = 0;
-        $where_sort     = "ORDER BY t.price = 0, t.id ASC";
+        $where_sort     = "ORDER BY t.price = 0, t.id";
 
         if ($sort === "asc") {
-            $where_sort     = "ORDER BY t.price = 0, t.price ASC";
+            $where_sort     = "ORDER BY t.price = 0, t.price";
             $order_status   = 1;
         }
 
@@ -1127,7 +1135,7 @@ class CatalogExistClass extends CatalogueClass
                     LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
                     LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
                 WHERE t.price > 0 AND 1 $where_mfa $where_link_art
-                ORDER BY t.price ASC LIMIT 1";
+                ORDER BY t.price LIMIT 1";
             } else {
                 $where = $this->getFiltersWhere($params);
                 $query = "SELECT t.art_id FROM `$table` t
@@ -1141,7 +1149,7 @@ class CatalogExistClass extends CatalogueClass
                     LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id)
                     LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
                 WHERE t.price > 0 AND 1 $where $where_mfa $where_link_art
-                ORDER BY t.price ASC LIMIT 1";
+                ORDER BY t.price LIMIT 1";
             }
 
             $query_limit = "$query $limit ";
@@ -1326,7 +1334,7 @@ class CatalogExistClass extends CatalogueClass
                 }
 
                 $filters_btn = "
-                <a class=\"btn btn-sm\" href=\"" . $this->getSiteLink() . "$car_link\">{filter_cap_empty} &times;</a>" . $filters_btn;
+                <a class=\"btn btn-sm btn-white\" href=\"" . $this->getSiteLink() . "$car_link\">{filter_cap_empty}</a>" . $filters_btn;
             }
         }
 
@@ -1430,7 +1438,7 @@ class CatalogExistClass extends CatalogueClass
             $keys = implode(",", $keys);
 
             $param_ids = [];
-            $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` IN ($keys) ORDER BY `POSITION` ASC;");
+            $r = $db->query("SELECT `PARAM_ID` FROM `T2_TREE_PARAMS_EXIST` WHERE `PARAM_ID` IN ($keys) AND `LANG_ID` = 16 ORDER BY `POSITION`;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $param_id       = (int)$db->result($r, $i - 1, "PARAM_ID");
@@ -1852,14 +1860,23 @@ class CatalogExistClass extends CatalogueClass
         return $db->result($r, 0, "TYPE_BODY");
     }
 
+    public function getBodyName($body_id)
+    {
+        $language = new LangClass;
+        $lang_id = $language->getOldLanguage($this->getLanguage());
+        $db = DbSingleton::getTokoDb();
+        $r = $db->query("SELECT `TYPE_BODY` FROM `T_types_body_car` WHERE `BODY_ID` = $body_id AND `LANG_ID` = $lang_id LIMIT 1;");
+        return $db->result($r, 0, "TYPE_BODY");
+    }
+
     public function getCatalogSeoModsList($model_id): string
     {
         $list = "";
         $db = DbSingleton::getTokoDb();
 
         $r = $db->query("SELECT `TYP_KW_FROM`, `TYP_HP_FROM`, `TYP_CCM`, `VOLUME_CM`, `FUEL_ID`, `TYP_MMT_TEXT`,
-        CASE WHEN TYP_PCON_START = 0 THEN '' ELSE TYP_PCON_START END AS TYP_PCON_START,
-        CASE WHEN TYP_PCON_END = 0 THEN '' ELSE TYP_PCON_END END AS TYP_PCON_END
+        IF (TYP_PCON_START = 0, '', TYP_PCON_START) AS TYP_PCON_START,
+        IF (TYP_PCON_END = 0, '', TYP_PCON_END) AS TYP_PCON_END
         FROM `T_types` 
         WHERE `TYP_MOD_ID` = $model_id AND `ACTIVE` = 1;");
         $n = $db->num_rows($r);
@@ -1888,9 +1905,9 @@ class CatalogExistClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
 
         if ($mfa_id > 0 && $model !== "") {
-            $r = $db->query("SELECT `MOD_ID`, `TEX_TEXT`, 
-            CASE WHEN MOD_PCON_START = 0 THEN '' ELSE MOD_PCON_START END AS MOD_PCON_START,
-            CASE WHEN MOD_PCON_END = 0 THEN '' ELSE MOD_PCON_END END AS MOD_PCON_END 
+            $r = $db->query("SELECT `MOD_ID`, `TEX_TEXT`,      
+            IF (MOD_PCON_START = 0, '', MOD_PCON_START) AS MOD_PCON_START,
+            IF (MOD_PCON_END = 0, '', MOD_PCON_END) AS MOD_PCON_END
             FROM `T_models`
             WHERE `MOD_MFA_ID` = $mfa_id AND `Model` = '$model'
             ORDER BY `MOD_PCON_START`;");
@@ -2646,6 +2663,7 @@ class CatalogExistClass extends CatalogueClass
     public function getCatalogParamsCount($params): array
     {
         $count_brands = $count_params = $count_values = 0;
+
         foreach ($params as $param_id => $values) {
             if ((int)$param_id === 0) {
                 $count_brands += count($values);

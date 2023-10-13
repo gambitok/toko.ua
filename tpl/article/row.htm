@@ -56,6 +56,21 @@
 
     </div>
 </div>
+<div class="article-info-row">
+    <div class="input-group article-info-row-fast">
+        <input
+                id="input_phone_article" class="form-control masked-phone input-buy-min" type="tel" name="phone"
+                placeholder="+38(___) ___-__-__"
+                title="{input_valid_phone}" value="{user_phone}"
+        >
+        <div class="input-group-append">
+            <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="letsFinishOrder('input_phone_article', 1);">{make_order_fast}</button>
+        </div>
+    </div>
+</div>
+<div class="article-info-row">
+    {more_suggestions}
+</div>
 <div class="article-info-row article-info-row-wrap">
     <div class="article-info-row__text">
         {storage_info}: {art_del}
@@ -78,21 +93,11 @@
 
 </div>
 
-<div class="article-info-row">
-    <div class="input-group">
-        <input
-            id="input_phone_article" class="form-control masked-phone input-buy-min" type="tel" name="phone"
-            placeholder="+38(___) ___-__-__"
-            title="{input_valid_phone}" value="{user_phone}"
-        >
-        <div class="input-group-append">
-            <button class="btn btn-info btn-buy btn-buy-min" id="make_order_fast" {disabled} onclick="letsFinishOrder('input_phone_article', 1);">{make_order_fast}</button>
-        </div>
-    </div>
+<div class="article-info-row article-info-row-wrap">
+    {article_delivery_form}
 </div>
 
 <script>
-
     $(document).ready(function() {
         $("#count_1").inputSpinner();
 
@@ -110,5 +115,4 @@
         });
 
     });
-
 </script>

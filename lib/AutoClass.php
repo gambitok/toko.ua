@@ -273,8 +273,8 @@ class AutoClass extends CatalogueClass
         $text = "";
 
         $r = $db->query("SELECT `TYP_KW_FROM`, `TYP_HP_FROM`, `TYP_CCM`, `FUEL_ID`, `ENG_Cod`, `TYP_MMT_TEXT`,
-        CASE WHEN TYP_PCON_START = 0 THEN '' ELSE TYP_PCON_START END AS TYP_PCON_START,
-        CASE WHEN TYP_PCON_END = 0 THEN '' ELSE TYP_PCON_END END AS TYP_PCON_END
+        IF (TYP_PCON_START = 0, '', TYP_PCON_START) AS TYP_PCON_START,
+        IF (TYP_PCON_END = 0, '', TYP_PCON_END) AS TYP_PCON_END
         FROM `T_types` WHERE `TYP_ID` = $typ_id AND `ACTIVE` = 1;");
         $n = $db->num_rows($r);
         if ($n > 0) {
@@ -529,7 +529,10 @@ class AutoClass extends CatalogueClass
         $cookie     = $this->getSessionID();
         $where      = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-        $r = $db->query("SELECT `id`, `typ_id`, `timestamp` FROM `AUTO_HISTORY` WHERE $where GROUP BY `typ_id` ORDER BY `timestamp` DESC LIMIT 10;");
+        $r = $db->query("SELECT `id`, `typ_id`, `timestamp` FROM `AUTO_HISTORY` 
+        WHERE $where 
+        GROUP BY `typ_id` 
+        ORDER BY `timestamp` DESC LIMIT 10;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
@@ -622,6 +625,9 @@ class AutoClass extends CatalogueClass
         }
 
         $groups_str = implode(",", $groups);
+        if (empty($groups_str)) {
+            $groups_str = 0;
+        }
         $arr = [];
         $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID`, `POPULAR` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` IN ($groups_str);");
         $n = $db->num_rows($r);
@@ -756,16 +762,21 @@ class AutoClass extends CatalogueClass
      * */
     public function getCarsSeoContent($mfa_link, $mod_link = "")
     {
+        $form = "";
         $mfa_id = $this->getMfaLink($mfa_link);
         $mfa_id = (empty($mfa_link)) ? "" : $mfa_id;
         $model  = $this->getModLink($mod_link);
+        $group_list = $this->getCatalogCacheCol($mfa_id, $model, $mfa_link, $mod_link);
+
+        $mfa_list = $group_list;
         if (empty($model)) {
-            $mfa_list = $this->getCarsModelList($mfa_id) . $this->getCatalogCacheCol($mfa_id, $model, $mfa_link, $mod_link);
-        } else {
-            $mfa_list = $this->getCatalogCacheCol($mfa_id, $model, $mfa_link, $mod_link);
+            $mfa_list = $this->getCarsModelList($mfa_id) . $group_list;
         }
-        $form = $this->getHtmlForm("cars/seo_content");
-        $form = str_replace(array("{seo_list}", "{seo_header}"), array($mfa_list, ""), $form);
+
+        if (!empty($mfa_list)) {
+            $form = $this->getHtmlForm("cars/seo_content");
+            $form = str_replace(array("{seo_list}", "{seo_header}"), array($mfa_list, ""), $form);
+        }
 
         return $form;
     }
@@ -777,7 +788,7 @@ class AutoClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $mas = [];
-        $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_BRAND` ASC;");
+        $r = $db->query("SELECT `MFA_ID`, `MFA_BRAND`, `MFA_BRAND_LINK` FROM `T_manufacturers` WHERE `ACTIVE` = 1 ORDER BY `MFA_BRAND`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $mfa_id     = $db->result($r, $i - 1, "MFA_ID");

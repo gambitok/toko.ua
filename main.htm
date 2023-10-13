@@ -167,21 +167,31 @@
 
 <link rel="stylesheet" href="/app/fonts/fontawesome_web/css/all-minify.css">
 
+<!--<script type="text/javascript">-->
+<!--    (function(w,d){-->
+<!--        w.HelpCrunch=function(){w.HelpCrunch.q.push(arguments)};w.HelpCrunch.q=[];-->
+<!--        function r(){var s=document.createElement('script');s.async=1;s.type='text/javascript';s.src='https://widget.helpcrunch.com/';(d.body||d.head).appendChild(s);}-->
+<!--        if(w.attachEvent){w.attachEvent('onload',r)}else{w.addEventListener('load',r,false)}-->
+<!--    })(window, document)-->
+<!--</script>-->
+
+<!--<script type="text/javascript">-->
+<!--    HelpCrunch('init', 'toko', {-->
+<!--        applicationId: 2,-->
+<!--        applicationSecret: '5GOcY85a9ND3aR1/21l78MlAxYFGx2I7bxwJNx4NW7qXDzyq+jZ8AoH3o5ocJhJdX51CVTpe+gvyNTbmHs4q7w=='-->
+<!--    })-->
+
+<!--    HelpCrunch('showChatWidget');-->
+<!--</script>-->
 <script type="text/javascript">
-    (function(w,d){
-        w.HelpCrunch=function(){w.HelpCrunch.q.push(arguments)};w.HelpCrunch.q=[];
-        function r(){var s=document.createElement('script');s.async=1;s.type='text/javascript';s.src='https://widget.helpcrunch.com/';(d.body||d.head).appendChild(s);}
-        if(w.attachEvent){w.attachEvent('onload',r)}else{w.addEventListener('load',r,false)}
-    })(window, document)
+	window.helpcrunchSettings = {
+		organization: 'toko',
+		appId: '91041fa4-d278-4025-bff1-982afba0b00b',
+	};
 </script>
 
 <script type="text/javascript">
-    HelpCrunch('init', 'toko', {
-        applicationId: 2,
-        applicationSecret: '5GOcY85a9ND3aR1/21l78MlAxYFGx2I7bxwJNx4NW7qXDzyq+jZ8AoH3o5ocJhJdX51CVTpe+gvyNTbmHs4q7w=='
-    })
-
-    HelpCrunch('showChatWidget');
+	(function(w,d){var hS=w.helpcrunchSettings;if(!hS||!hS.organization){return;}var widgetSrc='https://'+hS.organization+'.widget.helpcrunch.com/';w.HelpCrunch=function(){w.HelpCrunch.q.push(arguments)};w.HelpCrunch.q=[];function r(){if (d.querySelector('script[src="' + widgetSrc + '"')) { return; }var s=d.createElement('script');s.async=1;s.type='text/javascript';s.src=widgetSrc;(d.body||d.head).appendChild(s);}if(d.readyState === 'complete'||hS.loadImmediately){r();} else if(w.attachEvent){w.attachEvent('onload',r)}else{w.addEventListener('load',r,false)}})(window, document)
 </script>
 
 <!--<div id="myHeader" class="sticky-header"></div>-->
@@ -194,7 +204,7 @@
 	<header>
 
 		{site_warning_message}
-		{site_lang_message}
+<!--		{site_lang_message}-->
 
 		<div class="row header-top">
 			<div class="container">

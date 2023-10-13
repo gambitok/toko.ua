@@ -16,8 +16,8 @@ $start = microtime(true);
 
 $where = "1";
 $where1 = "1";
-//$where = "`GROUP_ID` = 788";
-//$where1 = "`group_id` = 788";
+//$where = "`GROUP_ID` = 51";
+//$where1 = "`group_id` = 51";
 
 $dbc->query("TRUNCATE TABLE `EX_TABLE_TREE_AVAILABLE_MFA`;");
 $dbt->query("UPDATE `T2_TREE_GROUP_EXIST` SET `STATUS_CACHE` = 0 WHERE $where;");

@@ -215,15 +215,28 @@ function catalogueFilter() {
         }}, true);
 }
 
-function getArticleApplModelForm(art_id, mfa_id, a) {
-    $(".info__applicability-checked").each(function () {
-        $(this).removeClass("span-red");
-    });
-    $(a).addClass("span-red");
+function toggleApplModel(a) {
+    $(a).next('div').toggle();
+}
+
+function getArticleApplModelTypeForm(art_id, mfa_id, model, body_id) {
+    $("#GarageForm").modal("show");
+    $("#garage_block").html("<div class=\"spinner-border\"></div>");
+    JsHttpRequest.query(folder,{ 'w': 'getArticleApplModelTypeForm', 'art_id':art_id, 'mfa_id':mfa_id, 'model':model, 'body_id':body_id},
+        function (result, errors){ if (errors) {} if (result){
+            $("#garage_block").html(result.content);
+        }}, true);
+}
+
+function getArticleApplModelForm(art_id, mfa_id) {
+    // $(".info__applicability-checked").each(function () {
+    //     $(this).removeClass("span-red");
+    // });
+    // $(a).addClass("span-red");
     JsHttpRequest.query(folder,{ 'w': 'getArticleApplModelForm', 'art_id':art_id, 'mfa_id':mfa_id},
         function (result, errors){ if (errors) {} if (result){
             $("#info2_more").html(result.content);
-            $("#info3_more").html(result.content);
+            //$("#info3_more").html(result.content);
         }}, true);
 }
 
@@ -254,17 +267,22 @@ function copyToClipboard(element, art_name) {
 /*
 * finish add car to garage
 * */
-function finishGarage(typ_id, group_link) {
+function finishGarage(typ_id, group_link = '') {
     setCookie('auto_typ_id', typ_id);
     //addToGarage(typ_id);
     addToGarageHistory(typ_id);
-    location.href = group_link;
+    if (group_link) {
+        location.href = group_link;
+    } else {
+        showNotify("{done_cap}:", '{added_cap}!', "success");
+    }
 }
 
 function addToGarageHistory(sel_typ_id = 0) {
     JsHttpRequest.query(folder,{'w':'addGarageHistory', 'sel_typ_id':sel_typ_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
             console.log(result.content);
+            console.log(sel_typ_id);
         }}, true);
 }
 
@@ -586,18 +604,34 @@ function getPartsSortForm(link) {
     location.href = redirect_link;
 }
 
-function appendCatalog() {
-    let cur_page = parseInt($("#cur_page").val());
-    let max_page = parseInt($("#max_page").val());
+// function appendCatalog() {
+//     let cur_page = parseInt($("#cur_page").val());
+//     let max_page = parseInt($("#max_page").val());
+//
+//     if (cur_page < max_page) {
+//         let new_page = cur_page + 1;
+//         $("#cur_page").val(new_page);
+//         if (new_page === max_page) {
+//             $("#append_btn").hide();
+//         }
+//         $(".cat-products-list").last().append("<div class='cat-products-list'>CONTENT HERE => PAGE " + new_page + "</div>");
+//     } else {
+//         $("#append_btn").hide();
+//     }
+// }
 
-    if (cur_page < max_page) {
-        let new_page = cur_page + 1;
-        $("#cur_page").val(new_page);
-        if (new_page === max_page) {
-            $("#append_btn").hide();
-        }
-        $(".cat-products-list").last().append("<div class='cat-products-list'>CONTENT HERE => PAGE " + new_page + "</div>");
-    } else {
-        $("#append_btn").hide();
-    }
+function showBenefitsForm(benefit_id) {
+    JsHttpRequest.query(folder,{'w':'showBenefitsForm', 'benefit_id':benefit_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#BenefitsForm").modal("show");
+            $("#benefit_content").html(result.content);
+        }}, true);
+}
+
+function toggleArticleDeliveryHide(a) {
+    $(a).next('div').toggleClass('dnone');
+    let name1 = $(a).text();
+    let name2 = $(a).attr('data-attr');
+    $(a).text(name2);
+    $(a).attr('data-attr', name1);
 }

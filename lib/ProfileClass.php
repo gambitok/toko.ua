@@ -760,7 +760,7 @@ class ProfileClass extends ClientClass
 			LEFT JOIN `CASH` mc ON (mc.id = b.cash_id) 
 			LEFT JOIN `CASH` pmc ON (pmc.id = b.pay_cash_id) 
         WHERE b.client_id = $client_id AND b.data >= '$data_from 00:00:00' AND b.data <= '$data_to 23:59:59' 
-        ORDER BY b.id ASC;");
+        ORDER BY b.id;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
@@ -1056,15 +1056,15 @@ class ProfileClass extends ClientClass
         $db = DbSingleton::getDbm();
         $options = "";
 
-        $r = $db->query("SELECT `id`, `full_name`, `address` FROM `T_POINT` WHERE `status` = 1 ORDER BY `full_name` ASC;");
+        $r = $db->query("SELECT `id`, `full_name`, `address` FROM `T_POINT` WHERE `status` = 1 ORDER BY `full_name`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id     = $db->result($r, $i - 1, "id");
             $region = $db->result($r, $i - 1, "full_name");
-            $addres = $db->result($r, $i - 1, "address");
+            $address = $db->result($r, $i - 1, "address");
 
             $options .= "
-            <option value=\"$id\">$region ($addres)</option>";
+            <option value=\"$id\">$region ($address)</option>";
         }
 
         return $options;

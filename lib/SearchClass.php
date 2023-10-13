@@ -67,7 +67,7 @@ class SearchClass extends CatalogueClass
         FROM `T2_CROSS` t2c 
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID) 	
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_search' AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END) 
+        WHERE t2c.SEARCH_NUMBER = '$article_search' AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE)) 
         GROUP BY t2c.BRAND_ID;");
         $n = $db->num_rows($r);
 
@@ -149,7 +149,7 @@ class SearchClass extends CatalogueClass
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID)
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_id AND (CASE WHEN t2n.LANG_ID != NULL THEN t2n.LANG_ID = 16 ELSE TRUE END);");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_id AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE));");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_ids[] = $db->result($r, $i - 1, "ART_ID");
@@ -687,14 +687,15 @@ class SearchClass extends CatalogueClass
                     }
                 }
 
-                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ` ASC;");
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ`;");
                 $n = $db->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id                 = (int)$db->result($r, $i - 1, "art_id");
                     $article_nr_displ       = $db->result($r, $i - 1, "article_nr_displ");
                     $brand_id               = (int)$db->result($r, $i - 1, "brand_id");
                     $brand_name             = $db->result($r, $i - 1, "brand_name");
-                    $article_name           = $db->result($r, $i - 1, "article_name");
+                    //$article_name           = $db->result($r, $i - 1, "article_name");
+                    $article_name = $this->getArticleName($art_id);
                     $delivery_days          = (int)$db->result($r, $i - 1, "delivery_days");
                     $delivery_info          = $db->result($r, $i - 1, "delivery_info");
                     $delivery_short_info    = $db->result($r, $i - 1, "delivery_short_info");
@@ -811,7 +812,7 @@ class SearchClass extends CatalogueClass
 
         }
 
-        return array($list, $list_brand, $filters);
+        return array($list, $list_brand, $filters, count($mas));
     }
 
     /*

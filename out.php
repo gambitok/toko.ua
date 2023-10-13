@@ -19,32 +19,33 @@ $catalog_exist  = new CatalogExistClass();
 
 global $content;
 $content = null;
+
 // REDIRECT TO DEFAULT LANG
-$user_id = $_COOKIE['user_id'];
-$lang_id = (int)$_COOKIE['lang_id'];
-$postfix = strpos($_SERVER["REQUEST_URI"], "/uk/");
+//$user_id = $_COOKIE['user_id'];
+//$lang_id = (int)$_COOKIE['lang_id'];
+//$postfix = strpos($_SERVER["REQUEST_URI"], "/uk/");
 
-$lang_id_prefer = (int)$_COOKIE['lang_id_prefer'];
-if ($lang_id_prefer === 1) {
-    $_SESSION['lang_id'] = 2;
-    setcookie("lang_id", 2, time()+3600);
-    setcookie("lang_id_prefer", 2, time()+3600);
-    header("Location: " . getLangUrl("uk"), TRUE, 301);
-}
-
-$lang_id_prefix = findLanguageID(findLanguage());
-if (!empty($lang_id) && !empty($lang_id_prefix)) {
-    if ($lang_id !== $lang_id_prefix) {
-        $url = getLangUrl(getLangPrefix($lang_id));
-        header("Location: " . $url, TRUE, 301);
-    }
-}
+//$lang_id_prefer = (int)$_COOKIE['lang_id_prefer'];
+//if ($lang_id_prefer === 1) {
+//    $_SESSION['lang_id'] = 2;
+//    setcookie("lang_id", 2, time()+3600);
+//    setcookie("lang_id_prefer", 2, time()+3600);
+//    header("Location: " . getLangUrl("uk"), TRUE, 301);
+//}
+//
+//$lang_id_prefix = findLanguageID(findLanguage());
+//if (!empty($lang_id) && !empty($lang_id_prefix)) {
+//    if ($lang_id !== $lang_id_prefix) {
+//        $url = getLangUrl(getLangPrefix($lang_id));
+//        header("Location: " . $url, TRUE, 301);
+//    }
+//}
 
 // set cookies for user
 setCookies();
 
 // set language for user
-//$language->setLangID(findLanguageID(findLanguage()));
+$language->setLangID(findLanguageID(findLanguage()));
 
 $theme_htm = RDD . "/main.htm";
 if (file_exists($theme_htm)) {
@@ -69,17 +70,6 @@ elseif (file_exists(RDD . "/event/$path.php")) {
     include RDD . "/event/404.php";
 }
 include_once(RDD . "/event/menu.php");
-//$cookie_lang_id = (int)$_COOKIE['lang_id'];
-//
-//if ($cookie_lang_id === 1) {
-//
-//}
-//if ($cookie_lang_id === 2) {
-//
-//}
-//if ($cookie_lang_id === 3) {
-//
-//}
 
 // Main HEAD HTML
 $content = str_replace("{navigation_content}", $menu->getSiteNavigation(), $content);
@@ -100,7 +90,7 @@ $content = str_replace("{site_script_breadcrumbs}", $breadData[1], $content);
 $content = str_replace("{main_site_breadcrumbs}", $breadData[0], $content);
 $content = str_replace("{site_page_pagination}", "", $content);
 $content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
-$content = str_replace("{site_lang_message}", $menu->getSiteLangMessage($lang_id, $lang_id_prefer), $content);
+//$content = str_replace("{site_lang_message}", $menu->getSiteLangMessage($lang_id, $lang_id_prefer), $content);
 $content = str_replace("{seo_footers_block}", "", $content);
 $content = str_replace("{site_console}", "", $content);
 $content = str_replace("{seoshield_formulas}", "", $content);

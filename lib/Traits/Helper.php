@@ -158,7 +158,7 @@ trait Helper
         $db = DbSingleton::getDbm();
         $lang_id = $this->getLanguage();
         $options = "";
-        $r = $db->query("SELECT `id` FROM `manual` WHERE `key` = '$key' ORDER BY `mid` ASC;");
+        $r = $db->query("SELECT `id` FROM `manual` WHERE `key` = '$key' ORDER BY `mid`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id         = $db->result($r, $i - 1, "id");

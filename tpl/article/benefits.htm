@@ -1,0 +1,36 @@
+<div class="row article-benefits article-benefits-head">
+    <p>{article_benefits}</p>
+</div>
+<div class="row article-benefits">
+    <div class="col-lg-3 col-12 article-benefits-card">
+        <img src="/images/benefits/benefit_1.svg" alt="{article_benefits_1}">
+        <p>{article_benefits_1}</p>
+        <a onclick="showBenefitsForm(1)"><i class="fa fa-question-circle"></i></a>
+    </div>
+    <div class="col-lg-3 col-12 article-benefits-card">
+        <img src="/images/benefits/benefit_2.svg" alt="{article_benefits_2}">
+        <p>{article_benefits_2}</p>
+        <a onclick="showBenefitsForm(2)"><i class="fa fa-question-circle"></i></a>
+    </div>
+    <div class="col-lg-3 col-12 article-benefits-card">
+        <img src="/images/benefits/benefit_3.svg" alt="{article_benefits_3}">
+        <p>{article_benefits_3}</p>
+        <a onclick="showBenefitsForm(3)"><i class="fa fa-question-circle"></i></a>
+    </div>
+    <div class="col-lg-3 col-12 article-benefits-card">
+        <img src="/images/benefits/benefit_4.svg" alt="{article_benefits_4}">
+        <p>{article_benefits_4}</p>
+        <a onclick="showBenefitsForm(4)"><i class="fa fa-question-circle"></i></a>
+    </div>
+</div>
+
+<div class="modal fade" id="BenefitsForm" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-left ">
+                <button style="color: black;font-size: 20px;" type="button" class="close" data-dismiss="modal">&times;</button>
+                <div id="benefit_content" style="padding: 20px;"></div>
+            </div>
+        </div>
+    </div>
+</div>

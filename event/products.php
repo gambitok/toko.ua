@@ -2,10 +2,15 @@
 
 $linka = findLinks();
 
+//if ($linka[1] === 'adm55340-BLUE%20PRINT-3424881') {
+//    $red_link = $catalogue->getSiteLink() . $catalogue->products_link . '/os3568-calorstat-by-vernet-2794889/';
+//    header("Location: $red_link", TRUE, 301);
+//}
+
 $art_id = (int)substr($linka[1], strrpos($linka[1], "-") + 1);
 
 if ($art_id > 0 && $catalogue->checkArticleExist($art_id)) {
-    $articleData = $showform->getArticleForm($art_id);
+    $articleData = $showform->getArticleForm($art_id, 1);
     $breadcrumbsData = $catalogue->getBreadCrumbForm($articleData["breadcrumbs"]);
 
     $content = str_replace("{main_window}", $articleData["form"], $content);

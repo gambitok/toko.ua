@@ -9,7 +9,6 @@ class ClientClass
     public $status_user             = 1;
     public $status_user_retail      = 145;
     public $default_client_id       = 26;
-//    public $default_client_id       = 10;
     public $default_user            = 0;
     public $default_tpoint          = 1;
     public $default_currency        = 1;
@@ -519,50 +518,50 @@ class ClientClass
         return $db->result($r, 0, "full_name");
     }
 
-    public function validateRegistration($phone): array
-    {
-        $db = DbSingleton::getDbm();
-
-        $answer = 0; $err = 0;
-        $client_id = 0;
-
-        $phone  = $this->formatValidPhone($phone);
-        $r = $db->query("SELECT `phone`, `client_id` FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' AND `status` = $this->status_user LIMIT 1;");
-        $n = $db->num_rows($r);
-        if ($n > 0) {
-            $client_phone   = $db->result($r, 0, "phone");
-            $client_id      = $db->result($r, 0, "client_id");
-            $answer         = 1;
-            $err            = $client_phone;
-        }
-
-        $user_id = $this->getUser();
-
-        if ($user_id > 0) {
-            $user_phone = $this->getClientPhone();
-
-            if ($phone === $user_phone) {
-                $answer = 0;
-                $err = "";
-            }
-        }
-
-        if ($user_id === 0) {
-            $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id LIMIT 1;");
-            $n = $db->num_rows($r);
-
-            if ($n > 0) {
-                $client_category = (int)$db->result($r, 0, "client_category");
-
-                if ($client_category === $this->default_client_category) {     
-                    $answer = 0;
-                    $err = "";
-                }
-            }
-        }
-
-        return array($answer, $err);
-    }
+//    public function validateRegistration($phone): array
+//    {
+//        $db = DbSingleton::getDbm();
+//
+//        $answer = 0; $err = 0;
+//        $client_id = 0;
+//
+//        $phone  = $this->formatValidPhone($phone);
+//        $r = $db->query("SELECT `phone`, `client_id` FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' AND `status` = $this->status_user LIMIT 1;");
+//        $n = $db->num_rows($r);
+//        if ($n > 0) {
+//            $client_phone   = $db->result($r, 0, "phone");
+//            $client_id      = $db->result($r, 0, "client_id");
+//            $answer         = 1;
+//            $err            = $client_phone;
+//        }
+//
+//        $user_id = $this->getUser();
+//
+//        if ($user_id > 0) {
+//            $user_phone = $this->getClientPhone();
+//
+//            if ($phone === $user_phone) {
+//                $answer = 0;
+//                $err = "";
+//            }
+//        }
+//
+//        if ($user_id === 0) {
+//            $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id LIMIT 1;");
+//            $n = $db->num_rows($r);
+//
+//            if ($n > 0) {
+//                $client_category = (int)$db->result($r, 0, "client_category");
+//
+//                if ($client_category === $this->default_client_category) {
+//                    $answer = 0;
+//                    $err = "";
+//                }
+//            }
+//        }
+//
+//        return array($answer, $err);
+//    }
 
     /*
      * checking user authorization in the system
@@ -680,7 +679,7 @@ class ClientClass
     {
         $db = DbSingleton::getTokoDb();
         $tpoint_array = [];
-        $r = $db->query("SELECT `id` FROM `T_POINT` WHERE `status` = 1 ORDER BY CASE WHEN `id` = $tpoint_id_sel THEN 0 ELSE 1 END;");
+        $r = $db->query("SELECT `id` FROM `T_POINT` WHERE `status` = 1 ORDER BY IF (`id` = $tpoint_id_sel, 0, 1);");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $tpoint_id = (int)$db->result($r, $i - 1, "id");
@@ -797,7 +796,7 @@ class ClientClass
         $password   = $db->result($r, 0, "pass");
         $message    = "Vash login: $phone, vash parol: $password. Spasibo, chto Vy s nami! (www.toko.ua)";
 
-        $dbt->query("INSERT INTO `sms_journal` (`phone`, `sign`, `message`, `status`) VALUES ('$phone', 'TOKO.UA', '$message', '1');");
+        $dbt->query("INSERT INTO `sms_journal` (`phone`, `sign`, `message`, `status`, `answer`, `ip`, `captcha`) VALUES ('$phone', 'TOKO.UA', '$message', '1', '', '', '');");
 
         return $this->replaceLang("<div class=\"col-12\">{sms_sent}</div>");
     }
@@ -815,7 +814,7 @@ class ClientClass
         $message    = "Vvedite kod: $password";
 
         $db->query("INSERT INTO `phone_validation` (`phone`, `password`, `status`) VALUES ('$phone', '$password', '0');");
-        $dbt->query("INSERT INTO `sms_journal` (`phone`, `sign`, `message`, `status`, `ip`, `captcha`) VALUES ('$phone', 'TOKO.UA', '$message', '1', '$ip', '$captcha');");
+        $dbt->query("INSERT INTO `sms_journal` (`phone`, `sign`, `message`, `status`, `answer`, `ip`, `captcha`) VALUES ('$phone', 'TOKO.UA', '$message', '1', '', '$ip', '$captcha');");
 
         return $password;
     }
@@ -866,8 +865,8 @@ class ClientClass
 
         $r = $db->query("SELECT MAX(`id`) as mid FROM `A_CLIENTS`;");
         $client_id = 0 + $db->result($r, 0, "mid") + 1;
-        $db->query("INSERT INTO `A_CLIENTS` (`id`, `name`, `full_name`, `phone`, `email`, `country`, `state`, `region`, `city`, `client_category`, `rounding_price`) 
-        VALUES ('$client_id', '$name', '$name', '$phone', '$email', '$country_id', '$state_id', '$region_id', '$city_id', $client_category, 2);");
+        $db->query("INSERT INTO `A_CLIENTS` (`id`, `name`, `full_name`, `phone`, `email`, `country`, `state`, `region`, `city`, `client_category`, `rounding_price`, `user_id`, `parrent_id`, `org_type`) 
+        VALUES ('$client_id', '$name', '$name', '$phone', '$email', '$country_id', '$state_id', '$region_id', '$city_id', $client_category, 2, 0, 0, 0);");
 
         $r = $db->query("SELECT MAX(`id`) as mid FROM `A_CLIENTS_USERS`;");
         $user_id = 0 + $db->result($r, 0, "mid") + 1;
@@ -1047,11 +1046,11 @@ class ClientClass
         if ($brand_id > 0) {
             $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-            $r = $db->query("SELECT COUNT(`id`) as kilk FROM `CLIENT_HISTORY` WHERE $where;");
-            $k = (int)$db->result($r, 0, "kilk");
+            $r = $db->query("SELECT COUNT(`id`) as ids_count FROM `CLIENT_HISTORY` WHERE $where;");
+            $k = (int)$db->result($r, 0, "ids_count");
 
             if ($k > $this->max_history_count) {
-                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
+                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` LIMIT 1;");
                 $id = $db->result($r, 0, "id");
                 $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date', `article_nr_displ` = '$article_nr_displ', `brand_id` = $brand_id, `art_id` = $art_id WHERE `id` = $id;");
             } else {
@@ -1087,11 +1086,11 @@ class ClientClass
         if ($art_id > 0) {
             $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-            $r = $db->query("SELECT COUNT(`id`) as kilk FROM `ARTS_HISTORY` WHERE $where;");
-            $k = (int)$db->result($r, 0, "kilk");
+            $r = $db->query("SELECT COUNT(`id`) as ids_count FROM `ARTS_HISTORY` WHERE $where;");
+            $k = (int)$db->result($r, 0, "ids_count");
 
             if ($k > $this->max_history_count) {
-                $r = $db->query("SELECT `id` FROM `ARTS_HISTORY` WHERE $where ORDER BY `data` ASC LIMIT 1;");
+                $r = $db->query("SELECT `id` FROM `ARTS_HISTORY` WHERE $where ORDER BY `data` LIMIT 1;");
                 $id = (int)$db->result($r, 0, "id");
                 $db->query("UPDATE `ARTS_HISTORY` SET `data` = '$date', `art_id` = $art_id WHERE `id` = $id;");
             } else {
@@ -1721,9 +1720,9 @@ class ClientClass
                     $storage_str = 0;
                 }
 
-                $fna = explode(".", $file_name);
-                $ft = count($fna);
-                $file_type = $fna[$ft - 1];
+                //$fna = explode(".", $file_name);
+                //$ft = count($fna);
+                //$file_type = $fna[$ft - 1];
 
                 if ($currency > 0) {
                     $suppl_cash_id = $currency;

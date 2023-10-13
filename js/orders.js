@@ -293,6 +293,7 @@ function getDeliveryTypeFields(delivery_id) {
 
     street              = (typeof street === 'undefined') ? '' : street;
     house               = (typeof house === 'undefined') ? '' : house;
+    porch               = (typeof porch === 'undefined') ? '' : porch;
     department          = (typeof department === 'undefined') ? '' : department;
     department_id       = (typeof department_id === 'undefined') ? 0 : department_id;
     delivery_express    = (typeof delivery_express === 'undefined') ? 0 : delivery_express;

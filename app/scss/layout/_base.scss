@@ -527,22 +527,22 @@
         display: block;
         font-size: 14px;
         height: 30px;
-        margin: 0 15px 15px;
+        margin: 15px 15px 15px 0;
         overflow: auto;
         padding: 0;
         white-space: nowrap;
         word-wrap: break-word;
+        i, span {
+            color: #9f9f9f;
+            margin: 0 10px;
+        }
         &__item {
             display: inline;
             a {
-                color: #ccc;
+                color: #9f9f9f;
                 &:hover {
-                    color: #606975;
+                    text-decoration: underline;
                 }
-            }
-            i, span {
-                color: #ddd;
-                margin: 0 10px;
             }
         }
     }
@@ -567,6 +567,15 @@
             font-size: 13px;
             margin-left: 15px;
             margin-top: 15px;
+            &:hover {
+                background: #e7e7e7;
+            }
+        }
+        a.btn-white {
+            background: white;
+            &:hover {
+                background: #e7e7e7;
+            }
         }
         i {
             color: #228b94;

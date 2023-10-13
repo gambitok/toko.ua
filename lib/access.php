@@ -12,7 +12,7 @@ function setCookies()
     return true;
 }
 
-function getSiteCurentLink()
+function getSiteCurrentLink()
 {
     $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $actual_link = str_replace(array("/uk/", "/en/"), "/", $actual_link);
@@ -32,8 +32,13 @@ function getContent($content)
     $automan    = new AutoClass();
 
     $actual_link        = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-    $actual_full_link   = "<link rel=\"canonical\" href=\"$actual_link\"/>";
     $basketData         = $shop->countBasket();
+
+    $path = getPath();
+    if ($path === 'catalog') {
+        $actual_link = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+    }
+    $actual_full_link   = "<link rel=\"canonical\" href=\"$actual_link\"/>";
 
     $content = str_replace(array("{canonical_link}", "{canonical_full_link}", "{contacts_bottom}", "{basket_count}", "{basket_style}", "{garage_style}", "{garage_status}", "{basket_summ}", "{profile_mobile}", "{list_social}", "{info_title}", "{lang_list}", "<h1></h1>"), array($actual_link, $actual_full_link, $menu->showContactsBottom(), $basketData[0], $basketData[1], "", $automan->getGarageAutoCount(), $shop->countSummBasket(), $profile->getProfileInfoMobile(), "<ul>" . getPhpContent("/tpl/menu/social_icons.php") . "</ul>", "", "", "<h1>" . getTitle(getPath()) . "</h1>"), $content);
 
@@ -139,7 +144,6 @@ function printBreadcrumbs($path)
 {
     $cat = new CatalogueClass();
     $menu = new MenuClass();
-    $automan = new AutoClass();
     $bread = findLinks();
 
     $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -148,10 +152,15 @@ function printBreadcrumbs($path)
     }
 
     $icon = "<span> > </span>";
-    $section = $path;
-    $a_home = "<li class=\"cat-products-bread__item\"><a href=\"" . $cat->getSiteLink() . "\" title=\"{seo_site_toko}\">{seo_shop_toko}</a></li>";
-    $a_section = "<li class=\"cat-products-bread__item\"><a href=\"" . $cat->getSiteLink() . "$section/\">{site_$section}</a></li>";
-    $h_section = "{site_$section}";
+    $a_home = "
+    <li class=\"cat-products-bread__item\" typeof=\"v:Breadcrumb\">
+        <a href=\"" . $cat->getSiteLink() . "\" rel=\"v:url\" property=\"v:title\" title=\"{seo_site_toko}\">{seo_shop_toko}</a>
+    </li>";
+    $a_section = "
+    <li class=\"cat-products-bread__item\" typeof=\"v:Breadcrumb\">
+        <a href=\"" . $cat->getSiteLink() . "$path/\" rel=\"v:url\" property=\"v:title\">{site_$path}</a>
+    </li>";
+    $h_section = "{site_$path}";
 
     $list = "";
     $b_arr = [];
@@ -160,51 +169,25 @@ function printBreadcrumbs($path)
         "item" => $cat->getSiteLink()
     ];
 
-    switch ($section) {
+    switch ($path) {
         case "brands": {
             $brand_link = $bread[1];
             $b_arr[2] = [
                 "name" => $h_section,
                 "item" => "" . $cat->getSiteLink() . "brands/"
             ];
-            $pretitle = "$a_home $icon <a href=\"https://toko.ua/brands/\" rel=\"v:url\" property=\"v:title\">$h_section</a>";
+            $pretitle = "$a_home $icon $h_section";
 
-            if ($brand_link !== "") {
+            if (!empty($brand_link)) {
                 $brand_id = $cat->getBrandNameLink($brand_link);
                 $brand_name = $cat->getBrandName($brand_id);
                 $b_arr[3] = [
                     "name" => $brand_name,
                     "item" => "" . $cat->getSiteLink() . "brands/" . $brand_link . "/"
                 ];
-                $pretitle .= " $icon <a href=\"https://toko.ua/brands/$brand_link/\" rel=\"v:url\" property=\"v:title\">$brand_name</a>";
-            }
-            break;
-        }
-        case "cars" : {
-            list(, $mfa_link, $model_link) = $bread;
-            $h_section = "{site_cars_h1}";
-            $b_arr[2] = [
-                "name" => $h_section,
-                "item" => "" . $cat->getSiteLink() . "cars/"
-            ];
-            $pretitle = "$a_home $icon $h_section";
-            list($mfa_name, $model_name) = $automan->getAutoDescrLink($mfa_link, $model_link);
-
-            if ($mfa_link !== "") {
-                $pretitle = "$a_home $icon <a href=\"https://toko.ua/cars/\" rel=\"v:url\" property=\"v:title\">$h_section</a>";
-                $b_arr[3] = [
-                    "name" => $mfa_name,
-                    "item" => "" . $cat->getSiteLink() . "cars/" . $mfa_link . "/"
-                ];
-                $pretitle .= " $icon <a href=\"https://toko.ua/cars/$mfa_link/\" rel=\"v:url\" property=\"v:title\">$mfa_name</a>";
-
-                if ($model_link !== "") {
-                    $b_arr[4] = [
-                        "name" => "$mfa_name $model_name",
-                        "item" => "" . $cat->getSiteLink() . "cars/" . $mfa_link . "/" . $model_link . "/"
-                    ];
-                    $pretitle .= " $icon <a href=\"https://toko.ua/cars/$mfa_link/$model_link/\" rel=\"v:url\" property=\"v:title\">$mfa_name $model_name</a>";
-                }
+                $pretitle = $a_home . $icon . "<li class=\"cat-products-bread__item\" typeof=\"v:Breadcrumb\">
+                    <a href=\"https://toko.ua/brands/\" rel=\"v:url\" property=\"v:title\">$h_section</a>
+                </li>" . $icon . $brand_name;
             }
             break;
         }
@@ -264,13 +247,6 @@ function printBreadcrumbs($path)
             $pretitle = "$a_home $icon $info";
             break;
         }
-        case "contacts" :
-        case "signin" :
-        case "registration" :
-        case "profile" :
-        case "sell" :
-        case "special_offers" :
-        case "basket" :
         case "order" : {
             $pretitle = "$a_home $icon $h_section";
             $b_arr[2] = [
@@ -421,7 +397,7 @@ function getPhpContent($file)
 
 function replaceLangVariables($content)
 {
-    $site_link = getSiteCurentLink();
+    $site_link = getSiteCurrentLink();
     $content = str_replace(array("{site_link_ru}", "{site_link_uk}", "{site_link_en}"), array($site_link["ru"], $site_link["uk"], $site_link["en"]), $content);
 
     return $content;

@@ -7,20 +7,24 @@ $mod_link = $catalogue->getUrlString($linka[2]);
 
 $formData = $prod->getCarsForm($mfa_link, $mod_link);
 
-$form   = $formData["form"];
-$title  = $formData["title"];
-$descr  = $formData["descr"];
-$meta   = $formData["meta_tag"];
-
 if ($formData["status"] === 1) {
-    $content = str_replace("{main_window}", $form . $showform->getHistoryArts(), $content);
-    if ($title !== "") {
-        $content = str_replace("{site_title}", $title, $content);
+    $content = str_replace("{main_window}", $formData["form"] . $showform->getHistoryArts(), $content);
+    if ($formData["title"] !== "") {
+        $content = str_replace("{site_title}", $formData["title"], $content);
     }
-    if ($descr !== "") {
-        $content = str_replace("{site_description}", $descr, $content);
+    if ($formData["descr"] !== "") {
+        $content = str_replace("{site_description}", $formData["descr"], $content);
     }
-    $content = str_replace("{meta_social_tag}", $meta, $content);
+    $content = str_replace("{meta_social_tag}", "", $content);
+    $content = str_replace("{main_site_breadcrumbs}",
+    "<div class=\"container pad0\"
+        <div class=\"row cat-products\">
+            <div class=\"col-12\">
+                " . $formData["breadcrumbs"]["form"] . "
+            </div>
+        </div>
+    </div>", $content);
+    $content = str_replace("{site_script_breadcrumbs}", $formData["breadcrumbs"]["script"], $content);
 } else {
     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
     header("HTTP/1.0 404 Not Found");

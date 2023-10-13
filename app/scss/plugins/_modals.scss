@@ -377,6 +377,43 @@ $colors: (
     }
 }
 
+.applicable {
+    &-mfa {
+        margin-bottom: 2em;
+        color: #000;
+        &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    }
+    &-body {
+        margin: 2em 0;
+        th {
+            text-align: left;
+        }
+        td {
+            text-align: left;
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+        }
+    }
+    &-model {
+        margin: 2em 0;
+        th {
+            text-align: left;
+        }
+        td {
+            text-align: left;
+            &:hover {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
 .info {
     &__applicability {
         margin: 15px 0;

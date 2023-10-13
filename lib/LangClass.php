@@ -20,7 +20,9 @@ class LangClass
         $lang_id = $this->getUrlNumber($_SESSION["lang_id"]);
 
         if (empty($lang_id)) {
-            $lang_id = $this->getUrlNumber($_COOKIE["lang_id"]);
+            $lang_id = $this->default_lang_id;
+            $_SESSION["lang_id"]    = $lang_id;
+            $_COOKIE["lang_id"]     = $lang_id;
 
             if (empty($lang_id)) {
                 $this->setLangID($this->default_lang_id);
@@ -89,16 +91,18 @@ class LangClass
             $url        = "toko.ua/" . $this->getLangIDPrefix($lang_id) . $link;
             $url        = str_replace("//", "/", $url);
             $url        = "https://" . $url;
-//            $url = $this->getSiteLink() . 'set_lang.php?lang_id=' . $lang_id;
-//<a href=\"$url\">$lang_abr</a>
-            $list .= "
-            <div class=\"menu-language__item $active\">
-                <form action=\"https://toko.ua/set_lang2.php\" method=\"post\">
-                    <input type=\"hidden\" name=\"set_lang_id\" value=\"$lang_id\">
-                    <input type=\"hidden\" name=\"set_lang_url\" value=\"$url\">
-                    <input type=\"submit\" value=\"$lang_abr\">
-                </form>
+            //$url = $this->getSiteLink() . 'set_lang.php?lang_id=' . $lang_id;
+            $list .= "<div class=\"menu-language__item $active\">
+                <a href=\"$url\">$lang_abr</a>
             </div>";
+//            $list .= "
+//            <div class=\"menu-language__item $active\">
+//                <form action=\"https://toko.ua/set_lang2.php\" method=\"post\">
+//                    <input type=\"hidden\" name=\"set_lang_id\" value=\"$lang_id\">
+//                    <input type=\"hidden\" name=\"set_lang_url\" value=\"$url\">
+//                    <input type=\"submit\" value=\"$lang_abr\">
+//                </form>
+//            </div>";
         }
 
         return $list;
