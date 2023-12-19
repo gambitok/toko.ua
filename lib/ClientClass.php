@@ -1669,7 +1669,7 @@ class ClientClass
         $db = DbSingleton::getDbm();
         $dbt = DbSingleton::getTokoDb();
         $answer = 0;
-        $err = "Помилка збереження даних!";
+        $err = "Error saving data!";
         $user_id = 0;
         $price = 0;
         $suppl_cash_id = 2;
@@ -1746,6 +1746,7 @@ class ClientClass
                         $krs += 1;
 
                         if ($krs >= $start_row) {
+                            $encoding1 = mb_detect_encoding($Row[$index - 1]);
                             $suppl_index = trim(iconv("UTF-8", "Windows-1251", $Row[$index - 1]));
                             $suppl_brand = trim(iconv("UTF-8", "Windows-1251", $Row[$brand - 1]));
                             $suppl_price = str_replace(",", ".", trim(iconv("UTF-8", "Windows-1251", $Row[$price - 1])));

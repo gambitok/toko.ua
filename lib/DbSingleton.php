@@ -7,6 +7,7 @@ class DbSingleton
     private static $instanceDb;
     private static $instanceTokoDb;
     private static $instanceTokoCacheDb;
+    private static $instanceTokoEmojiDb;
 
     public static function getDbm()
     {
@@ -36,5 +37,15 @@ class DbSingleton
         }
 
         return self::$instanceTokoCacheDb;
+    }
+
+    public static function getTokoEmojiDb()
+    {
+        if (self::$instanceTokoEmojiDb === null) {
+            self::$instanceTokoEmojiDb = new dbe();
+            self::$instanceTokoEmojiDb->connect();
+        }
+
+        return self::$instanceTokoEmojiDb;
     }
 }

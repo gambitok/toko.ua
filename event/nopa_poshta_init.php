@@ -2,7 +2,19 @@
 
 use LisDev\Delivery\NovaPoshtaApi2;
 
-$np = new NovaPoshtaApi2('c11f032abf542a39f2324d58004e12c1');
+function getNovaPoshtaKey()
+{
+    $db = DbSingleton::getTokoDb();
+    $key = "";
+    $r = $db->query("SELECT `CODE` FROM `MAIL_SETTINGS` WHERE `ID` = 1 LIMIT 1;");
+    $n = $db->num_rows($r);
+    if ($n > 0) {
+        $key = $db->result($r, 0, "CODE");
+    }
+    return $key;
+}
+
+$np = new NovaPoshtaApi2(getNovaPoshtaKey());
 
 $list = "";
 $arr = $np->getCities();

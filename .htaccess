@@ -25,9 +25,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !(\.[a-zA-Z0-9]{1,5}|/)$
 RewriteRule ^(.*)$ $1/ [L,R=301]
 
-# redirect https://toko.ua/index => https://toko.ua
-RewriteCond %{THE_REQUEST} ^.*/index
-RewriteRule ^(.*)$ https://toko.ua/ [R=301,L]
+## redirect https://toko.ua/index => https://toko.ua
+#RewriteCond %{THE_REQUEST} ^.*/index
+#RewriteRule ^(.*)$ https://toko.ua/ [R=301,L]
 
 # redirect https://toko.ua/index.php => https://toko.ua
 RewriteCond %{THE_REQUEST} ^.*/index\.php

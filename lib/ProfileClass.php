@@ -424,7 +424,8 @@ class ProfileClass extends ClientClass
                     $delivery       = $db->result($r, 0, "delivery_type_id");
                     $status         = $db->result($r, 0, "status_dp");
                     $cash_id        = $db->result($r, 0, "cash_id");
-                    $summ_sale      = $db->result($r, 0, "summ_sale");
+                    //$summ_sale      = $db->result($r, 0, "summ_sale");
+                    $summ_sale      = $db->result($r, 0, "summ");
                     $status_visible = (int)$db->result($r, 0, "status_visible");
                     $price_summ     += (float)$summ_sale;
                     $summ           = $db->result($r, 0, "summ");

@@ -271,7 +271,7 @@
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 999999;
+    z-index: 1050;
     &-form {
         align-items: center;
         display: flex;
@@ -1129,6 +1129,37 @@
 
 /*==== PHONE ====*/
 @media (max-width:992px) {
+    .article-form {
+        h2 {
+            margin-top: 15px;
+            font-size: 18px;
+        }
+        &-row {
+            nav.article-form-row__title {
+                a {
+                    border-bottom: 2px solid #deedf3;
+                    border-top: 2px solid #deedf3;
+                }
+                a.active {
+                    border-bottom: 2px solid #228b94;
+                    border-top: 1px solid #228b94;
+                }
+            }
+        }
+    }
+
+    .article-benefits {
+        &-card {
+            justify-content: space-between;
+            p {
+                width: 100%;
+            }
+            a {
+                width: 50px;
+                text-align: right;
+            }
+        }
+    }
 
     .article-info {
         &-pc {

@@ -88,6 +88,8 @@ if ($n > 0) {
                         $csvData = file_get_contents($inputFileName);
                         $lines = explode(PHP_EOL, $csvData);
                         foreach ($lines as $line) {
+                            //$rows[] = str_getcsv($line, ";", '"');
+
                             $rows[] = str_getcsv($line, ";");
                         }
                     }
@@ -156,6 +158,9 @@ if ($n > 0) {
             } else {
                 $err = "The file $inputFileName does not exists";
             }
+
+//            $err_text = $err;
+//            $err = trim(iconv("UTF-8", "Windows-1251", $err));
 
             print 'File ' . $inputFileName . ' processed!' . "\n" . ($answer === 0 ? 'Error: ' : 'Success! ') . $err . "\n";
 

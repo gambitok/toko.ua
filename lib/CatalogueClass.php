@@ -1468,9 +1468,9 @@ class CatalogueClass
 
             $price = $this->getPriceRatingKours($price, $cash_id, 1);
 
-            if ($cash_id === 1) {
+//            if ($cash_id === 1) {
                 $price = $client->getClientPriceRounding($client_id, $price);
-            }
+//            }
         }
 
         return $price;

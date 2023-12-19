@@ -10,9 +10,6 @@ class FormClass extends CatalogueClass
     public $max_history_count   = 10;
     public $uploads_link        = "https://toko.ua/uploads/images/catalogue";
 
-    /*
-     * show modal form
-     * */
     public function showModalForm($name)
     {
         $name = $this->getNameString($name);
@@ -24,10 +21,6 @@ class FormClass extends CatalogueClass
         return $form;
     }
 
-    /*
-     * get brand country & flag
-     * from BRAND_ID
-     * */
     public function getCountryFlag($brand_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -219,12 +212,28 @@ class FormClass extends CatalogueClass
         return $basket_id;
     }
 
+    public function getBasketAnswer($basket_id, $new_amount, $stock)
+    {
+        $db = DbSingleton::getTokoDb();
+        $answer = ""; $err = 0;
+        if ($new_amount > $stock) {
+            $answer = "{too_much}"; $err = 1;
+        }
+        elseif ($new_amount === 0) {
+            $db->query("DELETE FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
+            $answer = "new_amount = 0"; $err = 2;
+        }
+        elseif ($new_amount > 0) {
+            $db->query("UPDATE `basket` SET `amount` = $new_amount WHERE `id` = $basket_id LIMIT 1;");
+            $answer = "ok"; $err = 3;
+        }
+        return array($answer, $err);
+    }
+
     public function updateBasketCountChange($basket_id, $amount): array
     {
         $basket_id = $this->getUrlNumber($basket_id);
-        $answer = ""; $err = 0;
         $stock = 0;
-
         $db = DbSingleton::getTokoDb();
 
         $r = $db->query("SELECT `stock` FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
@@ -234,18 +243,9 @@ class FormClass extends CatalogueClass
             $stock = (int)$db->result($r, 0, "stock");
             $new_amount = (int)$amount;
 
-            if ($new_amount > $stock) {
-                $answer = "{too_much}"; $err = 1;
-            }
-            elseif ($new_amount === 0) {
-                $db->query("DELETE FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
-                $answer = "new_amount = 0"; $err = 2;
-            }
-            elseif ($new_amount > 0) {
-                $db->query("UPDATE `basket` SET `amount` = $new_amount WHERE `id` = $basket_id LIMIT 1;");
-                $answer = "ok"; $err = 3;
-            }
+            list($answer, $err) = $this->getBasketAnswer($basket_id, $new_amount, $stock);
         } else {
+            $err = 0;
             $answer = "empty";
         }
 
@@ -255,7 +255,6 @@ class FormClass extends CatalogueClass
     public function updateBasketCount($basket_id, $status = 0): array
     {
         $basket_id = $this->getUrlNumber($basket_id);
-        $answer = ""; $err = 0;
         $stock = 0;
         $db = DbSingleton::getTokoDb();
 
@@ -267,18 +266,9 @@ class FormClass extends CatalogueClass
             $stock      = (int)$db->result($r, 0, "stock");
             $new_amount = ($status === 0) ? $amount - 1 : $amount + 1;
 
-            if ($new_amount > $stock) {
-                $answer = "{too_much}"; $err = 1;
-            }
-            elseif ($new_amount === 0) {
-                $db->query("DELETE FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
-                $answer = "new_amount = 0"; $err = 2;
-            }
-            elseif ($new_amount > 0) {
-                $db->query("UPDATE `basket` SET `amount` = $new_amount WHERE `id` = $basket_id LIMIT 1;");
-                $answer = "ok"; $err = 3;
-            }
+            list($answer, $err) = $this->getBasketAnswer($basket_id, $new_amount, $stock);
         } else {
+            $err = 0;
             $answer = "empty";
         }
 
@@ -293,25 +283,46 @@ class FormClass extends CatalogueClass
         $search_number = $this->getFormatAticle($search_number);
         $link = $this->getSiteLink() . $this->search_link . "/$search_number/$brand_link/";
 
-        $more = "{more_offers}";
-//        $n = 0;
-//
-//        if ($suppl_id === 0) {
-//            $r = $db->query("SELECT COUNT(`art_id`) as arts FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID` = $art_id");
-//            $n = (int)$db->result($r, 0, "arts") - 1;
-//
-//            $more = "{more_cap} $n {offer_pair_cap}";
-//        } else {
-//            $r = $db->query("SELECT COUNT(`art_id`) as arts FROM `T2_SUPPL_IMPORT` WHERE `art_id` = $art_id AND `status` = 1");
-//            $n = (int)$db->result($r, 0, "arts") - 1;
-//
-//            $r = $db->query("SELECT `client_storage_id`, `stock_suppl` FROM `T2_SUPPL_IMPORT` WHERE `price_usd` = (SELECT MIN(`price_usd`) as min_price FROM `T2_SUPPL_IMPORT` WHERE `art_id` = $art_id AND `status` = 1) LIMIT 1;");
-//            $client_storage_id = $db->result($r, 0, "client_storage_id");
-//            $stock_suppl = $db->result($r, 0, "stock_suppl");
-//            $min_price = $this->getArticleSupplPrice($art_id, $stock_suppl, $client_storage_id);
-//
-//            $more = "{more_cap} $n {offer_pair_cap} {from_cap} $min_price";
-//        }
+        $kours = new ExRateClass();
+        $cash_abr = $kours->getKoursCaptionLang($this->getCurrentExrate());
+
+        $more = "";
+
+        if ($suppl_id === 0) {
+            $r = $db->query("SELECT COUNT(`art_id`) as arts FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID` = $art_id");
+            $n = (int)$db->result($r, 0, "arts") - 1;
+
+            if ($n > 0) {
+                $min_price = $this->getArticlePrice($art_id);
+                $more = "{more_cap} $n {offer_pair_cap}";
+                $more .= " {from_cap} $min_price " . $cash_abr;
+            }
+        } else {
+            $r = $db->query("SELECT COUNT(si.`art_id`) as count_art_id FROM `T2_SUPPL_IMPORT` si 
+                LEFT JOIN `myparts_dba`.`A_CLIENTS_STORAGE` cs ON (cs.`client_id` = si.suppl_id AND cs.`id` = si.client_storage_id)
+            WHERE si.`ART_ID` = $art_id AND cs.visible = 1;");
+            $n = (int)$db->result($r, 0, "count_art_id") - 1;
+
+            if ($n > 0) {
+
+                $r = $db->query("SELECT `client_storage_id`, `suppl_id` FROM `T2_SUPPL_IMPORT` 
+                WHERE `price_usd` = (
+                    SELECT MIN(si.`price_usd`) as min_price FROM `T2_SUPPL_IMPORT` si
+                        LEFT JOIN `myparts_dba`.`A_CLIENTS_STORAGE` cs ON (cs.`client_id` = si.suppl_id AND cs.`id` = si.client_storage_id)
+                    WHERE si.`art_id` = $art_id AND si.`status` = 1 AND (si.`client_storage_id` != $storage_id OR si.`suppl_id` != $suppl_id) AND cs.`visible` = 1
+                ) AND `art_id` = $art_id LIMIT 1;");
+
+                $client_storage_id = $db->result($r, 0, "client_storage_id");
+                $client_suppl_id = $db->result($r, 0, "suppl_id");
+
+                if ($client_storage_id > 0 && $client_suppl_id > 0) {
+                    $min_price = $this->getArticleSupplPrice($art_id, $client_suppl_id, $client_storage_id);
+
+                    $more = "{more_cap} $n {offer_pair_cap}";
+                    $more .= " {from_cap} $min_price " . $cash_abr;
+                }
+            }
+        }
 
         return "<a class='article-info-row__link' href='$link'>$more</a>";
     }
@@ -1636,15 +1647,15 @@ class FormClass extends CatalogueClass
             $list = "
             <div class=\"info__numbers\">
                 <div class=\"row info__numbers-title\">
-                    <div class=\"col-3\">{brand_cap}</div>
-                    <div class=\"col-9\">{art_cap}</div>
+                    <div class=\"col-lg-3 col-5\">{brand_cap}</div>
+                    <div class=\"col-lg-9 col-7\">{art_cap}</div>
                 </div>";
             $i = 1;
 
             foreach ($arr as $key => $values) {
                 $list .= "<div class=\"row info__numbers-row\">
-                    <div class=\"col-3 info__numbers-row-auto\">" . $key . "</div>
-                    <div class=\"col-9 info__numbers-row-article\">";
+                    <div class=\"col-lg-3 col-12 info__numbers-row-auto\">" . $key . "</div>
+                    <div class=\"col-lg-9 col-12 info__numbers-row-article\">";
 
                 foreach ($values as $value) {
                     $format_value = str_replace(str_split('.,+-\/:*?"<>| '), "", $value);
@@ -1731,8 +1742,6 @@ class FormClass extends CatalogueClass
             for ($i = 1; $i <= $n; $i++) {
                 $brand_id   = $db->result($r, $i - 1, "MFA_ID");
                 $brand_name = $db->result($r, $i - 1, "MFA_BRAND");
-
-                //$list .= "<a class=\"info__applicability-checked\" onclick='getArticleApplModelForm(\"$art_id\", \"$brand_id\", this)'><i class=\"fas fa-car\"></i>$brand_name</a>";
                 $list .= "<div class='applicable-mfa' onclick='toggleApplModel(this);'>$brand_name</div>";
                 $list .= $this->getArticleApplModelForm($art_id, $brand_id);
             }
@@ -1755,7 +1764,7 @@ class FormClass extends CatalogueClass
         $list = "
         <div class='applicable-body' style='display: none'>";
         $list .= "
-        <table class='table'><tr>
+        <table class='table table-responsive'><tr>
             <th>{model_cap}</th>
             <th>{model_number}</th>
             <th>{year_issue}</th>
@@ -1775,8 +1784,6 @@ class FormClass extends CatalogueClass
         $n = $db->num_rows($r);
 
         for ($i = 1; $i <= $n; $i++) {
-            //$typ_id     = $db->result($r, $i - 1, "TYP_ID");
-            //$model      = $db->result($r, $i - 1, "TYP_MMT_TEXT");
             $model      = $db->result($r, $i - 1, "Model_name");
             $body_id    = $db->result($r, $i - 1, "BODY_ID");
             $d_start    = $db->result($r, $i - 1, "TYP_PCON_START");
@@ -1815,10 +1822,10 @@ class FormClass extends CatalogueClass
         $body_id = $this->getUrlNumber($body_id);
         $db = DbSingleton::getTokoDb();
 
-        $list = "
+        $list = "<div class='col-12'>
         <div class='applicable-model'>";
         $list .= "
-        <table class='table'><tr>
+        <table class='table table-responsive'><tr>
             <th>{model_cap}</th>
             <th>{modification_cap}</th>
             <th>{year_issue}</th>
@@ -1867,7 +1874,7 @@ class FormClass extends CatalogueClass
         }
 
         $list .= "</table>";
-        $list .= "</div>";
+        $list .= "</div></div>";
         $list = $this->replaceLang($list);
 
         return $list;

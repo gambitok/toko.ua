@@ -600,6 +600,28 @@ $colors: (
 }
 
 @media (max-width: 992px) {
+
+    .info__table {
+        width: 100%;
+            td {
+                padding: 0;
+            }
+    }
+
+    .info__numbers {
+        &-title {
+            display: none;
+        }
+        &-row {
+            border-top: 1px solid #606975;
+            &-auto {
+                border-right: none;
+                border-bottom: 1px solid #606975;
+                text-align: center;
+            }
+        }
+    }
+
     #BasketForm, #GarageForm {
         background: #fff!important;
         .modal-content {

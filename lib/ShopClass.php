@@ -1885,13 +1885,25 @@ class ShopClass extends CatalogueClass
         return array($list_np, $list_up);
     }
 
+    public function getNovaPoshtaKey()
+    {
+        $db = DbSingleton::getTokoDb();
+        $key = "";
+        $r = $db->query("SELECT `CODE` FROM `MAIL_SETTINGS` WHERE `ID` = 1 LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $key = $db->result($r, 0, "CODE");
+        }
+        return $key;
+    }
+
     /*
      * get NP departments
      * */
     public function getNovaPoshtaWarehousesSelect($ref, $department_ref)
     {
         $list   = $this->replaceLang("<option value=\"0\">{not_chosen}</option>");
-        $np     = new NovaPoshtaApi2('c11f032abf542a39f2324d58004e12c1');
+        $np     = new NovaPoshtaApi2($this->getNovaPoshtaKey());
         $arr    = $np->getWarehouses($ref)['data'];
 
         foreach ($arr as $val) {
