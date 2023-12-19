@@ -412,7 +412,6 @@ function translateContent($content)
     for ($i = 1; $i <= $n; $i++) {
         $code = $db->result($r, $i - 1, "variable");
         $word = $language->getLanguageName($code);
-        //$word = iconv("windows-1251", "UTF-8", $word);
         $content = str_replace("{" . $code . "}", $word, $content);
     }
 

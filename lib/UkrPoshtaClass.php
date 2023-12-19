@@ -106,7 +106,6 @@ class UkrPoshtaClass
 
         $arr = [];
         foreach ($data["Entry"] as $value) {
-//            $arr[$value["ID"]] = iconv("UTF-8", "windows-1251", $value["PO_LONG"]);
             $district_name = iconv("UTF-8", "windows-1251", $value['PO_LONG']);
             $district_name = str_replace('"', "", $district_name);
             $arr[] = [

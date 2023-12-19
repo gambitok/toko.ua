@@ -159,9 +159,6 @@ if ($n > 0) {
                 $err = "The file $inputFileName does not exists";
             }
 
-//            $err_text = $err;
-//            $err = trim(iconv("UTF-8", "Windows-1251", $err));
-
             print 'File ' . $inputFileName . ' processed!' . "\n" . ($answer === 0 ? 'Error: ' : 'Success! ') . $err . "\n";
 
             /*

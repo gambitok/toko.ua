@@ -28,11 +28,3 @@ foreach ($arr as $val) {
 
 $content = "";
 echo $list;
-
-// CITY REF
-
-// CITY NAME
-
-// AREA REF
-
-// AREA NAME
