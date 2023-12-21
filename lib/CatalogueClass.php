@@ -15,6 +15,7 @@ class CatalogueClass
     public $cars_link               = "cars";
     public $faq_card_count          = 2;
     public $faq_socials_card_count  = 4;
+    public $charset                 = "windows-1251";
 
     /*
      * SEARCH LIST

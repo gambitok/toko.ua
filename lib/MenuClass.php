@@ -1491,7 +1491,7 @@ class MenuClass extends CatalogueClass
 
             $dataCity = $this->getRandomCity();
             $city_name = $dataCity["city_name"];
-            $text = "$group_name " . mb_strtolower($this->replaceLang("{in_cap}"), 'windows-1251') . " $city_name";
+            $text = "$group_name " . mb_strtolower($this->replaceLang("{in_cap}"), $this->charset) . " $city_name";
 
             $arr[] = ["text" => $text, "link" => "$group_link/$text_link"];
         }
@@ -1523,7 +1523,7 @@ class MenuClass extends CatalogueClass
             $dataCity = $this->getRandomCity();
             $city_name = $dataCity["city_name"];
 
-            $text = "$group_name " . "$brand_name " . mb_strtolower($this->replaceLang("{in_cap}"), 'windows-1251') . " $city_name";
+            $text = "$group_name " . "$brand_name " . mb_strtolower($this->replaceLang("{in_cap}"), $this->charset) . " $city_name";
 
             $arr[] = ["text" => $text, "link" => "$group_link/$text_link"];
         }
@@ -1558,7 +1558,7 @@ class MenuClass extends CatalogueClass
             $dataCity = $this->getRandomCity();
             $city_name = $dataCity["city_name"];
 
-            $text = "$group_name {on_cap} " . "$mfa_name $model " . mb_strtolower($this->replaceLang("{in_cap}"), 'windows-1251') . " $city_name";
+            $text = "$group_name {on_cap} " . "$mfa_name $model " . mb_strtolower($this->replaceLang("{in_cap}"), $this->charset) . " $city_name";
 
             $arr[] = ["text" => $text, "link" => "$group_link/$text_link"];
         }

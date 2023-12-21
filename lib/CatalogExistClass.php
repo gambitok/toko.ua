@@ -2067,7 +2067,7 @@ class CatalogExistClass extends CatalogueClass
             $modelData = $this->getCatalogMfaModelInfo($mfa_id, $model);
             $h1_text_small = strtolower($h1_text);
 
-            $group_name_small = mb_strtolower($this->replaceLang($group_name), 'windows-1251');
+            $group_name_small = mb_strtolower($this->replaceLang($group_name), $this->charset);
             $text = str_replace(array("{GET_PAGE_H1}", "{GET_PAGE_H1_small}", "{GET_PAGE_H1_LINK}", "{MarkaMFA_Model}", "{MarkaMFA_Model_transl}", "{MarkaMFA_Model_LINK}", "{Main_Category_H1}", "{Main_Category_H1_LINK}", "{Main_Category_H1_LINK_small}", "{Main_Category_H1_Main_Category_H1}", "{Main_Category_H1_Main_Category_H1_LINK}", "{Cars_List}"),
                 array($h1_text, $h1_text_small, $h1_text, $modelData['model_name'], $modelData['model_transl'], $modelData['model_link'], $group_name, "<a href='$main_link'>$group_name</a>", "<a href='$main_link'>$group_name_small</a>", $head_name, "<a href='$head_link'>$head_name</a>", $this->getCatalogSeoCarsList($mfa_id, $model)), $text);
         }

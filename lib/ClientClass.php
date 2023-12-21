@@ -1746,7 +1746,7 @@ class ClientClass
                         $krs += 1;
 
                         if ($krs >= $start_row) {
-                            $encoding1 = mb_detect_encoding($Row[$index - 1]);
+                            //$encoding1 = mb_detect_encoding($Row[$index - 1]);
                             $suppl_index = trim(iconv("UTF-8", "Windows-1251", $Row[$index - 1]));
                             $suppl_brand = trim(iconv("UTF-8", "Windows-1251", $Row[$brand - 1]));
                             $suppl_price = str_replace(",", ".", trim(iconv("UTF-8", "Windows-1251", $Row[$price - 1])));

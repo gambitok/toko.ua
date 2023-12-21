@@ -590,7 +590,7 @@ function getSeoTextForm()
     $page = $catalogue->getUrlNumber($_GET["page"]);
     $postfix = $catalogue->getLangPostfix($catalogue->getLanguage());
 
-    if ($router === "") {
+    if ($router === "" || $router === NULL) {
         $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = '/' LIMIT 1;";
     }
 
@@ -612,7 +612,6 @@ function getSeoTextForm()
 
     $r = $db->query($query);
     $n = $db->num_rows($r);
-
     if (($n > 0) && $page <= 1) {
         $text = $db->result($r, 0, "CONTENT_$postfix");
         if ($text !== "") {
