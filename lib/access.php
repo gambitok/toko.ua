@@ -84,7 +84,7 @@ function getMoreTitle($path)
     if ($path === "search") {
         $art_search = $cat->getUrlString($linka[1]);
         $art_search = rawurldecode($art_search);
-        $art_search = iconv("UTF-8", "windows-1251", $art_search);
+        $art_search = $cat->getIconv($art_search);
         $brand_link = $cat->getUrlString($linka[2]);
         $brand_id   = ($brand_link !== "") ? $cat->getCatalogueBrandID($brand_link) : 0;
 
@@ -194,7 +194,7 @@ function printBreadcrumbs($path)
         case "search" : {
             $art_search  = $cat->getUrlString($bread[1]);
             $art_search  = rawurldecode($art_search);
-            $art_search  = iconv("UTF-8", "windows-1251", $art_search);
+            $art_search  = $cat->getIconv($art_search);
             $info        = $art_search;
             $pretitle    = "$a_home $icon {search_cap} $icon {search_results} $info";
             break;

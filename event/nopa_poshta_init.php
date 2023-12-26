@@ -15,12 +15,13 @@ function getNovaPoshtaKey()
 }
 
 $np = new NovaPoshtaApi2(getNovaPoshtaKey());
+$catalog = new CatalogueClass();
 
 $list = "";
 $arr = $np->getCities();
 
 foreach ($arr as $val) {
-    $name       = iconv("UTF-8", "windows-1251", $val["Description"]);
+    $name = $catalog->getIconv($val["Description"]);
     $ref    = $val["Ref"];
 
     $list .= "$name ($ref) \n<br>";

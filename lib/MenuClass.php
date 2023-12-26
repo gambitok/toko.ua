@@ -1799,7 +1799,7 @@ class MenuClass extends CatalogueClass
     * */
     public function formatUrlText($str): string
     {
-        $format_text = mb_convert_encoding($str, "UTF-8", "Windows-1251");
+        $format_text = $this->getIconConvert($str);
         $format_text = $this->translit($format_text);
         $format_text = str_replace(array(str_split('.,+-\/:*?"<>|_'), " ", "'"), array("", "-", ""), $format_text);
         $format_text = mb_strtolower($format_text);

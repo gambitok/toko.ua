@@ -33,8 +33,9 @@ trait Helper
         if (file_exists($form_htm)) {
             $form = file_get_contents($form_htm);
         }
-        iconv('Windows-1251', 'UTF-8', $form);
-        mb_convert_encoding($form, 'UTF-8', 'Windows-1251');
+        $catalogue = new CatalogueClass();
+        $form = $catalogue->getIconvWindows($form);
+        $form = $catalogue->getIconConvert($form);
 
         return $form;
     }
@@ -200,8 +201,9 @@ trait Helper
 
     public function getWeekdayAbr($week_day)
     {
+        $catalogue = new CatalogueClass();
         $wks = array('1' => "Пн", '2' => "Вт", '3' => "Ср", '4' => "Чт", '5' => "Пт", '6' => "Сб", '7' => "Нд");
-        $wks[$week_day] = iconv("UTF-8", "Windows-1251", $wks[$week_day]);
+        $wks[$week_day] = $catalogue->getIconv($wks[$week_day]);
 
         return $wks[$week_day];
     }
@@ -325,7 +327,8 @@ trait Helper
         if ($static) {
             $static_h1 = $static_data['//' . $_SERVER["HTTP_HOST"] . $uri][2];
         }
-        $static_h1 = iconv("UTF-8", "windows-1251", $static_h1);
+        $catalogue = new CatalogueClass();
+        $static_h1 = $catalogue->getIconv($static_h1);
 
         return $static_h1;
     }

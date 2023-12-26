@@ -1,6 +1,6 @@
 <?php
 
-class UkrPoshtaClass
+class UkrPoshtaClass extends CatalogueClass
 {
     protected $bearer_code;
 
@@ -57,7 +57,7 @@ class UkrPoshtaClass
 
         $arr = [];
         foreach ($data["Entry"] as $value) {
-            $arr[$value["REGION_ID"]] = iconv("UTF-8", "windows-1251", $value["REGION_UA"]);
+            $arr[$value["REGION_ID"]] = $this->getIconv($value["REGION_UA"]);
         }
 
         return $arr;
@@ -68,7 +68,7 @@ class UkrPoshtaClass
         $data = $this->connect("address-classifier-ws/", "get_city_by_region_id_and_district_id_and_city_ua", ["region_id" => $region_id]);
         $arr = [];
         foreach ($data["Entry"] as $value) {
-            $arr[$value["CITY_ID"]] = iconv("UTF-8", "windows-1251", $value["CITY_UA"]);
+            $arr[$value["CITY_ID"]] = $this->getIconv($value["CITY_UA"]);
         }
 
         return $arr;
@@ -81,7 +81,7 @@ class UkrPoshtaClass
         foreach ($data["Entry"] as $value) {
             $arr[] = [
                 'CITY_ID'   => $value['CITY_ID'],
-                'CITY_UA'   => iconv("UTF-8", "windows-1251", $value['CITY_UA']),
+                'CITY_UA'   => $this->getIconv($value["CITY_UA"]),
                 'REGION_ID' => $value['REGION_ID']];
         }
 
@@ -94,7 +94,7 @@ class UkrPoshtaClass
 
         $arr = [];
         foreach ($data["Entry"] as $value) {
-            $arr[$value["ID"]] = iconv("UTF-8", "windows-1251", $value["PO_LONG"]);
+            $arr[$value["ID"]] = $this->getIconv($value["PO_LONG"]);
         }
 
         return $arr;
@@ -106,7 +106,7 @@ class UkrPoshtaClass
 
         $arr = [];
         foreach ($data["Entry"] as $value) {
-            $district_name = iconv("UTF-8", "windows-1251", $value['PO_LONG']);
+            $district_name = $this->getIconv($value["PO_LONG"]);
             $district_name = str_replace('"', "", $district_name);
             $arr[] = [
                 'DISTRICT_ID'   => $value['ID'],

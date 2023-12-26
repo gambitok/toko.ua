@@ -17,6 +17,22 @@ class CatalogueClass
     public $faq_socials_card_count  = 4;
     public $charset                 = "windows-1251";
 
+    public function getIconv($str)
+    {
+        $str  = iconv("UTF-8", "windows-1251", $str);
+        return $str;
+    }
+    public function getIconConvert($str)
+    {
+        $str  = mb_convert_encoding($str, "UTF-8", "Windows-1251");
+        return $str;
+    }
+    public function getIconvWindows($str)
+    {
+        $str  = iconv("windows-1251", "UTF-8", $str);
+        return $str;
+    }
+
     /*
      * SEARCH LIST
      * */

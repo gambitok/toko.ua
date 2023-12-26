@@ -1,6 +1,6 @@
 <?php
 
-class SmsClass
+class SmsClass extends CatalogueClass
 {
 
     public $url         = 'https://sms-sender.km.ua/api/xml.api2.php';
@@ -47,8 +47,9 @@ class SmsClass
     public function send_sms($sign, $nomber, $message)
     {
         $nomber = $this->correct_nomber($nomber);
+        $message = $this->getIconv($message);
         $xml = '<sendsms>
-        <message><![CDATA[' . iconv("Windows-1251", "UTF-8", $message) . ']]></message>
+        <message><![CDATA[' . $message . ']]></message>
         <recipient phone="' . $nomber . '" sender="' . $sign . '" /></sendsms>';
         print_r($xml);
         $result = $this->send_xml($xml);

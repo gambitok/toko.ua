@@ -1673,6 +1673,7 @@ class ClientClass
         $user_id = 0;
         $price = 0;
         $suppl_cash_id = 2;
+        $catalog = new CatalogueClass();
 
         if ($suppl_id > 0) {
             $start_row = $template['start_row'];
@@ -1747,12 +1748,12 @@ class ClientClass
 
                         if ($krs >= $start_row) {
                             //$encoding1 = mb_detect_encoding($Row[$index - 1]);
-                            $suppl_index = trim(iconv("UTF-8", "Windows-1251", $Row[$index - 1]));
-                            $suppl_brand = trim(iconv("UTF-8", "Windows-1251", $Row[$brand - 1]));
-                            $suppl_price = str_replace(",", ".", trim(iconv("UTF-8", "Windows-1251", $Row[$price - 1])));
+                            $suppl_index = trim($catalog->getIconv($Row[$index - 1]));
+                            $suppl_brand = trim($catalog->getIconv($Row[$brand - 1]));
+                            $suppl_price = str_replace(",", ".", trim($catalog->getIconv($Row[$price - 1])));
 
                             if ($currency == 0) {
-                                $suppl_cash = trim(iconv("UTF-8", "Windows-1251", $Row[$cash - 1]));
+                                $suppl_cash = trim($catalog->getIconv($Row[$cash - 1]));
                                 $suppl_cash_id = $this->findCashID($suppl_cash, $cash_data);
                             }
                             $price_usd = 0;
@@ -1769,7 +1770,8 @@ class ClientClass
                             for ($s = 1; $s <= $kol_storages; $s++) {
                                 $storage_id = $storages[$s]["id"];
                                 $stokCellNom = $suppl_storages_use[$storage_id] - 1;
-                                $suppl_stock = trim(iconv("UTF-8", "Windows-1251", preg_replace('/\D/', '', $Row[$stokCellNom])));
+                                $cellNom = preg_replace('/\D/', '', $Row[$stokCellNom]);
+                                $suppl_stock = trim($catalog->getIconv($cellNom));
 
                                 if ($suppl_stock > 0) {
                                     if ($pkg != "") {
