@@ -4,7 +4,7 @@ define('RDD', __DIR__);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 @ini_set('display_errors', false);
 date_default_timezone_set("Europe/Kiev");
-header('Content-Type: text/html; charset=windows-1251');
+header('Content-Type: text/html; charset=utf-8');
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -52,7 +52,7 @@ for ($i = 1; $i <= $n; $i++) {
     fclose($csv_handler);
 
     $mail = new PHPMailer(true);
-    $mail->CharSet = 'windows-1251';
+    $mail->CharSet = 'utf-8';
 
     $host   = "smtp.yandex.ru";
     $name   = "robot@toko.ua";

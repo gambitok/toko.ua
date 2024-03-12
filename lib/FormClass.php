@@ -1865,6 +1865,12 @@ class FormClass extends CatalogueClass
             $model_link = $this->getModelLink($model);
             $link = $this->getSiteLink() . $this->cars_link . '/' . $mfa_link . '/' . $model_link . '/';
 
+            $group_id = $this->getArticleGroupExist($art_id);
+            if ($group_id > 0) {
+                $group_link = $this->getGroupRowLink($group_id);
+                $link = $this->getSiteLink() . $this->catalog_link . '/' . $group_link . '/auto/' . $mfa_link . '/' . $model_link . '/';
+            }
+
             $list .= "<tr onclick=\"getArticleApplModelInfoForm('$art_id', '$typ_id')\">
                 <td><a href='$link'>$typ_mmt</a></td>
                 <td>$typ_text</td>

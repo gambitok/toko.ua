@@ -21,7 +21,7 @@ if ($n > 0) {
         $date       = $dbm->result($r, $i - 1, "date");
         $filename   = $user . "/" . $dbm->result($r, $i - 1, "filename");
         $list       = $catalogue->getPriceList($user);
-//
+
         $csv = "";
         foreach ($list as $record) {
             foreach ($record as $rec) {
@@ -38,7 +38,7 @@ if ($n > 0) {
             }
         }
 
-        $csv_handler = fopen(RDD . "/../uploads/$filename", 'w') or die("Can't create file");
+        $csv_handler = fopen(RDD . "/../uploads/$filename", 'wb') or die("Can't create file");
         fwrite($csv_handler, $csv);
         fclose($csv_handler);
         $date_end = date("Y-m-d H:i:s");

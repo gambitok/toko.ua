@@ -6,18 +6,18 @@ function navigateTo(id) {
 }
 
 // Modal `Region`
-function showRegionForm() {
-    JsHttpRequest.query(folder,{'w':'showModalForm', 'form':"region"},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#modals").append(result.content);
-            $("#RegionForm").modal("show");
-            $("#menu").css('left', '-100%');
-
-            $("#RegionForm").on('hidden.bs.modal', function () {
-                setCookie('tpoint_id_status', 1);
-            });
-        }}, true);
-}
+// function showRegionForm() {
+//     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':"region"},
+//         function (result, errors){ if (errors) {alert(errors);} if (result){
+//             $("#modals").append(result.content);
+//             $("#RegionForm").modal("show");
+//             $("#menu").css('left', '-100%');
+//
+//             $("#RegionForm").on('hidden.bs.modal', function () {
+//                 setCookie('tpoint_id_status', 1);
+//             });
+//         }}, true);
+// }
 
 // function showLangStatusForm(status) {
 //     setCookie('lang_id_status', 1);

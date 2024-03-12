@@ -110,23 +110,31 @@ function showGarageForm(sel_typ_id = 0) {
             $("#garage_block").html(result.content);
         }}, true);
 
-    if (form_cars.length && form_cars.html().length === 0) {
-        console.log('garage');
-        // $("#garage_404_select").html("<div class=\"spinner-border\"></div>");
+
+    if (form_cars.length) {
+        if (form_cars.html().length === 0) {
+            console.log('garage');
+            // $("#garage_404_select").html("<div class=\"spinner-border\"></div>");
+            JsHttpRequest.query(folder,{'w':'showCarsGarageForm'},
+                function (result, errors){ if (errors) {alert(errors);} if (result){
+
+                    if (result.content[1] == 1) {
+                        $("#garage_404_select").html(result.content[0]);
+                        toggleCarsNavigation($("div[data-type='manuf']"));
+                    }
+                }}, true);
+        } else {
+            console.log('none');
+            let form_garage = $("#garage_cars_form");
+            form_garage.html("<div class=\"spinner-border\"></div>");
+            form_garage.html(form_cars.html());
+            form_cars.html("");
+        }
+    } else {
         JsHttpRequest.query(folder,{'w':'showCarsGarageForm'},
             function (result, errors){ if (errors) {alert(errors);} if (result){
-
-                if (result.content[1] == 1) {
-                    $("#garage_404_select").html(result.content[0]);
-                    toggleCarsNavigation($("div[data-type='manuf']"));
-                }
+                $("#garage_cars_form").html(result.content[0]);
             }}, true);
-    } else {
-        console.log('none');
-        let form_garage = $("#garage_cars_form");
-        form_garage.html("<div class=\"spinner-border\"></div>");
-        form_garage.html(form_cars.html());
-        form_cars.html("");
     }
 
     // let path = window.location.pathname;

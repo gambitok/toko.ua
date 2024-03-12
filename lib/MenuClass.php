@@ -451,20 +451,19 @@ class MenuClass extends CatalogueClass
         ORDER BY t2.position DESC, t2a.full_name;");
         $n = $db->num_rows($r);
 
-        if ($n > 0) {
-            $region     = $db->result($r, 0, "full_name");
-            $address    = $db->result($r, 0, "address");
-
-            $list = "
-            <span>{choose_office}:</span>
-            <a onClick=\"showRegionForm();\">
-                <span id=\"region_select\">
-                    <span class=\"fas fa-map-marker-alt\"></span>
-                    <span>$region ($address)</span>
-                </span>
-            </a>";
-            $list = $this->replaceLang($list);
-        }
+//        if ($n > 0) {
+//            $region     = $db->result($r, 0, "full_name");
+//            $address    = $db->result($r, 0, "address");
+//            $list = "
+//            <span>{choose_office}:</span>
+//            <a onClick=\"showRegionForm();\">
+//                <span id=\"region_select\">
+//                    <span class=\"fas fa-map-marker-alt\"></span>
+//                    <span>$region ($address)</span>
+//                </span>
+//            </a>";
+//            $list = $this->replaceLang($list);
+//        }
 
         return $list;
     }

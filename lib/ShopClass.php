@@ -856,8 +856,8 @@ class ShopClass extends CatalogueClass
         $r = $db->query("SELECT `VALID_TYPE_MAIN`, `VALID_TYPE_OTHER` FROM `orders_valid_delivery` WHERE `DELIVERY_ID` = $delivery_id LIMIT 1;");
         $valid_main = $db->result($r, 0, "VALID_TYPE_MAIN");
         $valid_other = $db->result($r, 0, "VALID_TYPE_OTHER");
-
-        if (in_array($city_id, [10108, 24861])) { // MAIN CITTIES
+        $main_cities = [10108];//, 24861
+        if (in_array($city_id, $main_cities)) {
             if ($valid_main) {
                 $result = 1;
             }
@@ -1832,12 +1832,15 @@ class ShopClass extends CatalogueClass
             $region_name_ru = $db->result($r, $i - 1, "REGION_NAME_RU");
             $state_name     = $db->result($r, $i - 1, "STATE_NAME");
             $state_name_ru  = $db->result($r, $i - 1, "STATE_NAME_RU");
-            $value_foo      = "$city_name ($state_name обл., $region_name р-он) - $city_name_ru ($state_name_ru обл., $region_name_ru р-он)";
-            $city_cap       = "$city_name ($state_name обл., $region_name р-он)";
+            $value_foo      = "$city_name ($state_name {region_small_cap}, $region_name {area_small_cap}) - $city_name_ru ($state_name_ru {region_small_cap}, $region_name_ru {area_small_cap})";
+            $city_cap       = "$city_name ($state_name {region_small_cap}, $region_name {area_small_cap})";
 
             if ($lang_id === 1 || $lang_id === 3) {
-                $city_cap = "$city_name_ru ($state_name_ru обл., $region_name_ru р-он)";
+                $city_cap = "$city_name_ru ($state_name_ru {region_small_cap}, $region_name_ru {area_small_cap})";
             }
+
+            $value_foo = $this->replaceLang($value_foo);
+            $city_cap = $this->replaceLang($city_cap);
 
             $mas[$i] = ["id" => $city_id, "value" => $value_foo, "data-foo" => $city_cap];
         }

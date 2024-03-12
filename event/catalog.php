@@ -18,6 +18,18 @@ $page       = $catalogue->getUrlNumber($_GET["page"]);
 $path_from  = $site_name . "/" . $router . "/";
 $src_link   = $catalogue->getSiteLink() . implode("/", $linka) . "/";
 
+//if ($router_2 === "home" || $router_2 === "*") {
+//    $red_status = 1;
+//    $red_type   = 301;
+//    $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$router/";
+//}
+//
+//if ($router_3 === "home" || $router_3 === "*") {
+//    $red_status = 1;
+//    $red_type   = 301;
+//    $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$router/$router_2/";
+//}
+
 if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
     $red_status = 1;
     $red_type   = 301;
@@ -89,6 +101,8 @@ else {
         if (!empty($group_id)) {
             $group_id       = $catalog_exist->getUrlNumber($group_id);
             $filters        = $linka[2];
+            $f1 = $filters;
+
             $filters        = ($filters === "auto") ? [] : $filters;
             $mfa_link       = $router_3;
             $model_link     = $router_4;
@@ -143,6 +157,12 @@ else {
                     $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
                 }
 
+                if ($f1 === "uk" || $f1 === "en") {
+                    $red_status = 1;
+                    $red_type   = 301;
+                    $red_link   = $catalogue->getSiteLink() . $catalog_exist->catalog_link . "/$router/";
+                }
+
                 if ($check_status > 0) {
                     $red_status = 1;
                     $red_type   = 301;
@@ -158,6 +178,12 @@ else {
                 }
 
                 $params = $catalog_exist->getCheckedFilters($group_id, $filters);
+
+                if ($filters !== "" && empty($params)) {
+                    $red_status = 1;
+                    $red_type   = 301;
+                    $red_link   = $catalogue->getSiteLink() . $path_from;
+                }
 
                 list($count_brands, $count_params, $count_values) = $catalog_exist->getCatalogParamsCount($params);
 
@@ -217,9 +243,21 @@ else {
             if (empty($cat_id)) {
                 // Header
                 $catalogData = $catalog_exist->showGroupHeadForm($head_id);
+
+                if ($router_2 !== "") {
+                    $red_status = 1;
+                    $red_type   = 301;
+                    $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$router/";
+                }
             } else {
                 // Category
                 $catalogData = $catalog_exist->showGroupCatForm($head_id, $cat_id);
+
+                if ($router_3 !== "") {
+                    $red_status = 1;
+                    $red_type   = 301;
+                    $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$router/$router_2/";
+                }
             }
             $content = str_replace("{main_window}", $catalogData["form"] . $showform->getHistoryArts(), $content);
             $content = str_replace("{site_title}", $catalogData["title"], $content);

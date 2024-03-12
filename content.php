@@ -10,7 +10,7 @@ require_once (RDD . "/lib/nova-poshta-api-2/src/Delivery/NovaPoshtaApi2.php");
 require_once (RDD . "/lib/UkrPoshtaClass.php");
 
 session_start();
-$JsHttpRequest  = new JsHttpRequest("windows-1251");
+$JsHttpRequest  = new JsHttpRequest("utf-8");
 $catalog        = new CatalogueClass();
 $search         = new SearchClass();
 $menu           = new MenuClass();

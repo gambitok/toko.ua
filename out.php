@@ -20,27 +20,6 @@ $catalog_exist  = new CatalogExistClass();
 global $content;
 $content = null;
 
-// REDIRECT TO DEFAULT LANG
-//$user_id = $_COOKIE['user_id'];
-//$lang_id = (int)$_COOKIE['lang_id'];
-//$postfix = strpos($_SERVER["REQUEST_URI"], "/uk/");
-
-//$lang_id_prefer = (int)$_COOKIE['lang_id_prefer'];
-//if ($lang_id_prefer === 1) {
-//    $_SESSION['lang_id'] = 2;
-//    setcookie("lang_id", 2, time()+3600);
-//    setcookie("lang_id_prefer", 2, time()+3600);
-//    header("Location: " . getLangUrl("uk"), TRUE, 301);
-//}
-//
-//$lang_id_prefix = findLanguageID(findLanguage());
-//if (!empty($lang_id) && !empty($lang_id_prefix)) {
-//    if ($lang_id !== $lang_id_prefix) {
-//        $url = getLangUrl(getLangPrefix($lang_id));
-//        header("Location: " . $url, TRUE, 301);
-//    }
-//}
-
 // set cookies for user
 setCookies();
 
@@ -53,6 +32,7 @@ if (file_exists($theme_htm)) {
 }
 
 $path = getPath();
+
 if ($path === "seoshield-client") {
     include RDD . "/seoshield-client/index.php";
     include RDD . "/seoshield-client/main.php";
@@ -71,19 +51,37 @@ elseif (file_exists(RDD . "/event/$path.php")) {
 }
 include_once(RDD . "/event/menu.php");
 
+$data = getSeoTitleData();
+if ($data) {
+    $title = $data[0];
+    $descr = $data[1];
+
+    if ($title !== "") {
+        $content = str_replace("{site_title}", $title, $content);
+    }
+    if ($descr !== "") {
+        $content = str_replace("{site_description}", $descr, $content);
+    }
+}
+
 // Main HEAD HTML
 $content = str_replace("{navigation_content}", $menu->getSiteNavigation(), $content);
 $content = str_replace("{footer_content}", $menu->getFooterForm(findLinks()[0]), $content);
-//, findUrl()
-//$content = str_replace("{anchor_contacts_content}", getHtmlForm("main/anchor-contacts"), $content);
 
-$content = str_replace("{main_charset}", "windows-1251", $content);
+$content = str_replace("{main_charset}", "utf-8", $content);
 $content = str_replace("{site_main_link}", $catalogue->getSiteLink(), $content);
 $content = str_replace("{site_lang_html}", getSiteLang(), $content);
 $content = str_replace("{site_google_conversation}", "", $content);
 $content = str_replace("{meta_social_tag}", getMetaTag(), $content);
+
+$data = getSeoTitleData();
+if ($data) {
+    $title = $data[0];
+    $descr = $data[1];
+}
+
 $content = str_replace("{site_title}", getTitle($path), $content);
-$content = str_replace("{site_description}", getDescription($path), $content);
+$content = str_replace("{site_description}", getTitle($path), $content);
 $content = str_replace("{site_keywords}", getKeywords($path), $content);
 
 $breadData = printBreadcrumbs($path);
@@ -91,7 +89,6 @@ $content = str_replace("{site_script_breadcrumbs}", $breadData[1], $content);
 $content = str_replace("{main_site_breadcrumbs}", $breadData[0], $content);
 $content = str_replace("{site_page_pagination}", "", $content);
 $content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
-//$content = str_replace("{site_lang_message}", $menu->getSiteLangMessage($lang_id, $lang_id_prefer), $content);
 $content = str_replace("{seo_footers_block}", "", $content);
 $content = str_replace("{site_console}", "", $content);
 $content = str_replace("{seoshield_formulas}", "", $content);
@@ -114,7 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SERVER['REQUEST_URI']) && st
 }
 
 // Main HTML
-//$content = str_replace("{main_seo_text}", ($seo_text == "" || $seo_text == "<!--seo_text_start--><!--seo_text_end-->") ? "" : getSeoText($seo_text), $content);
 $content = str_replace("{main_seo_text}", getSeoTextForm(), $content);
 $content = str_replace("{main_window}", "", $content);
 $content = str_replace("{main_seo_products_content}", "", $content);

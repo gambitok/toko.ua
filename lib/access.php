@@ -538,17 +538,24 @@ function findLinks()
 	    $link .= "/";
     }
 	$link = parse_url($link);
-    $durl = substr($link["path"], 1);
+    $sub_url = substr($link["path"], 1);
 	$i = 0;
 	$linka = [];
-	while ($durl !== "") {
-		$pos = strpos($durl, "/");
+    $c = 0;
+	while ($sub_url !== "") {
+		$pos = strpos($sub_url, "/");
 		if ($pos) {
-            $path = substr($durl, 0, $pos + 1);
-            $durl = str_replace_first($path, "", $durl);
+            $path = substr($sub_url, 0, $pos + 1);
+            $sub_url = str_replace_first($path, "", $sub_url);
             $cur_path = substr($path, 0, -1);
             if ($cur_path === "uk" || $cur_path === "en") {
-                $i = 0;
+                $c++;
+                if ($c === 1) {
+                    $i = 0;
+                } else {
+                    $linka[$i] = $cur_path;
+                    $i++;
+                }
             } else {
                 $linka[$i] = $cur_path;
                 $i++;
@@ -574,6 +581,39 @@ function getSeoText($seo_text)
     $form = str_replace("{seo_text}", $seo_text, $form);
 
     return $form;
+}
+
+function getSeoTitleData()
+{
+    $dbe = DbSingleton::getTokoEmojiDb();
+    $linka = findLinks();
+    $router = $linka[0];
+    $str_linka = $linka;
+    unset($str_linka[0]);
+    $str_linka = implode("/", $str_linka);
+    $catalogue = new CatalogueClass();
+    $postfix = $catalogue->getLangPostfix($catalogue->getLanguage());
+
+    if ($router === "" || $router === NULL) {
+        $router = "/";
+        $get_link = "";
+    } else {
+        $get_link = " AND `LINK` = '$str_linka'";
+    }
+
+    $r = $dbe->query("SELECT `TITLE_$postfix`, `DESCR_$postfix` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 0 $get_link LIMIT 1;");
+    $n = $dbe->num_rows($r);
+    if ($n == 0) {
+        $str_linka2 = explode("/", $str_linka)[0];
+        $r = $dbe->query("SELECT `TITLE_$postfix`, `DESCR_$postfix` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 1 AND `LINK` = '$str_linka2' LIMIT 1;");
+        $n = $dbe->num_rows($r);
+    }
+    if ($n > 0) {
+        $title = $dbe->result($r, 0, "TITLE_$postfix");
+        $descr = $dbe->result($r, 0, "DESCR_$postfix");
+    } else return false;
+
+    return array($title, $descr);
 }
 
 function getSeoTextForm()

@@ -33,9 +33,9 @@ trait Helper
         if (file_exists($form_htm)) {
             $form = file_get_contents($form_htm);
         }
-        $catalogue = new CatalogueClass();
-        $form = $catalogue->getIconvWindows($form);
-        $form = $catalogue->getIconConvert($form);
+        //$catalogue = new CatalogueClass();
+        //$form = $catalogue->getIconvWindows($form);
+        //$form = $catalogue->getIconConvert($form);
 
         return $form;
     }

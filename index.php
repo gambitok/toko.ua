@@ -3,7 +3,7 @@
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 @ini_set('display_errors', true);
 date_default_timezone_set("Europe/Kiev");
-header("Content-Type: text/html; charset=windows-1251");
+header("Content-Type: text/html; charset=utf-8");
 
 $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 

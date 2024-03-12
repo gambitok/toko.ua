@@ -276,7 +276,6 @@ class SearchClass extends CatalogueClass
      * */
     public function getSearchMatches($text): array
     {
-        $text = mb_strtolower($text, $this->charset);
         $max_word = 4;
         $arr = [];
 

@@ -192,12 +192,12 @@ function loadInputNumber() {
 
 $(document).ready(function() {
 
-    if (getCookie('tpoint_id_status') === "" && getCookie('user_id') === "") {
-
-        setTimeout(function() {
-            showRegionForm();
-        }, 5000);
-    }
+    // if (getCookie('tpoint_id_status') === "" && getCookie('user_id') === "") {
+    //
+    //     setTimeout(function() {
+    //         showRegionForm();
+    //     }, 5000);
+    // }
 
     // if (getCookie('lang_id_status') === "" && getCookie('user_id') === "") {
     //     //setCookie('lang_id_status', 1);

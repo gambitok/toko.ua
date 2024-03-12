@@ -6,11 +6,11 @@ class AutoClass extends CatalogueClass
     /*
      * get text translate of selected car
      * */
-    public function getCarManufTranslit($mfa_id, $model = ""): string
+    public function getCarManufTranslit($mfa_id, $model = "", $status = 0): string
     {
         $lang_id = (int)$this->getLanguage();
         $mfa_id = $this->getUrlNumber($mfa_id);
-        $model  = $this->getUrlString($model);
+        $model  = $this->getUrlString($model); $model_translate = "";
 
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_BRAND_TRANSLIT_RU`, `MFA_BRAND_TRANSLIT_UA` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
@@ -33,6 +33,14 @@ class AutoClass extends CatalogueClass
             }
 
             $text               = (!empty($model_translate)) ? "($mfa_translate $model_translate)" : $text;
+        }
+
+        if ($status === 1) {
+            $text = str_replace("(", "", $text);
+            $text = str_replace(")", "", $text);
+        }
+        if ($status === 2) {
+            $text = "$mfa_translate $model_translate";
         }
 
         return $text;

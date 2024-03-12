@@ -28,9 +28,9 @@ class dbm
         $this->load_auth_param();
         $this->db = mysqli_connect($this->host, $this->username, $this->password, $this->dbname);
 
-        mysqli_set_charset($this->db, 'cp1251');
-        mysqli_query($this->db, "SET NAMES 'cp1251' COLLATE 'cp1251_general_ci'");
-        mysqli_query($this->db, "SET CHARACTER SET 'cp1251' COLLATE 'cp1251_general_ci'");
+        mysqli_set_charset($this->db, 'utf8');
+        mysqli_query($this->db, "SET NAMES 'utf8' COLLATE 'utf8_general_ci'");
+        mysqli_query($this->db, "SET CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'");
     }
 
     public function close()
@@ -111,9 +111,9 @@ class db
         $this->load_auth_param();
         $this->db = mysqli_connect($this->host, $this->username, $this->password, $this->dbname);
 
-        mysqli_set_charset($this->db, 'cp1251');
-        mysqli_query($this->db, "SET NAMES 'cp1251' COLLATE 'cp1251_general_ci'");
-        mysqli_query($this->db, "SET CHARACTER SET 'cp1251' COLLATE 'cp1251_general_ci'");
+        mysqli_set_charset($this->db, 'utf8');
+        mysqli_query($this->db, "SET NAMES 'utf8' COLLATE 'utf8_general_ci'");
+        mysqli_query($this->db, "SET CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'");
     }
 
     public function close()
@@ -194,9 +194,9 @@ class dbc
         $this->load_auth_param();
         $this->db = mysqli_connect($this->host, $this->username, $this->password, $this->dbname);
 
-        mysqli_set_charset($this->db, 'cp1251');
-        mysqli_query($this->db, "SET NAMES 'cp1251' COLLATE 'cp1251_general_ci'");
-        mysqli_query($this->db, "SET CHARACTER SET 'cp1251' COLLATE 'cp1251_general_ci'");
+        mysqli_set_charset($this->db, 'utf8');
+        mysqli_query($this->db, "SET NAMES 'utf8' COLLATE 'utf8_general_ci'");
+        mysqli_query($this->db, "SET CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'");
     }
 
     public function close()
@@ -277,9 +277,9 @@ class dbe
         $this->load_auth_param();
         $this->db = mysqli_connect($this->host, $this->username, $this->password, $this->dbname);
 
-        mysqli_set_charset($this->db, 'utf8mb4');
-        mysqli_query($this->db, "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_bin'");
-        mysqli_query($this->db, "SET CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_bin'");
+        mysqli_set_charset($this->db, 'utf8');
+        mysqli_query($this->db, "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'");
+        mysqli_query($this->db, "SET CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'");
     }
 
     public function close()

@@ -4,7 +4,7 @@ error_reporting(E_ERROR);
 @ini_set('display_errors', true);
 @ini_set('html_errors', false);
 define('RDD', dirname(__FILE__));
-header('Content-Type: text/html; charset=windows-1251');
+header('Content-Type: text/html; charset=utf-8');
 date_default_timezone_set("Europe/Kiev");
 ini_set('memory_limit', '4096M');
 

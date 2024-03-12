@@ -2,7 +2,7 @@
 DirectoryIndex index.php
 Options -Indexes
 IndexOptions -FancyIndexing
-AddDefaultCharset windows-1251
+AddDefaultCharset utf-8
 
 Options +FollowSymLinks
 RewriteEngine On

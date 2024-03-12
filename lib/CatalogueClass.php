@@ -19,17 +19,17 @@ class CatalogueClass
 
     public function getIconv($str)
     {
-        $str  = iconv("UTF-8", "windows-1251", $str);
+        //$str  = iconv("UTF-8", "windows-1251", $str);
         return $str;
     }
     public function getIconConvert($str)
     {
-        $str  = mb_convert_encoding($str, "UTF-8", "Windows-1251");
+        //$str  = mb_convert_encoding($str, "UTF-8", "Windows-1251");
         return $str;
     }
     public function getIconvWindows($str)
     {
-        $str  = iconv("windows-1251", "UTF-8", $str);
+        //$str  = iconv("windows-1251", "UTF-8", $str);
         return $str;
     }
 
@@ -2616,7 +2616,23 @@ class CatalogueClass
         $cur            = $client->getClientCurrency($client_id);
         $cur_cap        = $kours->getKoursCaption($cur);
         $list           = $storages = [];
-        $filialList     = ["#", "{art_cap}", "{brand_cap}", "{caption_cap}", "{price_cap}", "{currency}", "{descrip_cap}", "{barcode_cap}"];
+
+        $cap1 = $this->replaceLang("{art_cap}");
+        $cap2 = $this->replaceLang("{brand_cap}");
+        $cap3 = $this->replaceLang("{caption_cap}");
+        $cap4 = $this->replaceLang("{price_cap}");
+        $cap5 = $this->replaceLang("{currency}");
+        $cap6 = $this->replaceLang("{descrip_cap}");
+        $cap7 = $this->replaceLang("{barcode_cap}");
+        $cap1 = iconv("UTF-8", "windows-1251", $cap1);
+        $cap2 = iconv("UTF-8", "windows-1251", $cap2);
+        $cap3 = iconv("UTF-8", "windows-1251", $cap3);
+        $cap4 = iconv("UTF-8", "windows-1251", $cap4);
+        $cap5 = iconv("UTF-8", "windows-1251", $cap5);
+        $cap6 = iconv("UTF-8", "windows-1251", $cap6);
+        $cap7 = iconv("UTF-8", "windows-1251", $cap7);
+
+        $filialList     = ["#", "$cap1", "$cap2", "$cap3", "$cap4", "$cap5", "$cap6", "$cap7"];
         $tpointOtherList = $client->getTpointOtherList($tpoint_user_id);
 
         foreach ($tpointOtherList as $tpoint) {
@@ -2629,18 +2645,20 @@ class CatalogueClass
             $address_remote = $client->getStorageAddress($storage_remote_alien);
 
             if (!empty($storage_local_alien)) {
-                $filialList[] = "$storage_cap $city_local ($address_local) ({local_storage})";
+                $storage_text = $this->replaceLang("$storage_cap $city_local ($address_local) ({local_storage})");
+                $filialList[] = iconv("UTF-8", "windows-1251", $storage_text);
                 $storages[]     = $storage_local_alien;
             }
-
+//
             if (!empty($storage_remote_alien)) {
-                $filialList[] = "$storage_cap $city_remote ($address_remote) ({remote_storage})";
+                $storage_text = $this->replaceLang("$storage_cap $city_remote ($address_remote) ({remote_storage})");
+                $filialList[] = iconv("UTF-8", "windows-1251", $storage_text);
                 $storages[]     = $storage_remote_alien;
             }
         }
 
         $list[0] = $filialList;
-        $list[0] = $this->replaceLang($list[0]);
+//        $list[0] = $this->replaceLang($list[0]);
 
         $r = $db->query("SELECT t2as.ART_ID, t2as.STORAGE_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2br.BARCODE 
         FROM `T2_ARTICLES_STRORAGE` t2as
@@ -2663,6 +2681,12 @@ class CatalogueClass
             $info = trim($info, "\n");
             $info = trim($info, "\r");
             $info = str_replace(array("\n", "\r"), "", $info);
+
+            $art_nr_ds = iconv("UTF-8", "windows-1251", $art_nr_ds);
+            $brand_name = iconv("UTF-8", "windows-1251", $brand_name);
+            $art_name = iconv("UTF-8", "windows-1251", $art_name);
+            $info = iconv("UTF-8", "windows-1251", $info);
+            $barcode = iconv("UTF-8", "windows-1251", $barcode);
 
             $price = $this->getArticlePriceClient($art_id, $client_id, $cur);
             $price = str_replace(".", ",", $price);

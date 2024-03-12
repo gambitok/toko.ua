@@ -13,6 +13,16 @@ if ($art_id > 0 && $catalogue->checkArticleExist($art_id)) {
     $articleData = $showform->getArticleForm($art_id, 1);
     $breadcrumbsData = $catalogue->getBreadCrumbForm($articleData["breadcrumbs"]);
 
+    $data = getSeoTitleData();
+    if ($data) {
+        $descr = $data[1];
+
+        if ($descr !== "") {
+            $descr = str_replace('"', "'", $descr);
+            $content = str_replace("{site_description}", $descr, $content);
+        }
+    }
+
     $content = str_replace("{main_window}", $articleData["form"], $content);
     $content = str_replace("{main_site_breadcrumbs}", $breadcrumbsData["form"], $content);
     $content = str_replace("{site_script_breadcrumbs}", $breadcrumbsData["script"], $content);

@@ -20,7 +20,7 @@
 
 class JsHttpRequest
 {
-    var $SCRIPT_ENCODING = "windows-1251";
+    var $SCRIPT_ENCODING = "utf-8";
     var $SCRIPT_DECODE_MODE = '';
     var $LOADER = null;
     var $ID = null;    
