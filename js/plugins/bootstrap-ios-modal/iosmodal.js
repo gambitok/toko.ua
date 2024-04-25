@@ -2,17 +2,7 @@
  * iosmodal.js - a small Bootstrap modal styled like an iOS modal
  * Copyright 2020 Terry Morse
  * MIT license
- */
-
-/**
- * @external $
- * @property {function} modal
- */
-
-const iOSModal = (function () {
-
-  const modalWrapper = document.createElement('div');
-  modalWrapper.innerHTML = `
+ */ const iOSModal=function(){let o=document.createElement("div");o.innerHTML=`
     <div class="modal fade" id="iosmodal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-ios" role="document">
         <div class="modal-content">
@@ -27,63 +17,7 @@ const iOSModal = (function () {
         </div>
       </div>
     </div>
-  `;
-
-  const modalDiv = modalWrapper.querySelector('.modal.fade');
-  const modalDialog = modalDiv.querySelector('.modal-dialog');
-  const modalContent = modalDialog.querySelector('.modal-content');
-  const modalBody = modalContent.querySelector('.modal-body');
-  const modalFooter = modalContent.querySelector('.modal-footer');
-  const btnGroup = modalFooter.querySelector('.btn-group');
-
-  /**
-   * show the modal
-   * @param {Node|string} body - modal body content, DOM Node or string
-   * @param {{id,type,class,innerHTML,onclick}[]} buttons - button data
-   */
-  function show (body, buttons) {
-
-    modalBody.innerHTML = '';
-    btnGroup.innerHTML = '';
-
-    if (body) {
-      if (typeof body === 'string') {
-        modalBody.innerHTML = body;
-      } else {
-        modalBody.appendChild(body);
-      }
-    }
-
-    if (buttons) {
-      buttons.forEach(btnProps => {
-        const btnData = Object.assign({}, btnProps);
-        if (btnData.class) {
-          btnData.className = btnData.class;
-          delete btnData.class;
-        }
-        const btn = Object.assign(
-          document.createElement('button'), btnData);
-        // console.log('show btn:', btn);
-        btnGroup.appendChild(btn);
-      });
-    }
-
-    $('#iosmodal').modal('show');
-  }
-
-  function hide () {
-    $('#iosmodal').modal('hide');
-  }
-
-  function customize ({bottom}) {
-    if (!bottom) {
-      return;
-    }
-    console.log('iOSModal setting bottom to:', bottom);
-    modalDialog.style.bottom = bottom;
-  }
-
-  const cssRules = `
+  `;let a=o.querySelector(".modal.fade"),d=a.querySelector(".modal-dialog"),t=d.querySelector(".modal-content"),i=t.querySelector(".modal-body"),e=t.querySelector(".modal-footer"),l=e.querySelector(".btn-group"),n=`
     /*!
      * Bootstrap modal styled to look like an iOS modal
      * Copyright 2020 Terry Morse
@@ -204,20 +138,4 @@ const iOSModal = (function () {
     .modal-backdrop.show {
       opacity: 0.1;
     }
-  `;
-
-  // add css rules to head
-  const style = document.createElement('style');
-  style.id = 'iosModalStyle';
-  style.textContent = cssRules;
-  document.head.appendChild(style);
-
-  // add modal template to body
-  document.body.appendChild(modalDiv);
-
-  return {
-    customize,
-    show,
-    hide
-  };
-})();
+  `,r=document.createElement("style");return r.id="iosModalStyle",r.textContent=n,document.head.appendChild(r),document.body.appendChild(a),{customize:function o({bottom:a}){a&&(console.log("iOSModal setting bottom to:",a),d.style.bottom=a)},show:function o(a,d){i.innerHTML="",l.innerHTML="",a&&("string"==typeof a?i.innerHTML=a:i.appendChild(a)),d&&d.forEach(o=>{let a=Object.assign({},o);a.class&&(a.className=a.class,delete a.class);let d=Object.assign(document.createElement("button"),a);l.appendChild(d)}),$("#iosmodal").modal("show")},hide:function o(){$("#iosmodal").modal("hide")}}}();

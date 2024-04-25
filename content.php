@@ -12,6 +12,7 @@ require_once (RDD . "/lib/UkrPoshtaClass.php");
 session_start();
 $JsHttpRequest  = new JsHttpRequest("utf-8");
 $catalog        = new CatalogueClass();
+$catalog_exist  = new CatalogExistClass();
 $search         = new SearchClass();
 $menu           = new MenuClass();
 $client         = new ClientClass();
@@ -150,7 +151,7 @@ if ($_REQUEST["w"] === "showSearchDropdown2") {
 }
 
 if ($_REQUEST["w"] === "getCatalogueLink") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogueLink($_REQUEST["article_nr_search"]));
+    $GLOBALS['_RESULT'] = array("content" => $catalog->getCatalogueLink($_REQUEST["article_nr_search"], $_REQUEST["article_nr_search2"]));
 }
 
 if ($_REQUEST["w"] === "searchCity") {
@@ -214,6 +215,10 @@ if ($_REQUEST["w"] === "getMenuBar") {
 }
 
 /*==== MODALS ====*/
+
+if ($_REQUEST["w"] === "addModalForm") {
+    $GLOBALS['_RESULT'] = array("content" => $showform->addModalForm($_REQUEST["name"]));
+}
 
 if ($_REQUEST["w"] === "getArticleApplModelForm") {
     $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplModelForm($_REQUEST["art_id"], $_REQUEST["mfa_id"]));
@@ -289,10 +294,6 @@ if ($_REQUEST["w"] === "validateOperator") {
 if ($_REQUEST["w"] === "recoverPassword") {
     $GLOBALS['_RESULT'] = array("content" => $client->recoverPassword($_REQUEST["phone"]));
 }
-
-//if ($_REQUEST["w"] === "validatePhone") {
-//    $GLOBALS['_RESULT'] = array("content" => $client->validatePhone($_REQUEST["phone"]));
-//}
 
 if ($_REQUEST["w"] === "endValidation") {
     $GLOBALS['_RESULT'] = array("content" => $client->endValidation($_REQUEST["phone"], $_REQUEST["password"]));
@@ -398,6 +399,10 @@ if ($_REQUEST["w"] === "setClientRequestDone") {
     $GLOBALS['_RESULT'] = array("content" => $catalog->setClientRequestDone());
 }
 
+if ($_REQUEST["w"] === "getGroupCarMfaList") {
+    $GLOBALS['_RESULT'] = array("content" => $catalog_exist->getGroupCarMfaList($_REQUEST["group_id"], $_REQUEST["mfa_id_sel"], $_REQUEST["status"], $_REQUEST["letter"]));
+}
+
 if ($_REQUEST["w"] === "showModalForm") {
     $GLOBALS['_RESULT'] = array("content" => $showform->showModalForm($_REQUEST["form"]));
 }
@@ -443,12 +448,4 @@ if ($_REQUEST["w"] === "getGroupsLinks") {
     $GLOBALS['_RESULT'] = array("content" => $menu->getGroupsLinks($_REQUEST["group_id"],$_REQUEST["param_id"],$_REQUEST["value_id"]));
 }
 
-/*==== UkrPoshta ====*/
 
-//if ($_REQUEST["w"] === "getUpCitiesList") {
-//    $GLOBALS['_RESULT'] = array("content" => $up->printList($up->getCitiesList($_REQUEST["region_id"])));
-//}
-//
-//if ($_REQUEST["w"] === "getUpDistrictsList") {
-//    $GLOBALS['_RESULT'] = array("content" => $up->printList($up->getDistrictsList($_REQUEST["city_id"])));
-//}

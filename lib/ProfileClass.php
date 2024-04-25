@@ -1088,9 +1088,6 @@ class ProfileClass extends ClientClass
 
                 $csv = "";
                 foreach ($this->getPriceProfileList() as $record) {
-//                    foreach ($record as $rec) {
-//                        $csv .= $rec . ';';
-//                    }
                     $csv .= $record . ';';
                     $csv .= "\n";
                 }

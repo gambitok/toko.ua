@@ -49,6 +49,12 @@ trait Helper
 
         return $str;
     }
+    public function getUrlString2($str): string
+    {
+        $str = str_replace(array("'", "`", ",", '"', "&nbsp;", "/"), array("", "", "", "", "", ""), $str);
+
+        return $str;
+    }
 
     /*
      * validate string

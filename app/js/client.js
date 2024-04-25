@@ -1,6 +1,4 @@
-/*
-* change Site Language
-* */
+
 function setSiteLang(id) {
     JsHttpRequest.query(folder,{'w':'setSiteLang', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -117,7 +115,6 @@ function saveRegistrationForm() {
                 showAlertModal(text, "{error_cap}", 0, showLoginForm);
                 return false;
             } else {
-                //showValidateModal(phone, validatePhone, saveRegistration);
                 return true;
             }
         }}, true);

@@ -79,7 +79,7 @@
             <div class="modal-body">
                 <div class="request">
                     <div class="request-row request-row-mob" style="display: flex">
-                        <div class="request-row__image"><img src="/images/icons/faq/vin-icon.png" alt="Icon"></div>
+                        <div class="request-row__image"><img class="lazy" src="/images/no_photo_min.png" data-src="/images/icons/faq/vin-icon.png" alt="Icon"></div>
                         <div class="request-row__title">
                             <span style="color: #0CA9EE;">{faq_request_title}</span><br>
                             <span style="color: #36cd76;">{faq_request_title2}</span>
@@ -114,17 +114,17 @@
         <div class="tool-status-contain">
             <span id="tool-garage" class="tool-status {garage_style}">!</span>
         </div>
-        <img class="fixed-nav-item__image" src="/images/icons/help/car.png" alt="img">
+        <img class="fixed-nav-item__image lazy" src="/images/no_photo_min.png" data-src="/images/icons/help/car.png" alt="img">
         <span class="fixed-nav-item__text">{garage_cap_upper}</span>
     </div>
 
     <div class="fixed-nav-item" onclick="showPhoneForm();">
-        <img class="fixed-nav-item__image" src="/images/icons/help/help.png" alt="img">
+        <img class="fixed-nav-item__image lazy" src="/images/no_photo_min.png" data-src="/images/icons/help/help.png" alt="img">
         <span class="fixed-nav-item__text">{call_cap}</span>
     </div>
 
     <div class="fixed-nav-item" onclick="showSearchInput();">
-        <img class="fixed-nav-item__image" src="/images/icons/help/search.png" alt="img">
+        <img class="fixed-nav-item__image lazy" src="/images/no_photo_min.png" data-src="/images/icons/help/search.png" alt="img">
         <span class="fixed-nav-item__text">{search_cap}</span>
     </div>
 
@@ -132,7 +132,7 @@
         <div class="tool-status-contain">
             <span class="tool-status {filters_style}">{filters_count}</span>
         </div>
-        <img class="fixed-nav-item__image" src="/images/icons/help/filter.png" alt="img">
+        <img class="fixed-nav-item__image lazy" src="/images/no_photo_min.png" data-src="/images/icons/help/filter.png" alt="img">
         <span class="fixed-nav-item__text">{filter_cap}</span>
     </div>
 
@@ -140,7 +140,7 @@
         <div class="tool-status-contain">
             <span id="tool-basket" class="tool-status {basket_style}">{basket_count}</span>
         </div>
-        <img class="fixed-nav-item__image" src="/images/icons/help/basket.png" alt="img">
+        <img class="fixed-nav-item__image lazy" src="/images/no_photo_min.png" data-src="/images/icons/help/basket.png" alt="img">
         <span class="fixed-nav-item__text">{basket_cap}</span>
     </div>
 </div>
@@ -154,6 +154,5 @@
 <script>
     $(document).ready(function() {
         getCarsSelectUser("cat-products-cars", "{mfa_link}", "{model_link}");
-        //{model_id_link}
     });
 </script>

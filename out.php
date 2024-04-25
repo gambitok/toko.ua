@@ -89,7 +89,6 @@ $content = str_replace("{site_script_breadcrumbs}", $breadData[1], $content);
 $content = str_replace("{main_site_breadcrumbs}", $breadData[0], $content);
 $content = str_replace("{site_page_pagination}", "", $content);
 $content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
-$content = str_replace("{seo_footers_block}", "", $content);
 $content = str_replace("{site_console}", "", $content);
 $content = str_replace("{seoshield_formulas}", "", $content);
 
@@ -113,7 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SERVER['REQUEST_URI']) && st
 // Main HTML
 $content = str_replace("{main_seo_text}", getSeoTextForm(), $content);
 $content = str_replace("{main_window}", "", $content);
-$content = str_replace("{main_seo_products_content}", "", $content);
 $content = str_replace("{main_seo_text_cars}", "", $content);
 
 if (findLanguage() === "en") {

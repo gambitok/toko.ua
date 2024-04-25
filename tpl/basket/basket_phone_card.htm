@@ -32,6 +32,7 @@
                     <button class="btn btn-sm btn-outline-secondary" onclick="updateCountBasket(0,{art_id},{storage_id},{stock},1);">-</button>
                 </div>
                 <input id="{amount_field}_phone" title="Amount" class="form-control" min="0" value="{amount}" onchange="updateBasketForm({art_id},{storage_id},{stock},1);">
+                <input type="hidden" value="{too_much}" id="basket_warning_message_phone">
                 <div class="input-group-append">
                     <button class="btn btn-sm btn-outline-secondary" onclick="updateCountBasket(1,{art_id},{storage_id},{stock},1);">+</button>
                 </div>

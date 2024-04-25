@@ -729,7 +729,7 @@ class ShopClass extends CatalogueClass
                 $list = "
                 <div class=\"orders-user\">
                     <p class=\"orders-user__title\">{saved_address}:</p>
-                    <a class=\"orders-user__toggle\" onclick=\"ordersUserToggle();\"><i class=\"fa fa-chevron-down\"></i></a>
+                    <a class=\"orders-user__toggle\" onclick=\"$('#user_saved_info_list').toggle();\"><i class=\"fa fa-chevron-down\"></i></a>
                     <div id=\"user_saved_info_list\">" . $list . "</div>
                 </div>";
             }
@@ -1920,14 +1920,6 @@ class ShopClass extends CatalogueClass
 
         return $list;
     }
-
-//    public function getSearchCityForm()
-//    {
-//        $form = $this->getHtmlForm("orders/city_dropdown");
-//        $form = str_replace(array("{selected_id}", "{selected_name}", "{select_list}"), array(0, "-{not_chosen}-", $this->searchCityMain()), $form);
-//
-//        return $form;
-//    }
 
     public function searchCityMain(): string
     {

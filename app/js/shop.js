@@ -46,7 +46,8 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
     if (parseInt(stock) < parseInt(count) || parseInt(count) === 0) {
         var secret = parseInt(stock) + 1;
         while (parseInt(secret) > parseInt(stock)) {
-            secret = prompt("Выбранное количество продукта превышает доступное количество!", 1);
+            let mess = $("#basket_warning_message").val();
+            secret = prompt(mess, 1);
             if (parseInt(secret) === 0) {
                 count_id.val(1);
                 showNotify("{error_cap}!", "{wrong_count_cap}!", "danger");
@@ -140,7 +141,8 @@ function updateBasketForm(art_id, storage_id, stock, phone) {
                 count_id.val(1);
                 return;
             }
-            secret = prompt("Выбранное количество продукта превышает доступное количество!", 1);
+            let mess = $("#basket_warning_message").val();
+            secret = prompt(mess, 1);
             if (secret === null) {
                 count_id.val(stock);
                 return;
@@ -263,7 +265,6 @@ function letsFinishOrder(name, status = 0) {
             let text    = result["err"];
             if (answer == 1) {
                 location.href = text;
-                //$("#BasketForm").modal("hide");
             }
             else if (answer == 2) {
                 showAlertModal(text, "{error_cap}", 0, showLoginForm);
@@ -275,32 +276,6 @@ function letsFinishOrder(name, status = 0) {
                 showAlertModal(text, "{error_cap}", 0);
             }
         }}, true);
-}
-
-// FINISH FAST ORDER
-function finishFastOrder(name, status = 0) {
-    $("#input_phone").val("");
-    validateForm("phone", "input");
-
-    let input_phone = $("#" + name);
-    let phone       = input_phone.val();
-
-    if (!validationInput(name)) {
-        let text = "{input_valid_phone}";
-        showAlertModal(text, "{error_cap}", 0);
-        return true;
-    }
-    else {
-        JsHttpRequest.query(folder,{'w':'checkRegClient', 'phone':phone},
-            function (result, errors){ if (errors) {alert(errors);} if (result){
-                if (result.content !== false) {
-                    let text = "{user_already_logged}!<br>{phone_cap}: " + result.content[0];
-                    showAlertModal(text, "{error_cap}", 0, showLoginForm);
-                } else {
-                    validateOperator(phone, status);
-                }
-            }}, true);
-    }
 }
 
 // VALIDATE PHONE NUMBER (by OPERATOR)
@@ -412,17 +387,3 @@ function validationInput(name) {
     }
 }
 
-function validationInputPhone() {
-    let phone = $("#input_phone_article").val();
-
-    JsHttpRequest.query(folder,{'w':'validateOperator', 'phone':phone},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            if (result.content === false) {
-                let text = "{check_phone_data}!";
-                showAlertModal(text, "{error_cap}", 0);
-                $("#input_phone_article").css("border", "1px solid red");
-            } else {
-                addFastOrder();
-            }
-        }}, true);
-}

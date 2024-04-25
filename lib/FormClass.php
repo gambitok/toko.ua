@@ -90,8 +90,8 @@ class FormClass extends CatalogueClass
 
     public function showBrandGroups($brand_id): string
     {
+        $automan = new AutoClass();
         $brand_id = $this->getUrlNumber($brand_id);
-        $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
 
         $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_BRANDS` WHERE `brand_id` = $brand_id GROUP BY `group_id`;");
@@ -104,29 +104,10 @@ class FormClass extends CatalogueClass
 
         $arr = [];
         if (!empty($groups)) {
-            $groups_str = implode(",", $groups);
-            if (empty($groups_str)) {
-                $groups_str = 0;
-            }
-            $r = $db->query("SELECT `HEAD_ID`, `CAT_ID`, `GROUP_ID`, `POPULAR` FROM `T2_TREE_HCG_EXIST` WHERE `GROUP_ID` IN ($groups_str);");
-            $n = $db->num_rows($r);
-            for ($i = 1; $i <= $n; $i++) {
-                $head_id    = $db->result($r, $i - 1, "HEAD_ID");
-                $cat_id     = $db->result($r, $i - 1, "CAT_ID");
-                $group_id   = $db->result($r, $i - 1, "GROUP_ID");
-                $popular    = (int)$db->result($r, $i - 1, "POPULAR");
-                $head_stat  = $this->getHeadRowStatus($head_id);
-
-                if ($head_stat) {
-                    $arr[$head_id][$cat_id][] = $group_id;
-                    if ($popular === 1) {
-                        $arr[$head_id][0][] = $group_id;
-                    }
-                }
-            }
+            $arr = $automan->getTreeHCGList($groups);
         }
 
-        return (new AutoClass())->getCatalogCacheColShow($arr, "", "", $brand_id);
+        return $automan->getCatalogCacheColShow($arr, "", "", $brand_id);
     }
 
     /*
@@ -1742,13 +1723,27 @@ class FormClass extends CatalogueClass
             for ($i = 1; $i <= $n; $i++) {
                 $brand_id   = $db->result($r, $i - 1, "MFA_ID");
                 $brand_name = $db->result($r, $i - 1, "MFA_BRAND");
-                $list .= "<div class='applicable-mfa' onclick='toggleApplModel(this);'>$brand_name</div>";
+                $list .= "<div class='applicable-mfa' onclick=\"$(this).next('div').toggle()\">$brand_name</div>";
                 $list .= $this->getArticleApplModelForm($art_id, $brand_id);
             }
             $list .= "</div>";
         }
 
         return $list;
+    }
+
+    public function getDateFormat($d_start, $d_end)
+    {
+        if (strlen($d_start) === 6) {
+            $d_start = substr($d_start, 0, 4) . "." . substr($d_start, 4, 2);
+        }
+        if (strlen($d_end) === 6) {
+            $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
+        }
+        if ($d_end === "" || $d_end === "-") {
+            $d_end = "{cur_time}";
+        }
+        return compact("d_start", "d_end");
     }
 
     /*
@@ -1790,15 +1785,9 @@ class FormClass extends CatalogueClass
             $d_end      = $db->result($r, $i - 1, "TYP_PCON_END");
 
             $body_name = $catalog->getBodyName($body_id);
-            if (strlen($d_start) === 6) {
-                $d_start = substr($d_start, 0, 4) . "." . substr($d_start, 4, 2);
-            }
-            if (strlen($d_end) === 6) {
-                $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
-            }
-            if ($d_end === "" || $d_end === "-") {
-                $d_end = "{cur_time}";
-            }
+            $dataFormat = $this->getDateFormat($d_start, $d_end);
+            $d_start = $dataFormat['d_start'];
+            $d_end = $dataFormat['d_end'];
 
             $list .= "<tr onclick=\"getArticleApplModelTypeForm('$art_id', '$mfa_id', '$model', '$body_id')\">
                 <td>$model</td>
@@ -1851,15 +1840,9 @@ class FormClass extends CatalogueClass
             $d_start    = $db->result($r, $i - 1, "TYP_PCON_START");
             $d_end      = $db->result($r, $i - 1, "TYP_PCON_END");
 
-            if (strlen($d_start) === 6) {
-                $d_start = substr($d_start, 0, 4) . "." . substr($d_start, 4, 2);
-            }
-            if (strlen($d_end) === 6) {
-                $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
-            }
-            if ($d_end === "" || $d_end === "-") {
-                $d_end = "{cur_time}";
-            }
+            $dataFormat = $this->getDateFormat($d_start, $d_end);
+            $d_start = $dataFormat['d_start'];
+            $d_end = $dataFormat['d_end'];
 
             $mfa_link = $this->getMfaData($mfa_id)['mfa_link'];
             $model_link = $this->getModelLink($model);
@@ -2003,7 +1986,7 @@ class FormClass extends CatalogueClass
         $indicators = $items = "";
         $k = 0;
 
-        $r = $db->query("SELECT `TITLE_$postfix`, `TEXT_$postfix`, `IMAGE`, `LINK`, `STATUS_TEXT` FROM `T2_BANNERS` WHERE `STATUS` = 1 ORDER BY `POSITION`;");
+        $r = $db->query("SELECT `TITLE_" . $postfix . "`, `TEXT_" . $postfix . "`, `IMAGE`, `LINK`, `STATUS_TEXT` FROM `T2_BANNERS` WHERE `STATUS` = 1 ORDER BY `POSITION`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $title  = $db->result($r, $i - 1, "TITLE_$postfix");
@@ -2144,6 +2127,11 @@ class FormClass extends CatalogueClass
     public function getTestPageContent()
     {
         return $this->getArticleForm(100002191, 1)["form"];
+    }
+
+    public function addModalForm($name = "")
+    {
+        return $this->replaceLang($this->getHtmlForm("modals/$name"));
     }
 
 }

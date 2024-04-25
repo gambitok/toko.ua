@@ -6,14 +6,22 @@ $('.modal').on('shown.bs.modal', function () {
 const folder = '/content.php';
 
 function showSearchInput() {
-    $('#InputForm').modal('show').on('shown.bs.modal', function () {
-        $('#search_input').focus();
-    }).on('keypress',function(e) {
-        if (e.which == 13) {
-            artSearch('search_input');
-        }
-    });
-    showSearchDropdown();
+
+    JsHttpRequest.query(folder,{'w':'addModalForm', 'name':'input'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modals").append(result.content).ready(function () {
+                $('#InputForm').modal('show').on('shown.bs.modal', function () {
+                    $('#search_input').focus();
+                }).on('keypress',function(e) {
+                    if (e.which == 13) {
+                        artSearch('search_input');
+                    }
+                });
+                showSearchDropdown();
+            });
+        }}, true);
+
+
 }
 
 // MAIN NAVIGATION
@@ -48,7 +56,7 @@ function toggleSocialIcons() {
 }
 
 function iosStyle() {
-    const mbody = document.getElementById('body-default').innerHTML;
+    const mob_body = document.getElementById('body-default').innerHTML;
     let contact_telegram = $("#contact_telegram").val();
     let contact_facebook = $("#contact_facebook").val();
     let contact_viber    = $("#contact_viber").val();
@@ -103,7 +111,7 @@ function iosStyle() {
             onclick: () => iOSModal.hide()
         }
     ];
-    iOSModal.show(mbody, buttons);
+    iOSModal.show(mob_body, buttons);
 }
 
 let timer;
@@ -119,11 +127,21 @@ $('.header-nav__li').on({'mouseover': function () {
 });
 
 function showViberForm() {
-    $("#ViberForm").modal("show");
+    JsHttpRequest.query(folder,{'w':'addModalForm', 'name':'viber'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modals").append(result.content).ready(function () {
+                $("#ViberForm").modal("show");
+            });
+        }}, true);
 }
 
 function showTelegramForm() {
-    $("#TelegramForm").modal("show");
+    JsHttpRequest.query(folder,{'w':'addModalForm', 'name':'telegram'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modals").append(result.content).ready(function () {
+                $("#TelegramForm").modal("show");
+            });
+        }}, true);
 }
 
 function detectmob() {
@@ -191,18 +209,6 @@ function loadInputNumber() {
 }
 
 $(document).ready(function() {
-
-    // if (getCookie('tpoint_id_status') === "" && getCookie('user_id') === "") {
-    //
-    //     setTimeout(function() {
-    //         showRegionForm();
-    //     }, 5000);
-    // }
-
-    // if (getCookie('lang_id_status') === "" && getCookie('user_id') === "") {
-    //     //setCookie('lang_id_status', 1);
-    //     //showRegionForm();
-    // }
 
     // Tooltips
     $(".tooltips").tooltip();
@@ -297,7 +303,6 @@ $(document).ready(function() {
     if (!detectmob()) {
         if (cookie_user_id === "") {
             setTimeout(function () {
-                //void(Tawk_API.toggle());
                 toggleSocialIcons();
             }, 60000);
         }

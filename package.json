@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "bootstrap-ios-modal": "^1.2.3",
+    "gulp-cli": "^3.0.0",
     "gulp-scss": "^1.4.0"
   }
 }

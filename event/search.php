@@ -5,9 +5,18 @@ $linka = findLinks();
 $brand_link         = $catalogue->getUrlString($linka[2]);
 $article_nr_search  = $catalogue->getUrlString($linka[1]);
 $article_nr_search  = rawurldecode($article_nr_search);
-$article_nr_search = $catalogue->getIconv($article_nr_search);
+$article_nr_search  = $catalogue->getIconv($article_nr_search);
+
+$text = $_GET["text"];
+if (!empty($text)) {
+    $article_nr_search = $text;
+    $article_nr_search  = rawurldecode($article_nr_search);
+    $article_nr_search  = $catalogue->getIconv($article_nr_search);
+    $article_nr_search = rtrim($article_nr_search, "/");
+}
 
 if ($article_nr_search === "") {
+    //
     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/search_unknown"), $content);
 } else {
     $content = str_replace("{main_window}", "{search}", $content);

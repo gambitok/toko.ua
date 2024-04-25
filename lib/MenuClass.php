@@ -3,6 +3,8 @@
 class MenuClass extends CatalogueClass
 {
 
+    public $cities_limit = 32;
+
     /*
      * get main form images
      * */
@@ -39,7 +41,7 @@ class MenuClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
 
-        $r = $db->query("SELECT `TITLE_$postfix` FROM `T2_REVIEWS` WHERE `ID` = $state_id LIMIT 1;");
+        $r = $db->query("SELECT `TITLE_" . $postfix . "` FROM `T2_REVIEWS` WHERE `ID` = $state_id LIMIT 1;");
         $title = $db->result($r, 0, "TITLE_$postfix");
         $title = str_replace(str_split('.+\/:*?"<>|!?'), "", $title);
         $title = ($title === "") ? $this->replaceLang("{state_one_cap}" . "-$state_id") : $title;
@@ -431,26 +433,20 @@ class MenuClass extends CatalogueClass
         return $list;
     }
 
-    /*
-     * GET TPoint Form
-     * (choose office)
-     * */
-    public function getRegionSelect()
-    {
-        $db = DbSingleton::getDbm();
-
-        $lang_id    = $this->getLanguage();
-        $tpoint_id  = $this->getTpointID();
-
-        $list = "";
-
-        $r = $db->query("SELECT t2a.full_name, t2a.address 
-        FROM `T_POINT` t2
-            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id = t2.id)
-        WHERE t2.id = $tpoint_id AND t2a.lang_id = $lang_id 
-        ORDER BY t2.position DESC, t2a.full_name;");
-        $n = $db->num_rows($r);
-
+//    public function getRegionSelect()
+//    {
+//        $db = DbSingleton::getDbm();
+//
+//        $lang_id    = $this->getLanguage();
+//        $tpoint_id  = $this->getTpointID();
+//        $list = "";
+//
+//        $r = $db->query("SELECT t2a.full_name, t2a.address
+//        FROM `T_POINT` t2
+//            LEFT JOIN `T_POINT_ADDRESS` t2a ON (t2a.tpoint_id = t2.id)
+//        WHERE t2.id = $tpoint_id AND t2a.lang_id = $lang_id
+//        ORDER BY t2.position DESC, t2a.full_name;");
+//        $n = $db->num_rows($r);
 //        if ($n > 0) {
 //            $region     = $db->result($r, 0, "full_name");
 //            $address    = $db->result($r, 0, "address");
@@ -464,9 +460,8 @@ class MenuClass extends CatalogueClass
 //            </a>";
 //            $list = $this->replaceLang($list);
 //        }
-
-        return $list;
-    }
+//        return $list;
+//    }
 
     /*
      * show contact form
@@ -483,7 +478,10 @@ class MenuClass extends CatalogueClass
         if ($n > 0) {
             for ($i = 1; $i <= $n; $i++) {
                 $form_range = $this->getHtmlForm("menu/contacts_range");
-                $form_range = str_replace(array("{contact_title}", "{contact_address}", "{contact_schedule}", "{contact_phone}"), array($db->result($r, $i - 1, "title"), $db->result($r, $i - 1, "address"), $db->result($r, $i - 1, "schedule"), $db->result($r, $i - 1, "phone")), $form_range);
+                $form_range = str_replace(
+                    array("{contact_title}", "{contact_address}", "{contact_schedule}", "{contact_phone}"),
+                    array($db->result($r, $i - 1, "title"), $db->result($r, $i - 1, "address"), $db->result($r, $i - 1, "schedule"), $db->result($r, $i - 1, "phone"))
+                , $form_range);
 
                 $list .= $form_range;
             }
@@ -1127,18 +1125,17 @@ class MenuClass extends CatalogueClass
 
     public function getPhoneContacts()
     {
-        $profile = new ProfileClass();
         $language = new LangClass();
-
+//        $profile = new ProfileClass();
+//        $form = str_replace(array("{region_select}", "{lang_select}"), array((!$profile->getProfileClientInfo()) ? $this->getRegionSelect() : "", $language->getLanguageMenuList($this->getLanguage())), $form);
         $form = $this->getHtmlForm("bar/contacts");
-        $form = str_replace(array("{region_select}", "{lang_select}"), array((!$profile->getProfileClientInfo()) ? $this->getRegionSelect() : "", $language->getLanguageMenuList($this->getLanguage())), $form);
+        $form = str_replace(array("{region_select}", "{lang_select}"), "", $language->getLanguageMenuList($this->getLanguage()), $form);
 
         return $form;
     }
 
     public function getFooterForm($router_sel = "")
     {
-        //$site_link = ""
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
 
@@ -1153,7 +1150,7 @@ class MenuClass extends CatalogueClass
             $where = "`LINK` != '$group_link'";
         }
 
-        $r = $db->query("SELECT `ROUTER`, `LINK`, `TEXT_$postfix` FROM `T2_SEO_FOOTER` WHERE $where ORDER BY `TEXT_RU` LIMIT 0,20;");
+        $r = $db->query("SELECT `ROUTER`, `LINK`, `TEXT_" . $postfix . "` FROM `T2_SEO_FOOTER` WHERE $where ORDER BY `TEXT_RU` LIMIT 0,20;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $router = $db->result($r, $i - 1, "ROUTER");
@@ -1177,67 +1174,30 @@ class MenuClass extends CatalogueClass
         </ul>";
 
         $form = getHtmlForm("main/footer");
-//        $form = str_replace(array("{popular_catalogs_list1}", "{popular_catalogs_list2}"), array($list1, $list2), $form);
-//        $form = str_replace("{footer_cities}", "", $form);
-
-//        $group_id_sel   = 0;
-//        $art_id_sel     = 0;
-//        $city_id_sel    = 0;
-//        $status_catalog = 0;
-//
-//        if ($router_sel === "catalog") {
-//            $catalog_exist  = new CatalogExistClass();
-//            $group_link     = findLinks()[1];
-//            $group_id_sel   = $catalog_exist->getGroupExistId($group_link);
-//            $city_id_sel    = $this->getUrlNumber($_GET["city"]);
-//
-//            $filters = findLinks()[2];
-//            if ($filters !== "" && $filters !== "auto") {
-//                $params = $catalog_exist->getCheckedFilters($group_id_sel, $filters);
-//                if (count($params) > 2) {
-//                    $status_catalog = 1;
-//                } elseif (count($params) === 2 && empty($params[0])) {
-//                    $status_catalog = 1;
-//                }
-//            }
-//        }
-
-//        if ($router_sel === "products") {
-//            $art_id_sel = (int)substr(findLinks()[1], strrpos(findLinks()[1], "-") + 1);
-//        }
-
-//        if ($router_sel !== "article" && $router_sel !== "search" && $status_catalog !== 1 && $this->getLanguage() !== 3) {
-//            $r = $db->query("SELECT * FROM `T2_FOOTER_ARCHIVE` WHERE `LINK` = '$site_link' LIMIT 1;");
-//            $n = $db->num_rows($r);
-//
-//            if ($n > 0) {
-//                $top_cities = $db->result($r, 0, "SEO_CITY");
-//                $top_cats   = $db->result($r, 0, "SEO_CAT");
-//                $top_goods  = $db->result($r, 0, "SEO_GOOD");
-//                $top_order  = $db->result($r, 0, "SEO_ORDER");
-//            } else {
-//                $top_cities = $this->replaceLang($this->getTopCities($city_id_sel));
-//                $top_cats   = $this->replaceLang($this->getTopCategories($group_id_sel));
-//                $top_goods  = $this->replaceLang($this->getTopGoods($art_id_sel));
-//                $top_order  = $this->replaceLang($this->getTopOrders($group_id_sel));
-//
-//                $top_cities = str_replace('"', "'", $top_cities);
-//                $top_cats   = str_replace('"', "'", $top_cats);
-//                $top_goods  = str_replace('"', "'", $top_goods);
-//                $top_order  = str_replace('"', "'", $top_order);
-//
-//                $db->query("INSERT INTO `T2_FOOTER_ARCHIVE` (`LINK`, `SEO_CITY`, `SEO_CAT`, `SEO_GOOD`, `SEO_ORDER`) VALUES (\"$site_link\", \"$top_cities\", \"$top_cats\", \"$top_goods\", \"$top_order\");");
-//            }
-//
-//            $list = $this->getHtmlForm("main/footer_cities");
-//            $list = str_replace(array("{top_cities_list}", "{top_categories_list}", "{top_goods_list}", "{top_orders_list}"), array($top_cities, $top_cats, $top_goods, $top_order), $list);
-//
-//            $form = str_replace("{footer_cities}", $list, $form);
-//        }
-
-        $form = str_replace(array("{popular_catalogs_list1}", "{popular_catalogs_list2}", "{footer_cities}"), array($list1, $list2, ""), $form);
+        $form = str_replace(array("{popular_catalogs_list1}", "{popular_catalogs_list2}", "{footer_cities}"), array($list1, $list2, $this->getSeoCitiesList()), $form);
 
         return $form;
+    }
+
+    public function getSeoCitiesList()
+    {
+        $list = "";
+        $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
+
+        $r = $db->query("SELECT `CITY_NAME_" . $postfix . "`, `LINK_NAME` FROM `SEO_LISTING_CITY` WHERE 1;");
+        $n = $db->num_rows($r);
+
+        for ($i = 1; $i <= $n; $i++) {
+            $city_name = $db->result($r, $i - 1, "CITY_NAME_$postfix");
+            $city_link = $db->result($r, $i - 1, "LINK_NAME");
+            $list .= "<a href='https://toko.ua/catalog/?city=$city_link'>$city_name</a>";
+            if ($i < $n) {
+                $list .= ", ";
+            }
+        }
+
+        return $list;
     }
 
     public function getTopGoods($art_id_sel = 0): string
@@ -1265,11 +1225,11 @@ class MenuClass extends CatalogueClass
             $art_nr_ds  = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
             $art_name   = $this->getArticleNameLang($art_id);
             $brand_name = $this->getBrandName($brand_id);
-            $fbrand     = $this->getBrandLink($brand_id);
-            $fname      = $this->getFormatAticle($art_nr_ds);
+            $f_brand     = $this->getBrandLink($brand_id);
+            $f_name      = $this->getFormatAticle($art_nr_ds);
 
             $text = "$art_name $brand_name $art_nr_ds";
-            $link = "$fname-$fbrand-$art_id";
+            $link = "$f_name-$f_brand-$art_id";
 
             $arr[] = ["link" => $link, "text" => $text];
         }
@@ -1417,7 +1377,7 @@ class MenuClass extends CatalogueClass
         <ul class=\"city-nav-ul\">";
         $postfix = $this->getLangPostfix($this->getLanguage());
 
-        $r = $db->query("SELECT `LINK_NAME`, `CITY_NAME_$postfix` FROM `SEO_LISTING_CITY` WHERE `ID` != $city_id_sel ORDER BY RAND() LIMIT 32;");
+        $r = $db->query("SELECT `LINK_NAME`, `CITY_NAME_" . $postfix . "` FROM `SEO_LISTING_CITY` WHERE `ID` != $city_id_sel ORDER BY RAND() LIMIT $this->cities_limit;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $city_link  = $db->result($r, $i - 1, "LINK_NAME");
@@ -1452,7 +1412,7 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
-        $r = $db->query("SELECT `LINK_NAME`, `CITY_NAME_IN_$postfix` FROM `SEO_LISTING_CITY` WHERE 1 ORDER BY RAND() LIMIT 1;");
+        $r = $db->query("SELECT `LINK_NAME`, `CITY_NAME_IN_" . $postfix . "` FROM `SEO_LISTING_CITY` WHERE 1 ORDER BY RAND() LIMIT 1;");
         $city_name = $db->result($r, 0, "CITY_NAME_IN_$postfix");
         $city_link = $db->result($r, 0, "LINK_NAME");
 

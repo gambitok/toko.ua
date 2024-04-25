@@ -66,7 +66,7 @@ class CatalogueClass
         $search_filters = $this->getHtmlForm("search/filters");
         $search_brands  = $this->getHtmlForm("search/brands");
 
-        list($list, $list_brand, $filters, $c) = $search->searchList($art_id_str, $article_nr_search, $brand_nr_search);
+        list($list, $list_brand, $filters) = $search->searchList($art_id_str, $article_nr_search, $brand_nr_search);
 
         // if found something
         if (($list_brand) && ($filters)) {
@@ -655,14 +655,13 @@ class CatalogueClass
                 }
 
                 $temp_arr = [];
-                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY $oderBy");
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_" . $temp_key . "` ORDER BY $oderBy");
                 $n = $db->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id                 = (int)$db->result($r, $i - 1, "art_id");
                     $article_nr_displ       = $db->result($r, $i - 1, "article_nr_displ");
                     $brand_id               = (int)$db->result($r, $i - 1, "brand_id");
                     $brand_name             = $db->result($r, $i - 1, "brand_name");
-                    //$article_name           = $db->result($r, $i - 1, "article_name");
                     $article_name = $this->getArticleName($art_id);
                     $delivery_days          = (int)$db->result($r, $i - 1, "delivery_days");
                     $delivery_info          = $db->result($r, $i - 1, "delivery_info");
@@ -832,14 +831,14 @@ class CatalogueClass
                             // visible suppl storage
                             $article_name = str_replace('"', "''" , $article_name);
                             if ($art_id_search !== $art_id && $this->getSuppLStorageVisible($suppl_id, $storage_id)) {
-                                $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
+                                $db->query("INSERT INTO `TEMP_ARTICLES_" . $temp_key . "` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
                                 VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', \"$article_name\", '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
                             }
                         }
                     }
                 }
 
-                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_$temp_key` ORDER BY `status` DESC, `article_nr_displ`;");
+                $r = $db->query("SELECT * FROM `TEMP_ARTICLES_" . $temp_key . "` ORDER BY `status` DESC, `article_nr_displ`;");
                 $n = $db->num_rows($r);
 
                 if ($n === 1) {
@@ -1443,6 +1442,7 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID = t2a.ART_ID)
         WHERE t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;");
         $n = (int)$dbt->num_rows($r);
+
         if ($n === 1) {
             $price      = (float)$dbt->result($r, 0, "price_" . $price_lvl);
             $minMarkup  = (float)$dbt->result($r, 0, "minMarkup");
@@ -1484,10 +1484,7 @@ class CatalogueClass
             }
 
             $price = $this->getPriceRatingKours($price, $cash_id, 1);
-
-//            if ($cash_id === 1) {
-                $price = $client->getClientPriceRounding($client_id, $price);
-//            }
+            $price = $client->getClientPriceRounding($client_id, $price);
         }
 
         return $price;
@@ -1503,6 +1500,7 @@ class CatalogueClass
         $price = 0;
 
         list(, , $price_suppl_lvl, $margin_price_suppl_lvl, $client_vat) = $this->getDpClientPriceLevels($client_id);
+
         $r = $dbt->query("SELECT t2si.price_usd 
         FROM `T2_ARTICLES` t2a 
             LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
@@ -1556,7 +1554,9 @@ class CatalogueClass
     {
         $db = DbSingleton::getDbm();
         $price_lvl = $margin_price_lvl = $price_suppl_lvl = $margin_price_suppl_lvl = $client_vat = 0;
-        $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id LIMIT 1;");
+
+        $r = $db->query("SELECT `price_lvl`, `margin_price_lvl`, `price_suppl_lvl`, `margin_price_suppl_lvl`, `client_vat` 
+        FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id LIMIT 1;");
         $n = $db->num_rows($r);
 
         if ($n === 1) {
@@ -1576,6 +1576,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getDbm();
         $price_in_vat = $show_in_vat = $price_add_vat = 0;
+
         $r = $db->query("SELECT `price_in_vat`, `show_in_vat`, `price_add_vat` FROM `A_CLIENTS_VAT_CONDITIONS` WHERE `client_id` = $suppl_id LIMIT 1;");
         $n = $db->num_rows($r);
 
@@ -1592,6 +1593,12 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $margin = $delivery = $margin2 = 0;
+
+//        $r = $db->query("SELECT `margin` FROM `T2_TREE_GROUP_PRICE`
+//        WHERE `tpoint_id` = '$tpoint_id' AND `suppl_id` = '$suppl_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `price_from` <= '$price_suppl'
+//        AND `price_to` >= '$price_suppl'  LIMIT 1;");
+//        $n = $db->num_rows($r);
+
         $r = $db->query("SELECT `margin`, `delivery`, `margin2` FROM `T_POINT_SUPPL_FM` 
         WHERE `tpoint_id` = '$tpoint_id' AND `suppl_id` = '$suppl_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `price_from` <= '$price_suppl' 
         AND `price_to` >= '$price_suppl' AND `price_rating_id` = '$price_suppl_lvl' LIMIT 1;");
@@ -2155,7 +2162,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
-        $r = $db->query("SELECT `TEX_$postfix` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID` = $head_id LIMIT 1;");
+        $r = $db->query("SELECT `TEX_" . $postfix . "` FROM `T2_TREE_HEAD_EXIST` WHERE `HEAD_ID` = $head_id LIMIT 1;");
         return $db->result($r, 0, "TEX_$postfix");
     }
     public function getHeadRowLink($head_id)
@@ -2202,7 +2209,7 @@ class CatalogueClass
             $cat_link = "";
         } else {
             $postfix = $this->getLangPostfix($this->getLanguage());
-            $r = $db->query("SELECT `TEX_$postfix`, `TEX_LINK` FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID` = $cat_id LIMIT 1;");
+            $r = $db->query("SELECT `TEX_" . $postfix . "`, `TEX_LINK` FROM `T2_TREE_CAT_EXIST` WHERE `CAT_ID` = $cat_id LIMIT 1;");
             $cat_link = $db->result($r, 0, "TEX_LINK");
             $cat_name = $db->result($r, 0, "TEX_$postfix");
         }
@@ -2224,7 +2231,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
-        $r = $db->query("SELECT `TEX_$postfix`, `H1_$postfix` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
+        $r = $db->query("SELECT `TEX_" . $postfix . "`, `H1_" . $postfix . "` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
         return ($db->result($r, 0, "H1_$postfix") === "")
             ? $db->result($r, 0, "TEX_$postfix")
             : $db->result($r, 0, "H1_$postfix");
@@ -2233,7 +2240,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $postfix = $this->getLangPostfix($this->getLanguage());
-        $r = $db->query("SELECT `TEX_$postfix` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
+        $r = $db->query("SELECT `TEX_" . $postfix . "` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
         return $db->result($r, 0, "TEX_$postfix");
     }
     public function getGroupRowLink($group_id)
@@ -2422,8 +2429,8 @@ class CatalogueClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id = (int)$db->result($r, $i - 1, "CAT_ID");
-            $col    = $db->result($r, $i - 1, "COL");
-            $row    = $db->result($r, $i - 1, "ROW");
+            $col    = (int)$db->result($r, $i - 1, "COL");
+            $row    = (int)$db->result($r, $i - 1, "ROW");
 
             $arr[$col][$row] = $cat_id;
         }
@@ -2476,6 +2483,7 @@ class CatalogueClass
         $cat_id = $this->getUrlNumber($cat_id);
         $db = DbSingleton::getTokoDb();
         $list = "";
+
         $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id AND `CAT_ID` = $cat_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -2649,7 +2657,6 @@ class CatalogueClass
                 $filialList[] = iconv("UTF-8", "windows-1251", $storage_text);
                 $storages[]     = $storage_local_alien;
             }
-//
             if (!empty($storage_remote_alien)) {
                 $storage_text = $this->replaceLang("$storage_cap $city_remote ($address_remote) ({remote_storage})");
                 $filialList[] = iconv("UTF-8", "windows-1251", $storage_text);
@@ -2658,7 +2665,6 @@ class CatalogueClass
         }
 
         $list[0] = $filialList;
-//        $list[0] = $this->replaceLang($list[0]);
 
         $r = $db->query("SELECT t2as.ART_ID, t2as.STORAGE_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2br.BARCODE 
         FROM `T2_ARTICLES_STRORAGE` t2as
@@ -2712,9 +2718,10 @@ class CatalogueClass
      * get catalog search link
      * from ARTICLE_NR_SEARCH
      * */
-    public function getCatalogueLink($article_nr_search): string
+    public function getCatalogueLink($article_nr_search, $article_nr_search2): string
     {
         $search = new SearchClass();
+        $article_nr_search2 = $this->getUrlString2($article_nr_search2);
         $article_nr_search = $this->getUrlString($article_nr_search);
         $article_nr_search = mb_strtolower($article_nr_search);
 
@@ -2746,7 +2753,8 @@ class CatalogueClass
             if ($count_zero === ($n - 1)) {
                 $link = $this->getSiteLink() . "$this->search_link/$exist_search_number/$exist_brand_link/";
             } else {
-                $link = $this->getSiteLink() . "$this->search_link/$exist_search_number/";
+//                $link = $this->getSiteLink() . "$this->search_link/$exist_search_number/";
+                $link = $this->getSiteLink() . "$this->search_link/?text=$article_nr_search2/";
             }
 
         }

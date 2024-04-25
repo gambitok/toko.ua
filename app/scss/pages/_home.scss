@@ -163,7 +163,6 @@
     }
 }
 
-/*==== PHONE ====*/
 @media (max-width: 768px) {
     .home {
         &-banner {
@@ -217,9 +216,6 @@
     }
 }
 
-/*==== /PHONE ====*/
-
-/*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) {
     .home {
         &-banner {
@@ -273,5 +269,4 @@
     }
 }
 
-/*==== /PAD ====*/
 

@@ -1,0 +1,32 @@
+<!--Search input modal-->
+<div class="modal fade" id="InputForm" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-left">
+                <div class="container">
+                    <div class="row">
+                        <div class="search">
+                            <div class="input-group">
+                                <input
+                                        id="search_input"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="{search_onsite}"
+                                        title="{search_onsite}"
+                                        onkeyup="showSearchDropdown();"
+                                        autofocus
+                                />
+                                <div class="input-group-append">
+                                    <button onClick="artSearch('search_input');" class="btn btn-primary btn-search-art" type="button" title="{search_cap}">
+                                        <span class="fas fa-search"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="search_input_dropdown" class="search-input"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

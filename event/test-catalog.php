@@ -1,5 +1,10 @@
 <?php
 
+$theme_htm = RDD . "/test-main.htm";
+if (file_exists($theme_htm)) {
+    $content = file_get_contents($theme_htm);
+}
+
 ini_set('memory_limit', '2048M');
 
 $linka      = findLinks();
@@ -183,10 +188,6 @@ else {
                     ', $content);
                 }
 
-                $content = str_replace("{seoshield_formulas}", "
-                    <!--ss_selected_filters_info|FilterName|FilterValue-->
-                    <!--seoshield_formulas--fil-traciya-->
-                ", $content);
             }
 
             (!empty($page)) ?: $page = 1;
@@ -272,11 +273,3 @@ else {
     }
 }
 
-if ($red_status) {
-    if ($red_type === 404) {
-        header("HTTP/1.0 404 Not Found");
-    }
-    if ($red_type === 301) {
-        header("Location: $red_link", TRUE, 301);
-    }
-}

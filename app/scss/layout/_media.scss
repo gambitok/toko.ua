@@ -1,4 +1,3 @@
-/* ==== PHONE ==== */
 @media (max-width: 768px) {
 
     .cat-products-count {
@@ -230,10 +229,6 @@
         }
     }
 
-    //.span-media {
-    //    display: none!important;
-    //}
-
     .garage-drop-block__select {
         border: none;
     }
@@ -399,15 +394,12 @@
 
 }
 
-/* ==== /PHONE ==== */
-
 @media (max-width: 992px) {
     .fixed-nav {
         display: flex;
     }
 }
 
-/*==== PAD PRO ====*/
 @media (min-width: 992px) and (max-width: 1275px) {
     .seo-li {
         margin-right: 0;
@@ -442,9 +434,6 @@
     }
 }
 
-/*==== /PAD PRO ====*/
-
-/*==== PAD ====*/
 @media (min-width: 768px) and (max-width: 992px) {
     .seo-li {
         margin-right: 0;
@@ -557,13 +546,8 @@
 
 }
 
-/*==== PAD ====*/
-
-/*==== PAD PRO2 ====*/
 @media (min-width: 576px) and (max-width: 768px) {
     .container {
         max-width: unset;
     }
 }
-
-/*==== /PAD PRO2 ====*/

@@ -463,12 +463,12 @@ trait Variables
         return $typ_id;
     }
 
-    public function formatArticleName($text, $max_symbols = 36): string
+    public function formatArticleName($text, $max_symbols = 146): string
     {
-        $dots = "...";
+        $dots = '...';
         $text = "$text";
         if (strlen($text) > $max_symbols) {
-            $format_text = substr($text, 0, $max_symbols - strlen($dots)) . $dots;
+            $format_text = mb_substr($text, 0, $max_symbols - strlen($dots)) . $dots;
         } else {
             $format_text = $text;
         }

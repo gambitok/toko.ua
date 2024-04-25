@@ -142,7 +142,7 @@
 }
 
 .request {
-    min-height: 397px;
+    min-height: 420px;
     padding: 10px;
     &-row, &-display {
         display: flex;
@@ -241,7 +241,6 @@
         border: none;
         color: #606975;
         cursor: pointer;
-        //float: right;
         font-size: 14px;
         margin-top: 15px;
         text-align: right;
@@ -448,19 +447,26 @@
     &-title {
         color: #228b94;
         display: block;
+        font-size: 18px;
         font-weight: 700;
         text-align: center;
         text-transform: uppercase;
     }
     &-content {
         display: block;
+        &-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
     }
     &-list {
         display: flex;
         flex-wrap: wrap;
         justify-content: start;
-        margin-bottom: 15px;
-        margin-top: 15px;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 30px;
+        margin-top: 30px;
+        padding-bottom: 30px;
         &__item {
             margin: 15px;
             width: calc(25% - 30px);

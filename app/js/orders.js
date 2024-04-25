@@ -89,8 +89,6 @@ function getPhone(str) {
     return str;
 }
 
-/*==== INFO BLOCK ====*/
-
 // SET NOVA POSHTA DEPARTMENTS
 function setCityVal() {
     let data = $("#user_city").select2("data");
@@ -137,8 +135,6 @@ function addOption(id_city, value_city, data_foo) {
         user_city.append(newOption).val(null).trigger('change');
     }
 }
-
-/*==== DELIVERY + PAYMENT ====*/
 
 // SET NOVA POSHTA DEPARTMENTS
 function setCityDepartments() {
@@ -223,8 +219,6 @@ function uncheckRadioPayment() {
     });
     $("#valid_payment_block").removeClass("not-valid");
 }
-
-/*==== SAVE ORDER ====*/
 
 // SHOW INFO BLOCK, HIDE OTHERS BLOCKS
 function editFields() {
@@ -334,8 +328,6 @@ function getBasketOrder() {
         }}, true);
 }
 
-/*==== VALIDATION ====*/
-
 // VALID INFO FIELDS
 function validInfoFields() {
     let valid       = 0;
@@ -407,7 +399,6 @@ function validInfoFields() {
         } else {
             valid_field.each(function() {
                 $(this).removeClass("not-valid accept-valid");
-                // $(this).prop("disabled", true);
                 $(this).next(".select2-container").find(".select2-selection--single").removeClass("not-valid accept-valid");
             });
             $("#valid_button").addClass("none");
@@ -503,8 +494,6 @@ function saveOrder() {
         }}, true);
 }
 
-/*==== USER DATA ====*/
-
 function dropClientOrderInfo(id) {
     JsHttpRequest.query(folder,{'w':'dropClientOrderInfo', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
@@ -556,7 +545,7 @@ function setClientOrderInfo(id) {
                 }
             });
 
-            // DELIVERY INFO FIELDS
+            // DELIVERY
             let div = $("div[data-tab-delivery='" + delivery_id + "']");
             div.find("div").find("input[name='street']").val(delivery_info["street"]);
             div.find("div").find("input[name='house']").val(delivery_info["house"]);
@@ -596,12 +585,6 @@ function getUserSavedData(user_id) {
         }}, true)
 }
 
-function ordersUserToggle() {
-    $("#user_saved_info_list").toggle();
-}
-
-/*==== ORDER DONE ====*/
-
 function saveOrderClient() {
     let user_id = $("#order_user_id").val();
     let name    = $("#user_name").val();
@@ -621,71 +604,4 @@ function loginOrderClient() {
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             location.href = result.content;
         }}, true);
-}
-
-/*==== UkrPoshta ====*/
-
-function getUpCitiesList()
-{
-    let region_id = $("#regions_list option:selected").val();
-
-    JsHttpRequest.query(folder,{'w':'getUpCitiesList', 'region_id': region_id},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            console.log(result.content);
-            $("#cities_list").html(result.content);
-        }}, true);
-
-    return true;
-}
-
-function getUpDistrictsList()
-{
-    let city_id = $("#cities_list option:selected").val();
-
-    JsHttpRequest.query(folder,{'w':'getUpDistrictsList', 'city_id': city_id},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#districts_list").html(result.content);
-        }}, true);
-
-    return true;
-}
-
-function ajaxTest()
-{
-    let region_id = $("#regions_list option:selected").val();
-    $.ajax({
-        type: "post",
-        url: '/content_ajax.php',
-        data: {foo: region_id},
-        success: function(response)
-        {
-            console.log(response);
-            let jsonData = JSON.parse(response);
-
-            if (jsonData.success === 1)
-            {
-                alert(jsonData.text);
-            } else {
-                alert('error!');
-            }
-        }
-    });
-
-    return true;
-}
-
-function ajaxCurl()
-{
-    $.ajax({
-        type: 'GET',
-        dataType:"xml",
-        url: "https://ukrposhta.ua/address-classifier-ws/get_regions_by_region_ua",
-        headers:{
-            'Authorization' : 'Bearer a979e2d9-d044-3f41-8b8c-099c5879ae32',
-            'Content-Type':'application/json'
-        },
-        succces: function(data) {
-            console.log('success', data);
-        }
-    });
 }

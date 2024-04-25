@@ -21,3 +21,29 @@
     <button onclick="ajaxTest()" class="btn">Submit</button>
 
 </div>
+
+<script>
+    function ajaxTest()
+    {
+        let region_id = $("#regions_list option:selected").val();
+        $.ajax({
+            type: "post",
+            url: '/content_ajax.php',
+            data: {foo: region_id},
+            success: function(response)
+            {
+                console.log(response);
+                let jsonData = JSON.parse(response);
+
+                if (jsonData.success === 1)
+                {
+                    alert(jsonData.text);
+                } else {
+                    alert('error!');
+                }
+            }
+        });
+
+        return true;
+    }
+</script>

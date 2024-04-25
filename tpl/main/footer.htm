@@ -1,3 +1,14 @@
+<style>
+    .footer-cities {
+        margin-top: 30px;
+        color: #a9a9a9;
+        text-align: center;
+    }
+    .footer-cities a {
+        color: #a9a9a9;
+    }
+</style>
+
 <div class="footer">
     <div class="row footer__socials">
         <div class="container">
@@ -36,8 +47,6 @@
                         <li><a href="{site_main_link}contacts/"> {contacts_cap}</a></li>
                         <li><a href="{site_main_link}reviews/"> {review_state_cap}</a></li>
                         <li><a href="{site_main_link}sitemap-html/"> {sitemap_cap}</a></li>
-<!--                        <li><a href="{site_main_link}/"> {about_us_cap}</a></li>-->
-<!--                        <li><a href="{site_main_link}/"> {delivery_and_paymant_cap}</a></li>-->
                     </ul>
                 </div>
                 <div class="col-lg-3 col-12 footer__contacts-column">
@@ -50,10 +59,17 @@
                 </div>
             </div>
         </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-12 footer-cities">
+                    {footer_cities}
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row footer__cities">
         <div id="seo_form_cities_bottom" class="wdt100"></div>
     </div>
-    {footer_cities}
 
 </div>

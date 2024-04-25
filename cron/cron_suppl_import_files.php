@@ -15,7 +15,7 @@ use Shuchkin\SimpleXLSX;
 $db = DbSingleton::getDbm();
 $client = new ClientClass();
 
-$r = $db->query("SELECT * FROM `IMPORT_SUPPLIER_FILES` WHERE `STATUS` = 1;");
+$r = $db->query("SELECT `ID`, `SUPPL_ID`, `FILENAME`, `STATUS_COUNTER` FROM `IMPORT_SUPPLIER_FILES` WHERE `STATUS` = 1;");
 $n = $db->num_rows($r);
 
 if ($n > 0) {
@@ -27,6 +27,10 @@ if ($n > 0) {
         $counter    = (int)$db->result($r, $i - 1, "STATUS_COUNTER");
 
         if ($suppl_id > 0) {
+
+            $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS` = 0 WHERE `ID` = $id LIMIT 1;");
+
+            $start = microtime(true);
 
             $inputFileName = '/var/www/gmail-serve/files/' . $suppl_id . '/' . $fileName;
 
@@ -125,7 +129,7 @@ if ($n > 0) {
 
                                     if ($count_success === count($data)) {
 
-                                        $dataProcess = $client->finishSupplPriceImport($fileName, $inputFileName, $suppl_id, $template, $rows);
+                                        $dataProcess = $client->finishSupplPriceImport($inputFileName, $suppl_id, $template, $rows);
 
                                         if ($dataProcess['answer'] === 1) {
                                             $answer = 1;
@@ -161,28 +165,26 @@ if ($n > 0) {
 
             print 'File ' . $inputFileName . ' processed!' . "\n" . ($answer === 0 ? 'Error: ' : 'Success! ') . $err . "\n";
 
+            $time = microtime(true) - $start;
+
             /*
              * STATUS_PROCESS = 0: Error, added to `IMPORT_SUPPLIER_ERROR
              * STATUS_PROCESS = 1: Success processed
              */
             if ($answer === 0) {
-                $db->query("INSERT INTO `IMPORT_SUPPLIER_ERROR` (`SUPPL_ID`, `TEXT`, `STATUS`) VALUES ($suppl_id, '$err', 1);");
+                $db->query("INSERT INTO `IMPORT_SUPPLIER_ERROR` (`SUPPL_ID`, `TEXT`, `STATUS`, `TIMEMAN`) VALUES ($suppl_id, '$err', 1, '$time');");
 
                 if ($counter > 0) {
-                    $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS` = 0, `STATUS_PROCESS` = 0 WHERE `ID` = $id LIMIT 1;");
+                    $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS` = 0, `STATUS_PROCESS` = 0, `TIMEMAN` = '$time' WHERE `ID` = $id LIMIT 1;");
                 } else {
-                    $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS_COUNTER` = `STATUS_COUNTER` + 1 WHERE `ID` = $id LIMIT 1;");
+                    $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS_COUNTER` = `STATUS_COUNTER` + 1, `TIMEMAN` = '$time' WHERE `ID` = $id LIMIT 1;");
                 }
             }
 
             if ($answer === 1) {
-                $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS` = 0, `STATUS_PROCESS` = 1 WHERE `ID` = $id LIMIT 1;");
+                $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS` = 0, `STATUS_PROCESS` = 1, `TIMEMAN` = '$time' WHERE `ID` = $id LIMIT 1;");
             }
 
         }
     }
 }
-
-
-
-

@@ -32,50 +32,6 @@ function toggleCarsTab(index) {
     }
 }
 
-function hideCarsNavigation(index) {
-    // Tab Non-Disabled
-    if (!$(index).hasClass("cars-nav__item-disabled")) {
-        // Uncheck Non-Active Nav
-        // Close Non-Active Tab
-        $("#myBackdrop").addClass("sticky-backdrop-hidden");
-        $(index).removeClass("cars-nav__item-active");
-        $("#" + $(index).attr("data-tab")).removeClass("cars-tab__block-active");
-    }
-}
-
-function showCarsNavigation(index, type, attr) {
-    let data_pred = $("div[data-type='" + $(index).attr("data-pred") + "']");
-    if (type === undefined) {
-        type = $(data_pred).attr("data-type");
-    }
-    if (attr === undefined) {
-        attr = $(data_pred).attr("data-id");
-    }
-    if (type === undefined && attr === undefined) {
-        type = "";
-        attr = 0;
-    }
-    // Tab Non-Disabled
-    if (!$(index).hasClass("cars-nav__item-disabled")) {
-        $("#myBackdrop").removeClass("sticky-backdrop-hidden");
-        // Show Active Nav
-        $(".cars-nav__item").each(function () {
-            $(this).removeClass("cars-nav__item-active");
-        });
-        $(index).addClass("cars-nav__item-active");
-        // Show Active Tab
-        $(".cars-tab__block").each(function () {
-            $(this).removeClass("cars-tab__block-active");
-        });
-        let index_tab = $("#" + $(index).attr("data-tab"));
-        index_tab.addClass("cars-tab__block-active");
-        getCarsSearchContent(type, attr);
-    }
-}
-
-/*
-* applicable_onclick
-* */
 function toggleNavMob() {
     document.getElementById("scrollManuf").scrollIntoView();
     let checked_index = $(".cars-nav__item-checked")[0];

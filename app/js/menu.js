@@ -55,36 +55,6 @@ function validate(evt) {
     }
 }
 
-// REGISTRATION VALIDATE
-// function showValidateModal(phone, callback, callback2) {
-//     if (phone !== undefined) {
-//         JsHttpRequest.query(folder,{ 'w': 'validatePhone', 'phone':phone},
-//             function (result, errors){ if (errors) {} if (result){
-//                 $("#ValidateForm").modal("show");
-//                 $("#validate_btn_ok").click(function(){
-//                     callback(callback2);
-//                 });
-//             }}, true);
-//     }
-// }
-
-function validatePhone(callback) {
-    let phone = $("#reg_phone").val();
-    if (phone === undefined) {
-        phone = $("#input_phone2").val();
-    }
-    let password = $("#validate_code").val();
-    JsHttpRequest.query(folder,{ 'w': 'endValidation', 'phone':phone, 'password':password},
-        function (result, errors){ if (errors) {} if (result){
-            if (result.content === true) {
-                callback();
-                $("#ValidateForm").modal("hide");
-            } else {
-                $("#validate_label").css("display", "block");
-            }
-        }}, true);
-}
-
 function togglePass(a) {
     if($(a).attr("checked") !== "checked") {
         $(a).attr("checked","checked");
@@ -113,8 +83,6 @@ function showGarageForm(sel_typ_id = 0) {
 
     if (form_cars.length) {
         if (form_cars.html().length === 0) {
-            console.log('garage');
-            // $("#garage_404_select").html("<div class=\"spinner-border\"></div>");
             JsHttpRequest.query(folder,{'w':'showCarsGarageForm'},
                 function (result, errors){ if (errors) {alert(errors);} if (result){
 
@@ -124,7 +92,6 @@ function showGarageForm(sel_typ_id = 0) {
                     }
                 }}, true);
         } else {
-            console.log('none');
             let form_garage = $("#garage_cars_form");
             form_garage.html("<div class=\"spinner-border\"></div>");
             form_garage.html(form_cars.html());
@@ -136,15 +103,6 @@ function showGarageForm(sel_typ_id = 0) {
                 $("#garage_cars_form").html(result.content[0]);
             }}, true);
     }
-
-    // let path = window.location.pathname;
-    // let arr = path.split("/");
-    // if (jQuery.inArray("catalog", arr) !== -1) {
-    //    console.log("ti v catalogue");
-    //     $(".btn-go-to").each(function() {
-    //         $(this).removeClass("none");
-    //     });
-    // }
 
 }
 

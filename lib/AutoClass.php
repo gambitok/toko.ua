@@ -3,6 +3,8 @@
 class AutoClass extends CatalogueClass
 {
 
+    public $history_limit_on_page = 10;
+
     /*
      * get text translate of selected car
      * */
@@ -537,10 +539,11 @@ class AutoClass extends CatalogueClass
         $cookie     = $this->getSessionID();
         $where      = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-        $r = $db->query("SELECT `id`, `typ_id`, `timestamp` FROM `AUTO_HISTORY` 
+        $r = $db->query("SELECT `id`, `typ_id`, `timestamp` 
+        FROM `AUTO_HISTORY` 
         WHERE $where 
-        GROUP BY `typ_id` 
-        ORDER BY `timestamp` DESC LIMIT 10;");
+        GROUP BY `typ_id`, `timestamp`
+        ORDER BY `timestamp` DESC LIMIT $this->history_limit_on_page");
         $n = $db->num_rows($r);
 
         if ($n > 0) {
@@ -613,7 +616,6 @@ class AutoClass extends CatalogueClass
 
     public function getCatalogCacheCol($mfa_id, $model, $mfa_link, $model_link): string
     {
-        $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
 
         $where_mfa = "1";
@@ -632,6 +634,14 @@ class AutoClass extends CatalogueClass
             $groups[] = $group_id;
         }
 
+        $arr = $this->getTreeHCGList($groups);
+
+        return $this->getCatalogCacheColShow($arr, $mfa_link, $model_link);
+    }
+
+    public function getTreeHCGList($groups)
+    {
+        $db = DbSingleton::getTokoDb();
         $groups_str = implode(",", $groups);
         if (empty($groups_str)) {
             $groups_str = 0;
@@ -654,7 +664,7 @@ class AutoClass extends CatalogueClass
             }
         }
 
-        return $this->getCatalogCacheColShow($arr, $mfa_link, $model_link);
+        return $arr;
     }
 
     public function getCatalogCacheColShow($arr, $mfa_link, $model_link, $brand_id = 0): string
@@ -834,7 +844,7 @@ class AutoClass extends CatalogueClass
         }
 
         $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
-        $form = str_replace(array("{seo_auto_title}", "{seo_auto_list}"), array("", $list), $form);
+        $form = str_replace(array("{seo_auto_title}", "{seo_auto_list}", "{seo_auto_letters}"), array("", $list, ""), $form);
 
         return $form;
     }
@@ -888,7 +898,7 @@ class AutoClass extends CatalogueClass
         }
 
         $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
-        $form = str_replace(array("{seo_auto_title}", "{seo_auto_list}"), array("", $list), $form);
+        $form = str_replace(array("{seo_auto_title}", "{seo_auto_list}", "{seo_auto_letters}"), array("", $list, ""), $form);
 
         return $form;
     }

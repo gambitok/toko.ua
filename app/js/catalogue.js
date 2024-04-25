@@ -5,29 +5,6 @@ function navigateTo(id) {
     }, 500);
 }
 
-// Modal `Region`
-// function showRegionForm() {
-//     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':"region"},
-//         function (result, errors){ if (errors) {alert(errors);} if (result){
-//             $("#modals").append(result.content);
-//             $("#RegionForm").modal("show");
-//             $("#menu").css('left', '-100%');
-//
-//             $("#RegionForm").on('hidden.bs.modal', function () {
-//                 setCookie('tpoint_id_status', 1);
-//             });
-//         }}, true);
-// }
-
-// function showLangStatusForm(status) {
-//     setCookie('lang_id_status', 1);
-//     if (status) {
-//
-//     } else {
-//
-//     }
-// }
-
 // Modal `Help` in Catalogs
 function showPhoneForm() {
     JsHttpRequest.query(folder,{'w':'showModalForm', 'form':"help"},
@@ -48,6 +25,7 @@ function showStorage(art_id) {
 // SEARCH (by ARTICLE_DISPLAY / ARTICLE_SEARCH)
 function artSearch(input_name) {
     let art = $("#" + input_name).val();
+    let art2 = art;
 
     art = art.replace(/\s+/g, '');
     art = art.replace(/\.+/g, '');
@@ -58,7 +36,7 @@ function artSearch(input_name) {
         showNotify("{error_cap}:", "{input_art_first}!", "danger");
         $("#" + input_name).focus();
     } else {
-        JsHttpRequest.query(folder,{'w':'getCatalogueLink', 'article_nr_search':art},
+        JsHttpRequest.query(folder,{'w':'getCatalogueLink', 'article_nr_search':art, 'article_nr_search2':art2},
             function (result, errors){ if (errors) {alert(errors);} if (result){
                 location.href = result.content;
             }}, true);
@@ -215,10 +193,6 @@ function catalogueFilter() {
         }}, true);
 }
 
-function toggleApplModel(a) {
-    $(a).next('div').toggle();
-}
-
 function getArticleApplModelTypeForm(art_id, mfa_id, model, body_id) {
     $("#GarageForm").modal("show");
     $("#garage_block").html("<div class=\"spinner-border\"></div>");
@@ -229,14 +203,9 @@ function getArticleApplModelTypeForm(art_id, mfa_id, model, body_id) {
 }
 
 function getArticleApplModelForm(art_id, mfa_id) {
-    // $(".info__applicability-checked").each(function () {
-    //     $(this).removeClass("span-red");
-    // });
-    // $(a).addClass("span-red");
     JsHttpRequest.query(folder,{ 'w': 'getArticleApplModelForm', 'art_id':art_id, 'mfa_id':mfa_id},
         function (result, errors){ if (errors) {} if (result){
             $("#info2_more").html(result.content);
-            //$("#info3_more").html(result.content);
         }}, true);
 }
 
@@ -254,22 +223,11 @@ function getArticleApplModelInfoForm(art_id, typ_id) {
     }
 }
 
-// COPY ARTICLE BUTTON
-function copyToClipboard(element, art_name) {
-    let $temp = $("<input>");
-    $("body").append($temp);
-    $temp.val($("#" + element).next().val()).select();
-    document.execCommand("copy");
-    $temp.remove();
-    showNotify("{done_cap}:", "{art_cap} '" + art_name + "' {copied_to_clipboard}!", "success");
-}
-
 /*
 * finish add car to garage
 * */
 function finishGarage(typ_id, group_link = '') {
     setCookie('auto_typ_id', typ_id);
-    //addToGarage(typ_id);
     addToGarageHistory(typ_id);
     if (group_link) {
         location.href = group_link;
@@ -294,7 +252,6 @@ function addToGarage(typ_id = 0, a) {
     if (typ_id !== undefined && typ_id !== 0 && typ_id !== "") {
         JsHttpRequest.query(folder,{'w':'addToGarage', 'typ_id':typ_id},
             function (result, errors){ if (errors) {alert(errors);} if (result) {
-                // if (result.content !== false) {
                     if (result.content[0] === false) {
                         showNotify("{error_cap}:", "{garage_auto_exist}", "danger");
                     } else {
@@ -302,9 +259,6 @@ function addToGarage(typ_id = 0, a) {
                         $(a).addClass("btn-img-disabled");
                         showGarageStatus();
                     }
-                // } else {
-                //     showNotify("{error_cap}:", "{garage_is_full}", "danger");
-                // }
             }}, true);
     } else {
         showNotify("{error_cap}:", "{select_all_fields}!", "danger");
@@ -383,17 +337,6 @@ function changeActionCount(i, action_price, action_amount) {
         $("#price_out_" + i).remove();
     }
 }
-
-// TOGGLE VIEW (CARD / TABLE)
-// function toggleProductView(ds) {
-//     JsHttpRequest.query(folder,{ 'w': 'toggleProductView', 'ds':ds},
-//         function (result, errors){ if (errors) {} if (result){
-//             let type_search = $("#type_search").val();
-//             if (type_search === "1") {
-//                 catalogueFilter();
-//             }
-//         }}, true);
-// }
 
 function setCatalogFilters() {
     let cat_filters = $("#catalog-filters");
@@ -604,22 +547,6 @@ function getPartsSortForm(link) {
     location.href = redirect_link;
 }
 
-// function appendCatalog() {
-//     let cur_page = parseInt($("#cur_page").val());
-//     let max_page = parseInt($("#max_page").val());
-//
-//     if (cur_page < max_page) {
-//         let new_page = cur_page + 1;
-//         $("#cur_page").val(new_page);
-//         if (new_page === max_page) {
-//             $("#append_btn").hide();
-//         }
-//         $(".cat-products-list").last().append("<div class='cat-products-list'>CONTENT HERE => PAGE " + new_page + "</div>");
-//     } else {
-//         $("#append_btn").hide();
-//     }
-// }
-
 function showBenefitsForm(benefit_id) {
     JsHttpRequest.query(folder,{'w':'showBenefitsForm', 'benefit_id':benefit_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -634,4 +561,15 @@ function toggleArticleDeliveryHide(a) {
     let name2 = $(a).attr('data-attr');
     $(a).text(name2);
     $(a).attr('data-attr', name1);
+}
+
+function getGroupCarMfaList(group_id, mfa_id_sel, status, letter, link) {
+    JsHttpRequest.query(folder,{'w':'getGroupCarMfaList', 'group_id':group_id, 'mfa_id_sel':mfa_id_sel, 'status':status, 'letter':letter},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#seo-auto-content").html(result.content);
+            $(".alpha-item a").each(function () {
+                $(this).removeClass("active");
+            });
+            $("#" + $(link).attr("id")).addClass("active");
+        }}, true);
 }

@@ -121,3 +121,15 @@
     </div>
 
 </div>
+
+<script>
+    // COPY ARTICLE BUTTON
+    function copyToClipboard(element, art_name) {
+        let $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($("#" + element).next().val()).select();
+        document.execCommand("copy");
+        $temp.remove();
+        showNotify("{done_cap}:", "{art_cap} '" + art_name + "' {copied_to_clipboard}!", "success");
+    }
+</script>

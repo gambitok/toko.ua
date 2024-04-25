@@ -11,7 +11,8 @@ $content = str_replace("{garage_link}", $menu->getGarageLink(), $content);
 $content = str_replace("{site_menu_bar}", $menu->getMenuBar(), $content);
 
 if (!$profile->getProfileClientInfo()) {
-    $content = str_replace("{region_select}", $menu->getRegionSelect(), $content);
+    //$menu->getRegionSelect()
+    $content = str_replace("{region_select}", "", $content);
     $content = str_replace("{login_info}", "", $content);
 } else {
     $content = str_replace("{region_select}", "", $content);

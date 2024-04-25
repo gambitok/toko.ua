@@ -1122,7 +1122,7 @@ class ClientClass
         list($client_id, $user_id) = $this->getClientData();
         $where = (empty($user_id)) ? "`cookie_id` = '$cookie_id'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-        $r = $db->query("SELECT `id`, `article_nr_displ`, `brand_id` FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;");
+        $r = $db->query("SELECT `id`, `article_nr_displ`, `brand_id` FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id`, `data` ORDER BY `data` DESC LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id         = $db->result($r, $i - 1, "id");
@@ -1164,7 +1164,7 @@ class ClientClass
         list($client_id, $user_id) = $this->getClientData();
         $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-        $r = $db->query("SELECT `id`, `art_id` FROM `ARTS_HISTORY` WHERE $where GROUP BY `art_id` ORDER BY `data` DESC LIMIT 10;");
+        $r = $db->query("SELECT `id`, `art_id` FROM `ARTS_HISTORY` WHERE $where GROUP BY `art_id`, `data` ORDER BY `data` DESC LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id     = $db->result($r, $i - 1, "id");
@@ -1526,12 +1526,12 @@ class ClientClass
                         $rbr = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
                         $brand_id = intval($db->result($rbr, 0, "BRAND_ID"));
                         $arr = [];
-                        $rpar = $db->query("SELECT `PARAM_ID`, `VALUE_ID` FROM `T2_TREE_ARTS_PARAMS_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `ART_ID` = $art_id;");
-                        $npar = $db->num_rows($rpar);
-                        if ($npar > 0) {
-                            for ($i = 1; $i <= $npar; $i++) {
-                                $param_id = $db->result($rpar, $i - 1, "PARAM_ID");
-                                $value_id = $db->result($rpar, $i - 1, "VALUE_ID");
+                        $r_par = $db->query("SELECT `PARAM_ID`, `VALUE_ID` FROM `T2_TREE_ARTS_PARAMS_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `ART_ID` = $art_id;");
+                        $n_par = $db->num_rows($r_par);
+                        if ($n_par > 0) {
+                            for ($i = 1; $i <= $n_par; $i++) {
+                                $param_id = $db->result($r_par, $i - 1, "PARAM_ID");
+                                $value_id = $db->result($r_par, $i - 1, "VALUE_ID");
                                 $arr[$param_id][] = $value_id;
                             }
                             $column_name = [];
@@ -1555,17 +1555,17 @@ class ClientClass
                     $n3 = $dbc->num_rows($r3);
                     if ($n3 == 0) {
                         $arr = [];
-                        $rmfa = $db->query("SELECT tl.`ART_ID`, tm.MOD_MFA_ID, tm.Model 
+                        $r_mfa = $db->query("SELECT tl.`ART_ID`, tm.MOD_MFA_ID, tm.Model 
                         FROM `T2_LINKS` tl
                             LEFT JOIN `T_types` tt ON (tt.TYP_ID = tl.TYP_ID)
                             LEFT JOIN `T_models` tm ON (tm.MOD_ID = tt.TYP_MOD_ID)
                         WHERE `ART_ID` = $art_id 
                         GROUP BY tl.ART_ID, tm.MOD_MFA_ID, tm.Model");
-                        $nmfa = $db->num_rows($rmfa);
-                        for ($i = 1; $i <= $nmfa; $i++) {
-                            $art_id = $db->result($rmfa, $i - 1, "ART_ID");
-                            $mfa_id = $db->result($rmfa, $i - 1, "MOD_MFA_ID");
-                            $model = $db->result($rmfa, $i - 1, "Model");
+                        $n_mfa = $db->num_rows($r_mfa);
+                        for ($i = 1; $i <= $n_mfa; $i++) {
+                            $art_id = $db->result($r_mfa, $i - 1, "ART_ID");
+                            $mfa_id = $db->result($r_mfa, $i - 1, "MOD_MFA_ID");
+                            $model = $db->result($r_mfa, $i - 1, "Model");
                             if ($mfa_id > 0) {
                                 $arr[$art_id][$mfa_id][] = $model;
                             }
@@ -1595,6 +1595,7 @@ class ClientClass
             $table = "EX_TABLE_TREE_$group_id";
             $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
             $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
+
             $rch1 = $dbc->query("SHOW TABLES LIKE '$table';");
             $nch1 = $dbc->num_rows($rch1);
             $rch2 = $dbc->query("SHOW TABLES LIKE '$table_params';");
@@ -1664,7 +1665,7 @@ class ClientClass
         return $data;
     }
 
-    public function finishSupplPriceImport($file_name, $file_path, $suppl_id, $template, $rows)
+    public function finishSupplPriceImport($file_path, $suppl_id, $template, $rows)
     {
         $db = DbSingleton::getDbm();
         $dbt = DbSingleton::getTokoDb();
@@ -1721,10 +1722,6 @@ class ClientClass
                     $storage_str = 0;
                 }
 
-                //$fna = explode(".", $file_name);
-                //$ft = count($fna);
-                //$file_type = $fna[$ft - 1];
-
                 if ($currency > 0) {
                     $suppl_cash_id = $currency;
                 }
@@ -1742,12 +1739,15 @@ class ClientClass
                 $krs = 0;
 
                 if (!empty($rows)) {
-
+                    $dec = 0;
                     foreach ($rows as $Key => $Row) {
                         $krs += 1;
+                        if($krs % 1000 == 0) {
+                            $dec++;
+                            print "$dec. $krs processed" . "\n";
+                        }
 
                         if ($krs >= $start_row) {
-                            //$encoding1 = mb_detect_encoding($Row[$index - 1]);
                             $suppl_index = trim($catalog->getIconv($Row[$index - 1]));
                             $suppl_brand = trim($catalog->getIconv($Row[$brand - 1]));
                             $suppl_price = str_replace(",", ".", trim($catalog->getIconv($Row[$price - 1])));
@@ -1777,10 +1777,10 @@ class ClientClass
                                     if ($pkg != "") {
                                         $pkg .= ",";
                                     }
-                                    $pkg .= "($suppl_id, \"$suppl_index\", \"$suppl_brand\", '$suppl_price', '$suppl_cash_id', '$kours_usd', '$price_usd', '$storage_id', '$suppl_stock', CURDATE())";
+                                    $pkg .= "($suppl_id, \"$suppl_index\", \"$suppl_brand\", '$suppl_price', '$suppl_cash_id', '$kours_usd', '$price_usd', '$storage_id', '$suppl_stock', CURDATE(), 0, '', 0)";
                                     $pkg_k += 1;
                                     if ($pkg_k == $max_pkg) {
-                                        $dbt->query("INSERT INTO `T2_SUPPL_IMPORT` (`suppl_id`, `suppl_index`, `brand`, `price_suppl`, `cash_id`, `kours_usd`, `price_usd`, `client_storage_id`, `stock_suppl`, `data_update`) VALUES $pkg;");
+                                        $dbt->query("INSERT INTO `T2_SUPPL_IMPORT` (`suppl_id`, `suppl_index`, `brand`, `price_suppl`, `cash_id`, `kours_usd`, `price_usd`, `client_storage_id`, `stock_suppl`, `data_update`, `return_delay`, `warranty_info`, `art_id`) VALUES $pkg;");
                                         $pkg = "";
                                         $pkg_k = 0;
                                     }
@@ -1790,7 +1790,7 @@ class ClientClass
                     }
 
                     if (!empty($pkg)) {
-                        $dbt->query("INSERT INTO `T2_SUPPL_IMPORT` (`suppl_id`, `suppl_index`, `brand`, `price_suppl`, `cash_id`, `kours_usd`, `price_usd`, `client_storage_id`, `stock_suppl`, `data_update`) VALUES $pkg;");
+                        $dbt->query("INSERT INTO `T2_SUPPL_IMPORT` (`suppl_id`, `suppl_index`, `brand`, `price_suppl`, `cash_id`, `kours_usd`, `price_usd`, `client_storage_id`, `stock_suppl`, `data_update`, `return_delay`, `warranty_info`, `art_id`) VALUES $pkg;");
                     }
 
                     $answer = 1;
