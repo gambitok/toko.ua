@@ -1,5 +1,21 @@
 @media (max-width: 768px) {
 
+    .anchor {
+        position: fixed;
+        right: 25px;
+        bottom: 40px;
+        display: block;
+        width: 50px;
+        height: 50px;
+        background: transparent;
+        text-align: center;
+        font-size: 36px;
+        a {
+            color: #deedf3;
+            text-decoration: none;
+        }
+    }
+
     .cat-products-count {
         margin: 15px 0;
     }

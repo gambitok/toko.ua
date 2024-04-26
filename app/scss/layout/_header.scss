@@ -304,6 +304,16 @@ header {
 
 .header-phone {
     display: none;
+    &-sticky {
+        background: #fff;
+        box-shadow: 0 8px 8px grey;
+        color: black;
+        left: 0;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1050;
+    }
     &-nav {
         border-bottom: 1px solid #ccc;
         padding: 10px 15px;

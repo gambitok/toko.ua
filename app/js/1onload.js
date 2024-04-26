@@ -5,23 +5,9 @@ $('.modal').on('shown.bs.modal', function () {
 
 const folder = '/content.php';
 
-function showSearchInput() {
-
-    JsHttpRequest.query(folder,{'w':'addModalForm', 'name':'input'},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#modals").append(result.content).ready(function () {
-                $('#InputForm').modal('show').on('shown.bs.modal', function () {
-                    $('#search_input').focus();
-                }).on('keypress',function(e) {
-                    if (e.which == 13) {
-                        artSearch('search_input');
-                    }
-                });
-                showSearchDropdown();
-            });
-        }}, true);
-
-
+function scrollToAnchor(){
+    let aTag = $("header");
+    $('html,body').animate({scrollTop: aTag.offset().top},'slow');
 }
 
 // MAIN NAVIGATION
@@ -40,6 +26,34 @@ $(".footer").mouseover(function() {
 $(".backdrop").mouseover(function() {
     closeHideNavigation();
 });
+
+let timer;
+$('.header-nav__li').on({'mouseover': function () {
+        let self = this;
+        timer = setTimeout(function () {
+            showHideNavigation($(self).attr("data-nav-id"));
+        }, 500);
+    },
+    'mouseout' : function () {
+        clearTimeout(timer);
+    }
+});
+
+function showSearchInput() {
+    JsHttpRequest.query(folder,{'w':'addModalForm', 'name':'input'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#modals").append(result.content).ready(function () {
+                $('#InputForm').modal('show').on('shown.bs.modal', function () {
+                    $('#search_input').focus();
+                }).on('keypress',function(e) {
+                    if (e.which == 13) {
+                        artSearch('search_input');
+                    }
+                });
+                showSearchDropdown();
+            });
+        }}, true);
+}
 
 function toggleSocialIcons() {
     if (detectmob()) {
@@ -113,18 +127,6 @@ function iosStyle() {
     ];
     iOSModal.show(mob_body, buttons);
 }
-
-let timer;
-$('.header-nav__li').on({'mouseover': function () {
-        let self = this;
-        timer = setTimeout(function () {
-            showHideNavigation($(self).attr("data-nav-id"));
-        }, 500);
-    },
-    'mouseout' : function () {
-        clearTimeout(timer);
-    }
-});
 
 function showViberForm() {
     JsHttpRequest.query(folder,{'w':'addModalForm', 'name':'viber'},
@@ -208,12 +210,42 @@ function loadInputNumber() {
     });
 }
 
+function getMenuBar(head_id) {
+    JsHttpRequest.query(folder,{'w':'getMenuBar', 'head_id':head_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#menu-bar-content").html(result.content);
+        }}, true);
+}
+
+function showModalSearch() {
+    if (!detectmob()) {
+    } else {
+        $("#SearchForm").modal('show');
+        $("#search-mobile").addClass("search-mobile-fixed");
+        $("#search-dropdown").addClass("search-dropdown-fixed");
+        showSearchDropdown2();
+    }
+}
+
+$(function() {
+    if (detectmob()) {
+        let $sticky = $("#sticky-search");
+        let top = $(".main").offset().top;
+        $(window).scroll(function() {
+            if($(document).scrollTop() > top){
+                $sticky.addClass('header-phone-sticky');
+            }
+            else  {
+                $sticky.removeClass('header-phone-sticky');
+            }
+        });
+    }
+});
+
 $(document).ready(function() {
 
-    // Tooltips
     $(".tooltips").tooltip();
 
-    // Lazy Load for images
     new LazyLoad({ elements_selector: ".lazy" });
 
     // Only numbers for buying
@@ -308,29 +340,11 @@ $(document).ready(function() {
         }
     }
 
-});
-
-function getMenuBar(head_id) {
-    JsHttpRequest.query(folder,{'w':'getMenuBar', 'head_id':head_id},
-        function (result, errors){ if (errors) {alert(errors);} if (result){
-            $("#menu-bar-content").html(result.content);
-        }}, true);
-}
-
-function showModalSearch() {
-    if (!detectmob()) {
-    } else {
-        $("#SearchForm").modal('show');
-        $("#search-mobile").addClass("search-mobile-fixed");
-        $("#search-dropdown").addClass("search-dropdown-fixed");
-        showSearchDropdown2();
-    }
-}
-
-$(document).ready(function() {
     $('#SearchForm').on('click', function () {
         $("#search-mobile").removeClass("search-mobile-fixed");
         $("#search-dropdown").removeClass("search-dropdown-fixed");
         $("#SearchForm").modal('hide');
     });
+
 });
+
