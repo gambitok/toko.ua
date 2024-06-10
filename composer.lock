@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c25ac56395351ed30dbd3671fe40bcd0",
+    "content-hash": "02acdf4d18089dc07c5ce913f3dc6870",
     "packages": [
         {
             "name": "box/spout",
@@ -469,6 +469,53 @@
                 }
             ],
             "time": "2023-04-17T16:11:26+00:00"
+        },
+        {
+            "name": "igorbunov/checkbox-in-ua-php-sdk",
+            "version": "1.3.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/igorbunov/checkbox-in-ua-php-sdk.git",
+                "reference": "6244c3a429b1f2e23734a012e232671fd5d17b62"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/igorbunov/checkbox-in-ua-php-sdk/zipball/6244c3a429b1f2e23734a012e232671fd5d17b62",
+                "reference": "6244c3a429b1f2e23734a012e232671fd5d17b62",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.4",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "otis22/php-coverage-checker": "^1.2",
+                "phpstan/phpstan": "^0.12.57",
+                "phpunit/phpunit": "^9.1",
+                "squizlabs/php_codesniffer": "^3.5.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "igorbunov\\Checkbox\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "igorbunov",
+                    "email": "igorbunov.ua@mail.com"
+                }
+            ],
+            "description": "PHP SDK for integration with checkbox.in.ua api",
+            "support": {
+                "issues": "https://github.com/igorbunov/checkbox-in-ua-php-sdk/issues",
+                "source": "https://github.com/igorbunov/checkbox-in-ua-php-sdk/tree/1.3.6"
+            },
+            "time": "2024-04-08T07:39:04+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -1807,7 +1854,9 @@
         "ext-zip": "*",
         "ext-json": "*",
         "ext-iconv": "*",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "ext-mysqli": "*",
+        "ext-gd": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.2.0"

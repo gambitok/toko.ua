@@ -627,7 +627,7 @@ class AutoClass extends CatalogueClass
         }
 
         $groups = [];
-        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_AVAILABLE_MFA` WHERE $where_mfa ;");
+        $r = $dbc->query("SELECT DISTINCT `group_id` FROM `EX_TABLE_AVAILABLE_MFA` WHERE $where_mfa ;");
         $n = $dbc->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id = $dbc->result($r, $i - 1, "group_id");

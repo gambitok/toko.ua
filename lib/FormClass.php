@@ -94,7 +94,7 @@ class FormClass extends CatalogueClass
         $brand_id = $this->getUrlNumber($brand_id);
         $dbc = DbSingleton::getTokoCacheDb();
 
-        $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_BRANDS` WHERE `brand_id` = $brand_id GROUP BY `group_id`;");
+        $r = $dbc->query("SELECT DISTINCT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_BRANDS` WHERE `brand_id` = $brand_id;");
         $n = $dbc->num_rows($r);
         $groups = [];
         for ($i = 1; $i <= $n; $i++) {

@@ -173,9 +173,9 @@ else {
                     $red_link   = $catalogue->getSiteLink() . $path_from;
                 }
 
-                list($count_brands, $count_params, $count_values) = $catalog_exist->getCatalogParamsCount($params);
+                list($count_brands, $count_params, $count_values, $real_count_params) = $catalog_exist->getCatalogParamsCount($params);
 
-                if ($count_values > 0) {
+                if ($real_count_params > 1) {
                     $content = str_replace("{meta_noindex}", '
                         <meta name="robots" content="noindex, nofollow">
                         <meta name="googlebot" content="noindex, nofollow">

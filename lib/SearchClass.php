@@ -226,7 +226,7 @@ class SearchClass extends CatalogueClass
                         if ($stock > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                                 $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
-                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', \"$article_name\", '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
+                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', \"$brand_name\", \"$article_name\", '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
                             }
                         }
                     }
@@ -666,7 +666,7 @@ class SearchClass extends CatalogueClass
                             // visible suppl storage
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                                 $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
-                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', '$brand_name', \"$article_name\", '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
+                                VALUES ('$art_id', '$article_nr_displ', '$brand_id', \"$brand_name\", \"$article_name\", '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
 
                                 if ($art_id === $art_id_search) {
                                     $main_brand = $brand_id;
