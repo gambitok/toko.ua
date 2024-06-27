@@ -2,8 +2,17 @@
 
 $content = "";
 
-$r = $db->query('SELECT ID FROM GOODS_GROUP WHERE PARRENT_ID = ?', 0);
-var_dump($r);
+$start = microtime(true);
+$mp = DbSingleton::getMyPartsDb();
+$r = $mp->query('SELECT * FROM T2_ARTICLES_PARTITIONS_PERIOD WHERE op_type = ? LIMIT 100', 1)->fetchAll();
+$time = microtime(true) - $start;
+var_dump($time);
+
+//$start = microtime(true);
+//$dm = DbSingleton::getDbm();
+//$r = $dm->query('SELECT * FROM T2_ARTICLES_PARTITIONS_PERIOD WHERE op_type = 1 LIMIT 100');
+//$time = microtime(true) - $start;
+//var_dump($time);
 
 //$server = 'https://api.checkbox.in.ua/api/v1';
 //$login  = 'vera777';

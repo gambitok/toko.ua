@@ -54,7 +54,7 @@ for ($i = 1; $i <= $n; $i++) {
 
 $dbc->query("TRUNCATE TABLE `EX_TABLE_AVAILABLE_MFA`;");
 $dbc->query("INSERT INTO `EX_TABLE_AVAILABLE_MFA` (`group_id`, `mfa_id`, `model`)
-SELECT `group_id`, `mfa_id`, `model` FROM `EX_TABLE_TREE_AVAILABLE_MFA` WHERE $where1 GROUP BY `group_id`, `mfa_id`, `model`;");
+SELECT DISTINCT `group_id`, `mfa_id`, `model` FROM `EX_TABLE_TREE_AVAILABLE_MFA` WHERE $where1;");
 
 $time = microtime(true) - $start;
 

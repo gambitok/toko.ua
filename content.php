@@ -437,7 +437,7 @@ if ($_REQUEST["w"] === "showCarsGarageForm") {
 /*==== MENU ====*/
 
 if ($_REQUEST["w"] === "getHeaderContent") {
-    $GLOBALS['_RESULT'] = array("content" => $catalog->getHeaderContent($_REQUEST["head_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $catalog->getHeaderContent($_REQUEST["head_id"], $_REQUEST["cat_id_selected"], $_REQUEST["group_id_selected"]));
 }
 
 if ($_REQUEST["w"] === "getGroupsListValues") {

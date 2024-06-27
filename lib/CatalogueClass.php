@@ -49,11 +49,10 @@ class CatalogueClass
         $cur = $this->getCurrentExrate();
 
         $art_ids = [];
-        $r = $db->query("SELECT t2c.ART_ID
+        $r = $db->query("SELECT DISTINCT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
-        GROUP BY t2c.`ART_ID`;");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE));");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -468,9 +467,8 @@ class CatalogueClass
 
         $arts = $art_id_arr = [];
 
-        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` 
-        WHERE `ART_ID` = $art_id AND ((`KIND` = 3 AND `RELATION` = 0) OR (`KIND` IN (3, 4) AND `RELATION` = 1) OR (`KIND` IN (3, 4) AND `RELATION` = 2)) 
-        GROUP BY `SEARCH_NUMBER` LIMIT 0,10;");
+        $r = $db->query("SELECT DISTINCT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` 
+        WHERE `ART_ID` = $art_id AND ((`KIND` = 3 AND `RELATION` = 0) OR (`KIND` IN (3, 4) AND `RELATION` = 1) OR (`KIND` IN (3, 4) AND `RELATION` = 2)) LIMIT 0,10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_search = $db->result($r, $i - 1, "SEARCH_NUMBER");
@@ -762,12 +760,11 @@ class CatalogueClass
         $brand_nr_search    = $this->getArticleBrand($art_id_search);
 
         $arts = [];
-        $r = $db->query("SELECT t2c.ART_ID
+        $r = $db->query("SELECT DISTINCT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID)
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
-        GROUP BY t2c.`ART_ID`;");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE));");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -2187,7 +2184,7 @@ class CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $cats = [];
-        $r = $db->query("SELECT `CAT_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id GROUP BY `CAT_ID`;");
+        $r = $db->query("SELECT DISTINCT `CAT_ID` FROM `T2_TREE_HCG_EXIST` WHERE `HEAD_ID` = $head_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $cat_id     = (int)$db->result($r, $i - 1, "CAT_ID");
@@ -2419,7 +2416,7 @@ class CatalogueClass
     /*
      * HEADER ROW `HEADERS-CATS-GROUPS` LIST
      * */
-    public function getHeaderContent($head_id)
+    public function getHeaderContent($head_id, $cat_id_selected, $group_id_selected)
     {
         $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("catalog_menu/list");
@@ -2447,7 +2444,7 @@ class CatalogueClass
                 <div class=\"tree-block__col\" style=\"width: calc(100% / $max_col);\">";
 
                 foreach ($rows as $row_id => $cat_id) {
-                    $group_list = $this->getTreeConsGroupList($head_id, $cat_id);
+                    $group_list = $this->getTreeConsGroupList($head_id, $cat_id, $group_id_selected);
                     $head_link  = $this->getHeadRowLink($head_id);
                     $catData    = $this->getCatRowData($cat_id);
                     $cat_name   = $catData["cat_name"];
@@ -2457,6 +2454,9 @@ class CatalogueClass
 
                     if (empty($cat_id)) {
                         $link = "<span style=\"color: #228b94; display: block; font-size: 16px; font-weight: 700; padding-bottom: 15px;\"><span style=\"margin-right: 5px; color: #f44438;\">&bull;</span>$cat_name</span>";
+                    }
+                    if ((int)$cat_id === (int)$cat_id_selected) {
+                        $link = "<a>$cat_name</a>";
                     }
 
                     $list .= "
@@ -2478,7 +2478,7 @@ class CatalogueClass
 
         return $form;
     }
-    public function getTreeConsGroupList($head_id, $cat_id): string
+    public function getTreeConsGroupList($head_id, $cat_id, $group_id_selected): string
     {
         $cat_id = $this->getUrlNumber($cat_id);
         $db = DbSingleton::getTokoDb();
@@ -2504,10 +2504,15 @@ class CatalogueClass
                 $group_id   = $db->result($r, $i - 1, "GROUP_ID");
                 $group_name = $this->getGroupRowName($group_id);
                 $group_link = $this->getGroupRowLink($group_id);
+                $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a>";
+
+                if ((int)$group_id === (int)$group_id_selected) {
+                    $link = "<a>$group_name</a>";
+                }
 
                 $list .= "
                 <div class=\"tree-item-list__element\">
-                    <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a>
+                   $link
                 </div>";
             }
         }
@@ -2726,7 +2731,7 @@ class CatalogueClass
         $article_nr_search = mb_strtolower($article_nr_search);
 
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search' GROUP BY `BRAND_ID`;");
+        $r = $db->query("SELECT DISTINCT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search';");
         $n = $db->num_rows($r);
 
         if ($n === 1) {

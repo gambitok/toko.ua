@@ -450,7 +450,11 @@ class FormClass extends CatalogueClass
             $art_name   = $this->getBrandName($brand_id) . " " . $art_nr_ds;
             $h1         = $this->getArticleName($art_id) . " " . $art_name;
 
-            $form = str_replace(array("{article_name}", "{article_header}", "{art_name}", "{article_style}"), array($art_name, $h1, $art_nr_ds, "none"), $form);
+            $form = str_replace(
+                array("{article_name}", "{article_header}", "{art_name}", "{article_style}"),
+                array($art_name, $h1, $art_nr_ds, "none"),
+                $form
+            );
 
             $delivery_short_info = "
             <div>
@@ -473,13 +477,17 @@ class FormClass extends CatalogueClass
         } else {
             $client = new ClientClass();
             $user_phone         = ($this->getUser() > 0) ? $client->getClientInfo($this->getClient(), $this->getUser())["phone"] : "";
-            $product_link       = $this->getSiteLink() . $this->products_link . "/" . $this->getArticleSearch($art_id) . "-" . $this->getBrandLink($brand_id) . "-$art_id/";
+            $product_link       = $this->getSiteLink() . $this->products_link . "/" . mb_strtolower($this->getArticleSearch($art_id)) . "-" . $this->getBrandLink($brand_id) . "-$art_id/";
             $real_stock_label   = ($real_stock > 10) ? "> 10" : $real_stock;
 
             $more = $this->getArticleAnalogsMore($art_id, $brand_id, $art_sr_nr, (int)$articleData["suppl_id"], $articleData["storage_id"]);
 
             $article_info_row = $this->getHtmlForm("article/row");
-            $article_info_row = str_replace(array("{art_price}", "{art_cur}", "{art_stock}", "{art_stock_label}", "{art_del}", "{page_product_link}", "{user_phone}", "{more_suggestions}"), array($articleData["price"], $articleData["currency"], $real_stock, $real_stock_label, $delivery_short_info, $product_link, $user_phone, $more), $article_info_row);
+            $article_info_row = str_replace(
+                array("{art_price}", "{art_cur}", "{art_stock}", "{art_stock_label}", "{art_del}", "{page_product_link}", "{user_phone}", "{more_suggestions}"),
+                array($articleData["price"], $articleData["currency"], $real_stock, $real_stock_label, $delivery_short_info, $product_link, $user_phone, $more),
+                $article_info_row
+            );
 
             if ($hidden === 1) {
                 $article_info_row = str_replace("{article_delivery_form}", $this->getArticleDelivery($art_id), $article_info_row);
@@ -496,7 +504,11 @@ class FormClass extends CatalogueClass
             }
         }
 
-        $article_info_row = str_replace(array("{article_card_amount}", "{article_card_basket_id}", "{buy_class_btn}", "{buy_class_input}"), array($basket_count, $basket_id, $buy_class_btn, $buy_class_input), $article_info_row);
+        $article_info_row = str_replace(
+            array("{article_card_amount}", "{article_card_basket_id}", "{buy_class_btn}", "{buy_class_input}"),
+            array($basket_count, $basket_id, $buy_class_btn, $buy_class_input),
+            $article_info_row
+        );
 
         $form = str_replace("{art_id}", $art_id, $form);
         $form = str_replace("{art_name}", $art_nr_ds, $form);
@@ -1013,6 +1025,8 @@ class FormClass extends CatalogueClass
         $article_text           = "$article_name $brand_name $article_nr_displ";
         $format_article_search  = $this->getFormatAticle($article_nr_displ);
         $format_brand_name      = $this->getFormatBrand($this->getBrandName($brand_id));
+        $format_brand_name = str_replace("%20", "-", $format_brand_name);
+        $format_brand_name = mb_strtolower($format_brand_name);
 
         $arr[] = [
             "name" => $article_text,
@@ -1708,14 +1722,13 @@ class FormClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
 
         $list = $this->err1;
-        $r = $db->query("SELECT man.MFA_ID, man.MFA_BRAND 
+        $r = $db->query("SELECT DISTINCT man.MFA_ID, man.MFA_BRAND 
         FROM `T_types` tt 
             INNER JOIN `T_models` tm ON (tm.MOD_ID = tt.TYP_MOD_ID) 
             INNER JOIN `T_manufacturers` man ON (man.MFA_ID = tm.MOD_MFA_ID) 
         WHERE tt.TYP_ID IN (
             SELECT `TYP_ID` FROM `T2_LINKS` WHERE `ART_ID` = $art_id
-        ) AND tt.ACTIVE = 1 
-        GROUP BY man.MFA_ID;");
+        ) AND tt.ACTIVE = 1;");
         $n = $db->num_rows($r);
 
         if ($n > 0) {

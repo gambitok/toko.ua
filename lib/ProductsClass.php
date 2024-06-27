@@ -209,7 +209,7 @@ class ProductsClass extends CatalogueClass
         if ($type === "manuf") {
             $mfa_id = $this->getUrlNumber($value);
 
-            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model`;");
+            $r = $db->query("SELECT DISTINCT `Model` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $model      = $db->result($r, $i - 1, "Model");

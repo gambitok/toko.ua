@@ -1,5 +1,13 @@
 <?php
 
+$actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+if (strpos($actual_link, "%20") !== false) {
+    $new_link = str_replace("%20", "-", $actual_link);
+    $new_link = mb_strtolower($new_link);
+    header("Location: $new_link", TRUE, 301);
+}
+
 $linka = findLinks();
 
 $art_id = (int)substr($linka[1], strrpos($linka[1], "-") + 1);

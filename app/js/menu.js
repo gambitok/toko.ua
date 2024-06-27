@@ -192,7 +192,11 @@ function saveSellForm() {
 
 function showHideNavigation(head_id) {
     $("#navigation-hide").show();
-    JsHttpRequest.query(folder,{'w':'getHeaderContent', 'head_id':head_id},
+    let cat_id_selected = $("#cat_id_selected").val();
+    let group_id_selected = $("#group_id_selected").val();
+    console.log(cat_id_selected);
+    console.log(group_id_selected);
+    JsHttpRequest.query(folder,{'w':'getHeaderContent', 'head_id':head_id, 'cat_id_selected':cat_id_selected, 'group_id_selected':group_id_selected},
         function (result, errors){ if (errors) {alert(errors);} if (result){
         $("#content-nav__content").html(result.content);
         $(".header-nav__li").each(function() {

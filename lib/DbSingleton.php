@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/mysql_class.php';
+require_once __DIR__ . '/mysql.php';
 
 class DbSingleton
 {
@@ -8,6 +9,16 @@ class DbSingleton
     private static $instanceTokoDb;
     private static $instanceTokoCacheDb;
     private static $instanceTokoEmojiDb;
+    private static $instanceMyPartsDb;
+
+    public static function getMyPartsDb()
+    {
+        if (self::$instanceMyPartsDb === null) {
+            self::$instanceMyPartsDb = new myPartsDb();
+        }
+
+        return self::$instanceMyPartsDb;
+    }
 
     public static function getDbm()
     {

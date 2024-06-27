@@ -12,7 +12,7 @@ class SearchClass extends CatalogueClass
         $article_search = "";
         $brand_id = 0;
         $article_nr_search = $this->getUrlString($article_nr_search);
-        $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search' GROUP BY `BRAND_ID`;");
+        $r = $db->query("SELECT DISTINCT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search';");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $article_search = $db->result($r, $i - 1, "SEARCH_NUMBER");
@@ -351,9 +351,9 @@ class SearchClass extends CatalogueClass
             $text = $this->getUrlString($text);
             $format_text = str_replace(str_split(' -,+\/:*?"<>|_.'), "", $text);
 
-            $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `DISPLAY_NR`, MIN(`KIND`) as min_kind FROM `T2_CROSS` 
+            $r = $db->query("SELECT DISTINCT `ART_ID`, `BRAND_ID`, `DISPLAY_NR`, MIN(`KIND`) as min_kind FROM `T2_CROSS` 
             WHERE `SEARCH_NUMBER` = \"$format_text\" 
-            GROUP BY `BRAND_ID` ORDER BY `min_kind`;");
+            ORDER BY `min_kind`;");
             $n1 = $db->num_rows($r);
             for ($i = 1; $i <= $n1; $i++) {
                 $art_id     = $db->result($r, $i - 1, "ART_ID");

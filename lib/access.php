@@ -601,11 +601,11 @@ function getSeoTitleData()
         $get_link = " AND `LINK` = '$str_linka'";
     }
 
-    $r = $dbe->query("SELECT `TITLE_$postfix`, `DESCR_$postfix` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 0 $get_link LIMIT 1;");
+    $r = $dbe->query("SELECT `TITLE_" . $postfix . "`, `DESCR_" . $postfix . "` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 0 $get_link LIMIT 1;");
     $n = $dbe->num_rows($r);
     if ($n == 0) {
         $str_linka2 = explode("/", $str_linka)[0];
-        $r = $dbe->query("SELECT `TITLE_$postfix`, `DESCR_$postfix` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 1 AND `LINK` = '$str_linka2' LIMIT 1;");
+        $r = $dbe->query("SELECT `TITLE_" . $postfix . "`, `DESCR_" . $postfix . "` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 1 AND `LINK` = '$str_linka2' LIMIT 1;");
         $n = $dbe->num_rows($r);
     }
     if ($n > 0) {
@@ -631,12 +631,12 @@ function getSeoTextForm()
     $postfix = $catalogue->getLangPostfix($catalogue->getLanguage());
 
     if ($router === "" || $router === NULL) {
-        $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = '/' LIMIT 1;";
+        $query = "SELECT `CONTENT_" . $postfix . "` FROM `T2_SEO_TEXT` WHERE `ROUTER` = '/' LIMIT 1;";
     }
 
     if ($router === "cars") {
         $link = $str_linka;
-        $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'cars' AND `LINK` = '$link' LIMIT 1;";
+        $query = "SELECT `CONTENT_" . $postfix . "` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'cars' AND `LINK` = '$link' LIMIT 1;";
     }
 
     if ($router === "catalog") {
@@ -647,7 +647,7 @@ function getSeoTextForm()
         }
         $link = ltrim($link, "/");
 
-        $query = "SELECT `CONTENT_$postfix` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'catalog' AND `LINK` = '$link' LIMIT 1;";
+        $query = "SELECT `CONTENT_" . $postfix . "` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'catalog' AND `LINK` = '$link' LIMIT 1;";
     }
 
     $r = $db->query($query);

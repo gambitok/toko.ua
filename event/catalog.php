@@ -16,7 +16,8 @@ $router_4   = $catalogue->getUrlString($linka[4]);
 $router_5   = $catalogue->getUrlString($linka[5]);
 $page       = $catalogue->getUrlNumber($_GET["page"]);
 $path_from  = $site_name . "/" . $router . "/";
-$src_link   = $catalogue->getSiteLink() . implode("/", $linka) . "/";
+$site_link  = $catalogue->getSiteLink();
+$src_link   = $site_link . implode("/", $linka) . "/";
 
 if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
     $red_status = 1;
@@ -50,7 +51,7 @@ else {
                 $check_link = rtrim($check_link, "/");
                 $red_status = 1;
                 $red_type   = 301;
-                $red_link   = $catalogue->getSiteLink() . $check_link;
+                $red_link   = $site_link . $check_link;
             }
 
             if ($catalogue->checkCityLink($city_link)) {
@@ -68,6 +69,11 @@ else {
                 $red_status = 1;
                 $red_type   = 404;
                 $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                $content = str_replace("{meta_noindex}", '
+                    <meta name="robots" content="noindex, nofollow">
+                    <meta name="googlebot" content="noindex, nofollow">
+                    <meta name="yandex" content="noindex, nofollow">
+                ', $content);
             }
         }
 
@@ -80,14 +86,21 @@ else {
             $red_status = 1;
             $red_type   = 404;
             $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+            $content = str_replace("{meta_noindex}", '
+                <meta name="robots" content="noindex, nofollow">
+                <meta name="googlebot" content="noindex, nofollow">
+                <meta name="yandex" content="noindex, nofollow">
+            ', $content);
         }
 
         /*
          * Catalog with Group
          * */
         $group_id = $catalog_exist->getGroupExistId($router);
+
         if (!empty($group_id)) {
             $group_id       = $catalog_exist->getUrlNumber($group_id);
+            $_SESSION['group_id'] = (int)$group_id;
             $filters        = $linka[2];
             $f1 = $filters;
 
@@ -107,6 +120,11 @@ else {
                     $red_status = 1;
                     $red_type   = 404;
                     $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                    $content = str_replace("{meta_noindex}", '
+                        <meta name="robots" content="noindex, nofollow">
+                        <meta name="googlebot" content="noindex, nofollow">
+                        <meta name="yandex" content="noindex, nofollow">
+                    ', $content);
                 }
 
                 if ($model_link !== "") {
@@ -121,6 +139,11 @@ else {
                             $red_status = 1;
                             $red_type   = 404;
                             $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                            $content = str_replace("{meta_noindex}", '
+                                <meta name="robots" content="noindex, nofollow">
+                                <meta name="googlebot" content="noindex, nofollow">
+                                <meta name="yandex" content="noindex, nofollow">
+                            ', $content);
                         }
 
                         if ($model !== "") {
@@ -130,6 +153,11 @@ else {
                                 $red_status = 1;
                                 $red_type   = 404;
                                 $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                                $content = str_replace("{meta_noindex}", '
+                                    <meta name="robots" content="noindex, nofollow">
+                                    <meta name="googlebot" content="noindex, nofollow">
+                                    <meta name="yandex" content="noindex, nofollow">
+                                ', $content);
                             }
                         }
                     }
@@ -143,19 +171,24 @@ else {
                     $red_status = 1;
                     $red_type   = 404;
                     $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+                    $content = str_replace("{meta_noindex}", '
+                        <meta name="robots" content="noindex, nofollow">
+                        <meta name="googlebot" content="noindex, nofollow">
+                        <meta name="yandex" content="noindex, nofollow">
+                    ', $content);
                 }
 
                 if ($f1 === "uk" || $f1 === "en") {
                     $red_status = 1;
                     $red_type   = 301;
-                    $red_link   = $catalogue->getSiteLink() . $catalog_exist->catalog_link . "/$router/";
+                    $red_link   = $site_link . $catalog_exist->catalog_link . "/$router/";
                 }
 
                 if ($check_status > 0) {
                     $red_status = 1;
                     $red_type   = 301;
                     $group_link = $catalog_exist->getGroupRowLink($group_id);
-                    $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$group_link/" . $check_link . "/";
+                    $red_link   = $site_link . $catalogue->catalog_link .  "/$group_link/" . $check_link . "/";
 
                     if ($mfa_link !== "") {
                         $red_link .= "$mfa_link/";
@@ -170,10 +203,18 @@ else {
                 if ($filters !== "" && empty($params)) {
                     $red_status = 1;
                     $red_type   = 301;
-                    $red_link   = $catalogue->getSiteLink() . $path_from;
+                    $red_link   = $site_link . $path_from;
                 }
 
-                list($count_brands, $count_params, $count_values, $real_count_params) = $catalog_exist->getCatalogParamsCount($params);
+                list($count_brands, $count_params, $count_values, $real_count_params, $real_count_brands) = $catalog_exist->getCatalogParamsCount($params);
+
+                if ($real_count_brands >= 2) {
+                    $content = str_replace("{meta_noindex}", '
+                        <meta name="robots" content="noindex, nofollow">
+                        <meta name="googlebot" content="noindex, nofollow">
+                        <meta name="yandex" content="noindex, nofollow">
+                    ', $content);
+                }
 
                 if ($real_count_params > 1) {
                     $content = str_replace("{meta_noindex}", '
@@ -196,7 +237,7 @@ else {
             $status_auto_type = $catalogue->getUrlNumber($_COOKIE["status_auto_type"]);
             (!empty($status_auto_type)) ?: $status_auto_type = 0;
 
-            $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $src_link, $sort);
+            $catalog_form = $catalog_exist->showPartsCatalogueParams($group_id, $page, $filters, $params, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $src_link, $sort, $count_brands);
 
             if ($page > $catalog_form["pages_count"] && $catalog_form["pages_count"] > 0) {
                 $max_page   = $catalog_form["pages_count"];
@@ -208,10 +249,10 @@ else {
 
             if ($page > 1) {
                 $content = str_replace("{meta_noindex}", '
-                        <meta name="robots" content="noindex, follow">
-                        <meta name="googlebot" content="noindex, follow">
-                        <meta name="yandex" content="noindex, follow">
-                    ', $content);
+                    <meta name="robots" content="noindex, follow">
+                    <meta name="googlebot" content="noindex, follow">
+                    <meta name="yandex" content="noindex, follow">
+                ', $content);
             }
 
             $content = str_replace("{main_window}", $catalog_form["form"] . $showform->getHistoryArts(), $content);
@@ -226,6 +267,7 @@ else {
          * */
         $head_id = $catalog_exist->getGroupHeadExistId($router);
         if (!empty($head_id)) {
+            $_SESSION['head_id'] = (int)$head_id;
             $cat_id = $catalog_exist->getGroupCatExistId($router_2);
 
             if (empty($cat_id)) {
@@ -235,16 +277,17 @@ else {
                 if ($router_2 !== "") {
                     $red_status = 1;
                     $red_type   = 301;
-                    $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$router/";
+                    $red_link   = $site_link . $catalogue->catalog_link .  "/$router/";
                 }
             } else {
+                $_SESSION['cat_id'] = (int)$cat_id;
                 // Category
                 $catalogData = $catalog_exist->showGroupCatForm($head_id, $cat_id);
 
                 if ($router_3 !== "") {
                     $red_status = 1;
                     $red_type   = 301;
-                    $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$router/$router_2/";
+                    $red_link   = $site_link . $catalogue->catalog_link .  "/$router/$router_2/";
                 }
             }
             $content = str_replace("{main_window}", $catalogData["form"] . $showform->getHistoryArts(), $content);
@@ -258,7 +301,7 @@ else {
         if ($router_2 === "clutch%20" || $router_2 === "clutch ") {
             $red_status = 1;
             $red_type   = 301;
-            $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/stceplenie_i_transmissiia/clutch/";
+            $red_link   = $site_link . $catalogue->catalog_link .  "/stceplenie_i_transmissiia/clutch/";
         }
 
         /*
@@ -268,6 +311,11 @@ else {
             $red_status = 1;
             $red_type   = 404;
             $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+            $content = str_replace("{meta_noindex}", '
+                <meta name="robots" content="noindex, nofollow">
+                <meta name="googlebot" content="noindex, nofollow">
+                <meta name="yandex" content="noindex, nofollow">
+            ', $content);
         }
     }
 }

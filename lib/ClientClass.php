@@ -1164,7 +1164,7 @@ class ClientClass
         list($client_id, $user_id) = $this->getClientData();
         $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-        $r = $db->query("SELECT `id`, `art_id` FROM `ARTS_HISTORY` WHERE $where GROUP BY `art_id`, `data` ORDER BY `data` DESC LIMIT 10;");
+        $r = $db->query("SELECT DISTINCT `id`, `art_id` FROM `ARTS_HISTORY` WHERE $where ORDER BY `data` DESC LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id     = $db->result($r, $i - 1, "id");
@@ -1388,7 +1388,7 @@ class ClientClass
     {
         $db = DbSingleton::getTokoDb();
         $suppl_arts = [];
-        $r = $db->query("SELECT `art_id` FROM `T2_SUPPL_IMPORT` WHERE `suppl_id` = $suppl_id GROUP BY `art_id`;");
+        $r = $db->query("SELECT DISTINCT `art_id` FROM `T2_SUPPL_IMPORT` WHERE `suppl_id` = $suppl_id;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "art_id");

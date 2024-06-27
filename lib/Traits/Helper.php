@@ -468,6 +468,7 @@ trait Helper
     {
         $form = "";
         $script = "";
+
         if (!empty($breads)) {
             $key            = 0;
             $list           = "";

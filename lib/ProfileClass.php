@@ -544,30 +544,30 @@ class ProfileClass extends ClientClass
                         $where_dp = "WHERE dp.`dp_id` = $dp_id AND ord.`dp_str_id` != 0";
                     }
 
-                    $rstr = $db->query("SELECT dp.*, ord.order_id, ord.id as order_str_id 
+                    $r_str = $db->query("SELECT dp.*, ord.order_id, ord.id as order_str_id 
                     FROM `orders_str_new` ord
                         LEFT OUTER JOIN `J_DP_STR` dp ON (dp.id = ord.dp_str_id)
                     $where_dp 
                     GROUP BY dp.art_id;");
-                    $nstr = $db->num_rows($rstr);
+                    $n_str = $db->num_rows($r_str);
 
-                    if ($nstr === 0) {
-                        $rstr = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id` = $dp_id GROUP BY `art_id`;");
-                        $nstr = $db->num_rows($rstr);
+                    if ($n_str === 0) {
+                        $r_str = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id` = $dp_id GROUP BY `art_id`;");
+                        $n_str = $db->num_rows($r_str);
                         $nedp = true;
                     }
 
-                    for ($j = 1; $j <= $nstr; $j++) {
-                        $order_id       = $db->result($rstr, $j - 1, "order_id");
-                        $order_str_id   = $db->result($rstr, $j - 1, "order_str_id") + 0;
-                        $art_nr_ds      = $db->result($rstr, $j - 1, "article_nr_displ");
-                        $art_id         = $db->result($rstr, $j - 1, "art_id");
-                        $brand_id       = $db->result($rstr, $j - 1, "brand_id");
-                        $amount         = (int)$db->result($rstr, $j - 1, "amount");
-                        $amount_collect = (int)$db->result($rstr, $j - 1, "amount_collect");
-                        $summ           = $db->result($rstr, $j - 1, "summ");
-                        $status_dps     = $db->result($rstr, $j - 1, "status_dps");
-                        $status_visible = (int)$db->result($rstr, $j - 1, "status_visible");
+                    for ($j = 1; $j <= $n_str; $j++) {
+                        $order_id       = $db->result($r_str, $j - 1, "order_id");
+                        $order_str_id   = $db->result($r_str, $j - 1, "order_str_id") + 0;
+                        $art_nr_ds      = $db->result($r_str, $j - 1, "article_nr_displ");
+                        $art_id         = $db->result($r_str, $j - 1, "art_id");
+                        $brand_id       = $db->result($r_str, $j - 1, "brand_id");
+                        $amount         = (int)$db->result($r_str, $j - 1, "amount");
+                        $amount_collect = (int)$db->result($r_str, $j - 1, "amount_collect");
+                        $summ           = $db->result($r_str, $j - 1, "summ");
+                        $status_dps     = $db->result($r_str, $j - 1, "status_dps");
+                        $status_visible = (int)$db->result($r_str, $j - 1, "status_visible");
                         $price          = round($summ / $amount, 2);
                         $status_dps     = $this->getManualName($status_dps);
                         $brand_name     = $this->getBrandName($brand_id);
@@ -626,14 +626,14 @@ class ProfileClass extends ClientClass
                 $order_id   = $db->result($r, $i - 1, "id") + 0;
                 $cash_id    = $db->result($r, $i - 1, "cash_id");
 
-                $rstr = $db->query("SELECT `art_id`, `brand_id`, `amount`, `price`, `summ` FROM `orders_str_new` WHERE `order_id` = $order_id;");
-                $nstr = $db->num_rows($rstr);
-                for ($j = 1; $j <= $nstr; $j++) {
-                    $art_id     = $db->result($rstr, $j - 1, "art_id");
-                    $brand_id   = $db->result($rstr, $j - 1, "brand_id");
-                    $amount     = (int)$db->result($rstr, $j - 1, "amount");
-                    $price      = $db->result($rstr, $j - 1, "price");
-                    $summ       = $db->result($rstr, $j - 1, "summ");
+                $r_str = $db->query("SELECT `art_id`, `brand_id`, `amount`, `price`, `summ` FROM `orders_str_new` WHERE `order_id` = $order_id;");
+                $n_str = $db->num_rows($r_str);
+                for ($j = 1; $j <= $n_str; $j++) {
+                    $art_id     = $db->result($r_str, $j - 1, "art_id");
+                    $brand_id   = $db->result($r_str, $j - 1, "brand_id");
+                    $amount     = (int)$db->result($r_str, $j - 1, "amount");
+                    $price      = $db->result($r_str, $j - 1, "price");
+                    $summ       = $db->result($r_str, $j - 1, "summ");
                     $art_nr_ds  = $this->getArticleDispl($art_id);
                     $brand_name = $this->getBrandName($brand_id);
                     $price      = $kours->getKoursFromUAH($price, $cash_id);

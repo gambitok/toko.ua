@@ -539,10 +539,9 @@ class AutoClass extends CatalogueClass
         $cookie     = $this->getSessionID();
         $where      = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-        $r = $db->query("SELECT `id`, `typ_id`, `timestamp` 
+        $r = $db->query("SELECT DISTINCT `id`, `typ_id`, `timestamp` 
         FROM `AUTO_HISTORY` 
         WHERE $where 
-        GROUP BY `typ_id`, `timestamp`
         ORDER BY `timestamp` DESC LIMIT $this->history_limit_on_page");
         $n = $db->num_rows($r);
 
@@ -827,7 +826,7 @@ class AutoClass extends CatalogueClass
             </div>
             <div class=\"seo-auto-list\">";
 
-            $r = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id GROUP BY `Model`;");
+            $r = $db->query("SELECT DISTINCT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id;");
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $model      = $db->result($r, $i - 1, "Model");
@@ -881,7 +880,7 @@ class AutoClass extends CatalogueClass
             $list .= "
             <div class=\"seo-auto-list seo_details\">";
 
-            $r2 = $db->query("SELECT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 GROUP BY `Model`;");
+            $r2 = $db->query("SELECT DISTINCT `Model`, `Model_Link` FROM `T_models` WHERE `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1;");
             $n2 = $db->num_rows($r2);
             for ($i2 = 1; $i2 <= $n2; $i2++) {
                 $model      = $db->result($r2, $i2 - 1, "Model");

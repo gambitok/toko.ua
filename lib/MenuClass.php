@@ -868,11 +868,9 @@ class MenuClass extends CatalogueClass
             $table_params   = "EX_TABLE_TREE_PARAMS_$group_id";
             $where_sort     = "ORDER BY t.price = 0, t.id";
 
-            $query = "SELECT t.art_id FROM `$table` t
+            $query = "SELECT DISTINCT t.art_id FROM `$table` t
                 LEFT JOIN `$table_params` tp ON (tp.art_id = t.art_id) 
                 LEFT JOIN `$table_mfa` tm ON (tm.art_id = t.art_id)
-            WHERE 1 
-            GROUP BY t.art_id
             $where_sort";
 
             $query_limit = "$query $limit";
@@ -1603,7 +1601,7 @@ class MenuClass extends CatalogueClass
             </tr></thead><tbody>";
 
             if ($value_id === 0) {
-                $r = $dbc->query("SELECT `mfa_id`, `model`, COUNT(`art_id`) as count_arts  FROM `EX_TABLE_TREE_MFA_$group_id` WHERE 1 GROUP BY `mfa_id`, `model`;");
+                $r = $dbc->query("SELECT DISTINCT `mfa_id`, `model`, COUNT(`art_id`) as count_arts  FROM `EX_TABLE_TREE_MFA_$group_id`;");
                 $n = $dbc->num_rows($r);
                 for ($i = 1; $i <= $n; $i++) {
                     $mfa_id     = $dbc->result($r, $i - 1, "mfa_id");
@@ -1721,7 +1719,7 @@ class MenuClass extends CatalogueClass
     /*
      * Tree List Headers
      * */
-    public function getSiteNavigation()
+    public function getSiteNavigation($head_id_sel = 0, $cat_id_sel = 0, $group_id_sel = 0)
     {
         $db = DbSingleton::getTokoDb();
         $form = $this->getHtmlForm("main/navigation");
@@ -1730,16 +1728,23 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $head_id    = $db->result($r, $i - 1, "HEAD_ID");
+            $head_id    = (int)$db->result($r, $i - 1, "HEAD_ID");
             $head_name  = $this->getHeadRowName($head_id);
             $head_link  = $this->getHeadRowLink($head_id);
-
+            if ($head_id_sel === $head_id) {
+                $link = "<a rel=\"noopener\">$head_name</a>";
+            } else {
+                $link = "<a rel=\"noopener\" href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/\">$head_name</a>";
+            }
             $list .= "
             <li class=\"header-nav__li\" data-nav-id=\"$head_id\">
-                <a rel=\"noopener\" href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/\">$head_name</a>
+                $link
             </li>";
         }
+
         $form = str_replace("{catalog_range}", $list, $form);
+        $form = str_replace("{cat_id}", $cat_id_sel, $form);
+        $form = str_replace("{group_id}", $group_id_sel, $form);
 
         return $form;
     }

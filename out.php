@@ -65,7 +65,12 @@ if ($data) {
 }
 
 // Main HEAD HTML
-$content = str_replace("{navigation_content}", $menu->getSiteNavigation(), $content);
+$content = str_replace("{navigation_content}", $menu->getSiteNavigation($_SESSION['head_id'], $_SESSION['cat_id'], $_SESSION['group_id']), $content);
+
+$_SESSION['head_id'] = 0;
+$_SESSION['cat_id'] = 0;
+$_SESSION['group_id'] = 0;
+
 $content = str_replace("{footer_content}", $menu->getFooterForm(findLinks()[0]), $content);
 
 $content = str_replace("{main_charset}", "utf-8", $content);
