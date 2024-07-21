@@ -520,12 +520,15 @@ class CatalogExistClass extends CatalogueClass
         }
 
         if ($n > 0) {
+
             if ($status === 0) {
                 $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`) VALUES ($group_id, 1);");
             }
+
             if ($status === 1) {
                 $r = $dbc->query("SELECT `group_id` FROM `EX_TABLE_TREE_AVAILABLE_GROUP` WHERE `group_id` = $group_id LIMIT 1;");
                 $group_select_id = $dbc->result($r, 0, "group_id");
+
                 if (empty($group_select_id)) {
                     $dbc->query("INSERT INTO `EX_TABLE_TREE_AVAILABLE_GROUP` (`group_id`, `status`) VALUES ($group_id, 1);");
                 }
@@ -680,8 +683,9 @@ class CatalogExistClass extends CatalogueClass
                 "link" => $this->getSiteLink() . "$this->catalog_link/$head_link/"
             ];
 
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
+            $groupData = $this->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
 
             $arr[] = [
                 "name" => $group_name,
@@ -1184,13 +1188,11 @@ class CatalogExistClass extends CatalogueClass
             $pager = $this->replaceLang(" - {pager_cap} $page");
         }
 
+        $breadcrumbs_script = "";
         if (empty($art_id_str)) {
             $form = $this->showPartsCatalogueError($group_id, $mfa_id, $model, $status_auto, $status_auto_type, $typ_id, $h1_text);
-
-            $breadcrumbs_script = "";
         } else {
             $form = $this->getHtmlForm("catalog_exist/form");
-
             $parts_h1           = "$h1_text $translit $pager";
             $parts_count        = "{unselect_cap} $count " . $this->getGoodsCap($count);
             $parts_sort         = $this->getPartsSortForm($sort, $source_link);
@@ -1885,18 +1887,18 @@ class CatalogExistClass extends CatalogueClass
         if (count($params) === 2) {
             $param_id_1 = array_keys($params)[0];
             $params_1[$param_id_1] = $params[$param_id_1];
-            list($filters_h1_1) = $this->getCatalogH1($group_id, $params_1);
+            $filters_h1_1 = $this->getCatalogH1Seo($group_id, $params_1);
             $list = $this->getPartsFiltersForm2($group_id, $params_1, $filters_h1_1);
 
             $param_id_2 = array_keys($params)[0];
             $params_2[$param_id_1] = $params[$param_id_2];
-            list($filters_h1_2) = $this->getCatalogH1($group_id, $params_2);
+            $filters_h1_2 = $this->getCatalogH1Seo($group_id, $params_2);
             $list .= $this->getPartsFiltersForm2($group_id, $params_2, $filters_h1_2);
         }
 
         if (count($params) === 1) {
             $sel_param_id = array_keys($params)[0];
-            list($filters_h1) = $this->getCatalogH1($group_id, $params);
+            $filters_h1 = $this->getCatalogH1Seo($group_id, $params);
             $list = $this->getPartsFiltersForm2($group_id, $params, $filters_h1, $sel_param_id);
         }
 
@@ -2059,8 +2061,9 @@ class CatalogExistClass extends CatalogueClass
         $text = "";
         $db = DbSingleton::getTokoDb();
 
-        $group_name = $this->getGroupRowName($group_id);
-        $group_link = $this->getGroupRowLink($group_id);
+        $groupData = $this->getGroupRowData($group_id);
+        $group_name = $groupData["name"];
+        $group_link = $groupData["link"];
         $main_link  = $this->getSiteLink() . $this->catalog_link . "/" . $group_link . "/";
 
         $head_id    = $this->getHeadExistID($group_id, 1);
@@ -2284,8 +2287,9 @@ class CatalogExistClass extends CatalogueClass
         $nophoto    = $this->noPhoto;
 
         if ($group_id > 0) {
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
+            $groupData = $this->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
             $link       .= "/$group_link/auto";
             $det_cap    = $group_name . " {on_cap}";
         }
@@ -2434,8 +2438,9 @@ class CatalogExistClass extends CatalogueClass
         $title      = "";
 
         if ($group_id > 0) {
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
+            $groupData = $this->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
             $det_cap    = $group_name;
             $link       .= "$group_link/auto";
 
@@ -2526,6 +2531,141 @@ class CatalogExistClass extends CatalogueClass
         $form = $this->replaceLang($form);
 
         return $form;
+    }
+
+    public function getCatalogH1Seo($group_id, $params = [])
+    {
+        $car_text = "";
+        $group_name = ($group_id > 0) ? $this->getGroupRowName($group_id) : "";
+        $group_text = $group_name;
+
+        if (!empty($params)) {
+
+            // brand or param, >2 params
+            if (count($params) > 1) {
+                $group_text = $group_name;
+                $count_params = 0;
+                ksort($params);
+
+                foreach ($params as $param_id => $values) {
+                    $param_name = $this->getGroupParamName($param_id);
+
+                    if ((int)$param_id === 0) {
+                        foreach ($values as $brand_id) {
+                            $brand_name = $this->getBrandName($brand_id);
+                            $group_text .= " $brand_name, ";
+                        }
+                        $group_text = rtrim($group_text, ", ");
+                    }
+
+                    if ($param_id > 0) {
+                        $count_params++;
+                        if ($count_params === 1) {
+                            $group_text .= ":";
+                        }
+                        $group_text .= " $param_name - ";
+                        foreach ($values as $value_id) {
+                            $value_name = $this->getGroupValueName($value_id, $param_id);
+                            $group_text .= "$value_name, ";
+                        }
+                        $group_text = rtrim($group_text, ", ");
+                        $group_text .= "; ";
+                    }
+                }
+                $group_text = rtrim($group_text, "; ");
+            }
+
+            // with brand
+            if (array_key_exists(0, $params)) {
+
+                // only brands
+                if (count($params) === 1) {
+                    $group_text = $group_name;
+                    if (count($params[0]) >= 1) {
+                        foreach ($params[0] as $value_id) {
+                            $brand_name = $this->getGroupValueName($value_id);
+                            $group_text .= " $brand_name, ";
+                        }
+                        $group_text = rtrim($group_text, ", ");
+                    }
+                }
+
+                // 1 brand + 1 param
+                if (count($params) === 2) {
+                    $group_text = $group_name;
+                    $count_params = 0;
+                    ksort($params);
+
+                    foreach ($params as $param_id => $values) {
+
+                        if ((int)$param_id === 0) {
+                            foreach ($values as $brand_id) {
+                                $brand_name = $this->getBrandName($brand_id);
+                                $group_text .= " $brand_name";
+                            }
+                        }
+
+                        if ($param_id > 0) {
+                            $param_name = $this->getGroupParamName($param_id);
+                            $count_params++;
+                            if ($count_params === 1) {
+                                $group_text .= ":";
+                            }
+                            $group_text .= " $param_name - ";
+
+                            foreach ($values as $value_id) {
+                                $value_name = $this->getGroupValueName($value_id, $param_id);
+                                $value_h1_name = $this->getGroupValueH1($value_id, $param_id);
+
+                                if (count($values) === 1) {
+                                    if ($value_h1_name !== "") {
+                                        $group_text = $value_h1_name;
+                                    } else {
+                                        $group_text .= " $value_name";
+                                    }
+                                } else {
+                                    $group_text = " $group_text";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // no brands, only params
+            if (!array_key_exists(0, $params) && count($params) === 1) {
+                $group_text = $group_name;
+                $count_params = 0;
+
+                foreach ($params as $param_id => $values) {
+                    $param_name = $this->getGroupParamName($param_id);
+                    $count_params++;
+
+                    if ($count_params === 1) {
+                        $group_text .= ":";
+                    }
+                    if (count($values) > 1) {
+                        $group_text .= " $param_name - ";
+                    }
+                    foreach ($values as $value_id) {
+                        $value_name     = $this->getGroupValueName($value_id, $param_id);
+                        $value_h1_name  = $this->getGroupValueH1($value_id, $param_id);
+
+                        if ($value_h1_name !== "") {
+                            $group_text .= " $value_h1_name, ";
+                        } else {
+                            $group_text .= " $value_name, ";
+                        }
+                    }
+                    $group_text = rtrim($group_text, ", ");
+                }
+            }
+        }
+
+        $title = "$group_text $car_text";
+        $title = rtrim($title, " ");
+
+        return $title;
     }
 
     /*

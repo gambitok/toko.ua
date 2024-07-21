@@ -2224,6 +2224,18 @@ class CatalogueClass
         return $head_id;
     }
 
+    public function getGroupRowData($group_id)
+    {
+        $group_id = $this->getUrlNumber($group_id);
+        $db = DbSingleton::getTokoDb();
+        $postfix = $this->getLangPostfix($this->getLanguage());
+        $r = $db->query("SELECT `TEX_" . $postfix . "`, `H1_" . $postfix . "`, `TEX_LINK` FROM `T2_TREE_GROUP_EXIST` WHERE `GROUP_ID` = $group_id LIMIT 1;");
+        $name = ($db->result($r, 0, "H1_$postfix") === "")
+            ? $db->result($r, 0, "TEX_$postfix")
+            : $db->result($r, 0, "H1_$postfix");
+        $link = $db->result($r, 0, "TEX_LINK");
+        return compact("name", "link");
+    }
     public function getGroupRowName($group_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -2488,12 +2500,18 @@ class CatalogueClass
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $group_id   = $db->result($r, $i - 1, "GROUP_ID");
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
+            $groupData = $this->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
+
+            $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a>";
+            if ((int)$group_id === (int)$group_id_selected) {
+                $link = "<a>$group_name</a>";
+            }
 
             $list .= "
             <div class=\"tree-item-list__element\">
-                <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a>
+                $link
             </div>";
         }
 
@@ -2502,8 +2520,9 @@ class CatalogueClass
             $n = $db->num_rows($r);
             for ($i = 1; $i <= $n; $i++) {
                 $group_id   = $db->result($r, $i - 1, "GROUP_ID");
-                $group_name = $this->getGroupRowName($group_id);
-                $group_link = $this->getGroupRowLink($group_id);
+                $groupData = $this->getGroupRowData($group_id);
+                $group_name = $groupData["name"];
+                $group_link = $groupData["link"];
                 $link = "<a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a>";
 
                 if ((int)$group_id === (int)$group_id_selected) {

@@ -1088,8 +1088,9 @@ class MenuClass extends CatalogueClass
                     $list .= "
                     <div class=\"menu-bar-group\">";
                     foreach ($groups as $group_id) {
-                        $group_name = $this->getGroupRowName($group_id);
-                        $group_link = $this->getGroupRowLink($group_id);
+                        $groupData = $this->getGroupRowData($group_id);
+                        $group_name = $groupData["name"];
+                        $group_link = $groupData["link"];
 
                         $list .= "
                         <div class=\"menu-bar-group__item\">
@@ -1271,8 +1272,9 @@ class MenuClass extends CatalogueClass
             $group_id = (int)$db->result($r, $i - 1, "GROUP_ID");
             $value_id = (int)$db->result($r, $i - 1, "VALUE_ID");
 
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
+            $groupData = $this->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
 
             $text_link = "";
 
@@ -1296,8 +1298,9 @@ class MenuClass extends CatalogueClass
             $brand_name = $this->getBrandName($brand_id);
             $value_id   = (int)$db->result($r, $i - 1, "VALUE_ID");
 
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
+            $groupData = $this->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
 
             $text_link = "brandy=$brand_link";
 
@@ -1322,8 +1325,9 @@ class MenuClass extends CatalogueClass
             $mfa_id     = (int)$db->result($r, $i - 1, "MFA_ID");
             $model      = $db->result($r, $i - 1, "MODEL");
 
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
+            $groupData = $this->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
 
             if ($value_id > 0) {
                 $dataValue  = $catalog_exist->getGroupValueInfo($value_id);
@@ -1433,8 +1437,9 @@ class MenuClass extends CatalogueClass
             $group_id = $db->result($r, $i - 1, "GROUP_ID");
             $value_id = $db->result($r, $i - 1, "VALUE_ID");
 
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
+            $groupData = $this->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
 
             $text_link = "";
 
@@ -1462,8 +1467,9 @@ class MenuClass extends CatalogueClass
             $brand_name = $this->getBrandName($brand_id);
             $value_id   = $db->result($r, $i - 1, "VALUE_ID");
 
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
+            $groupData = $this->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
 
             $text_link = "brandy=$brand_link";
 
@@ -1493,8 +1499,9 @@ class MenuClass extends CatalogueClass
             $mfa_id     = $db->result($r, $i - 1, "MFA_ID");
             $model      = $db->result($r, $i - 1, "MODEL");
 
-            $group_name = $this->getGroupRowName($group_id);
-            $group_link = $this->getGroupRowLink($group_id);
+            $groupData = $this->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
 
             if ($value_id > 0) {
                 $dataValue  = $catalog_exist->getGroupValueInfo($value_id);

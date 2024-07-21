@@ -857,8 +857,9 @@ class FormClass extends CatalogueClass
     {
         $catalog = new CatalogueClass();
 
-        $group_name = $catalog->getGroupRowName($group_id);
-        $group_link = $catalog->getGroupRowLink($group_id);
+        $groupData = $catalog->getGroupRowData($group_id);
+        $group_name = $groupData["name"];
+        $group_link = $groupData["link"];
 
         $link = "
         <a href=\"" . $this->getSiteLink() . "$this->catalog_link/$group_link/\">$group_name</a>";
@@ -1008,8 +1009,9 @@ class FormClass extends CatalogueClass
                 "link" => $catalog->getSiteLink() . "$catalog->catalog_link/$head_link/"
             ];
 
-            $group_name = $catalog->getGroupRowName($group_id);
-            $group_link = $catalog->getGroupRowLink($group_id);
+            $groupData = $catalog->getGroupRowData($group_id);
+            $group_name = $groupData["name"];
+            $group_link = $groupData["link"];
 
             $arr[] = [
                 "name" => $group_name,
@@ -2111,8 +2113,9 @@ class FormClass extends CatalogueClass
                         <li><a href=\"$site_link$head_link/$cat_link/\">$cat_name</a><ul>";
 
                         foreach ($groups as $group_id) {
-                            $group_name = $this->getGroupRowName($group_id);
-                            $group_link = $this->getGroupRowLink($group_id);
+                            $groupData = $catalog_exist->getGroupRowData($group_id);
+                            $group_name = $groupData["name"];
+                            $group_link = $groupData["link"];
 
                             $list .= "
                             <li><a href=\"$site_link$group_link/\">$group_name</a></li>";
