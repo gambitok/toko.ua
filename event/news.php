@@ -1,5 +1,7 @@
 <?php
 
+global $dbm, $catalogue, $menu, $formObj, $content;
+
 $red_status = 0;
 $red_type   = 0;
 $red_link   = "";
@@ -17,14 +19,14 @@ if (findLinks()[3] === "grafС–k-roboti-na-novorС–chnС–-svyata" || findL
 }
 
 if ($link === "") {
-    $content = str_replace("{main_window}", $menu->showNews() . $showform->getHistoryArts(), $content);
+    $content = str_replace("{main_window}", $menu->showNews() . $formObj->getHistoryArts(), $content);
 
     $title = $catalogue->replaceLang("{site_news}");
     $title = str_replace("{h1_text}", "{news_cap}", $title);
 } elseif ($link === "state") {
     $state_id = findLinks()[2];
 
-	$content = str_replace("{main_window}", $menu->showNewsState($state_id) . $showform->getHistoryArts(), $content);
+	$content = str_replace("{main_window}", $menu->showNewsState($state_id) . $formObj->getHistoryArts(), $content);
     $content = str_replace("{meta_social_tag}", $menu->getNewsMetaTags($state_id), $content);
 
     $title = $catalogue->replaceLang("{site_news}");

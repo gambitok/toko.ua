@@ -10,7 +10,7 @@ class ClientClass
     public $status_user_retail      = 145;
     public $default_client_id       = 26;
     public $default_user            = 0;
-    public $default_tpoint          = 2;
+    public $defaultSalePoint        = 2;
     public $default_currency        = 1;
     public $default_client_category = 140;
     public $vin_len                 = 17;
@@ -24,13 +24,13 @@ class ClientClass
     {
         $cookie_client_id = $this->getUrlNumber($_COOKIE["client_id"]);
 
-        if ($cookie_client_id !== "") {
+        if ($cookie_client_id !== 0) {
             $_SESSION["client_id"] = $cookie_client_id;
         }
 
         $cookie_user_id = $this->getUrlNumber($_COOKIE["user_id"]);
 
-        if ($cookie_user_id !== "") {
+        if ($cookie_user_id !== 0) {
             $_SESSION["user_id"] = $cookie_user_id;
         }
 
@@ -50,10 +50,10 @@ class ClientClass
     /*
      * get default storage from t_point_id
      * */
-    public function getDefaultStorageID($tpoint_id)
+    public function getDefaultStorageID($salePointID)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `storage_id` FROM `T_POINT_STORAGE` WHERE `tpoint_id` = $tpoint_id AND `default` = 1 LIMIT 1;");
+        $r = $db->query("SELECT `storage_id` FROM `T_POINT_STORAGE` WHERE `tpoint_id` = $salePointID AND `default` = 1 LIMIT 1;");
 
         return $db->result($r, 0, "storage_id");
     }
@@ -196,9 +196,7 @@ class ClientClass
     public function formatValidPhone($phone)
     {
         $phone = str_replace(str_split("()+- "), "", $phone);
-        $phone = substr($phone, -10);
-
-        return $phone;
+        return substr($phone, -10);
     }
 
     /*
@@ -233,8 +231,8 @@ class ClientClass
             $n2 = $db->num_rows($r);
         }
 
-        $user_id    = ($n === 0 && $n2 === 0) ? false : $db->result($r, 0, "id");
-        $client_id  = $db->result($r, 0, "client_id");
+        $user_id = ($n === 0 && $n2 === 0) ? false : $db->result($r, 0, "id");
+        $client_id = $db->result($r, 0, "client_id");
 
         $this->setSessionUserData($client_id, $user_id);
 
@@ -267,13 +265,13 @@ class ClientClass
     {
         $_SESSION["client_id"]  = $this->default_client_id;
         $_SESSION["user_id"]    = $this->default_user;
-        $_SESSION["tpoint_id"]  = $this->default_tpoint;
+        $_SESSION["tpoint_id"]  = $this->defaultSalePoint;
         $_SESSION["currency"]   = $this->default_currency;
         $_SESSION["lang_id"]    = $this->default_lang_id;
 
         setcookie("client_id", "", time() - 3600);
         setcookie("user_id", "", time() - 3600);
-        setcookie("tpoint_id", $this->default_tpoint, time() - 3600);
+        setcookie("tpoint_id", $this->defaultSalePoint, time() - 3600);
         setcookie("currency", $this->default_currency);
         setcookie("lang_id", $this->default_lang_id);
 
@@ -372,7 +370,7 @@ class ClientClass
     /*
      * save registration
      * */
-    public function saveRegistration($phone, $pass, $email, $name, $client_cat, $city_id, $tpoint_id, $mailing): bool
+    public function saveRegistration($phone, $pass, $email, $name, $client_cat, $city_id, $salePointID, $mailing): bool
     {
         $db = DbSingleton::getDbm();
 
@@ -382,10 +380,10 @@ class ClientClass
         $name       = $this->getUrlString($name);
         $client_cat = $this->getUrlNumber($client_cat);
         $city_id    = $this->getUrlNumber($city_id);
-        $tpoint_id  = $this->getUrlNumber($tpoint_id);
+        $salePointID  = $this->getUrlNumber($salePointID);
         $mailing    = $this->getUrlNumber($mailing);
         $mailing    = ($mailing) ? 1 : 0;
-        $client_id  = $this->getClientByTpoint($tpoint_id);
+        $client_id  = $this->getClientBySalePoint($salePointID);
         $date       = date("Y-m-d H:i:s");
 
         list($region, $state, $country) = $this->getLocationCity($city_id);
@@ -413,12 +411,12 @@ class ClientClass
     }
 
     /*
-     * get client from tpoint
+     * get client from sale point
      * */
-    public function getClientByTpoint($tpoint_id)
+    public function getClientBySalePoint($salePointID)
     {
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `client_id` FROM `T_POINT_CLIENTS_RETAIL` WHERE `tpoint_id` = $tpoint_id AND `status` = 1;");
+        $r = $db->query("SELECT `client_id` FROM `T_POINT_CLIENTS_RETAIL` WHERE `tpoint_id` = $salePointID AND `status` = 1;");
 
         return $db->result($r, 0, "client_id");
     }
@@ -442,22 +440,22 @@ class ClientClass
     }
 
     /*
-     * set TPOINT
+     * set sale point
      * */
-    public function setTpoint($tpoint_id): int
+    public function setTpoint($salePointID): int
     {
-        $tpoint_id = $this->getUrlNumber($tpoint_id);
-        $client_id = $this->getClientByTpoint($tpoint_id);
-        $_SESSION["tpoint_id"] = $tpoint_id;
+        $salePointID = $this->getUrlNumber($salePointID);
+        $client_id = $this->getClientBySalePoint($salePointID);
+        $_SESSION["tpoint_id"] = $salePointID;
         $_SESSION["client_id"] = $client_id;
-        setcookie("tpoint_id", $tpoint_id, time() + (86400 * 30), "/");
+        setcookie("tpoint_id", $salePointID, time() + (86400 * 30), "/");
         setcookie("client_id", $client_id, time() + (86400 * 30), "/");
 
-        return $tpoint_id;
+        return $salePointID;
     }
 
     /*
-     * get TPOINT
+     * get sale point
      * */
     public function getTpoint($client_id = 0): int
     {
@@ -467,43 +465,43 @@ class ClientClass
         }
 
         $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id;");
-        $tpoint_id = (int)$db->result($r, 0, "tpoint_id");
+        $salePointID = (int)$db->result($r, 0, "tpoint_id");
 
-        if (empty($tpoint_id)) {
-            $tpoint_id = $this->default_tpoint;
+        if (empty($salePointID)) {
+            $salePointID = $this->defaultSalePoint;
         }
 
-        return $tpoint_id;
+        return $salePointID;
     }
 
     /*
-     * get TPOINT from CLIENT
+     * get SALE POINT from CLIENT
      * */
-    public function getTpointUser($client_id): int
+    public function getSalePointUser($client_id): int
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `tpoint_id` FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id;");
-        $tpoint_id = (int)$db->result($r, 0, "tpoint_id");
+        $salePointID = (int)$db->result($r, 0, "tpoint_id");
 
-        if (empty($tpoint_id)) {
-            $tpoint_id = $this->default_tpoint;
+        if (empty($salePointID)) {
+            $salePointID = $this->defaultSalePoint;
         }
 
-        return $tpoint_id;
+        return $salePointID;
     }
 
     /*
-     * set default retail tpoint
+     * set default retail sale point
      * */
-    public function setTpointRetail(): bool
+    public function getSalePointRetail(): bool
     {
-        (!empty($_SESSION["tpoint_id"])) ?: $_SESSION["tpoint_id"] = $this->default_tpoint;
+        (!empty($_SESSION["tpoint_id"])) ?: $_SESSION["tpoint_id"] = $this->defaultSalePoint;
 
         return true;
     }
 
     /*
-     * get tpoint name from storage_id
+     * get sale point name from storage_id
      * */
     public function getArticleStorageTPoint($storage_id)
     {
@@ -511,57 +509,12 @@ class ClientClass
         $db = DbSingleton::getTokoDb();
 
         $r = $db->query("SELECT `tpoint_id` FROM `T_POINT_STORAGE` WHERE `storage_id` = $storage_id LIMIT 1;");
-        $tpoint_id = $db->result($r, 0, "tpoint_id") + 0;
+        $salePointID = $db->result($r, 0, "tpoint_id") + 0;
 
-        $r = $db->query("SELECT `full_name` FROM `T_POINT` WHERE `id` = $tpoint_id LIMIT 1;");
+        $r = $db->query("SELECT `full_name` FROM `T_POINT` WHERE `id` = $salePointID LIMIT 1;");
 
         return $db->result($r, 0, "full_name");
     }
-
-//    public function validateRegistration($phone): array
-//    {
-//        $db = DbSingleton::getDbm();
-//
-//        $answer = 0; $err = 0;
-//        $client_id = 0;
-//
-//        $phone  = $this->formatValidPhone($phone);
-//        $r = $db->query("SELECT `phone`, `client_id` FROM `A_CLIENTS_USERS` WHERE `phone` = '$phone' AND `status` = $this->status_user LIMIT 1;");
-//        $n = $db->num_rows($r);
-//        if ($n > 0) {
-//            $client_phone   = $db->result($r, 0, "phone");
-//            $client_id      = $db->result($r, 0, "client_id");
-//            $answer         = 1;
-//            $err            = $client_phone;
-//        }
-//
-//        $user_id = $this->getUser();
-//
-//        if ($user_id > 0) {
-//            $user_phone = $this->getClientPhone();
-//
-//            if ($phone === $user_phone) {
-//                $answer = 0;
-//                $err = "";
-//            }
-//        }
-//
-//        if ($user_id === 0) {
-//            $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id LIMIT 1;");
-//            $n = $db->num_rows($r);
-//
-//            if ($n > 0) {
-//                $client_category = (int)$db->result($r, 0, "client_category");
-//
-//                if ($client_category === $this->default_client_category) {
-//                    $answer = 0;
-//                    $err = "";
-//                }
-//            }
-//        }
-//
-//        return array($answer, $err);
-//    }
 
     /*
      * checking user authorization in the system
@@ -642,13 +595,13 @@ class ClientClass
     }
 
     /*
-     * get storage_id from Tpoint
+     * get storage_id from sale point
      * */
-    public function getStorageByTpoint($tpoint_id): array
+    public function getStorageBySalePoint($salePointID): array
     {
         $db = DbSingleton::getTokoDb();
         $storage_local = $storage_remote = [];
-        $r = $db->query("SELECT `storage_id`, `local` FROM `T_POINT_STORAGE` WHERE `tpoint_id` = $tpoint_id AND `status` = 1;");
+        $r = $db->query("SELECT `storage_id`, `local` FROM `T_POINT_STORAGE` WHERE `tpoint_id` = $salePointID AND `status` = 1;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $storage_id = $db->result($r, $i - 1, "storage_id");
@@ -672,43 +625,43 @@ class ClientClass
     }
 
     /*
-     * select all tpoint except the specified one
+     * select all sale points except the specified one
      * Table: toko_dba.`T_POINT`
     */
-    public function getTpointOtherList($tpoint_id_sel): array
+    public function getSalePointOtherList($salePointID_sel): array
     {
         $db = DbSingleton::getTokoDb();
-        $tpoint_array = [];
-        $r = $db->query("SELECT `id` FROM `T_POINT` WHERE `status` = 1 ORDER BY IF (`id` = $tpoint_id_sel, 0, 1);");
+        $salePointIDArray = [];
+        $r = $db->query("SELECT `id` FROM `T_POINT` WHERE `status` = 1 ORDER BY IF (`id` = $salePointID_sel, 0, 1);");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $tpoint_id = (int)$db->result($r, $i - 1, "id");
-            $tpoint_array[] = $tpoint_id;
+            $salePointID = (int)$db->result($r, $i - 1, "id");
+            $salePointIDArray[] = $salePointID;
         }
 
-        return $tpoint_array;
+        return $salePointIDArray;
     }
 
     /*
-     * getting tpoint address
+     * getting sale point address
      * Table: toko_dba.`T_POINT`
     */
-    public function getTPointAddress($tpoint_id)
+    public function getSalePointAddress($salePointID)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `address` FROM `T_POINT` WHERE `id` = $tpoint_id AND `status` = 1 LIMIT 1;");
+        $r = $db->query("SELECT `address` FROM `T_POINT` WHERE `id` = $salePointID AND `status` = 1 LIMIT 1;");
 
         return $db->result($r, 0, "address");
     }
 
     /*
-     * getting city name by tpoint
+     * getting city name by sale point
      * Table: toko_dba.`T_POINT`
     */
-    public function getTPointCity($tpoint_id)
+    public function getSalePointCity($salePointID)
     {
         $db = DbSingleton::getTokoDb();
-        $r = $db->query("SELECT `city` FROM `T_POINT` WHERE `id` = $tpoint_id AND `status` = 1 LIMIT 1;");
+        $r = $db->query("SELECT `city` FROM `T_POINT` WHERE `id` = $salePointID AND `status` = 1 LIMIT 1;");
         $city_id = $db->result($r, 0, "city");
 
         return $this->getCityName($city_id);
@@ -844,7 +797,7 @@ class ClientClass
      * Set CATEGORY
      * Set CONDITIONS
      * */
-    public function addRetailClient($tpoint_client_id, $phone, $name = "", $city_id = 0, $email = "", $pass = "", $client_category = 0): array
+    public function addRetailClient($salePointIDClientID, $phone, $name = "", $city_id = 0, $email = "", $pass = "", $client_category = 0): array
     {
         $db = DbSingleton::getDbm();
 
@@ -875,7 +828,7 @@ class ClientClass
 
         $db->query("INSERT INTO `A_CLIENTS_CATEGORY` (`client_id`, `category_id`) VALUES ('$client_id', '1');");
 
-        $this->moveClientsConditionsRetail($tpoint_client_id, $client_id);
+        $this->moveClientsConditionsRetail($salePointIDClientID, $client_id);
 
         return array("client_id" => $client_id, "user_id" => $user_id);
     }
@@ -884,11 +837,11 @@ class ClientClass
      * MOVE CLIENT CONDITION
      * add new client from existing
      * */
-    public function moveClientsConditionsRetail($tpoint_client_id, $client_id): bool
+    public function moveClientsConditionsRetail($salePointIDClientID, $client_id): bool
     {
         $db = DbSingleton::getDbm();
 
-        $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $tpoint_client_id LIMIT 1;");
+        $r = $db->query("SELECT * FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $salePointIDClientID LIMIT 1;");
         $n = (int)$db->num_rows($r);
 
         if ($n === 1) {
@@ -902,12 +855,12 @@ class ClientClass
             $margin_price_lvl       = $db->result($r, 0, "margin_price_lvl");
             $price_suppl_lvl        = $db->result($r, 0, "price_suppl_lvl");
             $margin_price_suppl_lvl = $db->result($r, 0, "margin_price_suppl_lvl");
-            $tpoint_id              = $db->result($r, 0, "tpoint_id");
+            $salePointID            = $db->result($r, 0, "tpoint_id");
             $client_vat             = $db->result($r, 0, "client_vat");
             $doc_type_id            = $db->result($r, 0, "doc_type_id");
 
             $db->query("INSERT INTO `A_CLIENTS_CONDITIONS` (`client_id`, `cash_id`, `country_cash_id`, `credit_cash_id`, `payment_delay`, `credit_limit`, `credit_return`, `price_lvl`, `margin_price_lvl`, `price_suppl_lvl`, `margin_price_suppl_lvl`, `tpoint_id`, `client_vat`, `doc_type_id`) 
-            VALUES ('$client_id', '$cash_id', '$country_cash_id', '$credit_cash_id', '$payment_delay', '$credit_limit', '$credit_return', '$price_lvl', '$margin_price_lvl', '$price_suppl_lvl', '$margin_price_suppl_lvl', '$tpoint_id', '$client_vat', '$doc_type_id');");
+            VALUES ('$client_id', '$cash_id', '$country_cash_id', '$credit_cash_id', '$payment_delay', '$credit_limit', '$credit_return', '$price_lvl', '$margin_price_lvl', '$price_suppl_lvl', '$margin_price_suppl_lvl', '$salePointID', '$client_vat', '$doc_type_id');");
         }
 
         return true;
@@ -926,17 +879,6 @@ class ClientClass
         $client_category = (int)$db->result($r, 0, "client_category");
 
         return ($client_category === $this->default_client_category);
-    }
-
-    /*
-     * get all users count
-     * */
-    public function getUsersCount(): int
-    {
-        $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT `id` FROM `A_CLIENTS_USERS` WHERE `status` = 1;");
-
-        return $db->num_rows($r);
     }
 
     /*
@@ -1031,7 +973,7 @@ class ClientClass
     /*
      * Add History
      * */
-    public function insertHistory($article_nr_displ, $brand_id): bool
+    public function insertHistory($articleNrDisplay, $brand_id): bool
     {
         $db = DbSingleton::getTokoDb();
         session_start();
@@ -1041,7 +983,7 @@ class ClientClass
         $date       = date("Y-m-d H:i:s");
         $client_id  = $this->getClient();
         $user_id    = $this->getUser();
-        $art_id     = $this->getArtID($article_nr_displ);
+        $art_id     = $this->getArtID($articleNrDisplay);
 
         if ($brand_id > 0) {
             $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
@@ -1052,15 +994,15 @@ class ClientClass
             if ($k > $this->max_history_count) {
                 $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` LIMIT 1;");
                 $id = $db->result($r, 0, "id");
-                $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date', `article_nr_displ` = '$article_nr_displ', `brand_id` = $brand_id, `art_id` = $art_id WHERE `id` = $id;");
+                $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date', `article_nr_displ` = '$articleNrDisplay', `brand_id` = $brand_id, `art_id` = $art_id WHERE `id` = $id;");
             } else {
-                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ` = '$article_nr_displ' AND `brand_id` = $brand_id;");
+                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id;");
                 $n = $db->num_rows($r);
                 if ($n > 0) {
-                    $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date' WHERE $where AND `article_nr_displ` = '$article_nr_displ' AND `brand_id` = $brand_id;");
+                    $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date' WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id;");
                 } else {
                     $db->query("INSERT INTO `CLIENT_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `article_nr_displ`, `brand_id`, `data`, `art_id`) 
-                    VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$article_nr_displ', '$brand_id', '$date', '$art_id');");
+                    VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$articleNrDisplay', '$brand_id', '$date', '$art_id');");
                 }
             }
         }
@@ -1180,21 +1122,6 @@ class ClientClass
         }
 
         return $history;
-    }
-
-    /*
-     * Delete Client
-     * */
-    public function dropClient($client_id): string
-    {
-        $client_id = $this->getUrlNumber($client_id);
-        $db = DbSingleton::getDbm();
-        $db->query("DELETE FROM `A_CLIENTS` WHERE `id` = $client_id LIMIT 1;");
-        $db->query("DELETE FROM `A_CLIENTS_USERS` WHERE `client_id` = $client_id LIMIT 1;");
-        $db->query("DELETE FROM `A_CLIENTS_CATEGORY` WHERE `client_id` = $client_id LIMIT 1;");
-        $db->query("DELETE FROM `A_CLIENTS_CONDITIONS` WHERE `client_id` = $client_id LIMIT 1;");
-
-        return "deleted client: #$client_id";
     }
 
     public function getClientMarkupMin($client_id): int
@@ -1340,8 +1267,7 @@ class ClientClass
             // get CLIENT
             $clientData = $this->getClientUserByPhone($phone);
             $client_id  = $clientData["client_id"];
-            // check if retail
-            // check if have BONUS already
+            // check if retail and have BONUS already
             // add BONUS
             if ($this->checkRetailClientCategory($client_id) && !$this->checkClientBonus($client_id, $bonus)) {
                 $this->addClientBonus($client_id, $bonus);
@@ -1358,14 +1284,12 @@ class ClientClass
         $bonus_sum = $this->setClientBonus($client_id, $bonus);
 
         $form = $this->getHtmlForm("bonus/phone_done");
-        $form = str_replace(array("{bonus_summ}", "{bonus_phone}"), array($bonus_sum, $phone), $form);
+        $form = str_replace(array("{bonus_sum}", "{bonus_phone}"), array($bonus_sum, $phone), $form);
 
-        $form = $this->replaceLang($form);
-
-        return $form;
+        return $this->replaceLang($form);
     }
 
-    public function getCashDataArray()
+    public function getCashDataArray(): array
     {
         $db = DbSingleton::getDbm();
         $dat = array();
@@ -1384,7 +1308,7 @@ class ClientClass
         return $dat;
     }
 
-    public function getSupplArtsList($suppl_id)
+    public function getSupplArtsList($suppl_id): array
     {
         $db = DbSingleton::getTokoDb();
         $suppl_arts = [];
@@ -1397,7 +1321,7 @@ class ClientClass
         return $suppl_arts;
     }
 
-    public function getSupplStorageArray($suppl_id)
+    public function getSupplStorageArray($suppl_id): array
     {
         $db = DbSingleton::getDbm();
         $suppl_id = intval($suppl_id);
@@ -1434,11 +1358,10 @@ class ClientClass
         return $id;
     }
 
-    public function getCacheStockArts($suppl_arts, $suppl_import_arts)
+    public function getCacheStockArts($suppl_arts, $suppl_import_arts): array
     {
         $db = DbSingleton::getTokoDb();
 
-        // Ті, яких немає в $suppl_import_arts
         $suppl_delete_arts = array_diff($suppl_arts, $suppl_import_arts);
         $suppl_valid_arts = [];
 
@@ -1462,9 +1385,7 @@ class ClientClass
             }
         }
 
-        // Імпортовані + Валідні з видалених
         $suppl_cache_arts_update = array_merge($suppl_import_arts, $suppl_valid_arts);
-        // Ті, яких немає в $suppl_cache_arts_update
         $suppl_cache_arts_delete = array_diff($suppl_arts, $suppl_cache_arts_update);
 
         return array($suppl_cache_arts_update, $suppl_cache_arts_delete);
@@ -1483,12 +1404,12 @@ class ClientClass
         return $group_id;
     }
 
-    public function updateGroupCacheArts($suppl_cache_arts_update, $suppl_cache_arts_delete)
+    public function updateGroupCacheArts($suppl_cache_arts_update, $suppl_cache_arts_delete): array
     {
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
         $answer = 0;
-        $err = "Помилка запису";
+        $err = "РџРѕРјРёР»РєР°!";
 
         $arts_update = [];
         foreach ($suppl_cache_arts_update as $art_id) {
@@ -1570,8 +1491,8 @@ class ClientClass
                                 $arr[$art_id][$mfa_id][] = $model;
                             }
                         }
-                        foreach ($arr as $art_id => $mfas) {
-                            foreach ($mfas as $mfa_id => $models) {
+                        foreach ($arr as $art_id => $mfaList) {
+                            foreach ($mfaList as $mfa_id => $models) {
                                 foreach ($models as $model) {
                                     $art_id = intval($art_id);
                                     $mfa_id = intval($mfa_id);
@@ -1628,7 +1549,7 @@ class ClientClass
         return array($answer, $err);
     }
 
-    public function getActingExRate()
+    public function getActingExRate(): array
     {
         $db = DbSingleton::getDbm();
         $exRate = [];
@@ -1665,7 +1586,7 @@ class ClientClass
         return $data;
     }
 
-    public function finishSupplPriceImport($file_path, $suppl_id, $template, $rows)
+    public function finishSupplPriceImport($file_path, $suppl_id, $template, $rows): array
     {
         $db = DbSingleton::getDbm();
         $dbt = DbSingleton::getTokoDb();
@@ -1680,8 +1601,8 @@ class ClientClass
             $start_row = $template['start_row'];
             $currency = $template['currency'];
             $exRateData = $this->getActingExRate();
-            $kours_usd = $exRateData['USD'];
-            $kours_eur = $exRateData['EUR'];
+            $exRateUSD = $exRateData['USD'];
+            $exRateEUR = $exRateData['EUR'];
 
             if (file_exists($file_path)) {
                 $suppl_arts = $this->getSupplArtsList($suppl_id);
@@ -1740,7 +1661,7 @@ class ClientClass
 
                 if (!empty($rows)) {
                     $dec = 0;
-                    foreach ($rows as $Key => $Row) {
+                    foreach ($rows as $Row) {
                         $krs += 1;
                         if($krs % 1000 == 0) {
                             $dec++;
@@ -1761,23 +1682,23 @@ class ClientClass
                                 $price_usd = $suppl_price;
                             }
                             if ($suppl_cash_id == 1) {
-                                $price_usd = ($suppl_price / $kours_usd);
+                                $price_usd = ($suppl_price / $exRateUSD);
                             }
                             if ($suppl_cash_id == 3) {
-                                $price_usd = ($suppl_price * $kours_eur / $kours_usd);
+                                $price_usd = ($suppl_price * $exRateEUR / $exRateUSD);
                             }
 
                             for ($s = 1; $s <= $kol_storages; $s++) {
                                 $storage_id = $storages[$s]["id"];
-                                $stokCellNom = $suppl_storages_use[$storage_id] - 1;
-                                $cellNom = preg_replace('/\D/', '', $Row[$stokCellNom]);
+                                $stockCellNom = $suppl_storages_use[$storage_id] - 1;
+                                $cellNom = preg_replace('/\D/', '', $Row[$stockCellNom]);
                                 $suppl_stock = trim($catalog->getIconv($cellNom));
 
                                 if ($suppl_stock > 0) {
                                     if ($pkg != "") {
                                         $pkg .= ",";
                                     }
-                                    $pkg .= "($suppl_id, \"$suppl_index\", \"$suppl_brand\", '$suppl_price', '$suppl_cash_id', '$kours_usd', '$price_usd', '$storage_id', '$suppl_stock', CURDATE(), 0, '', 0)";
+                                    $pkg .= "($suppl_id, \"$suppl_index\", \"$suppl_brand\", '$suppl_price', '$suppl_cash_id', '$exRateUSD', '$price_usd', '$storage_id', '$suppl_stock', CURDATE(), 0, '', 0)";
                                     $pkg_k += 1;
                                     if ($pkg_k == $max_pkg) {
                                         $dbt->query("INSERT INTO `T2_SUPPL_IMPORT` (`suppl_id`, `suppl_index`, `brand`, `price_suppl`, `cash_id`, `kours_usd`, `price_usd`, `client_storage_id`, `stock_suppl`, `data_update`, `return_delay`, `warranty_info`, `art_id`) VALUES $pkg;");

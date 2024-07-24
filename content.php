@@ -1,6 +1,6 @@
 <?php
 
-define('RDD', __DIR__);
+const RDD = __DIR__;
 date_default_timezone_set("Europe/Kiev");
 
 require_once (RDD . "/vendor/autoload.php");                  // init classes
@@ -18,8 +18,8 @@ $menu           = new MenuClass();
 $client         = new ClientClass();
 $lang           = new LangClass();
 $shop           = new ShopClass();
-$showform       = new FormClass();
-$automan        = new AutoClass();
+$formObj        = new FormClass();
+$autoObj        = new AutoClass();
 $profile        = new ProfileClass();
 $prod           = new ProductsClass();
 $up             = new UkrPoshtaClass("a979e2d9-d044-3f41-8b8c-099c5879ae32");
@@ -59,11 +59,11 @@ if ($_REQUEST["w"] === "shortSearchList") {
 }
 
 if ($_REQUEST["w"] === "getOriginalNumbers") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->getOriginalNumbers($_REQUEST["art_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->getOriginalNumbers($_REQUEST["art_id"]));
 }
 
 if ($_REQUEST["w"] === "getArticleApplicableForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplicableForm($_REQUEST["art_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->getArticleApplicableForm($_REQUEST["art_id"]));
 }
 
 if ($_REQUEST["w"] === "setCityDepartments") {
@@ -169,31 +169,31 @@ if ($_REQUEST["w"] === "getCatalogListFilter") {
 /*==== GARAGE ====*/
 
 if ($_REQUEST["w"] === "addToGarage") {
-    $GLOBALS['_RESULT'] = array("content" => $automan->addToGarage($_REQUEST["typ_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $autoObj->addToGarage($_REQUEST["typ_id"]));
 }
 
 if ($_REQUEST["w"] === "deleteAutoGarage") {
-    $GLOBALS['_RESULT'] = array("content" => $automan->deleteAutoGarage($_REQUEST["auto_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $autoObj->deleteAutoGarage($_REQUEST["auto_id"]));
 }
 
 if ($_REQUEST["w"] === "showGarageForm") {
-    $GLOBALS['_RESULT'] = array("content" => $automan->showGarageForm());
+    $GLOBALS['_RESULT'] = array("content" => $autoObj->showGarageForm());
 }
 
 if ($_REQUEST["w"] === "addGarageHistory") {
-    $GLOBALS['_RESULT'] = array("content" => $automan->addGarageHistory($_REQUEST["sel_typ_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $autoObj->addGarageHistory($_REQUEST["sel_typ_id"]));
 }
 
 if ($_REQUEST["w"] === "getGarageAutoCount") {
-    $GLOBALS['_RESULT'] = array("content" => $automan->getGarageAutoCount());
+    $GLOBALS['_RESULT'] = array("content" => $autoObj->getGarageAutoCount());
 }
 
 if ($_REQUEST["w"] === "showAutoHistory") {
-    $GLOBALS['_RESULT'] = array("content" => $automan->showAutoHistory());
+    $GLOBALS['_RESULT'] = array("content" => $autoObj->showAutoHistory());
 }
 
 if ($_REQUEST["w"] === "dropAutoHistory") {
-    $GLOBALS['_RESULT'] = array("content" => $automan->dropAutoHistory($_REQUEST["history_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $autoObj->dropAutoHistory($_REQUEST["history_id"]));
 }
 
 /*==== MENU ====*/
@@ -217,51 +217,51 @@ if ($_REQUEST["w"] === "getMenuBar") {
 /*==== MODALS ====*/
 
 if ($_REQUEST["w"] === "addModalForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->addModalForm($_REQUEST["name"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->addModalForm($_REQUEST["name"]));
 }
 
-if ($_REQUEST["w"] === "getArticleApplModelForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplModelForm($_REQUEST["art_id"], $_REQUEST["mfa_id"]));
+if ($_REQUEST["w"] === "getArticleApplicableModelForm") {
+    $GLOBALS['_RESULT'] = array("content" => $formObj->getArticleApplicableModelForm($_REQUEST["art_id"], $_REQUEST["mfa_id"]));
 }
 
-if ($_REQUEST["w"] === "getArticleApplModelInfoForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplModelInfoForm($_REQUEST["art_id"], $_REQUEST["typ_id"]));
+if ($_REQUEST["w"] === "getArticleApplicableModelInfoForm") {
+    $GLOBALS['_RESULT'] = array("content" => $formObj->getArticleApplicableModelInfoForm($_REQUEST["art_id"], $_REQUEST["typ_id"]));
 }
 
-if ($_REQUEST["w"] === "getArticleApplModelTypeForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->getArticleApplModelTypeForm($_REQUEST["art_id"], $_REQUEST["mfa_id"], $_REQUEST["model"], $_REQUEST["body_id"]));
+if ($_REQUEST["w"] === "getArticleApplicableModelTypeForm") {
+    $GLOBALS['_RESULT'] = array("content" => $formObj->getArticleApplicableModelTypeForm($_REQUEST["art_id"], $_REQUEST["mfa_id"], $_REQUEST["model"], $_REQUEST["body_id"]));
 }
 
 if ($_REQUEST["w"] === "showInfoForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->showInfoForm($_REQUEST["art_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->showInfoForm($_REQUEST["art_id"]));
 }
 
 if ($_REQUEST["w"] === "showBenefitsForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->showBenefitsForm($_REQUEST["benefit_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->showBenefitsForm($_REQUEST["benefit_id"]));
 }
 
 if ($_REQUEST["w"] === "showPhotoGallery") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->showPhotoGallery($_REQUEST["ref"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->showPhotoGallery($_REQUEST["ref"]));
 }
 
 if ($_REQUEST["w"] === "showBrandForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->showBrandForm($_REQUEST["brand"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->showBrandForm($_REQUEST["brand"]));
 }
 
 if ($_REQUEST["w"] === "deleteHistoryItem") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->deleteHistoryItem($_REQUEST["history_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->deleteHistoryItem($_REQUEST["history_id"]));
 }
 
 if ($_REQUEST["w"] === "getBasketId") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->getBasketId($_REQUEST["art_id"], $_REQUEST["storage_id"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->getBasketId($_REQUEST["art_id"], $_REQUEST["storage_id"]));
 }
 if ($_REQUEST["w"] === "updateBasketCount") {
-    list($answer, $err, $new_amount) = $showform->updateBasketCount($_REQUEST["basket_id"], $_REQUEST["status"]);
+    list($answer, $err, $new_amount) = $formObj->updateBasketCount($_REQUEST["basket_id"], $_REQUEST["status"]);
     $GLOBALS['_RESULT'] = array("answer" => $answer, "err" => $err, "new_amount" => $new_amount);
 }
 
 if ($_REQUEST["w"] === "updateBasketCountChange") {
-    list($answer, $err, $new_amount) = $showform->updateBasketCountChange($_REQUEST["basket_id"], $_REQUEST["amount"]);
+    list($answer, $err, $new_amount) = $formObj->updateBasketCountChange($_REQUEST["basket_id"], $_REQUEST["amount"]);
     $GLOBALS['_RESULT'] = array("answer" => $answer, "err" => $err, "new_amount" => $new_amount);
 }
 
@@ -298,10 +298,6 @@ if ($_REQUEST["w"] === "recoverPassword") {
 if ($_REQUEST["w"] === "endValidation") {
     $GLOBALS['_RESULT'] = array("content" => $client->endValidation($_REQUEST["phone"], $_REQUEST["password"]));
 }
-
-//if ($_REQUEST["w"] === "toggleProductView") {
-//    $GLOBALS['_RESULT'] = array("content" => $client->toggleProductView($_REQUEST["ds"]));
-//}
 
 if ($_REQUEST["w"] === "finishBonusPhone") {
     $GLOBALS['_RESULT'] = array("content" => $client->finishBonusPhone($_REQUEST["phone"], $_REQUEST["bonus"]));
@@ -374,7 +370,7 @@ if ($_REQUEST["w"] === "updateBasketStatus") {
 }
 
 if ($_REQUEST["w"] === "showCityForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->showCityForm($_REQUEST["city_like"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->showCityForm($_REQUEST["city_like"]));
 }
 
 if ($_REQUEST["w"] === "closeOrderArtUpdate") {
@@ -404,7 +400,7 @@ if ($_REQUEST["w"] === "getGroupCarMfaList") {
 }
 
 if ($_REQUEST["w"] === "showModalForm") {
-    $GLOBALS['_RESULT'] = array("content" => $showform->showModalForm($_REQUEST["form"]));
+    $GLOBALS['_RESULT'] = array("content" => $formObj->showModalForm($_REQUEST["form"]));
 }
 
 /*==== HOME CARS ====*/
@@ -447,5 +443,3 @@ if ($_REQUEST["w"] === "getGroupsListValues") {
 if ($_REQUEST["w"] === "getGroupsLinks") {
     $GLOBALS['_RESULT'] = array("content" => $menu->getGroupsLinks($_REQUEST["group_id"],$_REQUEST["param_id"],$_REQUEST["value_id"]));
 }
-
-

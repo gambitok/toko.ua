@@ -5,7 +5,7 @@ trait Variables
     /*
      * Format Article
      * */
-    public function getFormatAticle($name)
+    public function getFormatArticle($name)
     {
         $name = strtolower($name);
         return str_replace(str_split('.,+-\/:*?"<>| '), "", $name);
@@ -92,7 +92,7 @@ trait Variables
     }
 
     /*
-     * ART_ID => ARTICLE_NR_DISPL
+     * ART_ID => ARTICLE_NR_DISPLAY
      * */
     public function getArticleDispl($art_id)
     {
@@ -152,7 +152,7 @@ trait Variables
     /*==== ARTICLE_NR ================================================================================================*/
 
     /*
-     * ARTICLE_NR_SEARCH => ARTICLE_NR_DISPL
+     * ARTICLE_NR_SEARCH => ARTICLE_NR_DISPLAY
      * */
     public function getArtDispl($article_nr_search, $brand_nr_search = 0): array
     {
@@ -302,8 +302,8 @@ trait Variables
     }
 
     /*
-     * get jpay name
-     * from JPAY_ID
+     * get pay name
+     * from PAY_ID
      * */
     public function getJPayName($jpay_id): array
     {
@@ -399,8 +399,7 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT` FROM `T2_DELIVERY` WHERE `ID` = $delivery_id LIMIT 1;");
         $name = $db->result($r, 0, "TEXT");
-        $name = $this->replaceLang($name);
-        return $name;
+        return $this->replaceLang($name);
     }
 
     /*
@@ -412,8 +411,7 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT` FROM `T2_DELIVERY_EXPRESS` WHERE `ID` = $delivery_id LIMIT 1;");
         $name = $db->result($r, 0, "TEXT");
-        $name = $this->replaceLang($name);
-        return $name;
+        return $this->replaceLang($name);
     }
 
     /*
@@ -425,8 +423,7 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT` FROM `T2_PAYMENT` WHERE `ID` = $payment_id LIMIT 1;");
         $name = $db->result($r, 0, "TEXT");
-        $name = $this->replaceLang($name);
-        return $name;
+        return $this->replaceLang($name);
     }
 
     public function getSearchMessages(): array
@@ -440,13 +437,12 @@ trait Variables
      * get BRAND_ID
      * from BRAND_LINK
      * */
-    public function getCatalogueBrandID($brand_link)
+    public function getCatalogueBrandID($brand_link): int
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `BRAND_ID` FROM `T2_BRANDS` WHERE `BRAND_LINK` = '$brand_link' LIMIT 1;");
         $brand_id = $db->result($r, 0, "BRAND_ID");
-        $brand_id = $this->getUrlNumber($brand_id);
-        return $brand_id;
+        return $this->getUrlNumber($brand_id);
     }
 
     /*
@@ -526,15 +522,13 @@ trait Variables
     public function getFaqSocialsForm()
     {
         $form = $this->getHtmlForm("faq/request-socials");
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
     public function setClientRequestDone()
     {
         $form = $this->getHtmlForm("faq/request-done");
-        $form = $this->replaceLang($form);
-        return $form;
+        return $this->replaceLang($form);
     }
 
 //    public function checkMfa($mfa_link)

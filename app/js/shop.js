@@ -44,7 +44,7 @@ function moveBasket(id, art_id, brand_id, stock, storage_id, suppl_id) {
     }
 
     if (parseInt(stock) < parseInt(count) || parseInt(count) === 0) {
-        var secret = parseInt(stock) + 1;
+        let secret = parseInt(stock) + 1;
         while (parseInt(secret) > parseInt(stock)) {
             let mess = $("#basket_warning_message").val();
             secret = prompt(mess, 1);
@@ -132,10 +132,10 @@ function updateBasketForm(art_id, storage_id, stock, phone) {
     if (phone > 0) {
         prefix = "_phone";
     }
-    var count_id = $("#count_" + art_id + "_" + storage_id + prefix);
-    var count = count_id.val();
+    const count_id = $("#count_" + art_id + "_" + storage_id + prefix);
+    let count = count_id.val();
     if (parseInt(stock) < parseInt(count) || parseInt(count) === 0) {
-        var secret = parseInt(stock) + 1;
+        let secret = parseInt(stock) + 1;
         while (parseInt(secret) > parseInt(stock)) {
             if (secret === null) {
                 count_id.val(1);
@@ -261,19 +261,17 @@ function letsFinishOrder(name, status = 0) {
 
     JsHttpRequest.query(folder,{'w':'letsFinishOrder', 'phone': phone, 'dataArticle': dataArticle},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            let answer  = result["answer"];
-            let text    = result["err"];
-            if (answer == 1) {
-                location.href = text;
+            if (result["answer"] == 1) {
+                location.href = result["err"];
             }
-            else if (answer == 2) {
-                showAlertModal(text, "{error_cap}", 0, showLoginForm);
+            else if (result["answer"] == 2) {
+                showAlertModal(result["err"], "{error_cap}", 0, showLoginForm);
             }
-            else if (answer == 3) {
-                showAlertModal(text, "{error_cap}", 0);
+            else if (result["answer"] == 3) {
+                showAlertModal(result["err"], "{error_cap}", 0);
             }
             else {
-                showAlertModal(text, "{error_cap}", 0);
+                showAlertModal(result["err"], "{error_cap}", 0);
             }
         }}, true);
 }

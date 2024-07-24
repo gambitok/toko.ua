@@ -1,5 +1,6 @@
 <?php
 
+global $content, $menu, $client;
 if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
     $ip = $_SERVER['HTTP_CLIENT_IP'];
 } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -18,7 +19,7 @@ if ($phone === "") {
         $client_id  = $clientData["client_id"];
 
         if ($client->checkRetailClientCategory($client_id)) {
-            if (!$client->checkClientBonus($client_id, 1)) {
+            if (!$client->checkClientBonus($client_id)) {
 
                 $client->validatePhone($phone, $ip, "google");
                 $content = str_replace("{main_window}", $menu->showScanPhoneForm($phone), $content);

@@ -1,29 +1,30 @@
 <?php
 
-$linka = findLinks();
+global $content, $catalogue, $search;
+$httpHost = findLinks();
 
-$brand_link         = $catalogue->getUrlString($linka[2]);
-$article_nr_search  = $catalogue->getUrlString($linka[1]);
+$brand_link         = $catalogue->getUrlString($httpHost[2]);
+$article_nr_search  = $catalogue->getUrlString($httpHost[1]);
 $article_nr_search  = rawurldecode($article_nr_search);
 $article_nr_search  = $catalogue->getIconv($article_nr_search);
 
 $text = $_GET["text"];
 if (!empty($text)) {
     $article_nr_search = $text;
-    $article_nr_search  = rawurldecode($article_nr_search);
-    $article_nr_search  = $catalogue->getIconv($article_nr_search);
+    $article_nr_search = rawurldecode($article_nr_search);
+    $article_nr_search = $catalogue->getIconv($article_nr_search);
     $article_nr_search = rtrim($article_nr_search, "/");
 }
 
 if ($article_nr_search === "") {
-    //
     $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/search_unknown"), $content);
 } else {
     $content = str_replace("{main_window}", "{search}", $content);
+
     if ($brand_link === "") {
         $content = str_replace("{search}", $search->getSearchList($article_nr_search), $content);
     } else {
-        $content = str_replace("{search}", $catalogue->getCatalogList($catalogue->getFormatAticle($article_nr_search), $catalogue->getCatalogueBrandID($brand_link)), $content);
+        $content = str_replace("{search}", $catalogue->getCatalogList($catalogue->getFormatArticle($article_nr_search), $catalogue->getCatalogueBrandID($brand_link)), $content);
     }
 }
 

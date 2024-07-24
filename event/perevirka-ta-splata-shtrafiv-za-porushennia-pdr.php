@@ -1,5 +1,7 @@
 <?php
 
+global $content, $catalogue, $menu;
+
 $red_status = 0;
 $red_type   = 0;
 $red_link   = "";

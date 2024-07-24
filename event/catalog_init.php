@@ -1,5 +1,7 @@
 <?php
 
+global $content, $menu, $catalogue;
+
 $form = $catalogue->getHtmlForm("catalog_init");
 
 $form = str_replace("{select_groups}", $menu->getGroupsList(), $form);

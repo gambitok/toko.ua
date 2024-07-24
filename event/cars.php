@@ -1,19 +1,21 @@
 <?php
 
-$linka = findLinks();
+global $catalogue, $content, $formObj, $prod;
 
-$mfa_link = $catalogue->getUrlString($linka[1]);
-$mod_link = $catalogue->getUrlString($linka[2]);
+$httpHost = findLinks();
+
+$mfa_link = $catalogue->getUrlString($httpHost[1]);
+$mod_link = $catalogue->getUrlString($httpHost[2]);
 
 $formData = $prod->getCarsForm($mfa_link, $mod_link);
 
 if ($formData["status"] === 1) {
-    $content = str_replace("{main_window}", $formData["form"] . $showform->getHistoryArts(), $content);
+    $content = str_replace("{main_window}", $formData["form"] . $formObj->getHistoryArts(), $content);
     if ($formData["title"] !== "") {
         $content = str_replace("{site_title}", $formData["title"], $content);
     }
-    if ($formData["descr"] !== "") {
-        $content = str_replace("{site_description}", $formData["descr"], $content);
+    if ($formData["description"] !== "") {
+        $content = str_replace("{site_description}", $formData["description"], $content);
     }
     $content = str_replace("{meta_social_tag}", "", $content);
     $content = str_replace("{main_site_breadcrumbs}",

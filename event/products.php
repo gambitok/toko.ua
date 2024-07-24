@@ -1,5 +1,7 @@
 <?php
 
+global $content, $catalogue, $formObj, $client;
+
 $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 if (strpos($actual_link, "%20") !== false) {
@@ -8,21 +10,21 @@ if (strpos($actual_link, "%20") !== false) {
     header("Location: $new_link", TRUE, 301);
 }
 
-$linka = findLinks();
+$httpHost = findLinks();
 
-$art_id = (int)substr($linka[1], strrpos($linka[1], "-") + 1);
+$art_id = (int)substr($httpHost[1], strrpos($httpHost[1], "-") + 1);
 
 if ($art_id > 0 && $catalogue->checkArticleExist($art_id)) {
-    $articleData = $showform->getArticleForm($art_id, 1);
+    $articleData = $formObj->getArticleForm($art_id, 1);
     $breadcrumbsData = $catalogue->getBreadCrumbForm($articleData["breadcrumbs"]);
 
     $data = getSeoTitleData();
     if ($data) {
-        $descr = $data[1];
+        $description = $data[1];
 
-        if ($descr !== "") {
-            $descr = str_replace('"', "'", $descr);
-            $content = str_replace("{site_description}", $descr, $content);
+        if ($description !== "") {
+            $description = str_replace('"', "'", $description);
+            $content = str_replace("{site_description}", $description, $content);
         }
     }
 

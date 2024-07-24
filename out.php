@@ -1,18 +1,19 @@
 <?php
 
+
 $db = DbSingleton::getTokoDb();
 $dbm = DbSingleton::getDbm();
 $dbc = DbSingleton::getTokoCacheDb();
 
-$showform       = new FormClass();
+$formObj        = new FormClass();
 $catalogue      = new CatalogueClass();
 $search         = new SearchClass();
 $prod           = new ProductsClass();
-$automan        = new AutoClass();
+$autoObj        = new AutoClass();
 $menu           = new MenuClass();
 $shop           = new ShopClass();
 $client         = new ClientClass();
-$kours          = new ExRateClass();
+$exRate         = new ExRateClass();
 $profile        = new ProfileClass();
 $language       = new LangClass();
 $catalog_exist  = new CatalogExistClass();
@@ -54,13 +55,13 @@ include_once(RDD . "/event/menu.php");
 $data = getSeoTitleData();
 if ($data) {
     $title = $data[0];
-    $descr = $data[1];
+    $description = $data[1];
 
     if ($title !== "") {
         $content = str_replace("{site_title}", $title, $content);
     }
-    if ($descr !== "") {
-        $content = str_replace("{site_description}", $descr, $content);
+    if ($description !== "") {
+        $content = str_replace("{site_description}", $description, $content);
     }
 }
 
@@ -78,11 +79,12 @@ $content = str_replace("{site_main_link}", $catalogue->getSiteLink(), $content);
 $content = str_replace("{site_lang_html}", getSiteLang(), $content);
 $content = str_replace("{site_google_conversation}", "", $content);
 $content = str_replace("{meta_social_tag}", getMetaTag(), $content);
+$content = str_replace("{site_main_link_home}", ($_SERVER['REQUEST_URI'] === "/" ) ? "" : "href=\"" . $catalogue->getSiteLink() . "\"", $content);
 
 $data = getSeoTitleData();
 if ($data) {
     $title = $data[0];
-    $descr = $data[1];
+    $description = $data[1];
 }
 
 $content = str_replace("{site_title}", getTitle($path), $content);

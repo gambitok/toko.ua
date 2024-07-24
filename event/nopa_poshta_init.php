@@ -2,7 +2,7 @@
 
 use LisDev\Delivery\NovaPoshtaApi2;
 
-function getNovaPoshtaKey()
+function getNovaPostKey()
 {
     $db = DbSingleton::getTokoDb();
     $key = "";
@@ -14,7 +14,7 @@ function getNovaPoshtaKey()
     return $key;
 }
 
-$np = new NovaPoshtaApi2(getNovaPoshtaKey());
+$np = new NovaPoshtaApi2(getNovaPostKey());
 $catalog = new CatalogueClass();
 
 $list = "";

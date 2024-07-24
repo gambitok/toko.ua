@@ -1,5 +1,7 @@
 <?php
 
+global $content, $catalogue, $menu, $formObj;
+
 $red_status = 0;
 $red_type   = 0;
 $red_link   = "";
@@ -19,6 +21,6 @@ if ($red_status) {
     }
 }
 
-$content = str_replace("{main_window}", $menu->showContacts() . $showform->getHistoryArts(), $content);
+$content = str_replace("{main_window}", $menu->showContacts() . $formObj->getHistoryArts(), $content);
 $content = str_replace("{site_title}", "{site_contacts}", $content);
 $content = str_replace("{site_description}", "", $content);

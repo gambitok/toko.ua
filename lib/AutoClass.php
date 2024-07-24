@@ -8,33 +8,34 @@ class AutoClass extends CatalogueClass
     /*
      * get text translate of selected car
      * */
-    public function getCarManufTranslit($mfa_id, $model = "", $status = 0): string
+    public function getCarManufactureTranslate($mfa_id, $model = "", $status = 0): string
     {
-        $lang_id = (int)$this->getLanguage();
+        $lang_id = $this->getLanguage();
         $mfa_id = $this->getUrlNumber($mfa_id);
-        $model  = $this->getUrlString($model); $model_translate = "";
+        $model = $this->getUrlString($model); 
+        $model_translate = "";
 
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `MFA_BRAND_TRANSLIT_RU`, `MFA_BRAND_TRANSLIT_UA` FROM `T_manufacturers` WHERE `MFA_ID` = $mfa_id LIMIT 1;");
-        $mfa_translate  = $db->result($r, 0, "MFA_BRAND_TRANSLIT_RU");
-        $mfa_translate_ua  = $db->result($r, 0, "MFA_BRAND_TRANSLIT_UA");
+        $mfa_translate = $db->result($r, 0, "MFA_BRAND_TRANSLIT_RU");
+        $mfa_translate_ua = $db->result($r, 0, "MFA_BRAND_TRANSLIT_UA");
 
         if ($lang_id === 2) {
             $mfa_translate = $mfa_translate_ua;
         }
 
-        $text           = (!empty($mfa_translate)) ? "($mfa_translate)" : "";
+        $text = (!empty($mfa_translate)) ? "($mfa_translate)" : "";
 
         if (!empty($model)) {
             $r = $db->query("SELECT `Model_TRANSLIT_RU`, `Model_TRANSLIT_UA` FROM `T_models` WHERE `Model` = '$model' AND `Model_TRANSLIT_RU` != '' LIMIT 1;");
-            $model_translate    = $db->result($r, 0, "Model_TRANSLIT_RU");
-            $model_translate_ua    = $db->result($r, 0, "Model_TRANSLIT_UA");
+            $model_translate = $db->result($r, 0, "Model_TRANSLIT_RU");
+            $model_translate_ua = $db->result($r, 0, "Model_TRANSLIT_UA");
 
             if ($lang_id === 2) {
                 $model_translate = $model_translate_ua;
             }
 
-            $text               = (!empty($model_translate)) ? "($mfa_translate $model_translate)" : $text;
+            $text = (!empty($model_translate)) ? "($mfa_translate $model_translate)" : $text;
         }
 
         if ($status === 1) {
@@ -99,7 +100,7 @@ class AutoClass extends CatalogueClass
      * get car mfa, model, model_id, typ text
      * from IDs
      * */
-    public function getAutoDescr($mfa_id, $model = "", $model_id = 0, $typ_id = 0): array
+    public function getAutoDescription($mfa_id, $model = "", $model_id = 0, $typ_id = 0): array
     {
         $mfa_id     = $this->getUrlNumber($mfa_id);
         $model      = $this->getUrlString($model);
@@ -136,7 +137,7 @@ class AutoClass extends CatalogueClass
      * get car mfa & model names
      * from LINK
      * */
-    public function getAutoDescrLink($mfa_link, $model_link): array
+    public function getAutoDescriptionLink($mfa_link, $model_link): array
     {
         $mfa_link   = $this->getUrlString($mfa_link);
         $model_link = $this->getUrlString($model_link);
@@ -332,7 +333,7 @@ class AutoClass extends CatalogueClass
             }
 
             list($mfa_id, $model, $model_id) = $this->getCarInfo($typ_id);
-            list($mfa_cap, , $model_id_cap) = $this->getAutoDescr($mfa_id, $model, $model_id, $typ_id);
+            list($mfa_cap, , $model_id_cap) = $this->getAutoDescription($mfa_id, $model, $model_id, $typ_id);
             $model_id_image = $this->getAutoIMG($mfa_id, $model, $model_id)["model_id_image"];
 
             $auto_form = $this->getHtmlForm("garage/garage_selected");
@@ -405,9 +406,7 @@ class AutoClass extends CatalogueClass
                     $status_disable = "disabled";
                     $status_btn     = "";
                 }
-                list($mfa_cap, , $model_id_cap, $typ_text) = $this->getAutoDescr($mfa_id, $model, $model_id, $typ_id);
-
-//                $btn_link = "<button class=\"btn btn-primary btn-sm btn-go-to \" onclick=\"location.reload();\">{go_to_cap}</button>";
+                list($mfa_cap, , $model_id_cap, $typ_text) = $this->getAutoDescription($mfa_id, $model, $model_id, $typ_id);
 
                 $list .= "
                 <li class=\"garage-row\">
@@ -474,7 +473,7 @@ class AutoClass extends CatalogueClass
                     }
 
                     $db->query("INSERT INTO `AUTO_GARAGE` (`client_id`, `user_id`, `cookie_id`, `typ_id`, `status`) VALUES ($client_id, $user_id, '$cookie_id', $typ_id, 1);");
-                    list($mfa_cap, , $model_id_cap, $typ_text) = $this->getAutoDescr($mfa_id, $model, $model_id, $typ_id);
+                    list($mfa_cap, , $model_id_cap, $typ_text) = $this->getAutoDescription($mfa_id, $model, $model_id, $typ_id);
                     setcookie("auto_typ_id", $typ_id, time() + (86400 * 30), "/");
                     $result = true;
                     $text   = $this->replaceLang("{auto_cap} $mfa_cap $model_id_cap $typ_text {garage_added}");
@@ -638,7 +637,7 @@ class AutoClass extends CatalogueClass
         return $this->getCatalogCacheColShow($arr, $mfa_link, $model_link);
     }
 
-    public function getTreeHCGList($groups)
+    public function getTreeHCGList($groups): array
     {
         $db = DbSingleton::getTokoDb();
         $groups_str = implode(",", $groups);
@@ -669,7 +668,7 @@ class AutoClass extends CatalogueClass
     public function getCatalogCacheColShow($arr, $mfa_link, $model_link, $brand_id = 0): string
     {
         $list = "";
-        $nophoto = $this->noPhoto;
+        $no_photo = $this->noPhoto;
 
         $brand_name = "";
         if ($brand_id > 0) {
@@ -696,7 +695,7 @@ class AutoClass extends CatalogueClass
                             </div>
                         </div>
                         <div class=\"tree-heads__item-image\">
-                            <img data-src=\"/uploads/images/group_tree_head/$head_img\" class=\"lazy\" alt=\"$head_name\" src=\"$nophoto\">
+                            <img data-src=\"/uploads/images/group_tree_head/$head_img\" class=\"lazy\" alt=\"$head_name\" src=\"$no_photo\">
                         </div>
                     </div>
                 </label>
@@ -843,9 +842,11 @@ class AutoClass extends CatalogueClass
         }
 
         $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
-        $form = str_replace(array("{seo_auto_title}", "{seo_auto_list}", "{seo_auto_letters}"), array("", $list, ""), $form);
-
-        return $form;
+        
+        return str_replace(
+            array("{seo_auto_title}", "{seo_auto_list}", "{seo_auto_letters}"), 
+            array("", $list, ""), 
+        $form);
     }
 
     /*
@@ -897,9 +898,11 @@ class AutoClass extends CatalogueClass
         }
 
         $form = $this->getHtmlForm("catalog_exist/seo_content_auto");
-        $form = str_replace(array("{seo_auto_title}", "{seo_auto_list}", "{seo_auto_letters}"), array("", $list, ""), $form);
-
-        return $form;
+        
+        return str_replace(
+            array("{seo_auto_title}", "{seo_auto_list}", "{seo_auto_letters}"), 
+            array("", $list, ""), 
+        $form);
     }
 
     /*
@@ -925,9 +928,11 @@ class AutoClass extends CatalogueClass
         }
 
         $form = $this->getHtmlForm("article/social");
-        $form = str_replace(array("{h1_meta_tag}", "{url_meta_tag}", "{main_image_cap}"), array($h1_text, $url_text, $car_pict), $form);
-
-        return $form;
+        
+        return str_replace(
+            array("{h1_meta_tag}", "{url_meta_tag}", "{main_image_cap}"), 
+            array($h1_text, $url_text, $car_pict), 
+        $form);
     }
 
     public function getCarsTitle($mfa_id, $model)
@@ -937,11 +942,11 @@ class AutoClass extends CatalogueClass
         $mfa_link   = $catalog->getManufactureLink($mfa_id);
         $model_link = $catalog->getModelLink($model);
 
-        list($mfa_text, $model_text) = $this->getAutoDescrLink($mfa_link, $model_link);
+        list($mfa_text, $model_text) = $this->getAutoDescriptionLink($mfa_link, $model_link);
 
         return (empty($mfa_text))
             ? "{site_cars_h1}"
-            : $this->replaceLang("{details_on_cap} $mfa_text $model_text " . $this->getCarManufTranslit($mfa_id, $model));
+            : $this->replaceLang("{details_on_cap} $mfa_text $model_text " . $this->getCarManufactureTranslate($mfa_id, $model));
     }
 
 }

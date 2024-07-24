@@ -1,5 +1,7 @@
 <?php
 
+global $catalogue, $content, $formObj, $autoObj, $menu;
+
 // REDIRECT OLD TOKO LINKS (dep=23)
 $w = $catalogue->getUrlString($_GET["w"]);
 if ($w === "modelfind") {
@@ -11,19 +13,19 @@ if ($w === "modelfind") {
 $content = str_replace("{main_window}", $catalogue->getHtmlForm("main_form"), $content);
 
 // HISTORY SEARCH FORM
-$content = str_replace("{history_arts}", $showform->getHistoryArts(), $content);
+$content = str_replace("{history_arts}", $formObj->getHistoryArts(), $content);
 
 // CARS FORM
-$content = str_replace("{catalogue_tab_search}", $showform->drawLoader(), $content);
+$content = str_replace("{catalogue_tab_search}", $formObj->drawLoader(), $content);
 
 // BANNER FORM
-$content = str_replace("{catalogue_banner}", $showform->getCarsBanner(), $content);
+$content = str_replace("{catalogue_banner}", $formObj->getCarsBanner(), $content);
 
 // CATALOG GROUPS FORM
 $content = str_replace("{select_det_group}", $catalogue->getCatalogColList(), $content);
 
 // CARS FORM
-$content = str_replace("{select_auto_group}", $automan->getAutoMfaModelList(), $content);
+$content = str_replace("{select_auto_group}", $autoObj->getAutoMfaModelList(), $content);
 
 // POPULAR BRANDS FORM
 $content = str_replace("{popular_brands}", $menu->showPopularBrands(), $content);

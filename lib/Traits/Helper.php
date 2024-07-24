@@ -8,7 +8,6 @@ trait Helper
     public $noPhoto = "/images/no_photo.svg";
     protected $err1 = "{nothing_found}";
     protected $err2 = "{not_specified}";
-    protected $err3 = "{no_info}";
 
     /*
      * get cookie `session_id`
@@ -33,9 +32,6 @@ trait Helper
         if (file_exists($form_htm)) {
             $form = file_get_contents($form_htm);
         }
-        //$catalogue = new CatalogueClass();
-        //$form = $catalogue->getIconvWindows($form);
-        //$form = $catalogue->getIconConvert($form);
 
         return $form;
     }
@@ -45,15 +41,17 @@ trait Helper
      * */
     public function getUrlString($str): string
     {
-        $str = str_replace(array("'", "`", ",", '"', "%22", "%27", "%60", "&nbsp;", "&rsquo;", "%20"), array("", "", "", "", "", "", "", "", "", " "), $str);
-
-        return $str;
+        return str_replace(
+            array("'", "`", ",", '"', "%22", "%27", "%60", "&nbsp;", "&rsquo;", "%20"),
+            array("", "", "", "", "", "", "", "", "", " "),
+        $str);
     }
     public function getUrlString2($str): string
     {
-        $str = str_replace(array("'", "`", ",", '"', "&nbsp;", "/"), array("", "", "", "", "", ""), $str);
-
-        return $str;
+        return str_replace(
+            array("'", "`", ",", '"', "&nbsp;", "/"),
+            array("", "", "", "", "", ""),
+        $str);
     }
 
     /*
@@ -61,9 +59,10 @@ trait Helper
      * */
     public function getNameString($str): string
     {
-        $str = str_replace(array("'", "`", '"', "%22", "%27", "%60", "&rsquo;", "%20"), array("", "", "", "", "", "", "", " "), $str);
-
-        return $str;
+        return str_replace(
+            array("'", "`", '"', "%22", "%27", "%60", "&rsquo;", "%20"),
+            array("", "", "", "", "", "", "", " "),
+        $str);
     }
 
     /*
@@ -78,14 +77,14 @@ trait Helper
         return $number;
     }
 
-    public function getCurrentExrate(): int
+    public function getCurrentExRate(): int
     {
-        return (new ExRateClass())->getCurrentKours();
+        return (new ExRateClass())->getCurrentExRate();
     }
 
-    public function getSymbolExrate($cur): string
+    public function getSymbolExRate($cur): string
     {
-        return (new ExRateClass())->getKoursSymbol($cur);
+        return (new ExRateClass())->getExRateSymbol($cur);
     }
 
     public function getClient(): int
@@ -214,7 +213,7 @@ trait Helper
         return $wks[$week_day];
     }
 
-    public function translit($st)
+    public function getFormattedTranslatedText($st)
     {
         $cyr = [
             'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п',
@@ -228,9 +227,7 @@ trait Helper
             'A', 'B', 'V', 'G', 'D', 'E', 'Io', 'Zh', 'Z', 'I', 'Y', 'K', 'L', 'M', 'N', 'O', 'P',
             'R', 'S', 'T', 'U', 'F', 'H', 'Ts', 'Ch', 'Sh', 'Sht', 'A', 'I', 'Y', 'e', 'Yu', 'Ya', 'I', 'Yi', 'Ye'
         ];
-        $st = str_replace($cyr, $lat, $st);
-
-        return $st;
+        return str_replace($cyr, $lat, $st);
     }
 
     /*
@@ -239,7 +236,6 @@ trait Helper
      * */
     public function randomPassword(): string
     {
-        // $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $kol = 4;
         $alphabet = "1234567890";
         $pass = array();
@@ -252,66 +248,15 @@ trait Helper
         return implode($pass);
     }
 
-    /*
-     * get text offer variables
-     * */
     public function getOfferCap($i)
     {
-        $caption_1  = "{offer_cap}";
-        $caption_2  = "{offer_pair_cap}";
-        $caption_3  = "{offer_tenths_cap}";
-        $caption    = "";
-        $mas1       = [1];
-        $mas2       = [2, 3, 4];
-        $mas3       = [0, 5, 6, 7, 8, 9];
-        $mas4       = [11, 12, 13, 14, 15, 16, 17, 18, 19];
-        $mod        = $i % 10;
-
-        if (in_array($mod, $mas1)) {
-            $caption = $caption_1;
-        }
-        if (in_array($mod, $mas2)) {
-            $caption = $caption_2;
-        }
-        if (in_array($mod, $mas3) || in_array($i, $mas4, true)) {
-            $caption = $caption_3;
-        }
-        $caption = $this->replaceLang($caption);
-
-        return $caption;
+        return $this->extracted($i, "{offer_cap}", "{offer_pair_cap}", "{offer_tenths_cap}");
     }
-    /*
-     * get text offer variables
-     * */
     public function getGoodsCap($i)
     {
-        $caption_1  = "{goods_cap}";
-        $caption_2  = "{goods_pair_cap}";
-        $caption_3  = "{goods_tenths_cap}";
-        $caption    = "";
-        $mas1       = [1];
-        $mas2       = [2, 3, 4];
-        $mas3       = [0, 5, 6, 7, 8, 9];
-        $mas4       = [11, 12, 13, 14, 15, 16, 17, 18, 19];
-        $mod        = $i % 10;
-
-        if (in_array($mod, $mas1)) {
-            $caption = $caption_1;
-        }
-        if (in_array($mod, $mas2)) {
-            $caption = $caption_2;
-        }
-        if (in_array($mod, $mas3) || in_array($i, $mas4, true)) {
-            $caption = $caption_3;
-        }
-        $caption = $this->replaceLang($caption);
-
-        return $caption;
+        return $this->extracted($i, "{goods_cap}", "{goods_pair_cap}", "{goods_tenths_cap}");
     }
-
-    /*
-     * Check ART_ID in PHOTO
-     * */
+    
     public function checkPhoto($ref): bool
     {
         $db = DbSingleton::getTokoDb();
@@ -322,7 +267,7 @@ trait Helper
     }
 
     /*
-     * Get `Seoshield` H1
+     * Get `Seo shield` H1
      * */
     public function getStaticH1($uri)
     {
@@ -334,9 +279,7 @@ trait Helper
             $static_h1 = $static_data['//' . $_SERVER["HTTP_HOST"] . $uri][2];
         }
         $catalogue = new CatalogueClass();
-        $static_h1 = $catalogue->getIconv($static_h1);
-
-        return $static_h1;
+        return $catalogue->getIconv($static_h1);
     }
 
     /*
@@ -353,37 +296,37 @@ trait Helper
         return $n !== 0;
     }
 
-    public function getCatalogOldRedirectLink($linka): array
+    public function getCatalogOldRedirectLink($httpHost): array
     {
-        $automan = new AutoClass();
+        $autoObj = new AutoClass();
         $catalog_exist = new CatalogExistClass();
 
         $status = 0;
 
-        $redirect_link = $this->getSiteLink() . $linka[0] . "/" . $linka[1] . "/";
+        $redirect_link = $this->getSiteLink() . $httpHost[0] . "/" . $httpHost[1] . "/";
 
-        $group_id = $catalog_exist->getGroupExistId($linka[1]);
+        $group_id = $catalog_exist->getGroupExistId($httpHost[1]);
 
-        if (!empty($linka[2]) && $group_id > 0 && $linka[2] !== "auto" && strpos($linka[2], "brandy=") === false) {
+        if (!empty($httpHost[2]) && $group_id > 0 && $httpHost[2] !== "auto" && strpos($httpHost[2], "brandy=") === false) {
             // 1 - mfa link
-            $mfa_id = $automan->getMfaLink($linka[2]);
+            $mfa_id = $autoObj->getMfaLink($httpHost[2]);
             if ($mfa_id > 0) {
                 $status = 1;
-                $redirect_link .= "auto/" . $linka[2] . "/";
-                if (!empty($linka[3])) {
-                    $redirect_link .= $linka[3] . "/";
+                $redirect_link .= "auto/" . $httpHost[2] . "/";
+                if (!empty($httpHost[3])) {
+                    $redirect_link .= $httpHost[3] . "/";
                 }
             }
             // 2 - filter link (brands)
-            if (strpos($linka[2], "brandy=") !== false) {
+            if (strpos($httpHost[2], "brandy=") !== false) {
                 $status = 2;
-                $redirect_link .= $linka[2] . "/";
-                $mfa_id = $automan->getMfaLink($linka[3]);
+                $redirect_link .= $httpHost[2] . "/";
+                $mfa_id = $autoObj->getMfaLink($httpHost[3]);
                 if ($mfa_id > 0) {
                     $status = 3;
-                    $redirect_link .= $linka[3] . "/";
-                    if (!empty($linka[4])) {
-                        $redirect_link .= $linka[4] . "/";
+                    $redirect_link .= $httpHost[3] . "/";
+                    if (!empty($httpHost[4])) {
+                        $redirect_link .= $httpHost[4] . "/";
                     }
                 }
             }
@@ -399,7 +342,7 @@ trait Helper
 
     public function getCatalogRedirectLink($link, $mfa_link = "", $model_link = ""): array
     {
-        $automan = new AutoClass();
+        $autoObj = new AutoClass();
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `LINK_TO` FROM `T2_CATALOG_REDIRECT` WHERE `LINK_FROM` LIKE '%$link%' LIMIT 1;");
         $n = $db->num_rows($r);
@@ -414,7 +357,7 @@ trait Helper
             }
         }
 
-        $mfa_id = $automan->getMfaLink($mfa_link);
+        $mfa_id = $autoObj->getMfaLink($mfa_link);
 
         if (($mfa_id > 0) && !empty($mfa_link)) {
             if (!$this->checkCatalogRedirectFilters($redirect_link)) {
@@ -525,6 +468,34 @@ trait Helper
         $r = $db->query("SELECT `$prefix$postfix` FROM `SEO_LISTING_CITY` WHERE `LINK_NAME` = '$city_link' LIMIT 1;");
 
         return $db->result($r, 0, "$prefix$postfix");
+    }
+
+    /**
+     * @param $i
+     * @param string $caption_1
+     * @param string $caption_2
+     * @param string $caption_3
+     * @return array|mixed|string|string[]
+     */
+    public function extracted($i, string $caption_1, string $caption_2, string $caption_3)
+    {
+        $caption = "";
+        $mas1 = [1];
+        $mas2 = [2, 3, 4];
+        $mas3 = [0, 5, 6, 7, 8, 9];
+        $mas4 = [11, 12, 13, 14, 15, 16, 17, 18, 19];
+        $mod = $i % 10;
+
+        if (in_array($mod, $mas1)) {
+            $caption = $caption_1;
+        }
+        if (in_array($mod, $mas2)) {
+            $caption = $caption_2;
+        }
+        if (in_array($mod, $mas3) || in_array($i, $mas4, true)) {
+            $caption = $caption_3;
+        }
+        return $this->replaceLang($caption);
     }
 
 }

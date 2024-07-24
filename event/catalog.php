@@ -1,8 +1,10 @@
 <?php
 
+global $content, $catalogue, $catalog_exist, $formObj, $autoObj;
+
 ini_set('memory_limit', '2048M');
 
-$linka      = findLinks();
+$httpHost   = findLinks();
 $red_status = 0;
 $red_type   = 0;
 $red_link   = "";
@@ -11,20 +13,20 @@ $sort       = $catalogue->getUrlString($_GET["sort"]);
 $city_link  = $catalogue->getUrlString($_GET["city"]);
 $page       = $catalogue->getUrlNumber($_GET["page"]);
 
-$site_name  = $catalogue->getUrlString($linka[0]);
-$router     = $catalogue->getUrlString($linka[1]);
-$router_2   = $catalogue->getUrlString($linka[2]);
-$router_3   = $catalogue->getUrlString($linka[3]);
-$router_4   = $catalogue->getUrlString($linka[4]);
-$router_5   = $catalogue->getUrlString($linka[5]);
+$site_name  = $catalogue->getUrlString($httpHost[0]);
+$router     = $catalogue->getUrlString($httpHost[1]);
+$router_2   = $catalogue->getUrlString($httpHost[2]);
+$router_3   = $catalogue->getUrlString($httpHost[3]);
+$router_4   = $catalogue->getUrlString($httpHost[4]);
+$router_5   = $catalogue->getUrlString($httpHost[5]);
 
 $path_from  = $site_name . "/" . $router . "/";
 $site_link  = $catalogue->getSiteLink();
 $catalog_link = $catalogue->catalog_link;
-$src_link   = $site_link . implode("/", $linka) . "/";
+$src_link   = $site_link . implode("/", $httpHost) . "/";
 
 $error_form = $catalogue->getHtmlForm("error/404_catalog");
-$history_form = $showform->getHistoryArts();
+$history_form = $formObj->getHistoryArts();
 $index_form = '
     <meta name="robots" content="noindex, follow">
     <meta name="googlebot" content="noindex, follow">
@@ -36,10 +38,10 @@ $noindex_form = '
     <meta name="yandex" content="noindex, nofollow">
 ';
 
-if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
+if ($catalogue->getCatalogOldRedirectLink($httpHost)["status"] > 0) {
     $red_status = 1;
     $red_type   = 301;
-    $red_link   = $catalogue->getCatalogOldRedirectLink($linka)["redirect_link"];
+    $red_link   = $catalogue->getCatalogOldRedirectLink($httpHost)["redirect_link"];
 }
 elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $mfa_link   = $router_2;
@@ -49,9 +51,9 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $red_link   = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
 }
 else {
-    $str_linka = $linka;
-    unset($str_linka[0]);
-    $str_linka = implode("/", $str_linka);
+    $httpHostString = $httpHost;
+    unset($httpHostString[0]);
+    $httpHostString = implode("/", $httpHostString);
 
     /*
      * Catalog
@@ -75,7 +77,7 @@ else {
 
             if ($catalogue->checkCityLink($city_link)) {
                 $city_name_in   = $catalogue->getCityNameIn($city_link, "CITY_NAME_IN_");
-                $city_name      = $catalogue->getCityNameIn($city_link, "CITY_NAME_");
+                $city_name      = $catalogue->getCityNameIn($city_link);
                 $h1             = "<div style='padding: 15px;'><h1>{details_in_cap} $city_name_in</h1></div>";
                 $title          = str_replace("{CITY_NAME_RU}", $city_name, $catalogue->replaceLang("{site_catalog_title_city}"));
                 $description    = str_replace("{CITY_NAME_IN_RU}", $city_name_in, $catalogue->replaceLang("{site_catalog_descr_city}"));
@@ -109,8 +111,8 @@ else {
 
         if (!empty($group_id)) {
             $group_id = $catalog_exist->getUrlNumber($group_id);
-            $_SESSION['group_id'] = (int)$group_id;
-            $filters  = $linka[2];
+            $_SESSION['group_id'] = $group_id;
+            $filters  = $httpHost[2];
             $f1 = $filters;
 
             $filters        = ($filters === "auto") ? [] : $filters;
@@ -123,7 +125,7 @@ else {
             $params         = [];
 
             if ($mfa_link !== "") {
-                $mfa_id = $automan->getMfaLink($mfa_link);
+                $mfa_id = $autoObj->getMfaLink($mfa_link);
 
                 if ($mfa_id === 0) {
                     $red_status = 1;
@@ -137,9 +139,9 @@ else {
                     if ($model_link === "rav4") {
                         $red_status = 1;
                         $red_type = 301;
-                        $red_link = $site_link . $catalog_link . "/$router/" . $linka[2] . "/$router_3/rav-4/";
+                        $red_link = $site_link . $catalog_link . "/$router/" . $httpHost[2] . "/$router_3/rav-4/";
                     } else {
-                        $model = $automan->getModLink($model_link);
+                        $model = $autoObj->getModLink($model_link);
 
                         if ($model === "") {
                             $red_status = 1;
@@ -149,7 +151,7 @@ else {
                         }
 
                         if ($model !== "") {
-                            $model_id = $automan->getModIdLink($model_id_link);
+                            $model_id = $autoObj->getModIdLink($model_id_link);
 
                             if (($model_id_link !== "") && !$model_id) {
                                 $red_status = 1;

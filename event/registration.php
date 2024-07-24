@@ -1,11 +1,12 @@
 <?php
 
+global $client, $profile, $content;
 $phone      = $_POST["reg_phone"];
 $name       = $_POST["reg_name"];
 $email      = $_POST["reg_email"];
 $password   = $_POST["reg_password"];
 $category   = $_POST["reg_category"];
-$tpoint     = $_POST["reg_tpoint"];
+$salePoint  = $_POST["reg_tpoint"];
 $city       = $_POST["user_city"];
 $mailing    = isset($_POST["reg_mailing"]) ? 1 : 0;
 
@@ -15,7 +16,7 @@ PHONE: $phone<br>
 EMAIL: $email<br>
 PASS: $password<br>
 CATEG: $category<br>
-TPOINT: $tpoint<br>
+TPOINT: $salePoint<br>
 CITY: $city<br>
 MAILINT: $mailing";
 
@@ -42,7 +43,7 @@ if ($client->checkUnRegClient()) {
             $message = "{done}";
             $form = $client->getHtmlForm("profile/registration_done");
 
-            $client->saveRegistration($phone, $password, $email, $name, $category, $city, $tpoint, $mailing);
+            $client->saveRegistration($phone, $password, $email, $name, $category, $city, $salePoint, $mailing);
         }
     } else {
         $message = "{user_already_logged}!";
@@ -53,7 +54,7 @@ if ($client->checkUnRegClient()) {
     $form = str_replace("{reg_email}", $email, $form);
     $form = str_replace("{reg_password}", $password, $form);
     $form = str_replace("{reg_category}", $category, $form);
-    $form = str_replace("{reg_tpoint}", $tpoint, $form);
+    $form = str_replace("{reg_tpoint}", $salePoint, $form);
     $form = str_replace("{user_city}", $city, $form);
     $form = str_replace("{reg_mailing}", $mailing, $form);
     $form = str_replace("{message}", (!empty($message)) ? "<label class=\"alert-danger\">$message</label>" : $message, $form);

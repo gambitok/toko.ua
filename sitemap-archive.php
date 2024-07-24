@@ -3,7 +3,7 @@
 $xmlWriter = new XMLWriter();
 $xmlWriter->openMemory();
 
-define('RDD', __DIR__);
+const RDD = __DIR__;
 
 $lang = "";
 
@@ -33,9 +33,9 @@ $xmlWriter->writeAttribute('xmlns', "http://www.sitemaps.org/schemas/sitemap/0.9
 foreach ($names as $file) {
     if (file_exists($file)) {
         $data = file_get_contents($file);
-        $gzdata = gzencode($data);
+        $gz_data = gzencode($data);
         $new_file = str_replace(".xml", ".xml.gz", $file);
-        file_put_contents($new_file, $gzdata);
+        file_put_contents($new_file, $gz_data);
         unlink($file);
 
         $new_path = str_replace("/var/www/toko.ua$lang/", "https://toko.ua$lang/", $new_file);
@@ -47,5 +47,5 @@ foreach ($names as $file) {
 }
 
 $xmlWriter->endElement();
-file_put_contents(RDD . "$lang/sitemap.xml", $xmlWriter->flush(true), FILE_APPEND);
+file_put_contents(RDD . "$lang/sitemap.xml", $xmlWriter->flush(), FILE_APPEND);
 $xmlWriter->endDocument();

@@ -1,6 +1,6 @@
 <?php
 
-function setCookies()
+function setCookies(): bool
 {
     session_start();
     $catalogue = new CatalogueClass();
@@ -12,7 +12,7 @@ function setCookies()
     return true;
 }
 
-function getSiteCurrentLink()
+function getSiteCurrentLink(): array
 {
     $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $actual_link = str_replace(array("/uk/", "/en/"), "/", $actual_link);
@@ -29,7 +29,7 @@ function getContent($content)
     $menu       = new MenuClass();
     $shop       = new ShopClass();
     $profile    = new ProfileClass();
-    $automan    = new AutoClass();
+    $autoObj    = new AutoClass();
 
     $actual_link        = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $basketData         = $shop->countBasket();
@@ -40,12 +40,13 @@ function getContent($content)
     }
     $actual_full_link   = "<link rel=\"canonical\" href=\"$actual_link\"/>";
 
-    $content = str_replace(array("{canonical_link}", "{canonical_full_link}", "{contacts_bottom}", "{basket_count}", "{basket_style}", "{garage_style}", "{garage_status}", "{basket_summ}", "{profile_mobile}", "{list_social}", "{info_title}", "{lang_list}", "<h1></h1>"), array($actual_link, $actual_full_link, $menu->showContactsBottom(), $basketData[0], $basketData[1], "", $automan->getGarageAutoCount(), $shop->countSummBasket(), $profile->getProfileInfoMobile(), "<ul>" . getPhpContent("/tpl/menu/social_icons.php") . "</ul>", "", "", "<h1>" . getTitle(getPath()) . "</h1>"), $content);
-
-    return $content;
+    return str_replace(
+        array("{canonical_link}", "{canonical_full_link}", "{contacts_bottom}", "{basket_count}", "{basket_style}", "{garage_style}", "{garage_status}", "{basket_sum}", "{profile_mobile}", "{list_social}", "{info_title}", "{lang_list}", "<h1></h1>"),
+        array($actual_link, $actual_full_link, $menu->showContactsBottom(), $basketData[0], $basketData[1], "", $autoObj->getGarageAutoCount(), $shop->countSumBasket(), $profile->getProfileInfoMobile(), "<ul>" . getPhpContent("/tpl/menu/social_icons.php") . "</ul>", "", "", "<h1>" . getTitle(getPath()) . "</h1>"), 
+    $content);
 }
 
-function checkLangVariable($variable)
+function checkLangVariable($variable): bool
 {
     $db = DbSingleton::getTokoDb();
     $r = $db->query("SELECT 1 FROM `new_lang_wd` WHERE `variable` = '$variable' LIMIT 1;");
@@ -54,7 +55,7 @@ function checkLangVariable($variable)
     return ($n > 0);
 }
 
-function getMetaTag()
+function getMetaTag(): string
 {
     return '
 	<meta property="og:type" content="website" />
@@ -75,74 +76,74 @@ function getTitle($path)
     return $language->replaceLangData($title);
 }
 
-function getMoreTitle($path)
+function getMoreTitle($path): string
 {
-    $automan = new AutoClass();
-    $cat = new CatalogueClass();
-    $linka = findLinks();
+    $autoObj = new AutoClass();
+    $catalogue = new CatalogueClass();
+    $httpHost = findLinks();
 
     if ($path === "search") {
-        $art_search = $cat->getUrlString($linka[1]);
+        $art_search = $catalogue->getUrlString($httpHost[1]);
         $art_search = rawurldecode($art_search);
-        $art_search = $cat->getIconv($art_search);
-        $brand_link = $cat->getUrlString($linka[2]);
-        $brand_id   = ($brand_link !== "") ? $cat->getCatalogueBrandID($brand_link) : 0;
+        $art_search = $catalogue->getIconv($art_search);
+        $brand_link = $catalogue->getUrlString($httpHost[2]);
+        $brand_id   = ($brand_link !== "") ? $catalogue->getCatalogueBrandID($brand_link) : 0;
 
         if ($art_search === "") {
-            $pretitle = "{site_title_short}";
-        } elseif ($brand_id === 0 || $brand_id === "0") {
-            $pretitle = "{search_results} $art_search | {site_title_short}";
+            $predTitle = "{site_title_short}";
+        } elseif (empty($brand_id)) {
+            $predTitle = "{search_results} $art_search | {site_title_short}";
         } else {
-            $art_id     = $cat->getArticleId($art_search, $brand_id);
-            $art_name   = $cat->getArticleName($art_id);
-            $brand_name = $cat->getBrandName($brand_id);
+            $art_id     = $catalogue->getArticleId($art_search, $brand_id);
+            $art_name   = $catalogue->getArticleName($art_id);
+            $brand_name = $catalogue->getBrandName($brand_id);
             $art_search = strtoupper($art_search);
-            $pretitle   = "$brand_name $art_search - $art_name | {site_title_short}";
+            $predTitle   = "$brand_name $art_search - $art_name | {site_title_short}";
         }
     }
     elseif ($path === "cars") {
-        $mfa_link = $cat->getUrlString($linka[1]);
-        $mod_link = $cat->getUrlString($linka[2]);
+        $mfa_link = $catalogue->getUrlString($httpHost[1]);
+        $mod_link = $catalogue->getUrlString($httpHost[2]);
 
         if ($mfa_link === "") {
-            $pretitle = "{site_cars_h1} — {seo_site_toko}";
+            $predTitle = "{site_cars_h1} {seo_site_toko}";
         } else {
-            list($mfa_brand, $model_text) = $automan->getAutoDescrLink($mfa_link, $mod_link);
-            list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-            $translit = $automan->getCarManufTranslit($mfa_id, $model);
+            list($mfa_brand, $model_text) = $autoObj->getAutoDescriptionLink($mfa_link, $mod_link);
+            list($mfa_id, $model) = $autoObj->getAutoIdsLink($mfa_link, $mod_link);
+            $textTranslate = $autoObj->getCarManufactureTranslate($mfa_id, $model);
 
             if ($mfa_link !== "") {
                 $mm = "$mfa_brand $model_text";
-                if ($translit !== "") {
-                    $mm .= " $translit";
+                if ($textTranslate !== "") {
+                    $mm .= " $textTranslate";
                 }
             } else {
                 $mm = "";
             }
 
-            $pretitle = "{details_on_cap}";
-            ($mm === "") ?: $pretitle .= " $mm";
-            $postfix = $cat->replaceLang("{seo_title_lvl3}");
-            $postfix = str_replace("{title_lvl1}", $pretitle, $postfix);
-            $pretitle = "$pretitle - $postfix";
+            $predTitle = "{details_on_cap}";
+            ($mm === "") ?: $predTitle .= " $mm";
+            $postfix = $catalogue->replaceLang("{seo_title_lvl3}");
+            $postfix = str_replace("{title_lvl1}", $predTitle, $postfix);
+            $predTitle = "$predTitle - $postfix";
         }
     }
     elseif (checkLangVariable("site_$path")) {
-        $pretitle = "{site_$path} - {seo_title}";
+        $predTitle = "{site_$path} - {seo_title}";
     } else {
-        $pretitle = "{seo_404_title}";
+        $predTitle = "{seo_404_title}";
     }
 
     if ($path === "uk" || $path === "en") {
-        $pretitle = "{site_title}";
+        $predTitle = "{site_title}";
     }
 
-    return $pretitle;
+    return $predTitle;
 }
 
-function printBreadcrumbs($path)
+function printBreadcrumbs($path): array
 {
-    $cat = new CatalogueClass();
+    $catalogue = new CatalogueClass();
     $menu = new MenuClass();
     $bread = findLinks();
 
@@ -154,11 +155,11 @@ function printBreadcrumbs($path)
     $icon = "<span> > </span>";
     $a_home = "
     <li class=\"cat-products-bread__item\" typeof=\"v:Breadcrumb\">
-        <a href=\"" . $cat->getSiteLink() . "\" rel=\"v:url\" property=\"v:title\" title=\"{seo_site_toko}\">{seo_shop_toko}</a>
+        <a href=\"" . $catalogue->getSiteLink() . "\" rel=\"v:url\" property=\"v:title\" title=\"{seo_site_toko}\">{seo_shop_toko}</a>
     </li>";
     $a_section = "
     <li class=\"cat-products-bread__item\" typeof=\"v:Breadcrumb\">
-        <a href=\"" . $cat->getSiteLink() . "$path/\" rel=\"v:url\" property=\"v:title\">{site_$path}</a>
+        <a href=\"" . $catalogue->getSiteLink() . "$path/\" rel=\"v:url\" property=\"v:title\">{site_$path}</a>
     </li>";
     $h_section = "{site_$path}";
 
@@ -166,7 +167,7 @@ function printBreadcrumbs($path)
     $b_arr = [];
     $b_arr[1] = [
         "name" => "{seo_site_toko}",
-        "item" => $cat->getSiteLink()
+        "item" => $catalogue->getSiteLink()
     ];
 
     switch ($path) {
@@ -174,43 +175,43 @@ function printBreadcrumbs($path)
             $brand_link = $bread[1];
             $b_arr[2] = [
                 "name" => $h_section,
-                "item" => "" . $cat->getSiteLink() . "brands/"
+                "item" => $catalogue->getSiteLink() . "brands/"
             ];
-            $pretitle = "$a_home $icon $h_section";
+            $predTitle = "$a_home $icon $h_section";
 
             if (!empty($brand_link)) {
-                $brand_id = $cat->getBrandNameLink($brand_link);
-                $brand_name = $cat->getBrandName($brand_id);
+                $brand_id = $catalogue->getBrandNameLink($brand_link);
+                $brand_name = $catalogue->getBrandName($brand_id);
                 $b_arr[3] = [
                     "name" => $brand_name,
-                    "item" => "" . $cat->getSiteLink() . "brands/" . $brand_link . "/"
+                    "item" => $catalogue->getSiteLink() . "brands/" . $brand_link . "/"
                 ];
-                $pretitle = $a_home . $icon . "<li class=\"cat-products-bread__item\" typeof=\"v:Breadcrumb\">
+                $predTitle = $a_home . $icon . "<li class=\"cat-products-bread__item\" typeof=\"v:Breadcrumb\">
                     <a href=\"https://toko.ua/brands/\" rel=\"v:url\" property=\"v:title\">$h_section</a>
                 </li>" . $icon . $brand_name;
             }
             break;
         }
         case "search" : {
-            $art_search  = $cat->getUrlString($bread[1]);
+            $art_search  = $catalogue->getUrlString($bread[1]);
             $art_search  = rawurldecode($art_search);
-            $art_search  = $cat->getIconv($art_search);
+            $art_search  = $catalogue->getIconv($art_search);
             $info        = $art_search;
-            $pretitle    = "$a_home $icon {search_cap} $icon {search_results} $info";
+            $predTitle    = "$a_home $icon {search_cap} $icon {search_results} $info";
             break;
         }
         case "news" : {
-            $h_section = $cat->replaceLang($h_section);
+            $h_section = $catalogue->replaceLang($h_section);
             $h_section = str_replace("{h1_text}", "{news_cap}", $h_section);
             $b_arr[2] = [
                 "name" => $h_section,
-                "item" => "" . $cat->getSiteLink() . "news/"
+                "item" => $catalogue->getSiteLink() . "news/"
             ];
 
-            if ($cat->getUrlString($bread[1]) === "state") {
-                $a_section = $cat->replaceLang($a_section);
+            if ($catalogue->getUrlString($bread[1]) === "state") {
+                $a_section = $catalogue->replaceLang($a_section);
                 $a_section = str_replace("{h1_text}", "{news_cap}", $a_section);
-                $state_link = $cat->getUrlString($bread[2]);
+                $state_link = $catalogue->getUrlString($bread[2]);
                 $state_name = $menu->getNewsStateTitle($state_link);
                 $info = "$a_section $icon " . $state_name;
                 $b_arr[3] = [
@@ -220,21 +221,21 @@ function printBreadcrumbs($path)
             } else {
                 $info = $h_section;
             }
-            $pretitle = "$a_home $icon $info";
+            $predTitle = "$a_home $icon $info";
             break;
         }
         case "reviews" : {
-            $h_section = $cat->replaceLang($h_section);
+            $h_section = $catalogue->replaceLang($h_section);
             $h_section = str_replace("{h1_text}", "{review_state_cap}", $h_section);
             $b_arr[2] = [
                 "name" => $h_section,
-                "item" => "" . $cat->getSiteLink() . "reviews/"
+                "item" => $catalogue->getSiteLink() . "reviews/"
             ];
 
-            if ($cat->getUrlString($bread[1]) === "state") {
-                $a_section = $cat->replaceLang($a_section);
+            if ($catalogue->getUrlString($bread[1]) === "state") {
+                $a_section = $catalogue->replaceLang($a_section);
                 $a_section = str_replace("{h1_text}", "{review_state_cap}", $a_section);
-                $state_link = $cat->getUrlString($bread[2]);
+                $state_link = $catalogue->getUrlString($bread[2]);
                 $state_name = $menu->getReviewStateTitle($state_link);
                 $info = "$a_section $icon " . $state_name;
                 $b_arr[3] = [
@@ -244,11 +245,11 @@ function printBreadcrumbs($path)
             } else {
                 $info = $h_section;
             }
-            $pretitle = "$a_home $icon $info";
+            $predTitle = "$a_home $icon $info";
             break;
         }
         case "order" : {
-            $pretitle = "$a_home $icon $h_section";
+            $predTitle = "$a_home $icon $h_section";
             $b_arr[2] = [
                 "name" => $h_section,
                 "item" => $actual_link
@@ -256,17 +257,17 @@ function printBreadcrumbs($path)
             break;
         }
         default : {
-            $pretitle = "";
+            $predTitle = "";
             break;
         }
     }
 
     $form = "";
-    if ($pretitle !== "") {
+    if ($predTitle !== "") {
         $form = getHtmlForm("menu/breadcrumbs");
-        $form = str_replace("{bread_text}", $pretitle, $form);
+        $form = str_replace("{bread_text}", $predTitle, $form);
     }
-    $form = $cat->replaceLang($form);
+    $form = $catalogue->replaceLang($form);
 
     foreach ($b_arr as $key => $val) {
         $title  = $val["name"];
@@ -312,55 +313,55 @@ function getHtmlForm($name)
 function getDescription($path)
 {
     $language = new LangClass();
-    $cat = new CatalogueClass();
-    $linka = findLinks();
+    $catalogue = new CatalogueClass();
+    $httpHost = findLinks();
     $path = str_replace("/", "", $path);
     $prefix = "";
-    $descr = ($path !== "")
+    $description = ($path !== "")
         ? "{seo_description} $prefix {seo_description2}"
         : "{seo_description} {seo_description2}";
 
     if ($path === "cars") {
-        $descr = "{site_cars_description}";
+        $description = "{site_cars_description}";
     }
     if ($path === "article") {
-        $art_id = $linka[3];
-        $art_search = $cat->getArticleDispl($art_id);
-        $brand_id   = $cat->getArticleBrand($art_id);
+        $art_id = $httpHost[3];
+        $art_search = $catalogue->getArticleDispl($art_id);
+        $brand_id   = $catalogue->getArticleBrand($art_id);
         $art_search = strtoupper($art_search);
-        $brand_name = $cat->getBrandName($brand_id);
+        $brand_name = $catalogue->getBrandName($brand_id);
         $brand_name = strtoupper($brand_name);
-        $art_name   = $cat->getArticleName($art_id);
-        $descr      = "$art_name $brand_name $art_search - {seo_description_article}";
-        $descr      = ltrim($descr, " ");
+        $art_name   = $catalogue->getArticleName($art_id);
+        $description      = "$art_name $brand_name $art_search - {seo_description_article}";
+        $description      = ltrim($description, " ");
     }
     if ($path === "brands") {
-        $descr = "{site_brands_description}";
+        $description = "{site_brands_description}";
     }
     if ($path === "catalog") {
-        $descr = "{seo_description} {seo_description2}";
+        $description = "{seo_description} {seo_description2}";
     }
 
-    $descr = $language->replaceLangData($descr);
-    ($cat->getUrlNumber($_GET['page']) === 0) ?: $descr = "";
+    $description = $language->replaceLangData($description);
+    ($catalogue->getUrlNumber($_GET['page']) === 0) ?: $description = "";
 
-    return $descr;
+    return $description;
 }
 
 function getKeywords($path)
 {
     $language = new LangClass();
-    $cat = new CatalogueClass();
+    $catalogue = new CatalogueClass();
     $path = str_replace("/", "", $path);
     $prefix = "";
     $keywords = ($path !== "") ? $prefix : "{site_keywords}";
     $keywords = $language->replaceLangData($keywords);
-    ($cat->getUrlNumber($_GET['page']) === 0) ?: $keywords = "";
+    ($catalogue->getUrlNumber($_GET['page']) === 0) ?: $keywords = "";
 
     return $keywords;
 }
 
-function getSiteLang($lang_id_sel = 0)
+function getSiteLang($lang_id_sel = 0): string
 {
     $language = new LangClass();
 
@@ -398,9 +399,10 @@ function getPhpContent($file)
 function replaceLangVariables($content)
 {
     $site_link = getSiteCurrentLink();
-    $content = str_replace(array("{site_link_ru}", "{site_link_uk}", "{site_link_en}"), array($site_link["ru"], $site_link["uk"], $site_link["en"]), $content);
-
-    return $content;
+    return str_replace(
+        array("{site_link_ru}", "{site_link_uk}", "{site_link_en}"),
+        array($site_link["ru"], $site_link["uk"], $site_link["en"]),
+    $content);
 }
 
 function translateContent($content)
@@ -452,35 +454,6 @@ function findPath()
 	return $res;
 }
 
-function getLangPrefix($lang_id)
-{
-    $pre = "";
-    $lang_id = (int)$lang_id;
-
-    if ($lang_id === 2) {
-        $pre = "uk/";
-    }
-    if ($lang_id === 3) {
-        $pre = "en/";
-    }
-
-    return $pre;
-}
-
-function getLangUrl($lang)
-{
-    $path = $_SERVER["REQUEST_URI"];
-    $path = ltrim($path, "/en/");
-    $path = ltrim($path, "/uk/");
-    $path = ltrim($path, "/ru/");
-    if (empty($lang)) {
-        $postfix = "/";
-    } else {
-        $postfix = "/$lang/";
-    }
-    return "https://" . $_SERVER["HTTP_HOST"] . $postfix . $path;
-}
-
 function findUrl()
 {
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
@@ -489,13 +462,13 @@ function findUrl()
     return $link["path"];
 }
 
-function findNoIndex()
+function findNoIndex(): bool
 {
     $link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
     $result = 0;
     $arr = ["?utm_", "?sort=", "?gclid=", "?UAH", "?RUR", "?WMZ", "?USD"];
-    foreach ($arr as $findme) {
-        $pos = strripos($link, $findme);
+    foreach ($arr as $a) {
+        $pos = strripos($link, $a);
         if ($pos !== false) {
             $result++;
         }
@@ -504,7 +477,7 @@ function findNoIndex()
     return ($result > 0);
 }
 
-function findLanguage()
+function findLanguage(): string
 {
     $postfix = "";
     $link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
@@ -518,7 +491,7 @@ function findLanguage()
     return $postfix;
 }
 
-function findLanguageID($postfix)
+function findLanguageID($postfix): int
 {
     $language_id = 1;
     if ($postfix === "uk") {
@@ -531,7 +504,7 @@ function findLanguageID($postfix)
     return $language_id;
 }
 
-function findLinks()
+function findLinks(): array
 {
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 	if (substr($link, -1) !== "/") {
@@ -540,7 +513,7 @@ function findLinks()
 	$link = parse_url($link);
     $sub_url = substr($link["path"], 1);
 	$i = 0;
-	$linka = [];
+	$httpHost = [];
     $c = 0;
 	while ($sub_url !== "") {
 		$pos = strpos($sub_url, "/");
@@ -553,11 +526,11 @@ function findLinks()
                 if ($c === 1) {
                     $i = 0;
                 } else {
-                    $linka[$i] = $cur_path;
+                    $httpHost[$i] = $cur_path;
                     $i++;
                 }
             } else {
-                $linka[$i] = $cur_path;
+                $httpHost[$i] = $cur_path;
                 $i++;
             }
 		} else {
@@ -565,32 +538,29 @@ function findLinks()
         }
 	}
 
-	return $linka;
+	return $httpHost;
 }
 
 function str_replace_first($from, $to, $content)
 {
     $from = "/" . preg_quote($from, "/") . "/";
-
     return preg_replace($from, $to, $content, 1);
 }
 
 function getSeoText($seo_text)
 {
     $form = getHtmlForm("menu/seo_text");
-    $form = str_replace("{seo_text}", $seo_text, $form);
-
-    return $form;
+    return str_replace("{seo_text}", $seo_text, $form);
 }
 
 function getSeoTitleData()
 {
     $dbe = DbSingleton::getTokoEmojiDb();
-    $linka = findLinks();
-    $router = $linka[0];
-    $str_linka = $linka;
-    unset($str_linka[0]);
-    $str_linka = implode("/", $str_linka);
+    $httpHost = findLinks();
+    $router = $httpHost[0];
+    $httpHostString = $httpHost;
+    unset($httpHostString[0]);
+    $httpHostString = implode("/", $httpHostString);
     $catalogue = new CatalogueClass();
     $postfix = $catalogue->getLangPostfix($catalogue->getLanguage());
 
@@ -598,22 +568,22 @@ function getSeoTitleData()
         $router = "/";
         $get_link = "";
     } else {
-        $get_link = " AND `LINK` = '$str_linka'";
+        $get_link = " AND `LINK` = '$httpHostString'";
     }
 
     $r = $dbe->query("SELECT `TITLE_" . $postfix . "`, `DESCR_" . $postfix . "` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 0 $get_link LIMIT 1;");
     $n = $dbe->num_rows($r);
     if ($n == 0) {
-        $str_linka2 = explode("/", $str_linka)[0];
-        $r = $dbe->query("SELECT `TITLE_" . $postfix . "`, `DESCR_" . $postfix . "` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 1 AND `LINK` = '$str_linka2' LIMIT 1;");
+        $seoTitleLink = explode("/", $httpHostString)[0];
+        $r = $dbe->query("SELECT `TITLE_" . $postfix . "`, `DESCR_" . $postfix . "` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 1 AND `LINK` = '$seoTitleLink' LIMIT 1;");
         $n = $dbe->num_rows($r);
     }
     if ($n > 0) {
         $title = $dbe->result($r, 0, "TITLE_$postfix");
-        $descr = $dbe->result($r, 0, "DESCR_$postfix");
+        $description = $dbe->result($r, 0, "DESCR_$postfix");
     } else return false;
 
-    return array($title, $descr);
+    return array($title, $description);
 }
 
 function getSeoTextForm()
@@ -621,11 +591,11 @@ function getSeoTextForm()
     $db = DbSingleton::getTokoDb();
     $form = "";
     $query = "";
-    $linka = findLinks();
-    $router = $linka[0];
-    $str_linka = $linka;
-    unset($str_linka[0]);
-    $str_linka = implode("/", $str_linka);
+    $httpHost = findLinks();
+    $router = $httpHost[0];
+    $httpHostString = $httpHost;
+    unset($httpHostString[0]);
+    $httpHostString = implode("/", $httpHostString);
     $catalogue = new CatalogueClass();
     $page = $catalogue->getUrlNumber($_GET["page"]);
     $postfix = $catalogue->getLangPostfix($catalogue->getLanguage());
@@ -635,12 +605,12 @@ function getSeoTextForm()
     }
 
     if ($router === "cars") {
-        $link = $str_linka;
+        $link = $httpHostString;
         $query = "SELECT `CONTENT_" . $postfix . "` FROM `T2_SEO_TEXT` WHERE `ROUTER` = 'cars' AND `LINK` = '$link' LIMIT 1;";
     }
 
     if ($router === "catalog") {
-        $link = $str_linka;
+        $link = $httpHostString;
         $city_link = $catalogue->getUrlString($_GET["city"]);
         if (($city_link !== "") && $catalogue->checkCityLink($city_link)) {
             $link .= "/?city=$city_link";

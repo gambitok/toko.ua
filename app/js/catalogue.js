@@ -24,7 +24,8 @@ function showStorage(art_id) {
 
 // SEARCH (by ARTICLE_DISPLAY / ARTICLE_SEARCH)
 function artSearch(input_name) {
-    let art = $("#" + input_name).val();
+    const input = $("#" + input_name);
+    let art = input.val();
     let art2 = art;
 
     art = art.replace(/\s+/g, '');
@@ -34,7 +35,7 @@ function artSearch(input_name) {
 
     if (art === "" || art === undefined) {
         showNotify("{error_cap}:", "{input_art_first}!", "danger");
-        $("#" + input_name).focus();
+        input.focus();
     } else {
         JsHttpRequest.query(folder,{'w':'getCatalogueLink', 'article_nr_search':art, 'article_nr_search2':art2},
             function (result, errors){ if (errors) {alert(errors);} if (result){
@@ -46,7 +47,7 @@ function artSearch(input_name) {
 function selectRegion(id) {
     JsHttpRequest.query(folder,{'w':'setTpoint', 'id':id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            location.reload(true);
+            location.reload();
         }}, true);
 }
 
@@ -136,7 +137,7 @@ function catalogueFilter() {
 
             loadInputNumber();
 
-            var input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
+            const input_price = $("#filter-price"), input_delivery = $("#filter-delivery");
             input_price.slider();
             input_price.on("slide", function(e) {
                 let evalue = e.value;
@@ -193,26 +194,26 @@ function catalogueFilter() {
         }}, true);
 }
 
-function getArticleApplModelTypeForm(art_id, mfa_id, model, body_id) {
+function getArticleApplicableModelTypeForm(art_id, mfa_id, model, body_id) {
     $("#GarageForm").modal("show");
     $("#garage_block").html("<div class=\"spinner-border\"></div>");
-    JsHttpRequest.query(folder,{ 'w': 'getArticleApplModelTypeForm', 'art_id':art_id, 'mfa_id':mfa_id, 'model':model, 'body_id':body_id},
+    JsHttpRequest.query(folder,{ 'w': 'getArticleApplicableModelTypeForm', 'art_id':art_id, 'mfa_id':mfa_id, 'model':model, 'body_id':body_id},
         function (result, errors){ if (errors) {} if (result){
             $("#garage_block").html(result.content);
         }}, true);
 }
 
-function getArticleApplModelForm(art_id, mfa_id) {
-    JsHttpRequest.query(folder,{ 'w': 'getArticleApplModelForm', 'art_id':art_id, 'mfa_id':mfa_id},
+function getArticleApplicableModelForm(art_id, mfa_id) {
+    JsHttpRequest.query(folder,{ 'w': 'getArticleApplicableModelForm', 'art_id':art_id, 'mfa_id':mfa_id},
         function (result, errors){ if (errors) {} if (result){
             $("#info2_more").html(result.content);
         }}, true);
 }
 
-function getArticleApplModelInfoForm(art_id, typ_id) {
+function getArticleApplicableModelInfoForm(art_id, typ_id) {
     let er = 0;
     if (document.getElementById("AMI" + typ_id).innerHTML === "") {
-        JsHttpRequest.query(folder,{ 'w': 'getArticleApplModelInfoForm', 'art_id':art_id, 'typ_id':typ_id},
+        JsHttpRequest.query(folder,{ 'w': 'getArticleApplicableModelInfoForm', 'art_id':art_id, 'typ_id':typ_id},
             function (result, errors){ if (errors) {} if (result){
                 document.getElementById("AMI" + typ_id).innerHTML = result.content;
             }}, true);
@@ -239,8 +240,6 @@ function finishGarage(typ_id, group_link = '') {
 function addToGarageHistory(sel_typ_id = 0) {
     JsHttpRequest.query(folder,{'w':'addGarageHistory', 'sel_typ_id':sel_typ_id},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            console.log(result.content);
-            console.log(sel_typ_id);
         }}, true);
 }
 
@@ -326,14 +325,14 @@ function changeBasketCount(status, id) {
 function changeActionCount(i, action_price, action_amount) {
     let true_amount = $("#count_" + i).val();
     let true_price  = $("#true_price_" + i).val();
-    let true_kours  = $("#true_kours_" + i).val();
+    let true_cash  = $("#true_kours_" + i).val();
     let price       = $("#price_" + i);
 
     if (parseInt(true_amount) >= parseInt(action_amount)) {
-        price.text(action_price + " " + true_kours);
-        price.prepend("<span id='price_out_" + i + "' class='span-outline'>" + true_price + " " + true_kours + "</span><br>");
+        price.text(action_price + " " + true_cash);
+        price.prepend("<span id='price_out_" + i + "' class='span-outline'>" + true_price + " " + true_cash + "</span><br>");
     } else {
-        price.text(true_price + " " + true_kours);
+        price.text(true_price + " " + true_cash);
         $("#price_out_" + i).remove();
     }
 }
@@ -349,9 +348,9 @@ function setCatalogFilters() {
 }
 
 function setClientRequest() {
-    let phone   = $("#help-phone").val(); if ($("#help-phone").length === 0) phone = "";
-    let vin     = $("#help-vin").val(); if ($("#help-vin").length === 0) vin = "";
-    let text    = $("#help-text").val(); if ($("#help-text").length === 0) text = "";
+    const req_phone = $("#help-phone"); let phone = req_phone.val(); if (req_phone.length === 0) phone = "";
+    const req_vin = $("#help-vin"); let vin = req_vin.val(); if (req_vin.length === 0) vin = "";
+    const req_text = $("#help-text"); let text = req_text.val(); if (req_text.length === 0) text = "";
     let status  = 0;
 
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
@@ -366,9 +365,9 @@ function setClientRequest() {
 }
 
 function setClientRequestFaq() {
-    let phone   = $("#faq-phone").val(); if ($("#faq-phone").length === 0) phone = "";
-    let vin     = $("#faq-vin").val(); if ($("#faq-vin").length === 0) vin = "";
-    let text    = $("#faq-text").val(); if ($("#faq-text").length === 0) text = "";
+    const req_phone = $("#faq-phone"); let phone = req_phone.val(); if (req_phone.length === 0) phone = "";
+    const req_vin = $("#faq-vin"); let vin = req_vin.val(); if (req_vin.length === 0) vin = "";
+    const req_text = $("#faq-text"); let text = req_text.val(); if (req_text.length === 0) text = "";
     let status  = 0;
 
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
@@ -383,10 +382,10 @@ function setClientRequestFaq() {
 }
 
 function setClientRequestCard() {
-    let phone   = $("#help-phone-2").val(); if ($("#help-phone-2").length === 0) phone = "";
-    let vin     = $("#help-vin-2").val(); if ($("#help-vin-2").length === 0) vin = "";
-    let text    = $("#help-text-2").val(); if ($("#help-text-2").length === 0) text = "";
-    let status  = 1;
+    const req_phone = $("#help-phone-2"); let phone = req_phone.val(); if (req_phone.length === 0) phone = "";
+    const req_vin = $("#help-vin-2"); let vin = req_vin.val(); if (req_vin.length === 0) vin = "";
+    const req_text = $("#help-text-2"); let text = req_text.val(); if (req_text.length === 0) text = "";
+    const status  = 1;
 
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
@@ -402,9 +401,9 @@ function setClientRequestCard() {
 }
 
 function setClientRequest2() {
-    let phone   = $("#req-phone").val(); if ($("#req-phone").length === 0) phone = "";
-    let vin     = $("#req-vin").val(); if ($("#req-vin").length === 0) vin = "";
-    let text    = $("#req-text").val(); if ($("#req-text").length === 0) text = "";
+    const req_phone = $("#req-phone"); let phone = req_phone.val(); if (req_phone.length === 0) phone = "";
+    const req_vin = $("#req-vin"); let vin = req_vin.val(); if (req_vin.length === 0) vin = "";
+    const req_text = $("#req-text"); let text = req_text.val(); if (req_text.length === 0) text = "";
 
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
@@ -418,9 +417,9 @@ function setClientRequest2() {
 }
 
 function setClientRequest3() {
-    let phone   = $("#req-phone-seo").val(); if ($("#req-phone-seo").length === 0) phone = "";
-    let vin     = $("#req-vin-seo").val(); if ($("#req-vin-seo").length === 0) vin = "";
-    let text    = $("#req-text-seo").val(); if ($("#req-text-seo").length === 0) text = "";
+    const req_phone = $("#req-phone-seo"); let phone = req_phone.val(); if (req_phone.length === 0) phone = "";
+    const req_vin = $("#req-vin-seo"); let vin = req_vin.val(); if (req_vin.length === 0) vin = "";
+    const req_text = $("#req-text-seo"); let text = req_text.val(); if (req_text.length === 0) text = "";
 
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
@@ -449,14 +448,11 @@ function updateBasketCount(status) {
 
     JsHttpRequest.query(folder,{'w':'updateBasketCount', 'basket_id':basket_id, 'status':status},
         function (result, errors){ if (errors) {alert(errors);} if (result){
-            let answer = result["answer"];
-            let err = result["err"];
-            let new_amount = result["new_amount"];
-            if (err == 1) {
-                showNotify("{error_cap}!", answer, "danger");
-                $("#count_1").val(new_amount);
+            if (result["err"] == 1) {
+                showNotify("{error_cap}!", result["answer"], "danger");
+                $("#count_1").val(result["new_amount"]);
             }
-            if (err == 2) {
+            if (result["err"] == 2) {
                 $("#basket_id").val(0);
                 $(".buy-form__button").removeClass("buy-form__button-hidden");
                 $(".buy-form__input").addClass("buy-form__input-hidden");
@@ -467,7 +463,7 @@ function updateBasketCount(status) {
 function moveBasketButton() {
     $(".btn-buy").parent(".buy-form__button").toggleClass("buy-form__button-hidden").next(".buy-form__input").toggleClass("buy-form__input-hidden");
 
-    let id          = "one";
+    let id   = "one";
     let art_id      = $("#art_id").val();
     let brand_id    = $("#brand_id").val();
     let stock       = $("#stock").val();

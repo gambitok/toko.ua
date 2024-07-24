@@ -1,3 +1,3 @@
 <?php
 
-$content = str_replace("{main_window}", $showform->showSitemap(), $content);
+$content = str_replace("{main_window}", $formObj->showSitemap(), $content);

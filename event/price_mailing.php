@@ -1,9 +1,11 @@
 <?php
 
-$linka = findLinks();
+global $content, $dbm, $catalogue;
 
-$type_id = $catalogue->getUrlNumber($linka[1]);
-$user_id = $catalogue->getUrlNumber($linka[2]);
+$httpHost = findLinks();
+
+$type_id = $catalogue->getUrlNumber($httpHost[1]);
+$user_id = $catalogue->getUrlNumber($httpHost[2]);
 
 if (empty($catalogue->getUser())) {
     require_once("profile.php");

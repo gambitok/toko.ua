@@ -13,7 +13,7 @@ if (!empty($matches[0])) {
     header("Location: $lower", TRUE, 301);
 }
 
-define('RDD', __DIR__);
+const RDD = __DIR__;
 require_once (RDD . "/vendor/autoload.php");                  // init classes
 require_once (RDD . "/lib/access.php");                       // get access site
 require_once (RDD . "/js/JsHttpRequest/JsHttpRequest.php");   // ajax requests

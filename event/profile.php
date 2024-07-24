@@ -1,5 +1,7 @@
 <?php
 
+global $content, $client, $profile, $catalogue;
+
 if ($client->checkUnRegClient()) {
     header("Location: /signin", TRUE, 301);
 } else {

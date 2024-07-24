@@ -1,7 +1,8 @@
 <?php
 
-$linka = findLinks();
-$w = $catalogue->getUrlString($linka[1]);
+global $catalogue;
+$httpHost = findLinks();
+$w = $catalogue->getUrlString($httpHost[1]);
 
 if ($w === "" || $w === "finddetail" || $w === "findtec" || $w === "findmodel" || $w === "auto") {
     header("Location: /catalog/", TRUE, 301);

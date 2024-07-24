@@ -3,7 +3,7 @@
 class ProfileClass extends ClientClass
 {
 
-    public $page_signin         = "signin/";
+    public $page_sign_in         = "signin/";
     public $page_profile        = "profile/orders/";
     public $page_registration   = "registration/";
 
@@ -34,9 +34,8 @@ class ProfileClass extends ClientClass
         } else {
             $form = str_replace("{reg_logout}", "none", $form);
         }
-        $form = str_replace(array("{reg_login}", "{reg_logout}"), "", $form);
 
-        return $form;
+        return str_replace(array("{reg_login}", "{reg_logout}"), "", $form);
     }
 
     /*
@@ -127,11 +126,9 @@ class ProfileClass extends ClientClass
     public function getProfileInfoMobile()
     {
         $info = ($this->getUser() === 0)
-            ? "<a href=\"" . $this->getSiteLink() . "$this->page_signin\">{authorization}</a>"
+            ? "<a href=\"" . $this->getSiteLink() . "$this->page_sign_in\">{authorization}</a>"
             : "<a href=\"" . $this->getSiteLink() . "$this->page_profile\">{profile}</a>";
-        $info = $this->replaceLang($info);
-
-        return $info;
+        return $this->replaceLang($info);
     }
 
     /*
@@ -145,9 +142,7 @@ class ProfileClass extends ClientClass
 
         $form = $this->getHtmlForm("profile/profile");
         $form = str_replace(array("{client_name}", "{client_id}"), array($name, $client_id), $form);
-        $form = $this->replaceLang($form);
-
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -172,9 +167,8 @@ class ProfileClass extends ClientClass
         $r = $db->query("SELECT `bonus_balance` FROM `A_CLIENTS` WHERE `id` = $client_id;");
         $n = $db->num_rows($r);
         if ($n > 0) {
-            $summ = $db->result($r, 0, "bonus_balance");
             $form = $this->getHtmlForm("profile/profile_bonus");
-            $form = str_replace("{bonus_profile}", $summ, $form);
+            $form = str_replace("{bonus_profile}", $db->result($r, 0, "bonus_balance"), $form);
         } else {
             $form = "";
         }
@@ -194,9 +188,7 @@ class ProfileClass extends ClientClass
 
         $form = $this->getHtmlForm("profile/profile_account");
         $form = str_replace(array("{client_id}", "{client_phone}", "{client_password}", "{client_email}", "{client_name}", "{type_form}", "{client_country}", "{region_form}", "{client_city}", "{bonus_user}"), array($user_id, $clientData["phone"], $clientData["password"], $clientData["email"], $clientData["name"], $menu->showTypeForm($clientData["type"]), $clientData["country"], $menu->getRegionForm($clientData["region"]), $clientData["city"], $this->getClientBonus($client_id) ? $this->showClientBonus($client_id) : ""), $form);
-        $form = $this->replaceLang($form);
-
-        return $form;
+        return $this->replaceLang($form);
     }
 
     public function checkDpStrExist($dp_id): bool
@@ -319,9 +311,7 @@ class ProfileClass extends ClientClass
             <input id=\"order_id\" type=\"hidden\" value=\"$order_id\">";
         }
 
-        $list = $this->replaceLang($list);
-
-        return $list;
+        return $this->replaceLang($list);
     }
 
     /*
@@ -355,9 +345,9 @@ class ProfileClass extends ClientClass
         $order_id   = $this->getUrlNumber($order_id);
         $user_id    = $this->getUrlNumber($user_id);
         $db = DbSingleton::getDbm();
-        $r = $db->query("SELECT COUNT(`id`) as kilk FROM `orders_new` WHERE `id` = $order_id AND `client_user_id` = $user_id;");
+        $r = $db->query("SELECT COUNT(`id`) as count_ids FROM `orders_new` WHERE `id` = $order_id AND `client_user_id` = $user_id;");
 
-        return (int)$db->result($r, 0, "kilk");
+        return (int)$db->result($r, 0, "count_ids");
     }
 
     /*
@@ -389,12 +379,12 @@ class ProfileClass extends ClientClass
     public function showProfileOrders()
     {
         $db = DbSingleton::getDbm();
-        $kours = new ExRateClass();
+        $exRate = new ExRateClass();
         $client = new ClientClass();
 
         $form       = $this->getHtmlForm("profile/profile_orders");
         $user_id    = $this->getUser();
-        $k          = $summ = 0;
+        $k          = $summary = 0;
         $list       = "";
         $date_sel   = date("Y-m-d H:i:s", (strtotime("-15 day" , strtotime(date("Y-m-d H:i:s")))));
 
@@ -403,7 +393,7 @@ class ProfileClass extends ClientClass
         for ($ii = 1; $ii <= $nn; $ii++) {
             $dp_id  = $db->result($rr, $ii - 1, "dp_id");
             $dp_arr = explode(",", $dp_id);
-            $prefix = $id = $name = $date = $city_name = $delivery_type = $payment_type = $price_summ = $cash_name = $status_type = $bg_bug = "";
+            $prefix = $id = $name = $date = $city_name = $delivery_type = $payment_type = $price_summary = $cash_name = $status_type = "";
 
             foreach ($dp_arr as $jValue) {
                 $dp_value = (int)$jValue;
@@ -424,19 +414,18 @@ class ProfileClass extends ClientClass
                     $delivery       = $db->result($r, 0, "delivery_type_id");
                     $status         = $db->result($r, 0, "status_dp");
                     $cash_id        = $db->result($r, 0, "cash_id");
-                    //$summ_sale      = $db->result($r, 0, "summ_sale");
-                    $summ_sale      = $db->result($r, 0, "summ");
+                    $summary_sale   = $db->result($r, 0, "summ");
                     $status_visible = (int)$db->result($r, 0, "status_visible");
-                    $price_summ     += (float)$summ_sale;
-                    $summ           = $db->result($r, 0, "summ");
+                    $price_summary  += (float)$summary_sale;
+                    $summary        = $db->result($r, 0, "summ");
                     $city_name      .= $city . "\n";
                     $delivery_type  .= $this->getManualName($delivery) . "\n";
                     $payment_type   .= $this->getManualName(0) . "\n";
                     $status_type    .= $this->getManualName($status) . "\n";
-                    $cash_name      .= $kours->getKoursCaption($cash_id) . "\n";
+                    $cash_name      .= $exRate->getExRateCaption($cash_id) . "\n";
 
-                    if ($price_summ === 0) {
-                        $price_summ += (float)$db->result($r, 0, "summ");
+                    if ($price_summary === 0) {
+                        $price_summary += (float)$db->result($r, 0, "summ");
                     }
 
                     if ($status_visible === 1 &&$this->checkSelectDpBug($dp_value)) {
@@ -448,9 +437,9 @@ class ProfileClass extends ClientClass
             $bg_bug     = ($k > 0) ? "bg-warning" : "";
             $k          = 0;
             $id         = rtrim($id, ",");
-            $price_summ = number_format($price_summ, 2, '.', '');
+            $price_summary = number_format($price_summary, 2, '.', '');
 
-            if ($summ > 0 && $id !== "") {
+            if ($summary > 0 && $id !== "") {
                 $list .= "
                 <tr class=\"$bg_bug pointer\" onclick=\"showProfileOrdersArts('$id','')\">
                     <td>$prefix-$id</td>
@@ -459,7 +448,7 @@ class ProfileClass extends ClientClass
                     <td>$city_name</td>
                     <td>$delivery_type</td>
                     <td>$payment_type</td>
-                    <td>$price_summ</td>
+                    <td>$price_summary</td>
                     <td>$cash_name</td>
                     <td>$status_type</td>
                 </tr>";
@@ -475,13 +464,13 @@ class ProfileClass extends ClientClass
             $city       = $db->result($r2, $i - 1, "region");
             $delivery   = $db->result($r2, $i - 1, "delivery");
             $payment    = $db->result($r2, $i - 1, "payment");
-            $price_summ = $db->result($r2, $i - 1, "price_summ");
+            $price_summary = $db->result($r2, $i - 1, "price_summ");
             $cash_id    = $db->result($r2, $i - 1, "cash_id");
-            $price_summ = $kours->getKoursFromUAH($price_summ, $cash_id);
+            $price_summary = $exRate->getExRateFromUAH($price_summary, $cash_id);
             $city_name  = $this->getCityName($city);
             $del_tp     = $this->getManualName($delivery);
             $pay_tp     = $this->getManualName($payment);
-            $cash_name  = $kours->getKoursCaption($cash_id);
+            $cash_name  = $exRate->getExRateCaption($cash_id);
 
             $list .= "
             <tr class=\"pointer\" onclick=\"showProfileOrdersArts('','$id')\">
@@ -491,16 +480,15 @@ class ProfileClass extends ClientClass
                 <td>$city_name</td>
                 <td>$del_tp</td>
                 <td>$pay_tp</td>
-                <td>$price_summ</td>
+                <td>$price_summary</td>
                 <td>$cash_name</td>
                 <td>{order_in_queue}</td>
             </tr>";
         }
 
         $form = str_replace("{orders_range}", $list, $form);
-        $form = $this->replaceLang($form);
 
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -514,7 +502,7 @@ class ProfileClass extends ClientClass
         $order_check    = $this->getUrlNumber($order_check);
 
         $db = DbSingleton::getDbm();
-        $kours = new ExRateClass();
+        $exRate = new ExRateClass();
 
         $list       = "";
         $form       = $this->getHtmlForm("profile/profile_orders_arts");
@@ -526,7 +514,7 @@ class ProfileClass extends ClientClass
         // Dp orders arts
         if (empty($order_check)) {
             foreach ($dp_arr as $jjValue) {
-                $nedp = false;
+                $dp_status = false;
                 $dp_value = $jjValue;
                 $where_dp_client = ($dp_check !== "") ? "WHERE `id` = '$dp_value' AND `client_id` = $client_id" : "WHERE `client_id` = $client_id";
 
@@ -537,12 +525,7 @@ class ProfileClass extends ClientClass
                     $dp_id  = $db->result($r, 0, "id") + 0;
                     $prefix = $db->result($r, 0, "prefix");
 
-                    if ($dp_check !== "") {
-                        $where_dp = "WHERE dp.`dp_id` = $dp_id AND ord.`dp_str_id` != 0";
-                    } else {
-                        $dp_id = $jjValue;
-                        $where_dp = "WHERE dp.`dp_id` = $dp_id AND ord.`dp_str_id` != 0";
-                    }
+                    $where_dp = "WHERE dp.`dp_id` = $dp_id AND ord.`dp_str_id` != 0";
 
                     $r_str = $db->query("SELECT dp.*, ord.order_id, ord.id as order_str_id 
                     FROM `orders_str_new` ord
@@ -554,7 +537,7 @@ class ProfileClass extends ClientClass
                     if ($n_str === 0) {
                         $r_str = $db->query("SELECT * FROM `J_DP_STR` WHERE `dp_id` = $dp_id GROUP BY `art_id`;");
                         $n_str = $db->num_rows($r_str);
-                        $nedp = true;
+                        $dp_status = true;
                     }
 
                     for ($j = 1; $j <= $n_str; $j++) {
@@ -565,10 +548,10 @@ class ProfileClass extends ClientClass
                         $brand_id       = $db->result($r_str, $j - 1, "brand_id");
                         $amount         = (int)$db->result($r_str, $j - 1, "amount");
                         $amount_collect = (int)$db->result($r_str, $j - 1, "amount_collect");
-                        $summ           = $db->result($r_str, $j - 1, "summ");
+                        $summary           = $db->result($r_str, $j - 1, "summ");
                         $status_dps     = $db->result($r_str, $j - 1, "status_dps");
                         $status_visible = (int)$db->result($r_str, $j - 1, "status_visible");
-                        $price          = round($summ / $amount, 2);
+                        $price          = round($summary / $amount, 2);
                         $status_dps     = $this->getManualName($status_dps);
                         $brand_name     = $this->getBrandName($brand_id);
 
@@ -582,11 +565,11 @@ class ProfileClass extends ClientClass
                         }
 
                         $price = number_format($price, 2, '.', '');
-                        $summ = number_format($summ, 2, '.', '');
+                        $summary = number_format($summary, 2, '.', '');
 
                         $amount_text = ($this->checkSelectStrDpBug($dp_id, $art_id) > 0) ? "$amount_collect ($amount)" : $amount;
 
-                        if ($nedp) {
+                        if ($dp_status) {
                             $list .= "
                             <tr class=\"$bg_bug\">
                                 <td>$prefix-$dp_id</td>
@@ -594,7 +577,7 @@ class ProfileClass extends ClientClass
                                 <td>$brand_name</td>
                                 <td><p class=\"text-center\">$amount_text</p> $btn_bug</td>
                                 <td>$price</td>
-                                <td>$summ</td>
+                                <td>$summary</td>
                                 <td>$status_dps</td>
                             </tr>";
                         }
@@ -607,7 +590,7 @@ class ProfileClass extends ClientClass
                                 <td>$brand_name</td>
                                 <td><p class=\"text-center\">$amount_text</p> $btn_bug</td>
                                 <td>$price</td>
-                                <td>$summ</td>
+                                <td>$summary</td>
                                 <td>$status_dps</td>
                             </tr>";
                         }
@@ -633,11 +616,11 @@ class ProfileClass extends ClientClass
                     $brand_id   = $db->result($r_str, $j - 1, "brand_id");
                     $amount     = (int)$db->result($r_str, $j - 1, "amount");
                     $price      = $db->result($r_str, $j - 1, "price");
-                    $summ       = $db->result($r_str, $j - 1, "summ");
+                    $summary    = $db->result($r_str, $j - 1, "summ");
                     $art_nr_ds  = $this->getArticleDispl($art_id);
                     $brand_name = $this->getBrandName($brand_id);
-                    $price      = $kours->getKoursFromUAH($price, $cash_id);
-                    $summ       = $kours->getKoursFromUAH($summ, $cash_id);
+                    $price      = $exRate->getExRateFromUAH($price, $cash_id);
+                    $summary    = $exRate->getExRateFromUAH($summary, $cash_id);
 
                     $list .= "
                     <tr>
@@ -646,7 +629,7 @@ class ProfileClass extends ClientClass
                         <td>$brand_name</td>
                         <td><p class=\"text-center\">$amount</p></td>
                         <td>$price</td>
-                        <td>$summ</td>
+                        <td>$summary</td>
                         <td>{making_order_cap}</td>
                     </tr>";
                 }
@@ -654,9 +637,7 @@ class ProfileClass extends ClientClass
         }
 
         $form = str_replace("{orders_range}", $list, $form);
-        $form = $this->replaceLang($form);
-
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -728,15 +709,13 @@ class ProfileClass extends ClientClass
             $list .= "</table></td></tr>";
         }
 
-        $list = $this->replaceLang($list);
-
-        return $list;
+        return $this->replaceLang($list);
     }
 
     public function showProfileCheckForm($data_from = "", $data_to = "")
     {
         $db = DbSingleton::getDbm();
-        $kours = new ExRateClass();
+        $exRate = new ExRateClass();
         $client = new ClientClass();
 
         $data_from  = $this->getNameString($data_from);
@@ -751,9 +730,8 @@ class ProfileClass extends ClientClass
         }
 
         $client_id      = $this->getClient();
-        $balans_after   = 0;
-        $saldo_end      = 0;
-        $saldo_end      = number_format((float)$saldo_end, 2, '.', '');
+        $balanceAfter   = $balanceNetEnd = 0;
+        $balanceNetEnd  = number_format((float)$balanceNetEnd, 2, '.', '');
         $list           = "";
 
         $r = $db->query("SELECT b.*, mc.abr as cash_name, pmc.abr as cash_abr
@@ -768,14 +746,14 @@ class ProfileClass extends ClientClass
             for ($i = 1; $i <= $n; $i++) {
                 $data           = $db->result($r, $i - 1, "data");
                 $cash_name      = $db->result($r, $i - 1, "cash_name");
-                $summ           = round($db->result($r, $i - 1, "summ"), 2);
+                $summary        = round($db->result($r, $i - 1, "summ"), 2);
                 $deb_kre        = (int)$db->result($r, $i - 1, "deb_kre");
-                $balans_before  = $db->result($r, $i - 1, "balans_before");
-                $balans_after   = $db->result($r, $i - 1, "balans_after");
+                $balanceBefore  = $db->result($r, $i - 1, "balans_before");
+                $balanceAfter   = $db->result($r, $i - 1, "balans_after");
                 $doc_type_id    = (int)$db->result($r, $i - 1, "doc_type_id");
                 $doc_id         = $db->result($r, $i - 1, "doc_id");
                 $pay_cash_name  = $db->result($r, $i - 1, "cash_abr");
-                $pay_summ       = $db->result($r, $i - 1, "pay_summ");
+                $pay_summary    = $db->result($r, $i - 1, "pay_summ");
                 $document_name  = "";
 
                 if ($doc_type_id === 1) {
@@ -783,9 +761,9 @@ class ProfileClass extends ClientClass
                 }
 
                 if ($doc_type_id === 2) {
-                    list($jpay_doc_type_id, $document_name) = $this->getJPayName($doc_id);
-                    if ($jpay_doc_type_id === 99) {
-                        $summ = "";
+                    list($j_pay_doc_type_id, $document_name) = $this->getJPayName($doc_id);
+                    if ($j_pay_doc_type_id === 99) {
+                        $summary = "";
                     }
                 }
 
@@ -797,14 +775,12 @@ class ProfileClass extends ClientClass
                     $document_name = $this->getBackClientsName($doc_id);
                 }
 
-                $debit = $kredit = "";
+                $debit = $credit = "";
                 if ($deb_kre === 1) {
-                    $debit = $summ;
-                    $saldo_end -= $debit;
+                    $debit = $summary;
                 }
                 if ($deb_kre === 2) {
-                    $kredit = $summ;
-                    $saldo_end += $kredit;
+                    $credit = $summary;
                 }
 
                 $onclick = "showProfileDocs($i, $doc_id, $doc_type_id);";
@@ -813,16 +789,16 @@ class ProfileClass extends ClientClass
                     <td>$i</td>
                     <td>$data</td>
                     <td>$cash_name</td>
-                    <td>$balans_before</td>
+                    <td>$balanceBefore</td>
                     <td>$debit</td>
-                    <td>$kredit</td>
-                    <td>$balans_after</td>
+                    <td>$credit</td>
+                    <td>$balanceAfter</td>
                     <td>$document_name</td>
-                    <td>$pay_summ $pay_cash_name</td>
+                    <td>$pay_summary $pay_cash_name</td>
                 </tr>";
             }
 
-            $saldo_end = round($balans_after, 2);
+            $balanceNetEnd = round($balanceAfter, 2);
 
         } else {
             $list = "
@@ -834,61 +810,65 @@ class ProfileClass extends ClientClass
 
         if ($n === 0) {
             $r = $db->query("SELECT `balans_after` FROM `B_CLIENT_BALANS_JOURNAL` WHERE `client_id` = $client_id ORDER BY `data` DESC LIMIT 1;");
-            $balans_after = $db->result($r, 0, "balans_after");
-            $saldo_end = round($balans_after, 2);
+            $balanceAfter = $db->result($r, 0, "balans_after");
+            $balanceNetEnd = round($balanceAfter, 2);
         }
 
         $form = $this->getHtmlForm("profile/profile_check");
-        $saldo_start_cap = $saldo_end_cap = "";
+        $balanceNetStart_cap = $balanceNetEnd_cap = "";
 
         $client_cash_id = $client->getClientCurrency($client_id);
-        list($saldo_start, $saldo_cash_id) = $this->getClientBalansPeriodStart($client_id, $client_cash_id, $data_from, 0);
+        list($balanceNetStart, $balanceNetCash) = $this->getClientBalancePeriodStart($client_id, $client_cash_id, $data_from, 0);
 
-        $saldo_data_start = date("Y-m-01");
-        if ($saldo_start < 0) {
-            $saldo_start_cap = " (<span class=\"span-red\">{debt_cap}</span>)";
+        $balanceNetDate_start = date("Y-m-01");
+        if ($balanceNetStart < 0) {
+            $balanceNetStart_cap = " (<span class=\"span-red\">{debt_cap}</span>)";
         }
-        elseif ($saldo_start > 0) {
-            $saldo_start_cap = " (<span class=\"span-green\">{prepayment}</span>)";
-        }
-
-        $form = str_replace(array("{saldo_start_data}", "{saldo_start_date}"), array($saldo_start . " " . $kours->getKoursCaption($saldo_cash_id) . $saldo_start_cap, $saldo_data_start), $form);
-
-        $saldo_data_end = date("Y-m-d");
-        if ($saldo_end < 0) {
-            $saldo_end_cap = " (<span class=\"span-red\">{debt_cap}</span>)";
-        }
-        elseif ($saldo_end > 0) {
-            $saldo_end_cap = " (<span class=\"span-green\">{prepayment}</span>)";
+        elseif ($balanceNetStart > 0) {
+            $balanceNetStart_cap = " (<span class=\"span-green\">{prepayment}</span>)";
         }
 
-        $form = str_replace(array("{saldo_end_data}", "{saldo_end_date}", "{profile_check_range}"), array($saldo_end . " " . $kours->getKoursCaption($saldo_cash_id) . $saldo_end_cap, $saldo_data_end, $list), $form);
-        $form = $this->replaceLang($form);
+        $form = str_replace(
+            array("{saldo_start_data}", "{saldo_start_date}"),
+            array($balanceNetStart . " " . $exRate->getExRateCaption($balanceNetCash) . $balanceNetStart_cap, $balanceNetDate_start),
+        $form);
 
-        return $form;
+        $balanceNetDate_end = date("Y-m-d");
+        if ($balanceNetEnd < 0) {
+            $balanceNetEnd_cap = " (<span class=\"span-red\">{debt_cap}</span>)";
+        }
+        elseif ($balanceNetEnd > 0) {
+            $balanceNetEnd_cap = " (<span class=\"span-green\">{prepayment}</span>)";
+        }
+
+        $form = str_replace(
+            array("{saldo_end_data}", "{saldo_end_date}", "{profile_check_range}"),
+            array($balanceNetEnd . " " . $exRate->getExRateCaption($balanceNetCash) . $balanceNetEnd_cap, $balanceNetDate_end, $list),
+        $form);
+
+        return $this->replaceLang($form);
     }
 
-    public function getClientBalansPeriodStart($client_id, $cash_id_sel, $data_from, $recursion): array
+    public function getClientBalancePeriodStart($client_id, $cash_id_sel, $data_from, $recursion): array
     {
         $db = DbSingleton::getDbm();
         $cash_id = 1;
-        $saldo_start = 0;
-        $saldo_data_start = $data_from;
+        $balanceNetStart = 0;
+        $balanceNetDate_start = $data_from;
 
         $r = $db->query("SELECT `saldo_start`, `cash_id`, `data_start` FROM `B_CLIENT_BALANS_PERIOD` WHERE `client_id` = $client_id AND `data_start` = '" . date("Y-m-01", strtotime($data_from)) . "' LIMIT 1;");
         $n = $db->num_rows($r);
 
         if ($n === 1) {
-            $saldo_start = $db->result($r, 0, "saldo_start");
+            $balanceNetStart = $db->result($r, 0, "saldo_start");
             $cash_id = $db->result($r, 0, "cash_id");
-            $saldo_data_start = $db->result($r, 0, "data_start");
+            $balanceNetDate_start = $db->result($r, 0, "data_start");
         }
 
         if ($n === 0) {
             $recursion++;
             if ($recursion < 12) {
                 $data_from = date("Y-m-01", strtotime("$data_from -1 month"));
-                list($saldo_start, , $saldo_data_start) = $this->getClientBalansPeriodStart($client_id, $cash_id_sel, $data_from, $recursion);
             } else {
                 $data_main_start = date("Y-m-01", strtotime($data_from));
                 $db->query("INSERT INTO `B_CLIENT_BALANS_PERIOD` (`client_id`,`cash_id`,`saldo_start`,`data_start`,`active`) 
@@ -896,13 +876,13 @@ class ProfileClass extends ClientClass
                 $data_plus_month = date("Y-m-d", strtotime("$data_main_start +1 month"));
                 $data_from = date("Y-m-01", strtotime($data_plus_month));
                 $recursion -= 2;
-                list($saldo_start, , $saldo_data_start) = $this->getClientBalansPeriodStart($client_id, $cash_id_sel, $data_from, $recursion);
             }
+            list($balanceNetStart, , $balanceNetDate_start) = $this->getClientBalancePeriodStart($client_id, $cash_id_sel, $data_from, $recursion);
 
             $cash_id = $cash_id_sel;
         }
 
-        return array($saldo_start, $cash_id, $saldo_data_start);
+        return array($balanceNetStart, $cash_id, $balanceNetDate_start);
     }
 
     /*
@@ -935,7 +915,7 @@ class ProfileClass extends ClientClass
         $user_id    = $this->getUser();
         $csv        = "";
         $date       = date("Y-m-d_H-i-s");
-        $filedir    = $user_id . "/" . $user_id . "_price-list_" . $date . ".csv";
+        $file_dir   = $user_id . "/" . $user_id . "_price-list_" . $date . ".csv";
         $filename   = $user_id . "_price-list_" . $date . ".csv";
         $list       = $catalogue->getPriceList();
 
@@ -945,21 +925,9 @@ class ProfileClass extends ClientClass
             }
             $csv .= "\n";
         }
-        if (!file_exists(RDD . "/uploads/$user_id")) {
-            if (!mkdir($concurrentDirectory = RDD . "/uploads/$user_id", 0777, true) && !is_dir($concurrentDirectory)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-            }
-        }
-        elseif (file_exists(RDD . "/uploads/$user_id/")) {
-            foreach (glob(RDD . "/uploads/$user_id/*") as $file) {
-                unlink($file);
-            }
-        }
-        $csv_handler = fopen(RDD . "/uploads/$filedir", 'wb') or die("Can't create file");
-        fwrite($csv_handler, $csv);
-        fclose($csv_handler);
+        $this->extractedFile($user_id, $file_dir, $csv);
 
-        return array($filename, $filedir);
+        return array($filename, $file_dir);
     }
 
     public function showPriceList()
@@ -1022,10 +990,12 @@ class ProfileClass extends ClientClass
         }
 
         $form = $this->getHtmlForm("profile/profile_price_list");
-        $form = str_replace(array("{price_download}", "{price_download_excel}", "{price_disabled}", "{price_history}"), array($list, $list_excel, $disable, $history_fr), $form);
-        $form = $this->replaceLang($form);
+        $form = str_replace(
+            array("{price_download}", "{price_download_excel}", "{price_disabled}", "{price_history}"),
+            array($list, $list_excel, $disable, $history_fr),
+        $form);
 
-        return $form;
+        return $this->replaceLang($form);
     }
 
     /*
@@ -1034,9 +1004,7 @@ class ProfileClass extends ClientClass
     public function getStatusProfilePrice($status)
     {
         $text = ($status === 2) ? "{status_off}" : "{status_on}";
-        $text = $this->replaceLang($text);
-
-        return $text;
+        return $this->replaceLang($text);
     }
 
     /*
@@ -1047,9 +1015,10 @@ class ProfileClass extends ClientClass
         $menu = new MenuClass();
         $shop = new ShopClass();
         $form = $this->getHtmlForm("profile/registration");
-        $form = str_replace(array("{type_form}", "{region_form}", "{category_options}", "{tpoint_options}", "{user_city_main_list}"), array($menu->showTypeForm(), $menu->getRegionForm(), $this->getManualOptions("customers_categories"), $this->getRegionSelectProfile(), $shop->getCitiesMainSelect()), $form);
-
-        return $form;
+        return str_replace(
+            array("{type_form}", "{region_form}", "{category_options}", "{sale_point_options}", "{user_city_main_list}"),
+            array($menu->showTypeForm(), $menu->getRegionForm(), $this->getManualOptions("customers_categories"), $this->getRegionSelectProfile(), $shop->getCitiesMainSelect()),
+        $form);
     }
 
     public function getRegionSelectProfile(): string
@@ -1092,26 +1061,36 @@ class ProfileClass extends ClientClass
                     $csv .= "\n";
                 }
 
-                if (!file_exists(RDD . "/uploads/$user_id")) {
-                    if (!mkdir($concurrentDirectory = RDD . "/uploads/$user_id", 0777, true) && !is_dir($concurrentDirectory)) {
-                        throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-                    }
-                }
-                elseif (file_exists(RDD . "/uploads/$user_id/")) {
-                    foreach (glob(RDD . "/uploads/$user_id/*") as $file) {
-                        unlink($file);
-                    }
-                }
-
-                $csv_handler = fopen(RDD . "/uploads/$filename", 'wb') or die("Can't create file");
-                fwrite($csv_handler, $csv);
-                fclose($csv_handler);
+                $this->extractedFile($user_id, $filename, $csv);
                 $date_end = date("Y-m-d H:i:s");
                 $dbm->query("UPDATE `cron_task_prices` SET `status` = 2, `date_end` = '$date_end' WHERE `user_id` = $user_id AND `status` = 1;");
             }
         }
 
         return true;
+    }
+
+    /**
+     * @param $user_id
+     * @param string $filename
+     * @param string $csv
+     * @return void
+     */
+    public function extractedFile($user_id, string $filename, string $csv)
+    {
+        if (!file_exists(RDD . "/uploads/$user_id")) {
+            if (!mkdir($concurrentDirectory = RDD . "/uploads/$user_id", 0777, true) && !is_dir($concurrentDirectory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
+        } elseif (file_exists(RDD . "/uploads/$user_id/")) {
+            foreach (glob(RDD . "/uploads/$user_id/*") as $file) {
+                unlink($file);
+            }
+        }
+
+        $csv_handler = fopen(RDD . "/uploads/$filename", 'wb') or die("Can't create file");
+        fwrite($csv_handler, $csv);
+        fclose($csv_handler);
     }
 
 }

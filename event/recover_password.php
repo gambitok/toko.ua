@@ -1,5 +1,6 @@
 <?php
 
+global $client, $content;
 session_start();
 
 if ($client->checkUnRegClient()) {
@@ -35,7 +36,10 @@ if ($client->checkUnRegClient()) {
         $_SESSION["captcha_code_status"] = 0;
     }
 
-    $form = str_replace(array("{form_phone}", "{form_password}", "{message}"), array($ses_phone, $ses_password, (!empty($message)) ? "<label class=\"alert-danger\">$message</label>" : $message), $form);
+    $form = str_replace(
+        array("{form_phone}", "{form_password}", "{message}"),
+        array($ses_phone, $ses_password, (!empty($message)) ? "<label class=\"alert-danger\">$message</label>" : $message),
+    $form);
     $content = str_replace("{main_window}", $form, $content);
 
 

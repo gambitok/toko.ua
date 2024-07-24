@@ -16,29 +16,30 @@ class ProductsClass extends CatalogueClass
 
     public function getCarsForm($mfa_link, $mod_link): array
     {
-        $automan = new AutoClass();
+        $autoObj = new AutoClass();
 
         $status = 1;
-        $title  = $descr = "";
+        $title = $description = "";
 
-        list($mfa_id, $model) = $automan->getAutoIdsLink($mfa_link, $mod_link);
-        $h1 = $automan->getCarsTitle($mfa_id, $model);
+        list($mfa_id, $model) = $autoObj->getAutoIdsLink($mfa_link, $mod_link);
+        $h1 = $autoObj->getCarsTitle($mfa_id, $model);
 
         $form = $this->getHtmlForm("cars/form");
-        $form = str_replace(array("{cars_h1}", "{cars_list}", "{cars_seo}"),
-            array($h1, $this->getCarsSearch($mfa_link, $mod_link), $automan->getCarsSeoContent($mfa_link, $mod_link)),
+        $form = str_replace(
+            array("{cars_h1}", "{cars_list}", "{cars_seo}"),
+            array($h1, $this->getCarsSearch($mfa_link, $mod_link), $autoObj->getCarsSeoContent($mfa_link, $mod_link)),
         $form);
 
-        $automan->getCarsMetaTags($mfa_id, $model, $h1);
+        $autoObj->getCarsMetaTags($mfa_id, $model, $h1);
         if ($mfa_id > 0) {
             $title = $this->replaceLang("{site_cars_mfa}");
-            $descr = $this->replaceLang("{site_cars_mfa_description}");
+            $description = $this->replaceLang("{site_cars_mfa_description}");
             if ($model !== "") {
                 $title = $this->replaceLang("{site_cars_model}");
-                $descr = $this->replaceLang("{site_cars_model_description}");
+                $description = $this->replaceLang("{site_cars_model_description}");
             }
             $title = str_replace("{h1_text}", $h1, $title);
-            $descr = str_replace("{h1_text}", $h1, $descr);
+            $description = str_replace("{h1_text}", $h1, $description);
         }
 
         if ($mfa_id === 0 && $mfa_link !== "") {
@@ -50,10 +51,10 @@ class ProductsClass extends CatalogueClass
 
         $breadcrumbs = $this->getBreadCrumbForm($this->getCarsBreadCrumb($mfa_id, $model));
 
-        return compact("form", "title", "descr", "status", "breadcrumbs");
+        return compact("form", "title", "description", "status", "breadcrumbs");
     }
 
-    public function getCarsBreadCrumb($mfa_id = 0, $model = "")
+    public function getCarsBreadCrumb($mfa_id = 0, $model = ""): array
     {
         $arr = [];
 
@@ -92,15 +93,15 @@ class ProductsClass extends CatalogueClass
         $form = $this->getHtmlForm("cars/cars");
 
         if ($mfa_link !== "") {
-            $automan    = new AutoClass();
-            $mfa_id     = $automan->getMfaLink($mfa_link);
-            $mfa_brand  = $automan->getMfaBrand($mfa_id);
+            $autoObj    = new AutoClass();
+            $mfa_id     = $autoObj->getMfaLink($mfa_link);
+            $mfa_brand  = $autoObj->getMfaBrand($mfa_id);
             $list_model = $this->getCarsSearchContent("manuf", $mfa_id, $group_id)[0];
 
             $form = str_replace(array("{cars_models}", "{selected_manuf}", "{cars_manufacturer}"), array($list_model, $mfa_id, $mfa_brand), $form);
 
             if ($mod_link !== "") {
-                $model = $automan->getModLink($mod_link);
+                $model = $autoObj->getModLink($mod_link);
                 $cars_content = $this->getCarsSearchContent("model", $mfa_id . "_" . $model, $group_id)[0];
 
                 $form = str_replace(array("{cars_years}", "{selected_model}", "{cars_model}", "{active_nav}"), array($cars_content, $mfa_id . "_" . $model, $model, "years"), $form);
@@ -181,9 +182,9 @@ class ProductsClass extends CatalogueClass
         $value  = $this->getNameString($value);
 
         $db = DbSingleton::getTokoDb();
-        $automan = new AutoClass();
+        $autoObj = new AutoClass();
 
-        $group_link = $this->getSiteLink() . "$this->catalog_link/" . $automan->getGroupRowLink($group_id) . "/";
+        $group_link = $this->getSiteLink() . "$this->catalog_link/" . $autoObj->getGroupRowLink($group_id) . "/";
 
         $list = $title = $nav = $tab = "";
         $skip = $n = 0;
@@ -219,7 +220,7 @@ class ProductsClass extends CatalogueClass
                 <div data-url=\"model/$model_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$model</div>";
             }
 
-            $title  = $automan->getMfaBrand($mfa_id);
+            $title  = $autoObj->getMfaBrand($mfa_id);
             $nav    = "manuf";
             $tab    = "cars-tab2";
         }
@@ -483,16 +484,17 @@ class ProductsClass extends CatalogueClass
      * */
     public function getCarsGarage()
     {
-        $automan = new AutoClass();
+        $autoObj = new AutoClass();
         $auto_typ_id = $this->getCookieAuto();
-        list($manufacture, $model, $model_id) = $automan->getCarInfo($auto_typ_id);
-        list($manufacture_cap, , $model_id_cap,) = $automan->getAutoDescr($manufacture, $model, $model_id, $auto_typ_id);
-        $models_img = $automan->getAutoIMG($manufacture, $model, $model_id)["model_id_image"];
-        $garage_btn = ($auto_typ_id !== "" && !($automan->checkUserGarage($auto_typ_id))) ? "btn-img-disabled" : "";
+        list($manufacture, $model, $model_id) = $autoObj->getCarInfo($auto_typ_id);
+        list($manufacture_cap, , $model_id_cap,) = $autoObj->getAutoDescription($manufacture, $model, $model_id, $auto_typ_id);
+        $models_img = $autoObj->getAutoIMG($manufacture, $model, $model_id)["model_id_image"];
+        $garage_btn = ($auto_typ_id !== "" && !($autoObj->checkUserGarage($auto_typ_id))) ? "btn-img-disabled" : "";
 
         $form = $this->getHtmlForm("garage/selected");
-        $form = str_replace(array("{typ_id}", "{manufacture_cap}", "{model_id_cap}", "{typ_text}", "{models_img}", "{garage_button}", "{typ_id}"),
-            array($auto_typ_id, $manufacture_cap, $model_id_cap, $automan->getGroupInfo($auto_typ_id), $models_img, $garage_btn, $auto_typ_id),
+        $form = str_replace(
+            array("{typ_id}", "{manufacture_cap}", "{model_id_cap}", "{typ_text}", "{models_img}", "{garage_button}", "{typ_id}"),
+            array($auto_typ_id, $manufacture_cap, $model_id_cap, $autoObj->getGroupInfo($auto_typ_id), $models_img, $garage_btn, $auto_typ_id),
         $form);
 
         return $this->replaceLang($form);

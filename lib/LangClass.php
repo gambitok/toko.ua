@@ -88,18 +88,9 @@ class LangClass
             $url        = "toko.ua/" . $this->getLangIDPrefix($lang_id) . $link;
             $url        = str_replace("//", "/", $url);
             $url        = "https://" . $url;
-            //$url = $this->getSiteLink() . 'set_lang.php?lang_id=' . $lang_id;
-            $list .= "<div class=\"menu-language__item $active\">
+            $list       .= "<div class=\"menu-language__item $active\">
                 <a href=\"$url\">$lang_abr</a>
             </div>";
-//            $list .= "
-//            <div class=\"menu-language__item $active\">
-//                <form action=\"https://toko.ua/set_lang2.php\" method=\"post\">
-//                    <input type=\"hidden\" name=\"set_lang_id\" value=\"$lang_id\">
-//                    <input type=\"hidden\" name=\"set_lang_url\" value=\"$url\">
-//                    <input type=\"submit\" value=\"$lang_abr\">
-//                </form>
-//            </div>";
         }
 
         return $list;
@@ -127,8 +118,6 @@ class LangClass
     public function setLangID($lang_id): bool
     {
         $lang_id = $this->getUrlNumber($lang_id);
-//        $_SESSION["lang_id"] = $lang_id;
-//        setcookie("lang_id", $lang_id, time() + (86400 * 30), "/");
         $_SESSION['lang_id'] = $lang_id;
         setcookie("lang_id", $lang_id, time()+3600);
         return true;

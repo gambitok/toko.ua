@@ -1,5 +1,7 @@
 <?php
 
+global $content, $catalogue, $catalog_exist, $formObj, $autoObj;
+
 $theme_htm = RDD . "/test-main.htm";
 if (file_exists($theme_htm)) {
     $content = file_get_contents($theme_htm);
@@ -7,26 +9,26 @@ if (file_exists($theme_htm)) {
 
 ini_set('memory_limit', '2048M');
 
-$linka      = findLinks();
+$httpHost      = findLinks();
 $red_status = 0;
 $red_type   = 0;
 $red_link   = "";
 $sort       = $catalogue->getUrlString($_GET["sort"]);
 $city_link  = $catalogue->getUrlString($_GET["city"]);
-$site_name  = $catalogue->getUrlString($linka[0]);
-$router     = $catalogue->getUrlString($linka[1]);
-$router_2   = $catalogue->getUrlString($linka[2]);
-$router_3   = $catalogue->getUrlString($linka[3]);
-$router_4   = $catalogue->getUrlString($linka[4]);
-$router_5   = $catalogue->getUrlString($linka[5]);
+$site_name  = $catalogue->getUrlString($httpHost[0]);
+$router     = $catalogue->getUrlString($httpHost[1]);
+$router_2   = $catalogue->getUrlString($httpHost[2]);
+$router_3   = $catalogue->getUrlString($httpHost[3]);
+$router_4   = $catalogue->getUrlString($httpHost[4]);
+$router_5   = $catalogue->getUrlString($httpHost[5]);
 $page       = $catalogue->getUrlNumber($_GET["page"]);
 $path_from  = $site_name . "/" . $router . "/";
-$src_link   = $catalogue->getSiteLink() . implode("/", $linka) . "/";
+$src_link   = $catalogue->getSiteLink() . implode("/", $httpHost) . "/";
 
-if ($catalogue->getCatalogOldRedirectLink($linka)["status"] > 0) {
+if ($catalogue->getCatalogOldRedirectLink($httpHost)["status"] > 0) {
     $red_status = 1;
     $red_type   = 301;
-    $red_link   = $catalogue->getCatalogOldRedirectLink($linka)["redirect_link"];
+    $red_link   = $catalogue->getCatalogOldRedirectLink($httpHost)["redirect_link"];
 }
 elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $mfa_link   = $router_2;
@@ -36,9 +38,9 @@ elseif ($catalogue->getCatalogRedirectLink($path_from)["status"]) {
     $red_link   = $catalogue->getCatalogRedirectLink($path_from, $mfa_link, $model_link)["redirect_link"];
 }
 else {
-    $str_linka = $linka;
-    unset($str_linka[0]);
-    $str_linka = implode("/", $str_linka);
+    $httpHostString = $httpHost;
+    unset($httpHostString[0]);
+    $httpHostString = implode("/", $httpHostString);
 
     /*
      * Catalog
@@ -76,7 +78,7 @@ else {
             }
         }
 
-        $content = str_replace("{main_window}", $h1 . $catalogue->getCatalogColList() . $showform->getHistoryArts(), $content);
+        $content = str_replace("{main_window}", $h1 . $catalogue->getCatalogColList() . $formObj->getHistoryArts(), $content);
     }
     else {
 
@@ -93,7 +95,7 @@ else {
         $group_id = $catalog_exist->getGroupExistId($router);
         if (!empty($group_id)) {
             $group_id       = $catalog_exist->getUrlNumber($group_id);
-            $filters        = $linka[2];
+            $filters        = $httpHost[2];
             $f1 = $filters;
 
             $filters        = ($filters === "auto") ? [] : $filters;
@@ -106,7 +108,7 @@ else {
             $params         = [];
 
             if ($mfa_link !== "") {
-                $mfa_id = $automan->getMfaLink($mfa_link);
+                $mfa_id = $autoObj->getMfaLink($mfa_link);
 
                 if ($mfa_id === 0) {
                     $red_status = 1;
@@ -118,9 +120,9 @@ else {
                     if ($model_link === "rav4") {
                         $red_status = 1;
                         $red_type   = 301;
-                        $red_link   = $catalog_exist->getSiteLink() . $catalog_exist->catalog_link . "/$router/" . $linka[2] . "/$router_3/rav-4/";
+                        $red_link   = $catalog_exist->getSiteLink() . $catalog_exist->catalog_link . "/$router/" . $httpHost[2] . "/$router_3/rav-4/";
                     } else {
-                        $model = $automan->getModLink($model_link);
+                        $model = $autoObj->getModLink($model_link);
 
                         if ($model === "") {
                             $red_status = 1;
@@ -129,7 +131,7 @@ else {
                         }
 
                         if ($model !== "") {
-                            $model_id = $automan->getModIdLink($model_id_link);
+                            $model_id = $autoObj->getModIdLink($model_id_link);
 
                             if (($model_id_link !== "") && !$model_id) {
                                 $red_status = 1;
@@ -215,7 +217,7 @@ else {
                     ', $content);
             }
 
-            $content = str_replace("{main_window}", $catalog_form["form"] . $showform->getHistoryArts(), $content);
+            $content = str_replace("{main_window}", $catalog_form["form"] . $formObj->getHistoryArts(), $content);
             $content = str_replace("{site_title}", $catalog_form["title"], $content);
             $content = str_replace("{site_description}", $catalog_form["description"], $content);
             $content = str_replace("{meta_social_tag}", $catalog_exist->getCatalogMetaTags($group_id, $catalog_form["h1"]), $content);
@@ -248,7 +250,7 @@ else {
                     $red_link   = $catalogue->getSiteLink() . $catalogue->catalog_link .  "/$router/$router_2/";
                 }
             }
-            $content = str_replace("{main_window}", $catalogData["form"] . $showform->getHistoryArts(), $content);
+            $content = str_replace("{main_window}", $catalogData["form"] . $formObj->getHistoryArts(), $content);
             $content = str_replace("{site_title}", $catalogData["title"], $content);
             $content = str_replace("{site_description}", $catalogData["description"], $content);
 

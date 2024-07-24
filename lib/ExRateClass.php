@@ -12,7 +12,7 @@ class ExRateClass
     /*
      * get current currency_id
      * */
-    public function getCurrentKours(): int
+    public function getCurrentExRate(): int
     {
         session_start();
         $cur = $this->getUrlNumber($_COOKIE["currency"]);
@@ -32,7 +32,7 @@ class ExRateClass
      * get currency_id
      * from currency text value
      * */
-    public function getKours($val)
+    public function getExRate($val)
     {
         $db = DbSingleton::getDbm();
 
@@ -59,15 +59,15 @@ class ExRateClass
      * get exchange rate price
      * from price & currency_id
      * */
-    public function getKoursPrice($price, $cur): float
+    public function getExRatePrice($price, $cur): float
     {
         $cur = (int)$cur;
 
         if ($cur === 2) {
-            $price /= $this->getKours("dollar");
+            $price /= $this->getExRate("dollar");
             $price = number_format($price, 2, '.', '');
         } elseif ($cur === 3) {
-            $price /= $this->getKours("euro");
+            $price /= $this->getExRate("euro");
             $price = number_format($price, 2, '.', '');
         } elseif (is_float($price)) {
             $price = number_format($price, 2, '.', '');
@@ -80,15 +80,15 @@ class ExRateClass
      * get exchange rate price from usa
      * from price & currency_id
      * */
-    public function getKoursFromUSA($price, $cur): string
+    public function getExRateFromUSA($price, $cur): string
     {
         $cur = (int)$cur;
 
         if ($cur === 1) {
-            $price *= $this->getKours("dollar");
+            $price *= $this->getExRate("dollar");
             $price = number_format($price, 2, '.', '');
         } elseif ($cur === 3) {
-            $price = ($price * $this->getKours("dollar")) / $this->getKours("euro");
+            $price = ($price * $this->getExRate("dollar")) / $this->getExRate("euro");
             $price = number_format($price, 2, '.', '');
         } elseif (is_float($price)) {
             $price = number_format($price, 2, '.', '');
@@ -101,15 +101,15 @@ class ExRateClass
      * get exchange rate price from usd
      * from price & currency_id
      * */
-    public function getKoursFromUAH($price, $cur): string
+    public function getExRateFromUAH($price, $cur): string
     {
         $cur = (int)$cur;
 
         if ($cur === 2) {
-            $price /= $this->getKours("dollar");
+            $price /= $this->getExRate("dollar");
             $price = number_format($price, 2, '.', '');
         } elseif ($cur === 3) {
-            $price /= $this->getKours("euro");
+            $price /= $this->getExRate("euro");
             $price = number_format($price, 2, '.', '');
         } else {
             $price = number_format($price, 2, '.', '');
@@ -122,7 +122,7 @@ class ExRateClass
      * get exchange rate caption
      * from currency_id
      * */
-    public function getKoursCaption($cur)
+    public function getExRateCaption($cur)
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `abr` FROM `CASH` WHERE `id` = $cur LIMIT 1;");
@@ -135,7 +135,7 @@ class ExRateClass
      * get exchange rate caption lang
      * from currency_id
      * */
-    public function getKoursCaptionLang($cur)
+    public function getExRateCaptionLang($cur)
     {
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `abr2` FROM `CASH` WHERE `id` = $cur LIMIT 1;");
@@ -148,7 +148,7 @@ class ExRateClass
      * get exchange rate symbol
      * from currency_id
      * */
-    public function getKoursSymbol($cur): string
+    public function getExRateSymbol($cur): string
     {
         $result = "{uah_cap}";
 

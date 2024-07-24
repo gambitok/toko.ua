@@ -1,3 +1,4 @@
 <?php
 
-$content = str_replace("{main_window}", $showform->showHistoryForm(), $content);
+global $content, $formObj;
+$content = str_replace("{main_window}", $formObj->showHistoryForm(), $content);
