@@ -16,8 +16,7 @@ class ShopClass extends CatalogueClass
         $formObj = new FormClass();
 
         $disabled       = "";
-        $location       = "stayInOrder();";
-        $location_fast  = "stayInOrder();";
+        $location       = $location_fast = "stayInOrder();";
         $sum_checked    = $sum_total = $count_checked = 0;
         $client_id      = $this->getClient();
         $where          = $client->getClientWhere();
@@ -91,10 +90,12 @@ class ShopClass extends CatalogueClass
         $location_ff    = ($count_checked > 0) ? $location_fast : "alert('" . $this->replaceLang("{chose_all_in_basket}") . "');";
 
         $table_basket = $this->getHtmlForm("basket/basket_form");
-        $table_basket = str_replace(array("{basket_rows}", "{checked_status}", "{basket_phone_rows}", "{sum}", "{sum_total}", "{count}", "{total_style}", "{location}", "{location_fast}", "{currency}", "{cur_cap}", "{disabled}", "{basket_proposed}", "{user_phone}", "{validate_class}"), array($basketRow, $checked_status, $basketPhoneRow, $sum_checked, $sum_total, $count_checked, $total_style, $location, $location_ff, $formObj->getCurrencyForm($cur, 1), $this->getSymbolExRate($cur), $disabled, $this->getProposedArts(), $client->getClientPhone(), $validate_class), $table_basket);
+        $table_basket = str_replace(
+            array("{basket_rows}", "{checked_status}", "{basket_phone_rows}", "{sum}", "{sum_total}", "{count}", "{total_style}", "{location}", "{location_fast}", "{currency}", "{cur_cap}", "{disabled}", "{basket_proposed}", "{user_phone}", "{validate_class}"),
+            array($basketRow, $checked_status, $basketPhoneRow, $sum_checked, $sum_total, $count_checked, $total_style, $location, $location_ff, $formObj->getCurrencyForm($cur, 1), $this->getSymbolExRate($cur), $disabled, $this->getProposedArts(), $client->getClientPhone(), $validate_class),
+        $table_basket);
 
         $table_basket = $this->replaceLang($table_basket);
-
         if ($n === 0) {
             $table_basket = $this->replaceLang($this->getHtmlForm("basket/basket_error"));
         }
@@ -134,7 +135,7 @@ class ShopClass extends CatalogueClass
         $country_nm = $flag =  "";
         if ($flagData !== false) {
             $flag       = "<img class=\"flag flag-" . $flagData["flag"] . " flag-search\">";
-            $country_nm = "{brand_manuf}: " . $flagData["country"];
+            $country_nm = "{brand_manufacture}: " . $flagData["country"];
         }
 
         if (!$visible) {
@@ -377,7 +378,7 @@ class ShopClass extends CatalogueClass
      * */
     public function deleteFromBasket($art_id, $storage_id): bool
     {
-        $art_id     = $this->getUrlNumber($art_id);
+        $art_id = $this->getUrlNumber($art_id);
         $storage_id = $this->getUrlNumber($storage_id);
 
         $db = DbSingleton::getTokoDb();
@@ -436,8 +437,10 @@ class ShopClass extends CatalogueClass
 
         $where = $client->getClientWhere();
         $status_action = 0;
+
         if ($this->checkActionPrice($art_id)) {
             list($action_id, $action_amount) = $this->checkActionPrice($art_id);
+
             if ($amount >= $action_amount) {
                 $status_action = $action_id;
             }
@@ -526,6 +529,7 @@ class ShopClass extends CatalogueClass
                     $id     = $dbt->result($r, $i - 1, "id") + 0;
                     $price  = $dbt->result($r, $i - 1, "price");
                     $price  = $exRate->getExRatePrice($price, $cur);
+
                     if ($cur === 1) {
                         $price = $client->getClientPriceRounding($client_id, $price);
                     }
@@ -950,8 +954,11 @@ class ShopClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $id     = $db->result($r, $i - 1, "ID");
             $text   = $db->result($r, $i - 1, "TEXT");
-            $list   .= "
-            <option value=\"$id\">$text</option>";
+
+            $list .= str_replace(
+                array("{value}", "{name}", "{checked}"),
+                array($id, $text, ""),
+            $this->getHtmlForm("helper/select_option"));
         }
 
         return $this->replaceLang($list);
@@ -1066,7 +1073,6 @@ class ShopClass extends CatalogueClass
         $client_id = $client->getClientByUser($user_id);
         $user_status = 0;
 
-        // CREATE CLIENT
         if (empty($user_id)) {
             $clientData     = $client->addRetailClient($this->getClient(), $phone);
             $client_id      = $clientData["client_id"];
@@ -1089,7 +1095,6 @@ class ShopClass extends CatalogueClass
         $cookie     = $this->getSessionID();
         $cash_id    = $client->getClientCurrency($client_id);
 
-        // CREATE ORDER
         $order_id = $this->saveClientOrder($client_id, $user_id, $cookie, $salePointID, $cash_id, "", "", $phone, 0, "", 0, 0);
 
         return $this->getSiteLink() . "order/?order_id=$order_id&user_id=$user_id&user_status=$user_status/";
@@ -1103,7 +1108,7 @@ class ShopClass extends CatalogueClass
 
         list($client_id, $user_id, $user_status) = $this->getOrderData($client, $phone);
 
-        $salePointID  = $this->getTpointID();
+        $salePointID= $this->getTpointID();
         $cookie     = $this->getSessionID();
         $cash_id    = $client->getClientCurrency($client_id);
 
@@ -1340,6 +1345,7 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT` FROM `T2_DELIVERY` WHERE `ID` = $delivery_id LIMIT 1;");
         $text = $db->result($r, 0, "TEXT");
+
         return $this->replaceLang($text);
     }
 
@@ -1351,19 +1357,18 @@ class ShopClass extends CatalogueClass
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `TEXT` FROM `T2_PAYMENT` WHERE `ID` = $payment_id LIMIT 1;");
         $text = $db->result($r, 0, "TEXT");
+
         return $this->replaceLang($text);
     }
 
     /*
      * drop client order info
      * */
-    public function dropClientOrderInfo($id): bool
+    public function dropClientOrderInfo($id)
     {
         $id = $this->getUrlNumber($id);
         $db = DbSingleton::getDbm();
         $db->query("UPDATE `ORDERS_CLIENT_INFO` SET `STATUS` = 0 WHERE `ID` = $id;");
-
-        return true;
     }
 
     /*
@@ -1797,8 +1802,10 @@ class ShopClass extends CatalogueClass
             $city_name_foo  = "$city_name1 - $city_name2";
             $sel            = ($user_city > 0 && $user_city === $city_id) ? "selected" : "";
 
-            $list .= "
-            <option value=\"$city_id\" data-foo=\"$city_name\" $sel>$city_name_foo</option>";
+            $list .= str_replace(
+                array("{value}", "{name}", "{checked}", "{data}"),
+                array($city_id, $city_name_foo, $sel, "data-foo=\"$city_name\""),
+            $this->getHtmlForm("helper/select_option_data"));
         }
 
         return $list;
@@ -1867,8 +1874,10 @@ class ShopClass extends CatalogueClass
             $name       = $db->result($r, $i - 1, "CITY_NAME");
             $area_name  = $db->result($r, $i - 1, "AREA_NAME");
 
-            $list .= "
-            <option value=\"$ref\">$name ($area_name)</option>";
+            $list .= str_replace(
+                array("{value}", "{name}", "{checked}"),
+                array($ref, "$name ($area_name)", ""),
+            $this->getHtmlForm("helper/select_option"));
         }
 
         return $list;
@@ -1881,8 +1890,7 @@ class ShopClass extends CatalogueClass
     {
         $city_ref = $this->getNameString($city_ref);
         $list_np = $this->getNovaPostWarehousesSelect($city_ref, $department_ref);
-        $list_up = "
-        <option value=\"0\">{not_chosen}</option>";
+        $list_up = $this->getHtmlForm("helper/select_not_option");
 
         return array($list_np, $list_up);
     }
@@ -1904,7 +1912,7 @@ class ShopClass extends CatalogueClass
      * */
     public function getNovaPostWarehousesSelect($ref, $department_ref)
     {
-        $list   = $this->replaceLang("<option value=\"0\">{not_chosen}</option>");
+        $list   = $this->replaceLang($this->getHtmlForm("helper/select_not_option"));
         $np     = new NovaPoshtaApi2($this->getNovaPostKey());
         $arr    = $np->getWarehouses($ref)['data'];
 
@@ -1913,8 +1921,10 @@ class ShopClass extends CatalogueClass
             $war_ref    = $val["Ref"];
             $sel        = ($war_ref === $department_ref) ? "selected" : "";
 
-            $list .= "
-            <option value=\"$war_ref\" $sel>$name</option>";
+            $list .= str_replace(
+                array("{value}", "{name}", "{checked}"),
+                array($war_ref, $name, $sel),
+            $this->getHtmlForm("helper/select_option"));
         }
 
         return $list;

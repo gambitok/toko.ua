@@ -163,7 +163,7 @@ trait Helper
     {
         $db = DbSingleton::getDbm();
         $lang_id = $this->getLanguage();
-        $options = "";
+        $list = "";
         $r = $db->query("SELECT `id` FROM `manual` WHERE `key` = '$key' ORDER BY `mid`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -174,11 +174,14 @@ trait Helper
             if (empty($caption)) {
                 $caption = $db->result($r, $i - 1, "mcaption");
             }
-            $options .= "
-            <option value=\"$id\">$caption</option>";
+
+            $list .= str_replace(
+                array("{value}", "{name}", "{checked}"),
+                array($id, $caption, ""),
+            $this->getHtmlForm("helper/select_option"));
         }
 
-        return $options;
+        return $list;
     }
 
     public function multiSort()

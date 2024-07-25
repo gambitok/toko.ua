@@ -1024,7 +1024,7 @@ class ProfileClass extends ClientClass
     public function getRegionSelectProfile(): string
     {
         $db = DbSingleton::getDbm();
-        $options = "";
+        $list = "";
 
         $r = $db->query("SELECT `id`, `full_name`, `address` FROM `T_POINT` WHERE `status` = 1 ORDER BY `full_name`;");
         $n = $db->num_rows($r);
@@ -1033,11 +1033,13 @@ class ProfileClass extends ClientClass
             $region = $db->result($r, $i - 1, "full_name");
             $address = $db->result($r, $i - 1, "address");
 
-            $options .= "
-            <option value=\"$id\">$region ($address)</option>";
+            $list .= str_replace(
+                array("{value}", "{name}", "{checked}"),
+                array($id, "$region ($address)", ""),
+            $this->getHtmlForm("helper/select_option"));
         }
 
-        return $options;
+        return $list;
     }
 
     /*
