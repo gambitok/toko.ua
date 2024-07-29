@@ -1099,7 +1099,7 @@ class ClientClass
         $history = [];
         $cookie = $this->getSessionID();
 
-        if ($cookie === "" || $cookie === NULL) {
+        if (empty($cookie)) {
             $cookie = 0;
         }
 

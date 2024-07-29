@@ -15,6 +15,7 @@ trait Helper
     public function getSessionID(): string
     {
         $cookie_id = $this->getUrlString($_COOKIE["session_id"]);
+
         if (empty($cookie_id)) {
             $cookie_id = 0;
         }
@@ -29,6 +30,7 @@ trait Helper
     {
         $form = "";
         $form_htm = RDD . "/tpl/$name.htm";
+
         if (file_exists($form_htm)) {
             $form = file_get_contents($form_htm);
         }
@@ -46,6 +48,7 @@ trait Helper
             array("", "", "", "", "", "", "", "", "", " "),
         $str);
     }
+
     public function getUrlString2($str): string
     {
         return str_replace(
@@ -115,9 +118,7 @@ trait Helper
 
     public function getSiteLink(): string
     {
-        $language = new LangClass();
-
-        return "https://toko.ua/" . $language->getLangIDPrefix($this->getLanguage());
+        return "https://toko.ua/" . (new LangClass())->getLangIDPrefix($this->getLanguage());
     }
 
     public function getLanguage(): int
@@ -133,9 +134,11 @@ trait Helper
     public function getLangPostfix($lang_id): string
     {
         $postfix = "RU";
+
         if ($lang_id === 2) {
             $postfix = "UA";
         }
+
         if ($lang_id === 3) {
             $postfix = "EN";
         }
@@ -164,6 +167,7 @@ trait Helper
         $db = DbSingleton::getDbm();
         $lang_id = $this->getLanguage();
         $list = "";
+
         $r = $db->query("SELECT `id` FROM `manual` WHERE `key` = '$key' ORDER BY `mid`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -188,11 +192,14 @@ trait Helper
     {
         $args = func_get_args();
         $c = count($args);
+
         if ($c < 2) {
             return false;
         }
+
         $array = array_splice($args, 0, 1);
         $array = $array[0];
+
         usort($array, function ($a, $b) use ($args) {
             $i = 0;
             $c = count($args);
@@ -224,12 +231,14 @@ trait Helper
             'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П',
             'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я', 'І', 'Ї', 'Є'
         ];
+
         $lat = [
             'a', 'b', 'v', 'g', 'd', 'e', 'io', 'zh', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p',
             'r', 's', 't', 'u', 'f', 'h', 'ts', 'ch', 'sh', 'sht', 'a', 'i', 'y', 'e', 'yu', 'ya', 'i', 'yi', 'ye',
             'A', 'B', 'V', 'G', 'D', 'E', 'Io', 'Zh', 'Z', 'I', 'Y', 'K', 'L', 'M', 'N', 'O', 'P',
             'R', 'S', 'T', 'U', 'F', 'H', 'Ts', 'Ch', 'Sh', 'Sht', 'A', 'I', 'Y', 'e', 'Yu', 'Ya', 'I', 'Yi', 'Ye'
         ];
+
         return str_replace($cyr, $lat, $st);
     }
 
@@ -243,6 +252,7 @@ trait Helper
         $alphabet = "1234567890";
         $pass = array();
         $alphaLength = strlen($alphabet) - 1;
+
         for ($i = 0; $i < $kol; $i++) {
             $n = rand(0, $alphaLength);
             $pass[] = $alphabet[$n];
@@ -281,8 +291,8 @@ trait Helper
         if ($static) {
             $static_h1 = $static_data['//' . $_SERVER["HTTP_HOST"] . $uri][2];
         }
-        $catalogue = new CatalogueClass();
-        return $catalogue->getIconv($static_h1);
+
+        return (new CatalogueClass())->getIconv($static_h1);
     }
 
     /*
@@ -311,23 +321,25 @@ trait Helper
         $group_id = $catalog_exist->getGroupExistId($httpHost[1]);
 
         if (!empty($httpHost[2]) && $group_id > 0 && $httpHost[2] !== "auto" && strpos($httpHost[2], "brandy=") === false) {
+
             // 1 - mfa link
-            $mfa_id = $autoObj->getMfaLink($httpHost[2]);
-            if ($mfa_id > 0) {
+            if ($autoObj->getMfaLink($httpHost[2]) > 0) {
                 $status = 1;
                 $redirect_link .= "auto/" . $httpHost[2] . "/";
                 if (!empty($httpHost[3])) {
                     $redirect_link .= $httpHost[3] . "/";
                 }
             }
+
             // 2 - filter link (brands)
             if (strpos($httpHost[2], "brandy=") !== false) {
                 $status = 2;
                 $redirect_link .= $httpHost[2] . "/";
-                $mfa_id = $autoObj->getMfaLink($httpHost[3]);
-                if ($mfa_id > 0) {
+
+                if ($autoObj->getMfaLink($httpHost[3]) > 0) {
                     $status = 3;
                     $redirect_link .= $httpHost[3] . "/";
+
                     if (!empty($httpHost[4])) {
                         $redirect_link .= $httpHost[4] . "/";
                     }
@@ -347,10 +359,12 @@ trait Helper
     {
         $autoObj = new AutoClass();
         $db = DbSingleton::getTokoDb();
+
         $r = $db->query("SELECT `LINK_TO` FROM `T2_CATALOG_REDIRECT` WHERE `LINK_FROM` LIKE '%$link%' LIMIT 1;");
         $n = $db->num_rows($r);
         $status = 0;
         $redirect_link = "";
+
         if ($n > 0) {
             $status = 1;
             $redirect_link = $db->result($r, 0, "LINK_TO");

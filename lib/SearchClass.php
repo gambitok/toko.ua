@@ -517,7 +517,6 @@ class SearchClass extends CatalogueClass
 
         $del_arts = [];
         foreach ($mas2 as $mas_key => $mas_val) {
-            $i = 0;
             foreach ($mas_val as $val) {
                 if ((int)$val["suppl_id"] === 0 && (int)$val["stock"] > 0 && count($mas_val) > 1) {
                     $del_arts[] = $mas_key;
@@ -1070,7 +1069,7 @@ class SearchClass extends CatalogueClass
         $style          = "";
         $i              = 0;
         $check          = 0;
-        $dataArt        = $this->getArtDispl($article_nr_search, $brand_nr_search);
+        $dataArt        = $this->getArtDisplay($article_nr_search, $brand_nr_search);
 
         if (!empty($mas)) {
 

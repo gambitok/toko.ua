@@ -88,7 +88,7 @@ class CatalogueClass
 
         //search brands
         if (!empty($list_brand)) {
-            $search_brands = str_replace(array("{brands_list}", "{brands_display}"), array($list_brand, ($list_brand === "") ? "none" : ""), $search_brands);
+            $search_brands = str_replace(array("{brands_list}", "{brands_display}"), array($list_brand, ""), $search_brands);
             $form = str_replace("{cat_search_brands}", $search_brands, $form);
         }
         $form = str_replace("{cat_search_telegram}", $this->getTelegramForm(), $form);
@@ -606,7 +606,7 @@ class CatalogueClass
                             $price > 0
                             && $stock > 0
                             && (
-                                (float)$mas[$art_id][0]["price"] === 0 || (int)$mas[$art_id][0]["stock"] === 0
+                                empty((float)$mas[$art_id][0]["price"]) || (int)$mas[$art_id][0]["stock"] === 0
                             )
                         )
                     ) {
@@ -724,7 +724,7 @@ class CatalogueClass
                     $article_name = str_replace('"', "''" , $article_name);
 
                     // show articles with suppl_id=0 or with price!=0 and stock!=0
-                    if ($price !== 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
+                    if ($price > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
                         if ($stock > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
                             // visible suppl storage
                             $article_name = str_replace('"', "''" , $article_name);
@@ -968,7 +968,7 @@ class CatalogueClass
                 $today = "<span class=\"delivery-dark\">$date_del ($week_day_short)</span>";
             }
 
-            $info = "$today<br>{$time_from_del} - {$time_to_del}";
+            $info = "$today<br>$time_from_del - $time_to_del";
             $delivery_short_info = "$today<br>{with_cap} $time_from_del";
 
             $result[$deliveryTime["suppl_id"]][$deliveryTime["suppl_storage_id"]] = [
@@ -1677,7 +1677,7 @@ class CatalogueClass
                     $arr[$mas_key][0] = $mas[$mas_key][$key];
                     unset($mas[$mas_key][$key]);
                 }
-                elseif ((float)$val["price"] === 0) {
+                elseif (empty((float)$val["price"])) {
                     $arr[$mas_key][0] = $mas[$mas_key][$key];
                     unset($mas[$mas_key][$key]);
                 }
@@ -1716,7 +1716,7 @@ class CatalogueClass
                     if ((int)$val["stock"] === 0) {
                         unset($mas[$mas_key][$key]);
                     }
-                    elseif ((float)$val["price"] === 0) {
+                    elseif (empty((float)$val["price"])) {
                         unset($mas[$mas_key][$key]);
                     }
                 }
@@ -1748,7 +1748,7 @@ class CatalogueClass
 
         if ($count_success > 0) {
             foreach ($mas as $key => $value) {
-                if ((int)$value["stock"] === 0 || (float)$value["price"] === 0) {
+                if ((int)$value["stock"] === 0 ||  empty((float)$value["price"])) {
                     unset($mas[$key]);
                 }
             }
@@ -1981,26 +1981,24 @@ class CatalogueClass
         $ll = $other_storages["content"];
         $view = 1;
 
-        (!$view) ?: $list .= "<div class=\"row\">";
+        $list .= "<div class=\"row\">";
 
         $cc = 0;
-        if ($view) {
-            foreach ($mas as $mas_key => $mas_val) {
-                foreach ($mas_val as $key => $val) {
-                    if ($cc > 0) {
-                        unset($mas[$mas_key][$key]);
-                    }
-                    $cc++;
+        foreach ($mas as $mas_key => $mas_val) {
+            foreach ($mas_val as $key => $val) {
+                if ($cc > 0) {
+                    unset($mas[$mas_key][$key]);
                 }
-                $cc = 0;
+                $cc++;
             }
+            $cc = 0;
         }
 
         $i = 0;
         $faq_pos = (count($mas) >= $this->faq_card_count) ? $this->faq_card_count : count($mas);
         $faq_socials_pos = (count($mas) >= $this->faq_socials_card_count) ? $this->faq_socials_card_count : count($mas);
 
-        (!$view) ?: $list = "<div>$list";
+        $list = "<div>$list";
 
         if (!empty($mas)) {
             foreach ($mas as $mas_key => $mas_val) {

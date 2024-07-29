@@ -119,7 +119,7 @@ class ShopClass extends CatalogueClass
         $status         = $data["status"];
         $status_checked = $data["status_checked"];
         $cur            = $data["cur"];
-        $art_nr_ds      = $this->getArticleDispl($art_id);
+        $art_nr_ds      = $this->getArticleDisplay($art_id);
         $brand_name     = $this->getBrandName($brand_id);
 
         // DELIVERY
@@ -312,7 +312,7 @@ class ShopClass extends CatalogueClass
         $cookie     = $this->getSessionID();
         $date_time  = date("Y-m-d H:i:s");
         $old_amount = $status_action = 0;
-        $art_name   = $this->getArticleDispl($art_id);
+        $art_name   = $this->getArticleDisplay($art_id);
 
         $r = $db->query("SELECT `amount` FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where LIMIT 1;");
         $n = $db->num_rows($r);
@@ -325,6 +325,7 @@ class ShopClass extends CatalogueClass
         if ($this->checkActionPrice($art_id)) {
             list($action_id, $action_amount, $action_price) = $this->checkActionPrice($art_id);
             $action_price = $exRate->getExRateFromUSA($action_price, 1); // to UAH
+
             if ($amount >= $action_amount) {
                 $status_action = $action_id;
                 $price = $action_price;
@@ -781,7 +782,7 @@ class ShopClass extends CatalogueClass
         if ($user_id > 0) {
             list($user_name, $user_phone, $user_email, $user_city) = $client->getClientUserData($user_id);
 
-            if ($user_id > 0 && $user_phone !== "" && $user_name !== "" && $user_city !== "") {
+            if ($user_phone !== "" && $user_name !== "" && $user_city !== "") {
                 $status = true;
             }
         }
@@ -869,6 +870,7 @@ class ShopClass extends CatalogueClass
         $result = 0;
 
         $r = $db->query("SELECT `VALID_TYPE_MAIN`, `VALID_TYPE_OTHER` FROM `orders_valid_delivery` WHERE `DELIVERY_ID` = $delivery_id LIMIT 1;");
+
         $valid_main = $db->result($r, 0, "VALID_TYPE_MAIN");
         $valid_other = $db->result($r, 0, "VALID_TYPE_OTHER");
         $main_cities = [10108];//, 24861
@@ -1700,7 +1702,7 @@ class ShopClass extends CatalogueClass
                 $brand_id   = $db->result($r, $i - 1, "brand_id");
                 $price      = $db->result($r, $i - 1, "price");
                 $amount     = $db->result($r, $i - 1, "amount");
-                $art_nr_ds  = $this->getArticleDispl($art_id);
+                $art_nr_ds  = $this->getArticleDisplay($art_id);
                 $brand_name = $this->getBrandName($brand_id);
                 $art_name   = $this->getArticleName($art_id);
                 $price      = $exRate->getExRatePrice($price, $cur);

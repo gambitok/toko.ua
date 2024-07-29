@@ -107,15 +107,10 @@ class ExRateClass
 
         if ($cur === 2) {
             $price /= $this->getExRate("dollar");
-            $price = number_format($price, 2, '.', '');
         } elseif ($cur === 3) {
             $price /= $this->getExRate("euro");
-            $price = number_format($price, 2, '.', '');
-        } else {
-            $price = number_format($price, 2, '.', '');
         }
-
-        return $price;
+        return number_format($price, 2, '.', '');
     }
 
     /*

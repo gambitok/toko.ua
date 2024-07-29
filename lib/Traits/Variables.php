@@ -19,8 +19,6 @@ trait Variables
         return str_replace(array("/", " "), array("-", "%20"), $brand);
     }
 
-    /*==== ARTICLE_ID ================================================================================================*/
-
     /*
      * ART_ID => BRAND_ID
      * */
@@ -34,6 +32,7 @@ trait Variables
             $r = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
             $brand_id = $db->result($r, 0, "BRAND_ID");
         }
+
         return $brand_id;
     }
 
@@ -57,6 +56,7 @@ trait Variables
         if ($name === "") {
             $name = $this->replaceLang("{details_name_cap}");
         }
+
         return $name;
     }
 
@@ -78,6 +78,7 @@ trait Variables
                 $name = $db->result($r, 0, "NAME");
             }
         }
+
         return $name;
     }
 
@@ -94,11 +95,12 @@ trait Variables
     /*
      * ART_ID => ARTICLE_NR_DISPLAY
      * */
-    public function getArticleDispl($art_id)
+    public function getArticleDisplay($art_id)
     {
         $art_id = $this->getUrlNumber($art_id);
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `ARTICLE_NR_DISPL` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
+        
         return $db->result($r, 0, "ARTICLE_NR_DISPL");
     }
 
@@ -113,6 +115,7 @@ trait Variables
         if ($n > 0) {
             $group_id = $db->result($r, 0, "GROUP_ID");
         }
+        
         return $group_id;
     }
 
@@ -130,6 +133,7 @@ trait Variables
             $r = $db->query("SELECT MAX(`BARCODE`) as max_barcode FROM `T2_BARCODES`;");
             $barcode = $db->result($r, 0, "max_barcode") + 0;
         }
+        
         return $barcode;
     }
 
@@ -146,18 +150,17 @@ trait Variables
         $r = $db->query("SELECT SUM(`AMOUNT`) as summ_amount FROM `T2_ARTICLES_STRORAGE`
         WHERE `ART_ID` = $art_id AND `STORAGE_ID` IN ($storage_id);");
         $n = $db->num_rows($r);
+        
         return ($n > 0) ? (int)$db->result($r, 0, "summ_amount") : 0;
     }
-
-    /*==== ARTICLE_NR ================================================================================================*/
 
     /*
      * ARTICLE_NR_SEARCH => ARTICLE_NR_DISPLAY
      * */
-    public function getArtDispl($article_nr_search, $brand_nr_search = 0): array
+    public function getArtDisplay($article_nr_search, $brand_nr_search = 0): array
     {
         $db = DbSingleton::getTokoDb();
-        $article_nr_displ = $article_nr_search;
+        $article_nr_display = $article_nr_search;
         $brand_id = $brand_nr_search;
         $art_id = 0;
 
@@ -170,7 +173,7 @@ trait Variables
         $n = $db->num_rows($r);
         if ($n > 0) {
             $art_id = $db->result($r, 0, "ART_ID");
-            $article_nr_displ = $db->result($r, 0, "ARTICLE_NR_DISPL");
+            $article_nr_display = $db->result($r, 0, "ARTICLE_NR_DISPL");
         }
 
         if ($n === 0) {
@@ -178,13 +181,13 @@ trait Variables
             $n2 = $db->num_rows($r2);
             if ($n2 > 0) {
                 $art_id = $db->result($r2, 0, "ART_ID");
-                $article_nr_displ = $db->result($r2, 0, "DISPLAY_NR");
+                $article_nr_display = $db->result($r2, 0, "DISPLAY_NR");
             }
         }
 
         $brand = $this->getBrandName($brand_id);
 
-        return array("art" => $article_nr_displ, "brand" => $brand, "brand_id" => $brand_id, "art_id" => $art_id);
+        return array("art" => $article_nr_display, "brand" => $brand, "brand_id" => $brand_id, "art_id" => $art_id);
     }
 
     /*
@@ -225,8 +228,6 @@ trait Variables
         return $art_id;
     }
 
-    /*==== BRAND =====================================================================================================*/
-
     /*
      * get brand name
      * from BRAND_ID
@@ -266,6 +267,7 @@ trait Variables
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT `BRAND_LINK` FROM `T2_BRANDS` WHERE `BRAND_ID` = $brand_id LIMIT 1;");
         $n = $db->num_rows($r);
+        
         return ($n === 1) ? $db->result($r, 0, "BRAND_LINK") : 0;
     }
 
@@ -280,6 +282,7 @@ trait Variables
         $city_id = $this->getUrlNumber($city_id);
         $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `CITY_NAME` FROM `T2_CITY` WHERE `CITY_ID` = $city_id LIMIT 1;");
+        
         return $db->result($r, 0, "CITY_NAME");
     }
 
@@ -298,6 +301,7 @@ trait Variables
         if ($n === 1) {
             $name = $db->result($r, 0, "prefix") . "-" . $db->result($r, 0, "doc_nom");
         }
+        
         return $name;
     }
 
@@ -305,22 +309,24 @@ trait Variables
      * get pay name
      * from PAY_ID
      * */
-    public function getJPayName($jpay_id): array
+    public function getJPayName($j_pay_id): array
     {
-        $jpay_id = $this->getUrlNumber($jpay_id);
+        $j_pay_id = $this->getUrlNumber($j_pay_id);
         $db = DbSingleton::getDbm();
         $name = "";
         $pay_type_id = 0;
+        
         $r = $db->query("SELECT p.*, m.mcaption as pay_type_name 
         FROM `J_PAY` p 
             LEFT JOIN `manual` m ON (m.id = p.pay_type_id AND m.`key` = 'pay_type_id') 
-        WHERE p.status = 1 AND p.id = $jpay_id LIMIT 1;");
+        WHERE p.status = 1 AND p.id = $j_pay_id LIMIT 1;");
         $n = (int)$db->num_rows($r);
 
         if ($n === 1) {
             $pay_type_id    = (int)$db->result($r, 0, "pay_type_id");
             $name           = $db->result($r, 0, "pay_type_name") . " #" . $db->result($r, 0, "doc_nom");
         }
+        
         return array($pay_type_id, $name);
     }
 
@@ -332,6 +338,7 @@ trait Variables
     {
         $fuel_id = $this->getUrlNumber($fuel_id);
         $db = DbSingleton::getTokoDb();
+        
         $lang_id = $this->getLanguage();
         if ($lang_id === 1) {
             $lang_id = 16;
@@ -344,6 +351,7 @@ trait Variables
         }
 
         $r = $db->query("SELECT `FUEL` FROM `T_types_fuel` WHERE `FUEL_ID` = $fuel_id AND `LANG_ID` = $lang_id LIMIT 1;");
+        
         return $db->result($r, 0, "FUEL");
     }
 
@@ -364,31 +372,6 @@ trait Variables
         }
         return $prefix . "-" . $doc_nom;
     }
-
-//    public function getCatalogueBrandLink2($article_nr_search)
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $brand_link = "";
-//        $r = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ARTICLE_NR_SEARCH` = '$article_nr_search';");
-//        $n = $db->num_rows($r);
-//        if ($n == 1) {
-//            $brand_id = $db->result($r, 0, "BRAND_ID");
-//            $r = $db->query("SELECT `BRAND_LINK` FROM `T2_BRANDS` WHERE `BRAND_ID` = $brand_id LIMIT 1;");
-//            $brand_link = $db->result($r, 0, "BRAND_LINK");
-//        }
-//        return $brand_link;
-//    }
-
-//    public function getFiltersSearch($brand_filter)
-//    {
-//        if ($brand_filter !== "") {
-//            $brand_filter = str_replace("'", "", $brand_filter);
-//            $where_brands = " AND t2a.BRAND_ID IN ($brand_filter) ";
-//        } else {
-//            $where_brands = "";
-//        }
-//        return $where_brands;
-//    }
 
     /*
      * get delivery name
@@ -451,12 +434,7 @@ trait Variables
     public function getCookieAuto()
     {
         $auto_typ_id = $this->getUrlNumber($_COOKIE["auto_typ_id"]);
-        if ($auto_typ_id > 0 && $auto_typ_id !== "") {
-            $typ_id = (int)$auto_typ_id;
-        } else {
-            $typ_id = "";
-        }
-        return $typ_id;
+        return ($auto_typ_id > 0) ? $auto_typ_id : "";
     }
 
     public function formatArticleName($text, $max_symbols = 146): string
@@ -530,98 +508,5 @@ trait Variables
         $form = $this->getHtmlForm("faq/request-done");
         return $this->replaceLang($form);
     }
-
-//    public function checkMfa($mfa_link)
-//    {
-//        $mfa_id = 0;
-//        $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `MFA_ID` FROM `T_manufacturers` WHERE `MFA_BRAND_LINK` = '$mfa_link' AND `ACTIVE` = 1 LIMIT 1;");
-//        $n = $db->num_rows($r);
-//        if ($n > 0) {
-//            $mfa_id = $db->result($r, 0, "MFA_ID");
-//        }
-//        return $mfa_id;
-//    }
-//
-//    public function checkModel($mfa_id, $model_link)
-//    {
-//        $model = "";
-//        if ($mfa_id > 0) {
-//            $db = DbSingleton::getTokoDb();
-//            $r = $db->query("SELECT `Model` FROM `T_models` WHERE `Model_Link` = '$model_link' AND `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 LIMIT 1;");
-//            $n = $db->num_rows($r);
-//            if ($n > 0) {
-//                $model = $db->result($r, 0, "Model");
-//            }
-//        }
-//        return $model;
-//    }
-
-//    public function testLinks()
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `LINK` FROM `T_TEST_LINKS`;");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $link = $db->result($r, $i - 1, "LINK");
-//            $arr = explode("/", $link);
-//
-//            $status = 0;
-//            $router = $arr[1];
-//
-//            if ($router == "") {
-//                $status = 1;
-//            }
-//
-//            if ($router == "cars") {
-//                $mfa_link = $arr[2]; $mfa_id = 0;
-//                $model_link = $arr[3]; $model = "";
-//                if ($mfa_link != "") {
-//                    $mfa_id = $this->checkMfa($mfa_link);
-//                    if ($model_link != "") {
-//                        $model = $this->checkModel($mfa_id, $model_link);
-//                    }
-//                }
-//                if ($mfa_link != "" && $model_link == "") {
-//                    if ($mfa_id > 0) {
-//                        $status = 1;
-//                    } else {
-//                        $status = 0;
-//                    }
-//                }
-//                elseif ($mfa_link != "" && $model_link != "") {
-//                    if ($model != "") {
-//                        $status = 1;
-//                    } else {
-//                        $status = 0;
-//                    }
-//                }
-//
-//            }
-//
-//            $db->query("UPDATE `T_TEST_LINKS` SET `STATUS` = $status WHERE `LINK` = '$link' LIMIT 1;");
-//        }
-//        return 0;
-//    }
-
-    /*
-     * type_id = 1 : group_id
-     * type_id = 2 : cat_id
-     * type_id = 3 : head_id
-     * */
-//    public function initKeywords()
-//    {
-//        $db = DbSingleton::getTokoDb();
-//        $r = $db->query("SELECT `HEAD_ID`, `TEX_RU`, `TEX_UA` FROM `T2_TREE_HEAD_EXIST` WHERE `STATUS` = 1;");
-//        $n = $db->num_rows($r);
-//        for ($i = 1; $i <= $n; $i++) {
-//            $group_id = $db->result($r, $i - 1, "HEAD_ID");
-//            $text_ru = $db->result($r, $i - 1, "TEX_RU");
-//            $text_ua = $db->result($r, $i - 1, "TEX_UA");
-//            $db->query("INSERT INTO `T2_TREE_KEYWORDS` (`KEY_ID`, `TYPE_ID`, `KEYWORD`) VALUES ($group_id, 3, \"$text_ru\");");
-//            $db->query("INSERT INTO `T2_TREE_KEYWORDS` (`KEY_ID`, `TYPE_ID`, `KEYWORD`) VALUES ($group_id, 3, \"$text_ua\");");
-//        }
-//        return true;
-//    }
 
 }

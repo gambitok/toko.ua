@@ -112,13 +112,9 @@ function getMoreTitle($path): string
             list($mfa_id, $model) = $autoObj->getAutoIdsLink($mfa_link, $mod_link);
             $textTranslate = $autoObj->getCarManufactureTranslate($mfa_id, $model);
 
-            if ($mfa_link !== "") {
-                $mm = "$mfa_brand $model_text";
-                if ($textTranslate !== "") {
-                    $mm .= " $textTranslate";
-                }
-            } else {
-                $mm = "";
+            $mm = "$mfa_brand $model_text";
+            if ($textTranslate !== "") {
+                $mm .= " $textTranslate";
             }
 
             $predTitle = "{details_on_cap}";
@@ -326,7 +322,7 @@ function getDescription($path)
     }
     if ($path === "article") {
         $art_id = $httpHost[3];
-        $art_search = $catalogue->getArticleDispl($art_id);
+        $art_search = $catalogue->getArticleDisplay($art_id);
         $brand_id   = $catalogue->getArticleBrand($art_id);
         $art_search = strtoupper($art_search);
         $brand_name = $catalogue->getBrandName($brand_id);

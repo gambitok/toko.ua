@@ -617,7 +617,7 @@ class ProfileClass extends ClientClass
                     $amount     = (int)$db->result($r_str, $j - 1, "amount");
                     $price      = $db->result($r_str, $j - 1, "price");
                     $summary    = $db->result($r_str, $j - 1, "summ");
-                    $art_nr_ds  = $this->getArticleDispl($art_id);
+                    $art_nr_ds  = $this->getArticleDisplay($art_id);
                     $brand_name = $this->getBrandName($brand_id);
                     $price      = $exRate->getExRateFromUAH($price, $cash_id);
                     $summary    = $exRate->getExRateFromUAH($summary, $cash_id);

@@ -221,7 +221,7 @@ class MenuClass extends CatalogueClass
 
             for ($i = 1; $i <= $n; $i++) {
                 $art_id     = $db->result($r, $i - 1, "art_id");
-                $art_nr_ds  = $this->getArticleDispl($art_id);
+                $art_nr_ds  = $this->getArticleDisplay($art_id);
                 $amount     = $db->result($r, $i - 1, "amount");
                 $max_amount = $db->result($r, $i - 1, "max_amount");
                 $timestamp  = $db->result($r, $i - 1, "timestamp");
@@ -389,7 +389,7 @@ class MenuClass extends CatalogueClass
                 $region     = $db->result($r, $i - 1, "full_name");
                 $address    = $db->result($r, $i - 1, "address");
 
-                ($salePoint === "") ? $ch = "" : ($ch = ($id === $salePoint) ? "checked='checked'" : "");
+                (empty($salePoint)) ? $ch = "" : ($ch = ($id === $salePoint) ? "checked='checked'" : "");
                 $list .= "
                 <label class=\"container_radio\"> 
                     $region ($address)<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
@@ -429,7 +429,7 @@ class MenuClass extends CatalogueClass
                 $id     = $db->result($r, $i - 1, "id");
                 $region = $db->result($r, $i - 1, "full_name");
 
-                ($salePoint === "") ? $ch = "" : ($ch = ($id === $salePoint) ? "checked='checked'" : "");
+                (empty($salePoint)) ? $ch = "" : ($ch = ($id === $salePoint) ? "checked='checked'" : "");
                 $list .= "
                 <label class=\"container_radio-phone\">
                     $region<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">

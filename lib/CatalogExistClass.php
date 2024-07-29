@@ -2297,7 +2297,7 @@ class CatalogExistClass extends CatalogueClass
                 $d_start    = substr($d_start, 0, 4);
                 $d_end      = $db->result($r2, $i2 - 1, "MOD_PCON_END");
                 $d_end      = substr($d_end, 0, 4);
-                $d_end      = ($d_end === 0) ? "{cur_time}" : $d_end;
+                $d_end      = ($d_end === "") ? "{cur_time}" : $d_end;
 
                 $list .= "
                 <a class=\"seo-li\" href=\"" . $this->getSiteLink() . "$link/$mfa_link/$mod_link/$mod_id_lnk/\">

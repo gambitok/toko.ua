@@ -447,7 +447,7 @@ class FormClass extends CatalogueClass
         $art_sr_nr  = $this->getArticleSearch($art_id);
 
         if ($real_stock === NULL) {
-            $art_nr_ds  = $this->getArticleDispl($art_id);
+            $art_nr_ds  = $this->getArticleDisplay($art_id);
             $brand_id   = $this->getArticleBrand($art_id);
             $art_name   = $this->getBrandName($brand_id) . " " . $art_nr_ds;
             $h1         = $this->getArticleName($art_id) . " " . $art_name;
@@ -1116,7 +1116,7 @@ class FormClass extends CatalogueClass
         $history_id = $this->getUrlNumber($history_id);
         $db = DbSingleton::getTokoDb();
 
-        if ($history_id === "") {
+        if (empty($history_id)) {
             $user_id    = $this->getUser();
             $client_id  = $this->getClient();
             $cookie     = $this->getSessionID();
@@ -1160,20 +1160,17 @@ class FormClass extends CatalogueClass
         if ($photo_name !== "") {
             $photo_name = "$this->uploads_link/$photo_name";
         } else {
-            $brand_photo = "";
             $db = DbSingleton::getTokoDb();
             $r = $db->query("SELECT `logo_name` FROM `T2_BRAND_LINK` WHERE `BRAND_ID` = $brand_id LIMIT 1;");
             $n = $db->num_rows($r);
 
+            $brand_photo = "";
             if ($n > 0) {
                 $brand_photo = $db->result($r, 0, "logo_name");
             }
 
-            if ($photo_name === "" && $brand_photo !== "") {
-                $status = 1;
-            }
-
             if ($brand_photo !== "") {
+                $status = 1;
                 $photo_name = "https://portal.myparts.pro/cdn/brands_files/" . $brand_photo;
             }
         }
@@ -1370,7 +1367,7 @@ class FormClass extends CatalogueClass
     public function showInfoForm($art_id): array
     {
         $art_id     = $this->getUrlNumber($art_id);
-        $art_nr_ds  = $this->getArticleDispl($art_id);
+        $art_nr_ds  = $this->getArticleDisplay($art_id);
         $brand_name = $this->getBrandName($this->getArticleBrand($art_id));
 
         $title = "
