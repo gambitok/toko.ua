@@ -1289,12 +1289,10 @@ class CatalogueClass
             if ($margin_price_lvl < 0 && $markup_min === 0) {
                 $price_minus = $price + ($price * $margin_price_lvl / 100);
                 $operativeLimit = $operativePrice + ($operativePrice * $minMarkup / 100);
+
                 if ($price_minus >= $operativeLimit) {
                     $price = $price_minus;
-                }
-                elseif ($operativeLimit >= $price) {
-                    true;
-                } else {
+                } elseif ($operativeLimit < $price) {
                     $price = $operativeLimit;
                 }
             }
@@ -1309,11 +1307,10 @@ class CatalogueClass
 
                 if ($procPriceMargin >= $procOperativePriceMin) {
                     $price = $procPriceMargin;
-                } elseif (($procPriceMargin < $procOperativePriceMin) && ($procOperativePriceMin > $price)) {
-                    true;
-                } else {
+                } elseif ($procOperativePriceMin <= $price) {
                     $price = $procOperativePriceMin;
                 }
+
                 $price = $this->getPriceRatingExRate($price, $cash_id, $art_cash_id);
             }
 
@@ -1358,10 +1355,7 @@ class CatalogueClass
 
                 if ($price_minus >= $operativeLimit) {
                     $price = $price_minus;
-                }
-                elseif ($operativeLimit >= $price) {
-                    true;
-                } else {
+                } elseif ($operativeLimit < $price) {
                     $price = $operativeLimit;
                 }
             }
@@ -1373,12 +1367,10 @@ class CatalogueClass
 
                 if ($procPriceMargin >= $procOperativePriceMin) {
                     $price = $procPriceMargin;
-                }
-                elseif (($procPriceMargin < $procOperativePriceMin) && ($procOperativePriceMin > $price)) {
-                    true;
-                } else {
+                } elseif ($procOperativePriceMin <= $price) {
                     $price = $procOperativePriceMin;
                 }
+
                 $price = $this->getPriceRatingExRate($price, 2, $cash_id);
             }
 

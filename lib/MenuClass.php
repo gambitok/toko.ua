@@ -1166,7 +1166,9 @@ class MenuClass extends CatalogueClass
         $list = $this->replaceLang($this->getHtmlForm("helper/select_not_option"));
         $lang_id = $this->getOldLanguage($this->getLanguage());
 
-        $r = $db->query("SELECT `VALUE_ID`, `VALUE_NAME`, `PARAM_ID` FROM `T2_TREE_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `LANG_ID` = $lang_id ORDER BY `VALUE_NAME`;");
+        $r = $db->query("SELECT `VALUE_ID`, `VALUE_NAME`, `PARAM_ID` FROM `T2_TREE_VALUE_EXIST` 
+        WHERE `GROUP_ID` = $group_id AND `LANG_ID` = $lang_id 
+        ORDER BY `VALUE_NAME`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $value_id   = $db->result($r, $i - 1, "VALUE_ID");
