@@ -1903,9 +1903,11 @@ class ShopClass extends CatalogueClass
         $key = "";
         $r = $db->query("SELECT `CODE` FROM `MAIL_SETTINGS` WHERE `ID` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $key = $db->result($r, 0, "CODE");
         }
+
         return $key;
     }
 
@@ -1963,6 +1965,7 @@ class ShopClass extends CatalogueClass
                     $city_name  = $db->result($r, $i - 1, "CITY_NAME_CLEAR$postfix") . " ($state_name обл., $region_name р-он)";
                     $city_full_name = "$city_name1 ($state_name обл., $region_name р-он) - $city_name2 ($state_name2 обл., $region_name2 р-он)";
                 }
+
                 if ($outputStatus) {
                     $city_name = $city_full_name;
                 }
@@ -1972,9 +1975,10 @@ class ShopClass extends CatalogueClass
             }
         } else {
             if ($outputStatus) {
-            $list = $this->replaceLang("<li class=\"select3-list__item\">-{nothing_found}-</li>");
+                $list = $this->replaceLang("<li class=\"select3-list__item\">-{nothing_found}-</li>");
             }
         }
+
         return $list;
     }
 

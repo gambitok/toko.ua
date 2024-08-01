@@ -322,7 +322,7 @@ class FormClass extends CatalogueClass
         $articleData = $this->getArticleInfo($art_id);
         $delivery_days = $articleData['delivery_days'];
         $time_from = $articleData['delivery_time_from'];
-        $delivery_date = $this->getTpointDeliveryTime($delivery_days);
+        $delivery_date = $this->getSalePointDeliveryTime($delivery_days);
         $delivery_date = str_replace("<br>", " ", $delivery_date);
         $delivery_time2 = $delivery_date . " {with_cap} " . $time_from;
         $delivery_time1 = $delivery_date . " {with_cap} 18:00";

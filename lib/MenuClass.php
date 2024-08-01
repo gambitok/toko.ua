@@ -396,6 +396,7 @@ class MenuClass extends CatalogueClass
                     <span class=\"radiomark\"></span>
                 </label>";
             }
+
             $list .= "
             </form>";
         }
@@ -503,6 +504,7 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getDbm();
         $form = "";
+
         if (empty($org_type)) {
             $org_type = 1;
         }
@@ -530,9 +532,11 @@ class MenuClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $language_id = $this->getLanguage();
+
         if ($language_id !== 1) {
             $language_id = 5;
         }
+
         $file = "";
 
         $r = $db->query("SELECT `id` FROM `news_galery` WHERE `cat` = $news_id ORDER BY `main` DESC;");
@@ -795,7 +799,7 @@ class MenuClass extends CatalogueClass
         $r = $db->query("SELECT * FROM `T2_REVIEWS` WHERE `ID` = $state_id ORDER BY `DATA_CREATE` DESC;");
         $postfix    = $this->getLangPostfix($this->getLanguage());
         $date       = $db->result($r, 0, "DATA");
-        $date_create= $db->result($r, 0, "DATA_CREATE");
+        $date_create = $db->result($r, 0, "DATA_CREATE");
         $site_title = $db->result($r, 0, "T_$postfix");
         $site_description = $db->result($r, 0, "D_$postfix");
         $title      = $db->result($r, 0, "TITLE_$postfix");
@@ -886,9 +890,11 @@ class MenuClass extends CatalogueClass
             $text_end = $text;
             for ($i = 0, $iMax = strlen($text); $i <= $iMax; $i++) {
                 $pos_start = strpos($text_end, "<img", $i);
+
                 if ($text_end === substr($text_end, $pos_start)) {
                     break;
                 }
+
                 $text_end   = substr($text_end, $pos_start);
                 $pos_end    = (strpos($text_end, ">")) + 1;
                 $text_img   = substr($text_end, 0, $pos_end);
@@ -1086,6 +1092,7 @@ class MenuClass extends CatalogueClass
 
         $list1 = $list2 = "";
         $where = "1";
+
         if ($router_sel === "catalog") {
             $group_link = findLinks()[1];
             $where = "`LINK` != '$group_link'";
@@ -1235,7 +1242,7 @@ class MenuClass extends CatalogueClass
                     LEFT JOIN `EX_TABLE_TREE_$group_id` tm ON (tm.art_id = tp.art_id)
                 WHERE (tp.`param_$param_id` = '$value_id' OR tp.`param_$param_id` LIKE '%,$value_id%' OR tp.`param_$param_id` LIKE '%$value_id,%');");
                 $count_arts = (int)$dbc->result($r, 0, "count_arts");
-                $link       = "https://toko.ua/catalog/$group_link/$param_link=$value_link/";
+                $link = "https://toko.ua/catalog/$group_link/$param_link=$value_link/";
                 $seo_status = (int)$this->checkSeoText("catalog", $link);
                 $count++;
 
@@ -1285,9 +1292,9 @@ class MenuClass extends CatalogueClass
                     $count_arts = $dbc->result($r, $i - 1, "count_arts");
 
                     if ($mfa_id > 0) {
-                        $mfa_link   = $this->getManufactureLink($mfa_id);
+                        $mfa_link = $this->getManufactureLink($mfa_id);
                         $model_link = $this->getModelLink($model);
-                        $link       = "https://toko.ua/catalog/$group_link/$param_link=$value_link/$mfa_link/$model_link/";
+                        $link = "https://toko.ua/catalog/$group_link/$param_link=$value_link/$mfa_link/$model_link/";
                         $seo_status = (int)$this->checkSeoText("catalog", $link);
                         $count++;
 

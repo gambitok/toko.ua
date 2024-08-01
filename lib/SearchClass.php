@@ -819,9 +819,9 @@ class SearchClass extends CatalogueClass
 
         if ($where_art_id_str !== "") {
             $articlePrices      = $this->getArticlePrices($where_art_id_str);
-            $deliverInfo        = $this->getTpointDeliveryInfos($salePointID, $where_art_id_str);
+            $deliverInfo        = $this->getSalePointDeliveryInfo($salePointID, $where_art_id_str);
             $articleSupplPrices = $this->getArticleSupplPrices($where_art_id_str);
-            $supplDeliverInfo   = $this->getTpointSupplDeliveriesInfo($salePointID);
+            $supplDeliverInfo   = $this->getSalePointSupplDeliveryInfo($salePointID);
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands);
             $n = $db->num_rows($r);
