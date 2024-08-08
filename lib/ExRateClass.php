@@ -37,18 +37,22 @@ class ExRateClass
         $db = DbSingleton::getDbm();
 
         if ($val === "dollar") {
+
             if ($this->usdRate === null) {
                 $r = $db->query("SELECT `kours_value` FROM `J_KOURS` WHERE `cash_id` = 2 AND `in_use` = 1 LIMIT 1;");
                 $this->usdRate = number_format($db->result($r, 0, "kours_value"), 2, '.', '');
             }
+
             return $this->usdRate;
         }
 
         if ($val === "euro") {
+
             if ($this->euroRate === null) {
                 $r = $db->query("SELECT `kours_value` FROM `J_KOURS` WHERE `cash_id` = 3 AND `in_use` = 1 LIMIT 1;");
                 $this->euroRate = number_format($db->result($r, 0, "kours_value"), 2, '.', '');
             }
+
             return $this->euroRate;
         }
 
@@ -66,10 +70,12 @@ class ExRateClass
         if ($cur === 2) {
             $price /= $this->getExRate("dollar");
             $price = number_format($price, 2, '.', '');
-        } elseif ($cur === 3) {
+        }
+        elseif ($cur === 3) {
             $price /= $this->getExRate("euro");
             $price = number_format($price, 2, '.', '');
-        } elseif (is_float($price)) {
+        }
+        elseif (is_float($price)) {
             $price = number_format($price, 2, '.', '');
         }
 
@@ -87,10 +93,12 @@ class ExRateClass
         if ($cur === 1) {
             $price *= $this->getExRate("dollar");
             $price = number_format($price, 2, '.', '');
-        } elseif ($cur === 3) {
+        }
+        elseif ($cur === 3) {
             $price = ($price * $this->getExRate("dollar")) / $this->getExRate("euro");
             $price = number_format($price, 2, '.', '');
-        } elseif (is_float($price)) {
+        }
+        elseif (is_float($price)) {
             $price = number_format($price, 2, '.', '');
         }
 
@@ -107,9 +115,11 @@ class ExRateClass
 
         if ($cur === 2) {
             $price /= $this->getExRate("dollar");
-        } elseif ($cur === 3) {
+        }
+        elseif ($cur === 3) {
             $price /= $this->getExRate("euro");
         }
+
         return number_format($price, 2, '.', '');
     }
 

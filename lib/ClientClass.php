@@ -196,6 +196,7 @@ class ClientClass
     public function formatValidPhone($phone)
     {
         $phone = str_replace(str_split("()+- "), "", $phone);
+
         return substr($phone, -10);
     }
 
@@ -226,6 +227,7 @@ class ClientClass
         $r = $db->query("SELECT `id`, `client_id` FROM `A_CLIENTS_USERS` WHERE `pass` = '$password' AND `phone` IN ($phone_list) AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
         $n2 = 0;
+
         if ($n === 0) {
             $r = $db->query("SELECT `id`, `client_id` FROM `A_CLIENTS_USERS_RETAIL` WHERE `pass` = '$password' AND `phone` IN ($phone_list) AND `status` = $this->status_user_retail LIMIT 1;");
             $n2 = $db->num_rows($r);
@@ -387,6 +389,7 @@ class ClientClass
         $date       = date("Y-m-d H:i:s");
 
         list($region, $state, $country) = $this->getLocationCity($city_id);
+
         if (empty($client_cat)) {
             $client_cat = $this->default_client_category;
         }
@@ -546,9 +549,10 @@ class ClientClass
 
         // only for this user
         $user_id = $this->getUser();
+
         if ($user_id > 0) {
-            $user_phone = $this->getClientPhone();
-            if ($phone === $user_phone) {
+
+            if ($phone === $this->getClientPhone()) {
                 $res = false;
             }
         }
@@ -586,8 +590,7 @@ class ClientClass
             $result = true;
         }
 
-        $user_id = $this->getUser();
-        if (($user_id > 0) && $phone !== $this->getClientPhone()) {
+        if (($this->getUser() > 0) && $phone !== $this->getClientPhone()) {
             $result = false;
         }
 
@@ -678,6 +681,7 @@ class ClientClass
         $storage_address = "";
         $r = $db->query("SELECT `address` FROM `STORAGE` WHERE `id` = $storage_id AND `status` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $storage_address = $db->result($r, 0, "address");
         }
@@ -696,6 +700,7 @@ class ClientClass
         $city_name = "";
         $r = $db->query("SELECT `city` FROM `STORAGE` WHERE `id` = $storage_id AND `status` = 1 LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $city_name = $this->getCityName($db->result($r, 0, "city"));
         }
@@ -998,6 +1003,7 @@ class ClientClass
             } else {
                 $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id;");
                 $n = $db->num_rows($r);
+
                 if ($n > 0) {
                     $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date' WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id;");
                 } else {
@@ -1170,13 +1176,17 @@ class ClientClass
 
         if (($phone === "") || (strlen($vin) !== $this->vin_len && $status === 1) || (!$this->validateOperator($phone))) {
             $answer = false;
+
             if ($phone === "") {
                 $err = "{phone_number_input}";
-            } elseif ($vin === "") {
+            }
+            elseif ($vin === "") {
                 $err = "{vin_number_input}";
-            } elseif (!$this->validateOperator($phone)) {
+            }
+            elseif (!$this->validateOperator($phone)) {
                 $err = "{sms_error_1}";
-            } elseif ($status === 1 && strlen($vin) !== $this->vin_len) {
+            }
+            elseif ($status === 1 && strlen($vin) !== $this->vin_len) {
                 $err = "{vin_error_1}";
             } else {
                 $err = "{input_all_data}";
@@ -1269,6 +1279,7 @@ class ClientClass
             $client_id  = $clientData["client_id"];
             // check if retail and have BONUS already
             // add BONUS
+
             if ($this->checkRetailClientCategory($client_id) && !$this->checkClientBonus($client_id, $bonus)) {
                 $this->addClientBonus($client_id, $bonus);
             }
@@ -1305,6 +1316,7 @@ class ClientClass
             $dat[$i]["abr2"] = $abr2;
             $dat[$i]["name"] = $name;
         }
+
         return $dat;
     }
 
@@ -1318,6 +1330,7 @@ class ClientClass
             $art_id = $db->result($r, $i - 1, "art_id");
             $suppl_arts[] = $art_id;
         }
+
         return $suppl_arts;
     }
 
@@ -1334,6 +1347,7 @@ class ClientClass
             $st[$i]["id"] = $id;
             $st[$i]["name"] = $name;
         }
+
         return $st;
     }
 
@@ -1341,14 +1355,17 @@ class ClientClass
     {
         $id = 0;
         foreach ($cash_data as $cash) {
+
             if ($cash["abr"] == $suppl_cash) {
                 $id = $cash["id"];
                 break;
             }
+
             if ($cash["abr2"] == $suppl_cash) {
                 $id = $cash["id"];
                 break;
             }
+
             if ($cash["name"] == $suppl_cash) {
                 $id = $cash["id"];
                 break;
@@ -1371,14 +1388,17 @@ class ClientClass
                 $status = 0;
                 $r1 = $db->query("SELECT * FROM `T2_SUPPL_IMPORT` WHERE `art_id` = $art_id;");
                 $n1 = $db->num_rows($r1);
+
                 if ($n1 > 0) {
                     $status = 1;
                 }
                 $r2 = $db->query("SELECT * FROM `T2_ARTICLES_STRORAGE` WHERE `ART_ID` = $art_id AND `AMOUNT` > 0;");
                 $n2 = $db->num_rows($r2);
+
                 if ($n2 > 0) {
                     $status = 1;
                 }
+
                 if ($status) {
                     $suppl_valid_arts[] = $art_id;
                 }
@@ -1398,9 +1418,11 @@ class ClientClass
         $group_id = 0;
         $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `ART_ID` = $art_id LIMIT 1;");
         $n = $db->num_rows($r);
+
         if ($n > 0) {
             $group_id = $db->result($r, 0, "GROUP_ID");
         }
+
         return $group_id;
     }
 
@@ -1435,6 +1457,7 @@ class ClientClass
                     // TABLE
                     $r1 = $dbc->query("SELECT `art_id` FROM `$table` WHERE `art_id` = $art_id;");
                     $n1 = $dbc->num_rows($r1);
+
                     if ($n1 == 0) {
                         $rbr = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
                         $brand_id = intval($db->result($rbr, 0, "BRAND_ID"));
@@ -1443,12 +1466,14 @@ class ClientClass
                     // TABLE PARAMS
                     $r2 = $dbc->query("SELECT `art_id` FROM `$table_params` WHERE `art_id` = $art_id;");
                     $n2 = $dbc->num_rows($r2);
+
                     if ($n2 == 0) {
                         $rbr = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
                         $brand_id = intval($db->result($rbr, 0, "BRAND_ID"));
                         $arr = [];
                         $r_par = $db->query("SELECT `PARAM_ID`, `VALUE_ID` FROM `T2_TREE_ARTS_PARAMS_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `ART_ID` = $art_id;");
                         $n_par = $db->num_rows($r_par);
+
                         if ($n_par > 0) {
                             for ($i = 1; $i <= $n_par; $i++) {
                                 $param_id = $db->result($r_par, $i - 1, "PARAM_ID");
@@ -1458,14 +1483,17 @@ class ClientClass
                             $column_name = [];
                             $column_value = [];
                             foreach ($arr as $param_id => $values) {
+
                                 if ($param_id > 0 && !empty($values)) {
                                     $column_name[] = "`param_$param_id`";
                                     $column_value[] = "'" . implode(",", $values) . "'";
                                 }
                             }
                             $column_set_name = implode(",", $column_name);
+
                             if ($column_set_name != "") $column_set_name = ", " . $column_set_name;
                             $column_set_value = implode(",", $column_value);
+
                             if ($column_set_value != "") $column_set_value = ", " . $column_set_value;
 
                             $dbc->query("INSERT INTO `$table_params` (`art_id`, `brand_id`, `status` $column_set_name) VALUES ($art_id, $brand_id, 1 $column_set_value);");
@@ -1474,6 +1502,7 @@ class ClientClass
                     // TABLE MFA
                     $r3 = $dbc->query("SELECT `art_id` FROM `$table_mfa` WHERE `art_id` = $art_id;");
                     $n3 = $dbc->num_rows($r3);
+
                     if ($n3 == 0) {
                         $arr = [];
                         $r_mfa = $db->query("SELECT tl.`ART_ID`, tm.MOD_MFA_ID, tm.Model 
@@ -1487,6 +1516,7 @@ class ClientClass
                             $art_id = $db->result($r_mfa, $i - 1, "ART_ID");
                             $mfa_id = $db->result($r_mfa, $i - 1, "MOD_MFA_ID");
                             $model = $db->result($r_mfa, $i - 1, "Model");
+
                             if ($mfa_id > 0) {
                                 $arr[$art_id][$mfa_id][] = $model;
                             }
@@ -1529,16 +1559,19 @@ class ClientClass
                     $art_id = intval($art_id);
                     $r1 = $dbc->query("SELECT `art_id` FROM `$table` WHERE `art_id` = $art_id;");
                     $n1 = $dbc->num_rows($r1);
+
                     if ($n1 > 0) {
                         $dbc->query("DELETE FROM `$table` WHERE `art_id` = $art_id;");
                     }
                     $r2 = $dbc->query("SELECT `art_id` FROM `$table_params` WHERE `art_id` = $art_id;");
                     $n2 = $dbc->num_rows($r2);
+
                     if ($n2 > 0) {
                         $dbc->query("DELETE FROM `$table_params` WHERE `art_id` = $art_id;");
                     }
                     $r3 = $dbc->query("SELECT `art_id` FROM `$table_mfa` WHERE `art_id` = $art_id;");
                     $n3 = $dbc->num_rows($r3);
+
                     if ($n3 > 0) {
                         $dbc->query("DELETE FROM `$table_mfa` WHERE `art_id` = $art_id;");
                     }
@@ -1616,18 +1649,23 @@ class ClientClass
                 $storage_str = "";
 
                 foreach ($template['columns'] as $key => $val) {
+
                     if ($val['type'] === 'index') {
                         $index = $key;
                     }
+
                     if ($val['type'] === 'brand') {
                         $brand = $key;
                     }
+
                     if ($val['type'] === 'price') {
                         $price = $key;
                     }
+
                     if ($val['type'] === 'cash') {
                         $cash = $key;
                     }
+
                     if ($val['type'] === 'storage') {
                         $storage_id = $val['storage_id'];
                         $suppl_storages_use[$storage_id] = $key;
@@ -1661,8 +1699,10 @@ class ClientClass
 
                 if (!empty($rows)) {
                     $dec = 0;
+
                     foreach ($rows as $Row) {
                         $krs += 1;
+
                         if($krs % 1000 == 0) {
                             $dec++;
                             print "$dec. $krs processed" . "\n";
@@ -1678,12 +1718,15 @@ class ClientClass
                                 $suppl_cash_id = $this->findCashID($suppl_cash, $cash_data);
                             }
                             $price_usd = 0;
+
                             if ($suppl_cash_id == 2) {
                                 $price_usd = $suppl_price;
                             }
+
                             if ($suppl_cash_id == 1) {
                                 $price_usd = ($suppl_price / $exRateUSD);
                             }
+
                             if ($suppl_cash_id == 3) {
                                 $price_usd = ($suppl_price * $exRateEUR / $exRateUSD);
                             }
@@ -1695,11 +1738,13 @@ class ClientClass
                                 $suppl_stock = trim($catalog->getIconv($cellNom));
 
                                 if ($suppl_stock > 0) {
+
                                     if ($pkg != "") {
                                         $pkg .= ",";
                                     }
                                     $pkg .= "($suppl_id, \"$suppl_index\", \"$suppl_brand\", '$suppl_price', '$suppl_cash_id', '$exRateUSD', '$price_usd', '$storage_id', '$suppl_stock', CURDATE(), 0, '', 0)";
                                     $pkg_k += 1;
+
                                     if ($pkg_k == $max_pkg) {
                                         $dbt->query("INSERT INTO `T2_SUPPL_IMPORT` (`suppl_id`, `suppl_index`, `brand`, `price_suppl`, `cash_id`, `kours_usd`, `price_usd`, `client_storage_id`, `stock_suppl`, `data_update`, `return_delay`, `warranty_info`, `art_id`) VALUES $pkg;");
                                         $pkg = "";

@@ -18,12 +18,13 @@ $up = new UkrPoshtaClass("a979e2d9-d044-3f41-8b8c-099c5879ae32");
 $data = $up->getDistrictsListAll();
 foreach ($data as $value)
 {
-    $disctrict_id   = $value['DISTRICT_ID'];
-    $disctrict_name = $value['DISTRICT_NAME'];
-    $city_id        = $value['CITY_ID'];
+    $district_id   = $value['DISTRICT_ID'];
+    $district_name = $value['DISTRICT_NAME'];
+    $city_id       = $value['CITY_ID'];
 
-    $dbt->query("INSERT INTO `UP_DISTRICTS` (`DISTRICT_ID`, `CITY_ID`, `NAME`) VALUES ($disctrict_id, $city_id, \"$disctrict_name\");");
-    $disctrict_name = $catalog_exist->getIconvWindows($disctrict_name);
+    $dbt->query("INSERT INTO `UP_DISTRICTS` (`DISTRICT_ID`, `CITY_ID`, `NAME`) 
+    VALUES ($district_id, $city_id, \"$district_name\");");
+    $district_name = $catalog_exist->getIconvWindows($district_name);
 
-    print("$disctrict_id - $disctrict_name \n");
+    print("$district_id - $district_name \n");
 }

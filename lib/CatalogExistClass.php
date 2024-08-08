@@ -319,7 +319,7 @@ class CatalogExistClass extends CatalogueClass
         $table = "EX_TABLE_TREE_MFA_$group_id";
 
         $r = $dbc->query("SHOW TABLES LIKE '$table';");
-        $n = $dbc->num_rows($r);
+        $n = (int)$dbc->num_rows($r);
 
         if ($n > 0) {
             $r = $dbc->query("SELECT COUNT(`art_id`) as col_arts FROM `$table`;");

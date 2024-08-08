@@ -32,7 +32,7 @@ Done with full table \n
 $r = $dbt->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP_EXIST` WHERE $where;");
 $n = $dbt->num_rows($r);
 for ($i = 1; $i <= $n; $i++) {
-    $group_id   = $dbt->result($r, $i - 1, "GROUP_ID");
+    $group_id = (int)$dbt->result($r, $i - 1, "GROUP_ID");
     $group_link = $catalog_exist->getGroupRowLink($group_id);
 
     print $catalog_exist->initPartsTable($group_id);
@@ -50,7 +50,7 @@ Done with $group_link (GROUP_ID: $group_id) \n
 $r = $dbt->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP_EXIST` WHERE $where;");
 $n = $dbt->num_rows($r);
 for ($i = 1; $i <= $n; $i++) {
-    $group_id   = $dbt->result($r, $i - 1, "GROUP_ID");
+    $group_id = (int)$dbt->result($r, $i - 1, "GROUP_ID");
     $catalog_exist->initPartsAvailableTables($group_id, 1);
 }
 
