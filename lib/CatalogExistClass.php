@@ -1116,8 +1116,7 @@ class CatalogExistClass extends CatalogueClass
         $form = str_replace(
             array("{h1_text}", "{vin_text}", "{parts_cars}"),
             array("<b>$filters_h1</b>", "<a class=\"blue-a\" onclick=\"$('#VinFormPhone').modal('show');\">{vin_order}</a>", $this->drawLoader()),
-            $form
-        );
+        $form);
 
         $catalog_text = "{in_spare_parts_catalog}";
         $catalog_link = $this->getSiteLink() . $this->cars_link . "/";
@@ -1135,7 +1134,7 @@ class CatalogExistClass extends CatalogueClass
             }
         }
 
-        $form = str_replace("{catalog_link}", "<a class=\"blue-a\" href=\"$catalog_link\">$catalog_text</a>", $form);
+        $form = str_replace("{catalog_link}", $this->getHtmlTag("a", $catalog_text, ['href' => $catalog_link, 'class' => 'blue-a']), $form);
 
         return $this->replaceLang($form);
     }
@@ -1412,8 +1411,7 @@ class CatalogExistClass extends CatalogueClass
                     $value_name = $this->getGroupValueName($value_id, $param_id);
                     $link = $this->getPartsFilterLinks($group_id, $params, $param_id, $value_id, $mfa_id, $model, $model_id);
 
-                    $filters_btn .= "
-                    <a href=\"$link\" class=\"btn btn-sm\">$value_name &times;</a>";
+                    $filters_btn .= $this->getHtmlTag("a", $value_name, ['href' => $link, 'class' => 'btn btn-sm']);
                 }
             }
 
@@ -1436,8 +1434,7 @@ class CatalogExistClass extends CatalogueClass
                     $car_link .= "$model_id_link/";
                 }
 
-                $filters_btn = "
-                <a class=\"btn btn-sm btn-white\" href=\"" . $this->getSiteLink() . "$car_link\">{filter_cap_empty}</a>" . $filters_btn;
+                $filters_btn = $this->getHtmlTag("a", "{filter_cap_empty}", ['href' => $this->getSiteLink() . "$car_link\"", 'class' => 'btn btn-sm btn-white']) . $filters_btn;
             }
         }
 
@@ -1595,7 +1592,9 @@ class CatalogExistClass extends CatalogueClass
                             if (in_array($value_id, $params[$param_id])) {
                                 $count_brands++;
                             }
-                        } elseif (in_array($value_id, $params[$param_id])) {
+                        }
+
+                        elseif (in_array($value_id, $params[$param_id])) {
                             $count_params++;
                         }
 
@@ -1709,8 +1708,7 @@ class CatalogExistClass extends CatalogueClass
                             $checked    = (in_array($value_id, $params[$param_id], true));
 
                             if (!$checked) {
-                                $list_params .= "
-                                <a href=\"$link\">$value_name</a>, ";
+                                $list_params .= $this->getHtmlTag("a", $value_name, ['href' => $link]). ", ";
                             }
                         }
 
@@ -1783,7 +1781,9 @@ class CatalogExistClass extends CatalogueClass
                         if (empty($params[$param])) {
                             unset($params[$param]);
                         }
-                    } elseif ($unset === 0 && !in_array($value_id, $params[$param_id], true)) {
+                    }
+
+                    elseif ($unset === 0 && !in_array($value_id, $params[$param_id], true)) {
                         $params[$param_id][] = $value_id;
                     }
                 }
@@ -1887,11 +1887,10 @@ class CatalogExistClass extends CatalogueClass
                     $all_count = "($count)";
                 }
 
-                $form = $this->getHtmlForm("catalog_exist/params_cars");
                 $form = str_replace(
                     array("{typ_text}", "{on_car_checked}", "{on_car_count}", "{on_all_checked}", "{on_all_count}"),
                     array($typ_text, $car_checked, $car_count, $all_checked, $all_count),
-                $form);
+                $this->getHtmlForm("catalog_exist/params_cars"));
             }
 
             elseif ($mfa_id > 0) {
@@ -2131,7 +2130,8 @@ class CatalogExistClass extends CatalogueClass
         }
 
         $model_name = $text;
-        $model_link = "<a href='$link'>$text</a>";
+        $model_link = $this->getHtmlTag("a", $text, ['href' => $link]);
+
         $model_transl = $text_transl;
 
         return compact('model_name', 'model_link', 'model_transl');
@@ -2231,9 +2231,13 @@ class CatalogExistClass extends CatalogueClass
             $year       = $modData["years"];
             $types      = $modData["types"];
 
+            $link1 = $this->getHtmlTag("a", $group_name, ['href' => $main_link]);
+            $link2 = $this->getHtmlTag("a", $group_name_small, ['href' => $main_link]);
+            $link3 = $this->getHtmlTag("a", $head_name, ['href' => $head_link]);
+
             $text = str_replace(
                 array("{GET_PAGE_H1}", "{GET_PAGE_H1_small}", "{GET_PAGE_H1_LINK}", "{MarkaMFA_Model}", "{MarkaMFA_Model_transl}", "{MarkaMFA_Model_LINK}", "{Main_Category_H1}", "{Main_Category_H1_LINK}", "{Main_Category_H1_LINK_small}", "{Main_Category_H1_Main_Category_H1}", "{Main_Category_H1_Main_Category_H1_LINK}", "{Cars_List}", "{MarkaMfa_model_volume}", "{MarkaMfa_model_year}", "{MarkaMfa_model_types}"),
-                array($h1_text, $h1_text_small, $h1_text, $modelData['model_name'], $modelData['model_transl'], $modelData['model_link'], $group_name, "<a href='$main_link'>$group_name</a>", "<a href='$main_link'>$group_name_small</a>", $head_name, "<a href='$head_link'>$head_name</a>", $this->getCatalogSeoCarsList($mfa_id, $model), $volume, $year, $types),
+                array($h1_text, $h1_text_small, $h1_text, $modelData['model_name'], $modelData['model_transl'], $modelData['model_link'], $group_name, $link1, $link2, $head_name, $link3, $this->getCatalogSeoCarsList($mfa_id, $model), $volume, $year, $types),
             $text);
         }
         
@@ -3211,7 +3215,7 @@ class CatalogExistClass extends CatalogueClass
 
         $form = str_replace(
             array("{head_h1}", "{head_list}"),
-            array($h1_text, $this->getCatalogColListCat($head_id)),
+            array($h1_text, $this->getCatalogColListCat($db, $head_id)),
         $this->getHtmlForm("catalog_exist/head_form"));
         $form = $this->replaceLang($form);
 

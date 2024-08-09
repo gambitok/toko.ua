@@ -431,7 +431,7 @@ class AutoClass extends CatalogueClass
         }
 
         $products = new ProductsClass();
-        $form = str_replace(array("{garage_list}", "{auto_form}", "{cars_garage_content}"), array($list, $auto_form, $products->showCarsForm()), $form);
+        $form = str_replace(array("{garage_list}", "{auto_form}", "{cars_garage_content}"), array($list, $auto_form, $products->getCarsSearch()), $form);
 
         if ($n === 0) {
             $form = $this->getHtmlForm("error/404_garage");

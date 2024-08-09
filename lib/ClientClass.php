@@ -78,9 +78,8 @@ class ClientClass
     /*
      * get Client Name
      * */
-    public function getClientName($user_id, $client_id)
+    public function getClientName($db, $user_id, $client_id)
     {
-        $db = DbSingleton::getDbm();
         $r = $db->query("SELECT `name` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id AND `client_id` = $client_id AND `status` = $this->status_user LIMIT 1;");
         $n = $db->num_rows($r);
 

@@ -83,7 +83,7 @@ class SearchClass extends CatalogueClass
                 $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
                 $brand_link = $db->result($r, $i - 1, "BRAND_LINK");
                 $art_name   = $db->result($r, $i - 1, "NAME");
-                $count      = $this->countBrandItems($search_nr, $brand_id);
+                $count      = $this->countBrandItems($db, $search_nr, $brand_id);
 
                 if ($count === 0) {
                     $count_zero++;
@@ -142,10 +142,8 @@ class SearchClass extends CatalogueClass
     /*
      * SEARCH COUNT BY BRAND
      * */
-    public function countBrandItems($article_nr_search, $brand_id): int
+    public function countBrandItems($db, $article_nr_search, $brand_id): int
     {
-        $db = DbSingleton::getTokoDb();
-
         $art_ids    = [];
         $brand_id   = $this->getUrlNumber($brand_id);
 
@@ -197,10 +195,12 @@ class SearchClass extends CatalogueClass
                     $format_name        = $this->getFormatArticle($article_nr_displ);
 
                     $price = $this->getArticlePrice($art_id);
+
                     if ($suppl_id > 0) {
                         $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
                     }
                     $price = $exRate->getExRatePrice($price, $cur);
+
                     if ($cur === 1) {
                         $price = $client->getClientPriceRounding($client_id, $price);
                     }
@@ -226,7 +226,9 @@ class SearchClass extends CatalogueClass
                     $article_name = str_replace('"', "''" , $article_name);
 
                     if ($price > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
+
                         if ($stock > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
+
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                                 $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
                                 VALUES ('$art_id', '$article_nr_displ', '$brand_id', \"$brand_name\", \"$article_name\", '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
@@ -288,8 +290,10 @@ class SearchClass extends CatalogueClass
             $i = 0;
             foreach ($text_arr as $value) {
                 $i++;
+
                 if (mb_strlen($value) > 1) {
                     $arr[$i][] = $value;
+
                     if (mb_strlen($value) > $max_word) {
                         $format_value = substr($value, 0, -2);
                         $arr[$i][] = $format_value;
@@ -346,6 +350,7 @@ class SearchClass extends CatalogueClass
         $formObj = new FormClass();
 
         $list = $list1 = $list2 = $list3 = "";
+
         if ($text === "") {
             $list = $formObj->showHistoryList();
         }
@@ -354,10 +359,6 @@ class SearchClass extends CatalogueClass
             $text = $this->getUrlString($text);
             $format_text = str_replace(str_split(' -,+\/:*?"<>|_.'), "", $text);
 
-//            $r = $db->query("SELECT DISTINCT `ART_ID`, `BRAND_ID`, `DISPLAY_NR`, MIN(`KIND`) as min_kind
-//            FROM `T2_CROSS`
-//            WHERE `SEARCH_NUMBER` = \"$format_text\"
-//            ORDER BY `min_kind`;");
             $r = $db->query("SELECT `ART_ID`, `BRAND_ID`, `DISPLAY_NR`, MIN(`KIND`) as min_kind FROM `T2_CROSS` 
             WHERE `SEARCH_NUMBER` = \"$format_text\" 
             GROUP BY `BRAND_ID` 
@@ -410,6 +411,7 @@ class SearchClass extends CatalogueClass
                             <a href='$link'>$key_name</a>
                         <li>";
                     }
+
                     elseif ($type_id === 2) {
                         $catData    = $this->getCatRowData($key_id);
                         $key_name   = $catData["cat_name"];
@@ -423,6 +425,7 @@ class SearchClass extends CatalogueClass
                             <a href='$link'>$key_name</a>
                         <li>";
                     }
+
                     elseif ($type_id === 3) {
                         $key_name   = $this->getHeadRowName($key_id);
                         $key_link   = $this->getHeadRowLink($key_id);
@@ -499,6 +502,7 @@ class SearchClass extends CatalogueClass
         foreach ($mas as $mas_key => $mas_val) {
             $i = 0;
             foreach ($mas_val as $val) {
+                
                 if ($i === 0) {
                     $arr[$mas_key] = (int)$val["suppl_id"];
                 }
@@ -518,6 +522,7 @@ class SearchClass extends CatalogueClass
         $del_arts = [];
         foreach ($mas2 as $mas_key => $mas_val) {
             foreach ($mas_val as $val) {
+                
                 if ((int)$val["suppl_id"] === 0 && (int)$val["stock"] > 0 && count($mas_val) > 1) {
                     $del_arts[] = $mas_key;
                 }
@@ -526,6 +531,7 @@ class SearchClass extends CatalogueClass
 
         foreach ($del_arts as $art_id) {
             foreach ($mas2[$art_id] as $key => $val) {
+                
                 if ((int)$val["suppl_id"] > 0) {
                     unset($mas2[$art_id][$key]);
                 }
@@ -585,11 +591,13 @@ class SearchClass extends CatalogueClass
 
                     // price
                     $price = $this->getArticlePrice($art_id);
+
                     if ($suppl_id > 0) {
                         $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
                     }
 
                     $price = $exRate->getExRatePrice($price, $cur);
+
                     if ($cur === 1) {
                         $price = $client->getClientPriceRounding($client_id, $price);
                     }
@@ -612,9 +620,11 @@ class SearchClass extends CatalogueClass
                     if ($filter_price > $filters["max_price"]) {
                         $filters["max_price"] = ceil($filter_price);
                     }
+
                     if ($filter_price < $filters["min_price"]) {
                         $filters["min_price"] = ceil($filter_price);
                     }
+
                     if ($delivery_days > $filters["max_dd"]) {
                         $filters["max_dd"] = $delivery_days;
                     }
@@ -630,8 +640,10 @@ class SearchClass extends CatalogueClass
 
                     // show articles with suppl_id=0 or with price!=0 and stock!=0
                     if (($price > 0 || $nulls === 1) || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
+
                         if (($stock > 0 || $nulls === 1) || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
                             // visible suppl storage
+
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                                 $db->query("INSERT INTO `TEMP_ARTICLES_$temp_key` (`art_id`, `article_nr_displ`, `brand_id`, `brand_name`, `article_name`, `delivery_info`, `stock`, `price`, `delivery_days`, `delivery_short_info`, `suppl_id`, `return_days`, `status`, `storage_id`) 
                                 VALUES ('$art_id', '$article_nr_displ', '$brand_id', \"$brand_name\", \"$article_name\", '$delivery_info', $stock, $price, '$delivery_days', '$delivery_short_info', '$suppl_id', '$return_days', '$status', '$storage_id');");
@@ -641,11 +653,13 @@ class SearchClass extends CatalogueClass
                                 }
 
                                 if ($brand_name !== "") {
+
                                     if (($stock > 0 && $price > 0) || ($nulls === 1 && $price > 0)) {
                                         $brands[$art_id]["brand_name"]  = $brand_name;
                                         $brands[$art_id]["brand_id"]    = $brand_id;
 
                                         if (!empty($brands[$art_id]["price"])) {
+
                                             if ($price < $brands[$art_id]["price"]) {
                                                 $brands[$art_id]["price"] = $price;
                                             }
@@ -715,6 +729,7 @@ class SearchClass extends CatalogueClass
                 // sort by delivery days and price (all analogs list)
                 $arr = [];
                 foreach ($mas as $mas_key => $mas_val) {
+
                     if ($mas_key !== $art_id_search) {
                         $arr[$mas_key] = $mas_val[0];
                         $arr[$mas_key]['ART_ID'] = $mas_key;
@@ -726,7 +741,9 @@ class SearchClass extends CatalogueClass
                 $mas2 = [];
                 foreach ($arr as $val) {
                     $art = $val['ART_ID'];
+                    
                     if ($art != $art_id_search) {
+                        
                         if ((int)$val['delivery_days'] === 0 && (int)$val['suppl_id'] === 0) {
                             $mas1[$art] = $mas[$art];
                         } else {
@@ -737,11 +754,13 @@ class SearchClass extends CatalogueClass
 
                 $arr2 = [];
                 foreach ($mas2 as $mas_key => $mas_val) {
+                    
                     if ($mas_key !== $art_id_search) {
                         $arr2[$mas_key] = $mas_val[0];
                         $arr2[$mas_key]['ART_ID'] = $mas_key;
                     }
                 }
+
                 $sort = array();
                 foreach($arr2 as $k => $v) {
                     $sort['price'][$k] = $v['price'];
@@ -758,9 +777,11 @@ class SearchClass extends CatalogueClass
                 if (!empty($mas0)) {
                     $mas1 = $mas0 + $mas1;
                 }
+                
                 if (!empty($mas1)) {
                     $mas22 = $mas1 + $mas22;
                 }
+                
                 $mas = $mas22;
 
                 // show other storages
@@ -794,6 +815,7 @@ class SearchClass extends CatalogueClass
 
         $nulls = 0;
         $mas_nulls = [];
+        
         if ($this->getUserStatusNulls($this->getUser())) {
             $nulls = 1;
         }
@@ -818,10 +840,10 @@ class SearchClass extends CatalogueClass
         }
 
         if ($where_art_id_str !== "") {
-            $articlePrices      = $this->getArticlePrices($where_art_id_str);
-            $deliverInfo        = $this->getSalePointDeliveryInfo($salePointID, $where_art_id_str);
-            $articleSupplPrices = $this->getArticleSupplPrices($where_art_id_str);
-            $supplDeliverInfo   = $this->getSalePointSupplDeliveryInfo($salePointID);
+            $articlePrices      = $this->getArticlePrices($db, $where_art_id_str);
+            $deliverInfo        = $this->getSalePointDeliveryInfo($db, $salePointID, $where_art_id_str);
+            $articleSupplPrices = $this->getArticleSupplPrices($db, $where_art_id_str);
+            $supplDeliverInfo   = $this->getSalePointSupplDeliveryInfo($db, $salePointID);
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands);
             $n = $db->num_rows($r);
@@ -852,14 +874,15 @@ class SearchClass extends CatalogueClass
                     if ($suppl_id > 0) {
                         $price          = $articleSupplPrices[$art_id][$suppl_id][$storage_id];
                         $deliveryData   = $supplDeliverInfo[$suppl_id][$storage_id] ?? [
-                                "info"                  => $this->err2,
-                                "delivery_days"         => 0,
-                                "delivery_short_info"   => $this->err2
-                            ];
+                            "info"                  => $this->err2,
+                            "delivery_days"         => 0,
+                            "delivery_short_info"   => $this->err2
+                        ];
                         $delivery_days = $deliveryData["delivery_days"];
                     }
 
                     $price = $exRate->getExRatePrice($price, $cur);
+                    
                     if ($cur === 1) {
                         $price = $client->getClientPriceRounding($client_id, $price);
                     }
@@ -868,20 +891,25 @@ class SearchClass extends CatalogueClass
                     if ($filter_price > $filters["max_price"]) {
                         $filters["max_price"] = ceil($filter_price);
                     }
+                    
                     if ($delivery_days > $filters["max_dd"]) {
                         $filters["max_dd"] = $delivery_days;
                     }
 
                     if ($price > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
+                       
                         if ($stock > 0 || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
+                           
                             if ($art_id === $art_id_search) {
                                 $main_brand = $brand_id;
                             }
+                          
                             if (($brand_name !== "") && $stock > 0 && $price > 0) {
                                 $brands[$art_id]["brand_name"]  = $brand_name;
                                 $brands[$art_id]["brand_id"]    = $brand_id;
 
                                 if (!empty($brands[$art_id]["price"])) {
+                                
                                     if ($price < $brands[$art_id]["price"]) {
                                         $brands[$art_id]["price"] = $price;
                                     }
@@ -911,10 +939,12 @@ class SearchClass extends CatalogueClass
                     $format_name        = $this->getFormatArticle($article_nr_displ);
 
                     $price = $articlePrices[$art_id] ?? 0;
+                  
                     if ($suppl_id > 0) {
                         $price = $articleSupplPrices[$art_id][$suppl_id][$storage_id];
                     }
                     $price = $exRate->getExRatePrice($price, $cur);
+                 
                     if ($cur === 1) {
                         $price = $client->getClientPriceRounding($client_id, $price);
                     }
@@ -926,10 +956,10 @@ class SearchClass extends CatalogueClass
 
                     if ($suppl_id > 0) {
                         $deliveryData = $supplDeliverInfo[$suppl_id][$storage_id] ?? [
-                                "info"                  => $this->err2,
-                                "delivery_days"         => 0,
-                                "delivery_short_info"   => $this->err2
-                            ];
+                            "info"                  => $this->err2,
+                            "delivery_days"         => 0,
+                            "delivery_short_info"   => $this->err2
+                        ];
                         $delivery_info          = $deliveryData["info"];
                         $delivery_days          = $deliveryData["delivery_days"];
                         $delivery_short_info    = $deliveryData["delivery_short_info"];
@@ -951,8 +981,10 @@ class SearchClass extends CatalogueClass
 
                     // show articles with suppl_id=0 or with price!=0 and stock!=0
                     if (($price > 0 || $nulls === 1) || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
+                        
                         if (($stock > 0 || $nulls === 1) || (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && $brand_id === $brand_nr_search)) {
                             // visible suppl storage
+                           
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                                 $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
 
@@ -991,6 +1023,7 @@ class SearchClass extends CatalogueClass
                 // sort by delivery days and price (all analogs list)
                 $arr = [];
                 foreach ($mas as $mas_key => $mas_val) {
+                 
                     if ($mas_key !== $art_id_search) {
                         $arr[$mas_key] = $mas_val[0];
                         $arr[$mas_key]['ART_ID'] = $mas_key;
@@ -1002,7 +1035,9 @@ class SearchClass extends CatalogueClass
                 $mas2 = [];
                 foreach ($arr as $val) {
                     $art = $val['ART_ID'];
+                    
                     if ($art != $art_id_search) {
+                      
                         if ((int)$val['delivery_days'] === 0 && (int)$val['suppl_id'] === 0) {
                             $mas1[$art] = $mas[$art];
                         } else {
@@ -1013,6 +1048,7 @@ class SearchClass extends CatalogueClass
 
                 $arr2 = [];
                 foreach ($mas2 as $mas_key => $mas_val) {
+                  
                     if ($mas_key !== $art_id_search) {
                         $arr2[$mas_key] = $mas_val[0];
                         $arr2[$mas_key]['ART_ID'] = $mas_key;
@@ -1034,6 +1070,7 @@ class SearchClass extends CatalogueClass
                 if (!empty($mas0)) {
                     $mas1 = $mas0 + $mas1;
                 }
+               
                 if (!empty($mas1)) {
                     $mas22 = $mas1 + $mas22;
                 }
@@ -1114,6 +1151,7 @@ class SearchClass extends CatalogueClass
             if (count($mas) > 1) {
 
                 foreach ($mas as $mas_key => $mas_val) {
+                  
                     if ($mas_key !== $art_id_search) {
                         foreach ($mas_val as $val) {
                             $art_id     = $mas_key;
@@ -1168,11 +1206,10 @@ class SearchClass extends CatalogueClass
             $list = $error;
         }
 
-        $form = $this->getHtmlForm("catalog_exist/search");
         return str_replace(
             array("{article_nr_displ}", "{brand_name}", "{search_target_class}", "{search_target_list}", "{search_list}", "{search_list_style}"),
             array($dataArt["art"], $dataArt["brand"], $style_target, $list_target, $list, $style),
-        $form);
+        $this->getHtmlForm("catalog_exist/search"));
     }
 
     public function printSearchList3($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $delivery_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id)
@@ -1180,21 +1217,23 @@ class SearchClass extends CatalogueClass
         $return_days = $this->getUrlNumber($return_days);
 
         $formObj   = new FormClass();
-        $exRate      = new ExRateClass();
-        $client     = new ClientClass();
-        $shop       = new ShopClass();
+        $exRate    = new ExRateClass();
+        $client    = new ClientClass();
+        $shop      = new ShopClass();
 
         $cur                = $this->getCurrentExRate();
-        $exRateCaption          = $this->getSymbolExRate($cur);
+        $exRateCaption      = $this->getSymbolExRate($cur);
         $format_name        = $this->getFormatArticle($article_nr_displ);
         $format_brand_link  = $this->getBrandLink($brand_id);
         $return_days_alt    = $return_days_img = "";
 
         if ((int)$suppl_id > 0) {
+            
             if ($return_days === 0) {
                 $return_days_alt = "{no_exchange}";
                 $return_days_img = $this->images . "/exchange/exchange2.png";
             }
+            
             elseif ($return_days >= 15) {
                 $return_days_alt = "{return_within} $return_days {days_cap}";
                 $return_days_img = $this->images . "/exchange/exchange1.png";
@@ -1230,21 +1269,23 @@ class SearchClass extends CatalogueClass
         $format_product_text = ($article_name === "") ? "{details_name_cap}" : $this->formatArticleName($article_name);
 
         $product_stock = (int)$stock;
+        
         if (empty($suppl_id) && (int)$stock > 10) {
             $product_stock = ">10";
         }
 
         $flagData = $formObj->getCountryFlag($brand_id);
         $flagClass = (!$flagData) ? "none" : "";
-        $instock = (empty($suppl_id) && !empty($stock)) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "";
+        $in_stock = (empty($suppl_id) && !empty($stock)) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "";
 
         $delivery_info = str_replace('"', "", $delivery_info);
         $delivery_short_info = str_replace("<br>", " ", $delivery_short_info);
+
         if (empty($delivery_days) && empty($suppl_id)) {
             $delivery_short_info = "<span class='delivery-green'>{send_done}</span>";
         }
 
-        $tpoint_f_name      = (empty($suppl_id)) ? $client->getArticleStorageTPoint($storage_id) : "";
+        $t_point_f_name     = (empty($suppl_id)) ? $client->getArticleStorageTPoint($storage_id) : "";
         $product_main_photo = ($formObj->getArticlePhoto($art_id) === "") ? $this->noPhoto : $formObj->getArticlePhoto($art_id);
         $analog_display     = (($article_nr_displ === $article_nr_search || $format_name === $article_nr_search) && ($brand_id === $brand_nr_search)) ? "none" : "";
 
@@ -1263,12 +1304,10 @@ class SearchClass extends CatalogueClass
         $index_type     = $this->getIndexTypeImage($art_id, $article_nr_search, $article_nr_displ, $format_name, $brand_id, $brand_nr_search);
         $product_info   = $formObj->getArticleInfoForm($art_id, 1);
 
-        $form = $this->getHtmlForm("product_card");
         $form = str_replace(
             array("{product_i}", "{art_id}", "{brand_id}", "{product_name}", "{product_brand}", "{page_product_link}", "{page_product_link2}", "{product_text}", "{format_product_text}", "{product_stock}", "{product_real_stock}", "{product_storage_id}", "{product_suppl_id}", "{return_days_img}", "{return_days_alt}", "{return_display}", "{photo_src}", "{photo_display}", "{product_main_photo}", "{product_del}", "{product_dd}", "{product_delivery_class}", "{product_delivery_short_info}", "{product_price}", "{product_true_price}", "{product_kours_cap}", "{product_action}", "{product_action_count}", "{product_title_del}", "{analog_display}", "{product_barcode}", "{style_border}", "{style_class}", "{style_none}", "{style_hide}", "{country_display}", "{flag_image}", "{country_name}", "{instock}", "{index_type}", "{tpoint_full_name}", "{product_info}", "{del_class}", "{basket_amount}", "{pvisibility}", "{pvisibility_price}", "{pvisibility_info}"),
-            array($id, $art_id, $brand_id, $article_nr_displ, $brand_name, $product_link, $product_link2, $product_text, $format_product_text, $product_stock, $stock, $storage_id, $suppl_id, $return_days_img, $return_days_alt, $return_display, $photo_src, $photo_display, $product_main_photo, $delivery_info, $delivery_days, "", $delivery_short_info, $price . " " . $exRateCaption, $price, $exRateCaption, $action_form, $action_count, $prod_title_del, $analog_display, $prod_barcode, $os["border"], $os["class"], $os["none"], $os["hide"], $flagClass, $flagData["flag"], $flagData["country"], $instock, $index_type, $tpoint_f_name, $product_info, "", $basket_amount_cap, $p_visibility, $p_visibility_price, $p_visibility_info),
-            $form
-        );
+            array($id, $art_id, $brand_id, $article_nr_displ, $brand_name, $product_link, $product_link2, $product_text, $format_product_text, $product_stock, $stock, $storage_id, $suppl_id, $return_days_img, $return_days_alt, $return_display, $photo_src, $photo_display, $product_main_photo, $delivery_info, $delivery_days, "", $delivery_short_info, $price . " " . $exRateCaption, $price, $exRateCaption, $action_form, $action_count, $prod_title_del, $analog_display, $prod_barcode, $os["border"], $os["class"], $os["none"], $os["hide"], $flagClass, $flagData["flag"], $flagData["country"], $in_stock, $index_type, $t_point_f_name, $product_info, "", $basket_amount_cap, $p_visibility, $p_visibility_price, $p_visibility_info),
+        $this->getHtmlForm("product_card"));
 
         $list = $form;
         $list .= $os["content"];

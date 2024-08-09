@@ -73,20 +73,17 @@ class FormClass extends CatalogueClass
             </a>";
         }
 
-        $form = $this->getHtmlForm("brands/range");
-        
-        return str_replace("{brands_range}", $list, $form);
+        return str_replace("{brands_range}", $list, $this->getHtmlForm("brands/range"));
     }
 
     public function showBrandSelect($brand_id)
     {
         $brand_id = $this->getUrlNumber($brand_id);
-        $form = $this->getHtmlForm("brands/select");
 
         return str_replace(
             array("{brand_h1}", "{brand_select}", "{brand_groups}"),
-            array($this->getBrandName($brand_id), $this->showBrandForm($brand_id), $this->showBrandGroups($brand_id)), 
-        $form);
+            array($this->getBrandName($brand_id), $this->showBrandForm($brand_id), $this->showBrandGroups($brand_id)),
+        $this->getHtmlForm("brands/select"));
     }
 
     public function showBrandGroups($brand_id): string
@@ -99,8 +96,7 @@ class FormClass extends CatalogueClass
         $n = $dbc->num_rows($r);
         $groups = [];
         for ($i = 1; $i <= $n; $i++) {
-            $group_id = $dbc->result($r, $i - 1, "group_id");
-            $groups[] = $group_id;
+            $groups[] = $dbc->result($r, $i - 1, "group_id");
         }
 
         $arr = [];
@@ -187,6 +183,7 @@ class FormClass extends CatalogueClass
         $client = new ClientClass();
         $where = $client->getClientWhere();
         $basket_id = 0;
+
         $r = $db->query("SELECT `id` FROM `basket` WHERE `art_id` = $art_id AND `storage_id` = $storage_id AND $where ORDER BY `id` DESC LIMIT 1;");
         $n = $db->num_rows($r);
 
@@ -201,17 +198,21 @@ class FormClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $answer = ""; $err = 0;
+
         if ($new_amount > $stock) {
             $answer = "{too_much}"; $err = 1;
         }
+
         elseif ($new_amount === 0) {
             $db->query("DELETE FROM `basket` WHERE `id` = $basket_id LIMIT 1;");
             $answer = "new_amount = 0"; $err = 2;
         }
+
         elseif ($new_amount > 0) {
             $db->query("UPDATE `basket` SET `amount` = $new_amount WHERE `id` = $basket_id LIMIT 1;");
             $answer = "ok"; $err = 3;
         }
+
         return array($answer, $err);
     }
 
@@ -307,7 +308,7 @@ class FormClass extends CatalogueClass
             }
         }
 
-        return "<a class='article-info-row__link' href='$link'>$more</a>";
+        return $this->getHtmlTag("a", $more, ['class' => 'article-info-row__link']);
     }
 
     public function getArticleDelivery($art_id)
@@ -344,11 +345,13 @@ class FormClass extends CatalogueClass
         $list = "";
         $salePointID = $this->getTpointID();
         $city_list = [];
+
         if ($salePointID === 2) {
-            $city_list = [10108, 9591, 9588, 9551, 9597, 9500, 9572, 9550, 9552, 9073, 9164];
+            $city_list = json_decode(file_get_contents(RDD . "/app/json/delivery_cities.json"), true)['cities'];;
         }
+
         if ($salePointID === 1) {
-            $city_list = [24861];
+            $city_list = json_decode(file_get_contents(RDD . "/app/json/delivery_point.json"), true)['cities'];;
         }
 
         if (!empty($city_list)) {
@@ -375,11 +378,11 @@ class FormClass extends CatalogueClass
         $status = 0;
 
         $r = $db->query("SELECT EXISTS(SELECT `ID` FROM `T2_CROSS`
-                         WHERE
-                            `SEARCH_NUMBER` = '$search_number' AND
-                             `BRAND_ID` = $brand_id AND
-                             `kind` != 0 AND
-                             `ART_ID` != $art_id) as res");
+         WHERE
+            `SEARCH_NUMBER` = '$search_number' AND
+             `BRAND_ID` = $brand_id AND
+             `kind` != 0 AND
+             `ART_ID` != $art_id) as res");
 
         $n = $db->result($r, 0, "res");
 
@@ -411,7 +414,7 @@ class FormClass extends CatalogueClass
             list($manufacture_cap, , $model_id_cap,) = $auto->getAutoDescription($manufacture, $model, $model_id, $auto_typ_id);
             $form = str_replace(
                 array("{applicable_display}", "{applicable_display_text}", "{applicable_cap}"),
-                array("applicable-active", "{is_applicable}", "<a href=\"/\">$manufacture_cap $model_id_cap</a>"),
+                array("applicable-active", "{is_applicable}", $this->getHtmlTag("a", "$manufacture_cap $model_id_cap", ['href' => '/'])),
             $form);
         }
 
@@ -592,13 +595,15 @@ class FormClass extends CatalogueClass
     public function getArticleBenefits()
     {
         $form = $this->getHtmlForm("article/benefits");
+
         return $this->replaceLang($form);
     }
 
     public function showBenefitsForm($id)
     {
         $text = $this->replaceLang("{article_benefits_hidden_$id}");
-        return str_replace("{site_link_url}", "<a href='" . $this->getSiteLink() . "'>Toko.ua</a>", $text);
+
+        return str_replace("{site_link_url}", $this->getHtmlTag("a", "Toko.ua", ['href' => $this->getSiteLink()]), $text);
     }
 
     public function getGalleryPhoto($art_id, $brand_id, $h1): array
@@ -964,16 +969,20 @@ class FormClass extends CatalogueClass
         } else {
             $ch1 = "checked=\"checked\"";
         }
+
         if ($type === 0) {
             $jsFilter = "catalogueFilter();";
         }
+
         if ($type === 1) {
             $jsFilter = "showBasketForm();";
         }
+
         if ($cash_id === 2) {
             $cash_add = "
             <input id=\"radio_usd\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch2 onclick=\"$jsFilter\"><label for=\"radio_usd\">$</label>";
         }
+
         if ($cash_id === 3) {
             $cash_add = "
             <input id=\"radio_eur\" type=\"radio\" name=\"cur\" value=\"$cash_id\" $ch3 onclick=\"$jsFilter\"><label for=\"radio_eur\">€</label>";
@@ -1002,6 +1011,7 @@ class FormClass extends CatalogueClass
 
         $mas = [];
         $city_like = $this->getNameString($city_like);
+
         if ($city_like !== "") {
             $where = "WHERE `CITY_NAME` LIKE '%$city_like%'";
         } else {
@@ -1033,6 +1043,7 @@ class FormClass extends CatalogueClass
 
         $r = $db->query("SELECT `TEXT`, `VALUE`, `ART_ID` FROM `T2_INFO` WHERE `ART_ID` IN ($where_art_id_str) AND `LANG_ID` = 16 ORDER BY `SORT`;");
         $infoTemplates = mysqli_fetch_all($r, MYSQLI_ASSOC);
+
         foreach ($infoTemplates as $infoTemplate) {
             self::$infoTemplates[$infoTemplate['ART_ID']][] = $infoTemplate;
         }
@@ -1147,6 +1158,7 @@ class FormClass extends CatalogueClass
     public function getArticleActivePhoto($art_id): string
     {
         $photo_name = $this->getArticlePhoto($art_id);
+
         return ($photo_name === "") ? $this->noPhoto : "$this->uploads_link/$photo_name";
     }
 
@@ -1165,6 +1177,7 @@ class FormClass extends CatalogueClass
             $n = $db->num_rows($r);
 
             $brand_photo = "";
+
             if ($n > 0) {
                 $brand_photo = $db->result($r, 0, "logo_name");
             }
@@ -1332,8 +1345,8 @@ class FormClass extends CatalogueClass
 
                 foreach ($values as $value) {
                     $format_value = str_replace(str_split('.,+-\/:*?"<>| '), "", $value);
-                    $list .= "
-                    <a target=\"_blank\" href=\"" . $this->getSiteLink() . "$this->search_link/$format_value/\">$value</a>";
+                    $list .= $this->getHtmlTag("a", $value, ['target' => '_blank', 'href' => $this->getSiteLink() . "$this->search_link/$format_value/\""]);
+
                     $i++;
                     if ($i <= count($values)) {
                         $list .= ", ";
@@ -1358,6 +1371,7 @@ class FormClass extends CatalogueClass
     {
         $form = $this->getHtmlForm("cars/loader-gear");
         $list = $this->getHtmlForm("loader");
+
         return str_replace("{form_range}", $list, $form);
     }
 
@@ -1737,8 +1751,7 @@ class FormClass extends CatalogueClass
         $dbc = DbSingleton::getTokoCacheDb();
 
         $site_link = $this->getSiteLink();
-        $list = "
-        <a href=\"$site_link\">{site_main}</a>";
+        $list = $this->getHtmlTag("a", "{site_main}", ['href' => $site_link]);
 
         $arr = [];
 

@@ -43,12 +43,15 @@ class LangClass
         if ($lang_id === 1) {
             $lang_id = 16;
         }
+
         if ($lang_id === 2) {
             $lang_id = 41;
         }
+
         if ($lang_id === 3) {
             $lang_id = 4;
         }
+
         if (empty($lang_id)) {
             $lang_id = $this->default_old_lang_id;
         }
@@ -88,7 +91,8 @@ class LangClass
             $url        = "toko.ua/" . $this->getLangIDPrefix($lang_id) . $link;
             $url        = str_replace("//", "/", $url);
             $url        = "https://" . $url;
-            $list       .= "<div class=\"menu-language__item $active\">
+            $list       .= "
+            <div class=\"menu-language__item $active\">
                 <a href=\"$url\">$lang_abr</a>
             </div>";
         }
@@ -104,6 +108,7 @@ class LangClass
         if ($lang_id === 2) {
             $pre = "uk/";
         }
+
         if ($lang_id === 3) {
             $pre = "en/";
         }
@@ -120,6 +125,7 @@ class LangClass
         $lang_id = $this->getUrlNumber($lang_id);
         $_SESSION['lang_id'] = $lang_id;
         setcookie("lang_id", $lang_id, time()+3600);
+
         return true;
     }
 
@@ -142,6 +148,7 @@ class LangClass
     {
         $db = DbSingleton::getTokoDb();
         $lang = $this->getLanguageData();
+
         if (self::$langNames === null) {
             $r = $db->query("SELECT l.caption, lw.variable 
             FROM `new_lang_wdv` l
@@ -160,10 +167,12 @@ class LangClass
     public function replaceLangData($cont)
     {
         $db = DbSingleton::getTokoDb();
+
         if (self::$langVariables === null) {
             $r = $db->query("SELECT `variable` FROM `new_lang_wd`;");
             self::$langVariables = array_column(mysqli_fetch_all($r), 0);
         }
+
         foreach (self::$langVariables as $langVariable) {
             $cont = str_replace("{" . $langVariable . "}", $this->getLanguageName($langVariable), $cont);
         }
@@ -190,6 +199,7 @@ class LangClass
     public function changeLangJs($text)
     {
         $text = $this->getNameString($text);
+
         return $this->replaceLangData($text);
     }
 

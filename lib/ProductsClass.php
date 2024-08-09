@@ -31,13 +31,16 @@ class ProductsClass extends CatalogueClass
         $form);
 
         $autoObj->getCarsMetaTags($mfa_id, $model, $h1);
+
         if ($mfa_id > 0) {
             $title = $this->replaceLang("{site_cars_mfa}");
             $description = $this->replaceLang("{site_cars_mfa_description}");
+
             if ($model !== "") {
                 $title = $this->replaceLang("{site_cars_model}");
                 $description = $this->replaceLang("{site_cars_model_description}");
             }
+
             $title = str_replace("{h1_text}", $h1, $title);
             $description = str_replace("{h1_text}", $h1, $description);
         }
@@ -45,6 +48,7 @@ class ProductsClass extends CatalogueClass
         if ($mfa_id === 0 && $mfa_link !== "") {
             $status = 0;
         }
+
         if ($mod_link !== "" && $model === "") {
             $status = 0;
         }
@@ -98,19 +102,28 @@ class ProductsClass extends CatalogueClass
             $mfa_brand  = $autoObj->getMfaBrand($mfa_id);
             $list_model = $this->getCarsSearchContent("manuf", $mfa_id, $group_id)[0];
 
-            $form = str_replace(array("{cars_models}", "{selected_manuf}", "{cars_manufacturer}"), array($list_model, $mfa_id, $mfa_brand), $form);
+            $form = str_replace(
+                array("{cars_models}", "{selected_manuf}", "{cars_manufacturer}"),
+                array($list_model, $mfa_id, $mfa_brand),
+            $form);
 
             if ($mod_link !== "") {
                 $model = $autoObj->getModLink($mod_link);
                 $cars_content = $this->getCarsSearchContent("model", $mfa_id . "_" . $model, $group_id)[0];
 
-                $form = str_replace(array("{cars_years}", "{selected_model}", "{cars_model}", "{active_nav}"), array($cars_content, $mfa_id . "_" . $model, $model, "years"), $form);
+                $form = str_replace(
+                    array("{cars_years}", "{selected_model}", "{cars_model}", "{active_nav}"),
+                    array($cars_content, $mfa_id . "_" . $model, $model, "years"),
+                $form);
             }
 
             $form = str_replace("{active_nav}", "model", $form);
         }
 
-        $form = str_replace(array("{cars_manufactures}", "{selected_manuf}", "{selected_model}", "{active_nav}"), array($this->getCarsSearchContent()[0], 0, 0, ""), $form);
+        $form = str_replace(
+            array("{cars_manufactures}", "{selected_manuf}", "{selected_model}", "{active_nav}"),
+            array($this->getCarsSearchContent()[0], 0, 0, ""),
+        $form);
 
         return $this->replaceLang($form);
     }
@@ -119,6 +132,7 @@ class ProductsClass extends CatalogueClass
     {
         $db = DbSingleton::getTokoDb();
         $r = $db->query("SELECT MIN(`MOD_PCON_START`) as min_year FROM `T_models` WHERE `ACTIVE` = 1;");
+
         return substr($db->result($r, 0, "min_year"), 0, -2);
     }
 
@@ -147,6 +161,7 @@ class ProductsClass extends CatalogueClass
         $headers = [];
         foreach ($mas as $val) {
             $item = floor($val / 10) * 10;
+
             if (!in_array($item, $headers, true)) {
                 $headers[] = $item;
             }
@@ -155,6 +170,7 @@ class ProductsClass extends CatalogueClass
         $res = [];
         foreach ($headers as $head) {
             foreach ($mas as $val) {
+
                 if (($val - $head) < 10 && ($val - $head) >= 0) {
                     $res[$head][] = $val;
                 }
@@ -163,14 +179,16 @@ class ProductsClass extends CatalogueClass
 
         $form = "";
         foreach ($res as $key => $value) {
-            $form .= "
-            <div class=\"cars-tab__block-item-years\"><div class=\"cars-tab__block-item cars-tab__block-item-min cars-tab__block-item-min-disabled\">$key - e</div>";
+            $list = $this->getHtmlForm("cars-tab/model");
+            $l = "";
             foreach ($value as $year) {
-                $year_cap = $mfa_id . "_" . $model . "_" . $year;
-                $form .= "
-                <div class=\"cars-tab__block-item cars-tab__block-item-min\" data-url=\"years/$year_cap\" onclick=\"toggleCarsTab(this)\">$year</div>";
+                $l .= str_replace(
+                    array("{year}", "{year_cap}"),
+                    array($year, $mfa_id . "_" . $model . "_" . $year),
+                $this->getHtmlForm("cars-tab/model_list"));
             }
-            $form .= "</div>";
+            $list = str_replace(array("{key}", "{list}"), array($key, $l), $list);
+            $form .= $list;
         }
 
         return $form;
@@ -197,8 +215,10 @@ class ProductsClass extends CatalogueClass
                 $mfa_id     = $db->result($r, $i - 1, "MFA_ID");
                 $mfa_brand  = $db->result($r, $i - 1, "MFA_BRAND");
 
-                $list .= "
-                <div data-url=\"manuf/$mfa_id\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$mfa_brand</div>";
+                $list .= str_replace(
+                    array("{mfa_id}", "{mfa_brand}"),
+                    array($mfa_id, $mfa_brand),
+                $this->getHtmlForm("cars-tab/auto"));
             }
 
             $title  = "{auto_cap}";
@@ -216,8 +236,10 @@ class ProductsClass extends CatalogueClass
                 $model      = $db->result($r, $i - 1, "Model");
                 $model_cap  = $mfa_id . "_" . $model;
 
-                $list .= "
-                <div data-url=\"model/$model_cap\" class=\"cars-tab__block-item\" onclick=\"toggleCarsTab(this)\">$model</div>";
+                $list .= str_replace(
+                    array("{model_cap}", "{model}"),
+                    array($model_cap, $model),
+                $this->getHtmlForm("cars-tab/manufacture"));
             }
 
             $title  = $autoObj->getMfaBrand($mfa_id);
@@ -231,7 +253,7 @@ class ProductsClass extends CatalogueClass
 
             $mfa_id = $this->getUrlNumber($mfa_id);
             $model  = $this->getUrlString($model);
-            $n      = 1;
+            $n = 1;
 
             $r = $db->query("SELECT MIN(`MOD_PCON_START`) as min_year, 
                 IF (MIN(`MOD_PCON_END`) = 0, 0, MAX(`MOD_PCON_END`)) AS max_year
@@ -239,7 +261,8 @@ class ProductsClass extends CatalogueClass
             WHERE `Model` = '$model' AND `MOD_MFA_ID` = $mfa_id;");
             $date_start = $db->result($r, 0, "min_year");
             $date_end   = $db->result($r, 0, "max_year");
-            $list       .= $this->getYearsForm($date_start, $date_end, $mfa_id, $model);
+
+            $list .= $this->getYearsForm($date_start, $date_end, $mfa_id, $model);
 
             $title  = $model;
             $nav    = "model";
@@ -263,9 +286,11 @@ class ProductsClass extends CatalogueClass
             FROM `T_models` 
             WHERE `Model` = '$model' AND `MOD_MFA_ID` = $mfa_id AND `ACTIVE` = 1 $where;");
             $n = $db->num_rows($r);
+
             if ($n === 1) {
                 $skip = $db->result($r, 0, "MOD_ID");
             }
+
             for ($i = 1; $i <= $n; $i++) {
                 $mod_id     = $db->result($r, $i - 1, "MOD_ID") + 0;
                 $tex_text   = $db->result($r, $i - 1, "TEX_TEXT");
@@ -277,25 +302,10 @@ class ProductsClass extends CatalogueClass
 
                 list($body_name, $body_path) = $this->getBodyCarImage($mod_id);
 
-                $list .= "
-                <div data-url=\"bodyc/$mod_id\" class=\"cars-tab__block-item cars-tab__block-item-body\" onclick=\"toggleCarsTab(this)\">
-                    <div class=\"bodyc\">
-                        <div class=\"bodyc-head\">
-                            <div class=\"bodyc__title\">$tex_text</div>
-                            <div class=\"bodyc__type\"><img src=\"$body_path\" alt=\"$body_name\" title=\"$body_name\"></div></div>
-                        </div>    
-                        <div class=\"bodyc-content\">
-                            <div class=\"bodyc__descr\">
-                                {model_number_type}: $body_name
-                                <br>
-                                {year_issue}: $d_start - $d_end
-                            </div>
-                            <div class=\"bodyc__image\">
-                                <img src=\"https://toko.ua/uploads/images/models/$image\" alt=\"$tex_text\" title=\"$tex_text\">
-                            </div>
-                        </div>
-                    </div>
-                </div>";
+                $list .= str_replace(
+                    array("{mod_id}", "{text}", "{body_name}", "{body_path}", "{image}", "{d_start}", "{d_end}"),
+                    array($mod_id, $tex_text, $body_name, $body_path, $image, $d_start, $d_end),
+                $this->getHtmlForm("cars-tab/years"));
             }
 
             $title  = $year;
@@ -320,8 +330,11 @@ class ProductsClass extends CatalogueClass
                 $fuel_text      = $this->getFuelName($fuel_id);
                 $fuel_cap       = $mod_id . "_" . $volume_cm . "_" . $fuel_id;
                 $onclick        = ($count_types === 1) ? "finishGarage('$typ_id', '$group_link')" : "toggleCarsTab(this)";
-                $list .= "
-                <div data-url=\"engin/$fuel_cap\" class=\"cars-tab__block-item\" onclick=\"$onclick\">$volume_cm $fuel_text</div>";
+
+                $list .= str_replace(
+                    array("{fuel_cap}", "{onclick}", "{volume_cm}", "{fuel_text}"),
+                    array($fuel_cap, $onclick, $volume_cm, $fuel_text),
+                $this->getHtmlForm("cars-tab/body"));
             }
 
             $title  = $this->getModIdText($mod_id);
@@ -355,20 +368,17 @@ class ProductsClass extends CatalogueClass
                 if (mb_strlen($d_start) === 6) {
                     $d_start = substr($d_start, 0, 4) . "." . substr($d_start, 4, 2);
                 }
+
                 if (mb_strlen($d_end) === 6) {
                     $d_end = substr($d_end, 0, 4) . "." . substr($d_end, 4, 2);
                 }
 
-                $list .= "
-                <div class=\"cars-tab__block-item cars-tab__block-item-modif\"><a onclick=\"finishGarage('$typ_id', '$group_link')\">
-                <b>$typ_text</b> 
-                    <table>
-                        <tr><td>{date_release}:</td><td class=\"text-right\">$d_start - $d_end</td></tr>
-                        <tr><td>{engine_model}:</td><td class=\"text-right\">$eng_cod</td></tr>
-                        <tr><td>{power_cap}:</td><td class=\"text-right\">$hp_from {horse_power_cap}, $kw_from {kilo_wat_cap}</td></tr>
-                    </table>
-                </a></div>";
+                $list .= str_replace(
+                    array("{typ_id}", "{text}", "{group_link}", "{eng_cod}", "{hp_from}", "{kw_from}", "{d_start}", "{d_end}"),
+                    array($typ_id, $typ_text, $group_link, $eng_cod, $hp_from, $kw_from, $d_start, $d_end),
+                $this->getHtmlForm("cars-tab/engine"));
             }
+
             $title  = $volume_cm . " " . $this->getFuelName($fuel_id);
             $nav    = "engin";
             $tab    = "cars-tab6";
@@ -383,8 +393,7 @@ class ProductsClass extends CatalogueClass
         }
 
         if ($n === 0) {
-            $list = "
-            <div style=\"margin: 30px auto;\">{nothing_found}</div>";
+            $list = $this->replaceLang("cars-tab/error");
         }
 
         $list = $this->replaceLang($list);
@@ -491,31 +500,19 @@ class ProductsClass extends CatalogueClass
         $models_img = $autoObj->getAutoIMG($manufacture, $model, $model_id)["model_id_image"];
         $garage_btn = ($auto_typ_id !== "" && !($autoObj->checkUserGarage($auto_typ_id))) ? "btn-img-disabled" : "";
 
-        $form = $this->getHtmlForm("garage/selected");
         $form = str_replace(
             array("{typ_id}", "{manufacture_cap}", "{model_id_cap}", "{typ_text}", "{models_img}", "{garage_button}", "{typ_id}"),
             array($auto_typ_id, $manufacture_cap, $model_id_cap, $autoObj->getGroupInfo($auto_typ_id), $models_img, $garage_btn, $auto_typ_id),
-        $form);
+        $this->getHtmlForm("garage/selected"));
 
         return $this->replaceLang($form);
-    }
-
-    // Modal Cars Form
-    public function showCarsForm()
-    {
-        return $this->getCarsSearch();
     }
 
     // Modal Cars Form
     public function showCarsGarageForm(): array
     {
         $form = $this->getCarsSearch();
-        $auto_typ_id = $this->getCookieAuto();
-        $status = 0;
-
-        if ($auto_typ_id !== "") {
-            $status = 1;
-        }
+        $status = ($this->getCookieAuto() === "") ? 0 : 1;
 
         return array($form, $status);
     }

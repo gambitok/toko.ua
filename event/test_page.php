@@ -2,11 +2,15 @@
 
 $content = "";
 
-$start = microtime(true);
-$mp = DbSingleton::getMyPartsDb();
-$r = $mp->query('SELECT * FROM T2_ARTICLES_PARTITIONS_PERIOD WHERE op_type = ? LIMIT 100', 1)->fetchAll();
-$time = microtime(true) - $start;
-var_dump($time);
+$cities = json_decode(file_get_contents(RDD . "/app/json/delivery_cities.json"), true)['cities'];
+
+print_r($cities);
+
+//$start = microtime(true);
+//$mp = DbSingleton::getMyPartsDb();
+//$r = $mp->query('SELECT * FROM T2_ARTICLES_PARTITIONS_PERIOD WHERE op_type = ? LIMIT 100', 1)->fetchAll();
+//$time = microtime(true) - $start;
+//var_dump($time);
 
 //$start = microtime(true);
 //$dm = DbSingleton::getDbm();

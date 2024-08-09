@@ -423,7 +423,7 @@ if ($_REQUEST["w"] === "clearCarsBlock") {
 }
 
 if ($_REQUEST["w"] === "showCarsForm") {
-    $GLOBALS['_RESULT'] = array("content" => $prod->showCarsForm());
+    $GLOBALS['_RESULT'] = array("content" => $prod->getCarsSearch());
 }
 
 if ($_REQUEST["w"] === "showCarsGarageForm") {

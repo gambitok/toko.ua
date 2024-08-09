@@ -54,9 +54,8 @@ class MenuClass extends CatalogueClass
     /*
      * show news form
      * */
-    public function showNews()
+    public function showNews($db)
     {
-        $db = DbSingleton::getTokoDb();
         $language_id = $this->getLanguage();
         if ($language_id === 2) {
             $language_id = 5;
@@ -106,10 +105,9 @@ class MenuClass extends CatalogueClass
         return str_replace("{news_range}", $list, $form);
     }
 
-    public function getNewsData($state_id): array
+    public function getNewsData($db, $state_id): array
     {
         $state_id = $this->getUrlNumber($state_id);
-        $db = DbSingleton::getTokoDb();
 
         $language_id = $this->getLanguage();
         if ($language_id !== 1) {
@@ -134,9 +132,9 @@ class MenuClass extends CatalogueClass
     /*
      * show news state form
      * */
-    public function showNewsState($state_id)
+    public function showNewsState($db, $state_id)
     {
-        $newsData = $this->getNewsData($state_id);
+        $newsData = $this->getNewsData($db, $state_id);
         $list = "
         <div class=\"news-state\">
             <h1>" . $newsData['title'] . "</h1>
@@ -152,9 +150,9 @@ class MenuClass extends CatalogueClass
         $form);
     }
 
-    public function getNewsMetaTags($state_id)
+    public function getNewsMetaTags($db, $state_id)
     {
-        $newsData = $this->getNewsData($state_id);
+        $newsData = $this->getNewsData($db, $state_id);
         $form = $this->getHtmlForm("article/social");
 
         return str_replace(
@@ -336,6 +334,7 @@ class MenuClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $id = $db->result($r, $i - 1, "ID");
             $name = $db->result($r, $i - 1, "NAME");
+
             $list .= str_replace(
                 array("{value}", "{name}", "{checked}"),
                 array($id, $name, ""),
@@ -390,6 +389,7 @@ class MenuClass extends CatalogueClass
                 $address    = $db->result($r, $i - 1, "address");
 
                 (empty($salePoint)) ? $ch = "" : ($ch = ($id === $salePoint) ? "checked='checked'" : "");
+
                 $list .= "
                 <label class=\"container_radio\"> 
                     $region ($address)<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
@@ -431,12 +431,14 @@ class MenuClass extends CatalogueClass
                 $region = $db->result($r, $i - 1, "full_name");
 
                 (empty($salePoint)) ? $ch = "" : ($ch = ($id === $salePoint) ? "checked='checked'" : "");
+
                 $list .= "
                 <label class=\"container_radio-phone\">
                     $region<input type=\"radio\" name=\"tpoint\" value=\"$id\" $ch onClick=\"selectRegion('$id');\">
                     <span class=\"radiomark-phone\"></span>
                 </label>";
             }
+
             $list .= "
             </form>";
         }
@@ -473,9 +475,6 @@ class MenuClass extends CatalogueClass
         return str_replace("{contact_block}", $list, $this->getHtmlForm("menu/contacts"));
     }
 
-        /*
-         * get region select (registration)
-         * */
     public function getRegionForm($region = 0): string
     {
         $db = DbSingleton::getTokoDb();
@@ -544,6 +543,7 @@ class MenuClass extends CatalogueClass
 
         if ($n > 0) {
             $id = $db->result($r, 0, "id");
+
             if (file_exists("uploads/images/news/$language_id/$news_id/$id.jpg")) {
                 $file = "$id.jpg";
             }
@@ -1136,8 +1136,7 @@ class MenuClass extends CatalogueClass
         for ($i = 1; $i <= $n; $i++) {
             $city_name = $db->result($r, $i - 1, "CITY_NAME_$postfix");
             $city_link = $db->result($r, $i - 1, "LINK_NAME");
-            $list .= "
-            <a href='https://toko.ua/catalog/?city=$city_link'>$city_name</a>";
+            $list .= $this->getHtmlTag("a", $city_name, ['href' => "https://toko.ua/catalog/?city=$city_link"]);
 
             if ($i < $n) {
                 $list .= ", ";
@@ -1224,13 +1223,10 @@ class MenuClass extends CatalogueClass
                         $seo_status = (int)$this->checkSeoText("catalog", $link_cat);
                         $count++;
 
-                        $list .= "
-                        <tr>
-                            <td>$count</td>
-                            <td>$link</td>
-                            <td>$count_arts</td>
-                            <td>$seo_status</td>
-                        </tr>";
+                        $list .= str_replace(
+                            array("{count}", "{link}", "{count_arts}", "{seo_status}"),
+                            array($count, $link, $count_arts, $seo_status),
+                        $this->getHtmlForm("groups/table"));
                     }
                 }
             } else {
@@ -1246,13 +1242,10 @@ class MenuClass extends CatalogueClass
                 $seo_status = (int)$this->checkSeoText("catalog", $link);
                 $count++;
 
-                $list .= "    
-                <tr>
-                    <td>$count</td>
-                    <td>$link</td>
-                    <td>$count_arts</td>
-                    <td>$seo_status</td>
-                </tr>";
+                $list .= str_replace(
+                    array("{count}", "{link}", "{count_arts}", "{seo_status}"),
+                    array($count, $link, $count_arts, $seo_status),
+                $this->getHtmlForm("groups/table"));
 
                 $r = $dbc->query("SELECT tm.`mfa_id`, COUNT(tm.`art_id`) as count_arts 
                 FROM `EX_TABLE_TREE_PARAMS_$group_id` tp
@@ -1270,13 +1263,10 @@ class MenuClass extends CatalogueClass
                         $seo_status = (int)$this->checkSeoText("catalog", $link);
                         $count++;
 
-                        $list .= "
-                        <tr>
-                            <td>$count</td>
-                            <td>$link</td>
-                            <td>$count_arts</td>
-                            <td>$seo_status</td>
-                        </tr>";
+                        $list .= str_replace(
+                            array("{count}", "{link}", "{count_arts}", "{seo_status}"),
+                            array($count, $link, $count_arts, $seo_status),
+                        $this->getHtmlForm("groups/table"));
                     }
                 }
 
@@ -1298,13 +1288,10 @@ class MenuClass extends CatalogueClass
                         $seo_status = (int)$this->checkSeoText("catalog", $link);
                         $count++;
 
-                        $list .= "
-                        <tr>
-                            <td>$count</td>
-                            <td>$link</td>
-                            <td>$count_arts</td>
-                            <td>$seo_status</td>
-                        </tr>";
+                        $list .= str_replace(
+                            array("{count}", "{link}", "{count_arts}", "{seo_status}"),
+                            array($count, $link, $count_arts, $seo_status),
+                        $this->getHtmlForm("groups/table"));
                     }
                 }
             }
@@ -1327,7 +1314,6 @@ class MenuClass extends CatalogueClass
     public function getSiteNavigation($head_id_sel = 0, $cat_id_sel = 0, $group_id_sel = 0)
     {
         $db = DbSingleton::getTokoDb();
-        $form = $this->getHtmlForm("main/navigation");
         $list = "";
 
         $r = $db->query("SELECT `HEAD_ID` FROM `T2_TREE_CONSTRUCTOR` WHERE `STATUS` = 1 ORDER BY `POSITION`;");
@@ -1338,12 +1324,11 @@ class MenuClass extends CatalogueClass
             $head_link  = $this->getHeadRowLink($head_id);
 
             if ($head_id_sel === $head_id) {
-                $link = "
-                <a rel=\"noopener\">$head_name</a>";
+                $link = $this->getHtmlTag("a", $head_name, ['rel' => "noopener"]);
             } else {
-                $link = "
-                <a rel=\"noopener\" href=\"" . $this->getSiteLink() . "$this->catalog_link/$head_link/\">$head_name</a>";
+                $link = $this->getHtmlTag("a", $head_name, ['rel' => "noopener", 'href' => $this->getSiteLink() . "$this->catalog_link/$head_link/\""]);
             }
+
             $list .= "
             <li class=\"header-nav__li\" data-nav-id=\"$head_id\">
                 $link
@@ -1353,7 +1338,7 @@ class MenuClass extends CatalogueClass
         return str_replace(
             array("{catalog_range}", "{cat_id}", "{group_id}"),
             array($list, $cat_id_sel, $group_id_sel),
-        $form);
+        $this->getHtmlForm("main/navigation"));
     }
 
     public function checkSeoText($router, $link): bool

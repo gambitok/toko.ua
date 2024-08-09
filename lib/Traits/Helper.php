@@ -38,6 +38,23 @@ trait Helper
         return $form;
     }
 
+    public function getHtmlTag($name, $text, $arr = []): string
+    {
+        $tag = "";
+
+        foreach ($arr as $key => $value) {
+            $tag .= "$key='$value'";
+        }
+
+        $form = "<$name $tag>$text</$name>";
+
+        if ($name === "input") {
+            $form = "<input $tag/>";
+        }
+
+        return $form;
+    }
+
     /*
      * validate string URL
      * */
