@@ -1,3 +1,37 @@
+.telegram {
+    &__form {
+        margin-top: 30px;
+        &:hover {
+            text-decoration: none;
+        }
+        img {
+            width: 100%;
+        }
+        p {
+             color: #0ca9ee;
+             font-size: 1rem;
+             font-weight: 700;
+             text-transform: uppercase;
+        }
+        ul {
+            list-style: none;
+        }
+        li {
+            list-style: initial;
+            margin-left: 15px;
+            color: #606975;
+            font-size: 14px;
+            &:hover {
+                text-decoration: underline;
+                color: #0ca9ee;
+            }
+        }
+    }
+    &__list {
+        padding-left: 0;
+    }
+}
+
 .filter-bw {
     filter: opacity(0.4) grayscale(100%);
 }
@@ -760,8 +794,13 @@
     }
     &-more {
         color: #a9a9a9;
+        font-size: 14px;
+        margin-top: 10px;
         cursor: pointer;
         display: block;
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }
 

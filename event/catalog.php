@@ -25,18 +25,16 @@ $site_link  = $catalogue->getSiteLink();
 $catalog_link = $catalogue->catalog_link;
 $src_link   = $site_link . implode("/", $httpHost) . "/";
 
+if ($httpHost[2] === "%22") {
+    $red_status = 1;
+    $red_type   = 301;
+    $red_link   = $site_link . $catalog_link . "/" .  $router;
+}
+
 $error_form = $catalogue->getHtmlForm("error/404_catalog");
 $history_form = $formObj->getHistoryArts();
-$index_form = '
-    <meta name="robots" content="noindex, follow">
-    <meta name="googlebot" content="noindex, follow">
-    <meta name="yandex" content="noindex, follow">
-';
-$noindex_form = '
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="googlebot" content="noindex, nofollow">
-    <meta name="yandex" content="noindex, nofollow">
-';
+$index_form = $catalogue->getHtmlForm("seo/noindex_follow");
+$noindex_form = $catalogue->getHtmlForm("seo/noindex_nofollow");
 
 if ($catalogue->getCatalogOldRedirectLink($httpHost)["status"] > 0) {
     $red_status = 1;
@@ -60,13 +58,14 @@ else {
      * */
 
     if ($router === "") {
-        $h1 = "<div style='padding: 15px;'><h1>{site_catalog}</h1></div>";
+        $h1 = $catalogue->getHtmlForm("catalog_exist/h1");
 
         if ($city_link !== "") {
 
             // redirect /?city=kiev/
             $check_link = $_SERVER['REQUEST_URI'];
             $s = substr($check_link, -1);
+
             if ($s === "/") {
                 $check_link = ltrim($check_link, "/");
                 $check_link = rtrim($check_link, "/");
@@ -78,30 +77,26 @@ else {
             if ($catalogue->checkCityLink($city_link)) {
                 $city_name_in   = $catalogue->getCityNameIn($city_link, "CITY_NAME_IN_");
                 $city_name      = $catalogue->getCityNameIn($city_link);
-                $h1             = "<div style='padding: 15px;'><h1>{details_in_cap} $city_name_in</h1></div>";
+                $h1             = str_replace("{city_name_in}", $city_name_in, $catalogue->getHtmlForm("catalog_exist/h1_city"));
                 $title          = str_replace("{CITY_NAME_RU}", $city_name, $catalogue->replaceLang("{site_catalog_title_city}"));
                 $description    = str_replace("{CITY_NAME_IN_RU}", $city_name_in, $catalogue->replaceLang("{site_catalog_descr_city}"));
 
-                $content = str_replace("{site_title}", $title, $content);
-                $content = str_replace("{site_description}", $description, $content);
+                $content = str_replace(array("{site_title}", "{site_description}"), array($title, $description), $content);
             } else {
                 $red_status = 1;
                 $red_type = 404;
-                $content = str_replace("{main_window}", $error_form, $content);
-                $content = str_replace("{meta_noindex}", $noindex_form, $content);
+                $content = str_replace(array("{main_window}", "{meta_noindex}"), array($error_form, $noindex_form), $content);
             }
         }
 
         $content = str_replace("{main_window}", $h1 . $catalogue->getCatalogColList() . $history_form, $content);
-    }
-    else {
+    } else {
 
         // GROUP_ID + CITY
         if ($city_link !== "") {
             $red_status = 1;
             $red_type = 404;
-            $content = str_replace("{main_window}", $error_form, $content);
-            $content = str_replace("{meta_noindex}", $noindex_form, $content);
+            $content = str_replace(array("{main_window}", "{meta_noindex}"), array($error_form, $noindex_form), $content);
         }
 
         /*
@@ -124,14 +119,19 @@ else {
             $model_id       = 0;
             $params         = [];
 
+            if ($f1 === "auto" && empty($filters) && empty($mfa_link)) {
+                $red_status = 1;
+                $red_type   = 301;
+                $red_link   = $site_link . $catalog_link . '/' . $router;
+            }
+
             if ($mfa_link !== "") {
                 $mfa_id = $autoObj->getMfaLink($mfa_link);
 
                 if ($mfa_id === 0) {
                     $red_status = 1;
                     $red_type = 404;
-                    $content = str_replace("{main_window}", $error_form, $content);
-                    $content = str_replace("{meta_noindex}", $noindex_form, $content);
+                    $content = str_replace(array("{main_window}", "{meta_noindex}"), array($error_form, $noindex_form), $content);
                 }
 
                 if ($model_link !== "") {
@@ -146,8 +146,7 @@ else {
                         if ($model === "") {
                             $red_status = 1;
                             $red_type = 404;
-                            $content = str_replace("{main_window}", $error_form, $content);
-                            $content = str_replace("{meta_noindex}", $noindex_form, $content);
+                            $content = str_replace(array("{main_window}", "{meta_noindex}"), array($error_form, $noindex_form), $content);
                         }
 
                         if ($model !== "") {
@@ -156,8 +155,7 @@ else {
                             if (($model_id_link !== "") && !$model_id) {
                                 $red_status = 1;
                                 $red_type = 404;
-                                $content = str_replace("{main_window}", $error_form, $content);
-                                $content = str_replace("{meta_noindex}", $noindex_form, $content);
+                                $content = str_replace(array("{main_window}", "{meta_noindex}"), array($error_form, $noindex_form), $content);
                             }
                         }
                     }
@@ -165,14 +163,14 @@ else {
             }
 
             $count_brands = 0;
+
             if (!empty($filters)) {
                 list($check_status, $check_link, $check_status_error) = $catalog_exist->checkRedirects($filters);
 
                 if ($check_status_error > 0) {
                     $red_status = 1;
                     $red_type = 404;
-                    $content = str_replace("{main_window}", $error_form, $content);
-                    $content = str_replace("{meta_noindex}", $noindex_form, $content);
+                    $content = str_replace(array("{main_window}", "{meta_noindex}"), array($error_form, $noindex_form), $content);
                 }
 
                 if ($f1 === "uk" || $f1 === "en") {
@@ -189,6 +187,7 @@ else {
 
                     if ($mfa_link !== "") {
                         $red_link .= "$mfa_link/";
+
                         if ($model_link !== "") {
                             $red_link .= "$model_link/";
                         }
@@ -213,10 +212,7 @@ else {
                     $content = str_replace("{meta_noindex}", $noindex_form, $content);
                 }
 
-                $content = str_replace("{seoshield_formulas}", "
-                    <!--ss_selected_filters_info|FilterName|FilterValue-->
-                    <!--seoshield_formulas--fil-traciya-->
-                ", $content);
+                $content = str_replace("{seoshield_formulas}", $catalogue->getHtmlForm("seo/shield"), $content);
             }
 
             (!empty($page)) ?: $page = 1;
@@ -297,16 +293,17 @@ else {
         if (empty($head_id) && empty($group_id)) {
             $red_status = 1;
             $red_type   = 404;
-            $content    = str_replace("{main_window}", $error_form, $content);
-            $content = str_replace("{meta_noindex}", $noindex_form, $content);
+            $content = str_replace(array("{main_window}", "{meta_noindex}"), array($error_form, $noindex_form), $content);
         }
     }
 }
 
 if ($red_status) {
+
     if ($red_type === 404) {
         header("HTTP/1.0 404 Not Found");
     }
+
     if ($red_type === 301) {
         header("Location: $red_link", TRUE, 301);
     }

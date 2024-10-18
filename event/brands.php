@@ -18,11 +18,11 @@ if ($brand_id > 0) {
     $title = $catalogue->replaceLang("{site_brands_select}");
     $title = str_replace("{brand_text}", $brand_name, $title);
 
-    $description = $catalogue->replaceLang("{site_brands_description_select}");
-    $description = str_replace("{brand_text}", $brand_name, $description);
+    $description = str_replace("{brand_text}", $brand_name, $catalogue->replaceLang("{site_brands_description_select}"));
 
-    $content = str_replace("{main_window}", "<div class='content'>" . $formObj->showBrandSelect($brand_id) . "</div>", $content);
-    $content = str_replace("{site_title}", $title, $content);
-    $content = str_replace("{site_description}", $description, $content);
+    $content = str_replace(
+        array("{main_window}", "{site_title}", "{site_description}"),
+        array("<div class='content'>" . $formObj->showBrandSelect($brand_id) . "</div>", $title, $description),
+    $content);
 }
 

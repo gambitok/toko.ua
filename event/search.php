@@ -9,6 +9,7 @@ $article_nr_search  = rawurldecode($article_nr_search);
 $article_nr_search  = $catalogue->getIconv($article_nr_search);
 
 $text = $_GET["text"];
+
 if (!empty($text)) {
     $article_nr_search = $text;
     $article_nr_search = rawurldecode($article_nr_search);
@@ -28,8 +29,4 @@ if ($article_nr_search === "") {
     }
 }
 
-$content = str_replace("{meta_noindex}", '
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="googlebot" content="noindex, nofollow">
-    <meta name="yandex" content="noindex, nofollow">
-', $content);
+$content = str_replace("{meta_noindex}", $catalogue->getHtmlForm("seo/noindex_nofollow"), $content);

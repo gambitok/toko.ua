@@ -4,10 +4,6 @@ global $dbm, $catalogue, $menu, $formObj, $content;
 
 $db = DbSingleton::getTokoDb();
 
-$red_status = 0;
-$red_type   = 0;
-$red_link   = "";
-
 $user_id = $catalogue->getUser();
 $today = date("Y-m-d");
 $dbm->query("UPDATE `A_CLIENTS_USERS` SET `update_news` = '$today' WHERE `id` = $user_id LIMIT 1;");
@@ -23,20 +19,17 @@ if (findLinks()[3] === "grafС–k-roboti-na-novorС–chnС–-svyata" || findL
 if ($link === "") {
     $content = str_replace("{main_window}", $menu->showNews($db) . $formObj->getHistoryArts(), $content);
 
-    $title = $catalogue->replaceLang("{site_news}");
-    $title = str_replace("{h1_text}", "{news_cap}", $title);
+    $title = str_replace("{h1_text}", "{news_cap}", $catalogue->replaceLang("{site_news}"));
 } elseif ($link === "state") {
     $state_id = findLinks()[2];
 
 	$content = str_replace("{main_window}", $menu->showNewsState($db, $state_id) . $formObj->getHistoryArts(), $content);
     $content = str_replace("{meta_social_tag}", $menu->getNewsMetaTags($db, $state_id), $content);
 
-    $title = $catalogue->replaceLang("{site_news}");
-    $title = str_replace("{h1_text}", $menu->getNewsData($db, $state_id)["title"], $title);
+    $title = str_replace("{h1_text}", $menu->getNewsData($db, $state_id)["title"], $catalogue->replaceLang("{site_news}"));
 } else {
-    $red_status = 1;
-    $red_type   = 404;
-    $content    = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
+    $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/404_catalog"), $content);
 }
+
 $content = str_replace("{site_title}", $title, $content);
 $content = str_replace("{site_description}", "", $content);

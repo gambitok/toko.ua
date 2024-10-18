@@ -32,11 +32,7 @@ if ($client->checkUnRegClient()) {
     $content = str_replace("{date_saldo_to}", date("Y-m-d"), $content);
 }
 
-$content = str_replace("{meta_noindex}", '
-    <meta name="robots" content="noindex">
-    <meta name="googlebot" content="noindex">
-    <meta name="yandex" content="noindex">
-', $content);
+$content = str_replace("{meta_noindex}", $catalogue->getHtmlForm("seo/noindex"), $content);
 
 
 

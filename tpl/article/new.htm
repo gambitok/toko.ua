@@ -97,15 +97,15 @@
         <div class="col-12">
             <nav class="article-form-row__title">
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{product_about_cap}</a>
-                    <a onclick="shortSearchList();" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">{analogs_2_cap}</a>
-                    <a onclick="shortArticleOE();" class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">{original_numbers}</a>
-                    <a onclick="shortArticleApplicable();" class="nav-item nav-link" id="nav-applicable-tab" data-toggle="tab" href="#nav-applicable" role="tab" aria-controls="nav-applicable" aria-selected="false">{applicability_cap}</a>
-                    <a class="nav-item nav-link" id="nav-reviews-tab" data-toggle="tab" href="#nav-reviews" role="tab" aria-controls="nav-reviews" aria-selected="false">{reviews_cap}</a>
+                    <a class="nav-item nav-link active {active_tab_home}" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{product_about_cap}</a>
+                    <a class="nav-item nav-link" onclick="shortSearchList();" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">{analogs_2_cap}</a>
+                    <a class="nav-item nav-link {active_tab_oe}" onclick="shortArticleOE();" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">{original_numbers}</a>
+                    <a class="nav-item nav-link {active_tab_applicable}" onclick="shortArticleApplicable();" id="nav-applicable-tab" data-toggle="tab" href="#nav-applicable" role="tab" aria-controls="nav-applicable" aria-selected="false">{applicability_cap}</a>
+                    <a class="nav-item nav-link {active_tab_reviews}" id="nav-reviews-tab" data-toggle="tab" href="#nav-reviews" role="tab" aria-controls="nav-reviews" aria-selected="false">{reviews_cap}</a>
                 </div>
             </nav>
             <div class="tab-content article-form-row__content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div class="tab-pane fade show active {active_tab_home}" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                     <div>
                         <h2>{specifications_cap} {art_name}</h2>
                         {art_info}
@@ -167,8 +167,6 @@
             </div>
         </div>
     </div>
-
-    <!--seoshield_formulas--kartochka-tovara-->
 
 </div>
 

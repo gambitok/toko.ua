@@ -1,6 +1,36 @@
 <!DOCTYPE html>
 <html lang="{site_lang_html}">
 <head>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			/** init gtm after 3500 seconds - this could be adjusted */
+			setTimeout(initGTM, 3500);
+		});
+		document.addEventListener('scroll', initGTMOnEvent);
+		document.addEventListener('mousemove', initGTMOnEvent);
+		document.addEventListener('touchstart', initGTMOnEvent);
+		function initGTMOnEvent(event) {
+			initGTM();
+			event.currentTarget.removeEventListener(event.type, initGTMOnEvent); // remove the event listener that got triggered
+		}
+		function initGTM() {
+			if (window.gtmDidInit) {
+				return false;
+			}
+			window.gtmDidInit = true; // flag to ensure script does not get added to DOM more than once.
+			const script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.async = true;
+			// ensure PageViews is always tracked (on script load)
+			script.onload = () => {
+				dataLayer.push({ event: 'gtm.js', 'gtm.start': new Date().getTime(), 'gtm.uniqueEventId': 0 });
+			};
+			script.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-K74L2Z7';
+			document.head.appendChild(script);
+		}
+	</script>
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-134334911-1"></script>
 	<script>
 		window.dataLayer = window.dataLayer || [];
@@ -10,13 +40,13 @@
 		gtag('config', 'AW-1023462949');
 	</script>
 
-	<!-- Google Tag Manager -->
-	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-		})(window,document,'script','dataLayer','GTM-NQ9KDT2');</script>
-	<!-- End Google Tag Manager -->
+<!--	&lt;!&ndash; Google Tag Manager &ndash;&gt;-->
+<!--	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':-->
+<!--				new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],-->
+<!--			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=-->
+<!--			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);-->
+<!--	})(window,document,'script','dataLayer','GTM-K74L2Z7');</script>-->
+<!--	&lt;!&ndash; End Google Tag Manager &ndash;&gt;-->
 
 	{site_google_conversation}
 
@@ -182,8 +212,8 @@
 
 <body>
 <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NQ9KDT2"
-			   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!--<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K74L2Z7"-->
+<!--				  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>-->
 <!-- End Google Tag Manager (noscript) -->
 
 <script type="text/javascript">
@@ -558,4 +588,3 @@
 
 <!-- Custom Scripts -->
 <script type="text/javascript" src="/app/src/js/app.min.js"></script>
-

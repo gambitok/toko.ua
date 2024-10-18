@@ -12,7 +12,7 @@ class SearchClass extends CatalogueClass
         $article_search = "";
         $brand_id = 0;
         $article_nr_search = $this->getUrlString($article_nr_search);
-        //$r = $db->query("SELECT DISTINCT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search';");
+
         $r = $db->query("SELECT `SEARCH_NUMBER`, `BRAND_ID` FROM `T2_CROSS` WHERE `SEARCH_NUMBER` = '$article_nr_search' GROUP BY `BRAND_ID`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -70,7 +70,7 @@ class SearchClass extends CatalogueClass
         FROM `T2_CROSS` t2c 
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID) 	
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_search' AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE)) 
+        WHERE t2c.SEARCH_NUMBER = '$article_search' AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE)) 
         GROUP BY t2c.BRAND_ID;");
         $n = $db->num_rows($r);
 
@@ -151,7 +151,7 @@ class SearchClass extends CatalogueClass
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID)
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_id AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE));");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_id AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE));");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_ids[] = $db->result($r, $i - 1, "ART_ID");
@@ -277,9 +277,6 @@ class SearchClass extends CatalogueClass
         return $count;
     }
 
-    /*
-     * SEARCH TEXT INPUT
-     * */
     public function getSearchMatches($text): array
     {
         $max_word = 4;
@@ -341,9 +338,6 @@ class SearchClass extends CatalogueClass
         return array($new, $max_matches);
     }
 
-    /*
-     * SEARCH TEXT INPUT
-     * */
     public function showSearchDropdown($text)
     {
         $db = DbSingleton::getTokoDb();
@@ -576,6 +570,7 @@ class SearchClass extends CatalogueClass
 
             $r = $this->getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, "", $nulls);
             $n = $db->num_rows($r);
+
             if ($n > 0) {
                 for ($i = 1; $i <= $n; $i++) {
                     $art_id             = (int)$db->result($r, $i - 1, "ART_ID");
@@ -987,7 +982,6 @@ class SearchClass extends CatalogueClass
                            
                             if ($this->getSuppLStorageVisible($suppl_id, $storage_id)) {
                                 $mas[$art_id][$i] = compact("article_nr_displ", "brand_id", "brand_name", "article_name", "delivery_info", "stock", "price", "delivery_days", "delivery_short_info", "suppl_id", "return_days", "storage_id", "status");
-
                             }
                         }
                     }
@@ -1276,13 +1270,13 @@ class SearchClass extends CatalogueClass
 
         $flagData = $formObj->getCountryFlag($brand_id);
         $flagClass = (!$flagData) ? "none" : "";
-        $in_stock = (empty($suppl_id) && !empty($stock)) ? "<b class=\"tables__instock\"> {in_stock}</b>" : "";
+        $in_stock = (empty($suppl_id) && !empty($stock)) ? $this->getHtmlTag("b", " {in_stock}", ['class' => 'tables__instock']) : "";
 
         $delivery_info = str_replace('"', "", $delivery_info);
         $delivery_short_info = str_replace("<br>", " ", $delivery_short_info);
 
         if (empty($delivery_days) && empty($suppl_id)) {
-            $delivery_short_info = "<span class='delivery-green'>{send_done}</span>";
+            $delivery_short_info = $this->getHtmlTag("span", "{send_done}", ['class' => 'delivery-green']);
         }
 
         $t_point_f_name     = (empty($suppl_id)) ? $client->getArticleStorageTPoint($storage_id) : "";

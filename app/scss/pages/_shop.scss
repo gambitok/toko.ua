@@ -445,27 +445,13 @@
 }
 
 .proposed {
-    filter: grayscale(100%);
     margin-top: 15px;
     max-height: 300px;
     overflow: hidden;
-    &:hover {
-        filter: grayscale(0);
-        .proposed-title {
-            filter: grayscale(0);
-        }
-        button {
-            filter: grayscale(0);
-        }
-        img {
-            filter: grayscale(0);
-        }
-    }
     &-title {
         background: #17a2b8;
         color: #fff;
         display: inline-block;
-        filter: grayscale(100%);
         font-size: 16px;
         padding: 5px;
     }
@@ -488,7 +474,6 @@
             height: 100%;
             img {
                 display: block;
-                filter: grayscale(100%);
                 margin: 0 auto;
                 height: 100%;
                 transition: all .3s linear;
@@ -511,7 +496,6 @@
             text-align: right;
             width: 50%;
             button {
-                filter: grayscale(100%);
                 transition: all .3s linear;
             }
         }

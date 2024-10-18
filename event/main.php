@@ -4,6 +4,7 @@ global $catalogue, $content, $formObj, $autoObj, $menu;
 
 // REDIRECT OLD TOKO LINKS (dep=23)
 $w = $catalogue->getUrlString($_GET["w"]);
+
 if ($w === "modelfind") {
     $art = $catalogue->getUrlString($_GET["art"]);
     header("Location: /search/$art/", TRUE, 301);
@@ -35,9 +36,5 @@ $content = str_replace("{contacts_bottom}", $menu->showContactsBottom(), $conten
 
 // LANGUAGE META INDEX
 if (findLanguage() !== "" && findLanguage() !== "uk") {
-    $content = str_replace("{meta_noindex}", '
-        <meta name="robots" content="noindex">
-        <meta name="googlebot" content="noindex">
-        <meta name="yandex" content="noindex">
-    ', $content);
+    $content = str_replace("{meta_noindex}", $menu->getHtmlForm("seo/noindex"), $content);
 }

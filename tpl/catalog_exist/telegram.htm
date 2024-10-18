@@ -1,26 +1,40 @@
 <style>
-    .telegram-form {
+    .telegram__form {
         margin-top: 30px;
     }
-    .telegram-form img {
+    .telegram__form:hover {
+        text-decoration: none;
+    }
+    .telegram__form img {
         width: 100%;
     }
-    .telegram-form p {
+    .telegram__form p {
         color: #0ca9ee;
-        font-weight: bold;
+        font-size: 1rem;
+        font-weight: 700;
         text-transform: uppercase;
     }
-    .telegram-form ul {
-
+    .telegram__form ul {
+        list-style: none;
     }
-    .telegram-form ul li {
-
+    .telegram__form li {
+        list-style: initial;
+        margin-left: 15px;
+        color: #606975;
+        font-size: 14px;
+    }
+    .telegram__form li:hover {
+        text-decoration: underline;
+        color: #0ca9ee;
+    }
+    .telegram__list {
+        padding-left: 0;
     }
 </style>
 
 <div class="container">
-    <a href="https://toko.ua/telegram_bot/" class="row telegram-form" rel=”nofollow”>
-        <div class="col-7">
+    <a href="https://toko.ua/telegram_bot/" class="row telegram__form" rel="nofollow">
+        <div class="col-7 telegram__list">
             <p>{telegram_bot_title}</p>
             <ul>
                 <li>{telegram_bot_number}</li>

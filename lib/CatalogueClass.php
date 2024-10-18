@@ -52,7 +52,7 @@ class CatalogueClass
         $r = $db->query("SELECT DISTINCT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE));");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE));");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -124,7 +124,7 @@ class CatalogueClass
         $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE))
         ORDER BY t2n.`NAME`;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
@@ -171,7 +171,10 @@ class CatalogueClass
             $current_value["max_dd"]    = $filters["max_dd"];
         }
         
-        return str_replace(array("{sideblock_max_price}", "{sideblock_max_dd}", "{sideblock_max_price_val}", "{sideblock_max_dd_val}", "{sideblock_min_price_val}", "{sideblock_min_dd_val}", "{cur_value}", "{catalogue_js_filter}", "{filters_col}"), array($filters["max_price"], $filters["max_dd"], $current_value["max_price"], $current_value["max_dd"], $current_value["min_price"], $current_value["min_dd"], $cur, "catalogueFilter();", "col-lg-2 col-12 pad0"), $search_filters);
+        return str_replace(
+            array("{sideblock_max_price}", "{sideblock_max_dd}", "{sideblock_max_price_val}", "{sideblock_max_dd_val}", "{sideblock_min_price_val}", "{sideblock_min_dd_val}", "{cur_value}", "{catalogue_js_filter}", "{filters_col}"),
+            array($filters["max_price"], $filters["max_dd"], $current_value["max_price"], $current_value["max_dd"], $current_value["min_price"], $current_value["min_dd"], $cur, "catalogueFilter();", "col-lg-2 col-12 pad0"),
+        $search_filters);
     }
 
     /*
@@ -242,7 +245,7 @@ class CatalogueClass
                 LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID)
             WHERE t2a.ART_ID IN ($where_art_id_str) 
                 AND t2b.`VISIBLE` = '1' 
-                AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
+                AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE))
                 $where_storage1
                 $where_brands 
             GROUP BY t2a.ART_ID, t2asc.STORAGE_ID
@@ -254,7 +257,7 @@ class CatalogueClass
                 LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1)
             WHERE t2a.ART_ID IN ($where_art_id_str) 
                 AND t2b.`VISIBLE` = '1' 
-                AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
+                AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE))
                 $where_storage2
                 $where_brands 
             GROUP BY t2a.ART_ID, t2si.client_storage_id;");
@@ -275,7 +278,7 @@ class CatalogueClass
                 LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID) 
                 LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID) 
                 LEFT OUTER JOIN `T2_ARTICLES_STRORAGE` t2asc ON (t2asc.ART_ID = t2a.ART_ID) 
-            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
+            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE))
             GROUP BY t2a.ART_ID, t2asc.STORAGE_ID 
             UNION ALL 
             SELECT t2a.ART_ID, t2a.BRAND_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, IFNULL(t2si.stock_suppl,0) as AMOUNT, IFNULL(t2si.client_storage_id,0) as storage_id, IFNULL(t2si.suppl_id,0), IFNULL(t2si.return_delay,0) 
@@ -283,9 +286,8 @@ class CatalogueClass
                 LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID) 
                 LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID) 
                 LEFT OUTER JOIN `T2_SUPPL_IMPORT` t2si ON (t2si.art_id = t2a.ART_ID AND t2si.status = 1) 
-            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
-            GROUP BY t2a.ART_ID, t2si.client_storage_id
-            ");
+            WHERE t2a.ART_ID IN ($where_art_id_str) AND t2b.`VISIBLE` = '1' AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE))
+            GROUP BY t2a.ART_ID, t2si.client_storage_id");
         }
 
         return $r;
@@ -602,7 +604,7 @@ class CatalogueClass
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2c.BRAND_ID)
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE));");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE));");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -2582,7 +2584,7 @@ class CatalogueClass
         $cap6 = iconv("UTF-8", "windows-1251", $cap6);
         $cap7 = iconv("UTF-8", "windows-1251", $cap7);
 
-        $filialList = ["#", "$cap1", "$cap2", "$cap3", "$cap4", "$cap5", "$cap6", "$cap7"];
+        $filialList = ["#", (string)$cap1, (string)$cap2, (string)$cap3, (string)$cap4, (string)$cap5, (string)$cap6, (string)$cap7];
         $t_pointOtherList = $client->getSalePointOtherList($t_point_user_id);
 
         foreach ($t_pointOtherList as $t_point) {
@@ -2615,7 +2617,7 @@ class CatalogueClass
             LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
             LEFT OUTER JOIN `T2_BARCODES` t2br ON (t2br.ART_ID = t2a.ART_ID)
-        WHERE t2as.AMOUNT != 0 AND (IF (t2n.LANG_ID != NULL, t2n.LANG_ID = 16, TRUE))
+        WHERE t2as.AMOUNT != 0 AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE))
         GROUP BY t2a.ARTICLE_NR_DISPL;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {

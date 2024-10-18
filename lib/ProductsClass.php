@@ -488,9 +488,6 @@ class ProductsClass extends CatalogueClass
         return array($class, $text);
     }
 
-    /*
-     * Get User Garage selected car in Catalog
-     * */
     public function getCarsGarage()
     {
         $autoObj = new AutoClass();
@@ -508,7 +505,6 @@ class ProductsClass extends CatalogueClass
         return $this->replaceLang($form);
     }
 
-    // Modal Cars Form
     public function showCarsGarageForm(): array
     {
         $form = $this->getCarsSearch();

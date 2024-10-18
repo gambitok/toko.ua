@@ -57,7 +57,7 @@ if ($client->checkUnRegClient()) {
     $form = str_replace("{reg_tpoint}", $salePoint, $form);
     $form = str_replace("{user_city}", $city, $form);
     $form = str_replace("{reg_mailing}", $mailing, $form);
-    $form = str_replace("{message}", (!empty($message)) ? "<label class=\"alert-danger\">$message</label>" : $message, $form);
+    $form = str_replace("{message}", (!empty($message)) ? $client->getHtmlTag("label", $message, ['class' => 'alert-danger']) : $message, $form);
 
     $content = str_replace("{main_window}", $form, $content);
 

@@ -122,27 +122,16 @@ $content = str_replace("{main_window}", "", $content);
 $content = str_replace("{main_seo_text_cars}", "", $content);
 
 if (findLanguage() === "en") {
-    $content = str_replace("{meta_noindex}", '
-        <meta name="robots" content="noindex, nofollow">
-        <meta name="googlebot" content="noindex, nofollow">
-        <meta name="yandex" content="noindex, nofollow">
-    ', $content);
+    $content = str_replace("{meta_noindex}", $catalogue->getHtmlForm("seo/noindex_nofollow"), $content);
 }
 
 $no_index = findNoIndex();
+
 if ($no_index) {
-    $content = str_replace("{meta_noindex}", '
-        <meta name="robots" content="noindex, nofollow">
-        <meta name="googlebot" content="noindex, nofollow">
-        <meta name="yandex" content="noindex, nofollow">
-    ', $content);
+    $content = str_replace("{meta_noindex}", $catalogue->getHtmlForm("seo/noindex_nofollow"), $content);
 }
 
-$content = str_replace("{meta_noindex}", '
-    <meta name="robots" content="index, follow">
-    <meta name="googlebot" content="index, follow">
-    <meta name="yandex" content="index, follow">
-', $content);
+$content = str_replace("{meta_noindex}", $catalogue->getHtmlForm("seo/index"), $content);
 
 $content = replaceLangVariables($content);
 $content = getContent($content);

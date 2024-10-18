@@ -1,0 +1,29 @@
+<div class="col-lg-4 col-12">
+    <div class="special-offers-item special-offers-item-discount">
+        <div class="row">
+            <div class="col-7">
+                <span class="special-offers-item__date" itemprop="datePublished">{timestamp}</span><br>
+                <div class="special-offers-item__name" itemprop="name">
+                    <a href="{link}" target="_blank">{art_nr_ds} {from_cap} {amount} {amount_abbr}.<br><span>{name}</span></a>
+                </div>
+                <div class="special-offers-item__descr" itemprop="description">
+                    {offer_valid_until}: {data} <br>
+                    {quantity_limited}: {max_amount}
+                </div>
+            </div>
+            <div class="col-5 special-offers-item-eco">
+            <span class="special-offers-item-eco__text">{economy_cap}</span><br>
+            <span class="special-offers-item-eco__number">{discount}%</span>
+        </div>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <a class="special-offers-item__link" href="{link}" target="_blank"><span class="fa fa-link"></span> {go_to_offer}</a>
+            </div>
+            <div class="col-4 text-right">
+                <a class="special-offers-item__info" onclick="showInfoForm('{art_id}', '{art_nr_ds}', '{brand_name}');">{info}</a>
+                {status_new}
+            </div>
+        </div>
+    </div>
+</div>

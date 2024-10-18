@@ -1,0 +1,20 @@
+<div class="tree-heads__item">
+    <input type="checkbox" id="toggle-head-{head_id}">
+    <label for="toggle-head-{head_id}">
+        <div id="tree_head-{head_id}" class="tree-heads__item-header">
+            <div class="tree-heads__item-text">
+                <div class="tree-heads__item-title">
+                    {head_name} {brand_name}
+                </div>
+                <div class="tree-heads__item-descr">
+                    {head_text}
+                </div>
+            </div>
+            <div class="tree-heads__item-image">
+                <img data-src="/uploads/images/group_tree_head/{head_img}" class="lazy" alt="{head_name}" src={no_photo}">
+            </div>
+        </div>
+    </label>
+    <div class="tree-cat" style="display: none;">
+    {list}
+</div></div>

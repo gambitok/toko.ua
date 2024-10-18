@@ -148,9 +148,14 @@
 .request {
     min-height: 420px;
     padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    align-items: center;
     &-row, &-display {
         display: flex;
         margin-bottom: 15px;
+        width: 100%;
         &-mob {
             display: none;
             a {
@@ -181,7 +186,7 @@
         }
         &__image {
             height: 40px;
-            width: 50px;
+            width: 75px;
             img {
                 height: 100%;
                 width: 100%;
@@ -520,15 +525,6 @@
     word-wrap: break-word;
     a {
         color: #000;
-    }
-}
-
-.hidden-list-more {
-    color: #228b94;
-    font-size: 16px;
-    margin-top: 10px;
-    &:hover {
-        text-decoration: underline;
     }
 }
 

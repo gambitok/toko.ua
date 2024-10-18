@@ -19,6 +19,7 @@ if ($art_id > 0 && $catalogue->checkArticleExist($art_id)) {
     $breadcrumbsData = $catalogue->getBreadCrumbForm($articleData["breadcrumbs"]);
 
     $data = getSeoTitleData();
+
     if ($data) {
         $description = $data[1];
 

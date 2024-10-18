@@ -24,7 +24,7 @@ if ($n > 0) {
         $id         = (int)$db->result($r, $i - 1, "ID");
         $suppl_id   = (int)$db->result($r, $i - 1, "SUPPL_ID");
         $fileName   = $db->result($r, $i - 1, "FILENAME");
-        $counter    = (int)$db->result($r, $i - 1, "STATUS_COUNTER");
+//        $counter    = (int)$db->result($r, $i - 1, "STATUS_COUNTER");
 
         if ($suppl_id > 0) {
 
@@ -174,17 +174,24 @@ if ($n > 0) {
             if ($answer === 0) {
                 $db->query("INSERT INTO `IMPORT_SUPPLIER_ERROR` (`SUPPL_ID`, `TEXT`, `STATUS`, `TIMEMAN`) VALUES ($suppl_id, '$err', 1, '$time');");
 
-                if ($counter > 0) {
+//                if ($counter >= 1) {
                     $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS` = 0, `STATUS_PROCESS` = 0, `TIMEMAN` = '$time' WHERE `ID` = $id LIMIT 1;");
-                } else {
-                    $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS_COUNTER` = `STATUS_COUNTER` + 1, `TIMEMAN` = '$time' WHERE `ID` = $id LIMIT 1;");
-                }
+                    unlink($inputFileName);
+//                }
+//                else {
+//                    $status_counter = $counter + 1;
+//                    $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS_COUNTER` = $status_counter, `TIMEMAN` = '$time' WHERE `ID` = $id LIMIT 1;");
+//                }
             }
 
             if ($answer === 1) {
                 $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS` = 0, `STATUS_PROCESS` = 1, `TIMEMAN` = '$time' WHERE `ID` = $id LIMIT 1;");
+                unlink($inputFileName);
             }
 
+            unlink($inputFileName);
+
         }
+
     }
 }

@@ -259,6 +259,7 @@ function printBreadcrumbs($path): array
     }
 
     $form = "";
+
     if ($predTitle !== "") {
         $form = getHtmlForm("menu/breadcrumbs");
         $form = str_replace("{bread_text}", $predTitle, $form);
@@ -279,6 +280,7 @@ function printBreadcrumbs($path): array
     $list = rtrim($list, ",");
 
     $script = "";
+
     if (count($b_arr) > 1) {
         $script = "
         <script type=\"application/ld+json\">
@@ -299,6 +301,7 @@ function getHtmlForm($name)
 {
     $form = "";
     $form_htm = RDD . "/tpl/$name.htm";
+
     if (file_exists($form_htm)) {
         $form = file_get_contents($form_htm);
     }
@@ -320,6 +323,7 @@ function getDescription($path)
     if ($path === "cars") {
         $description = "{site_cars_description}";
     }
+
     if ($path === "article") {
         $art_id = $httpHost[3];
         $art_search = $catalogue->getArticleDisplay($art_id);
@@ -331,9 +335,11 @@ function getDescription($path)
         $description      = "$art_name $brand_name $art_search - {seo_description_article}";
         $description      = ltrim($description, " ");
     }
+
     if ($path === "brands") {
         $description = "{site_brands_description}";
     }
+
     if ($path === "catalog") {
         $description = "{seo_description} {seo_description2}";
     }
@@ -368,9 +374,11 @@ function getSiteLang($lang_id_sel = 0): string
     }
 
     $lang_html = "ru";
+
     if ($lang_id === 2) {
         $lang_html = "uk";
     }
+
     if ($lang_id === 3) {
         $lang_html = "en";
     }
@@ -382,6 +390,7 @@ function getPhpContent($file)
 {
     ob_start();
     $file = RDD . $file;
+
     if (file_exists($file)) {
         include($file);
         $contents = ob_get_clean();
@@ -426,6 +435,7 @@ function getPath()
 function findPath()
 {
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+
     if (substr($link, -1) !== "/") {
         $link .= "/";
     }
@@ -437,6 +447,7 @@ function findPath()
     if ($pos) {
         $path = substr($url, 0, $pos + 1);
         $cur_path = substr($path, 0, -1);
+
         if ($cur_path === "uk" || $cur_path === "en") {
             $url = str_replace_first($path, "", $url);
             $pos = strpos($url, "/");
@@ -463,8 +474,10 @@ function findNoIndex(): bool
     $link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
     $result = 0;
     $arr = ["?utm_", "?sort=", "?gclid=", "?UAH", "?RUR", "?WMZ", "?USD"];
+
     foreach ($arr as $a) {
         $pos = strripos($link, $a);
+
         if ($pos !== false) {
             $result++;
         }
@@ -477,9 +490,11 @@ function findLanguage(): string
 {
     $postfix = "";
     $link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+
     if (strpos($link, "/uk/") !== false) {
         $postfix = "uk";
     }
+
     if (strpos($link, "/en/") !== false) {
         $postfix = "en";
     }
@@ -490,9 +505,11 @@ function findLanguage(): string
 function findLanguageID($postfix): int
 {
     $language_id = 1;
+
     if ($postfix === "uk") {
         $language_id = 2;
     }
+
     if ($postfix === "en") {
         $language_id = 3;
     }
@@ -503,7 +520,8 @@ function findLanguageID($postfix): int
 function findLinks(): array
 {
 	$link = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-	if (substr($link, -1) !== "/") {
+
+    if (substr($link, -1) !== "/") {
 	    $link .= "/";
     }
 	$link = parse_url($link);
@@ -511,14 +529,18 @@ function findLinks(): array
 	$i = 0;
 	$httpHost = [];
     $c = 0;
-	while ($sub_url !== "") {
+
+    while ($sub_url !== "") {
 		$pos = strpos($sub_url, "/");
+
 		if ($pos) {
             $path = substr($sub_url, 0, $pos + 1);
             $sub_url = str_replace_first($path, "", $sub_url);
             $cur_path = substr($path, 0, -1);
+
             if ($cur_path === "uk" || $cur_path === "en") {
                 $c++;
+
                 if ($c === 1) {
                     $i = 0;
                 } else {
@@ -540,12 +562,14 @@ function findLinks(): array
 function str_replace_first($from, $to, $content)
 {
     $from = "/" . preg_quote($from, "/") . "/";
+
     return preg_replace($from, $to, $content, 1);
 }
 
 function getSeoText($seo_text)
 {
     $form = getHtmlForm("menu/seo_text");
+
     return str_replace("{seo_text}", $seo_text, $form);
 }
 
@@ -568,8 +592,9 @@ function getSeoTitleData()
     }
 
     $r = $dbe->query("SELECT `TITLE_" . $postfix . "`, `DESCR_" . $postfix . "` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 0 $get_link LIMIT 1;");
-    $n = $dbe->num_rows($r);
-    if ($n == 0) {
+    $n = (int)$dbe->num_rows($r);
+
+    if ($n === 0) {
         $seoTitleLink = explode("/", $httpHostString)[0];
         $r = $dbe->query("SELECT `TITLE_" . $postfix . "`, `DESCR_" . $postfix . "` FROM `T2_SEO_TITLE` WHERE `ROUTER` = '$router' AND `STATUS_AUTO` = 1 AND `LINK` = '$seoTitleLink' LIMIT 1;");
         $n = $dbe->num_rows($r);
@@ -577,7 +602,9 @@ function getSeoTitleData()
     if ($n > 0) {
         $title = $dbe->result($r, 0, "TITLE_$postfix");
         $description = $dbe->result($r, 0, "DESCR_$postfix");
-    } else return false;
+    } else {
+        return false;
+    }
 
     return array($title, $description);
 }

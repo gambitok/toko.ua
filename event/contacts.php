@@ -21,6 +21,7 @@ if ($red_status) {
     }
 }
 
-$content = str_replace("{main_window}", $menu->showContacts() . $formObj->getHistoryArts(), $content);
-$content = str_replace("{site_title}", "{site_contacts}", $content);
-$content = str_replace("{site_description}", "", $content);
+$content = str_replace(
+    array("{main_window}", "{site_title}", "{site_description}"),
+    array($menu->showContacts() . $formObj->getHistoryArts(), "{site_contacts}", ""),
+$content);

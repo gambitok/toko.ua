@@ -3,9 +3,10 @@
 class ProfileClass extends ClientClass
 {
 
-    public $page_sign_in         = "signin/";
-    public $page_profile        = "profile/orders/";
+    public $page_sign_in    = "signin/";
+    public $page_profile    = "profile/orders/";
     public $page_registration   = "registration/";
+    public $page_news   = "news/";
 
     /*
      * get profile left navigation
@@ -17,7 +18,7 @@ class ProfileClass extends ClientClass
 
         return ($user_id === 0)
             ? false
-            : "{hello_cap}, <a href=\"" . $this->getSiteLink() . "$this->page_profile\">" . $name . "</a>";
+            : "{hello_cap}, " . $this->getHtmlTag("a", $name, ['href' => $this->getSiteLink() . $this->page_profile . "/"]);
     }
 
     /*
@@ -25,8 +26,7 @@ class ProfileClass extends ClientClass
      * */
     public function getProfileInfo()
     {
-        $form = $this->getHtmlForm("menu/profile_nav");
-        $form = str_replace("{reg_link}", $this->getSiteLink() . $this->page_registration, $form);
+        $form = str_replace("{reg_link}", $this->getSiteLink() . $this->page_registration, $this->getHtmlForm("menu/profile_nav"));
 
         if ($this->getUser() === 0) {
             $form = str_replace("{reg_login}", "none", $form);
@@ -72,26 +72,18 @@ class ProfileClass extends ClientClass
 
         $r = $db->query("SELECT 1 FROM `ACTION_CLIENTS` WHERE `timestamp` > '$update_actions 00:00:00' AND `status` = 1;");
         $n = $db->num_rows($r);
-
-        $counter = ($n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
+        $counter = ($n > 0) ? $this->getHtmlTag("span", "($n)", ['class' => 'authorization-item__counter']) : "";
 
         $info = "";
 
         if ($user_id > 0 && ($n1 > 0 || $n2 > 0)) {
-            $info = "
-            <li class=\"authorization-item\">
-                <a href=\"" . $this->getSiteLink() . "special_offers/\">
-                    <span class=\"fas fa-box-open\"></span> <span>{special_offers_cap} $counter</span>
-                </a>
-            </li>";
+            $link = $this->getSiteLink() . "special_offers/";
+            $info = str_replace(array("{link}", "{counter}"), array($link, $counter), $this->getHtmlForm("special_offers/info"));
         }
 
         return $info;
     }
 
-    /*
-     * get news navigation
-     * */
     public function getNewsInfo(): string
     {
         $db = DbSingleton::getDbm();
@@ -110,31 +102,21 @@ class ProfileClass extends ClientClass
         $r = $dbt->query("SELECT COUNT(`id`) as count_ids FROM `news` WHERE `data` > '$update_news' AND `lang_id` = $lang_id AND `status` = 1;");
         $n = (int)$dbt->result($r, 0, "count_ids");
 
-        $counter = ($user_id > 0 && $n > 0) ? "<span class=\"authorization-item__counter\">($n)</span>" : "";
+        $counter = ($user_id > 0 && $n > 0) ? $this->getHtmlTag("span", "($n)", ['class' => 'authorization-item__counter']) : "";
+        $link = $this->getSiteLink() . $this->page_news;
 
-        return "
-        <li class=\"authorization-item\">
-            <a href=\"" . $this->getSiteLink() . "news/\">
-                <span class=\"fas fa-newspaper\"></span><span> {news_cap} $counter</span>
-            </a>
-        </li>";
+        return str_replace(array("{link}", "{counter}"), array($link, $counter), $this->getHtmlForm("news/info"));
     }
 
-    /*
-     * get profile mobile navigation
-     * */
     public function getProfileInfoMobile()
     {
         $info = ($this->getUser() === 0)
-            ? "<a href=\"" . $this->getSiteLink() . "$this->page_sign_in\">{authorization}</a>"
-            : "<a href=\"" . $this->getSiteLink() . "$this->page_profile\">{profile}</a>";
+            ? $this->getHtmlTag("a", "{authorization}", ['href' => $this->getSiteLink() . "$this->page_sign_in/"])
+            : $this->getHtmlTag("a", "{profile}", ['href' => $this->getSiteLink() . "$this->page_profile/"]);
 
         return $this->replaceLang($info);
     }
 
-    /*
-     * show profile form
-     * */
     public function showProfileForm()
     {
         list($client_id, $user_id) = $this->getClientData();
@@ -146,9 +128,6 @@ class ProfileClass extends ClientClass
         return $this->replaceLang($form);
     }
 
-    /*
-     * check if client have bonus
-     * */
     public function getClientBonus($client_id): bool
     {
         $db = DbSingleton::getDbm();
@@ -158,9 +137,6 @@ class ProfileClass extends ClientClass
         return ($n > 0);
     }
 
-    /*
-     * show profile bonus form
-     * */
     public function showClientBonus($client_id)
     {
         $db = DbSingleton::getDbm();
@@ -176,9 +152,6 @@ class ProfileClass extends ClientClass
         return $form;
     }
 
-    /*
-     * show profile `account` form
-     * */
     public function showProfileAccount()
     {
         $menu = new MenuClass();
@@ -371,16 +344,12 @@ class ProfileClass extends ClientClass
         return $dp_arr;
     }
 
-    /*
-     * show orders (DP) in client profile
-     * */
     public function showProfileOrders()
     {
         $db = DbSingleton::getDbm();
         $exRate = new ExRateClass();
         $client = new ClientClass();
 
-        $form       = $this->getHtmlForm("profile/profile_orders");
         $user_id    = $this->getUser();
         $k          = $summary = 0;
         $list       = "";
@@ -468,7 +437,7 @@ class ProfileClass extends ClientClass
             $this->getHtmlForm("profile/orders"));
         }
 
-        $form = str_replace("{orders_range}", $list, $form);
+        $form = str_replace("{orders_range}", $list, $this->getHtmlForm("profile/profile_orders"));
 
         return $this->replaceLang($form);
     }
@@ -487,7 +456,6 @@ class ProfileClass extends ClientClass
         $exRate = new ExRateClass();
 
         $list       = "";
-        $form       = $this->getHtmlForm("profile/profile_orders_arts");
         $user_id    = $this->getUser();
         $client_id  = $this->getClient();
         $date_sel   = date("Y-m-d H:i:s", (strtotime("-15 day" , strtotime(date("Y-m-d H:i:s")))));
@@ -595,7 +563,7 @@ class ProfileClass extends ClientClass
             }
         }
 
-        $form = str_replace("{orders_range}", $list, $form);
+        $form = str_replace("{orders_range}", $list, $this->getHtmlForm("profile/profile_orders_arts"));
 
         return $this->replaceLang($form);
     }
@@ -628,7 +596,7 @@ class ProfileClass extends ClientClass
             }
         }
 
-        $list = "";
+        $form = "";
 
         if ($table !== "") {
             $table .= "_STR";
@@ -637,13 +605,7 @@ class ProfileClass extends ClientClass
             $n = $db->num_rows($r);
 
             $idd = "td-" . $td_id;
-
-            $list .= "<tr id='$idd'><td colspan='9'><table>";
-
-            $list .= str_replace(
-                array("{id}", "{art_nr_ds}", "{art_name}", "{amount}", "{price}", "{sum}"),
-                array("#", "{art_cap}", "{caption_cap}", "{amount_cap}", "{price_cap}", "{summ_cap}"),
-            $this->getHtmlForm("profile/docs"));
+            $list = "";
 
             for ($i = 1; $i <= $n; $i++) {
                 $art_id     = $db->result($r, $i - 1, "art_id");
@@ -659,10 +621,15 @@ class ProfileClass extends ClientClass
                 $this->getHtmlForm("profile/docs"));
             }
 
-            $list .= "</table></td></tr>";
+            $form = str_replace(array("{id}", "{list}"), array($idd, $list), $this->getHtmlForm("profile/table"));
+
+            $form = str_replace(
+                array("{id}", "{art_nr_ds}", "{art_name}", "{amount}", "{price}", "{sum}"),
+                array("#", "{art_cap}", "{caption_cap}", "{amount_cap}", "{price_cap}", "{summ_cap}"),
+            $this->getHtmlForm("profile/docs")) . $form;
         }
 
-        return $this->replaceLang($list);
+        return $this->replaceLang($form);
     }
 
     public function showProfileCheckForm($data_from = "", $data_to = "")
@@ -740,28 +707,19 @@ class ProfileClass extends ClientClass
                 }
 
                 $onclick = "showProfileDocs($i, $doc_id, $doc_type_id);";
-                $list .= "
-                <tr id=\"tr-$i\" class=\"text-center pointer\" onclick=\"$onclick\">
-                    <td>$i</td>
-                    <td>$data</td>
-                    <td>$cash_name</td>
-                    <td>$balanceBefore</td>
-                    <td>$debit</td>
-                    <td>$credit</td>
-                    <td>$balanceAfter</td>
-                    <td>$document_name</td>
-                    <td>$pay_summary $pay_cash_name</td>
-                </tr>";
+
+                $list .= str_replace(
+                    array("{num}", "{on_click}", "{data}", "{cash_name}", "{balance_before}", "{balance_after}", "{debit}", "{credit}", "{doc_name}", "{pay_sum}", "{pay_name}"),
+                    array($i, $onclick, $data, $cash_name, $balanceBefore, $balanceAfter, $debit, $credit, $document_name, $pay_summary, $pay_cash_name),
+                $this->getHtmlForm("profile/profile_table"));
+
+                $list .= "";
             }
 
             $balanceNetEnd = round($balanceAfter, 2);
 
         } else {
-            $list = "
-            <tr>
-                <td class=\"text-center\" colspan=\"9\">" . $this->err1 . "</td>
-            </tr>
-            </table>";
+            $list = str_replace("{message}", $this->err1, $this->getHtmlForm("profile/profile_table_error"));
         }
 
         if ($n === 0) {
@@ -779,11 +737,11 @@ class ProfileClass extends ClientClass
         $balanceNetDate_start = date("Y-m-01");
 
         if ($balanceNetStart < 0) {
-            $balanceNetStart_cap = " (<span class=\"span-red\">{debt_cap}</span>)";
+            $balanceNetStart_cap = " (" . $this->getHtmlTag("span", "{debt_cap}", ['class' => 'span-red']) . ")";
         }
 
         elseif ($balanceNetStart > 0) {
-            $balanceNetStart_cap = " (<span class=\"span-green\">{prepayment}</span>)";
+            $balanceNetStart_cap = " (" . $this->getHtmlTag("span", "{prepayment}", ['class' => 'span-green']) . ")";
         }
 
         $form = str_replace(
@@ -794,11 +752,11 @@ class ProfileClass extends ClientClass
         $balanceNetDate_end = date("Y-m-d");
 
         if ($balanceNetEnd < 0) {
-            $balanceNetEnd_cap = " (<span class=\"span-red\">{debt_cap}</span>)";
+            $balanceNetEnd_cap = " (" . $this->getHtmlTag("span", "{debt_cap}", ['class' => 'span-red']) . ")";
         }
 
         elseif ($balanceNetEnd > 0) {
-            $balanceNetEnd_cap = " (<span class=\"span-green\">{prepayment}</span>)";
+            $balanceNetEnd_cap = " (" . $this->getHtmlTag("span", "{prepayment}", ['class' => 'span-green']) . ")";
         }
 
         $form = str_replace(
@@ -914,10 +872,8 @@ class ProfileClass extends ClientClass
 
         if ($filename !== "") {
             $file = "$this->uploads/$user_id/" . $filename;
-            $list = "
-            <a class=\"btn btn-primary\" href=\"$file\" download $visible><span class='fa fa-download'></span> Download $filename</a><br>";
-            $list_excel = "
-            <a class=\"btn btn-primary\" href=\"https://toko.ua/cron/excel.php/?user=$user_id\"  $visible><span class='fa fa-download'></span> Download Excel </a><br>";
+            $list = str_replace(array("{file}", "{visible}", "{filename}"), array($file, $visible, $filename), $this->getHtmlForm("price/list"));
+            $list_excel = str_replace(array("{user_id}", "{visible}"), array($user_id, $visible), $this->getHtmlForm("price/excel"));
         } else {
             $list = "";
             $list_excel = "";
@@ -940,13 +896,7 @@ class ProfileClass extends ClientClass
                     $date_end = "-";
                 }
 
-                $table .= "
-                <tr $current>
-					<td>$filename</td>
-					<td>$date</td>
-					<td>$date_end</td>
-					<td>$status_nm</td>
-				</tr>";
+                $table .= str_replace(array("{current}", "{filename}", "{date}", "{date_end}", "{status_nm}"), array($current, $filename, $date, $date_end, $status_nm), $this->getHtmlForm("price/table"));
             }
 
             $history_fr = str_replace("{price_range}", $table, $this->getHtmlForm("profile/profile_price_table"));
@@ -960,19 +910,11 @@ class ProfileClass extends ClientClass
         return $this->replaceLang($form);
     }
 
-    /*
-     * get profile status
-     * */
     public function getStatusProfilePrice($status)
     {
-        $text = ($status === 2) ? "{status_off}" : "{status_on}";
-
-        return $this->replaceLang($text);
+        return $this->replaceLang(($status === 2) ? "{status_off}" : "{status_on}");
     }
 
-    /*
-     * show registration form
-     * */
     public function showRegistrationForm()
     {
         $menu = new MenuClass();
@@ -1005,9 +947,6 @@ class ProfileClass extends ClientClass
         return $list;
     }
 
-    /*
-    * download prices
-    * */
     public function downloadPrices(): bool
     {
         $db = DbSingleton::getTokoDb();
