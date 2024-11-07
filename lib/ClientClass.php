@@ -1336,7 +1336,7 @@ class ClientClass
     public function getSupplStorageArray($suppl_id): array
     {
         $db = DbSingleton::getDbm();
-        $suppl_id = intval($suppl_id);
+        $suppl_id = (int)$suppl_id;
         $st = array();
         $r = $db->query("SELECT `id`, `name` FROM `A_CLIENTS_STORAGE` WHERE `status` = 1 AND `client_id` = $suppl_id ORDER BY `name`;");
         $n = $db->num_rows($r);
@@ -1412,7 +1412,7 @@ class ClientClass
 
     public function getArtsGroupId($art_id)
     {
-        $art_id = intval($art_id);
+        $art_id = (int)$art_id;
         $db = DbSingleton::getTokoDb();
         $group_id = 0;
         $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `ART_ID` = $art_id LIMIT 1;");
@@ -1430,7 +1430,7 @@ class ClientClass
         $db = DbSingleton::getTokoDb();
         $dbc = DbSingleton::getTokoCacheDb();
         $answer = 0;
-        $err = "Помилка!";
+        $err = "Error!";
 
         $arts_update = [];
         foreach ($suppl_cache_arts_update as $art_id) {
@@ -1439,7 +1439,7 @@ class ClientClass
         }
 
         foreach ($arts_update as $group_id => $arts) {
-            $group_id = intval($group_id);
+            $group_id = (int)$group_id;
             $table = "EX_TABLE_TREE_$group_id";
             $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
             $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
@@ -1452,14 +1452,14 @@ class ClientClass
 
             if ($nch1 > 0 && $nch2 > 0 && $nch3 > 0) {
                 foreach ($arts as $art_id) {
-                    $art_id = intval($art_id);
+                    $art_id = (int)$art_id;
                     // TABLE
                     $r1 = $dbc->query("SELECT `art_id` FROM `$table` WHERE `art_id` = $art_id;");
                     $n1 = $dbc->num_rows($r1);
 
                     if ($n1 == 0) {
                         $rbr = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
-                        $brand_id = intval($db->result($rbr, 0, "BRAND_ID"));
+                        $brand_id = (int)$db->result($rbr, 0, "BRAND_ID");
                         $dbc->query("INSERT INTO `$table` (`art_id`, `brand_id`, `status`) VALUES ($art_id, $brand_id, 1);");
                     }
                     // TABLE PARAMS
@@ -1468,7 +1468,7 @@ class ClientClass
 
                     if ($n2 == 0) {
                         $rbr = $db->query("SELECT `BRAND_ID` FROM `T2_ARTICLES` WHERE `ART_ID` = $art_id LIMIT 1;");
-                        $brand_id = intval($db->result($rbr, 0, "BRAND_ID"));
+                        $brand_id = (int)$db->result($rbr, 0, "BRAND_ID");
                         $arr = [];
                         $r_par = $db->query("SELECT `PARAM_ID`, `VALUE_ID` FROM `T2_TREE_ARTS_PARAMS_VALUE_EXIST` WHERE `GROUP_ID` = $group_id AND `ART_ID` = $art_id;");
                         $n_par = $db->num_rows($r_par);
@@ -1490,10 +1490,14 @@ class ClientClass
                             }
                             $column_set_name = implode(",", $column_name);
 
-                            if ($column_set_name != "") $column_set_name = ", " . $column_set_name;
+                            if ($column_set_name != "") {
+                                $column_set_name = ", " . $column_set_name;
+                            }
                             $column_set_value = implode(",", $column_value);
 
-                            if ($column_set_value != "") $column_set_value = ", " . $column_set_value;
+                            if ($column_set_value != "") {
+                                $column_set_value = ", " . $column_set_value;
+                            }
 
                             $dbc->query("INSERT INTO `$table_params` (`art_id`, `brand_id`, `status` $column_set_name) VALUES ($art_id, $brand_id, 1 $column_set_value);");
                         }
@@ -1520,12 +1524,13 @@ class ClientClass
                                 $arr[$art_id][$mfa_id][] = $model;
                             }
                         }
-                        foreach ($arr as $art_id => $mfaList) {
+
+                        foreach ($arr as $key => $mfaList) {
                             foreach ($mfaList as $mfa_id => $models) {
                                 foreach ($models as $model) {
-                                    $art_id = intval($art_id);
-                                    $mfa_id = intval($mfa_id);
-                                    $dbc->query("INSERT INTO `$table_mfa` (`art_id`, `mfa_id`, `model`, `status`) VALUES ($art_id, $mfa_id, \"$model\", 1);");
+                                    $key = (int)$key;
+                                    $mfa_id = (int)$mfa_id;
+                                    $dbc->query("INSERT INTO `$table_mfa` (`art_id`, `mfa_id`, `model`, `status`) VALUES ($key, $mfa_id, \"$model\", 1);");
                                 }
                             }
                         }
@@ -1541,7 +1546,7 @@ class ClientClass
         }
 
         foreach ($arts_delete as $group_id => $arts) {
-            $group_id = intval($group_id);
+            $group_id = (int)$group_id;
             $table = "EX_TABLE_TREE_$group_id";
             $table_mfa = "EX_TABLE_TREE_MFA_$group_id";
             $table_params = "EX_TABLE_TREE_PARAMS_$group_id";
@@ -1555,7 +1560,7 @@ class ClientClass
 
             if ($nch1 > 0 && $nch2 > 0 && $nch3 > 0) {
                 foreach ($arts as $art_id) {
-                    $art_id = intval($art_id);
+                    $art_id = (int)$art_id;
                     $r1 = $dbc->query("SELECT `art_id` FROM `$table` WHERE `art_id` = $art_id;");
                     $n1 = $dbc->num_rows($r1);
 
@@ -1700,9 +1705,9 @@ class ClientClass
                     $dec = 0;
 
                     foreach ($rows as $Row) {
-                        $krs += 1;
+                        ++$krs;
 
-                        if($krs % 1000 == 0) {
+                        if ($krs % 1000 == 0) {
                             $dec++;
                             print "$dec. $krs processed" . "\n";
                         }
@@ -1742,7 +1747,7 @@ class ClientClass
                                         $pkg .= ",";
                                     }
                                     $pkg .= "($suppl_id, \"$suppl_index\", \"$suppl_brand\", '$suppl_price', '$suppl_cash_id', '$exRateUSD', '$price_usd', '$storage_id', '$suppl_stock', CURDATE(), 0, '', 0)";
-                                    $pkg_k += 1;
+                                    ++$pkg_k;
 
                                     if ($pkg_k == $max_pkg) {
                                         $dbt->query("INSERT INTO `T2_SUPPL_IMPORT` (`suppl_id`, `suppl_index`, `brand`, `price_suppl`, `cash_id`, `kours_usd`, `price_usd`, `client_storage_id`, `stock_suppl`, `data_update`, `return_delay`, `warranty_info`, `art_id`) VALUES $pkg;");
@@ -1771,7 +1776,7 @@ class ClientClass
                     $r = $dbt->query("SELECT `art_id`, `suppl_brand`, `suppl_index`, `return_delay` FROM `T2_SUPPL_ARTICLES_IMPORT` WHERE `suppl_id` = $suppl_id;");
                     $n = $dbt->num_rows($r);
                     for ($i = 1; $i <= $n; $i++) {
-                        $art_id         = intval($dbt->result($r, $i - 1, "art_id"));
+                        $art_id         = (int)$dbt->result($r, $i - 1, "art_id");
                         $suppl_brand    = $dbt->result($r, $i - 1, "suppl_brand");
                         $suppl_index    = $dbt->result($r, $i - 1, "suppl_index");
                         $return_delay   = $dbt->result($r, $i - 1, "return_delay");

@@ -61,8 +61,8 @@ trait Helper
     public function getUrlString($str): string
     {
         return str_replace(
-            array("'", "`", ",", '"', "%22", "%27", "%60", "&nbsp;", "&rsquo;", "%20"),
-            array("", "", "", "", "", "", "", "", "", " "),
+            array("'", "`", ",", '"', "%22", "%27", "%60", "&nbsp;", "&rsquo;", "%20", "%5c", '\\'),
+            array("", "", "", "", "", "", "", "", "", " ", "", ""),
         $str);
     }
 

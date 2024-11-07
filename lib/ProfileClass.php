@@ -353,7 +353,7 @@ class ProfileClass extends ClientClass
         $user_id    = $this->getUser();
         $k          = $summary = 0;
         $list       = "";
-        $date_sel   = date("Y-m-d H:i:s", (strtotime("-15 day" , strtotime(date("Y-m-d H:i:s")))));
+        $date_sel   = date("Y-m-d H:i:s", (strtotime("-1 year" , strtotime(date("Y-m-d H:i:s")))));
 
         $rr = $db->query("SELECT `dp_id` FROM `orders_new` WHERE `client_user_id` = $user_id AND `dp_id` > 0 AND `data` > '$date_sel' ORDER BY `data` DESC;");
         $nn = $db->num_rows($rr);
@@ -417,19 +417,15 @@ class ProfileClass extends ClientClass
         $r2 = $db->query("SELECT * FROM `orders_new` WHERE `client_user_id` = $user_id AND `dp_id` = 0 AND `status` = 1 AND `data` > '$date_sel' ORDER BY `data` DESC;");
         $n2 = $db->num_rows($r2);
         for ($i = 1; $i <= $n2; $i++) {
-            $id         = $db->result($r2, $i - 1, "id");
-            $name       = $db->result($r2, $i - 1, "name");
-            $date       = $db->result($r2, $i - 1, "data");
-            $city       = $db->result($r2, $i - 1, "region");
-            $delivery   = $db->result($r2, $i - 1, "delivery");
-            $payment    = $db->result($r2, $i - 1, "payment");
-            $price_summary = $db->result($r2, $i - 1, "price_summ");
-            $cash_id    = $db->result($r2, $i - 1, "cash_id");
-            $price_summary = $exRate->getExRateFromUAH($price_summary, $cash_id);
-            $city_name  = $this->getCityName($city);
-            $delivery_type     = $this->getManualName($delivery);
-            $payment_type     = $this->getManualName($payment);
-            $cash_name  = $exRate->getExRateCaption($cash_id);
+            $id             = $db->result($r2, $i - 1, "id");
+            $name           = $db->result($r2, $i - 1, "name");
+            $date           = $db->result($r2, $i - 1, "data");
+            $cash_id        = $db->result($r2, $i - 1, "cash_id");
+            $price_summary  = $exRate->getExRateFromUAH($db->result($r2, $i - 1, "price_summ"), $cash_id);
+            $city_name      = $this->getCityName($db->result($r2, $i - 1, "region"));
+            $delivery_type  = $this->getManualName($db->result($r2, $i - 1, "delivery"));
+            $payment_type   = $this->getManualName($db->result($r2, $i - 1, "payment"));
+            $cash_name      = $exRate->getExRateCaption($cash_id);
 
             $list .= str_replace(
                 array("{param1}", "{param2}", "{id}", "{bg_bug}", "{prefix}", "{name}", "{date}", "{city_name}", "{delivery_type}", "{payment_type}", "{price_summary}", "{cash_name}", "{status_type}"),
@@ -617,7 +613,7 @@ class ProfileClass extends ClientClass
 
                 $list .= str_replace(
                     array("{id}", "{art_nr_ds}", "{art_name}", "{amount}", "{price}", "{sum}"),
-                    array($i, "$art_nr_ds", "$art_name", "$amount", "$price", "$sum"),
+                    array($i, $art_nr_ds, $art_name, $amount, $price, $sum),
                 $this->getHtmlForm("profile/docs"));
             }
 
@@ -709,7 +705,7 @@ class ProfileClass extends ClientClass
                 $onclick = "showProfileDocs($i, $doc_id, $doc_type_id);";
 
                 $list .= str_replace(
-                    array("{num}", "{on_click}", "{data}", "{cash_name}", "{balance_before}", "{balance_after}", "{debit}", "{credit}", "{doc_name}", "{pay_sum}", "{pay_name}"),
+                    array("{num}", "{on_click}", "{date}", "{cash_name}", "{balance_before}", "{balance_after}", "{debit}", "{credit}", "{doc_name}", "{pay_sum}", "{pay_name}"),
                     array($i, $onclick, $data, $cash_name, $balanceBefore, $balanceAfter, $debit, $credit, $document_name, $pay_summary, $pay_cash_name),
                 $this->getHtmlForm("profile/profile_table"));
 

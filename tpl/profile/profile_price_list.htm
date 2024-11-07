@@ -1,11 +1,13 @@
-<p><button class="btn wdt100" onclick="setPriceList();" {price_disabled}>{price_list_form}</button></p>
-
-<div id="profile_check_load">
-	{price_download}
-	<br>
-	{price_download_excel}
+<div>
+	<button class="btn wdt100" onclick="setPriceList();" style="width: 300px; cursor: pointer" {price_disabled}>{price_list_form}</button>
+	<span id="profile_check_load">
+		{price_download}
+		<!--	{price_download_excel}-->
+	</span>
 </div>
+
 <br>
+
 <div class="profile_price_history">
 	{price_history}
 </div>

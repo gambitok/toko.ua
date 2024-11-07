@@ -28,8 +28,7 @@ if ($client->checkUnRegClient()) {
         $content = str_replace("{check_visible}", "none", $content);
     }
 
-    $content = str_replace("{date_saldo_from}", date("Y-m-01"), $content);
-    $content = str_replace("{date_saldo_to}", date("Y-m-d"), $content);
+    $content = str_replace(array("{date_saldo_from}", "{date_saldo_to}"), array(date("Y-m-01"), date("Y-m-d")), $content);
 }
 
 $content = str_replace("{meta_noindex}", $catalogue->getHtmlForm("seo/noindex"), $content);

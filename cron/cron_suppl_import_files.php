@@ -24,7 +24,6 @@ if ($n > 0) {
         $id         = (int)$db->result($r, $i - 1, "ID");
         $suppl_id   = (int)$db->result($r, $i - 1, "SUPPL_ID");
         $fileName   = $db->result($r, $i - 1, "FILENAME");
-//        $counter    = (int)$db->result($r, $i - 1, "STATUS_COUNTER");
 
         if ($suppl_id > 0) {
 
@@ -100,36 +99,57 @@ if ($n > 0) {
 
                     $template = $client->getSupplPriceTemplate($suppl_id);
 
+                    // template: json файл з шаблоном контрагента
+                    // row: массив з файлу xls/csv
+
                     if (!empty($rows)) {
 
                         if (!empty($template)) {
-                            $header_row = $template['header_row'];
+                            $template_header_row = $template['header_row'];
 
-                            if ($header_row > 0) {
-                                $header_row = $header_row - 1;
-                                $arr = $rows[$header_row];
-                                $data = $template['columns'];
+                            if ($template_header_row > 0) {
+                                --$template_header_row;
+                                $rows_header = $rows[$template_header_row];
+                                $template_columns = $template['columns'];
 
-                                if (!empty($arr)) {
+                                if (!empty($rows_header)) {
                                     $count_success = 0;
                                     $count_error = "";
+                                    $arr = [];
 
-                                    foreach ($data as $key => $value) {
-                                        $k = $key - 1;
+                                    $arr['start_row']   = $template['start_row'];
+                                    $arr['currency']    = $template['currency'];
+                                    $arr['header_row']  = $template['header_row'];
+                                    $arr['columns']     = [];
 
-                                        $v1 = trim($arr[$k]);
-                                        $v2 = trim($value['text']);
+                                    foreach ($template_columns as $key => $value) {
+                                        $text = $value['text'];
+                                        $text = trim($text);
+                                        $text = str_replace(array("\n", " "), "", $text);
+                                        $temp_count_success = $count_success;
 
-                                        if ($v1 === $v2) {
-                                            $count_success++;
+                                        foreach ($rows_header as $k => $v) {
+                                            $s1 = $v;
+                                            $s1 = trim($s1);
+                                            $s1 = str_replace(array("\n", " "), "", $s1);
+                                            
+                                            if ($s1 === $text) {
+                                                $arr['columns'][$key] = $value;
+                                                $count_success++;
+                                                break;
+                                            }
+                                        }
+
+                                        if ($count_success > $temp_count_success) {
+                                            $temp_count_success = 0;
                                         } else {
-                                            $count_error .= 'column ' . $value['type'] . ($value['storage_id'] ?: '') . ': ' . $v1 . '!=' . $v2 . '; ';
+                                            $count_error .= 'column ' . $text . ' not found(updated); ';
                                         }
                                     }
 
-                                    if ($count_success === count($data)) {
+                                    if ($count_success === count($template_columns)) {
 
-                                        $dataProcess = $client->finishSupplPriceImport($inputFileName, $suppl_id, $template, $rows);
+                                        $dataProcess = $client->finishSupplPriceImport($inputFileName, $suppl_id, $arr, $rows);
 
                                         if ($dataProcess['answer'] === 1) {
                                             $answer = 1;
@@ -174,14 +194,8 @@ if ($n > 0) {
             if ($answer === 0) {
                 $db->query("INSERT INTO `IMPORT_SUPPLIER_ERROR` (`SUPPL_ID`, `TEXT`, `STATUS`, `TIMEMAN`) VALUES ($suppl_id, '$err', 1, '$time');");
 
-//                if ($counter >= 1) {
-                    $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS` = 0, `STATUS_PROCESS` = 0, `TIMEMAN` = '$time' WHERE `ID` = $id LIMIT 1;");
-                    unlink($inputFileName);
-//                }
-//                else {
-//                    $status_counter = $counter + 1;
-//                    $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS_COUNTER` = $status_counter, `TIMEMAN` = '$time' WHERE `ID` = $id LIMIT 1;");
-//                }
+                $db->query("UPDATE `IMPORT_SUPPLIER_FILES` SET `STATUS` = 0, `STATUS_PROCESS` = 0, `TIMEMAN` = '$time' WHERE `ID` = $id LIMIT 1;");
+                unlink($inputFileName);
             }
 
             if ($answer === 1) {
