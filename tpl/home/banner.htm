@@ -8,15 +8,9 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $(".carousel").carousel({
-            interval: 5000
-        });
-        if (!detectmob()) {
-            $(".carousel").addClass("slide");
-        }
-    });
-    $(".carousel").on("touchstart", function(event){
+    $("#carouselBanner").carousel({
+        interval: 5000
+    }).addClass("slide").on("touchstart", function(event){
         var xClick = event.originalEvent.touches[0].pageX;
         $(this).one("touchmove", function(event){
             var xMove = event.originalEvent.touches[0].pageX;
@@ -27,7 +21,7 @@
                 $(this).carousel('prev');
             }
         });
-        $(".carousel").on("touchend", function(){
+        $("#carouselBanner").on("touchend", function(){
             $(this).off("touchmove");
         });
     });

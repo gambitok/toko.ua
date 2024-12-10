@@ -242,6 +242,23 @@ $(function() {
     }
 });
 
+function showBannerForm()
+{
+    JsHttpRequest.query(folder,{'w':'showBannerForm'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#home-banner").html(result.content);
+        }}, true);
+}
+
+function showHistoryForm()
+{
+    $("#history-form").html("");
+    JsHttpRequest.query(folder,{'w':'showHistoryForm'},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#history-form").html(result.content);
+        }}, true);
+}
+
 $(document).ready(function() {
 
     $(".tooltips").tooltip();
@@ -346,5 +363,12 @@ $(document).ready(function() {
         $("#SearchForm").modal('hide');
     });
 
+    if (!detectmob()) {
+        showBannerForm();
+    } else {
+        $("#home-banner").remove();
+    }
+
+    showHistoryForm();
 });
 

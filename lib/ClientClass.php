@@ -163,28 +163,16 @@ class ClientClass
         return $typ_id;
     }
 
-    /*
-     * format phone for Authorization
-     * */
     public function formatPhone($phone): string
     {
         $phone = $this->formatValidPhone($phone);
-        $number = strlen($phone) - 9;
-
-        if ($number > 0) {
-            $phone = substr($phone, $number);
-        }
-
-        $phone_arr      = [];
-        $phone_arr[]    = $phone;
-        $format_phone   = "0$phone";
-        $phone_arr[]    = $format_phone;
-        $format_phone   = "80$phone";
-        $phone_arr[]    = $format_phone;
-        $format_phone   = "380$phone";
-        $phone_arr[]    = $format_phone;
-        $format_phone   = "+380$phone";
-        $phone_arr[]    = $format_phone;
+        $phone_arr = [
+            $phone,
+            "0$phone",
+            "80$phone",
+            "380$phone",
+            "+380$phone"
+        ];
 
         return "'" . implode("','", $phone_arr) . "'";
     }
@@ -195,6 +183,11 @@ class ClientClass
     public function formatValidPhone($phone)
     {
         $phone = str_replace(str_split("()+- "), "", $phone);
+        $phone = str_replace(str_split(" "), "", $phone);
+
+        if (strpos($phone, '+38') === 0) {
+            $phone = substr($phone, 3);
+        }
 
         return substr($phone, -10);
     }
@@ -820,6 +813,9 @@ class ClientClass
         list($region_id, $state_id, $country_id) = $this->getLocationCity($city_id);
         $phone = $this->formatValidPhone($phone);
 
+//        $r = $db->query("SELECT `id` FROM `A_CLIENTS` WHERE `phone` = '$phone' LIMIT 1;");
+//        $n = $db->num_rows($r);
+
         $r = $db->query("SELECT MAX(`id`) as mid FROM `A_CLIENTS`;");
         $client_id = 0 + $db->result($r, 0, "mid") + 1;
         $db->query("INSERT INTO `A_CLIENTS` (`id`, `name`, `full_name`, `phone`, `email`, `country`, `state`, `region`, `city`, `client_category`, `rounding_price`, `user_id`, `parrent_id`, `org_type`) 
@@ -1111,7 +1107,7 @@ class ClientClass
         list($client_id, $user_id) = $this->getClientData();
         $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-        $r = $db->query("SELECT DISTINCT `id`, `art_id` FROM `ARTS_HISTORY` WHERE $where ORDER BY `data` DESC LIMIT 10;");
+        $r = $db->query("SELECT `id`, `art_id` FROM `ARTS_HISTORY` WHERE $where GROUP BY `art_id`, `data` ORDER BY `data` DESC LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id     = $db->result($r, $i - 1, "id");
@@ -1410,7 +1406,7 @@ class ClientClass
         return array($suppl_cache_arts_update, $suppl_cache_arts_delete);
     }
 
-    public function getArtsGroupId($art_id)
+    public function getArtsGroupId($art_id): int
     {
         $art_id = (int)$art_id;
         $db = DbSingleton::getTokoDb();
@@ -1419,7 +1415,7 @@ class ClientClass
         $n = $db->num_rows($r);
 
         if ($n > 0) {
-            $group_id = $db->result($r, 0, "GROUP_ID");
+            $group_id = (int)$db->result($r, 0, "GROUP_ID");
         }
 
         return $group_id;

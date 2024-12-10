@@ -1,0 +1,77 @@
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			// Відкласти запуск GTM та gtag на 3.5 секунди або до першої взаємодії користувача
+			if ('requestIdleCallback' in window) {
+				requestIdleCallback(initScripts); // Використовуємо requestIdleCallback, якщо підтримується
+			} else {
+				setTimeout(initScripts, 3500); // Якщо requestIdleCallback недоступний, встановлюємо таймер
+			}
+		});
+
+		// Запускаємо GTM та gtag після першої взаємодії користувача
+		document.addEventListener('scroll', initScriptsOnEvent);
+		document.addEventListener('mousemove', initScriptsOnEvent);
+		document.addEventListener('touchstart', initScriptsOnEvent);
+
+		function initScriptsOnEvent(event) {
+			initScripts();
+			// Видаляємо обробник події після першого виклику, щоб запобігти повторному завантаженню
+			event.currentTarget.removeEventListener(event.type, initScriptsOnEvent);
+		}
+
+		function initScripts() {
+			if (window.scriptsDidInit) return; // Перевірка, чи скрипти вже ініціалізовано
+			window.scriptsDidInit = true;
+
+			// Завантажуємо Google Tag Manager (GTM)
+			const gtmScript = document.createElement('script');
+			gtmScript.async = true;
+			gtmScript.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-K74L2Z7';
+			document.head.appendChild(gtmScript);
+
+			gtmScript.onload = () => {
+				window.dataLayer = window.dataLayer || [];
+				dataLayer.push({ event: 'gtm.js', 'gtm.start': new Date().getTime(), 'gtm.uniqueEventId': 0 });
+			};
+
+			// Завантажуємо Google Analytics (gtag.js)
+			const gtagScript = document.createElement('script');
+			gtagScript.async = true;
+			gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=UA-134334911-1';
+			document.head.appendChild(gtagScript);
+
+			gtagScript.onload = () => {
+				window.dataLayer = window.dataLayer || [];
+				function gtag() {
+					dataLayer.push(arguments);
+				}
+				gtag('js', new Date());
+				gtag('config', 'UA-134334911-1');
+				gtag('config', 'AW-1023462949');
+			};
+		}
+	</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-134334911-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-134334911-1');
+    gtag('config', 'AW-1023462949');
+</script>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-K74L2Z7');</script>
+<!-- End Google Tag Manager -->
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K74L2Z7"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->

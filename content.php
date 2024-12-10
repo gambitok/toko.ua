@@ -443,3 +443,13 @@ if ($_REQUEST["w"] === "getGroupsListValues") {
 if ($_REQUEST["w"] === "getGroupsLinks") {
     $GLOBALS['_RESULT'] = array("content" => $menu->getGroupsLinks($_REQUEST["group_id"],$_REQUEST["param_id"],$_REQUEST["value_id"]));
 }
+
+if ($_REQUEST["w"] === "showBannerForm") {
+    $GLOBALS['_RESULT'] = array("content" => $formObj->getCarsBanner());
+}
+
+if ($_REQUEST["w"] === "showHistoryForm") {
+    $GLOBALS['_RESULT'] = array("content" => $formObj->showHistoryForm());
+}
+
+

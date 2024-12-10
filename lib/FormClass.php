@@ -676,6 +676,11 @@ class FormClass extends CatalogueClass
 
     public function getHistoryArts()
     {
+        return $this->getHtmlForm("article/history_form");
+    }
+
+    public function getHistoryForm()
+    {
         $client = new ClientClass();
 
         $list = "";
@@ -1608,9 +1613,6 @@ class FormClass extends CatalogueClass
 
             (!$display) ?: $info = $this->getHtmlTag("div", $info, ['style' => 'padding: 10px']);
         }
-//        else {
-//            $info = (!$display) ? "{info_cap}" : "";
-//        }
 
         $info = str_replace('"', "", $info);
 

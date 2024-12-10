@@ -12,6 +12,8 @@ if (empty($order_id)) {
 } else {
     $form = $shop->getHtmlForm("orders/conversation");
     $form = str_replace("{conversation_sum}", $shop->getOrderSum($order_id), $form);
-    $content = str_replace("{site_google_conversation}", $form, $content);
-    $content = str_replace("{main_window}", $shop->getOrderContentForm($order_id, $user_id, $user_status), $content);
+    $content = str_replace(
+        array("{site_google_conversation}", "{main_window}"),
+        array($form, $shop->getOrderContentForm($order_id, $user_id, $user_status)),
+    $content);
 }

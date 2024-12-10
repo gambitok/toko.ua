@@ -1334,6 +1334,21 @@ class CatalogueClass
         return $price;
     }
 
+    public function getArtsGroupId($art_id): int
+    {
+        $art_id = (int)$art_id;
+        $db = DbSingleton::getTokoDb();
+        $group_id = 0;
+        $r = $db->query("SELECT `GROUP_ID` FROM `T2_TREE_ARTS_EXIST` WHERE `ART_ID` = $art_id LIMIT 1;");
+        $n = $db->num_rows($r);
+
+        if ($n > 0) {
+            $group_id = (int)$db->result($r, 0, "GROUP_ID");
+        }
+
+        return $group_id;
+    }
+
     public function getArticleSupplPrice($art_id, $suppl_id, $suppl_storage_id): float
     {
         $dbt = DbSingleton::getTokoDb();
@@ -1358,7 +1373,8 @@ class CatalogueClass
             //?
             $price = $suppl_price_usd;
 
-            list($suppl_margin_fm, $suppl_delivery_fm, $suppl_margin2_fm) = $this->getSalePointSupplFm($t_point, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl);
+            $group_id = $this->getArtsGroupId($art_id);
+            list($suppl_margin_fm, $suppl_delivery_fm, $suppl_margin2_fm) = $this->getSalePointSupplFmGroup($group_id, $t_point, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl);
 
             if ($suppl_margin_fm > 0) {
                 $price = ($price_suppl + $price_suppl * $suppl_margin_fm / 100) - $price_suppl;
@@ -1392,7 +1408,7 @@ class CatalogueClass
 
         $cur_usd = $exRate->getExRate("dollar");
         $price *= $cur_usd;
-        
+
         return $client->getClientPriceRounding($client_id, $price);
     }
 
@@ -1435,22 +1451,31 @@ class CatalogueClass
         return array($price_in_vat, $show_in_vat, $price_add_vat);
     }
 
-    public function getSalePointSupplFm($t_point_id, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl): array
+    public function getSalePointSupplFmGroup($group_id, $t_point_id, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl): array
     {
         $db = DbSingleton::getTokoDb();
         $margin = $delivery = $margin2 = 0;
 
-        $r = $db->query("SELECT `margin`, `delivery`, `margin2` FROM `T_POINT_SUPPL_FM` 
-        WHERE `tpoint_id` = '$t_point_id' AND `suppl_id` = '$suppl_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `price_from` <= '$price_suppl' 
+        $r = $db->query("SELECT `margin`, `delivery`, `margin2` FROM `T_POINT_SUPPL_FM_GROUP` 
+        WHERE `group_id` = '$group_id' AND `tpoint_id` = '$t_point_id' AND `suppl_id` = '$suppl_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `price_from` <= '$price_suppl' 
         AND `price_to` >= '$price_suppl' AND `price_rating_id` = '$price_suppl_lvl' LIMIT 1;");
-        $n = $db->num_rows($r);
-
+        $n = (int)$db->num_rows($r);
         if ($n === 1) {
             $margin     = (int)$db->result($r, 0, "margin");
             $delivery   = (float)$db->result($r, 0, "delivery");
             $margin2    = (int)$db->result($r, 0, "margin2");
-        }
+        } else {
+            $r = $db->query("SELECT `margin`, `delivery`, `margin2` FROM `T_POINT_SUPPL_FM` 
+            WHERE `tpoint_id` = '$t_point_id' AND `suppl_id` = '$suppl_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `price_from` <= '$price_suppl' 
+            AND `price_to` >= '$price_suppl' AND `price_rating_id` = '$price_suppl_lvl' LIMIT 1;");
+            $n = (int)$db->num_rows($r);
 
+            if ($n === 1) {
+                $margin     = (int)$db->result($r, 0, "margin");
+                $delivery   = (float)$db->result($r, 0, "delivery");
+                $margin2    = (int)$db->result($r, 0, "margin2");
+            }
+        }
         return array($margin, $delivery, $margin2);
     }
 

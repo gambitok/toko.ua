@@ -3,24 +3,23 @@
 global $catalogue, $content, $formObj, $autoObj, $menu;
 
 // REDIRECT OLD TOKO LINKS (dep=23)
-$w = $catalogue->getUrlString($_GET["w"]);
+//$w = $catalogue->getUrlString($_GET["w"]);
+//
+//if ($w === "modelfind") {
+//    $art = $catalogue->getUrlString($_GET["art"]);
+//    header("Location: /search/$art/", TRUE, 301);
+//}
 
-if ($w === "modelfind") {
-    $art = $catalogue->getUrlString($_GET["art"]);
-    header("Location: /search/$art/", TRUE, 301);
-}
-
-// MAIN TEMPLATE
 $content = str_replace("{main_window}", $catalogue->getHtmlForm("main_form"), $content);
 
-// HISTORY SEARCH FORM
 $content = str_replace("{history_arts}", $formObj->getHistoryArts(), $content);
 
 // CARS FORM
 $content = str_replace("{catalogue_tab_search}", $formObj->drawLoader(), $content);
 
 // BANNER FORM
-$content = str_replace("{catalogue_banner}", $formObj->getCarsBanner(), $content);
+//$content = str_replace("{catalogue_banner}", $formObj->getCarsBanner(), $content);
+$content = str_replace("{catalogue_banner}", $formObj->drawLoader(), $content);
 
 // CATALOG GROUPS FORM
 $content = str_replace("{select_det_group}", $catalogue->getCatalogColList(), $content);

@@ -390,7 +390,6 @@ function setClientRequestCard() {
     JsHttpRequest.query(folder,{'w':'setClientRequest', 'phone':phone, 'vin':vin, 'text':text, 'status':status},
         function (result, errors){ if (errors) {alert(errors);} if (result) {
             if (result["answer"] === false) {
-                console.log(result["err"]);
                 showNotify("{error_cap}:", result["err"], "danger");
             } else {
                 showNotify("{done_cap}:", "{manager_call}!", "success");
