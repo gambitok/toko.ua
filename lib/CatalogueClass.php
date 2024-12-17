@@ -2688,86 +2688,116 @@ class CatalogueClass
         return $list;
     }
 
+    public function getArts(): string
+    {
+        $dbt = DbSingleton::getTokoDb();
+        $dbc = DbSingleton::getTokoCacheDb();
+
+        $arts = [];
+        $r = $dbt->query("SELECT `GROUP_ID` FROM `T2_TREE_GROUP_EXIST` WHERE 1;");
+        $n = $dbt->num_rows($r);
+        for ($i = 1; $i <= $n; $i++) {
+            $group_id = $dbt->result($r, $i - 1, "GROUP_ID");
+
+            $table = "EX_TABLE_TREE_$group_id";
+
+            $r_check = $dbc->query("SELECT 1
+            FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_SCHEMA = 'toko_dba_cache' 
+            AND TABLE_NAME = '$table'; ");
+            $n_check = $dbc->num_rows($r_check);
+
+            if ($n_check > 0) {
+                $r2 = $dbc->query("SELECT `art_id` FROM `$table` WHERE `price` > 0");
+                $n2 = $dbc->num_rows($r2);
+                for ($j = 1; $j <= $n2; $j++) {
+                    $art_id = $dbc->result($r2, $j - 1, "art_id");
+                    $arts[] = $art_id;
+                }
+            }
+        }
+
+        $arts = array_unique($arts);
+
+        $str = implode(",", $arts);
+        return "SELECT 
+            t2as.ART_ID, 
+            t2a.ARTICLE_NR_DISPL, 
+            t2b.BRAND_NAME, 
+            IFNULL(t2n.NAME,'') as NAME, 
+            t2n.INFO, 
+            t2br.BARCODE 
+        FROM 
+            `T2_ARTICLES_STRORAGE` t2as
+        LEFT OUTER JOIN 
+            `T2_ARTICLES` t2a ON (t2a.ART_ID = t2as.ART_ID)
+        LEFT OUTER JOIN 
+            `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
+        LEFT OUTER JOIN 
+            `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
+        LEFT OUTER JOIN 
+            `T2_BARCODES` t2br ON (t2br.ART_ID = t2a.ART_ID)
+        WHERE 
+            t2as.AMOUNT != 0 AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE)) AND t2a.ART_ID IN ($str)
+        GROUP BY 
+            t2a.ARTICLE_NR_DISPL;";
+    }
+
     public function getCatalogCron(): array
     {
         $db = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $exRate = new ExRateClass();
 
-        $client_id      = $client->default_client_id;
-        $cur            = $client->getClientCurrency($client_id);
-        $cur_cap        = $exRate->getExRateCaption($cur);
-        $list           = [];
+        $client_id = $client->default_client_id;
+        $cur = $client->getClientCurrency($client_id);
+        $curCap = $exRate->getExRateCaption($cur);
 
-        $cap1 = $this->replaceLang("{art_cap}");
-        $cap2 = $this->replaceLang("{name_cap}");
-        $cap3 = $this->replaceLang("{info_cap}");
-        $cap4 = $this->replaceLang("{in_stock_cap}");
-        $cap5 = $this->replaceLang("{link_cap}");
-        $cap6 = $this->replaceLang("{image_cap}");
-        $cap7 = $this->replaceLang("{price_cap}");
-        $cap8 = "IDENTIFIER EXISTS";
-        $cap9 = "GTIN";
-        $cap10 = "MPN";
-        $cap11 = $this->replaceLang("{brand_cap}");
+        $query = $this->getArts();
 
-        $cap1 = iconv("UTF-8", "windows-1251", $cap1);
-        $cap2 = iconv("UTF-8", "windows-1251", $cap2);
-        $cap3 = iconv("UTF-8", "windows-1251", $cap3);
-        $cap4 = iconv("UTF-8", "windows-1251", $cap4);
-        $cap5 = iconv("UTF-8", "windows-1251", $cap5);
-        $cap6 = iconv("UTF-8", "windows-1251", $cap6);
-        $cap7 = iconv("UTF-8", "windows-1251", $cap7);
-        $cap8 = iconv("UTF-8", "windows-1251", $cap8);
-        $cap9 = iconv("UTF-8", "windows-1251", $cap9);
-        $cap10 = iconv("UTF-8", "windows-1251", $cap10);
-        $cap11 = iconv("UTF-8", "windows-1251", $cap11);
+        $result = $db->query($query);
+        $n = $db->num_rows($result);
+        $list = [];
 
-        $filialList = ["#", (string)$cap1, (string)$cap2, (string)$cap3, (string)$cap4, (string)$cap5, (string)$cap6, (string)$cap7, (string)$cap8, (string)$cap9, (string)$cap10, (string)$cap11];
-
-        $list[0] = $filialList;
-
-        $r = $db->query("SELECT t2as.ART_ID, t2as.STORAGE_ID, t2a.ARTICLE_NR_DISPL, t2b.BRAND_NAME, IFNULL(t2n.NAME,'') as NAME, t2n.INFO, t2br.BARCODE 
-        FROM `T2_ARTICLES_STRORAGE` t2as
-            LEFT OUTER JOIN `T2_ARTICLES` t2a ON (t2a.ART_ID = t2as.ART_ID)
-            LEFT OUTER JOIN `T2_BRANDS` t2b ON (t2b.BRAND_ID = t2a.BRAND_ID)
-            LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2a.ART_ID)
-            LEFT OUTER JOIN `T2_BARCODES` t2br ON (t2br.ART_ID = t2a.ART_ID)
-        WHERE t2as.AMOUNT != 0 AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE))
-        GROUP BY t2a.ARTICLE_NR_DISPL;");
-        $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
-            $art_id     = $db->result($r, $i - 1, "ART_ID");
-            $brand_id     = $db->result($r, $i - 1, "BRAND_ID");
-            $art_nr_ds  = $db->result($r, $i - 1, "ARTICLE_NR_DISPL");
-            $brand_name = $db->result($r, $i - 1, "BRAND_NAME");
-            $art_name   = $db->result($r, $i - 1, "NAME");
-            $info       = $db->result($r, $i - 1, "INFO");
+            $artId = $db->result($result, $i - 1, "ART_ID");
+            $brandId = $db->result($result, $i - 1, "BRAND_ID");
+            $artNrDs = $db->result($result, $i - 1, "ARTICLE_NR_DISPL");
+            $brandName = $db->result($result, $i - 1, "BRAND_NAME");
+            $artName = $db->result($result, $i - 1, "NAME");
+            $info = $db->result($result, $i - 1, "INFO");
 
-            $info = trim($info, " ");
-            $info = trim($info, "\n");
-            $info = trim($info, "\r");
+            $info = trim($info, " \n\r");
             $info = str_replace(array("\n", "\r"), "", $info);
 
-            $art_nr_ds = iconv("UTF-8", "windows-1251", $art_nr_ds);
-            $brand_name = iconv("UTF-8", "windows-1251", $brand_name);
-            $art_name = iconv("UTF-8", "windows-1251", $art_name);
-            $info = iconv("UTF-8", "windows-1251", $info);
-
-            $price = $this->getArticlePriceClient($db, $art_id, $client_id, $cur);
+            $price = $this->getArticlePriceClient($db, $artId, $client_id, $cur);
             $price = str_replace(".", ",", $price);
 
-            $gtin_status = ($art_nr_ds !== "") ? "yes" : "no";
-            $gtin = $art_nr_ds;
-            $mpn = $art_nr_ds;
+            $gtinStatus = ($artNrDs !== "") ? "yes" : "no";
+            $gtin = $artNrDs;
+            $mpn = $artNrDs;
 
             $formObj = new FormClass();
-            $main_article_photo = $formObj->getArticlePhoto($art_id);
-            $image = ($main_article_photo === "") ? $this->noPhoto : "https://toko.ua/uploads/images/catalogue/" . $main_article_photo;
+            $mainArticlePhoto = $formObj->getArticlePhoto($artId);
+            $image = ($mainArticlePhoto === "") ? $this->noPhoto : "https://toko.ua/uploads/images/catalogue/" . $mainArticlePhoto;
 
-            $link = $this->getSiteLink() . $this->products_link . "/" . mb_strtolower($this->getArticleSearch($art_id)) . "-" . $this->getBrandLink($brand_id) . "-$art_id/";
+            $link = $this->getSiteLink() . $this->products_link . "/" . mb_strtolower($this->getArticleSearch($artId)) . "-" . $this->getBrandLink($brandId) . "-$artId/";
 
-            $list[$i] = [$i, $art_id, $art_name, $info, "in_stock", $link, $image, $price . " " . $cur_cap, $gtin_status, $gtin, $mpn, $brand_name];
+            if ($price > 0) {
+                $list[] = [
+                    'id' => $artId,
+                    'title' => $artName,
+                    'description' => $info,
+                    'availability' => 'in_stock',
+                    'link' => $link,
+                    'image_link' => $image,
+                    'price' => $price . ' ' . $curCap,
+                    'identifier_exists' => $gtinStatus,
+                    'gtin' => $gtin,
+                    'mpn' => $mpn,
+                    'brand' => $brandName
+                ];
+            }
         }
 
         return $list;
