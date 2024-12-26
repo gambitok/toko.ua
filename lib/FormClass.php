@@ -1037,21 +1037,28 @@ class FormClass extends CatalogueClass
 
         $list = $client->getClientHistory();
         $result = "";
+        $form = "";
 
-        foreach ($list as $i => $iValue) {
-            $col        = $i + 1;
-            $art_nr_ds  = $iValue["article_nr_displ"];
-            $brand_name = $iValue["brand"];
-            $brand_link = $iValue["brand_link"];
-            $link       = $this->getSiteLink() . "$this->search_link/$art_nr_ds/$brand_link/";
+        if (!empty($list)) {
 
-            $result .= "
-            <li>$col. <a href=\"$link\">$art_nr_ds ($brand_name)</a></li>";
+            $col = 0;
+            foreach ($list as $value) {
+                ++$col;
+                $art_nr_ds  = $value["article_nr_displ"];
+                $brand_name = $value["brand"];
+                $brand_link = $value["brand_link"];
+                $link       = $this->getSiteLink() . "$this->search_link/$art_nr_ds/$brand_link/";
+
+                $result .= "
+                <li>$col. <a href=\"$link\">$art_nr_ds ($brand_name)</a></li>";
+            }
+
+            $result = str_replace("{empty_history}", "", $result);
+            $form = $this->getHtmlForm("menu/history_block");
+            $form = str_replace("{history_block}", $result, $form);
         }
 
-        !empty($list) ?: $result .= $this->getHtmlTag("p", "{empty_history}");
-
-        return str_replace("{history_block}", $result, $this->getHtmlForm("menu/history_block"));
+        return $this->replaceLang($form);
     }
 
     public function showHistoryList()
@@ -1062,12 +1069,14 @@ class FormClass extends CatalogueClass
         $list = $client->getClientHistory();
         $list_history = "";
 
-        foreach ($list as $i => $iValue) {
-            $id             = $iValue["id"];
-            $art_nr_ds      = $iValue["article_nr_displ"];
+        $i = 0;
+        foreach ($list as $value) {
+            ++$i;
+            $id             = $value["id"];
+            $art_nr_ds      = $value["article_nr_displ"];
             $format_article = $catalog->getFormatArticle($art_nr_ds);
-            $brand          = $iValue["brand"];
-            $brand_link     = $iValue["brand_link"];
+            $brand          = $value["brand"];
+            $brand_link     = $value["brand_link"];
             $history_link   = $this->getSiteLink() . "$this->search_link/$format_article/$brand_link/";
 
             $history_form = str_replace(

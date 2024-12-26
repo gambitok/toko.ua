@@ -1058,7 +1058,6 @@ class ClientClass
     public function getClientHistory(): array
     {
         $db = DbSingleton::getTokoDb();
-        $col = 0;
         $history = [];
         $cookie_id = $this->getSessionID();
 
@@ -1076,14 +1075,13 @@ class ClientClass
             $brand_name = $this->getBrandName($brand_id);
 
             if ($brand_name !== "") {
-                $history[$col] = [
+                $history[] = [
                     "id"                => $id,
                     "article_nr_displ"  => $art_nr_ds,
                     "brand_id"          => $brand_id,
                     "brand"             => $brand_name,
                     "brand_link"        => $brand_link
                 ];
-                $col++;
             }
         }
 
