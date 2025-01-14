@@ -684,12 +684,12 @@ class FormClass extends CatalogueClass
         $client = new ClientClass();
 
         $list = "";
-        $data = $client->getArtsHistory();
+        $data = $client->getClientHistory();
 
         if (!empty($data)) {
             foreach ($data as $value) {
                 $art_id = $value["art_id"];
-                $list   .= $this->getHistoryArtsCard($art_id);
+                $list .= $this->getHistoryArtsCard($art_id);
             }
             $form = str_replace("{history_range}", $list, $this->getHtmlForm("article/history"));
             $form = $this->replaceLang($form);

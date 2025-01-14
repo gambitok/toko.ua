@@ -17,9 +17,6 @@ class ClientClass
     public $max_history_count       = 10;
     public $default_lang_id         = 1;
 
-    /*
-     * get client data
-     * */
     public function getClientData(): array
     {
         $cookie_client_id = $this->getUrlNumber($_COOKIE["client_id"]);
@@ -47,9 +44,6 @@ class ClientClass
         return array($client_id, $user_id);
     }
 
-    /*
-     * get default storage from t_point_id
-     * */
     public function getDefaultStorageID($salePointID)
     {
         $db = DbSingleton::getDbm();
@@ -58,9 +52,6 @@ class ClientClass
         return $db->result($r, 0, "storage_id");
     }
 
-    /*
-     * get client from user_id
-     * */
     public function getClientByUser($user_id)
     {
         $db = DbSingleton::getDbm();
@@ -75,9 +66,6 @@ class ClientClass
         return $client_id;
     }
 
-    /*
-     * get Client Name
-     * */
     public function getClientName($db, $user_id, $client_id)
     {
         $r = $db->query("SELECT `name` FROM `A_CLIENTS_USERS` WHERE `id` = $user_id AND `client_id` = $client_id AND `status` = $this->status_user LIMIT 1;");
@@ -90,9 +78,6 @@ class ClientClass
         return $db->result($r, 0, "name");
     }
 
-    /*
-     * get Client where (cookie and client_id)
-     * */
     public function getClientWhere(): string
     {
         $user_id    = $this->getUser();
@@ -103,9 +88,6 @@ class ClientClass
             : "`client_id` = $user_id";
     }
 
-    /*
-     * only for A_CLIENTS_USERS
-     * */
     public function getClientPriceList(): bool
     {
         $db = DbSingleton::getDbm();
@@ -118,9 +100,6 @@ class ClientClass
         return !(($n === 0 || empty($price_status)));
     }
 
-    /*
-     * only for A_CLIENTS_USERS
-     * */
     public function getClientCheckList(): bool
     {
         $db = DbSingleton::getDbm();
@@ -132,9 +111,6 @@ class ClientClass
         return !(($n === 0));
     }
 
-    /*
-     * check client registration
-     * */
     public function checkUnRegClient(): bool
     {
         $user_id = $this->getUser();
@@ -142,9 +118,6 @@ class ClientClass
         return ($user_id === 0);
     }
 
-    /*
-     * get auto from garage
-     * */
     public function getClientAutoGarage($client_id, $user_id)
     {
         $client_id = $this->getUrlNumber($client_id);
@@ -177,9 +150,6 @@ class ClientClass
         return "'" . implode("','", $phone_arr) . "'";
     }
 
-    /*
-     * valid phone number
-     * */
     public function formatValidPhone($phone)
     {
         $phone = str_replace(str_split("()+- "), "", $phone);
@@ -192,9 +162,6 @@ class ClientClass
         return substr($phone, -10);
     }
 
-    /*
-     * login client cookies
-     * */
     public function loginOrderClient($user_id): string
     {
         $user_id = $this->getUrlNumber($user_id);
@@ -206,9 +173,6 @@ class ClientClass
         return $this->getSiteLink() . "profile/orders/";
     }
 
-    /*
-     * login client profile
-     * */
     public function loginClient($phone, $password)
     {
         $db = DbSingleton::getDbm();
@@ -252,9 +216,6 @@ class ClientClass
         return true;
     }
 
-    /*
-     * logout client profile
-     * */
     public function logoutClient(): bool
     {
         $_SESSION["client_id"]  = $this->default_client_id;
@@ -275,9 +236,6 @@ class ClientClass
         return true;
     }
 
-    /*
-     * drop basket in order
-     * */
     public function moveFromBasketToClient(): bool
     {
         $db = DbSingleton::getTokoDb();
@@ -294,10 +252,6 @@ class ClientClass
         return true;
     }
 
-    /*
-     * get country name
-     * from COUNTRY_ID
-     * */
     public function getCountryName($country_id)
     {
         $country_id = $this->getUrlNumber($country_id);
@@ -307,9 +261,6 @@ class ClientClass
         return $db->result($r, 0, "COUNTRY_NAME");
     }
 
-    /*
-     * get client info
-     * */
     public function getClientInfo($client_id, $user_id): array
     {
         $db = DbSingleton::getDbm();
@@ -342,9 +293,6 @@ class ClientClass
         return compact("phone", "password", "email", "name", "type", "country", "region", "city");
     }
 
-    /*
-     * edit profile data
-     * */
     public function saveProfile($phone, $pass, $email, $name): bool
     {
         $db = DbSingleton::getDbm();
@@ -361,9 +309,6 @@ class ClientClass
         return true;
     }
 
-    /*
-     * save registration
-     * */
     public function saveRegistration($phone, $pass, $email, $name, $client_cat, $city_id, $salePointID, $mailing): bool
     {
         $db = DbSingleton::getDbm();
@@ -405,9 +350,6 @@ class ClientClass
         return true;
     }
 
-    /*
-     * get client from sale point
-     * */
     public function getClientBySalePoint($salePointID)
     {
         $db = DbSingleton::getDbm();
@@ -416,9 +358,6 @@ class ClientClass
         return $db->result($r, 0, "client_id");
     }
 
-    /*
-     * get Client default currency
-     * */
     public function getClientCurrency($client_id): int
     {
         $client_id = $this->getUrlNumber($client_id);
@@ -434,9 +373,6 @@ class ClientClass
         return $cash_id;
     }
 
-    /*
-     * set sale point
-     * */
     public function setTpoint($salePointID): int
     {
         $salePointID = $this->getUrlNumber($salePointID);
@@ -449,9 +385,6 @@ class ClientClass
         return $salePointID;
     }
 
-    /*
-     * get sale point
-     * */
     public function getTpoint($client_id = 0): int
     {
         $db = DbSingleton::getDbm();
@@ -469,9 +402,6 @@ class ClientClass
         return $salePointID;
     }
 
-    /*
-     * get SALE POINT from CLIENT
-     * */
     public function getSalePointUser($client_id): int
     {
         $db = DbSingleton::getDbm();
@@ -485,9 +415,6 @@ class ClientClass
         return $salePointID;
     }
 
-    /*
-     * set default retail sale point
-     * */
     public function getSalePointRetail(): bool
     {
         (!empty($_SESSION["tpoint_id"])) ?: $_SESSION["tpoint_id"] = $this->defaultSalePoint;
@@ -495,9 +422,6 @@ class ClientClass
         return true;
     }
 
-    /*
-     * get sale point name from storage_id
-     * */
     public function getArticleStorageTPoint($storage_id)
     {
         $storage_id = $this->getUrlNumber($storage_id);
@@ -552,9 +476,6 @@ class ClientClass
         return $res;
     }
 
-    /*
-     * check reg phone
-     * */
     public function checkRegistration($phone): bool
     {
         $phone = $this->formatValidPhone($phone);
@@ -589,9 +510,6 @@ class ClientClass
         return $result;
     }
 
-    /*
-     * get storage_id from sale point
-     * */
     public function getStorageBySalePoint($salePointID): array
     {
         $db = DbSingleton::getTokoDb();
@@ -619,10 +537,6 @@ class ClientClass
         return array($storage_local, $storage_remote);
     }
 
-    /*
-     * select all sale points except the specified one
-     * Table: toko_dba.`T_POINT`
-    */
     public function getSalePointOtherList($salePointID_sel): array
     {
         $db = DbSingleton::getTokoDb();
@@ -637,10 +551,6 @@ class ClientClass
         return $salePointIDArray;
     }
 
-    /*
-     * getting sale point address
-     * Table: toko_dba.`T_POINT`
-    */
     public function getSalePointAddress($salePointID)
     {
         $db = DbSingleton::getTokoDb();
@@ -649,10 +559,6 @@ class ClientClass
         return $db->result($r, 0, "address");
     }
 
-    /*
-     * getting city name by sale point
-     * Table: toko_dba.`T_POINT`
-    */
     public function getSalePointCity($salePointID)
     {
         $db = DbSingleton::getTokoDb();
@@ -662,10 +568,6 @@ class ClientClass
         return $this->getCityName($city_id);
     }
 
-    /*
-     * getting storage address
-     * Table: toko_dba.`STORAGE`
-    */
     public function getStorageAddress($storage_id)
     {
         $storage_id = $this->getUrlNumber($storage_id);
@@ -681,10 +583,6 @@ class ClientClass
         return $storage_address;
     }
 
-    /*
-     * getting city name by storage
-     * Table: toko_dba.`STORAGE`
-    */
     public function getStorageCity($storage_id)
     {
         $storage_id = $this->getUrlNumber($storage_id);
@@ -751,9 +649,6 @@ class ClientClass
         return $this->replaceLang("<div class=\"col-12\">{sms_sent}</div>");
     }
 
-    /*
-     * send SMS validation
-     * */
     public function validatePhone($phone, $ip = "", $captcha = ""): int
     {
         $phone = $this->formatValidPhone($phone);
@@ -769,9 +664,6 @@ class ClientClass
         return $password;
     }
 
-    /*
-     * finish phone validation
-     * */
     public function endValidation($phone, $password): bool
     {
         $phone = $this->formatValidPhone($phone);
@@ -788,12 +680,6 @@ class ClientClass
         return ($n > 0);
     }
 
-    /*
-     * Create CLIENT
-     * Create WEB USER
-     * Set CATEGORY
-     * Set CONDITIONS
-     * */
     public function addRetailClient($salePointIDClientID, $phone, $name = "", $city_id = 0, $email = "", $pass = "", $client_category = 0): array
     {
         $db = DbSingleton::getDbm();
@@ -812,9 +698,6 @@ class ClientClass
 
         list($region_id, $state_id, $country_id) = $this->getLocationCity($city_id);
         $phone = $this->formatValidPhone($phone);
-
-//        $r = $db->query("SELECT `id` FROM `A_CLIENTS` WHERE `phone` = '$phone' LIMIT 1;");
-//        $n = $db->num_rows($r);
 
         $r = $db->query("SELECT MAX(`id`) as mid FROM `A_CLIENTS`;");
         $client_id = 0 + $db->result($r, 0, "mid") + 1;
@@ -953,9 +836,6 @@ class ClientClass
         return array($status, $user_id);
     }
 
-    /*
-     * get user phone
-     * */
     public function getClientPhone(): string
     {
         $db = DbSingleton::getDbm();
@@ -970,40 +850,42 @@ class ClientClass
         return $phone;
     }
 
-    /*
-     * Add History
-     * */
-    public function insertHistory($articleNrDisplay, $brand_id): bool
+    public function insertHistory($article_nr_search, $brand_id, $art_id = null): bool
     {
-        $db = DbSingleton::getTokoDb();
-        session_start();
+        if (($article_nr_search !== "" && $brand_id > 0) || $art_id > 0) {
+            $db = DbSingleton::getTokoDb();
+            session_start();
+            $ses        = session_id();
+            $cookie     = $this->getSessionID();
+            $date       = date("Y-m-d H:i:s");
+            list($client_id, $user_id) = $this->getClientData();
 
-        $ses        = session_id();
-        $cookie     = $this->getSessionID();
-        $date       = date("Y-m-d H:i:s");
-        $client_id  = $this->getClient();
-        $user_id    = $this->getUser();
-        $art_id     = $this->getArtID($articleNrDisplay);
+            if ($art_id === null) {
+                $art_id = $this->getArtID($article_nr_search);
+            }
 
-        if ($brand_id > 0) {
-            $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
+            $articleNrDisplay = $this->getArticleDisplay($art_id);
 
-            $r = $db->query("SELECT COUNT(`id`) as ids_count FROM `CLIENT_HISTORY` WHERE $where;");
-            $k = (int)$db->result($r, 0, "ids_count");
+            if ($brand_id > 0) {
+                $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-            if ($k > $this->max_history_count) {
-                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` LIMIT 1;");
-                $id = $db->result($r, 0, "id");
-                $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date', `article_nr_displ` = '$articleNrDisplay', `brand_id` = $brand_id, `art_id` = $art_id WHERE `id` = $id;");
-            } else {
-                $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id;");
-                $n = $db->num_rows($r);
+                $r = $db->query("SELECT COUNT(`id`) as ids_count FROM `CLIENT_HISTORY` WHERE $where;");
+                $k = (int)$db->result($r, 0, "ids_count");
 
-                if ($n > 0) {
-                    $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date' WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id;");
+                if ($k > $this->max_history_count) {
+                    $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where ORDER BY `data` LIMIT 1;");
+                    $id = $db->result($r, 0, "id");
+                    $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date', `article_nr_displ` = '$articleNrDisplay', `brand_id` = $brand_id, `art_id` = $art_id WHERE `id` = $id;");
                 } else {
-                    $db->query("INSERT INTO `CLIENT_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `article_nr_displ`, `brand_id`, `data`, `art_id`) 
-                    VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$articleNrDisplay', '$brand_id', '$date', '$art_id');");
+                    $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id;");
+                    $n = $db->num_rows($r);
+
+                    if ($n > 0) {
+                        $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date' WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id;");
+                    } else {
+                        $db->query("INSERT INTO `CLIENT_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `article_nr_displ`, `brand_id`, `data`, `art_id`) 
+                        VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$articleNrDisplay', '$brand_id', '$date', '$art_id');");
+                    }
                 }
             }
         }
@@ -1011,50 +893,16 @@ class ClientClass
         return true;
     }
 
-    /*
-     * Add History by article
-     * */
-    public function insertArtsHistory($art_id): bool
+    public function insertHistoryCatalog($art_id): bool
     {
-        $art_id = $this->getUrlNumber($art_id);
-        $db = DbSingleton::getTokoDb();
-        session_start();
-
-        $ses        = session_id();
-        $cookie     = $this->getSessionID();
-        $date       = date("Y-m-d H:i:s");
-        $client_id  = $this->getClient();
-        $user_id    = $this->getUser();
-
-        if ($art_id > 0) {
-            $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
-
-            $r = $db->query("SELECT COUNT(`id`) as ids_count FROM `ARTS_HISTORY` WHERE $where;");
-            $k = (int)$db->result($r, 0, "ids_count");
-
-            if ($k > $this->max_history_count) {
-                $r = $db->query("SELECT `id` FROM `ARTS_HISTORY` WHERE $where ORDER BY `data` LIMIT 1;");
-                $id = (int)$db->result($r, 0, "id");
-                $db->query("UPDATE `ARTS_HISTORY` SET `data` = '$date', `art_id` = $art_id WHERE `id` = $id;");
-            } else {
-                $r = $db->query("SELECT `id` FROM `ARTS_HISTORY` WHERE $where AND `art_id` = $art_id;");
-                $n = $db->num_rows($r);
-
-                if ($n > 0) {
-                    $db->query("UPDATE `ARTS_HISTORY` SET `data` = '$date' WHERE $where AND `art_id` = $art_id;");
-                } else {
-                    $db->query("INSERT INTO `ARTS_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `data`, `art_id`) 
-                    VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$date', $art_id);");
-                }
-            }
-        }
-
-        return true;
+        return $this->insertHistory(null, $this->getArticleBrand($art_id), $art_id);
     }
 
-    /*
-     * get user history
-     * */
+    public function insertHistorySearch($article_nr_search, $brand_id): bool
+    {
+        return $this->insertHistory($article_nr_search, $brand_id);
+    }
+
     public function getClientHistory(): array
     {
         $db = DbSingleton::getTokoDb();
@@ -1064,10 +912,11 @@ class ClientClass
         list($client_id, $user_id) = $this->getClientData();
         $where = (empty($user_id)) ? "`cookie_id` = '$cookie_id'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
-        $r = $db->query("SELECT `id`, `article_nr_displ`, `brand_id` FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id`, `data` ORDER BY `data` DESC LIMIT 10;");
+        $r = $db->query("SELECT `id`, `art_id`, `article_nr_displ`, `brand_id` FROM `CLIENT_HISTORY` WHERE $where GROUP BY `art_id`, `data` ORDER BY `data` DESC LIMIT 10;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $id         = $db->result($r, $i - 1, "id");
+            $art_id     = $db->result($r, $i - 1, "art_id");
             $art_nr_ds  = $db->result($r, $i - 1, "article_nr_displ");
             $brand_id   = $db->result($r, $i - 1, "brand_id");
             $brand_link = $this->getBrandLink($brand_id);
@@ -1077,46 +926,12 @@ class ClientClass
             if ($brand_name !== "") {
                 $history[] = [
                     "id"                => $id,
+                    "art_id"            => $art_id,
                     "article_nr_displ"  => $art_nr_ds,
                     "brand_id"          => $brand_id,
                     "brand"             => $brand_name,
                     "brand_link"        => $brand_link
                 ];
-            }
-        }
-
-        return $history;
-    }
-
-    /*
-     * get user history
-     * */
-    public function getArtsHistory(): array
-    {
-        $db = DbSingleton::getTokoDb();
-        $col = 0;
-        $history = [];
-        $cookie = $this->getSessionID();
-
-        if (empty($cookie)) {
-            $cookie = 0;
-        }
-
-        list($client_id, $user_id) = $this->getClientData();
-        $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
-
-        $r = $db->query("SELECT `id`, `art_id` FROM `ARTS_HISTORY` WHERE $where GROUP BY `art_id`, `data` ORDER BY `data` DESC LIMIT 10;");
-        $n = $db->num_rows($r);
-        for ($i = 1; $i <= $n; $i++) {
-            $id     = $db->result($r, $i - 1, "id");
-            $art_id = $db->result($r, $i - 1, "art_id");
-
-            if ($art_id > 0) {
-                $history[$col] = [
-                    "id"        => $id,
-                    "art_id"    => $art_id
-                ];
-                $col++;
             }
         }
 
@@ -1153,10 +968,6 @@ class ClientClass
         return array($user_name, $user_phone, $user_email, $user_city);
     }
 
-    /*
-     * CLIENT Requests
-     * T2_QUESTIONS
-     * */
     public function setClientRequest($phone, $vin = "", $text = "", $status = 0): array
     {
         $db = DbSingleton::getTokoDb();
@@ -1193,9 +1004,6 @@ class ClientClass
         return array($answer, $err);
     }
 
-    /*
-     * get client_id / user_id from PHONE
-     * */
     public function getClientUserByPhone($phone): array
     {
         $db = DbSingleton::getDbm();
@@ -1207,9 +1015,6 @@ class ClientClass
         return array("user_id" => $user_id, "client_id" => $client_id);
     }
 
-    /*
-     * Client Bonus
-     * */
     public function checkClientBonus($client_id, $bonus = 1): bool
     {
         $db = DbSingleton::getDbm();
@@ -1220,10 +1025,6 @@ class ClientClass
         return ($n > 0);
     }
 
-    /*
-     * add Client bonus
-     * if not exist
-     * */
     public function addClientBonus($client_id, $bonus = 1): bool
     {
         $db = DbSingleton::getDbm();
@@ -1238,9 +1039,6 @@ class ClientClass
         return true;
     }
 
-    /*
-     * update client bonus
-     * */
     public function setClientBonus($client_id, $bonus = 1)
     {
         $db = DbSingleton::getDbm();
@@ -1256,10 +1054,6 @@ class ClientClass
         return $sum;
     }
 
-    /*
-     * set bonus on clients phone
-     * if not used before
-     * */
     public function finishBonusPhone($phone, $bonus = 1)
     {
         $phone = $this->formatValidPhone($phone);

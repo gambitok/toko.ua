@@ -449,7 +449,7 @@ if ($_REQUEST["w"] === "showBannerForm") {
 }
 
 if ($_REQUEST["w"] === "showHistoryForm") {
-    $GLOBALS['_RESULT'] = array("content" => $formObj->showHistoryForm());
+    $GLOBALS['_RESULT'] = array("content" => $formObj->getHistoryForm());
 }
 
 

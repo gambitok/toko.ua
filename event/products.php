@@ -37,7 +37,7 @@ if ($art_id > 0 && $catalogue->checkArticleExist($art_id)) {
     $content = str_replace("{meta_social_tag}", "", $content);
 
     if ($articleData["real_stock"] > 0) {
-        $client->insertArtsHistory($art_id);
+        $client->insertHistoryCatalog($art_id);
     }
 } else {
     header("HTTP/1.0 404 Not Found");

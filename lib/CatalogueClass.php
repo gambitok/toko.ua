@@ -36,23 +36,20 @@ class CatalogueClass
     /*
      * SEARCH LIST
      * */
-    public function getCatalogList($article_nr_search, $brand_nr_search)
+    public function getCatalogList($article_nr_search, $brand_id)
     {
-        $article_nr_search  = $this->getUrlString($article_nr_search);
-        $brand_nr_search    = $this->getUrlNumber($brand_nr_search);
 
         $db = DbSingleton::getTokoDb();
-        $client = new ClientClass();
         $search = new SearchClass();
 
-        $client->insertHistory($article_nr_search, $brand_nr_search);
         $cur = $this->getCurrentExRate();
 
         $art_ids = [];
-        $r = $db->query("SELECT DISTINCT t2c.ART_ID
+        $r = $db->query("SELECT t2c.ART_ID
         FROM `T2_CROSS` t2c
             LEFT OUTER JOIN `T2_NAMES` t2n ON (t2n.ART_ID = t2c.ART_ID)
-        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_nr_search AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE));");
+        WHERE t2c.SEARCH_NUMBER = '$article_nr_search' AND t2c.BRAND_ID = $brand_id AND (IF (t2n.LANG_ID IS NOT NULL, t2n.LANG_ID = 16, TRUE))
+        GROUP BY t2c.ART_ID;");
         $n = $db->num_rows($r);
         for ($i = 1; $i <= $n; $i++) {
             $art_id = $db->result($r, $i - 1, "ART_ID");
@@ -65,7 +62,7 @@ class CatalogueClass
         $search_filters = $this->getHtmlForm("search/filters");
         $search_brands  = $this->getHtmlForm("search/brands");
 
-        list($list, $list_brand, $filters) = $search->searchList($art_id_str, $article_nr_search, $brand_nr_search);
+        list($list, $list_brand, $filters) = $search->searchList($art_id_str, $article_nr_search, $brand_id);
 
         // if found something
         if (($list_brand) && ($filters)) {
@@ -81,7 +78,7 @@ class CatalogueClass
         //colon
         $form = str_replace(
             array("{search_col}", "{filters_col}", "{type_search}", "{art_value}", "{brand_value}", "{cur_value}", "{cat_search_main}"),
-            array($colon, $colon_filter, 1, $article_nr_search, $brand_nr_search, $cur, $this->getSearchMain($search_main, $list)),
+            array($colon, $colon_filter, 1, $article_nr_search, $brand_id, $cur, $this->getSearchMain($search_main, $list)),
         $form);
 
         //search filters

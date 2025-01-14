@@ -1,6 +1,6 @@
 <?php
 
-global $content, $catalogue, $search;
+global $content, $catalogue, $search, $client;
 $httpHost = findLinks();
 
 $brand_link         = $catalogue->getUrlString($httpHost[2]);
@@ -25,7 +25,9 @@ if ($article_nr_search === "") {
     if ($brand_link === "") {
         $content = str_replace("{search}", $search->getSearchList($article_nr_search), $content);
     } else {
-        $content = str_replace("{search}", $catalogue->getCatalogList($catalogue->getFormatArticle($article_nr_search), $catalogue->getCatalogueBrandID($brand_link)), $content);
+        $brand_id = $catalogue->getCatalogueBrandID($brand_link);
+        $content = str_replace("{search}", $catalogue->getCatalogList($catalogue->getFormatArticle($article_nr_search), $brand_id), $content);
+        $client->insertHistorySearch($article_nr_search, $brand_id);
     }
 }
 

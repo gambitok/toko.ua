@@ -547,17 +547,17 @@ class SearchClass extends CatalogueClass
             $nulls = 1;
         }
 
-        $client_id  = $this->getClient();
+        $client_id = $this->getClient();
         $salePointID= $this->getTpointID();
-        $cur        = $this->getCurrentExRate();
+        $cur = $this->getCurrentExRate();
 
         session_start();
-        $temp_key               = session_id();
-        $mas                    = $filters = $brands = [];
-        $list_brand             = "";
-        $art_id_search          = 0;
-        $filters["max_price"]   = $filters["max_dd"] = $main_brand = 0;
-        $filters["min_price"]   = 99999999;
+        $temp_key = session_id();
+        $mas = $filters = $brands = [];
+        $list_brand = "";
+        $art_id_search = 0;
+        $filters["max_price"] = $filters["max_dd"] = $main_brand = 0;
+        $filters["min_price"] = 99999999;
 
         if ($article_nr_search !== "") {
             $art_id_search = $this->getArticleId($article_nr_search, $brand_nr_search);
