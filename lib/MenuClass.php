@@ -1288,8 +1288,7 @@ class MenuClass extends CatalogueClass
     * */
     public function formatUrlText($str): string
     {
-        $format_text = $this->getIconConvert($str);
-        $format_text = $this->getFormattedTranslatedText($format_text);
+        $format_text = $this->getFormattedTranslatedText($str);
         $format_text = str_replace(array(str_split('.,+-\/:*?"<>|_'), " ", "'"), array("", "-", ""), $format_text);
 
         return mb_strtolower($format_text);

@@ -6,14 +6,12 @@ $httpHost = findLinks();
 $brand_link         = $catalogue->getUrlString($httpHost[2]);
 $article_nr_search  = $catalogue->getUrlString($httpHost[1]);
 $article_nr_search  = rawurldecode($article_nr_search);
-$article_nr_search  = $catalogue->getIconv($article_nr_search);
 
 $text = $_GET["text"];
 
 if (!empty($text)) {
     $article_nr_search = $text;
     $article_nr_search = rawurldecode($article_nr_search);
-    $article_nr_search = $catalogue->getIconv($article_nr_search);
     $article_nr_search = rtrim($article_nr_search, "/");
 }
 

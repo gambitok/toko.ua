@@ -21,9 +21,8 @@ $list = "";
 $arr = $np->getCities();
 
 foreach ($arr as $val) {
-    $name = $catalog->getIconv($val["Description"]);
-    $ref    = $val["Ref"];
-
+    $name = $val["Description"];
+    $ref = $val["Ref"];
     $list .= "$name ($ref) \n<br>";
 }
 

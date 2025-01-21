@@ -15,30 +15,9 @@ class CatalogueClass
     public $cars_link               = "cars";
     public $faq_card_count          = 2;
     public $faq_socials_card_count  = 4;
-    public $charset                 = "windows-1251";
 
-    public function getIconv($str)
-    {
-        //$str  = iconv("UTF-8", "windows-1251", $str);
-        return $str;
-    }
-    public function getIconConvert($str)
-    {
-        //$str  = mb_convert_encoding($str, "UTF-8", "Windows-1251");
-        return $str;
-    }
-    public function getIconvWindows($str)
-    {
-        //$str  = iconv("windows-1251", "UTF-8", $str);
-        return $str;
-    }
-
-    /*
-     * SEARCH LIST
-     * */
     public function getCatalogList($article_nr_search, $brand_id)
     {
-
         $db = DbSingleton::getTokoDb();
         $search = new SearchClass();
 
@@ -105,9 +84,6 @@ class CatalogueClass
         return $this->getHtmlForm("catalog_exist/telegram");
     }
 
-    /*
-    * SEARCH LIST FILTER
-    * */
     public function getCatalogListFilter($article_nr_search, $brand_nr_search, $brand_filter, $price_f, $delivery_f): array
     {
         $article_nr_search  = $this->getNameString($article_nr_search);
@@ -147,17 +123,11 @@ class CatalogueClass
         return array($search_main, $search_filters, $search_brands, $filters["max_price"]);
     }
 
-    /*
-     * SEARCH LIST PRINT
-     * */
     public function getSearchMain($search_main, $list)
     {
         return str_replace("{search_result}", $list, $search_main);
     }
 
-    /*
-     * SEARCH LIST FILTERS FORM
-     * */
     public function getSearchFilters($search_filters, $filters, $cur, $current_value)
     {
         if (!empty($filters) && empty($current_value)) {
@@ -174,9 +144,6 @@ class CatalogueClass
         $search_filters);
     }
 
-    /*
-     * CATALOG TEMPORARY TABLE
-     * */
     public function createTemporarySearchTable($temp_key)
     {
         $db = DbSingleton::getTokoDb();
@@ -198,9 +165,6 @@ class CatalogueClass
         ) ENGINE = MYISAM;");
     }
 
-    /*
-     * CATALOG ARTS LIST
-     * */
     public function getTemporarySearchTable($where_art_id_str, $article_nr_search, $brand_nr_search, $where_brands = "", $nulls = 0)
     {
         $db = DbSingleton::getTokoDb();
@@ -290,9 +254,6 @@ class CatalogueClass
         return $r;
     }
 
-    /*
-     * CATALOG ORIGINAL NUMBERS
-     * */
     public function getOriginalEquipment($db, $art_id): string
     {
         $arts = $art_id_arr = [];
@@ -325,9 +286,6 @@ class CatalogueClass
         return implode(",", $art_id_arr);
     }
 
-    /*
-     * CATALOG BRAND FORM
-     * */
     public function getListBrand($brands, $main_brand, $cur, $brand_filter = [])
     {
         $list_brand = $main_brand_class = "";
@@ -405,9 +363,6 @@ class CatalogueClass
         return $this->replaceLang($list_brand);
     }
 
-    /*
-     * CATALOG EXIST
-     * */
     public function searchListCatalog($where_art_id_str, $mfa_id = 0, $model = "", $status_auto = 0, $order_status = 0)
     {
         $db = DbSingleton::getTokoDb();
@@ -574,9 +529,6 @@ class CatalogueClass
         return $list;
     }
 
-    /*
-     * CATALOG ANALOGS LIST
-     * */
     public function shortSearchList($art_id_search)
     {
         $art_id_search = $this->getUrlNumber($art_id_search);
@@ -748,9 +700,6 @@ class CatalogueClass
         return $this->replaceLang($list);
     }
 
-    /*
-     * SEARCH CACHE
-     * */
     public function getArticlePrices($db, $where_art_id_str): array
     {
         $client = new ClientClass();
@@ -921,9 +870,6 @@ class CatalogueClass
         return $result;
     }
 
-    /*
-     * Get Article image Type
-     * */
     public function getIndexTypeImage($art_id, $article_nr_search, $article_nr_displ, $format_name, $brand_id, $brand_nr_search): string
     {
         $true_art_id    = $this->getArtID($article_nr_search);
@@ -978,9 +924,6 @@ class CatalogueClass
         return $index_type;
     }
 
-    /*
-     * Check visibility of SUPPL storage
-     * */
     public function getSuppLStorageVisible($suppl_id, $storage_id): bool
     {
         $db = DbSingleton::getDbm();
@@ -1001,9 +944,6 @@ class CatalogueClass
         return true;
     }
 
-    /*
-     * Show SEARCH Line OR Card
-     * */
     public function printCatalogList($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $stock, $price, $ll, $suppl_id, $delivery_days, $delivery_short_info, $storage_id, $status, $view = 0, $status_auto = 0, $mfa_id = 0, $model = "")
     {
         $formObj = new FormClass();
@@ -1112,9 +1052,6 @@ class CatalogueClass
         return $this->replaceLang($list);
     }
 
-    /*
-     * check action price
-     * */
     public function checkActionPrice($art_id)
     {
         $db = DbSingleton::getDbm();
@@ -1170,9 +1107,6 @@ class CatalogueClass
         return false;
     }
 
-    /*
-     * check action amount
-     * */
     public function checkActionAmount($db, $art_id, $max_amount, $data): bool
     {
         $dbt = DbSingleton::getTokoDb();
@@ -1196,9 +1130,6 @@ class CatalogueClass
         return ($data >= $data_today && $all_amount > $max_amount);
     }
 
-    /*
-     * Export Price Rating (CRON)
-     * */
     public function getArticlePriceClient($dbt, $art_id, $client_id, $cur)
     {
         $client = new ClientClass();
@@ -1278,50 +1209,35 @@ class CatalogueClass
         $dbt = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $client_id = $this->getClient();
-        $markup_min = $client->getClientMarkupMin($client_id);
         $price = 0;
         list($price_lvl, $margin_price_lvl) = $this->getDpClientPriceLevels($client_id);
 
-        $r = $dbt->query("SELECT t2apr.price_$price_lvl, t2apr.cash_id, t2apr.minMarkup, t2aps.OPER_PRICE
-        FROM `T2_ARTICLES` t2a 
-            LEFT OUTER JOIN `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id = t2a.ART_ID)
-            LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID = t2a.ART_ID)
-        WHERE t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;");
-        $n = (int)$dbt->num_rows($r);
+        $query = "SELECT 
+                t2apr.price_$price_lvl, 
+                t2apr.cash_id, 
+                t2apr.minMarkup, 
+                t2aps.OPER_PRICE
+            FROM 
+                `T2_ARTICLES` t2a 
+            LEFT OUTER JOIN 
+                `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id = t2a.ART_ID)
+            LEFT OUTER JOIN 
+                `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID = t2a.ART_ID)
+            WHERE 
+                t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;";
 
-        if ($n === 1) {
-            $price      = (float)$dbt->result($r, 0, "price_" . $price_lvl);
-            $minMarkup  = (float)$dbt->result($r, 0, "minMarkup");
-            $operativePrice = (float)$dbt->result($r, 0, "OPER_PRICE");
-            $cash_id    = (int)$dbt->result($r, 0, "cash_id");
+        $result = $dbt->query($query);
+        if ($result->num_rows === 1) {
+            $data = $result->fetch_assoc();
+            $price = (float)$data["price_$price_lvl"];
+            $minMarkup = (float)$data["minMarkup"];
+            $operativePrice = (float)$data["OPER_PRICE"];
+            $cash_id = (int)$data["cash_id"];
 
             if ($margin_price_lvl > 0) {
                 $price += round($price * $margin_price_lvl / 100, 2);
-            }
-
-            if ($margin_price_lvl < 0 && $markup_min === 0) {
-                $price_minus = $price + ($price * $margin_price_lvl / 100);
-                $operativeLimit = $operativePrice + ($operativePrice * $minMarkup / 100);
-
-                if ($price_minus >= $operativeLimit) {
-                    $price = $price_minus;
-                } elseif ($operativeLimit < $price) {
-                    $price = $operativeLimit;
-                }
-            }
-
-            if ($margin_price_lvl < 0 && $markup_min > 0) {
-                $price = $this->getPriceRatingExRate($price, $cash_id, 2);
-                $procPriceMargin = $price - ($price * abs($margin_price_lvl) / 100);
-                $procOperativePriceMin = $operativePrice + ($operativePrice * $markup_min / 100);
-
-                if ($procPriceMargin >= $procOperativePriceMin) {
-                    $price = $procPriceMargin;
-                } elseif ($procOperativePriceMin <= $price) {
-                    $price = $procOperativePriceMin;
-                }
-
-                $price = $this->getPriceRatingExRate($price, 2, $cash_id);
+            } elseif ($margin_price_lvl < 0) {
+                $price = $this->calculatePriceWithMarkup($price, $minMarkup, $operativePrice, $margin_price_lvl);
             }
 
             $price = $this->getPriceRatingExRate($price, $cash_id, 1);
@@ -1329,6 +1245,32 @@ class CatalogueClass
         }
 
         return $price;
+    }
+
+    private function calculatePriceWithMarkup($price, $minMarkup, $operativePrice, $margin_price_lvl)
+    {
+        $price_minus = $price + ($price * $margin_price_lvl / 100);
+        $operativeLimit = $operativePrice + ($operativePrice * $minMarkup / 100);
+
+        if ($price_minus >= $operativeLimit) {
+            return $price_minus;
+        }
+
+        if ($operativeLimit < $price) {
+            return $operativeLimit;
+        }
+
+        $procPriceMargin = $price - ($price * abs($margin_price_lvl) / 100);
+        $procOperativePriceMin = $operativePrice + ($operativePrice * $minMarkup / 100);
+
+        if ($procPriceMargin >= $procOperativePriceMin) {
+            return $procPriceMargin;
+        }
+
+        if ($procOperativePriceMin <= $price) {
+            return $procOperativePriceMin;
+        }
+        return 0;
     }
 
     public function getArtsGroupId($art_id): int
@@ -1349,7 +1291,6 @@ class CatalogueClass
     public function getArticleSupplPrice($art_id, $suppl_id, $suppl_storage_id): float
     {
         $dbt = DbSingleton::getTokoDb();
-        $exRate = new ExRateClass();
         $client = new ClientClass();
         $t_point = $this->getTpointID();
         $client_id = $this->getClient();
@@ -1366,44 +1307,28 @@ class CatalogueClass
         if ($n === 1) {
             $suppl_price_usd = (float)($dbt->result($r, 0, "price_usd"));
             list($price_in_vat, $show_in_vat, $price_add_vat) = $this->getSupplVatConditions($suppl_id);
-            $price_suppl = $suppl_price_usd;
-            //?
-            $price = $suppl_price_usd;
 
-            $group_id = $this->getArtsGroupId($art_id);
-            list($suppl_margin_fm, $suppl_delivery_fm, $suppl_margin2_fm) = $this->getSalePointSupplFmGroup($group_id, $t_point, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl);
+            $price = $suppl_price_usd;
+            list($suppl_margin_fm, $suppl_delivery_fm, $suppl_margin2_fm) = $this->getSalePointSupplFmGroup($art_id, $t_point, $suppl_id, $suppl_storage_id, $price, $price_suppl_lvl);
 
             if ($suppl_margin_fm > 0) {
-                $price = ($price_suppl + $price_suppl * $suppl_margin_fm / 100) - $price_suppl;
+                $price *= (1 + $suppl_margin_fm / 100);
+                $price = ($price > $suppl_delivery_fm) ? $price : $price * (1 + $suppl_margin2_fm / 100) + $suppl_delivery_fm;
+                $price *= (1 + $margin_price_suppl_lvl / 100);
+            }
 
-                if ($price > $suppl_delivery_fm) {
-                    $price = ($price_suppl + $price_suppl * $suppl_margin_fm / 100);
-                }
-                
-                if ($price <= $suppl_delivery_fm) {
-                    $price = $price_suppl + $price_suppl * $suppl_margin2_fm / 100 + $suppl_delivery_fm;
-                }
-
-                if ($margin_price_suppl_lvl > 0 && $margin_price_suppl_lvl !== "") {
-                    $price = $price + $price * $margin_price_suppl_lvl / 100;
-                }
-
-                if ($client_vat === 1) {
-                    
-                    if ($price_in_vat === 0 && $show_in_vat === 1 && $price_add_vat === 1) {
-                        $price = $price + $price * 20 / 100;
-                    }
-                    
-                    if ($price_in_vat === 0 && $show_in_vat === 0) {
-                        $price = 0;
-                    }
+            if ($client_vat === 1) {
+                if ($price_in_vat === 0 && $show_in_vat === 1 && $price_add_vat === 1) {
+                    $price *= 1.2;
+                } elseif ($price_in_vat === 0 && $show_in_vat === 0) {
+                    $price = 0;
                 }
             }
 
             $price = round($price, 2);
         }
 
-        $cur_usd = $exRate->getExRate("dollar");
+        $cur_usd = (new ExRateClass())->getExRate("dollar");
         $price *= $cur_usd;
 
         return $client->getClientPriceRounding($client_id, $price);
@@ -1448,32 +1373,55 @@ class CatalogueClass
         return array($price_in_vat, $show_in_vat, $price_add_vat);
     }
 
-    public function getSalePointSupplFmGroup($group_id, $t_point_id, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl): array
+    public function getSalePointSupplFmGroup($art_id, $t_point_id, $suppl_id, $suppl_storage_id, $price_suppl, $price_suppl_lvl): array
     {
         $db = DbSingleton::getTokoDb();
         $margin = $delivery = $margin2 = 0;
 
-        $r = $db->query("SELECT `margin`, `delivery`, `margin2` FROM `T_POINT_SUPPL_FM_GROUP` 
-        WHERE `group_id` = '$group_id' AND `tpoint_id` = '$t_point_id' AND `suppl_id` = '$suppl_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `price_from` <= '$price_suppl' 
-        AND `price_to` >= '$price_suppl' AND `price_rating_id` = '$price_suppl_lvl' LIMIT 1;");
-        $n = (int)$db->num_rows($r);
-        if ($n === 1) {
-            $margin     = (int)$db->result($r, 0, "margin");
-            $delivery   = (float)$db->result($r, 0, "delivery");
-            $margin2    = (int)$db->result($r, 0, "margin2");
-        } else {
-            $r = $db->query("SELECT `margin`, `delivery`, `margin2` FROM `T_POINT_SUPPL_FM` 
-            WHERE `tpoint_id` = '$t_point_id' AND `suppl_id` = '$suppl_id' AND `suppl_storage_id` = '$suppl_storage_id' AND `price_from` <= '$price_suppl' 
-            AND `price_to` >= '$price_suppl' AND `price_rating_id` = '$price_suppl_lvl' LIMIT 1;");
-            $n = (int)$db->num_rows($r);
+        $group_id = $this->getArtsGroupId($art_id);
 
-            if ($n === 1) {
-                $margin     = (int)$db->result($r, 0, "margin");
-                $delivery   = (float)$db->result($r, 0, "delivery");
-                $margin2    = (int)$db->result($r, 0, "margin2");
+        $query = "
+            SELECT `margin`, `delivery`, `margin2`
+            FROM `T_POINT_SUPPL_FM_GROUP`
+            WHERE `group_id` = '$group_id'
+            AND `tpoint_id` = '$t_point_id'
+            AND `suppl_id` = '$suppl_id'
+            AND `suppl_storage_id` = '$suppl_storage_id'
+            AND `price_from` <= '$price_suppl'
+            AND `price_to` >= '$price_suppl'
+            AND `price_rating_id` = '$price_suppl_lvl'
+            LIMIT 1
+        ";
+
+        $r = $db->query($query);
+
+        if ($db->num_rows($r) === 1) {
+            $margin = (int)$db->result($r, 0, 'margin');
+            $delivery = (float)$db->result($r, 0, 'delivery');
+            $margin2 = (int)$db->result($r, 0, 'margin2');
+        } else {
+            $query = "
+                SELECT `margin`, `delivery`, `margin2`
+                FROM `T_POINT_SUPPL_FM`
+                WHERE `tpoint_id` = '$t_point_id'
+                AND `suppl_id` = '$suppl_id'
+                AND `suppl_storage_id` = '$suppl_storage_id'
+                AND `price_from` <= '$price_suppl'
+                AND `price_to` >= '$price_suppl'
+                AND `price_rating_id` = '$price_suppl_lvl'
+                LIMIT 1
+            ";
+
+            $r = $db->query($query);
+
+            if ($db->num_rows($r) === 1) {
+                $margin = (int)$db->result($r, 0, 'margin');
+                $delivery = (float)$db->result($r, 0, 'delivery');
+                $margin2 = (int)$db->result($r, 0, 'margin2');
             }
         }
-        return array($margin, $delivery, $margin2);
+
+        return [$margin, $delivery, $margin2];
     }
 
     public function getSalePointDeliveryTime($delivery_days): string
@@ -1582,10 +1530,6 @@ class CatalogueClass
         );
     }
 
-    /*
-     * Get article default cash
-     * table toko_dba.T2_ARTICLES_PRICE_RATING
-     * */
     public function getArticlePriceRatingCash($art_id): int
     {
         $db = DbSingleton::getTokoDb();
@@ -1671,9 +1615,6 @@ class CatalogueClass
         return array($mas, $arr);
     }
 
-    /*
-     * delete article from list with price = 0 OR stock = 0
-     * */
     public function deleteEmptyPosition($mas)
     {
         $i = $count_suggest = 0;
@@ -1715,9 +1656,6 @@ class CatalogueClass
         return $mas;
     }
 
-    /*
-     * delete article from list with price = 0 OR stock = 0
-     * */
     public function deleteEmptyPositionMain($mas)
     {
         $count_success = 0;
@@ -1741,9 +1679,6 @@ class CatalogueClass
         return $mas;
     }
 
-    /*
-     * delete position, where suppl_id = 0 AND suppl_id > 0 (same ART_ID)
-     * */
     public function deleteSupplPosition($mas)
     {
         $array_toko = [];
@@ -1776,9 +1711,6 @@ class CatalogueClass
         return $mas;
     }
 
-    /*
-     * delete position with repeat price AND delivery
-     * */
     public function deleteRepeatPosition($mas)
     {
         $uniq = [];
@@ -1812,9 +1744,6 @@ class CatalogueClass
         return $mas;
     }
 
-    /*
-     * sorted by min stock AND min price
-     * */
     public function sortByMinStock($mas)
     {
         $min_key = $pred_key = 0;
@@ -1853,9 +1782,6 @@ class CatalogueClass
         return $mas;
     }
 
-    /*
-     * show same articles with other storages
-     * */
     public function showOtherStorages($mas, $cur, $view): array
     {
         $cur_cap = $this->getSymbolExRate($cur);
@@ -1965,9 +1891,6 @@ class CatalogueClass
         ];
     }
 
-    /*
-     * show search list
-     * */
     public function outSearchList($list, $error, $mas, $other_storages, $saleOut = 0, $status_auto = 0, $mfa_id = 0, $model = ""): string
     {
         $ll = $other_storages["content"];
@@ -2040,9 +1963,6 @@ class CatalogueClass
         return $list;
     }
 
-    /*
-     * CATALOG ROW
-     * */
     public function getHeadRowName($head_id)
     {
         $db = DbSingleton::getTokoDb();
@@ -2190,9 +2110,6 @@ class CatalogueClass
         return (int)$db->result($r, 0, "STATUS_AUTO");
     }
 
-    /*
-     * Tree GRID Headers
-     * */
     public function getCatalogColList(): string
     {
         $db = DbSingleton::getTokoDb();
@@ -2344,9 +2261,6 @@ class CatalogueClass
         return $list;
     }
 
-    /*
-     * HEADER ROW `HEADERS-CATS-GROUPS` LIST
-     * */
     public function getHeaderContent($head_id, $cat_id_selected, $group_id_selected)
     {
         $db = DbSingleton::getTokoDb();
@@ -2576,9 +2490,6 @@ class CatalogueClass
         return $value_name;
     }
 
-    /*
-     * export price list for client
-     * */
     public function getPriceList($user_id = 0): array
     {
         $db = DbSingleton::getTokoDb();
@@ -2800,10 +2711,6 @@ class CatalogueClass
         return $list;
     }
 
-    /*
-     * get catalog search link
-     * from ARTICLE_NR_SEARCH
-     * */
     public function getCatalogueLink($article_nr_search, $article_nr_search2): string
     {
         $search = new SearchClass();

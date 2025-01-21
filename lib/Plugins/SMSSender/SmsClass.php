@@ -47,7 +47,6 @@ class SmsClass extends CatalogueClass
     public function send_sms($sign, $nomber, $message)
     {
         $nomber = $this->correct_nomber($nomber);
-        $message = $this->getIconv($message);
         $xml = '<sendsms>
         <message><![CDATA[' . $message . ']]></message>
         <recipient phone="' . $nomber . '" sender="' . $sign . '" /></sendsms>';

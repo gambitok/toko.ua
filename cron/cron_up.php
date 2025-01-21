@@ -24,7 +24,6 @@ foreach ($data as $value)
 
     $dbt->query("INSERT INTO `UP_DISTRICTS` (`DISTRICT_ID`, `CITY_ID`, `NAME`) 
     VALUES ($district_id, $city_id, \"$district_name\");");
-    $district_name = $catalog_exist->getIconvWindows($district_name);
 
     print("$district_id - $district_name \n");
 }

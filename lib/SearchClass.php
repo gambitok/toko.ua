@@ -3,9 +3,6 @@
 class SearchClass extends CatalogueClass
 {
 
-    /*
-     * SEARCH FORM
-     * */
     public function getSearchList($article_nr_search)
     {
         $db = DbSingleton::getTokoDb();
@@ -27,9 +24,6 @@ class SearchClass extends CatalogueClass
         return $this->getSearchResult($article_search, $article_nr_search);
     }
 
-    /*
-     * SEARCH ERROR FORM
-     * */
     public function getSearchResult($article_search, $article_nr_search)
     {
         if ($article_search !== "") {
@@ -783,7 +777,7 @@ class SearchClass extends CatalogueClass
                 $other_storages = $this->showOtherStorages($mas, $cur, 0);
 
                 // show search list
-                $list = $this->outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $nulls, $mas_nulls);
+                $list = $this->getSearchListView($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $nulls, $mas_nulls);
 
                 // get filter brand list
                 $list_brand = $this->getListBrand($brands, $main_brand, $cur);
@@ -1076,7 +1070,8 @@ class SearchClass extends CatalogueClass
                 // show search list
                 FormClass::cacheArticlesPhotos($where_art_id_str);
                 FormClass::cacheInfoTemplates($where_art_id_str);
-                $list = $this->outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $nulls, $mas_nulls);
+                
+                $list = $this->getSearchListView($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $nulls, $mas_nulls);
             }
 
             if (count($mas) === 0) {
@@ -1087,7 +1082,7 @@ class SearchClass extends CatalogueClass
         return array($list, $filters, $list_brand, $current_value);
     }
 
-    public function outSearchList3($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $nulls = 0, $mas_nulls = [])
+    public function getSearchListView($list, $error, $mas, $art_id_search, $article_nr_search, $brand_nr_search, $other_storages, $nulls = 0, $mas_nulls = [])
     {
         $cont   = $other_storages["content"];
         $class  = $other_storages["class"];
@@ -1126,10 +1121,10 @@ class SearchClass extends CatalogueClass
 
                 if (($stock > 0 && $price > 0)) {
                     $os             = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
-                    $list_target    .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                    $list_target    .= $this->getSearchListItemView($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
                 } elseif ($i === 1) {
                     $os             = ["content" => "", "class" => "", "hide" => "", "border" => "border-line", "none" => "dvisibility"];
-                    $list_target    .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                    $list_target    .= $this->getSearchListItemView($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
                 }
 
                 $i++;
@@ -1138,7 +1133,7 @@ class SearchClass extends CatalogueClass
             if ($check === 0) {
                 $style_target   = "";
                 $os             = ["content" => "", "class" => "", "hide" => "", "border" => "border-line", "none" => "dvisibility"];
-                $list_target    .= $this->printSearchList3($i, $dataArt["art_id"], $dataArt["art"], $dataArt["brand_id"], $dataArt["brand"], "", "", 0, 0, $article_nr_search, $brand_nr_search, $os, 0, 0, 0, "", 0);
+                $list_target    .= $this->getSearchListItemView($i, $dataArt["art_id"], $dataArt["art"], $dataArt["brand_id"], $dataArt["brand"], "", "", 0, 0, $article_nr_search, $brand_nr_search, $os, 0, 0, 0, "", 0);
             }
 
             // analogs
@@ -1163,7 +1158,7 @@ class SearchClass extends CatalogueClass
                             $storage_id = $val["storage_id"];
                             $os         = ["content" => $cont[$i], "class" => $class[$i], "hide" => $hide[$i], "border" => $border[$i], "none" => $none[$i]];
 
-                            $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                            $list .= $this->getSearchListItemView($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
                             $i++;
                         }
                     }
@@ -1187,7 +1182,7 @@ class SearchClass extends CatalogueClass
                             $storage_id = $val["storage_id"];
                             $os         = ["content" => "", "class" => "", "hide" => "", "border" => "border-line", "none" => "dvisibility"];
 
-                            $list .= $this->printSearchList3($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
+                            $list .= $this->getSearchListItemView($i, $art_id, $art_nr_ds, $brand_id, $brand_name, $art_name, $del_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $ret_days, $del_days, $del_short, $storage_id);
                             $i++;
                         }
                     }
@@ -1206,7 +1201,7 @@ class SearchClass extends CatalogueClass
         $this->getHtmlForm("catalog_exist/search"));
     }
 
-    public function printSearchList3($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $delivery_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id)
+    public function getSearchListItemView($id, $art_id, $article_nr_displ, $brand_id, $brand_name, $article_name, $delivery_info, $stock, $price, $article_nr_search, $brand_nr_search, $os, $suppl_id, $return_days, $delivery_days, $delivery_short_info, $storage_id)
     {
         $return_days = $this->getUrlNumber($return_days);
 

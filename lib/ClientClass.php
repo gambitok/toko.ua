@@ -1501,12 +1501,12 @@ class ClientClass
                         }
 
                         if ($krs >= $start_row) {
-                            $suppl_index = trim($catalog->getIconv($Row[$index - 1]));
-                            $suppl_brand = trim($catalog->getIconv($Row[$brand - 1]));
-                            $suppl_price = str_replace(",", ".", trim($catalog->getIconv($Row[$price - 1])));
+                            $suppl_index = trim($Row[$index - 1]);
+                            $suppl_brand = trim($Row[$brand - 1]);
+                            $suppl_price = str_replace(",", ".", trim($Row[$price - 1]));
 
                             if ($currency == 0) {
-                                $suppl_cash = trim($catalog->getIconv($Row[$cash - 1]));
+                                $suppl_cash = trim($Row[$cash - 1]);
                                 $suppl_cash_id = $this->findCashID($suppl_cash, $cash_data);
                             }
                             $price_usd = 0;
@@ -1527,7 +1527,7 @@ class ClientClass
                                 $storage_id = $storages[$s]["id"];
                                 $stockCellNom = $suppl_storages_use[$storage_id] - 1;
                                 $cellNom = preg_replace('/\D/', '', $Row[$stockCellNom]);
-                                $suppl_stock = trim($catalog->getIconv($cellNom));
+                                $suppl_stock = trim($cellNom);
 
                                 if ($suppl_stock > 0) {
 

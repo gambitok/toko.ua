@@ -14,7 +14,6 @@ if (!empty($_FILES)) {
     $cookie_id  = $catalogue->getSessionID();
     $targetDir  = RD . "/uploads/suppliers/";
     $fileName   = $_FILES['file']['name'];
-    $realFile   = $catalogue->getIconv($fileName);
     $fileName   = "$cookie_id." . pathinfo($fileName, PATHINFO_EXTENSION);
     $targFile   = $targetDir . $fileName;
     $size       = filesize($targFile);

@@ -57,7 +57,7 @@ class UkrPoshtaClass extends CatalogueClass
 
         $arr = [];
         foreach ($data["Entry"] as $value) {
-            $arr[$value["REGION_ID"]] = $this->getIconv($value["REGION_UA"]);
+            $arr[$value["REGION_ID"]] = $value["REGION_UA"];
         }
 
         return $arr;
@@ -68,7 +68,7 @@ class UkrPoshtaClass extends CatalogueClass
         $data = $this->connect("address-classifier-ws/", "get_city_by_region_id_and_district_id_and_city_ua", ["region_id" => $region_id]);
         $arr = [];
         foreach ($data["Entry"] as $value) {
-            $arr[$value["CITY_ID"]] = $this->getIconv($value["CITY_UA"]);
+            $arr[$value["CITY_ID"]] = $value["CITY_UA"];
         }
 
         return $arr;
@@ -81,24 +81,24 @@ class UkrPoshtaClass extends CatalogueClass
         foreach ($data["Entry"] as $value) {
             $arr[] = [
                 'CITY_ID'   => $value['CITY_ID'],
-                'CITY_UA'   => $this->getIconv($value["CITY_UA"]),
+                'CITY_UA'   => $value["CITY_UA"],
                 'REGION_ID' => $value['REGION_ID']];
         }
 
         return $arr;
     }
 
-    public function getDistrictsList($city_id): array
-    {
-        $data = $this->connect("address-classifier-ws/", "get_postoffices_by_postindex", ["poCityId" => $city_id]);
-
-        $arr = [];
-        foreach ($data["Entry"] as $value) {
-            $arr[$value["ID"]] = $this->getIconv($value["PO_LONG"]);
-        }
-
-        return $arr;
-    }
+//    public function getDistrictsList($city_id): array
+//    {
+//        $data = $this->connect("address-classifier-ws/", "get_postoffices_by_postindex", ["poCityId" => $city_id]);
+//
+//        $arr = [];
+//        foreach ($data["Entry"] as $value) {
+//            $arr[$value["ID"]] = $value["PO_LONG"];
+//        }
+//
+//        return $arr;
+//    }
 
     public function getDistrictsListAll(): array
     {
@@ -106,7 +106,7 @@ class UkrPoshtaClass extends CatalogueClass
 
         $arr = [];
         foreach ($data["Entry"] as $value) {
-            $district_name = $this->getIconv($value["PO_LONG"]);
+            $district_name = $value["PO_LONG"];
             $district_name = str_replace('"', "", $district_name);
             $arr[] = [
                 'DISTRICT_ID'   => $value['ID'],

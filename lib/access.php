@@ -85,7 +85,6 @@ function getMoreTitle($path): string
     if ($path === "search") {
         $art_search = $catalogue->getUrlString($httpHost[1]);
         $art_search = rawurldecode($art_search);
-        $art_search = $catalogue->getIconv($art_search);
         $brand_link = $catalogue->getUrlString($httpHost[2]);
         $brand_id   = ($brand_link !== "") ? $catalogue->getCatalogueBrandID($brand_link) : 0;
 
@@ -191,7 +190,6 @@ function printBreadcrumbs($path): array
         case "search" : {
             $art_search  = $catalogue->getUrlString($bread[1]);
             $art_search  = rawurldecode($art_search);
-            $art_search  = $catalogue->getIconv($art_search);
             $info        = $art_search;
             $predTitle    = "$a_home $icon {search_cap} $icon {search_results} $info";
             break;

@@ -231,12 +231,11 @@ trait Helper
         return $array;
     }
 
-    public function getWeekdayAbr($week_day)
+    public function getWeekdayAbr($week_day): string
     {
-        $catalogue = new CatalogueClass();
-        $wks = array('1' => "Пн", '2' => "Вт", '3' => "Ср", '4' => "Чт", '5' => "Пт", '6' => "Сб", '7' => "Нд");
-        $wks[$week_day] = $catalogue->getIconv($wks[$week_day]);
-
+        $wks = [
+            '1' => "Пн", '2' => "Вт", '3' => "Ср", '4' => "Чт", '5' => "Пт", '6' => "Сб", '7' => "Нд"
+        ];
         return $wks[$week_day];
     }
 
@@ -309,7 +308,7 @@ trait Helper
             $static_h1 = $static_data['//' . $_SERVER["HTTP_HOST"] . $uri][2];
         }
 
-        return (new CatalogueClass())->getIconv($static_h1);
+        return $static_h1;
     }
 
     /*

@@ -1782,9 +1782,9 @@ class ShopClass extends CatalogueClass
         $arr    = $np->getWarehouses($ref)['data'];
 
         foreach ($arr as $val) {
-            $name       = $this->getIconv($val["Description"]);
-            $war_ref    = $val["Ref"];
-            $sel        = ($war_ref === $department_ref) ? "selected" : "";
+            $name = $val["Description"];
+            $war_ref = $val["Ref"];
+            $sel = ($war_ref === $department_ref) ? "selected" : "";
 
             $list .= str_replace(
                 array("{value}", "{name}", "{checked}"),
