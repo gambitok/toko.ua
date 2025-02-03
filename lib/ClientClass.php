@@ -866,7 +866,7 @@ class ClientClass
 
             $articleNrDisplay = $this->getArticleDisplay($art_id);
 
-            if ($brand_id > 0) {
+            if ($brand_id > 0 && $art_id > 0 && $articleNrDisplay !== "") {
                 $where = (empty($user_id)) ? "`cookie_id` = '$cookie'" : "`client_id` = $client_id AND `client_user_id` = $user_id";
 
                 $r = $db->query("SELECT COUNT(`id`) as ids_count FROM `CLIENT_HISTORY` WHERE $where;");
@@ -877,14 +877,15 @@ class ClientClass
                     $id = $db->result($r, 0, "id");
                     $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date', `article_nr_displ` = '$articleNrDisplay', `brand_id` = $brand_id, `art_id` = $art_id WHERE `id` = $id;");
                 } else {
-                    $r = $db->query("SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id;");
-                    $n = $db->num_rows($r);
+                    $checkDuplicateQuery = "SELECT `id` FROM `CLIENT_HISTORY` WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id AND `art_id` = $art_id;";
+                    $checkDuplicateResult = $db->query($checkDuplicateQuery);
+                    $duplicateExists = $db->num_rows($checkDuplicateResult) > 0;
 
-                    if ($n > 0) {
-                        $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date' WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id;");
-                    } else {
+                    if (!$duplicateExists) {
                         $db->query("INSERT INTO `CLIENT_HISTORY` (`client_id`, `client_user_id`, `ses_id`, `cookie_id`, `article_nr_displ`, `brand_id`, `data`, `art_id`) 
                         VALUES ('$client_id', '$user_id', '$ses', '$cookie', '$articleNrDisplay', '$brand_id', '$date', '$art_id');");
+                    } else {
+                        $db->query("UPDATE `CLIENT_HISTORY` SET `data` = '$date' WHERE $where AND `article_nr_displ` = '$articleNrDisplay' AND `brand_id` = $brand_id AND `art_id` = $art_id;");
                     }
                 }
             }

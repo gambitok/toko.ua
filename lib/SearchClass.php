@@ -584,7 +584,6 @@ class SearchClass extends CatalogueClass
                     if ($suppl_id > 0) {
                         $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
                     }
-
                     $price = $exRate->getExRatePrice($price, $cur);
 
                     if ($cur === 1) {

@@ -399,13 +399,13 @@ class CatalogueClass
                     $return_days        = (int)$db->result($r, $i - 1, "return_delay");
 
                     $price = $this->getArticlePrice($art_id);
-                    
+
                     if ($suppl_id !== 0) {
                         $price = $this->getArticleSupplPrice($art_id, $suppl_id, $storage_id);
                     }
                     
                     $price = $exRate->getExRatePrice($price, $cur);
-                    
+
                     if ($cur === 1) {
                         $price = $client->getClientPriceRounding($client_id, $price);
                     }
@@ -1209,35 +1209,50 @@ class CatalogueClass
         $dbt = DbSingleton::getTokoDb();
         $client = new ClientClass();
         $client_id = $this->getClient();
+        $markup_min = $client->getClientMarkupMin($client_id);
         $price = 0;
         list($price_lvl, $margin_price_lvl) = $this->getDpClientPriceLevels($client_id);
 
-        $query = "SELECT 
-                t2apr.price_$price_lvl, 
-                t2apr.cash_id, 
-                t2apr.minMarkup, 
-                t2aps.OPER_PRICE
-            FROM 
-                `T2_ARTICLES` t2a 
-            LEFT OUTER JOIN 
-                `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id = t2a.ART_ID)
-            LEFT OUTER JOIN 
-                `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID = t2a.ART_ID)
-            WHERE 
-                t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;";
+        $r = $dbt->query("SELECT t2apr.price_$price_lvl, t2apr.cash_id, t2apr.minMarkup, t2aps.OPER_PRICE
+        FROM `T2_ARTICLES` t2a 
+            LEFT OUTER JOIN `T2_ARTICLES_PRICE_RATING` t2apr ON (t2apr.art_id = t2a.ART_ID)
+            LEFT OUTER JOIN `T2_ARTICLES_PRICE_STOCK` t2aps ON (t2aps.ART_ID = t2a.ART_ID)
+        WHERE t2a.ART_ID = $art_id AND t2apr.in_use = '1' LIMIT 1;");
+        $n = (int)$dbt->num_rows($r);
 
-        $result = $dbt->query($query);
-        if ($result->num_rows === 1) {
-            $data = $result->fetch_assoc();
-            $price = (float)$data["price_$price_lvl"];
-            $minMarkup = (float)$data["minMarkup"];
-            $operativePrice = (float)$data["OPER_PRICE"];
-            $cash_id = (int)$data["cash_id"];
+        if ($n === 1) {
+            $price      = (float)$dbt->result($r, 0, "price_" . $price_lvl);
+            $minMarkup  = (float)$dbt->result($r, 0, "minMarkup");
+            $operativePrice = (float)$dbt->result($r, 0, "OPER_PRICE");
+            $cash_id    = (int)$dbt->result($r, 0, "cash_id");
 
             if ($margin_price_lvl > 0) {
                 $price += round($price * $margin_price_lvl / 100, 2);
-            } elseif ($margin_price_lvl < 0) {
-                $price = $this->calculatePriceWithMarkup($price, $minMarkup, $operativePrice, $margin_price_lvl);
+            }
+
+            if ($margin_price_lvl < 0 && $markup_min === 0) {
+                $price_minus = $price + ($price * $margin_price_lvl / 100);
+                $operativeLimit = $operativePrice + ($operativePrice * $minMarkup / 100);
+
+                if ($price_minus >= $operativeLimit) {
+                    $price = $price_minus;
+                } elseif ($operativeLimit < $price) {
+                    $price = $operativeLimit;
+                }
+            }
+
+            if ($margin_price_lvl < 0 && $markup_min > 0) {
+                $price = $this->getPriceRatingExRate($price, $cash_id, 2);
+                $procPriceMargin = $price - ($price * abs($margin_price_lvl) / 100);
+                $procOperativePriceMin = $operativePrice + ($operativePrice * $markup_min / 100);
+
+                if ($procPriceMargin >= $procOperativePriceMin) {
+                    $price = $procPriceMargin;
+                } elseif ($procOperativePriceMin <= $price) {
+                    $price = $procOperativePriceMin;
+                }
+
+                $price = $this->getPriceRatingExRate($price, 2, $cash_id);
             }
 
             $price = $this->getPriceRatingExRate($price, $cash_id, 1);
@@ -1245,32 +1260,6 @@ class CatalogueClass
         }
 
         return $price;
-    }
-
-    private function calculatePriceWithMarkup($price, $minMarkup, $operativePrice, $margin_price_lvl)
-    {
-        $price_minus = $price + ($price * $margin_price_lvl / 100);
-        $operativeLimit = $operativePrice + ($operativePrice * $minMarkup / 100);
-
-        if ($price_minus >= $operativeLimit) {
-            return $price_minus;
-        }
-
-        if ($operativeLimit < $price) {
-            return $operativeLimit;
-        }
-
-        $procPriceMargin = $price - ($price * abs($margin_price_lvl) / 100);
-        $procOperativePriceMin = $operativePrice + ($operativePrice * $minMarkup / 100);
-
-        if ($procPriceMargin >= $procOperativePriceMin) {
-            return $procPriceMargin;
-        }
-
-        if ($procOperativePriceMin <= $price) {
-            return $procOperativePriceMin;
-        }
-        return 0;
     }
 
     public function getArtsGroupId($art_id): int
@@ -1319,8 +1308,9 @@ class CatalogueClass
 
             if ($client_vat === 1) {
                 if ($price_in_vat === 0 && $show_in_vat === 1 && $price_add_vat === 1) {
-                    $price *= 1.2;
-                } elseif ($price_in_vat === 0 && $show_in_vat === 0) {
+                    $price = $price + $price * 20 / 100;
+                }
+                if ($price_in_vat === 0 && $show_in_vat === 0) {
                     $price = 0;
                 }
             }
@@ -1363,7 +1353,6 @@ class CatalogueClass
 
         $r = $db->query("SELECT `price_in_vat`, `show_in_vat`, `price_add_vat` FROM `A_CLIENTS_VAT_CONDITIONS` WHERE `client_id` = $suppl_id LIMIT 1;");
         $n = $db->num_rows($r);
-
         if ($n === 1) {
             $price_in_vat   = (int)$db->result($r, 0, "price_in_vat");
             $show_in_vat    = (int)$db->result($r, 0, "show_in_vat");
