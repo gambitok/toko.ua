@@ -2743,6 +2743,55 @@ class CatalogueClass
         return $link;
     }
 
+    public function getArtReviews($art_id)
+    {
+        $user_id = $this->getUser();
+        $form = $this->getArtReviewsForm($art_id, $user_id) . $this->getArtReviewsList($art_id);
+        return $form;
+    }
+
+    public function getArtReviewsForm($art_id, $user_id)
+    {
+        $form = "";
+        if ($user_id > 0 && $art_id > 0) {
+            $db = DbSingleton::getDbm();
+            $r = $db->query("SELECT COUNT(orders_new.id) as count_arts
+            FROM orders_new
+            JOIN orders_str_new ON orders_new.id = orders_str_new.order_id
+            WHERE orders_new.client_user_id = $user_id
+            AND orders_str_new.art_id = $art_id;");
+            $n = $db->result($r, 0, "count_arts");
+            if ($n > 0) {
+                $form = $this->getHtmlForm("article/review");
+                $form = str_replace(array("{comment_user_id}", "{comment_art_id}"), array($user_id, $art_id), $form);
+            }
+        }
+        return $form;
+    }
+
+    public function getArtReviewsList($art_id)
+    {
+        $form = "";
+        if ($art_id > 0) {
+            $db = DbSingleton::getTokoDb();
+            $r = $db->query("SELECT * FROM `T2_ARTICLES_COMMENTS` WHERE `ART_ID` = $art_id");
+            $n = $db->num_rows($r);
+            if ($n > 0) {
+                $form = $this->getHtmlForm("article/reviews");
+                $list = "";
+                for ($i = 1; $i <= $n; $i++) {
+                    $user_id = (int)$db->result($r, $i - 1, "USER_ID");
+                    $text = (int)$db->result($r, $i - 1, "COMMENT");
+                    $date = (int)$db->result($r, $i - 1, "DATA");
+                    $list .= $this->getHtmlForm("article/reviews_card");
+                    $list = str_replace(array("{review_username}", "{review_comment}", "{review_date}"), array($user_id, $text, $date), $list);
+                }
+                $form = str_replace("{list}", $list, $form);
+            }
+        }
+        return $form;
+    }
+
 }
 
 function cmpPrice($a, $b): int

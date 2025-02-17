@@ -66,6 +66,10 @@ if ($_REQUEST["w"] === "getArticleApplicableForm") {
     $GLOBALS['_RESULT'] = array("content" => $formObj->getArticleApplicableForm($_REQUEST["art_id"]));
 }
 
+if ($_REQUEST["w"] === "getArtReviews") {
+    $GLOBALS['_RESULT'] = array("content" => $formObj->getArtReviews($_REQUEST["art_id"]));
+}
+
 if ($_REQUEST["w"] === "setCityDepartments") {
     $GLOBALS['_RESULT'] = array("content" => $shop->setCityDepartments($_REQUEST["city_ref"], $_REQUEST["department_ref"]));
 }

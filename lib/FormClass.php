@@ -535,6 +535,7 @@ class FormClass extends CatalogueClass
         if (empty($this->getApplicableCount($art_id))) {
             $form = str_replace("{active_tab_applicable}", "none", $form);
         }
+        $form = str_replace("{active_tab_reviews}", "", $form);
         $form = str_replace("{active_tab_home}", "", $form);
         $form = str_replace("{active_tab_oe}", "", $form);
         $form = str_replace("{active_tab_applicable}", "", $form);
@@ -1592,6 +1593,10 @@ class FormClass extends CatalogueClass
 
         $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID` = $art_id AND `LANG_ID` = 16 ORDER BY `SORT`;");
         $n = $db->num_rows($r);
+        if ($n === 0) {
+            $r = $db->query("SELECT `TEXT`, `VALUE` FROM `T2_INFO` WHERE `ART_ID` = $art_id AND `LANG_ID` = 41 ORDER BY `SORT`;");
+            $n = $db->num_rows($r);
+        }
         if ($n > 0) {
             $class  = (!$display) ? "info__table" : "info__table_min";
             $info   .= "<table class='$class'>";

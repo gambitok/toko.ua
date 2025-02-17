@@ -79,6 +79,15 @@ function shortArticleApplicable() {
         }}, true);
 }
 
+function getArtReviews() {
+    let art_id = $("#art_id").val();
+
+    JsHttpRequest.query(folder,{'w':'getArtReviews', 'art_id':art_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#nav-reviews").html(result.content);
+        }}, true);
+}
+
 // Modal `Brands`
 function showBrandForm(brand) {
     JsHttpRequest.query(folder,{'w':'showBrandForm', 'brand':brand},
