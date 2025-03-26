@@ -724,7 +724,7 @@ class ShopClass extends CatalogueClass
         $status = false;
 
         if ($user_id > 0) {
-            list($user_name, $user_phone, $user_email, $user_city) = $client->getClientUserData($user_id);
+            [$user_name, $user_phone, $user_email, $user_city] = $client->getClientUserData($user_id);
 
             if ($user_phone !== "" && $user_name !== "" && $user_city !== "") {
                 $status = true;
@@ -1262,7 +1262,7 @@ class ShopClass extends CatalogueClass
         return $this->replaceLang($text);
     }
 
-    public function dropClientOrderInfo($id)
+    public function dropClientOrderInfo($id): void
     {
         $id = $this->getUrlNumber($id);
         $db = DbSingleton::getDbm();

@@ -95,7 +95,7 @@ $breadData = printBreadcrumbs($path);
 $content = str_replace("{site_script_breadcrumbs}", $breadData[1], $content);
 $content = str_replace("{main_site_breadcrumbs}", $breadData[0], $content);
 $content = str_replace("{site_page_pagination}", "", $content);
-$content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
+//$content = str_replace("{site_warning_message}", $menu->getSiteWarningMessage(), $content);
 $content = str_replace("{site_console}", "", $content);
 $content = str_replace("{seoshield_formulas}", "", $content);
 

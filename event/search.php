@@ -16,17 +16,26 @@ if (!empty($text)) {
 }
 
 if ($article_nr_search === "") {
-    $content = str_replace("{main_window}", $catalogue->getHtmlForm("error/search_unknown"), $content);
+    $form = $catalogue->getHtmlForm("error/search_unknown");
 } else {
-    $content = str_replace("{main_window}", "{search}", $content);
+    $form = "{search}";
 
     if ($brand_link === "") {
-        $content = str_replace("{search}", $search->getSearchList($article_nr_search), $content);
+        $form = str_replace("{search}", $search->getSearchList($article_nr_search), $form);
     } else {
         $brand_id = $catalogue->getCatalogueBrandID($brand_link);
-        $content = str_replace("{search}", $catalogue->getCatalogList($catalogue->getFormatArticle($article_nr_search), $brand_id), $content);
+        $form = str_replace("{search}", $catalogue->getCatalogList($catalogue->getFormatArticle($article_nr_search), $brand_id), $form);
         $client->insertHistorySearch($article_nr_search, $brand_id);
     }
 }
+
+$client_id = $client->getClient();
+$client_category = (int)$client->getClientCategory($client_id);
+if ($client_category !== 140) {
+    $list = $catalogue->getWarningBlock();
+    $form = $list . $form;
+}
+
+$content = str_replace("{main_window}", $form, $content);
 
 $content = str_replace("{meta_noindex}", $catalogue->getHtmlForm("seo/noindex_nofollow"), $content);

@@ -716,6 +716,18 @@ class ClientClass
         return array("client_id" => $client_id, "user_id" => $user_id);
     }
 
+    public function getClientCategory($client_id)
+    {
+        $category_id = 0;
+        $db = DbSingleton::getDbm();
+        $r = $db->query("SELECT `client_category` FROM `A_CLIENTS` WHERE `id` = $client_id LIMIT 1;");
+        $n = $db->num_rows($r);
+        if ($n > 0) {
+            $category_id = $db->result($r, 0, "client_category");
+        }
+        return $category_id;
+    }
+
     /*
      * MOVE CLIENT CONDITION
      * add new client from existing

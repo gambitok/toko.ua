@@ -70,6 +70,14 @@ if ($_REQUEST["w"] === "getArtReviews") {
     $GLOBALS['_RESULT'] = array("content" => $formObj->getArtReviews($_REQUEST["art_id"]));
 }
 
+if ($_REQUEST["w"] === "addComment") {
+    $GLOBALS['_RESULT'] = array("content" => $formObj->addComment($_REQUEST["art_id"],$_REQUEST["user_id"],$_REQUEST["comment"]));
+}
+
+if ($_REQUEST["w"] === "dropComment") {
+    $GLOBALS['_RESULT'] = array("content" => $formObj->dropComment($_REQUEST["comment_id"],$_REQUEST["art_id"]));
+}
+
 if ($_REQUEST["w"] === "setCityDepartments") {
     $GLOBALS['_RESULT'] = array("content" => $shop->setCityDepartments($_REQUEST["city_ref"], $_REQUEST["department_ref"]));
 }

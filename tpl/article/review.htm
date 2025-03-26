@@ -1,10 +1,14 @@
-<form>
-    <div class="mb-3">
-        <label class="form-label">Comment</label>
-        <textarea class="form-control" rows="3" required></textarea>
+<div class="row">
+    <div class="col-6">
+        <div class="mb-3">
+            <label class="form-label">{comment_cap}</label>
+            <textarea id="comment_form" class="form-control" rows="3" required name="comment"></textarea>
+        </div>
+        <input type="hidden" name="user_id" value="{comment_user_id}" id="comment_user_id">
+        <input type="hidden" name="art_id" value="{comment_art_id}" id="comment_art_id">
+        <br>
+        <button type="submit" class="btn btn-primary" onclick="addComment();">{send_seller}</button>
     </div>
-    <input type="hidden" name="comment_user_id" value="{comment_user_id}">
-    <input type="hidden" name="comment_art_id" value="{comment_art_id}">
-    <button type="submit" class="btn btn-primary">Send</button>
-</form>
+</div>
+
 <br>

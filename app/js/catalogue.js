@@ -79,6 +79,25 @@ function shortArticleApplicable() {
         }}, true);
 }
 
+function addComment() {
+    let art_id = $("#comment_art_id").val();
+    let user_id = $("#comment_user_id").val();
+    let comment_form = $("#comment_form").val();
+
+    JsHttpRequest.query(folder,{'w':'addComment', 'art_id':art_id, 'user_id':user_id, 'comment':comment_form},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#nav-reviews").html(result.content);
+        }}, true);
+}
+
+function dropComment(id) {
+    let art_id = $("#comment_art_id").val();
+    JsHttpRequest.query(folder,{'w':'dropComment', 'comment_id':id, 'art_id':art_id},
+        function (result, errors){ if (errors) {alert(errors);} if (result){
+            $("#nav-reviews").html(result.content);
+        }}, true);
+}
+
 function getArtReviews() {
     let art_id = $("#art_id").val();
 

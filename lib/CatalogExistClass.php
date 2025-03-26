@@ -1280,9 +1280,17 @@ class CatalogExistClass extends CatalogueClass
             $parts_seo          = $this->getPartsCatalogueSeo($group_id, $page, $params, $source_link, $h1_text, $mfa_id, $model, $model_id, $status_auto, $status_auto_type, $typ_id, $min_price, $max_price);
             $parts_states       = $this->getPartsCatalogueStates($group_id);
 
+            $client = new ClientClass();
+            $last_dance = "";
+            $client_id = $client->getClient();
+            $client_category = (int)$client->getClientCategory($client_id);
+            if ($client_category !== 140) {
+                $last_dance = $this->getWarningBlock();
+            }
+
             $form = str_replace(
-                array("{details_group_id}", "{parts_name}", "{parts_list}", "{parts_h1}", "{parts_count}", "{parts_filters}", "{filter_count}", "{parts_sort}", "{parts_pagination_list}", "{parts_params}", "{parts_breadcrumbs}", "{status_auto}", "{filters_count}", "{filters_style}", "{parts_cars}", "{parts_params_cars}", "{parts_seo}", "{parts_states}", "{parts_telegram}"),
-                array($group_id, $group_text, $list, $parts_h1, $parts_count, $filters_btn, $filters_count, $parts_sort, $pagination_form, $parts_params, $breadcrumbsData["form"], $status_auto, $filters_count, $filters_status, $this->drawLoader(), $parts_params_cars, $parts_seo, $parts_states, $this->getTelegramForm()),
+                array("{details_group_id}", "{parts_name}", "{parts_list}", "{parts_h1}", "{parts_count}", "{parts_filters}", "{filter_count}", "{parts_sort}", "{parts_pagination_list}", "{parts_params}", "{parts_breadcrumbs}", "{status_auto}", "{filters_count}", "{filters_style}", "{parts_cars}", "{parts_params_cars}", "{parts_seo}", "{parts_states}", "{parts_telegram}", "{last_dance}"),
+                array($group_id, $group_text, $list, $parts_h1, $parts_count, $filters_btn, $filters_count, $parts_sort, $pagination_form, $parts_params, $breadcrumbsData["form"], $status_auto, $filters_count, $filters_status, $this->drawLoader(), $parts_params_cars, $parts_seo, $parts_states, $this->getTelegramForm(), $last_dance),
             $form);
         }
 
